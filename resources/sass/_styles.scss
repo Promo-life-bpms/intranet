@@ -1,0 +1,144 @@
+body {
+    font-family: $font-family;
+    background-color: $white-light;
+}
+.sidebar-wrapper {
+    background-color: $primary-dark;
+    .menu {
+        margin-top: 0;
+        .sidebar-title {
+            color: $white-light;
+        }
+        .sidebar-link {
+            color: $white-light;
+            &:hover {
+                color: $black;
+            }
+        }
+        .sidebar-item {
+            a {
+                color: $white-light;
+            }
+            &:hover {
+                color: $black;
+            }
+        }
+        .submenu {
+            .submenu-item {
+                a {
+                    color: $white-light;
+                    &:hover {
+                        color: $black;
+                    }
+                }
+            }
+        }
+    }
+    .sidebar-header {
+        padding: 2rem 2rem 0 2rem;
+        .card,
+        h5,
+        h6 {
+            background-color: $primary-dark;
+            color: $white-light;
+            font-size: 1rem;
+        }
+        .card{
+            padding: 10px;
+        }
+    }
+}
+
+.page-title {
+    h3 {
+        margin: 0;
+        padding: 0;
+        font-size: 1.5rem;
+    }
+}
+#main .section {
+    margin-top: 1rem;
+}
+
+.boton {
+    font-size: 15px;
+    color: $white;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: $primary;
+    border-radius: 5px;
+    border: none;
+    &:hover {
+        background-color: $primary-dark;
+        color: $white;
+    }
+}
+
+.boton-enviar {
+    font-size: 15px;
+    color: $white;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: $primary;
+    border-radius: 5px;
+    border: none;
+    &:hover {
+        background-color: $primary-dark;
+        color: $white;
+    }
+}
+
+.boton-ver {
+    font-size: 15px;
+    color: $white;
+    padding-top: 9px;
+    padding-bottom: 11px;
+    padding-left: 15px;
+    padding-right: 15px;
+    background-color: $primary;
+    border-radius: 5px;
+    border: none;
+    &:hover {
+        background-color: $primary-dark;
+        color: $white;
+    }
+}
+.boton-entregar-archivos {
+    font-size: 15px;
+    color: $white;
+    padding-top: 9px;
+    padding-bottom: 11px;
+    padding-left: 90px;
+    padding-right: 90px;
+    background-color: $primary;
+    border-radius: 5px;
+    border: none;
+    &:hover {
+        background-color: $primary-dark;
+        color: $white;
+    }
+}
+.card-photo {
+    position: relative;
+    overflow: hidden;
+    &:hover .change-icon {
+        top: 0px;
+        transform: all 0.2s ease-in-out;
+        cursor: pointer;
+    }
+}
+.change-icon {
+    display: flex;
+    top: 60px;
+    border-radius: 50%;
+    position: absolute;
+    background-color: rgba($color: #a59d9d, $alpha: 0.1);
+}
+.width-icon {
+    width: 40px;
+    height: 40px;
+}
