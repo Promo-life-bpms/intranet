@@ -43,7 +43,7 @@ body {
             color: $white-light;
             font-size: 1rem;
         }
-        .card{
+        .card {
             padding: 10px;
         }
     }
@@ -141,4 +141,38 @@ body {
 .width-icon {
     width: 40px;
     height: 40px;
+}
+
+.logos {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.logos > li {
+    list-style: none;
+    display: inline-block;
+    margin: 0 50px 0 50px;
+}
+
+/** dispositivos móviles en vista viewport (vertical) */
+@media (max-width: 575px) {
+    .contenedor-logo {
+        display: none;
+    }
+}
+
+/** dispositivos pequeños en vista landscape (horizontal) */
+@media (min-width: 576px) and (max-width: 767px) {
+    .contenedor-logo {
+        display: none;
+    }
+}
+
+.content {
+    background-color: #dcdcdc;
+}
+
+.promonews {
+    margin: 10px 5% 0 5%;
 }
