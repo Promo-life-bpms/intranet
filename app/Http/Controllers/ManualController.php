@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 class ManualController extends Controller
 {
     public function __invoke(){
-        $manual = Manual::all();
-        return view('manual.index', compact('manual'));
+        
+        return view('manual.index');
     }
 
 }

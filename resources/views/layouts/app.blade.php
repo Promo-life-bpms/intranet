@@ -10,6 +10,7 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('assets\vendors\toastify\toastify.css') }}">
     @yield('styles')
@@ -58,6 +59,7 @@
     @yield('scripts')
     <script src="{{ asset('assets\vendors\toastify\toastify.js') }}"></script>
     <script src="{{ asset('assets/js/mazer.js') }}"></script>
+    <script src="https://use.fontawesome.com/84b288f169.js"></script>
 </body>
 
 </html>

@@ -44,11 +44,123 @@
                 <li class="sidebar-title">Menu</li>
                 <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
                     <a href="{{ route('home') }}" class='sidebar-link'>
-                        <i class="bi bi-grid-fill"></i>
-                        <span>Dashboard</span>
+                        <i class="bi bi-house-door-fill"></i>
+                        <span>Inicio</span>
                     </a>
                 </li>
-                <li class="sidebar-item  {{ request()->is('users') ? 'active' : '' }}">
+
+                <li class="sidebar-item has-sub {{ request()->is('about') ? 'active' : '' }}">
+                    <a href="{{ route('about') }}" class='sidebar-link'>
+                        <i class="bi bi-info-circle-fill"></i>
+                        <span>Acerca de</span>
+                    </a>
+                    <ul class="submenu ">
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('about_promolife') }}">
+                                <span>Promolife</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('about_trade') }}">
+                                <span>BH-Trade</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('about_promodreams') }}">
+                                <span>Promodreams</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('about_trademarket') }}">
+                                <span>Trademarket</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="sidebar-item {{ request()->is('company') ? 'active' : '' }}">
+                    <a href="{{ route('company') }}" class='sidebar-link'>
+                        <i class="bi bi-diagram-3-fill"></i>
+                        <span>Organigrama</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item  has-sub {{ request()->is('aniversary') ? 'active' : '' }}">
+                    <a href="{{ route('aniversary') }}" class='sidebar-link'>
+                        <i class="fa fa-birthday-cake" aria-hidden="true"></i>
+                        <span>Aniversarios</span>
+                    </a>
+                    <ul class="submenu ">
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('aniversary') }}">
+                                <span>Cumpleanos</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('aniversary') }}">
+                                <span>Aniversarios</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="sidebar-item {{ request()->is('month') ? 'active' : '' }}">
+                    <a href="{{ route('month') }}" class='sidebar-link'>
+                        <i class="fa fa-trophy" aria-hidden="true"></i>
+                        <span>Empleado del Mes</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item  has-sub {{ request()->is('communique') ? 'active' : '' }}">
+                    <a href="{{ route('communique') }}" class='sidebar-link'>
+                        <i class="fa fa-bell" aria-hidden="true"></i>
+                        <span>Comunicados</span>
+                    </a>
+                    <ul class="submenu ">
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('communique_create') }}">
+                                <span>Crear comunicados</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('communique') }}">
+                                <span>Ver comunicados</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="sidebar-item {{ request()->is('manual') ? 'active' : '' }}">
+                    <a href="{{ route('manual') }}" class='sidebar-link'>
+                        <i class="fa fa-book" aria-hidden="true"></i>
+                        <span>Manuales</span>
+                    </a>
+                    
+                </li>
+
+                <li class="sidebar-item {{ request()->is('access') ? 'active' : '' }}">
+                    <a href="{{ route('access') }}" class='sidebar-link'>
+                        <i class="fa fa-globe" aria-hidden="true"></i>
+                        <span>Accesos</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {{ request()->is('folder') ? 'active' : '' }}">
+                    <a href="{{ route('folder') }}" class='sidebar-link'>
+                        <i class="fa fa-folder-open" aria-hidden="true"></i>
+                        <span>Carpetas</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {{ request()->is('request') ? 'active' : '' }}">
+                    <a href="{{ route('request') }}" class='sidebar-link'>
+                        <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                        <span>Solicitudes</span>
+                    </a>
+                </li>
+                
+
+                <!-- <li class="sidebar-item  {{ request()->is('users') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-grid-fill"></i>
                         <span>Ver Usuarios</span>
@@ -59,7 +171,7 @@
                         <i class="bi bi-grid-fill"></i>
                         <span>Ver Equipos</span>
                     </a>
-                </li>
+                </li> -->
                 <!-- Authentication Links -->
                 @guest
                     <li class="sidebar-item">
@@ -73,7 +185,7 @@
                 @else
                     <li class="sidebar-item  has-sub">
                         <a href="#" class='sidebar-link'>
-                            <i class="bi bi-stack"></i>
+                            <i class="fa fa-user" aria-hidden="true"></i>
                             <span>{{ Auth::user()->name }}</span>
                         </a>
                         <ul class="submenu ">

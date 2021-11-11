@@ -155,6 +155,25 @@ body {
   margin: 0 50px 0 50px;
 }
 
+.btnCreate {
+  width: 100%;
+  height: 50px;
+  background-color: #032a3d;
+  color: #ffffff;
+  border-radius: 5px;
+  border: 0;
+}
+
+.btnCreate:hover {
+  background-color: #006ead;
+}
+
+.aboutLogo {
+  width: 200px;
+  display: flex;
+  margin: auto;
+}
+
 /** dispositivos móviles en vista viewport (vertical) */
 @media (max-width: 575px) {
   .contenedor-logo {

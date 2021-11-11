@@ -9,7 +9,6 @@ class AccessController extends Controller
 {
     public function __invoke(){
 
-        $access = Access::all();
-        return view('access.index', compact('access'));
+        return view('access.index');
     }
 }
