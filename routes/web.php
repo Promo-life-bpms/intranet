@@ -10,13 +10,11 @@ use App\Http\Controllers\About\TrademarketController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AniversaryController;
 use App\Http\Controllers\MonthController;
-use App\Http\Controllers\Communique\CommuniqueController;
-use App\Http\Controllers\Communique\CreateCommuniqueController;
+use App\Http\Controllers\CommuniqueController;
 use App\Http\Controllers\ManualController;
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -37,10 +35,14 @@ Auth::routes();
 
 //=Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/communique', [CommuniqueController::class, 'index'])->name('communique.index');
+    Route::get('/communique/create', [CommuniqueController::class, 'create'])->name('communique.create');
+    Route::post('/communique', [CommuniqueController::class, 'store'])->name('communique.store');
+});
+Route::get('/', HomeController::class)->name('home');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/', HomeController::class)->name('home');
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/home', HomeController::class)->name('home');
+Route::get('/home', HomeController::class)->name('home');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/about', AboutController::class)->name('about');
 Route::middleware(['auth:sanctum', 'verified'])->get('/about/bhtrade', BhtradeController::class)->name('about_trade');
@@ -48,22 +50,10 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/about/promolife', Promoli
 Route::middleware(['auth:sanctum', 'verified'])->get('/about/promodreams', PromodreamsController::class)->name('about_promodreams');
 Route::middleware(['auth:sanctum', 'verified'])->get('/about/trademarket', TrademarketController::class)->name('about_trademarket');
 
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/company', CompanyController::class )->name('company');
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/aniversary', AniversaryController::class )->name('aniversary');
-
+Route::middleware(['auth:sanctum', 'verified'])->get('/company', CompanyController::class)->name('company');
+Route::middleware(['auth:sanctum', 'verified'])->get('/aniversary', AniversaryController::class)->name('aniversary');
 Route::middleware(['auth:sanctum', 'verified'])->get('/month', MonthController::class)->name('month');
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/communique',CommuniqueController::class)->name('communique');
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/communique/create',CreateCommuniqueController::class)->name('communique_create');
-
 Route::middleware(['auth:sanctum', 'verified'])->get('/manual', ManualController::class)->name('manual');
-
 Route::middleware(['auth:sanctum', 'verified'])->get('/access', AccessController::class)->name('access');
-
 Route::middleware(['auth:sanctum', 'verified'])->get('/folder', FolderController::class)->name('folder');
-
 Route::middleware(['auth:sanctum', 'verified'])->get('/request', RequestController::class)->name('request');
-

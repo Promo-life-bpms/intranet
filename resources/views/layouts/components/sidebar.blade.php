@@ -112,18 +112,18 @@
                 </li>
 
                 <li class="sidebar-item  has-sub {{ request()->is('communique') ? 'active' : '' }}">
-                    <a href="{{ route('communique') }}" class='sidebar-link'>
+                    <a href="{{ route('communique.index') }}" class='sidebar-link'>
                         <i class="fa fa-bell" aria-hidden="true"></i>
                         <span>Comunicados</span>
                     </a>
                     <ul class="submenu ">
                         <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('communique_create') }}">
+                            <a class="dropdown-item" href="{{ route('communique.create') }}">
                                 <span>Crear comunicados</span>
                             </a>
                         </li>
                         <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('communique') }}">
+                            <a class="dropdown-item" href="{{ route('communique.index') }}">
                                 <span>Ver comunicados</span>
                             </a>
                         </li>
@@ -135,7 +135,7 @@
                         <i class="fa fa-book" aria-hidden="true"></i>
                         <span>Manuales</span>
                     </a>
-                    
+
                 </li>
 
                 <li class="sidebar-item {{ request()->is('access') ? 'active' : '' }}">
@@ -158,7 +158,7 @@
                         <span>Solicitudes</span>
                     </a>
                 </li>
-                
+
 
                 <!-- <li class="sidebar-item  {{ request()->is('users') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
