@@ -3,7 +3,7 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="auth-title">T-Desing</h3>
+            <h3 class="auth-title">Intranet</h3>
             <p class="auth-subtitle mb-5">Inicie sesión con los datos que se le proporcionaron.</p>
         </div>
         <div class="card-body">

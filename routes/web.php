@@ -28,7 +28,7 @@ use App\Http\Controllers\RequestController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/home');
 });
 
 Auth::routes();
@@ -36,13 +36,12 @@ Auth::routes();
 //=Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/home', HomeController::class)->name('home');
+
     Route::get('/communique', [CommuniqueController::class, 'index'])->name('communique.index');
     Route::get('/communique/create', [CommuniqueController::class, 'create'])->name('communique.create');
     Route::post('/communique', [CommuniqueController::class, 'store'])->name('communique.store');
 });
-Route::get('/', HomeController::class)->name('home');
-
-Route::get('/home', HomeController::class)->name('home');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/about', AboutController::class)->name('about');
 Route::middleware(['auth:sanctum', 'verified'])->get('/about/bhtrade', BhtradeController::class)->name('about_trade');
