@@ -10,6 +10,98 @@
             <li><a  href="#"><img style="max-width: 50px;" src="{{asset('/img/trademarket.png')}}"  alt="trademarket"></a> </li>
         </ul>
     </div>
+
+    <div class="row">
+        <h1>Noviembre</h1>
+    </div>
+
+    <div class="row">
+
+        <div class="contenedor">
+            <ul class="access_list" style="padding: 0;">
+                <li class="access_item">
+                    <div class="card" style="width: 200px; height:210px;">
+                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" style="width: 100%; height:160px;   object-fit: contain;" class="card-img-top" alt="imagen">
+                        <div class="card-body" style="padding-top:0; padding-bottom:0">
+                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Nombre</p>
+                            
+                        </div>
+                    </div>
+                </li>
+
+                <li class="access_item">
+                    <div class="card" style="width: 200px; height:210px;">
+                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" style="width: 100%; height:160px;   object-fit: contain;" class="card-img-top" alt="imagen">
+                        <div class="card-body" style="padding-top:0; padding-bottom:0">
+                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Nombre</p>
+                            
+                        </div>
+                    </div>
+                </li>
+
+                <li class="access_item">
+                    <div class="card" style="width: 200px; height:210px;">
+                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" style="width: 100%; height:160px;   object-fit: contain;" class="card-img-top" alt="imagen">
+                        <div class="card-body" style="padding-top:0; padding-bottom:0">
+                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Nombre</p>
+                            
+                        </div>
+                    </div>
+                </li>
+
+                <li class="access_item">
+                    <div class="card" style="width: 200px; height:210px;">
+                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" style="width: 100%; height:160px;   object-fit: contain;" class="card-img-top" alt="imagen">
+                        <div class="card-body" style="padding-top:0; padding-bottom:0">
+                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Nombre</p>
+                            
+                        </div>
+                    </div>
+                </li>
+
+                <li class="access_item">
+                    <div class="card" style="width: 200px; height:210px;">
+                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" style="width: 100%; height:160px;   object-fit: contain;" class="card-img-top" alt="imagen">
+                        <div class="card-body" style="padding-top:0; padding-bottom:0">
+                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Nombre</p>
+                            
+                        </div>
+                    </div>
+                </li>
+
+                <li class="access_item">
+                    <div class="card" style="width: 200px; height:210px;">
+                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" style="width: 100%; height:160px;   object-fit: contain;" class="card-img-top" alt="imagen">
+                        <div class="card-body" style="padding-top:0; padding-bottom:0">
+                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Nombre</p>
+                            
+                        </div>
+                    </div>
+                </li>
+
+                <li class="access_item">
+                    <div class="card" style="width: 200px; height:210px;">
+                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" style="width: 100%; height:160px;   object-fit: contain;" class="card-img-top" alt="imagen">
+                        <div class="card-body" style="padding-top:0; padding-bottom:0">
+                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Nombre</p>
+                            
+                        </div>
+                    </div>
+                </li>
+
+                <li class="access_item">
+                    <div class="card" style="width: 200px; height:210px;">
+                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" style="width: 100%; height:160px;   object-fit: contain;" class="card-img-top" alt="imagen">
+                        <div class="card-body" style="padding-top:0; padding-bottom:0">
+                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Nombre</p>
+                            
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     
 @stop
 

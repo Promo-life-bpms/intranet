@@ -37,13 +37,14 @@ class CommuniqueController extends Controller
      */
     public function store(Request $request)
     {
+        
         request()->validate([
             'title' => 'required',
             'image' => 'required|mimes:png,jpg',
             'description' => 'required'
         ]);
         if (!$request->hasFile("image")) {
-            return;
+            return; 
         }
         $imagen = $request->file("image");
         $nombreimagen = $request->title . "." . $imagen->getClientOriginalName();
@@ -53,8 +54,16 @@ class CommuniqueController extends Controller
         $imagen->move($ruta, $nombreimagen);
         $request->image = $ruta . $nombreimagen;
 
-        Communique::created($request);
-        return redirect()->action([CommuniqueController::class, 'index']);
+       //Communique::created($request);
+       // return redirect()->action([CommuniqueController::class, 'index']);   
+
+        $communique = new Communique();
+        $communique->title=$request->title;
+        $communique->images =$ruta . $nombreimagen;
+        $communique->description=$request->description;
+        $communique->save();
+
+        return view('communique.create');
     }
 
     /**

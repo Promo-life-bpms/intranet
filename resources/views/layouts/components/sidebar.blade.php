@@ -4,6 +4,7 @@
             <a href="#" class="sidebar-hide d-xl-none d-flex justify-content-end px-5" style="font-size: 2rem"><i
                     class="bi bi-x bi-middle"></i></a>
         </div>
+        
         <div class="sidebar-header">
             <div class="card m-0 p-1">
                 <div class="d-flex align-items-center">
@@ -39,6 +40,8 @@
                 </div>
             </div>
         </div>
+
+                        
         <div class="sidebar-menu">
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>

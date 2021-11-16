@@ -14,16 +14,64 @@
 <div class="contenedor">
     <ul class="access_list">
         <li class="access_item">
-            <div class="card" style="width: 200px; height:200px;">
-                <img src="..." style="width: 100%; height:100px;  object-fit: cover;" class="card-img-top" alt="imagen">
-                <div class="card-body">
-                    <h5 class="card-title" style=" white-space: nowrap ;"></h5>
-                    <br>
+            <div class="card" style="width: 200px; height:210px;">
+                <img src="https://cdn.pixabay.com/photo/2017/03/08/21/20/pdf-2127829_960_720.png" style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
+                <div class="card-body" style="padding-top:0; padding-bottom:0">
+                    <h5 class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Reglamento</h5>
                     <a href="" style="width: 100%" class="btn btn-primary with">ABRIR</a>
                 </div>
             </div>
         </li>
 
+        <li class="access_item">
+            <div class="card" style="width: 200px; height:210px;">
+                <img src="https://cdn.pixabay.com/photo/2017/03/08/21/20/pdf-2127829_960_720.png" style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
+                <div class="card-body" style="padding-top:0; padding-bottom:0">
+                    <h5 class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Politicas</h5>
+                    <a href="" style="width: 100%" class="btn btn-primary with">ABRIR</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="access_item">
+            <div class="card" style="width: 200px; height:210px;">
+                <img src="https://cdn.pixabay.com/photo/2017/03/08/21/20/pdf-2127829_960_720.png" style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
+                <div class="card-body" style="padding-top:0; padding-bottom:0">
+                    <h5 class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Confidencialidad</h5>
+                    <a href="" style="width: 100%" class="btn btn-primary with">ABRIR</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="access_item">
+            <div class="card" style="width: 200px; height:210px;">
+                <img src="https://cdn.pixabay.com/photo/2017/03/08/21/20/pdf-2127829_960_720.png" style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
+                <div class="card-body" style="padding-top:0; padding-bottom:0">
+                    <h5 class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Procedimientos</h5>
+                    <a href="" style="width: 100%" class="btn btn-primary with">ABRIR</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="access_item">
+            <div class="card" style="width: 200px; height:210px;">
+                <img src="https://cdn.pixabay.com/photo/2017/03/08/21/20/pdf-2127829_960_720.png" style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
+                <div class="card-body" style="padding-top:0; padding-bottom:0">
+                    <h5 class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Ventas</h5>
+                    <a href="" style="width: 100%" class="btn btn-primary with">ABRIR</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="access_item">
+            <div class="card" style="width: 200px; height:210px;">
+                <img src="https://cdn.pixabay.com/photo/2017/03/08/21/20/pdf-2127829_960_720.png" style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
+                <div class="card-body" style="padding-top:0; padding-bottom:0">
+                    <h5 class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Entregas</h5>
+                    <a href="" style="width: 100%" class="btn btn-primary with">ABRIR</a>
+                </div>
+            </div>
+        </li>
     </ul>
 </div>
 @stop
@@ -32,16 +80,6 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <link href="{{asset('/css/styles.css')}}" rel="stylesheet">
 
-<style>
-    .access_list>.access_item {
-        display: inline-block;
-        margin-right: 20px;
-    }
-
-    .access_list {
-        padding-left: 0;
-    }
-</style>
 @stop
 
 @section('scripts')
