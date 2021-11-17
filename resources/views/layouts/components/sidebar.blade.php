@@ -96,7 +96,7 @@
                     <ul class="submenu ">
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('birthday') }}">
-                                <span>Cumpleanos</span>
+                                <span>Cumpleaños</span>
                             </a>
                         </li>
                         <li class="submenu-item ">
@@ -159,6 +159,13 @@
                     <a href="{{ route('request') }}" class='sidebar-link'>
                         <i class="fa fa-pencil-square" aria-hidden="true"></i>
                         <span>Solicitudes</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {{ request()->is('work') ? 'active' : '' }}">
+                    <a href="{{ route('work') }}" class='sidebar-link'>
+                    <i class="fa fa-trello" aria-hidden="true"></i>
+                        <span>Espacios de trabajo</span>
                     </a>
                 </li>
 

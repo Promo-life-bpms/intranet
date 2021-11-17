@@ -14,11 +14,11 @@
 
     <img class="aboutLogo" src="{{asset('/img/bhtrade.png')}}" alt="bhtrade">
 
-    <h3>Mision</h3>
+    <h3>Misión</h3>
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae, distinctio. Natus ipsum ratione voluptate harum ex! Sit molestiae, est pariatur magnam cum veniam cupiditate maxime. Doloribus rem quo natus fugit.</p>
 
 
-    <h3>Vision</h3>
+    <h3>Visión</h3>
     <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quos, earum velit nisi porro consequatur odit magnam hic tempora exercitationem eaque. Officia nostrum consequatur quod ab tenetur ipsam placeat assumenda minima?</p>
 
 

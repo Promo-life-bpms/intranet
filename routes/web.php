@@ -15,7 +15,7 @@ use App\Http\Controllers\ManualController;
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
-
+use App\Http\Controllers\WorkController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -59,3 +59,5 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/manual', ManualController
 Route::middleware(['auth:sanctum', 'verified'])->get('/access', AccessController::class)->name('access');
 Route::middleware(['auth:sanctum', 'verified'])->get('/folder', FolderController::class)->name('folder');
 Route::middleware(['auth:sanctum', 'verified'])->get('/request', RequestController::class)->name('request');
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/work', WorkController::class)->name('work');
