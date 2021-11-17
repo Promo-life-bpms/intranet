@@ -95,7 +95,7 @@
                     </a>
                     <ul class="submenu ">
                         <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('aniversary') }}">
+                            <a class="dropdown-item" href="{{ route('birthday') }}">
                                 <span>Cumpleanos</span>
                             </a>
                         </li>

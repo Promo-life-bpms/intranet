@@ -40,10 +40,27 @@
       <input type="date" class="form-control" placeholder="Fecha de Solicitud">
     </div>
   </div>
-
   <div class="mb-3">
     <label for="exampleFormControlTextarea1" class="form-label">Descripcion</label>
     <textarea class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col col-lg-6">
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="radiobutton" id="" value="option1" checked>
+        <label class="form-check-label" for="radiobutton1" style="color:#000000;">
+          Descontar Tiempo/Dia
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="radiobutton" id="radiobutton2" value="option2">
+        <label class="form-check-label" for="exampleRadios2" style="color:#000000;" >
+          A cuenta de vacaciones
+        </label>
+      </div>
+    </div>
   </div>
 
   <button class="btnCreate"><b>CREAR SOLICITUD</b></button>

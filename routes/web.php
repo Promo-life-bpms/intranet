@@ -50,7 +50,10 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/about/promodreams', Promo
 Route::middleware(['auth:sanctum', 'verified'])->get('/about/trademarket', TrademarketController::class)->name('about_trademarket');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/company', CompanyController::class)->name('company');
-Route::middleware(['auth:sanctum', 'verified'])->get('/aniversary', AniversaryController::class)->name('aniversary');
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/aniversary/aniversary', [AniversaryController::class,'aniversary'])->name('aniversary');
+Route::middleware(['auth:sanctum', 'verified'])->get('/aniversary/birthday', [AniversaryController::class,'birthday'])->name('birthday');
+
 Route::middleware(['auth:sanctum', 'verified'])->get('/month', MonthController::class)->name('month');
 Route::middleware(['auth:sanctum', 'verified'])->get('/manual', ManualController::class)->name('manual');
 Route::middleware(['auth:sanctum', 'verified'])->get('/access', AccessController::class)->name('access');

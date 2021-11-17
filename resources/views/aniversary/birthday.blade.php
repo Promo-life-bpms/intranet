@@ -12,7 +12,7 @@
     </div>
 
     <div class="row">
-        <h1>Noviembre</h1>
+        <h1>Cumpleaños de Noviembre</h1>
     </div>
 
     <div class="row">

@@ -417,7 +417,7 @@ body h1 {
   max-width: 100%;
   margin: 0 auto;
   height: 4px;
-  background: #428bff;
+  background: #1A74BB;
   border-radius: 1px;
 }
 .tabs .content {
@@ -438,7 +438,7 @@ body h1 {
   line-height: 1.4;
 }
 .tabs .content section h2 {
-  color: #428bff;
+  color: #1A74BB;
   display: none;
 }
 .tabs .content section h2::after {
@@ -447,16 +447,16 @@ body h1 {
   display: block;
   width: 30px;
   height: 3px;
-  background: #428bff;
+  background: #1A74BB;
   margin-top: 5px;
   left: 1px;
 }
 .tabs input[name=tab-control]:nth-of-type(1):checked ~ ul > li:nth-child(1) > label {
   cursor: default;
-  color: #428bff;
+  color: #1A74BB;
 }
 .tabs input[name=tab-control]:nth-of-type(1):checked ~ ul > li:nth-child(1) > label svg {
-  fill: #428bff;
+  fill: #1A74BB;
 }
 @media (max-width: 600px) {
   .tabs input[name=tab-control]:nth-of-type(1):checked ~ ul > li:nth-child(1) > label {
@@ -471,10 +471,10 @@ body h1 {
 }
 .tabs input[name=tab-control]:nth-of-type(2):checked ~ ul > li:nth-child(2) > label {
   cursor: default;
-  color: #428bff;
+  color: #1A74BB;
 }
 .tabs input[name=tab-control]:nth-of-type(2):checked ~ ul > li:nth-child(2) > label svg {
-  fill: #428bff;
+  fill: #1A74BB;
 }
 @media (max-width: 600px) {
   .tabs input[name=tab-control]:nth-of-type(2):checked ~ ul > li:nth-child(2) > label {
@@ -489,10 +489,10 @@ body h1 {
 }
 .tabs input[name=tab-control]:nth-of-type(3):checked ~ ul > li:nth-child(3) > label {
   cursor: default;
-  color: #428bff;
+  color: #1A74BB;
 }
 .tabs input[name=tab-control]:nth-of-type(3):checked ~ ul > li:nth-child(3) > label svg {
-  fill: #428bff;
+  fill: #435EBE;
 }
 @media (max-width: 600px) {
   .tabs input[name=tab-control]:nth-of-type(3):checked ~ ul > li:nth-child(3) > label {
@@ -507,10 +507,10 @@ body h1 {
 }
 .tabs input[name=tab-control]:nth-of-type(4):checked ~ ul > li:nth-child(4) > label {
   cursor: default;
-  color: #428bff;
+  color: #1A74BB;
 }
 .tabs input[name=tab-control]:nth-of-type(4):checked ~ ul > li:nth-child(4) > label svg {
-  fill: #428bff;
+  fill: #1A74BB;
 }
 @media (max-width: 600px) {
   .tabs input[name=tab-control]:nth-of-type(4):checked ~ ul > li:nth-child(4) > label {
