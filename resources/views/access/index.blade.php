@@ -45,7 +45,7 @@
 
         <li class="access_item">
             <div class="card" style="width: 200px; height:210px;">
-                <img src="https://cdn.pixabay.com/photo/2016/06/15/15/02/info-1459077__340.png" style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
+                <img src="https://cdn.pixabay.com/photo/2017/11/11/16/02/posts-2939379_960_720.png" style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
                 <div class="card-body" style="padding-top:0; padding-bottom:0">
                     <h5 class="card-title" style=" white-space: nowrap; margin-bottom:5px;">Help Desk</h5>
                     <a href="" style="width: 100%" class="btn btn-primary with">ABRIR</a>
