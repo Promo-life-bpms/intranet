@@ -165,7 +165,7 @@
                 <li class="sidebar-item {{ request()->is('work') ? 'active' : '' }}">
                     <a href="{{ route('work') }}" class='sidebar-link'>
                     <i class="fa fa-trello" aria-hidden="true"></i>
-                        <span>Espacios de trabajo</span>
+                        <span>Trello</span>
                     </a>
                 </li>
 

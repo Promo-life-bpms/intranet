@@ -14,7 +14,7 @@
 <div class="container">
     
     <ul class="access_list">
-    <h1>Espacios de Trabajo</h1>
+    <h1>Trellos disponibles</h1>
     <li class="access_item">
             <div class="card" style="width: 200px; height:210px;">
                 <img src="https://media.istockphoto.com/vectors/number-1-logo-colored-paint-one-icon-with-drips-dripping-liquid-art-vector-id969333104?k=6&m=969333104&s=170667a&w=0&h=KwiWuJM7jYovCeVUj_6ba9JjGSYsKWicJfw5HYh9z70=" style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
