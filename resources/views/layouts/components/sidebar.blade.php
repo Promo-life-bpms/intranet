@@ -75,7 +75,7 @@
                         </li>
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('about_trademarket') }}">
-                                <span>Trademarket</span>
+                                <span>Trademarket 57 </span>
                             </a>
                         </li>
                     </ul>
