@@ -13,10 +13,25 @@ class CreatePositionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('positions', function (Blueprint $table) {
-            $table->id();
+        Schema::create('departments', function (Blueprint $table) {
+
+            $table->bigIncrements('id');
+            $table->text('nombre');
+            $table->boolean('visible');
             $table->timestamps();
         });
+
+
+        Schema::create('positions', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->text('nombre');
+            $table->boolean('visible');
+            $table->unsignedBigInteger('area_id');
+            $table->foreign('area_id')->references('id')->on('departments')->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        
     }
 
     /**
@@ -27,5 +42,8 @@ class CreatePositionsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('positions');
+        Schema::dropIfExists('departments');
+
+
     }
 }

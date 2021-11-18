@@ -58,6 +58,6 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/month', MonthController::
 Route::middleware(['auth:sanctum', 'verified'])->get('/manual', ManualController::class)->name('manual');
 Route::middleware(['auth:sanctum', 'verified'])->get('/access', AccessController::class)->name('access');
 Route::middleware(['auth:sanctum', 'verified'])->get('/folder', FolderController::class)->name('folder');
-Route::middleware(['auth:sanctum', 'verified'])->get('/request', RequestController::class)->name('request');
+Route::middleware(['auth:sanctum', 'verified'])->get('/request', [RequestController::class,'index'])->name('request');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/work', WorkController::class)->name('work');
