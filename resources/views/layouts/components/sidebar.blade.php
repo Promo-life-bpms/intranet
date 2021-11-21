@@ -120,11 +120,14 @@
                         <span>Comunicados</span>
                     </a>
                     <ul class="submenu ">
-                        <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('communique.create') }}">
-                                <span>Crear comunicados</span>
-                            </a>
-                        </li>
+
+                    @can('communique.create')
+                    <li class="submenu-item ">
+                        <a class="dropdown-item" href="{{ route('communique.create') }}">
+                            <span>Crear comunicados</span>
+                        </a>
+                    </li>
+                    @endcan
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('communique.index') }}">
                                 <span>Ver comunicados</span>

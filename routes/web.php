@@ -39,7 +39,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/home', HomeController::class)->name('home');
 
     Route::get('/communique', [CommuniqueController::class, 'index'])->name('communique.index');
-    Route::get('/communique/create', [CommuniqueController::class, 'create'])->name('communique.create');
+    Route::get('/communique/create', [CommuniqueController::class, 'create'])->middleware('can:communique.create')->name('communique.create');
     Route::post('/communique', [CommuniqueController::class, 'store'])->name('communique.store');
 });
 
