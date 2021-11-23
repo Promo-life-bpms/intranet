@@ -16,6 +16,7 @@ use App\Http\Controllers\AccessController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\WorkController;
+use App\Http\Controllers\AdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -61,3 +62,10 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/folder', FolderController
 Route::middleware(['auth:sanctum', 'verified'])->get('/request', [RequestController::class,'index'])->name('request');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/work', WorkController::class)->name('work');
+
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/users', [AdminController::class,'users'])->name('admin.users');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/employee', [AdminController::class,'employees'])->name('admin.employee');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/contact', [AdminController::class,'contact'])->name('admin.contact');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/contacts/create', [AdminController::class,'contactCreate'])->name('admin.contact.create');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->post('/admin/contacts/create', [AdminController::class,'contactStore'])->name('admin.contact.store');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/contacts/{contact}/edit', [AdminController::class,'contactEdit'])->name('admin.contact.edit');

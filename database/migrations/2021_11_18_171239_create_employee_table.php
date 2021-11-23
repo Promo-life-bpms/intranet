@@ -17,10 +17,10 @@ class CreateEmployeeTable extends Migration
         Schema::create('contact', function (Blueprint $table) {
             $table->id();
             $table->string('num_tel',12);
-            $table->string('correo1',100);
-            $table->string('correo2',100);
-            $table->string('correo3',100);
-            $table->string('correo4',100);
+            $table->string('correo1',100)->nullable();
+            $table->string('correo2',100)->nullable();
+            $table->string('correo3',100)->nullable();
+            $table->string('correo4',100)->nullable();
             $table->timestamps();
         });
 
@@ -34,7 +34,9 @@ class CreateEmployeeTable extends Migration
             $table->date('fecha_ingreso');
             $table->boolean('status');
             $table->unsignedBigInteger('id_contacto');
+            $table->unsignedBigInteger('id_user');
             $table->foreign('id_contacto')->references('id')->on('contact');
+            $table->foreign('id_user')->references('id')->on('users');
             $table->timestamps();
         });
 

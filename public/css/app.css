@@ -1,5 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
-
+@charset "UTF-8";
 body {
   font-family: "Roboto", sans-serif;
   background-color: #f4f4f4;
@@ -172,21 +172,6 @@ body {
   width: 200px;
   display: flex;
   margin: auto;
-}
-
-.access_list>.access_item {
-  display: inline-block;
-  margin-right: 20px;
-}
-
-.card{
-  padding-left: 0;
-  border-radius: 10px;
-}
-
-.btn-group{
-  display: flex;
-  justify-content: center;
 }
 
 /** dispositivos móviles en vista viewport (vertical) */

@@ -35,7 +35,10 @@
                             {{ auth()->user()->name . ' ' . auth()->user()->lastname }}
                         </h5>
                         <h6 class="text-muted mb-0">
-                            Admin</h6>
+                        {{ 
+                            Auth::user()->roles->pluck('name')
+                        }}
+                        </h6>
                     </div>
                 </div>
             </div>
@@ -45,6 +48,35 @@
         <div class="sidebar-menu">
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
+                @can('admin.users')
+                <li class="sidebar-item has-sub {{ request()->is('admin.users') ? 'active' : '' }}">
+                    <a href="{{ route('admin.users') }}" class='sidebar-link'>
+                        <i class="fa fa-wrench" aria-hidden="true"></i>
+                        <span>Administrador</span>
+                    </a>
+                
+
+                    <ul class="submenu ">
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('admin.users') }}">
+                                <span>Usuarios</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('admin.employee') }}">
+                                <span>Empleados</span>
+                            </a>
+                        </li>  
+                        
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('admin.contact') }}">
+                                <span>Directorio</span>
+                            </a>
+                        </li>  
+                    </ul>
+                </li>
+                @endcan
+
                 <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
                     <a href="{{ route('home') }}" class='sidebar-link'>
                         <i class="bi bi-house-door-fill"></i>
