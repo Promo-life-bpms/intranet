@@ -17,6 +17,8 @@ use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\WorkController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\RoleController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -69,3 +71,13 @@ Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/c
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/contacts/create', [AdminController::class,'contactCreate'])->name('admin.contact.create');
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->post('/admin/contacts/create', [AdminController::class,'contactStore'])->name('admin.contact.store');
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/contacts/{contact}/edit', [AdminController::class,'contactEdit'])->name('admin.contact.edit');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->put('/admin/contacts/{contact}', [AdminController::class,'contactUpdate'])->name('admin.contact.update');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->delete('/admin/contacts/{contact}', [AdminController::class,'contactDestroy'])->name('admin.contact.destroy');
+
+
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/roles', [RoleController::class,'index'])->name('admin.roles');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/roles/create', [RoleController::class,'create'])->name('admin.roles.create');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->post('/admin/roles/create', [RoleController::class,'store'])->name('admin.roles.store');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/roles/{role}/edit', [RoleController::class,'edit'])->name('admin.roles.edit');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->put('/admin/roles/{role}', [RoleController::class,'update'])->name('admin.roles.update');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->delete('/admin/roles/{role}', [RoleController::class,'destroy'])->name('admin.roles.destroy');

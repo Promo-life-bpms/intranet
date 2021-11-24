@@ -23,6 +23,11 @@
         <label for="exampleFormControlInput1" class="form-label mt-4">Numero </label>
         <input type="text" class="form-control" maxlength="10" name="num_tel" placeholder="Ingrese el numero de telefono">
 
+        @error('num_tel') 
+          <small> <font color="red"> *Este campo es requerido* </font></small>
+          <br>
+        @enderror
+
         <label for="exampleFormControlInput1" class="form-label mt-4">Correo Promolife </label>
         <input type="text" class="form-control" name="correo1" placeholder="Ingrese el correo">
 

@@ -11,40 +11,45 @@
         </ul>
     </div>
 
+<div class="row">
+  <div class="col-8 ">
+    <h3>Roles</h3>
+  </div>
 
-    <h3>Empleados</h3>
-    <table class="table table-bordered">
+  <div class="col-4">
+    <a href="{{route('admin.roles.create')}}" type="button" style="width: 100%;" class="btn btn-success">AGREGAR NUEVO</a>
+  </div>
+</div>
+    <table class="table table-bordered mt-5">
   <thead>
     <tr>
-      <th scope="col"># </th>
+      <th scope="col">#</th>
       <th scope="col">Nombre</th>
-      <th scope="col">Apellido Paterno</th>
-      <th scope="col">Apellido Materno</th>
-      <th scope="col">Cumpleaños</th>
-      <th scope="col">Ingreso</th>
-      <th scope="col">Status</th>
-      <th scope="col">ID usuario</th>
       <th scope="col">Opciones</th>
-      
     </tr>
   </thead>
+
   <tbody>
-  @foreach($employees as $employee)
+  @foreach($roles as $role)
     <tr>
-      <th>{{$employee->id}}</th>
-      <td>{{$employee->nombre}}</td>
-      <td>{{$employee->paterno}}</td>
-      <td>{{$employee->materno}}</td>
-      <td>{{$employee->fecha_cumple	}}</td>
-      <td>{{$employee->fecha_ingreso}}</td>
-      <td>{{$employee->status}}</td>
-      <td>{{$employee->id_user}}</td>
-      <td>
-        <button type="button" class="btn btn-primary">EDITAR</button>
-        <button type="button" class="btn btn-danger">BORRAR</button>
+      <th>{{$role->id}}</th>
+      <td>{{$role->name}}</td>
+      <td >
+        <a href="{{route('admin.roles.edit',['role'=>$role->id])}}" type="button" class="btn btn-primary">EDITAR</a>
+       
+        <form action="{{route('admin.roles.destroy',['role'=> $role->id] )}}" method="POST">
+          @csrf
+          @method('delete')
+        <button type="submit" class="btn btn-danger">BORRAR</button>
+        </form>
+
       </td>
     </tr>
     @endforeach
+
+  </tbody>
+  <tbody>
+
 
   </tbody>
 </table>

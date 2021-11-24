@@ -11,43 +11,25 @@
         </ul>
     </div>
 
+<div class="row">
+  <div class="col-8 ">
+    <h3>Editar contacto</h3>
+  </div>
 
-    <h3>Empleados</h3>
-    <table class="table table-bordered">
-  <thead>
-    <tr>
-      <th scope="col"># </th>
-      <th scope="col">Nombre</th>
-      <th scope="col">Apellido Paterno</th>
-      <th scope="col">Apellido Materno</th>
-      <th scope="col">Cumpleaños</th>
-      <th scope="col">Ingreso</th>
-      <th scope="col">Status</th>
-      <th scope="col">ID usuario</th>
-      <th scope="col">Opciones</th>
-      
-    </tr>
-  </thead>
-  <tbody>
-  @foreach($employees as $employee)
-    <tr>
-      <th>{{$employee->id}}</th>
-      <td>{{$employee->nombre}}</td>
-      <td>{{$employee->paterno}}</td>
-      <td>{{$employee->materno}}</td>
-      <td>{{$employee->fecha_cumple	}}</td>
-      <td>{{$employee->fecha_ingreso}}</td>
-      <td>{{$employee->status}}</td>
-      <td>{{$employee->id_user}}</td>
-      <td>
-        <button type="button" class="btn btn-primary">EDITAR</button>
-        <button type="button" class="btn btn-danger">BORRAR</button>
-      </td>
-    </tr>
-    @endforeach
+  <form action="{{route('admin.roles.update', $role)}}" enctype="multipart/form-data" method="POST">
+        @csrf
+        @method('PUT')        
+        <label for="exampleFormControlInput1" class="form-label mt-4"> </label>
+        <input type="text" class="form-control" maxlength="10" name="num_tel" placeholder="Ingrese el numero de telefono" value="{{$role->id}}" readonly>
 
-  </tbody>
-</table>
+        <label for="exampleFormControlInput1" class="form-label mt-4">Nombre Rol </label>
+        <input type="text" class="form-control" name="name" placeholder="Ingrese el correo" value="{{$role->name}}" >
+
+        <input type="submit" class="btnCreate mt-4" value="ACTUALIZAR ROL"></button>
+      </form>
+</div>
+
+</div>
 
 @stop
 

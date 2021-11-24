@@ -17,7 +17,7 @@
   </div>
 
   <div class="col-4">
-    <a href="{{route('admin.contact.create')}}" type="button" class="btn btn-success">AGREGAR NUEVO</a>
+    <a href="{{route('admin.contact.create')}}" type="button" style="width: 100%;" class="btn btn-success">AGREGAR NUEVO</a>
   </div>
 </div>
     <table class="table table-bordered mt-5">
@@ -43,8 +43,13 @@
       <td>{{$contact->correo3	}}</td>
       <td>{{$contact->correo4}}</td>
       <td>
-        <a href="{{route('admin.contact.edit',['contact'=> $contact->id] )}}" type="button" class="btn btn-primary">EDITAR</a>
-        <button type="button" class="btn btn-danger">ELIMINAR</button>
+        <a style="width: 100%;" href="{{route('admin.contact.edit',['contact'=> $contact->id] )}}" type="button" class="btn btn-primary">EDITAR</a>
+        <form action="{{route('admin.contact.destroy',['contact'=> $contact->id] )}}" method="POST">
+          @csrf
+          @method('delete')
+        <button style="width: 100%;" type="submit" class="btn btn-danger">BORRAR</button>
+        </form>
+        
       </td>
     </tr>
     @endforeach

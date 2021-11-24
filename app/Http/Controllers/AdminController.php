@@ -6,6 +6,8 @@ use App\Models\Contact;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Models\Role as ModelsRole;
 
 class AdminController extends Controller
 {
@@ -30,27 +32,6 @@ class AdminController extends Controller
         return view('admin.contact.create');
     }
 
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -59,6 +40,10 @@ class AdminController extends Controller
      */
     public function contactStore(Request $request)
     {
+        $request->validate([
+            'num_tel'=>'required'
+        ]);
+
         $contacts = new Contact();
         $contacts->num_tel = $request->num_tel;
         $contacts->correo1 = $request->correo1;
@@ -73,17 +58,7 @@ class AdminController extends Controller
        
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
+   
     /**
      * Show the form for editing the specified resource.
      *
@@ -92,7 +67,9 @@ class AdminController extends Controller
      */
     public function contactEdit(Contact $contact)
     {
+         
         return view('admin.contact.edit', compact('contact'));
+
     }
 
     /**
@@ -102,9 +79,21 @@ class AdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function contactUpdate(Request $request, Contact $contact)
     {
-        //
+        $contact = new Contact();
+        $contact->num_tel = $request->num_tel;
+        $contact->correo1 = $request->correo1;
+        $contact->correo2 = $request->correo2;
+        $contact->correo3 = $request->correo3;
+        $contact->correo4 = $request->correo4;
+        $contact->save();
+
+
+        $contacts = Contact::all();
+
+        return view('admin.contact.contact', compact('contacts'));
+       
     }
 
     /**
@@ -113,8 +102,44 @@ class AdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function contactDestroy(Contact $contact)
     {
-        //
+        $contact->delete();
+
+        $contacts = Contact::all();
+
+        return view('admin.contact.contact', compact('contacts'));
     }
+
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function userStore(Request $request)
+    {
+        $request->validate([
+            'num_tel'=>'required'
+        ]);
+
+        $contacts = new Contact();
+        $contacts->num_tel = $request->num_tel;
+        $contacts->correo1 = $request->correo1;
+        $contacts->correo2 = $request->correo2;
+        $contacts->correo3 = $request->correo3;
+        $contacts->correo4 = $request->correo4;
+        $contacts->save();
+
+        $contacts = Contact::all();
+
+        return view('admin.contact.contact', compact('contacts'));
+       
+    }
+
+   
+
+
 }

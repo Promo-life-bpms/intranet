@@ -11,32 +11,23 @@
         </ul>
     </div>
 
+<div class="row">
+  <div class="col-8 ">
+    <h3>Editar contacto</h3>
+  </div>
 
-    <h3>Usuarios</h3>
-    <table class="table table-bordered">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Nombre</th>
-      <th scope="col">Correo</th>
-      <th scope="col">Opciones</th>
-    </tr>
-  </thead>
-  <tbody>
-  @foreach($users as $user)
-    <tr>
-      <th>{{$user->id}}</th>
-      <td>{{$user->name}}</td>
-      <td>{{$user->email}}</td>
-      <td>
-        <button type="button" class="btn btn-primary">EDITAR</button>
-        <button type="button" class="btn btn-danger">ELIMINAR</button>
-      </td>
-    </tr>
-    @endforeach
+  <form action="{{route('admin.roles.store')}}" enctype="multipart/form-data" method="POST">
+        @csrf
+        @method('PUT')        
 
-  </tbody>
-</table>
+        <label for="exampleFormControlInput1" class="form-label mt-4">Nombre Rol </label>
+        <input type="text" class="form-control" name="name" placeholder="Ingrese el correo" value="{{$role->name}}" >
+
+        <input type="submit" class="btnCreate mt-4" value="CREAR ROL"></button>
+      </form>
+</div>
+
+</div>
 
 @stop
 

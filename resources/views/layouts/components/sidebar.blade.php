@@ -57,6 +57,13 @@
                 
 
                     <ul class="submenu ">
+
+                    <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('admin.roles') }}">
+                                <span>Roles</span>
+                            </a>
+                        </li>
+
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('admin.users') }}">
                                 <span>Usuarios</span>

@@ -12,33 +12,22 @@
     </div>
 
 
-    <h3>Empleados</h3>
+    <h3>Usuarios</h3>
     <table class="table table-bordered">
   <thead>
     <tr>
-      <th scope="col"># </th>
+      <th scope="col">#</th>
       <th scope="col">Nombre</th>
-      <th scope="col">Apellido Paterno</th>
-      <th scope="col">Apellido Materno</th>
-      <th scope="col">Cumpleaños</th>
-      <th scope="col">Ingreso</th>
-      <th scope="col">Status</th>
-      <th scope="col">ID usuario</th>
+      <th scope="col">Correo</th>
       <th scope="col">Opciones</th>
-      
     </tr>
   </thead>
   <tbody>
-  @foreach($employees as $employee)
+  @foreach($users as $user)
     <tr>
-      <th>{{$employee->id}}</th>
-      <td>{{$employee->nombre}}</td>
-      <td>{{$employee->paterno}}</td>
-      <td>{{$employee->materno}}</td>
-      <td>{{$employee->fecha_cumple	}}</td>
-      <td>{{$employee->fecha_ingreso}}</td>
-      <td>{{$employee->status}}</td>
-      <td>{{$employee->id_user}}</td>
+      <th>{{$user->id}}</th>
+      <td>{{$user->name}}</td>
+      <td>{{$user->email}}</td>
       <td>
         <button type="button" class="btn btn-primary">EDITAR</button>
         <button type="button" class="btn btn-danger">BORRAR</button>

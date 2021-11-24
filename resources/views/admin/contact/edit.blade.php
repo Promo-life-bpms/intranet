@@ -13,28 +13,28 @@
 
 <div class="row">
   <div class="col-8 ">
-    <h3>Agregar contacto</h3>
+    <h3>Editar contacto</h3>
   </div>
 
-  <form action="{{route('admin.contact.store')}}" enctype="multipart/form-data" method="POST">
+  <form action="{{route('admin.contact.update', $contact)}}" enctype="multipart/form-data" method="POST">
         @csrf
-        @method('POST')        
+        @method('PUT')        
         <label for="exampleFormControlInput1" class="form-label mt-4"> </label>
-        <input type="text" class="form-control" maxlength="10" name="num_tel" placeholder="Ingrese el numero de telefono">
+        <input type="text" class="form-control" maxlength="10" name="num_tel" placeholder="Ingrese el numero de telefono" value="{{$contact->num_tel}}">
 
         <label for="exampleFormControlInput1" class="form-label mt-4">Correo Promolife </label>
-        <input type="text" class="form-control" name="correo1" placeholder="Ingrese el correo">
+        <input type="text" class="form-control" name="correo1" placeholder="Ingrese el correo" value="{{$contact->correo1}}" >
 
         <label for="exampleFormControlInput1" class="form-label mt-4">Correo BH-Trademarket </label>
-        <input type="text" class="form-control" name="correo2" placeholder="Ingrese el correo">
+        <input type="text" class="form-control" name="correo2" placeholder="Ingrese el correo" value="{{$contact->correo2}}">
 
         <label for="exampleFormControlInput1" class="form-label mt-4">Correo Trademarket </label>
-        <input type="text" class="form-control" name="correo3" placeholder="Ingrese el correo">
+        <input type="text" class="form-control" name="correo3" placeholder="Ingrese el correo" value="{{$contact->correo3}}">
 
         <label for="exampleFormControlInput1" class="form-label mt-4">Correo Promodreams </label>
-        <input type="text" class="form-control" name="correo4" placeholder="Ingrese el correo">
+        <input type="text" class="form-control" name="correo4" placeholder="Ingrese el correo" value="{{$contact->correo4}}">
 
-        <input type="submit" class="btnCreate mt-4" value="GUARDAR CONTACTO"></button>
+        <input type="submit" class="btnCreate mt-4" value="ACTUALIZAR CONTACTO"></button>
       </form>
 </div>
 
