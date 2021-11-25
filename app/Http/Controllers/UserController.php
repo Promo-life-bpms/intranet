@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserRolesController;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -23,16 +25,30 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store()
+    public function store(Request $request)
     {
-        /** 
+        $request->validate([
+            'name'=>'required',
+            'email'=>'required'
+        ]);
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi';
+        $user->save();
+
+        $user-> roles()->sync($request->roles);
+        $users =  User::all();
+        return view('admin.user.index', compact('users'));
+    }
+
+    /** 
         $request->validate([
             'name'=>'required',
             'email'
         ])
         */
-    }
-
 
     /**
      * Show the form for creating a new resource.
@@ -41,7 +57,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $roles = Role::all();
+        return view('admin.user.create', compact('roles'));
     }
 
     
@@ -62,9 +79,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        $roles = Role::all();
+        return view('admin.user.edit', compact('roles','user'));
+        
     }
 
     /**
@@ -74,23 +93,35 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        /** 
+        $request->validate([
+            'name'=>'required',
+            'email'=>'required'
+        ]);
+
+        $user->update($request->all());
+
+        $user-> roles()->sync($request->roles);
+        $users =  User::all();
+        return view('admin.user.index', compact('users'));
+
+    }
+    /** 
         $user->employee->update([
 
         ]);
         */
-    }
-
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $user -> delete();
+        $users =  User::all();
+        return view('admin.user.index', compact('users'));
     }
 }

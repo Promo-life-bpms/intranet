@@ -12,7 +12,16 @@
     </div>
 
 
-    <h3>Usuarios</h3>
+    <div class="row">
+      <div class="col-8 ">
+        <h3>Usuarios</h3>
+      </div>
+    
+      <div class="col-4">
+        <a href="{{route('admin.user.create')}}" type="button" style="width: 100%;" class="btn btn-success">AGREGAR NUEVO</a>
+      </div>
+    </div>
+
     <table class="table table-bordered">
   <thead>
     <tr>
@@ -29,8 +38,14 @@
       <td>{{$user->name}}</td>
       <td>{{$user->email}}</td>
       <td>
-        <button type="button" class="btn btn-primary">EDITAR</button>
-        <button type="button" class="btn btn-danger">BORRAR</button>
+        <a href="{{route('admin.user.edit',['user'=>$user->id])}}" type="button" class="btn btn-primary">EDITAR</a>
+
+        <form action="{{route('admin.user.destroy',['user'=> $user->id] )}}" method="POST">
+          @csrf
+          @method('delete')
+        <button type="submit" class="btn btn-danger">BORRAR</button>
+        </form>
+
       </td>
     </tr>
     @endforeach
