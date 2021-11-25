@@ -15,21 +15,40 @@
   <div class="col-8 ">
     <h3>Editar contacto</h3>
   </div>
-
-  <form action="{{route('admin.roles.update', $role)}}" enctype="multipart/form-data" method="POST">
-        @csrf
-        @method('PUT')        
-        <label for="exampleFormControlInput1" class="form-label mt-4"> </label>
-        <input type="text" class="form-control" maxlength="10" name="num_tel" placeholder="Ingrese el numero de telefono" value="{{$role->id}}" readonly>
-
-        <label for="exampleFormControlInput1" class="form-label mt-4">Nombre Rol </label>
-        <input type="text" class="form-control" name="name" placeholder="Ingrese el correo" value="{{$role->name}}" >
-
-        <input type="submit" class="btnCreate mt-4" value="ACTUALIZAR ROL"></button>
-      </form>
 </div>
 
-</div>
+
+  <div class="card">
+    <div class="card-body">
+      {!! Form::model($role,['route'=>['admin.roles.update',$role], 'method'=>'put']) !!}
+      <div class="form-group">
+        {!! Form::label('name', 'Nombre Rol', ) !!}
+        {!! Form::text('name', null, ['class'=>'form-control', 'placehorlder'=>'Ingrese el nombre del rol']) !!}
+         
+        @error('name') 
+        <small> <font color="red"> *Este campo es requerido* </font></small>
+        <br>
+      @enderror
+
+
+      <p class="mt-4">Lista de permisos</p>
+      @foreach ($permissions as $permission)
+          <div>
+            <label>
+              {!! Form::checkbox('permissions[]', $permission->id, null, ['class'=>'mr-4']) !!}
+              {{$permission->description}}
+            </label>
+          </div>
+      @endforeach
+
+        {!! Form::submit('ACTUALIZAR ROL', ['class'=>'btnCreate mt-4']) !!}
+      </div>
+
+      {!! Form::close() !!}
+    </div>
+  </div>
+
+
 
 @stop
 

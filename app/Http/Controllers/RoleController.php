@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
@@ -34,9 +35,13 @@ class RoleController extends Controller
             'name'=>'required'
         ]);
 
+
         $role = new Role();
         $role->name = $request->name;
+        $role->guard_name = "web";
         $role->save();
+        
+        $role-> permissions()->sync($request->permissions);
         
 
         $roles = Role::all();
@@ -52,7 +57,8 @@ class RoleController extends Controller
      */
     public function create(Role $role)
     {
-        return view('admin.roles.create', compact('role'));
+        $permissions = Permission::all();
+        return view('admin.roles.create', compact('permissions'));
     }
 
     /**
@@ -63,8 +69,9 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-
-        return view('admin.roles.edit', compact('role') );
+        $permissions = Permission::all();
+        return view('admin.roles.edit', compact('role','permissions') );
+        
     }
 
     /**
@@ -77,14 +84,13 @@ class RoleController extends Controller
     public function update(Request $request, Role $role)
     {
         $request->validate([
-            
             'name'=>'required'
         ]);
                
-        $role = new Role();
-        $role->name = $request->name;
-        $role->save();
-
+        $role->update($request->all());
+        
+        $role-> permissions()->sync($request->permissions);
+        
         $roles = Role::all();
         return view('admin.roles.index', compact('roles'));
 

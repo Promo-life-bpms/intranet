@@ -22,9 +22,9 @@ class RoleSeeder extends Seeder
         $role4 = Role::create(['name'=>'Empleados']);
 
 
-        Permission::create(['name'=>'communique.create'])->syncRoles([$role1,$role2]);
-        Permission::create(['name'=>'admin.users'])->syncRoles([$role1]);
-        Permission::create(['name'=>'admin.employees'])->syncRoles([$role1]);
+        Permission::create(['name'=>'communique.create',"description"=>"Crear comunicados"])->syncRoles([$role1,$role2]);
+        Permission::create(['name'=>'admin.users',"description"=>"Administrar usuarios"])->syncRoles([$role1]);
+        Permission::create(['name'=>'admin.employees',"description"=>"Administrar empleados"])->syncRoles([$role1]);
 
     }
 }
