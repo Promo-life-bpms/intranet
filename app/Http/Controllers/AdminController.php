@@ -12,11 +12,7 @@ use Spatie\Permission\Models\Role as ModelsRole;
 class AdminController extends Controller
 {
 
-    public function users(){
-        $users =  User::all();
-        return view('admin.user.users', compact('users'));
-    }
-
+   
     public function employees(){
         $employees =  Employee::all();
         return view('admin.employee.employee', compact('employees'));
@@ -81,14 +77,9 @@ class AdminController extends Controller
      */
     public function contactUpdate(Request $request, Contact $contact)
     {
-        $contact = new Contact();
-        $contact->num_tel = $request->num_tel;
-        $contact->correo1 = $request->correo1;
-        $contact->correo2 = $request->correo2;
-        $contact->correo3 = $request->correo3;
-        $contact->correo4 = $request->correo4;
-        $contact->save();
 
+
+        $contact->update($request->all());
 
         $contacts = Contact::all();
 

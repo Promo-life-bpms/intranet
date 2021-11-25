@@ -35,8 +35,8 @@ class CreateEmployeeTable extends Migration
             $table->boolean('status');
             $table->unsignedBigInteger('id_contacto');
             $table->unsignedBigInteger('id_user');
+            $table->foreignId('user_id')->constrained();
             $table->foreign('id_contacto')->references('id')->on('contact');
-            $table->foreign('id_user')->references('id')->on('users');
             $table->timestamps();
         });
 

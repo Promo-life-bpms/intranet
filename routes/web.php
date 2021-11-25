@@ -17,6 +17,7 @@ use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\WorkController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 
 /*
@@ -65,7 +66,14 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/request', [RequestControl
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/work', WorkController::class)->name('work');
 
-Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/users', [AdminController::class,'users'])->name('admin.users');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/users', [UserController::class,'index'])->name('admin.users');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/user/create', [UserController::class,'create'])->name('admin.user.create');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->post('/admin/user/create', [UserController::class,'store'])->name('admin.user.store');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/user/{user}/edit', [UserController::class,'edit'])->name('admin.user.edit');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->put('/admin/user/{user}', [UserController::class,'update'])->name('admin.user.update');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->delete('/admin/user/{user}', [UserController::class,'destroy'])->name('admin.user.destroy');
+
+
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/employee', [AdminController::class,'employees'])->name('admin.employee');
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/contact', [AdminController::class,'contact'])->name('admin.contact');
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/contacts/create', [AdminController::class,'contactCreate'])->name('admin.contact.create');
