@@ -16,31 +16,27 @@ class CreateEmployeeTable extends Migration
 
         Schema::create('contact', function (Blueprint $table) {
             $table->id();
-            $table->string('num_tel',12);
-            $table->string('correo1',100)->nullable();
-            $table->string('correo2',100)->nullable();
-            $table->string('correo3',100)->nullable();
-            $table->string('correo4',100)->nullable();
+            $table->string('num_tel', 12)->nullable();
+            $table->string('correo1', 100)->nullable();
+            $table->string('correo2', 100)->nullable();
+            $table->string('correo3', 100)->nullable();
+            $table->string('correo4', 100)->nullable();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
 
 
         Schema::create('employee', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre',30);
-            $table->string('paterno',30);
-            $table->string('materno',30);
-            $table->date('fecha_cumple');
-            $table->date('fecha_ingreso');
-            $table->boolean('status');
-            $table->unsignedBigInteger('id_contacto');
-            $table->unsignedBigInteger('id_user');
+            $table->string('nombre', 100)->nullable();
+            $table->string('paterno', 100)->nullable();
+            $table->string('materno', 100)->nullable();
+            $table->date('fecha_cumple')->nullable();
+            $table->date('fecha_ingreso')->nullable();
+            $table->boolean('status')->nullable();
             $table->foreignId('user_id')->constrained();
-            $table->foreign('id_contacto')->references('id')->on('contact');
             $table->timestamps();
         });
-
-        
     }
 
     /**
@@ -52,6 +48,5 @@ class CreateEmployeeTable extends Migration
     {
         Schema::dropIfExists('employee');
         Schema::dropIfExists('contact');
-
     }
 }

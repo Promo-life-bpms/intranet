@@ -16,7 +16,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees =  Employee::all();   
+        $employees =  Employee::all();
         return view('admin.employee.index', compact('employees'));
     }
 
@@ -27,8 +27,8 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        $contacts = Contact::pluck('num_tel','id')->toArray();
-        $users = User::pluck('name','id')->toArray();
+        $contacts = Contact::pluck('num_tel', 'id')->toArray();
+        $users = User::pluck('name', 'id')->toArray();
         return view('admin.employee.create', compact('contacts', 'users'));
     }
 
@@ -41,14 +41,12 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre'=>'required',
-            'paterno'=>'required',
-            'materno'=>'required',
-            'fecha_cumple'=>'required',
-            'fecha_ingreso'=>'required',
-            'status'=>'required',
-            'id_contacto'=>'required',
-            'id_user'=>'required'
+            'nombre' => 'required',
+            'paterno' => 'required',
+            'materno' => 'required',
+            'fecha_cumple' => 'required',
+            'fecha_ingreso' => 'required',
+            'status' => 'required'
         ]);
 
         $employee = new Employee();
@@ -58,11 +56,9 @@ class EmployeeController extends Controller
         $employee->fecha_cumple = $request->fecha_cumple;
         $employee->fecha_ingreso = $request->fecha_ingreso;
         $employee->status = $request->status;
-        $employee->id_contacto = $request->id_contacto;
-        $employee->id_user = $request->id_user;
         $employee->save();
 
-        $employees =  Employee::all();   
+        $employees =  Employee::all();
         return view('admin.employee.index', compact('employees'));
     }
 
@@ -85,9 +81,9 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        $contacts = Contact::pluck('num_tel','id')->toArray();
-        $users = User::pluck('name','id')->toArray();
-        
+        $contacts = Contact::pluck('num_tel', 'id')->toArray();
+        $users = User::pluck('name', 'id')->toArray();
+
         return view('admin.employee.edit', compact('employee', 'contacts', 'users'));
     }
 
@@ -98,24 +94,21 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,Employee $employee )
+    public function update(Request $request, Employee $employee)
     {
 
         $request->validate([
-            'nombre'=>'required',
-            'paterno'=>'required',
-            'materno'=>'required',
-            'fecha_cumple'=>'required',
-            'fecha_ingreso'=>'required',
-            'status'=>'required',
-            'id_contacto'=>'required',
-            'id_user'=>'required'
+            'nombre' => 'required',
+            'paterno' => 'required',
+            'materno' => 'required',
+            'fecha_cumple' => 'required',
+            'fecha_ingreso' => 'required',
+            'status' => 'required',
         ]);
 
         $employee->update($request->all());
 
-        $employees =  Employee::all();   
-        return view('admin.employee.index', compact('employees'));
+        return redirect()->action([EmployeeController::class, 'index']);
     }
 
     /**
@@ -128,7 +121,7 @@ class EmployeeController extends Controller
     {
         $employee->delete();
 
-        $employees =  Employee::all();   
+        $employees =  Employee::all();
         return view('admin.employee.index', compact('employees'));
     }
 }

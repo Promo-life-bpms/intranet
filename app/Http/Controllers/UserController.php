@@ -28,8 +28,8 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'=>'required',
-            'email'=>'required'
+            'name' => 'required',
+            'email' => 'required'
         ]);
 
         $user = new User();
@@ -38,17 +38,10 @@ class UserController extends Controller
         $user->password = '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi';
         $user->save();
 
-        $user-> roles()->sync($request->roles);
-        $users =  User::all();
-        return view('admin.user.index', compact('users'));
+        $user->roles()->sync($request->roles);
+        $user->employee()->create([]);
+        return redirect()->action([UserController::class, 'index']);
     }
-
-    /** 
-        $request->validate([
-            'name'=>'required',
-            'email'
-        ])
-        */
 
     /**
      * Show the form for creating a new resource.
@@ -61,7 +54,7 @@ class UserController extends Controller
         return view('admin.user.create', compact('roles'));
     }
 
-    
+
     /**
      * Display the specified resource.
      *
@@ -82,8 +75,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = Role::all();
-        return view('admin.user.edit', compact('roles','user'));
-        
+        return view('admin.user.edit', compact('roles', 'user'));
     }
 
     /**
@@ -96,22 +88,17 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'name'=>'required',
-            'email'=>'required'
+            'name' => 'required',
+            'email' => 'required'
         ]);
 
         $user->update($request->all());
 
-        $user-> roles()->sync($request->roles);
+        $user->roles()->sync($request->roles);
         $users =  User::all();
         return view('admin.user.index', compact('users'));
-
     }
-    /** 
-        $user->employee->update([
 
-        ]);
-        */
     /**
      * Remove the specified resource from storage.
      *
@@ -120,7 +107,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user -> delete();
+        $user->delete();
         $users =  User::all();
         return view('admin.user.index', compact('users'));
     }

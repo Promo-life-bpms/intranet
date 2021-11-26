@@ -17,4 +17,9 @@ class Contact extends Model
         'correo3',
         'correo4',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

@@ -12,6 +12,7 @@
             <thead>
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col">Usuario</th>
                     <th scope="col">Numero</th>
                     <th scope="col">Promolife</th>
                     <th scope="col">BH-Trademarket</th>
@@ -24,7 +25,8 @@
             <tbody>
                 @foreach ($contacts as $contact)
                     <tr>
-                        <th>{{ $contact->id }}</th>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $contact->user->name }}</td>
                         <td>{{ $contact->num_tel }}</td>
                         <td>{{ $contact->correo1 }}</td>
                         <td>{{ $contact->correo2 }}</td>

@@ -24,8 +24,8 @@
         @include('layouts.components.sidebar')
         <div id="main">
             @if (request()->is('home'))
+                @include('layouts.components.logos')
             @endif
-            @include('layouts.components.logos')
             <div class="px-3">
                 {{-- Menu Hamburguesa --}}
                 <header class="mb-3 d-xl-none">

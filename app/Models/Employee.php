@@ -18,7 +18,10 @@ class Employee extends Model
         'fecha_cumple',
         'fecha_ingreso',
         'status',
-        'id_contacto',
-        'id_user'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
