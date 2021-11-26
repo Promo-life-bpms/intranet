@@ -13,7 +13,7 @@
 
 <div class="row">
   <div class="col-8 ">
-    <h3>Editar contacto</h3>
+    <h3>Editar Contacto</h3>
   </div>
 
   <form action="{{route('admin.contact.update', $contact)}}" enctype="multipart/form-data" method="POST">

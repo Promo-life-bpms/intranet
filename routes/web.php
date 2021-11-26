@@ -19,6 +19,7 @@ use App\Http\Controllers\WorkController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\EmployeeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,7 +75,6 @@ Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->put('/admin/u
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->delete('/admin/users/{user}', [UserController::class,'destroy'])->name('admin.user.destroy');
 
 
-Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/employee', [AdminController::class,'employees'])->name('admin.employee');
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/contact', [AdminController::class,'contact'])->name('admin.contact');
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/contacts/create', [AdminController::class,'contactCreate'])->name('admin.contact.create');
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->post('/admin/contacts/create', [AdminController::class,'contactStore'])->name('admin.contact.store');
@@ -89,3 +89,11 @@ Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->post('/admin/
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/roles/{role}/edit', [RoleController::class,'edit'])->name('admin.roles.edit');
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->put('/admin/roles/{role}', [RoleController::class,'update'])->name('admin.roles.update');
 Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->delete('/admin/roles/{role}', [RoleController::class,'destroy'])->name('admin.roles.destroy');
+
+
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/employees', [EmployeeController::class,'index'])->name('admin.employee');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/employees/create', [EmployeeController::class,'create'])->name('admin.employee.create');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->post('/admin/employees/create', [EmployeeController::class,'store'])->name('admin.employee.store');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->get('/admin/employees/{employee}/edit', [EmployeeController::class,'edit'])->name('admin.employee.edit');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->put('/admin/employees/{employee}', [EmployeeController::class,'update'])->name('admin.employee.update');
+Route::middleware(['auth:sanctum', 'verified','can:admin.users'])->delete('/admin/employees/{employee}', [EmployeeController::class,'destroy'])->name('admin.employee.destroy');

@@ -12,15 +12,9 @@ use Spatie\Permission\Models\Role as ModelsRole;
 class AdminController extends Controller
 {
 
-   
-    public function employees(){
-        $employees =  Employee::all();
-        return view('admin.employee.employee', compact('employees'));
-    }
-
     public function contact(){
         $contacts = Contact::all();
-        return view('admin.contact.contact', compact('contacts'));
+        return view('admin.contact.index', compact('contacts'));
     }
  
 
@@ -50,7 +44,7 @@ class AdminController extends Controller
 
         $contacts = Contact::all();
 
-        return view('admin.contact.contact', compact('contacts'));
+        return view('admin.contact.index', compact('contacts'));
        
     }
 
@@ -83,7 +77,7 @@ class AdminController extends Controller
 
         $contacts = Contact::all();
 
-        return view('admin.contact.contact', compact('contacts'));
+        return view('admin.contact.index', compact('contacts'));
        
     }
 
@@ -99,7 +93,7 @@ class AdminController extends Controller
 
         $contacts = Contact::all();
 
-        return view('admin.contact.contact', compact('contacts'));
+        return view('admin.contact.index', compact('contacts'));
     }
 
 
@@ -126,7 +120,7 @@ class AdminController extends Controller
 
         $contacts = Contact::all();
 
-        return view('admin.contact.contact', compact('contacts'));
+        return view('admin.contact.index', compact('contacts'));
        
     }
 

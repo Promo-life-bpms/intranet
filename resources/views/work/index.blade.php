@@ -54,7 +54,22 @@
 
 @section('styles')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<style>
+    .access_list>.access_item {
+  display: inline-block;
+  margin-right: 20px;
+}
 
+.card{
+  padding-left: 0;
+  border-radius: 10px;
+}
+
+.btn-group{
+  display: flex;
+  justify-content: center;
+}
+</style>
 @stop
 
 @section('scripts')

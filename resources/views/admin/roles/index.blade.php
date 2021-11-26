@@ -37,7 +37,7 @@
       <td >
         <a href="{{route('admin.roles.edit',['role'=>$role->id])}}" type="button" class="btn btn-primary">EDITAR</a>
        
-        <form action="{{route('admin.roles.destroy',['role'=> $role->id] )}}" method="POST">
+        <form  class="form-delete" action="{{route('admin.roles.destroy',['role'=> $role->id] )}}"   method="POST">
           @csrf
           @method('delete')
         <button type="submit" class="btn btn-danger">BORRAR</button>
@@ -64,4 +64,27 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+  $('.form-delete').submit(function(e){
+    e.preventDefault();
+
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: "¡El registro se eliminará permanentemente!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '¡Si, eliminar!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.submit();
+      }
+    })
+  });
+
+</script>
 @stop

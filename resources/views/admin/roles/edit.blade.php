@@ -23,7 +23,7 @@
       {!! Form::model($role,['route'=>['admin.roles.update',$role], 'method'=>'put']) !!}
       <div class="form-group">
         {!! Form::label('name', 'Nombre Rol', ) !!}
-        {!! Form::text('name', null, ['class'=>'form-control', 'placehorlder'=>'Ingrese el nombre del rol']) !!}
+        {!! Form::text('name', null, ['class'=>'form-control', 'placeholder'=>'Ingrese el nombre del rol']) !!}
          
         @error('name') 
         <small> <font color="red"> *Este campo es requerido* </font></small>

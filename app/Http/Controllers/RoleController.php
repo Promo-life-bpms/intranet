@@ -108,6 +108,6 @@ class RoleController extends Controller
 
         $roles = Role::all();
 
-        return view('admin.roles.index', compact('roles'));
+        return view('admin.roles.index', compact('roles'))->with('borrar', 'ok');
     }
 }

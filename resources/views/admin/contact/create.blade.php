@@ -40,7 +40,7 @@
         <label for="exampleFormControlInput1" class="form-label mt-4">Correo Promodreams </label>
         <input type="text" class="form-control" name="correo4" placeholder="Ingrese el correo">
 
-        <input type="submit" class="btnCreate mt-4" value="GUARDAR CONTACTO"></button>
+        <input type="submit" class="btnCreate mt-4" value="CREAR CONTACTO"></button>
     </form>
 </div>
 

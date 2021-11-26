@@ -17,13 +17,13 @@
             {!! Form::model($user,['route'=>['admin.user.update',$user], 'method'=>'put']) !!}
             <div class="form-group">
               {!! Form::label('name', 'Nombre', ) !!}
-              {!! Form::text('name', null, ['class'=>'form-control', 'placehorlder'=>'Ingrese el nombre de usuario']) !!}
+              {!! Form::text('name', null, ['class'=>'form-control', 'placeholder'=>'Ingrese el nombre de usuario']) !!}
               @error('name') 
               <small> <font color="red"> *Este campo es requerido* </font></small>
               <br>
             @enderror
               {!! Form::label('name', 'Correo', ) !!}
-              {!! Form::text('email', null, ['class'=>'form-control', 'placehorlder'=>'Ingrese el correo de acceso']) !!}
+              {!! Form::text('email', null, ['class'=>'form-control', 'placeholder'=>'Ingrese el correo de acceso']) !!}
               @error('email') 
               <small> <font color="red"> *Este campo es requerido* </font></small>
               <br>
