@@ -39,7 +39,6 @@ class UserController extends Controller
         $user->save();
 
         $user->roles()->sync($request->roles);
-        $user->employee()->create([]);
         return redirect()->action([UserController::class, 'index']);
     }
 
