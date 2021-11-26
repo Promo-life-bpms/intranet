@@ -2,7 +2,10 @@
 
 @section('content')
     <div class="card-header">
-        <h3>Trellos disponibles</h3>
+        <div class="d-flex justify-content-between">
+            <h3>Trellos disponibles</h3>
+            <button class="btn btn-primary"> CREAR NUEVO </button>
+        </div>
     </div>
     <div class="card-body">
         <div class="row">
@@ -41,5 +44,5 @@
 
     </div>
 
-    <button class="btnCreate"> CREAR NUEVO </button>
+
 @stop
