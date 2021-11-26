@@ -35,9 +35,7 @@
                             {{ auth()->user()->name . ' ' . auth()->user()->lastname }}
                         </h5>
                         <h6 class="text-muted mb-0">
-                        {{
-                            Auth::user()->roles->pluck('name')
-                        }}
+                            {{                             Auth::user()->roles->pluck('name') }}
                         </h6>
                     </div>
                 </div>
@@ -49,39 +47,39 @@
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
                 @can('admin.users')
-                <li class="sidebar-item has-sub {{ request()->is('admin.users') ? 'active' : '' }}">
-                    <a href="{{ route('admin.users') }}" class='sidebar-link'>
-                        <i class="fa fa-wrench" aria-hidden="true"></i>
-                        <span>Administrador</span>
-                    </a>
+                    <li class="sidebar-item has-sub {{ request()->is('admin.users') ? 'active' : '' }}">
+                        <a href="{{ route('admin.users') }}" class='sidebar-link'>
+                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                            <span>Administrador</span>
+                        </a>
 
 
-                    <ul class="submenu ">
+                        <ul class="submenu ">
 
-                    <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('admin.roles') }}">
-                                <span>Roles</span>
-                            </a>
-                        </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.roles') }}">
+                                    <span>Roles</span>
+                                </a>
+                            </li>
 
-                        <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('admin.users') }}">
-                                <span>Usuarios</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('admin.employee') }}">
-                                <span>Empleados</span>
-                            </a>
-                        </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.users') }}">
+                                    <span>Usuarios</span>
+                                </a>
+                            </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.employee') }}">
+                                    <span>Empleados</span>
+                                </a>
+                            </li>
 
-                        <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('admin.contact') }}">
-                                <span>Directorio</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.contact') }}">
+                                    <span>Directorio</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 @endcan
 
                 <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
@@ -160,13 +158,13 @@
                     </a>
                     <ul class="submenu ">
 
-                    @can('communique.create')
-                    <li class="submenu-item ">
-                        <a class="dropdown-item" href="{{ route('communique.create') }}">
-                            <span>Crear comunicados</span>
-                        </a>
-                    </li>
-                    @endcan
+                        @can('communique.create')
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('communique.create') }}">
+                                    <span>Crear comunicados</span>
+                                </a>
+                            </li>
+                        @endcan
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('communique.index') }}">
                                 <span>Ver comunicados</span>
@@ -206,7 +204,7 @@
 
                 <li class="sidebar-item {{ request()->is('work') ? 'active' : '' }}">
                     <a href="{{ route('work') }}" class='sidebar-link'>
-                    <i class="fa fa-trello" aria-hidden="true"></i>
+                        <i class="fa fa-trello" aria-hidden="true"></i>
                         <span>Trello</span>
                     </a>
                 </li>
