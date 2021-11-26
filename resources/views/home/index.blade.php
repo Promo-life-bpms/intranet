@@ -2,18 +2,6 @@
 
 @section('dashboard')
 
-    <div class="contenedor-logo">
-        <ul class="logos" style="padding-left: 10px;">
-            <li><a href="#"><img style="max-width: 50px;" src="{{ asset('/img/bhtrade.png') }}" alt="bhtrade"></a> </li>
-            <li><a href="#"><img style="max-width: 80px;" src="{{ asset('/img/promolife.png') }}" alt="promolife"></a>
-            </li>
-            <li><a href="#"><img style="max-width: 50px;" src="{{ asset('/img/promodreams.png') }}" alt="promodreams"></a>
-            </li>
-            <li><a href="#"><img style="max-width: 50px;" src="{{ asset('/img/trademarket.png') }}" alt="trademarket"></a>
-            </li>
-        </ul>
-    </div>
-
     <img class="promonews" style="width:90%; " src="{{ asset('/img/diseno.jpeg') }}" alt="diseno">
 
 

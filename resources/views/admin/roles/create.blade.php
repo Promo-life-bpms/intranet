@@ -1,30 +1,15 @@
 @extends('layouts.app')
+@section('title')
+    <h3>Crear Rol</h3>
+@endsection
 
-@section('dashboard')
-
-<div class="contenedor-logo">
-        <ul class="logos" style="padding-left: 10px;">
-            <li><a  href="#"><img style="max-width: 50px;" src="{{asset('/img/bhtrade.png')}}"  alt="bhtrade"></a> </li>
-            <li><a  href="#"><img style="max-width: 80px;" src="{{asset('/img/promolife.png')}}"  alt="promolife"></a> </li>
-            <li><a  href="#"><img style="max-width: 50px;"src="{{asset('/img/promodreams.png')}}"  alt="promodreams"></a> </li>
-            <li><a  href="#"><img style="max-width: 50px;" src="{{asset('/img/trademarket.png')}}"  alt="trademarket"></a> </li>
-        </ul>
-    </div>
-
-<div class="row">
-  <div class="col-8 ">
-    <h3>Editar contacto</h3>
-  </div>
-</div>
-
-
-  <div class="card">
+@section('content')
     <div class="card-body">
       {!! Form::open(['route'=>'admin.roles.store']) !!}
       <div class="form-group">
         {!! Form::label('name', 'Nombre Rol', ) !!}
         {!! Form::text('name', null, ['class'=>'form-control', 'placehorlder'=>'Ingrese el nombre del rol']) !!}
-        @error('name') 
+        @error('name')
         <small> <font color="red"> *Este campo es requerido* </font></small>
         <br>
       @enderror
@@ -45,10 +30,6 @@
 
       {!! Form::close() !!}
     </div>
-  </div>
-
-
-
 @stop
 
 @section('styles')

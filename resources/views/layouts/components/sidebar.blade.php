@@ -4,7 +4,7 @@
             <a href="#" class="sidebar-hide d-xl-none d-flex justify-content-end px-5" style="font-size: 2rem"><i
                     class="bi bi-x bi-middle"></i></a>
         </div>
-        
+
         <div class="sidebar-header">
             <div class="card m-0 p-1">
                 <div class="d-flex align-items-center">
@@ -35,7 +35,7 @@
                             {{ auth()->user()->name . ' ' . auth()->user()->lastname }}
                         </h5>
                         <h6 class="text-muted mb-0">
-                        {{ 
+                        {{
                             Auth::user()->roles->pluck('name')
                         }}
                         </h6>
@@ -44,7 +44,7 @@
             </div>
         </div>
 
-                        
+
         <div class="sidebar-menu">
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
@@ -54,7 +54,7 @@
                         <i class="fa fa-wrench" aria-hidden="true"></i>
                         <span>Administrador</span>
                     </a>
-                
+
 
                     <ul class="submenu ">
 
@@ -73,13 +73,13 @@
                             <a class="dropdown-item" href="{{ route('admin.employee') }}">
                                 <span>Empleados</span>
                             </a>
-                        </li>  
-                        
+                        </li>
+
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('admin.contact') }}">
                                 <span>Directorio</span>
                             </a>
-                        </li>  
+                        </li>
                     </ul>
                 </li>
                 @endcan
@@ -92,7 +92,7 @@
                 </li>
 
                 <li class="sidebar-item has-sub {{ request()->is('about') ? 'active' : '' }}">
-                    <a href="{{ route('about') }}" class='sidebar-link'>
+                    <a href="#" class='sidebar-link'>
                         <i class="bi bi-info-circle-fill"></i>
                         <span>Acerca de</span>
                     </a>

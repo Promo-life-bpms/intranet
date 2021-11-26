@@ -41,17 +41,16 @@ Auth::routes();
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/home', HomeController::class)->name('home');
-
     Route::get('/communique', [CommuniqueController::class, 'index'])->name('communique.index');
     Route::get('/communique/create', [CommuniqueController::class, 'create'])->middleware('can:communique.create')->name('communique.create');
     Route::post('/communique', [CommuniqueController::class, 'store'])->name('communique.store');
-});
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/about', AboutController::class)->name('about');
-Route::middleware(['auth:sanctum', 'verified'])->get('/about/bhtrade', BhtradeController::class)->name('about_trade');
-Route::middleware(['auth:sanctum', 'verified'])->get('/about/promolife', PromolifeController::class)->name('about_promolife');
-Route::middleware(['auth:sanctum', 'verified'])->get('/about/promodreams', PromodreamsController::class)->name('about_promodreams');
-Route::middleware(['auth:sanctum', 'verified'])->get('/about/trademarket', TrademarketController::class)->name('about_trademarket');
+    Route::get('/about/promolife', [AboutController::class,'promolife'])->name('about_promolife');
+
+    Route::get('/about/bhtrade', [AboutController::class,'bh'])->name('about_trade');
+    Route::get('/about/promodreams', [AboutController::class,'promodreams'])->name('about_promodreams');
+    Route::get('/about/trademarket', [AboutController::class,'trademarket'])->name('about_trademarket');
+});
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/company', CompanyController::class)->name('company');
 

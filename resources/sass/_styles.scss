@@ -145,7 +145,7 @@ body {
 
 .logos {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -161,7 +161,7 @@ body {
     background-color: $primary-dark;
     color: #ffffff;
     border-radius: 5px ;
-    border:0;   
+    border:0;
 }
 
 .btnCreate:hover{
@@ -195,4 +195,7 @@ body {
 
 .promonews {
     margin: 10px 5% 0 5%;
+}
+.card-header{
+    background-color: #fff;
 }
