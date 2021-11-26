@@ -12,9 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets\vendors\toastify\toastify.css') }}">
     @yield('styles')
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
@@ -24,32 +22,36 @@
 <body>
     <div id="app">
         @include('layouts.components.sidebar')
-        <div id="main" class="py-3">
-            {{-- Menu Hamburguesa --}}
-            <header class="mb-3 d-xl-none">
-                <a href="#" class="burger-btn d-block">
-                    <i class="bi bi-justify fs-3"></i>
-                </a>
-            </header>
-
-            <div class="page-heading ">
-                <div id="appVue">
-                    <div class="page-title">
-                        <div class="row">
-                            <div class="col-12 order-md-1 order-last d-flex justify-content-between align-items-center">
-                                @yield('title')
+        <div id="main">
+            @if (request()->is('home'))
+            @endif
+            @include('layouts.components.logos')
+            <div class="px-3">
+                {{-- Menu Hamburguesa --}}
+                <header class="mb-3 d-xl-none">
+                    <a href="#" class="burger-btn d-block">
+                        <i class="bi bi-justify fs-3"></i>
+                    </a>
+                </header>
+                <div class="page-heading ">
+                    <div id="appVue">
+                        <div class="page-title">
+                            <div class="row">
+                                <div class="col-12">
+                                    @yield('title')
+                                </div>
                             </div>
                         </div>
+                        <section class="section">
+                            @yield('dashboard')
+                            <div class="card">
+                                @yield('content')
+                            </div>
+                        </section>
                     </div>
-                    <section class="section">
-                        @yield('dashboard')
-                        <div class="card">
-                            @yield('content')
-                        </div>
-                    </section>
                 </div>
+                @include('layouts.components.footer')
             </div>
-            @include('layouts.components.footer')
         </div>
     </div>
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
@@ -57,7 +59,6 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('assets/vendors/jquery/jquery.min.js') }}"></script>
     @yield('scripts')
-    <script src="{{ asset('assets\vendors\toastify\toastify.js') }}"></script>
     <script src="{{ asset('assets/js/mazer.js') }}"></script>
     <script src="https://use.fontawesome.com/84b288f169.js"></script>
 </body>
