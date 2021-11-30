@@ -63,7 +63,8 @@ class CommuniqueController extends Controller
         $communique->description=$request->description;
         $communique->save();
 
-        return view('communique.create');
+        $communiques = Communique::all();
+        return view('communique.show', compact('communiques'));
     }
 
     /**
@@ -74,7 +75,9 @@ class CommuniqueController extends Controller
      */
     public function show(Communique $communique)
     {
-        //
+        $communiques =  Communique::all();
+        $communiquesPrincipal =  Communique::paginate(5);
+        return view('communique.show', compact('communiques','communiquesPrincipal'));
     }
 
     /**
@@ -85,7 +88,8 @@ class CommuniqueController extends Controller
      */
     public function edit(Communique $communique)
     {
-        //
+        return view('communique.edit', compact('communique'));
+        
     }
 
     /**
@@ -97,7 +101,28 @@ class CommuniqueController extends Controller
      */
     public function update(Request $request, Communique $communique)
     {
-        //
+
+        request()->validate([
+            'title' => 'required',
+            'image' => 'required|mimes:png,jpg',
+            'description' => 'required'
+        ]);
+        if (!$request->hasFile("image")) {
+            return; 
+        }
+        $imagen = $request->file("image");
+        $nombreimagen = $request->title . "." . $imagen->getClientOriginalName();
+        $ruta = public_path("img/post/");
+
+        //$imagen->move($ruta,$nombreimagen);
+        $imagen->move($ruta, $nombreimagen);
+        $request->image = $ruta . $nombreimagen;
+
+
+        $communique->update($request->all());
+
+        $communiques = Communique::all();
+        return view('communique.show', compact('communiques'));
     }
 
     /**
@@ -108,6 +133,9 @@ class CommuniqueController extends Controller
      */
     public function destroy(Communique $communique)
     {
-        //
+        $communique->delete();
+
+        $communiques = Communique::all();
+        return view('communique.show', compact('communiques'));
     }
 }

@@ -11,6 +11,13 @@
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Titulo </label>
                 <input type="text" class="form-control" name="title" placeholder="Ingrese el titulo del comunicado">
+                
+                @error('title')
+                <small>
+                    <font color="red"> *Este campo es requerido* </font>
+                </small>
+                <br>
+                @enderror
             </div>
 
 
@@ -19,6 +26,14 @@
                     <div class="mb-2">
                         <label for="formFile" class="form-label">Imagen</label>
                         <input class="form-control" type="file" name="image" id="formFile">
+                        
+                        @error('image')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                        @enderror
+                    
                     </div>
                 </div>
                 {{-- <div class="col-4">
@@ -57,6 +72,14 @@
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Descripcion</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" name="description"></textarea>
+            
+                @error('description')
+                <small>
+                    <font color="red"> *Este campo es requerido* </font>
+                </small>
+                <br>
+                @enderror
+            
             </div>
             <input type="submit" class="btnCreate" value="CREAR COMUNICADO"></button>
         </form>

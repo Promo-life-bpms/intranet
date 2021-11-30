@@ -170,6 +170,13 @@
                                 <span>Ver comunicados</span>
                             </a>
                         </li>
+                        @can('communique.create')
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('communique.show') }}">
+                                <span>Administrar comunicados</span>
+                            </a>
+                        </li>
+                        @endcan
                     </ul>
                 </li>
 

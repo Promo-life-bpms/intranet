@@ -16,7 +16,7 @@ class CreateCommuniquesTable extends Migration
         Schema::create('communiques', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('images');
+            $table->text('images')->nullable();
             $table->text('description');
             $table->timestamps();
         });

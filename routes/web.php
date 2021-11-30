@@ -39,8 +39,6 @@ Auth::routes();
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/home', HomeController::class)->name('home');
     Route::get('/communique', [CommuniqueController::class, 'index'])->name('communique.index');
-    Route::get('/communique/create', [CommuniqueController::class, 'create'])->middleware('can:communique.create')->name('communique.create');
-    Route::post('/communique', [CommuniqueController::class, 'store'])->name('communique.store');
 
     Route::get('/about/promolife', [AboutController::class, 'promolife'])->name('about_promolife');
 
@@ -92,3 +90,18 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->post('/admin
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/admin/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('admin.employee.edit');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/admin/employees/{employee}', [EmployeeController::class, 'update'])->name('admin.employee.update');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/admin/employees/{employee}', [EmployeeController::class, 'destroy'])->name('admin.employee.destroy');
+
+
+
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/communiques/create', [CommuniqueController::class, 'create'])->name('communique.create');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/communiques', [CommuniqueController::class, 'show'])->name('communique.show');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->post('/communiques/create', [CommuniqueController::class, 'store'])->name('communique.store');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/communiques/{communique}/edit', [CommuniqueController::class, 'edit'])->name('communique.edit');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->post('/communiques/{communique}', [CommuniqueController::class, 'update'])->name('communique.update');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/communiques/{communique}', [CommuniqueController::class, 'destroy'])->name('communique.destroy');
+
+
+/* 
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/admin/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('admin.employee.edit');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/admin/employees/{employee}', [EmployeeController::class, 'update'])->name('admin.employee.update');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/admin/employees/{employee}', [EmployeeController::class, 'destroy'])->name('admin.employee.destroy'); */
