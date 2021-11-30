@@ -48,7 +48,10 @@
 @stop
 
 @section('scripts')
-   {{--  <script>
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
         $('.form-delete').submit(function(e) {
             e.preventDefault();
 
@@ -67,5 +70,5 @@
                 }
             })
         });
-    </script> --}}
+    </script>
 @stop

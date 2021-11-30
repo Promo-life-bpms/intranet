@@ -202,11 +202,28 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item {{ request()->is('request') ? 'active' : '' }}">
+                <li class="sidebar-item  has-sub {{ request()->is('request') ? 'active' : '' }}">
                     <a href="{{ route('request') }}" class='sidebar-link'>
                         <i class="fa fa-pencil-square" aria-hidden="true"></i>
                         <span>Solicitudes</span>
                     </a>
+                    
+                    <ul class="submenu ">
+
+                        @can('communique.create')
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('request') }}">
+                                    <span>Crear Solicitud</span>
+                                </a>
+                            </li>
+                        @endcan
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('request') }}">
+                                <span>Administrar Solicitudes</span>
+                            </a>
+                        </li>
+                    </ul>
+
                 </li>
 
                 <li class="sidebar-item {{ request()->is('work') ? 'active' : '' }}">

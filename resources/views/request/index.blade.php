@@ -2,62 +2,84 @@
 
 @section('content')
     <div class="card-header">
-        <h3>Crear Solicitud</h3>
+        <div class="d-flex justify-content-between">
+            <h3>Comunicados</h3>
+            <a href="{{ route('communique.create') }}" type="button" class="btn btn-success">Agregar</a>
+        </div>
     </div>
     <div class="card-body">
-        <form>
-            <div class="row mb-3">
-                <div class="col-8">
-                    <label for="exampleFormControlInput1" class="form-label">Nombre </label>
-                    <input type="text" class="form-control" id="exampleFormControlInput1"
-                        placeholder="Ingrese el titulo del comunicado">
-                </div>
-                <div class="col-4 mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Fecha de solicitud </label>
-                    <input type="date" class="form-control" placeholder="Fecha de Solicitud">
-                </div>
-            </div>
 
-            <div class="row mb-3">
-                <div class="col-8">
-                    <div class="mb-2">
-                        <label for="formFile" class="form-label">Tipo de solicitud</label>
-                        <select class="form-select" aria-label="Default select example">
-                            <option selected>Seleccionar tipo</option>
-                            <option value="1">Salir durante jornada</option>
-                            <option value="2">Vacaciones</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <label for="exampleFormControlInput1" class="form-label">Dia de aplicacion</label>
-                    <input type="date" class="form-control" placeholder="Fecha de Solicitud">
-                </div>
-            </div>
-            <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">Descripcion</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
-            </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col"># </th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Paterno</th>
+                    <th scope="col">Materno</th>
+                    <th scope="col">Solicitud</th>
+                    <th scope="col">Fecha de solicitud</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Especificacion </th>
+                    <th scope="col">Motivo</th>
+                    <th scope="col">Dia de Inicio </th>
+                    <th scope="col">Dia de Fin</th>
+                    <th scope="col">status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($requests as $request)
+                    <tr>
+                        <td>{{ $request->id }}</td>
+                        <td>{{ $request->nombre_soli }}</td>
+                        <td>{{ $request->fecha_soli }}</td>
+                        <td>{{ $request->tipo_soli }}</td>
+                        <td>{{ $request->dias_soli }}</td>
+                        <td>{{ $request->especificacion_soli }}</td>
+                        <td>{{ $request->motivo_soli }}</td>
+                        <td>{{ $request->status }}</td>
+                        <td>
+                            <a href="{{ route('communique.edit', ['communique' => $communique->id]) }}" type="button"
+                                class="btn btn-primary">Editar</a>
 
-            <div class="form-row">
-                <div class="form-group col col-lg-6">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radiobutton" id="" value="option1" checked>
-                        <label class="form-check-label" for="radiobutton1" style="color:#000000;">
-                            Descontar Tiempo/Dia
-                        </label>
-                    </div>
+                            <form class="form-delete" action="{{ route('communique.destroy', ['communique' => $communique->id]) }}"
+                                method="POST">
+                                @csrf
+                                @method('delete')
+                                <button type="submit" class="btn btn-danger">Borrar</button>
+                            </form>
 
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radiobutton" id="radiobutton2" value="option2">
-                        <label class="form-check-label" for="exampleRadios2" style="color:#000000;">
-                            A cuenta de vacaciones
-                        </label>
-                    </div>
-                </div>
-            </div>
+                        </td>
+                    </tr>
+                @endforeach
 
-            <button class="btnCreate"><b>CREAR SOLICITUD</b></button>
-        </form>
+            </tbody>
+        </table>
+
     </div>
+@stop
+
+@section('scripts')
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $('.form-delete').submit(function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡El registro se eliminará permanentemente!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '¡Si, eliminar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            })
+        });
+    </script>
 @stop

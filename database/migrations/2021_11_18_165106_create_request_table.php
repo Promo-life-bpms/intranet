@@ -15,14 +15,16 @@ class CreateRequestTable extends Migration
     {
         Schema::create('request', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre_soli',30);
-            $table->dateTime('fecha_soli');
-            $table->string('tipo_soli',30);
-            $table->date('dias_soli',30);
+            $table->string('nombre_solicitud',30);
+            $table->dateTime('fecha_solicitud');
+            $table->string('tipo_soli',40);
             $table->string('especificacion_soli',20);
-            $table->text('motivo_soli');
+            $table->text('motivo_solicitud');
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
             $table->boolean('status');
-            $table->string('id_empleado',10);
+            $table->unsignedBigInteger('id_empleado');
+           // $table->foreign('id_empleado')->references('id')->on('employee')->onDelete('cascade');
             $table->timestamps();
         });
     }

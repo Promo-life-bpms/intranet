@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Request as ModelsRequest;
 use Illuminate\Http\Request;
 
 class RequestController extends Controller
@@ -13,7 +14,8 @@ class RequestController extends Controller
      */
     public function index()
     {
-        return view('request.index');
+        $requests = ModelsRequest::all();  
+        return view('request.index', compact('requests'));
     }
 
     /**
