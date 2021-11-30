@@ -21,7 +21,8 @@ class CreateEmployeeTable extends Migration
             $table->string('correo2', 100)->nullable();
             $table->string('correo3', 100)->nullable();
             $table->string('correo4', 100)->nullable();
-            $table->foreignId('user_id')->constrained();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -34,7 +35,8 @@ class CreateEmployeeTable extends Migration
             $table->date('fecha_cumple')->nullable();
             $table->date('fecha_ingreso')->nullable();
             $table->boolean('status')->nullable();
-            $table->foreignId('user_id')->constrained();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -18,7 +18,7 @@ class CreateTableUserPosition extends Migration
             $table->unsignedBigInteger('puesto_id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('puesto_id')->references('id')->on('positions');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
         
