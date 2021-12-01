@@ -5,12 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Department extends Model
+class Organization extends Model
 {
     use HasFactory;
+    
+    public $table = "companies";
+
     protected $fillable = [
-        'name'
+        'id',
+        'name_company',
+        'description_company'
     ];
+
 
 
 }

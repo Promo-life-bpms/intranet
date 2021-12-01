@@ -63,10 +63,17 @@
                             </li>
 
                             <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('company.index') }}">
-                                    <span>Negocio</span>
+                                <a class="dropdown-item" href="{{ route('admin.organization.index') }}">
+                                    <span>Empresas</span>
                                 </a>
                             </li>
+
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.department.index') }}">
+                                    <span>Deparamentos</span>
+                                </a>
+                            </li> 
+
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.users') }}">
                                     <span>Usuarios</span>

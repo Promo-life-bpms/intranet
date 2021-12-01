@@ -13,6 +13,7 @@ use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\WorkController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\EmployeeController;
@@ -48,7 +49,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/about/promodreams', [AboutController::class, 'promodreams'])->name('about_promodreams');
     Route::get('/about/trademarket', [AboutController::class, 'trademarket'])->name('about_trademarket');
 
-    Route::get('/company', OrganizationController::class)->name('company');
+    Route::get('/company', [CompanyController::class, 'index'])->name('company');
 
     Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
@@ -59,10 +60,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/folder', FolderController::class)->name('folder');
     Route::get('/request', [RequestController::class, 'index'])->name('request');
     Route::get('/work', WorkController::class)->name('work');
-
+/* 
     Route::resource('company', CompanyController::class);
     Route::resource('departmens', CompanyController::class);
-    Route::resource('company', CompanyController::class);
+    Route::resource('company', CompanyController::class); */
 });
 
 
@@ -112,3 +113,19 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->post('/reque
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/request/{request}/edit', [RequestController::class, 'edit'])->name('request.edit');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/request/{request}', [RequestController::class, 'update'])->name('request.update');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/request/{request}', [RequestController::class, 'destroy'])->name('request.destroy');
+
+
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/organizations', [OrganizationController::class, 'index'])->name('admin.organization.index');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/organizations/create', [OrganizationController::class, 'create'])->name('admin.organization.create');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->post('/organizations/create', [OrganizationController::class, 'store'])->name('admin.organization.store');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/organizations/{organization}/edit', [OrganizationController::class, 'edit'])->name('admin.organization.edit');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/organizations/{organization}', [OrganizationController::class, 'update'])->name('admin.organization.update');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/organizations/{organization}', [OrganizationController::class, 'destroy'])->name('admin.organization.destroy');
+
+
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/departments', [DepartmentsController::class, 'index'])->name('admin.department.index');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/departments/create', [DepartmentsController::class, 'create'])->name('admin.department.create');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->post('/departments/create', [DepartmentsController::class, 'store'])->name('admin.department.store');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/departments/{department}/edit', [DepartmentsController::class, 'edit'])->name('admin.department.edit');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/departments/{department}', [DepartmentsController::class, 'update'])->name('admin.department.update');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/departments/{department}', [DepartmentsController::class, 'destroy'])->name('admin.department.destroy');
