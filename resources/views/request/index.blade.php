@@ -3,7 +3,7 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Comunicados</h3>
+            <h3>Solicitudes</h3>
             <a href="{{ route('communique.create') }}" type="button" class="btn btn-success">Agregar</a>
         </div>
     </div>

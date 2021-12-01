@@ -17,6 +17,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\EmployeeController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -101,7 +102,4 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->post('/commu
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/communiques/{communique}', [CommuniqueController::class, 'destroy'])->name('communique.destroy');
 
 
-/* 
-Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/admin/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('admin.employee.edit');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/admin/employees/{employee}', [EmployeeController::class, 'update'])->name('admin.employee.update');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/admin/employees/{employee}', [EmployeeController::class, 'destroy'])->name('admin.employee.destroy'); */
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/request/create', [RequestController::class, 'create'])->name('request.create');

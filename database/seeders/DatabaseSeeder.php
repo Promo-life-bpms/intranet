@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
             'remember_token' => '',
-        ])->assignRole('Empleados');
+        ])->assignRole('Empleado');
     }
 
 

@@ -81,7 +81,7 @@
             @enderror
         
         </div>
-        <input type="submit" class="btnCreate" value="CREAR COMUNICADO"></button>
+        <input type="submit" class="btnCreate" value="ACTUALIZAR COMUNICADO"></button>
     </form>
 
 </div>

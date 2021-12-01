@@ -212,7 +212,7 @@
 
                         @can('communique.create')
                             <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('request') }}">
+                                <a class="dropdown-item" href="{{ route('request.create') }}">
                                     <span>Crear Solicitud</span>
                                 </a>
                             </li>
