@@ -125,6 +125,13 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item {{ request()->is('admin.contact') ? 'active' : '' }}">
+                    <a href="{{ route('admin.contact') }}" class='sidebar-link'>
+                        <i class="fa fa-address-card" aria-hidden="true"></i>
+                        <span>Directorio</span>
+                    </a>
+                </li>
+                
                 <li class="sidebar-item  has-sub {{ request()->is('aniversary') ? 'active' : '' }}">
                     <a href="{{ route('aniversary') }}" class='sidebar-link'>
                         <i class="fa fa-birthday-cake" aria-hidden="true"></i>

@@ -69,12 +69,12 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/admin/
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/admin/users/{user}', [UserController::class, 'destroy'])->name('admin.user.destroy');
 
 
-Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/admin/contact', [AdminController::class, 'contact'])->name('admin.contact');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/admin/contacts/create', [AdminController::class, 'contactCreate'])->name('admin.contact.create');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->post('/admin/contacts/create', [AdminController::class, 'contactStore'])->name('admin.contact.store');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/admin/contacts/{contact}/edit', [AdminController::class, 'contactEdit'])->name('admin.contact.edit');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/admin/contacts/{contact}', [AdminController::class, 'contactUpdate'])->name('admin.contact.update');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/admin/contacts/{contact}', [AdminController::class, 'contactDestroy'])->name('admin.contact.destroy');
+Route::middleware(['auth:sanctum', 'verified'])->get('/admin/contact', [AdminController::class, 'contact'])->name('admin.contact');
+Route::middleware(['auth:sanctum', 'verified', 'can:sistemas'])->get('/admin/contacts/create', [AdminController::class, 'contactCreate'])->name('admin.contact.create');
+Route::middleware(['auth:sanctum', 'verified', 'can:sistemas'])->post('/admin/contacts/create', [AdminController::class, 'contactStore'])->name('admin.contact.store');
+Route::middleware(['auth:sanctum', 'verified', 'can:sistemas'])->get('/admin/contacts/{contact}/edit', [AdminController::class, 'contactEdit'])->name('admin.contact.edit');
+Route::middleware(['auth:sanctum', 'verified', 'can:sistemas'])->put('/admin/contacts/{contact}', [AdminController::class, 'contactUpdate'])->name('admin.contact.update');
+Route::middleware(['auth:sanctum', 'verified', 'can:sistemas'])->delete('/admin/contacts/{contact}', [AdminController::class, 'contactDestroy'])->name('admin.contact.destroy');
 
 
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/admin/roles', [RoleController::class, 'index'])->name('admin.roles');
@@ -103,3 +103,7 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/com
 
 
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/request/create', [RequestController::class, 'create'])->name('request.create');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->post('/request/create', [RequestController::class, 'store'])->name('request.store');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/request/{request}/edit', [RequestController::class, 'edit'])->name('request.edit');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/request/{request}', [RequestController::class, 'update'])->name('request.update');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/request/{request}', [RequestController::class, 'destroy'])->name('request.destroy');

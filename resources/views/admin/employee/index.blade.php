@@ -4,7 +4,7 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Empleados</h3>
-            <a href="{{ route('admin.employee.create') }}" type="button" class="btn btn-success">Agregar</a>
+            <!-- <a href="{{ route('admin.employee.create') }}" type="button" class="btn btn-success">Agregar</a> -->
         </div>
     </div>
     <div class="card-body">
@@ -53,6 +53,7 @@
 @stop
 
 @section('scripts')
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $('.form-delete').submit(function(e) {
             e.preventDefault();

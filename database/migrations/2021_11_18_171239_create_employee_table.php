@@ -39,6 +39,21 @@ class CreateEmployeeTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
+
+        Schema::create('request', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre_solicitud',30);
+            $table->dateTime('fecha_solicitud');
+            $table->string('tipo_soli',40);
+            $table->string('especificacion_soli',20);
+            $table->text('motivo_solicitud');
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
+            $table->boolean('status');
+            $table->unsignedBigInteger('employee_id');
+            $table->foreign('employee_id')->references('id')->on('employee')->onDelete('cascade');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -48,7 +63,9 @@ class CreateEmployeeTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('request');
         Schema::dropIfExists('employee');
         Schema::dropIfExists('contact');
+
     }
 }

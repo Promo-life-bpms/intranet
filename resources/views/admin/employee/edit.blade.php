@@ -74,6 +74,8 @@
                     <br>
                 @enderror
             </div>
+            {!! Form::submit('ACTUALIZAR EMPLEADO', ['class' => 'btnCreate mt-4']) !!}
+
         </div>
 
         {!! Form::close() !!}

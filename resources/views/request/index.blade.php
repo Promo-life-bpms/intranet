@@ -23,7 +23,9 @@
                     <th scope="col">Motivo</th>
                     <th scope="col">Dia de Inicio </th>
                     <th scope="col">Dia de Fin</th>
-                    <th scope="col">status</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Opciones</th>
+                    
                 </tr>
             </thead>
             <tbody>

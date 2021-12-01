@@ -35,9 +35,23 @@ class RequestController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    { 
+
+        $request->validate([
+            'nombre_solicitud'=>'required',
+            'fecha_solicitud'=>'required',
+            'tipo_soli'=>'required',
+            'especificacion_soli'=>'required',
+            'fecha_inicio'=>'required',
+            'fecha_fin'=>'required',
+        ]);
+
         
-        return view('request.create');
+
+
+
+        $requests = ModelsRequest::all();  
+        return view('request.index', compact('requests'));
     }
 
     /**
