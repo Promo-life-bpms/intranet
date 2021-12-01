@@ -16,7 +16,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\EmployeeController;
-
+use App\Http\Controllers\OrganizationController;
+use Symfony\Component\Routing\Router;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +48,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/about/promodreams', [AboutController::class, 'promodreams'])->name('about_promodreams');
     Route::get('/about/trademarket', [AboutController::class, 'trademarket'])->name('about_trademarket');
 
-    Route::get('/company', CompanyController::class)->name('company');
+    Route::get('/company', OrganizationController::class)->name('company');
 
     Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
@@ -58,6 +59,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/folder', FolderController::class)->name('folder');
     Route::get('/request', [RequestController::class, 'index'])->name('request');
     Route::get('/work', WorkController::class)->name('work');
+
+    Route::resource('company', CompanyController::class);
+    Route::resource('departmens', CompanyController::class);
+    Route::resource('company', CompanyController::class);
 });
 
 

@@ -35,7 +35,7 @@
                             {{ auth()->user()->name . ' ' . auth()->user()->lastname }}
                         </h5>
                         <h6 class="text-muted mb-0">
-                            {{                             Auth::user()->roles->pluck('name') }}
+                            {{ Auth::user()->roles->pluck('name') }}
                         </h6>
                     </div>
                 </div>
@@ -62,6 +62,11 @@
                                 </a>
                             </li>
 
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('company.index') }}">
+                                    <span>Negocio</span>
+                                </a>
+                            </li>
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.users') }}">
                                     <span>Usuarios</span>
@@ -171,11 +176,11 @@
                             </a>
                         </li>
                         @can('communique.create')
-                        <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('communique.show') }}">
-                                <span>Administrar comunicados</span>
-                            </a>
-                        </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('communique.show') }}">
+                                    <span>Administrar comunicados</span>
+                                </a>
+                            </li>
                         @endcan
                     </ul>
                 </li>
@@ -207,7 +212,7 @@
                         <i class="fa fa-pencil-square" aria-hidden="true"></i>
                         <span>Solicitudes</span>
                     </a>
-                    
+
                     <ul class="submenu ">
 
                         @can('communique.create')
