@@ -14,7 +14,7 @@ class DepartmentsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   
+    {
 
         $departments = Department::all();
         return view('admin.departments.index', compact('departments'));
@@ -58,7 +58,6 @@ class DepartmentsController extends Controller
      */
     public function show(Department $department)
     {
-      
     }
 
     /**

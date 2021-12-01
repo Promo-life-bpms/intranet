@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\Position;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,9 @@ class PositionController extends Controller
      */
     public function index()
     {
-        //
+        $positions = Position::all();
+        $departments = Department::all();
+        return view('admin.positions.index', compact('positions', 'departments'));
     }
 
     /**
@@ -24,7 +27,8 @@ class PositionController extends Controller
      */
     public function create()
     {
-        //
+        $departments = Department::all();
+        return view('admin.positions.create', compact('departments'));
     }
 
     /**
@@ -35,7 +39,18 @@ class PositionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'department' => 'required'
+        ]);
+
+        $position = new Position();
+        $position->name = $request->name;
+        $position->department_id = $request->department;
+        $position->save();
+
+        $positions = Position::all();
+        return view('admin.positions.index', compact('positions'));
     }
 
     /**
@@ -46,7 +61,6 @@ class PositionController extends Controller
      */
     public function show(Position $position)
     {
-        //
     }
 
     /**
@@ -57,7 +71,8 @@ class PositionController extends Controller
      */
     public function edit(Position $position)
     {
-        //
+        $departments = Department::all();
+        return view('admin.positions.edit', compact('position', 'departments'));
     }
 
     /**
@@ -69,7 +84,14 @@ class PositionController extends Controller
      */
     public function update(Request $request, Position $position)
     {
-        //
+        $request->validate([
+            'name' => 'required'
+        ]);
+
+        $position->update($request->all());
+
+        $positions = Position::all();
+        return view('admin.positions.index', compact('positions'));
     }
 
     /**
@@ -80,6 +102,8 @@ class PositionController extends Controller
      */
     public function destroy(Position $position)
     {
-        //
+        $position->delete();
+        $positions = Position::all();
+        return view('admin.positions.index', compact('positions'));
     }
 }

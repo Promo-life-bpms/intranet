@@ -48,14 +48,13 @@
                 <li class="sidebar-title">Menu</li>
                 @can('admin.users')
                     <li class="sidebar-item has-sub {{ request()->is('admin.users') ? 'active' : '' }}">
+
                         <a href="{{ route('admin.users') }}" class='sidebar-link'>
                             <i class="fa fa-wrench" aria-hidden="true"></i>
                             <span>Administrador</span>
                         </a>
 
-
-                        <ul class="submenu ">
-
+                        <ul class="submenu">
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.roles') }}">
                                     <span>Roles</span>
@@ -72,7 +71,13 @@
                                 <a class="dropdown-item" href="{{ route('admin.department.index') }}">
                                     <span>Deparamentos</span>
                                 </a>
-                            </li> 
+                            </li>
+
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.position.index') }}">
+                                    <span>Puestos</span>
+                                </a>
+                            </li>
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.users') }}">
@@ -143,7 +148,7 @@
                         <span>Directorio</span>
                     </a>
                 </li>
-                
+
                 <li class="sidebar-item  has-sub {{ request()->is('aniversary') ? 'active' : '' }}">
                     <a href="{{ route('aniversary') }}" class='sidebar-link'>
                         <i class="fa fa-birthday-cake" aria-hidden="true"></i>

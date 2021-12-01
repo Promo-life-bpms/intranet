@@ -74,6 +74,26 @@
                     <br>
                 @enderror
             </div>
+            <div class="col-4">
+                {!! Form::label('department', 'Nombre del puesto') !!}
+                <select name="department" class="form-control">
+                    <option value="" disabled>Seleccione..</option>
+                    @foreach ($departments as $item)
+                        <option value="{{ $item->id }}">
+                            {{ $item->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-4">
+                {!! Form::label('position', 'Nombre del puesto') !!}
+                <select name="position" class="form-control">
+                    <option value="" disabled>Seleccione..</option>
+                    @foreach ($positions as $item)
+                        <option value="{{ $item->id }}">
+                            {{ $item->name }}</option>
+                    @endforeach
+                </select>
+            </div>
             {!! Form::submit('ACTUALIZAR EMPLEADO', ['class' => 'btnCreate mt-4']) !!}
 
         </div>

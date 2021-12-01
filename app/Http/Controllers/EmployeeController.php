@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use App\Models\Department;
 use App\Models\Employee;
+use App\Models\Position;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -46,7 +48,9 @@ class EmployeeController extends Controller
             'materno' => 'required',
             'fecha_cumple' => 'required',
             'fecha_ingreso' => 'required',
-            'status' => 'required'
+            'status' => 'required',
+            'deparment' => 'required',
+            'company' => 'required'
         ]);
 
         $employee = new Employee();
@@ -81,10 +85,10 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        $contacts = Contact::pluck('num_tel', 'id')->toArray();
-        $users = User::pluck('name', 'id')->toArray();
+        $departments  = Department::all();
+        $positions  = Position::all();
 
-        return view('admin.employee.edit', compact('employee', 'contacts', 'users'));
+        return view('admin.employee.edit', compact('employee', 'departments', 'positions'));
     }
 
     /**
@@ -104,6 +108,8 @@ class EmployeeController extends Controller
             'fecha_cumple' => 'required',
             'fecha_ingreso' => 'required',
             'status' => 'required',
+            'deparment' => 'required',
+            'company' => 'required'
         ]);
 
         $employee->update($request->all());
