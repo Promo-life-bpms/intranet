@@ -44,7 +44,7 @@
         </div>
 
         <div class="row mt-4">
-            <div class="col-4">
+            <div class="col-6">
                 {!! Form::label('fecha_cumple', 'Fecha de Cumpleaños') !!}
                 {!! Form::date('fecha_cumple', null, ['class' => 'form-control']) !!}
                 @error('fecha_cumple')
@@ -54,7 +54,7 @@
                     <br>
                 @enderror
             </div>
-            <div class="col-4">
+            <div class="col-6">
                 {!! Form::label('fecha_ingreso', 'Fecha de Ingreso') !!}
                 {!! Form::date('fecha_ingreso', null, ['class' => 'form-control']) !!}
                 @error('fecha_ingreso')
@@ -64,6 +64,9 @@
                     <br>
                 @enderror
             </div>
+        </div>
+
+        <div class="row mt-4">
             <div class="col-4">
                 {!! Form::label('status', 'Status') !!}
                 {!! Form::select('status', ['1' => 'Activo', '0' => 'No Activo'], null, ['class' => 'form-control']) !!}
@@ -75,29 +78,33 @@
                 @enderror
             </div>
             <div class="col-4">
-                {!! Form::label('department', 'Nombre del puesto') !!}
-                <select name="department" class="form-control">
-                    <option value="" disabled>Seleccione..</option>
-                    @foreach ($departments as $item)
-                        <option value="{{ $item->id }}">
-                            {{ $item->name }}</option>
-                    @endforeach
-                </select>
+                {!! Form::label('department', 'Departamento') !!}
+                {!! Form::select('department', $departments, null, ['class' => 'form-control']) !!}
             </div>
             <div class="col-4">
-                {!! Form::label('position', 'Nombre del puesto') !!}
-                <select name="position" class="form-control">
-                    <option value="" disabled>Seleccione..</option>
-                    @foreach ($positions as $item)
-                        <option value="{{ $item->id }}">
-                            {{ $item->name }}</option>
-                    @endforeach
-                </select>
+                {!! Form::label('position', 'Puesto') !!}
+                {!! Form::select('position', $positions, null, ['class' => 'form-control']) !!}
             </div>
-            {!! Form::submit('ACTUALIZAR EMPLEADO', ['class' => 'btnCreate mt-4']) !!}
 
         </div>
 
+        <div class="row">
+            <div class="col mt-4">
+                <div class="col mt-4">
+                    <h5>Empresas a las que pertenece</h5>                    
+                    @foreach ($companies as $company)
+                    <div>
+                        <label>
+                            {!! Form::checkbox('companies[]', $company->id, null, ['class' => 'mr-4']) !!}
+                            {{ $company->name_company }}
+                        </label>
+                    </div>
+                @endforeach
+                {!! Form::submit('ACTUALIZAR EMPLEADO', ['class' => 'btnCreate mt-4']) !!}
+
+                </div>
+            </div>
+        </div>
         {!! Form::close() !!}
     </div>
 @stop

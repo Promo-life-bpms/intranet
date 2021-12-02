@@ -23,4 +23,15 @@ class Employee extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class);
+    }
+    
+
+    public function positions()
+    {
+        return $this->belongsToMany(Position::class);
+    } 
 }

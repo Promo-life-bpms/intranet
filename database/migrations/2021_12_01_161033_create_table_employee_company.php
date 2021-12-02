@@ -13,10 +13,10 @@ class CreateTableEmployeeCompany extends Migration
      */
     public function up()
     {
-        Schema::create('table_employee_company', function (Blueprint $table) {
+        Schema::create('company_employee', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained();
-            $table->foreignId('company_id')->constrained();
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
+            $table->foreignId('company_id')->constrained()->onDelete('cascade');
         });
     }
 
@@ -27,6 +27,6 @@ class CreateTableEmployeeCompany extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_employee_business');
+        Schema::dropIfExists('company_employee');
     }
 }

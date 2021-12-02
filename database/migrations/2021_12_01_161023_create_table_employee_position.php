@@ -13,10 +13,10 @@ class CreateTableEmployeePosition extends Migration
      */
     public function up()
     {
-        Schema::create('table_employee_position', function (Blueprint $table) {
+        Schema::create('employee_position', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained();
-            $table->foreignId('position_id')->constrained();
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
+            $table->foreignId('position_id')->constrained()->onDelete('cascade');
         });
     }
 
@@ -27,6 +27,6 @@ class CreateTableEmployeePosition extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_employee_position');
+        Schema::dropIfExists('employee_position');
     }
 }

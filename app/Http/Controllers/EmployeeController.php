@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Contact;
 use App\Models\Department;
 use App\Models\Employee;
@@ -85,10 +86,11 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        $departments  = Department::all();
-        $positions  = Position::all();
+        $departments  = Department::pluck('name', 'id')->toArray();
+        $positions  = Position::pluck('name', 'id')->toArray();
+        $companies = Company::all();
 
-        return view('admin.employee.edit', compact('employee', 'departments', 'positions'));
+        return view('admin.employee.edit', compact('employee', 'departments', 'positions','companies'));
     }
 
     /**
@@ -100,7 +102,7 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
-
+/* 
         $request->validate([
             'nombre' => 'required',
             'paterno' => 'required',
@@ -110,11 +112,18 @@ class EmployeeController extends Controller
             'status' => 'required',
             'deparment' => 'required',
             'company' => 'required'
-        ]);
-
+        ]); 
+ */
         $employee->update($request->all());
 
-        return redirect()->action([EmployeeController::class, 'index']);
+        $employee->companies()->sync($request->companies);
+   
+        $employee->positions()->sync($request->position); 
+        
+         
+
+        $employees =  Employee::all();
+        return view('admin.employee.index', compact('employees'));
     }
 
     /**
