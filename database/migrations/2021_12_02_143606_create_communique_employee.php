@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCommuniquesTable extends Migration
+class CreateCommuniqueEmployee extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateCommuniquesTable extends Migration
      */
     public function up()
     {
-        Schema::create('communiques', function (Blueprint $table) {
+        Schema::create('communique_employee', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('images')->nullable();
-            $table->text('files');
-            $table->text('description');
-            $table->timestamps();
+            $table->foreignId('employee_id')->constrained();
+            $table->foreignId('communique_id')->constrained();
         });
     }
 
@@ -30,6 +27,6 @@ class CreateCommuniquesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('communiques');
+        Schema::dropIfExists('communique_employee');
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Communique;
+use App\Models\Company;
+use App\Models\Department;
 use Illuminate\Http\Request;
 
 class CommuniqueController extends Controller
@@ -14,9 +16,9 @@ class CommuniqueController extends Controller
      */
     public function index()
     {
-        $communiques =  Communique::all();
-        $communiquesPrincipal =  Communique::paginate(5);
-        return view('communique.index', compact('communiques','communiquesPrincipal'));
+        $communiques =  Communique::orderBy('created_at', 'ASC')->simplePaginate(5);
+        $communiquesPrincipal =  Communique::orderBy('created_at', 'DESC')->limit(3)->get();
+        return view('communique.index', compact('communiques', 'communiquesPrincipal'));
     }
 
     /**
@@ -26,7 +28,9 @@ class CommuniqueController extends Controller
      */
     public function create()
     {
-        return view('communique.create');
+        $companies = Company::all();
+        $departments = Department::all();
+        return view('communique.create', compact('companies', 'departments'));
     }
 
     /**
@@ -37,34 +41,32 @@ class CommuniqueController extends Controller
      */
     public function store(Request $request)
     {
-        
         request()->validate([
             'title' => 'required',
-            'image' => 'required|mimes:png,jpg',
+            'images' => 'mimes:png,jpg|image',
+            'files' => 'mimes:png,jpg|image',
             'description' => 'required'
         ]);
-        if (!$request->hasFile("image")) {
-            return; 
+        if ($request->companies == '' || $request->departments == '') {
+            return back()->with('message', 'No es posible registrar el comunicado por que no has seleccionado a los destinatarios');
         }
         $imagen = $request->file("image");
         $nombreimagen = $request->title . "." . $imagen->getClientOriginalName();
-        $ruta = public_path("img/post/");
+        $ruta = public_path("storage/post/");
 
         //$imagen->move($ruta,$nombreimagen);
         $imagen->move($ruta, $nombreimagen);
-        $request->image = $ruta . $nombreimagen;
-
-       //Communique::created($request);
-       // return redirect()->action([CommuniqueController::class, 'index']);   
 
         $communique = new Communique();
-        $communique->title=$request->title;
-        $communique->images =$ruta . $nombreimagen;
-        $communique->description=$request->description;
+        $communique->title = $request->title;
+        $communique->images = "storage/post/" . $nombreimagen;
+        $communique->description = $request->description;
         $communique->save();
 
-        $communiques = Communique::all();
-        return view('communique.show', compact('communiques'));
+        //Quien recibe el comunicado
+        $communique->employeesAttachment()->attach(1);
+
+        return redirect()->action([CommuniqueController::class, 'index']);
     }
 
     /**
@@ -77,7 +79,7 @@ class CommuniqueController extends Controller
     {
         $communiques =  Communique::all();
         $communiquesPrincipal =  Communique::paginate(5);
-        return view('communique.show', compact('communiques','communiquesPrincipal'));
+        return view('communique.show', compact('communiques', 'communiquesPrincipal'));
     }
 
     /**
@@ -88,8 +90,9 @@ class CommuniqueController extends Controller
      */
     public function edit(Communique $communique)
     {
-        return view('communique.edit', compact('communique'));
-        
+        $companies = Company::all();
+        $departments = Department::all();
+        return view('communique.edit', compact('communique', 'companies', 'departments'));
     }
 
     /**
@@ -107,8 +110,13 @@ class CommuniqueController extends Controller
             'image' => 'required|mimes:png,jpg',
             'description' => 'required'
         ]);
+
+        if ($request->companies == '' || $request->departments == '') {
+            return back()->with('message', 'No es posible registrar el comunicado por que no has seleccionado a los destinatarios');
+        }
+
         if (!$request->hasFile("image")) {
-            return; 
+            return;
         }
         $imagen = $request->file("image");
         $nombreimagen = $request->title . "." . $imagen->getClientOriginalName();
@@ -121,8 +129,12 @@ class CommuniqueController extends Controller
 
         $communique->update($request->all());
 
-        $communiques = Communique::all();
-        return view('communique.show', compact('communiques'));
+
+        //Quien recibe el comunicado
+        $communique->employeesAttachment()->detach();
+        $communique->employeesAttachment()->attach([1, 2, 3]);
+
+        return redirect()->action([CommuniqueController::class, 'index']);
     }
 
     /**

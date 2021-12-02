@@ -73,6 +73,7 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function show($id)
     {
         //
@@ -90,7 +91,7 @@ class EmployeeController extends Controller
         $positions  = Position::pluck('name', 'id')->toArray();
         $companies = Company::all();
 
-        return view('admin.employee.edit', compact('employee', 'departments', 'positions','companies'));
+        return view('admin.employee.edit', compact('employee', 'departments', 'positions', 'companies'));
     }
 
     /**
@@ -102,7 +103,7 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
-/* 
+        /*
         $request->validate([
             'nombre' => 'required',
             'paterno' => 'required',
@@ -112,15 +113,13 @@ class EmployeeController extends Controller
             'status' => 'required',
             'deparment' => 'required',
             'company' => 'required'
-        ]); 
+        ]);
  */
         $employee->update($request->all());
 
         $employee->companies()->sync($request->companies);
-   
-        $employee->positions()->sync($request->position); 
-        
-         
+
+        $employee->positions()->sync($request->position);
 
         $employees =  Employee::all();
         return view('admin.employee.index', compact('employees'));
