@@ -72,6 +72,7 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function show($id)
     {
         //
@@ -100,7 +101,6 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
-
         $request->validate([
             'nombre' => 'required',
             'paterno' => 'required',
