@@ -11,16 +11,12 @@ class Request extends Model
 
     public $table = "request";
 
-
     protected $fillable = [
-        'id',
-        'nombre_soli',
-        'fecha_soli',
-        'tipo_soli',
-        'dias_soli',
-        'especificacion_soli',
-        'motivo_soli',
-        'status',
-        'id_empleado'
+        'type_request',
+        'days_absence',
+        'reason',
+        'direct_manager_id',
+        'direct_manager_status',
+        'human_resources_status',
     ];
 }

@@ -14,7 +14,7 @@ class RequestController extends Controller
      */
     public function index()
     {
-        $requests = ModelsRequest::all();  
+        $requests = ModelsRequest::all();
         return view('request.index', compact('requests'));
     }
 
@@ -35,7 +35,7 @@ class RequestController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
+    {
 
         $request->validate([
             'nombre_solicitud'=>'required',
@@ -46,11 +46,7 @@ class RequestController extends Controller
             'fecha_fin'=>'required',
         ]);
 
-        
-
-
-
-        $requests = ModelsRequest::all();  
+        $requests = ModelsRequest::all();
         return view('request.index', compact('requests'));
     }
 

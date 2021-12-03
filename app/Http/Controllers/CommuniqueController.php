@@ -41,30 +41,50 @@ class CommuniqueController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate([
-            'title' => 'required',
-            'images' => 'mimes:png,jpg|image',
-            'files' => 'mimes:png,jpg|image',
-            'description' => 'required'
-        ]);
-        if ($request->companies == '' || $request->departments == '') {
-            return back()->with('message', 'No es posible registrar el comunicado por que no has seleccionado a los destinatarios');
-        }
-        $imagen = $request->file("image");
-        $nombreimagen = $request->title . "." . $imagen->getClientOriginalName();
-        $ruta = public_path("storage/post/");
+        // request()->validate([
+        //     'title' => 'required',
+        //     'images' => 'mimes:png,jpg|image',
+        //     'files' => 'mimes:png,jpg|image',
+        //     'description' => 'required'
+        // ]);
+        // if ($request->companies == '' || $request->departments == '') {
+        //     return back()->with('message', 'No es posible registrar el comunicado por que no has seleccionado a los destinatarios');
+        // }
+        // $imagen = $request->file("image");
+        // $nombreimagen = $request->title . "." . $imagen->getClientOriginalName();
+        // $ruta = public_path("storage/post/");
 
         //$imagen->move($ruta,$nombreimagen);
-        $imagen->move($ruta, $nombreimagen);
+        // $imagen->move($ruta, $nombreimagen);
 
-        $communique = new Communique();
-        $communique->title = $request->title;
-        $communique->images = "storage/post/" . $nombreimagen;
-        $communique->description = $request->description;
-        $communique->save();
+        // $communique = new Communique();
+        // $communique->title = $request->title;
+        // $communique->images = "storage/post/" . $nombreimagen;
+        // $communique->description = $request->description;
+        // $communique->save();
 
         //Quien recibe el comunicado
-        $communique->employeesAttachment()->attach(1);
+        if ($request->departments && !$request->companies) {
+            foreach ($request->departments as $value) {
+                echo $value;
+            }
+            echo 1;
+        } else if (!$request->departments && $request->companies) {
+            foreach ($request->companies as $value) {
+                echo $value;
+            }
+            echo 2;
+        } else if ($request->departments && $request->companies) {
+            foreach ($request->companies as $value) {
+                echo $value;
+            }
+            foreach ($request->departments as $value) {
+                echo $value;
+            }
+            echo 3;
+        }
+        return;
+        // $communique->employeesAttachment()->attach(1);
 
         return redirect()->action([CommuniqueController::class, 'index']);
     }

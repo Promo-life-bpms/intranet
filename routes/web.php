@@ -61,8 +61,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/folder', FolderController::class)->name('folder');
     Route::get('/request', [RequestController::class, 'index'])->name('request');
     Route::get('/work', WorkController::class)->name('work');
-/*
-    Route::resource('company', CompanyController::class);
+    /* Route::resource('company', CompanyController::class);
     Route::resource('departmens', CompanyController::class);
     Route::resource('company', CompanyController::class); */
 });
