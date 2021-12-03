@@ -301,9 +301,3 @@
     </div>
 </div>
 
-
-@section('scripts')
-
-<script src="{{ asset('assets/js/mazer.js') }}"></script>
-
-@stop
