@@ -89,12 +89,6 @@
                                     <span>Empleados</span>
                                 </a>
                             </li>
-
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.contact') }}">
-                                    <span>Directorio</span>
-                                </a>
-                            </li>
                         </ul>
                     </li>
                 @endcan
@@ -306,3 +300,10 @@
         <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
     </div>
 </div>
+
+
+@section('scripts')
+
+<script src="{{ asset('assets/js/mazer.js') }}"></script>
+
+@stop

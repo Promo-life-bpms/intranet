@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
+    
     @yield('styles')
     <link rel="stylesheet" href="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
@@ -58,8 +59,10 @@
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('assets/vendors/jquery/jquery.min.js') }}"></script>
-    @yield('scripts')
     <script src="{{ asset('assets/js/mazer.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script> 
+
+    @yield('scripts')
     <script src="https://use.fontawesome.com/84b288f169.js"></script>
 </body>
 

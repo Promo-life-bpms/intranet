@@ -51,6 +51,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/about/trademarket', [AboutController::class, 'trademarket'])->name('about_trademarket');
 
     Route::get('/company', [CompanyController::class, 'index'])->name('company');
+    Route::get('company/getPosition/{id}',[CompanyController::class,'getPositions']);
+
 
     Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
@@ -99,7 +101,7 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/admin/
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/admin/employees/{employee}', [EmployeeController::class, 'update'])->name('admin.employee.update');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/admin/employees/{employee}', [EmployeeController::class, 'destroy'])->name('admin.employee.destroy');
 
-
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('dropdownlist/getPosition/{id}',[EmployeeController::class,'getPositions']);
 
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/communiques/create', [CommuniqueController::class, 'create'])->name('communique.create');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/communiques', [CommuniqueController::class, 'show'])->name('communique.show');
@@ -130,6 +132,8 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->post('/depar
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/departments/{department}/edit', [DepartmentsController::class, 'edit'])->name('admin.department.edit');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/departments/{department}', [DepartmentsController::class, 'update'])->name('admin.department.update');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/departments/{department}', [DepartmentsController::class, 'destroy'])->name('admin.department.destroy');
+
+
 
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/positions', [PositionController::class, 'index'])->name('admin.position.index');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/positions/create', [PositionController::class, 'create'])->name('admin.position.create');

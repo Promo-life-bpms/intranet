@@ -21,84 +21,25 @@
         </div>
         <div class="content">
             <section>
+                {!! Form::open() !!}
                 <div class="row">
                     <div class="col-4">
-                        <div class="mb-2">
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>Seleccionar area</option>
-                                <option value="1">Ventas</option>
-                                <option value="2">Sistemas</option>
-                                <option value="3">Administradores</option>
-                                <option value="4">Contable</option>
-                                <option value="5">Marketing</option>
-                                <option value="6">Desarrollo</option>
-                            </select>
-                            <br>
-                        </div>
+
+                            {!! Form::label('department', 'Departamento') !!}
+                            {!! Form::select('department', $departments, null, ['class' => 'form-control mt-2','placeholder'=>'Selecciona Departamento']) !!}
+                           
                     </div>
 
-                    <div class="row">
+                    <div class="row mt-4">
                         <div class="contenedor">
-                            <ul class="access_list" style="padding: 0;">
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
 
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
+                            <ul name="position" class="access_list" >
+                                <li></li>
                             </ul>
                         </div>
                     </div>
                 </div>
+                {!! Form::close() !!}
             </section>
 
             <section>
@@ -670,4 +611,36 @@
     </style>
 
 
+@stop
+
+@section('scripts')
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
+ <script type="text/javascript">
+    jQuery(document).ready(function ()
+    {
+            jQuery('select[name="department"]').on('change',function(){
+               var id = jQuery(this).val();
+               if(id)
+               {
+                  jQuery.ajax({
+                     url : '/company/getPosition/' +id,
+                     type : "GET",
+                     dataType : "json",
+                     success:function(data)
+                     {
+                        console.log(data);
+                        jQuery('ul[name="position"]').empty();
+                        jQuery.each(data, function(key,value){
+                            $('ul[name="position"]').append('<li>'+ value +'</li>');
+                        });
+                     }
+                  });
+               }
+               else
+               {
+                  $('select[name="position"]').empty();
+               }
+            });
+    });
+</script>
 @stop

@@ -12,7 +12,7 @@
                 {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre del puesto']) !!}
             </div>
             <div class="col">
-                {!! Form::label('department', 'Nombre del puesto') !!}
+                {!! Form::label('department', 'Nombre del departamento') !!}
                 <select name="department" class="form-control">
                     <option value="" disabled selected>Seleccione..</option>
                     @foreach ($departments as $item)
