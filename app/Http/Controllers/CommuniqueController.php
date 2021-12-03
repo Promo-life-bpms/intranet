@@ -66,22 +66,22 @@ class CommuniqueController extends Controller
         //Quien recibe el comunicado
         if ($request->departments && !$request->companies) {
             foreach ($request->departments as $value) {
-                echo $value;
+                $department = Department::find($value);
+                foreach ($department->positionAttachment as $position) {
+                    $position->users;
+                    print_r();
+                }
             }
             echo 1;
         } else if (!$request->departments && $request->companies) {
             foreach ($request->companies as $value) {
-                echo $value;
             }
             echo 2;
         } else if ($request->departments && $request->companies) {
             foreach ($request->companies as $value) {
-                echo $value;
+                foreach ($request->departments as $value) {
+                }
             }
-            foreach ($request->departments as $value) {
-                echo $value;
-            }
-            echo 3;
         }
         return;
         // $communique->employeesAttachment()->attach(1);

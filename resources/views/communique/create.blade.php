@@ -58,7 +58,7 @@
                             @foreach ($companies as $company)
                                 <div class="form-check mx-1">
                                     <input class="form-check-input" type="checkbox" name="companies[]"
-                                        value="{{ $company->name_company }}" id="checkcompany{{ $company->id }}">
+                                        value="{{ $company->id }}" id="checkcompany{{ $company->id }}">
                                     <label class="form-check-label" for="checkcompany{{ $company->id }}">
                                         {{ $company->name_company }}
                                     </label>
@@ -71,7 +71,7 @@
                         @foreach ($departments as $department)
                             <div class="form-check mx-3">
                                 <input class="form-check-input" type="checkbox" name="departments[]"
-                                    value="{{ $department->name }}" id="checkdepartment{{ $department->id }}">
+                                    value="{{ $department->id }}" id="checkdepartment{{ $department->id }}">
                                 <label class="form-check-label" for="checkdepartment{{ $department->id }}">
                                     {{ $department->name }}
                                 </label>

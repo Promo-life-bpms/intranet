@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class RequestController extends Controller
 {
-      /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -36,14 +36,13 @@ class RequestController extends Controller
      */
     public function store(Request $request)
     {
-
         $request->validate([
-            'nombre_solicitud'=>'required',
-            'fecha_solicitud'=>'required',
-            'tipo_soli'=>'required',
-            'especificacion_soli'=>'required',
-            'fecha_inicio'=>'required',
-            'fecha_fin'=>'required',
+            'nombre_solicitud' => 'required',
+            'fecha_solicitud' => 'required',
+            'tipo_soli' => 'required',
+            'especificacion_soli' => 'required',
+            'fecha_inicio' => 'required',
+            'fecha_fin' => 'required',
         ]);
 
         $requests = ModelsRequest::all();
@@ -58,7 +57,7 @@ class RequestController extends Controller
      */
     public function show(Request $request)
     {
-        //
+
     }
 
     /**
@@ -69,7 +68,7 @@ class RequestController extends Controller
      */
     public function edit(Request $request)
     {
-        //
+
     }
 
     /**
@@ -81,7 +80,7 @@ class RequestController extends Controller
      */
     public function update(Request $request)
     {
-        //
+
     }
 
     /**
@@ -92,6 +91,6 @@ class RequestController extends Controller
      */
     public function destroy(Request $request)
     {
-        //
+
     }
 }
