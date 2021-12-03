@@ -9,6 +9,7 @@ use App\Models\Employee;
 use App\Models\Position;
 use App\Models\User;
 use Illuminate\Http\Request;
+use DB;
 
 class EmployeeController extends Controller
 {
@@ -91,8 +92,9 @@ class EmployeeController extends Controller
         $positions  = Position::pluck('name', 'id')->toArray();
         $companies = Company::all();
 
-        return view('admin.employee.edit', compact('employee', 'departments', 'positions', 'companies'));
+        return view('admin.employee.edit', compact('employee', 'departments' , 'positions' , 'companies'));
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -103,7 +105,7 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
-        /*
+        
         $request->validate([
             'nombre' => 'required',
             'paterno' => 'required',
@@ -111,10 +113,8 @@ class EmployeeController extends Controller
             'fecha_cumple' => 'required',
             'fecha_ingreso' => 'required',
             'status' => 'required',
-            'deparment' => 'required',
-            'company' => 'required'
-        ]);
- */
+        ]); 
+ 
         $employee->update($request->all());
 
         $employee->companies()->sync($request->companies);
@@ -137,5 +137,11 @@ class EmployeeController extends Controller
 
         $employees =  Employee::all();
         return view('admin.employee.index', compact('employees'));
+    }
+
+    public function getPositions($id) 
+    {        
+            $positions = Position::all()->where("department_id",$id)->pluck("name","id");
+            return json_encode($positions);
     }
 }

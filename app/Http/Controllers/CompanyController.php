@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\Department;
+use App\Models\Position;
 use Illuminate\Http\Request;
 
 class CompanyController extends Controller
@@ -14,7 +16,10 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        return view('company.index');
+
+        $departments  = Department::pluck('name', 'id')->toArray();
+
+        return view('company.index',compact('departments'));
     }
 
     /**
@@ -81,5 +86,11 @@ class CompanyController extends Controller
     public function destroy(Company $company)
     {
         //
+    }
+
+    public function getPositions($id) 
+    {        
+            $positions = Position::all()->where("department_id",$id)->pluck("name","id");
+            return json_encode($positions);
     }
 }

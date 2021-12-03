@@ -79,12 +79,12 @@
             </div>
             <div class="col-4">
                 {!! Form::label('department', 'Departamento') !!}
-                {!! Form::select('department', $departments, null, ['class' => 'form-control']) !!}
+                {!! Form::select('department', $departments, null, ['class' => 'form-control','placeholder'=>'Selecciona Departamento']) !!}
             </div>
             <div class="col-4">
                 {!! Form::label('position', 'Puesto') !!}
-                {!! Form::select('position', $positions, null, ['class' => 'form-control']) !!}
-            </div>
+                {!! Form::select('position', $positions, null, ['class' => 'form-control','placeholder'=>'Selecciona Puesto']) !!}
+            </div> 
 
         </div>
 
@@ -107,4 +107,40 @@
         </div>
         {!! Form::close() !!}
     </div>
+
+
 @stop
+
+
+@section('scripts')
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
+<script type="text/javascript">
+    jQuery(document).ready(function ()
+    {
+            jQuery('select[name="department"]').on('change',function(){
+               var id = jQuery(this).val();
+               if(id)
+               {
+                  jQuery.ajax({
+                     url : '/dropdownlist/getPosition/' +id,
+                     type : "GET",
+                     dataType : "json",
+                     success:function(data)
+                     {
+                        console.log(data);
+                        jQuery('select[name="position"]').empty();
+                        jQuery.each(data, function(key,value){
+                           $('select[name="position"]').append('<option value="'+ key +'">'+ value +'</option>');
+                        });
+                     }
+                  });
+               }
+               else
+               {
+                  $('select[name="position"]').empty();
+               }
+            });
+    });
+</script>
+@stop
+
