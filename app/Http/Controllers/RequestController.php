@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DepartmentManager;
+use App\Models\Employee;
+use App\Models\EmployeePosition;
 use App\Models\Request as ModelsRequest;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RequestController extends Controller
 {
@@ -15,6 +21,7 @@ class RequestController extends Controller
     public function index()
     {
         $requests = ModelsRequest::all();
+      
         return view('request.index', compact('requests'));
     }
 
@@ -25,6 +32,8 @@ class RequestController extends Controller
      */
     public function create()
     {
+        
+        //$managers=DepartmentManager::pluck('department_id', 'id')->toArray();
         return view('request.create');
     }
 
@@ -37,13 +46,38 @@ class RequestController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre_solicitud' => 'required',
-            'fecha_solicitud' => 'required',
-            'tipo_soli' => 'required',
-            'especificacion_soli' => 'required',
-            'fecha_inicio' => 'required',
-            'fecha_fin' => 'required',
+            'type_request' => 'required',
+            'payment' => 'required',
+            'absence' => 'required',
+            'admission' => 'required',
+            'reason' => 'required'
         ]);
+
+        $req = new ModelsRequest();
+        $req->type_request = $request->type_request; 
+        $req->payment = $request->payment;
+        $req->absence = $request->absence;
+        $req->admission = $request->admission;
+        $req->reason = $request->reason;
+
+        $id = Auth::user()->id;
+
+        $userID = DB::table('employees')->where('id', $id)->value('id');
+
+        $userPosition = DB::table('employee_position')->where('employee_id', $userID )->value('position_id');
+
+        $position = DB::table('positions')->where('id',$userPosition)->value('department_id');
+
+        $manager = DB::table('department_manager')->where('department_id', $position)->value('employee_id');
+
+        $req->direct_manager_id = $manager;
+
+        $req->direct_manager_status ="Pendiente";
+
+        $req->human_resources_status ="Pendiente";
+
+        $req->save();
+
 
         $requests = ModelsRequest::all();
         return view('request.index', compact('requests'));

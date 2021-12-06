@@ -228,13 +228,13 @@
 
                     <ul class="submenu ">
 
-                        @can('communique.create')
+                        
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.create') }}">
                                     <span>Crear Solicitud</span>
                                 </a>
                             </li>
-                        @endcan
+                    
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('request') }}">
                                 <span>Administrar Solicitudes</span>

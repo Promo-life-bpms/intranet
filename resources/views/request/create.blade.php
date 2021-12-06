@@ -10,41 +10,37 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        {!! Form::label('nombre_solicitud', 'Tipo de Solicitud') !!}
-                        {!! Form::select('type', ['0' => 'Seleccione', '1' => 'Salir durante la Jornada', '2' => 'Faltar a sus labores'], '0', ['class' => 'form-control']) !!}
+                        {!! Form::label('type_request', 'Tipo de Solicitud') !!}
+                        {!! Form::select('type_request', ['0' => 'Seleccione', '1' => 'Salir durante la Jornada', '2' => 'Faltar a sus labores'], '0', ['class' => 'form-control']) !!}
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        {!! Form::label('nombre_solicitud', 'Forma de Pago') !!}
-                        {!! Form::select('pay', ['0' => 'Seleccione', '1' => 'Descontar Tiempo/Dia', '2' => 'Pagar Tiempo/Dia', '3' => 'A cuenta de vacaciones'], '0', ['class' => 'form-control']) !!}
+                        {!! Form::label('payment  ', 'Forma de Pago') !!}
+                        {!! Form::select('payment', ['0' => 'Seleccione', '1' => 'Descontar Tiempo/Dia', '2' => 'Pagar Tiempo/Dia', '3' => 'A cuenta de vacaciones'], '0', ['class' => 'form-control']) !!}
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        {!! Form::label('fecha_solicitud', 'Fecha de Ausencia') !!}
-                        {!! Form::date('fecha_solicitud', null, ['class' => 'form-control']) !!}
+                        {!! Form::label('absence', 'Fecha de Ausencia') !!}
+                        {!! Form::date('absence', null, ['class' => 'form-control']) !!}
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        {!! Form::label('fecha_solicitud', 'Fecha de Reingreso') !!}
-                        {!! Form::date('fecha_solicitud', null, ['class' => 'form-control']) !!}
+                        {!! Form::label('admission ', 'Fecha de Reingreso') !!}
+                        {!! Form::date('admission', null, ['class' => 'form-control']) !!}
                     </div>
                 </div>
+                
                 <div class="col-md-12">
                     <div class="mb-2 form-group">
-                        <label for="exampleFormControlTextarea1" class="form-label">Motivo</label>
-                        <div id="full" class="text-desc">
-                            <p>Descripcion de tu ausencia!</p>
-                            <br>
-                        </div>
-                        <input type="hidden" name="description" class="text-description">
+                        {!! Form::label('reason', 'Motivo') !!}
+                        {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder'=>'Ingrese el motivo']) !!}
                         @error('reason')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
                             </small>
-                            <br>
                         @enderror
                     </div>
                 </div>

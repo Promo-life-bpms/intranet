@@ -13,7 +13,7 @@ class CreateTableDepartmentManager extends Migration
      */
     public function up()
     {
-        Schema::create('table_department_manager', function (Blueprint $table) {
+        Schema::create('department_manager', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->foreignId('department_id')->constrained()->onDelete('cascade');

@@ -23,7 +23,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($employees as $employee)
+                @foreach  ($employees as $employee)
                     <tr>
                         <td>{{ $employee->id }}</td>
                         <td>{{ $employee->user->name }}</td>
@@ -50,6 +50,8 @@
         </table>
 
     </div>
+
+
 @stop
 
 @section('scripts')

@@ -5,26 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Request extends Model
+class EmployeePosition extends Model
 {
     use HasFactory;
 
-    public $table = "requests";
+    public $table = "employee_position";
+
 
     protected $fillable = [
         'id',
-        'type_request',
-        'payment',
-        'absence',
-        'admission',
-        'reason',
-        'direct_manager_id',
-        'direct_manager_status',
-        'human_resources_status'
+        'employee_id',
+        'position_id'
     ];
+
+   
 
     public function employee()
     {
         return $this->belongsTo(Employee::class,'id');
     }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'id');
+    }
+
 }

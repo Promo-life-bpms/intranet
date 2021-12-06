@@ -19,6 +19,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\DepartmentManagerController;
 use Symfony\Component\Routing\Router;
 
 /*
@@ -62,6 +63,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/access', AccessController::class)->name('access');
     Route::get('/folder', FolderController::class)->name('folder');
     Route::get('/request', [RequestController::class, 'index'])->name('request');
+
     Route::get('/work', WorkController::class)->name('work');
     /* Route::resource('company', CompanyController::class);
     Route::resource('departmens', CompanyController::class);
@@ -140,3 +142,12 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->post('/posit
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/positions/{position}/edit', [PositionController::class, 'edit'])->name('admin.position.edit');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/positions/{position}', [PositionController::class, 'update'])->name('admin.position.update');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/positions/{position}', [PositionController::class, 'destroy'])->name('admin.position.destroy');
+
+/* 
+
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/managers', [DepartmentManagerController::class, 'index'])->name('admin.manager.index');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/managers/create', [DepartmentManagerController::class, 'create'])->name('admin.manager.create');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->post('/managers/create', [DepartmentManagerController::class, 'store'])->name('admin.manager.store');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->get('/managers/{manager}/edit', [DepartmentManagerController::class, 'edit'])->name('admin.manager.edit');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->put('/managers/{manager}', [DepartmentManagerController::class, 'update'])->name('admin.manager.update');
+Route::middleware(['auth:sanctum', 'verified', 'can:admin.users'])->delete('/managers/{manager}', [DepartmentManagerController::class, 'destroy'])->name('admin.manager.destroy'); */

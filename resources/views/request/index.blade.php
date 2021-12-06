@@ -4,7 +4,7 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Solicitudes</h3>
-            <a href="{{ route('communique.create') }}" type="button" class="btn btn-success">Agregar</a>
+            <a href="{{ route('request.create') }}" type="button" class="btn btn-success">Agregar</a>
         </div>
     </div>
     <div class="card-body">
@@ -13,37 +13,34 @@
             <thead>
                 <tr>
                     <th scope="col"># </th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Paterno</th>
-                    <th scope="col">Materno</th>
-                    <th scope="col">Solicitud</th>
-                    <th scope="col">Fecha de solicitud</th>
                     <th scope="col">Tipo</th>
-                    <th scope="col">Especificacion </th>
+                    <th scope="col">Pago</th>
+                    <th scope="col">Fecha ausencia</th>
+                    <th scope="col">Fecha reingreso</th>
                     <th scope="col">Motivo</th>
-                    <th scope="col">Dia de Inicio </th>
-                    <th scope="col">Dia de Fin</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Opciones</th>
-                    
+                    <th scope="col">Jefe directo</th>
+                    <th scope="col">Jefe status </th>
+                    <th scope="col">RH status</th>     
+                    <th scope="col">Opciones</th>                   
                 </tr>
             </thead>
             <tbody>
                 @foreach ($requests as $request)
                     <tr>
                         <td>{{ $request->id }}</td>
-                        <td>{{ $request->nombre_soli }}</td>
-                        <td>{{ $request->fecha_soli }}</td>
-                        <td>{{ $request->tipo_soli }}</td>
-                        <td>{{ $request->dias_soli }}</td>
-                        <td>{{ $request->especificacion_soli }}</td>
-                        <td>{{ $request->motivo_soli }}</td>
-                        <td>{{ $request->status }}</td>
+                        <td>{{ $request->type_request}}</td>
+                        <td>{{ $request->payment}}</td>
+                        <td>{{ $request->absence }}</td>
+                        <td>{{ $request->admission}}</td>
+                        <td>{{ $request->reason}}</td>
+                        <td>{{ $request->direct_manager_id}}</td>
+                        <td>{{ $request->direct_manager_status}}</td>
+                        <td>{{ $request->human_resources_status}}</td>
                         <td>
-                            <a href="{{ route('communique.edit', ['communique' => $communique->id]) }}" type="button"
+                            <a href="{{ route('request.edit', ['request' => $request->id]) }}" type="button"
                                 class="btn btn-primary">Editar</a>
 
-                            <form class="form-delete" action="{{ route('communique.destroy', ['communique' => $communique->id]) }}"
+                            <form class="form-delete" action="{{ route('request.destroy', ['request' => $request->id]) }}"
                                 method="POST">
                                 @csrf
                                 @method('delete')
