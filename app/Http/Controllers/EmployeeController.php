@@ -64,8 +64,7 @@ class EmployeeController extends Controller
         $employee->status = $request->status;
         $employee->save();
 
-        $employees =  Employee::all();
-        return view('admin.employee.index', compact('employees'));
+        return redirect()->action(EmployeeController::class, 'index');
     }
 
     /**
@@ -92,7 +91,7 @@ class EmployeeController extends Controller
         $positions  = Position::pluck('name', 'id')->toArray();
         $companies = Company::all();
 
-        return view('admin.employee.edit', compact('employee', 'departments' , 'positions' , 'companies'));
+        return view('admin.employee.edit', compact('employee', 'departments', 'positions', 'companies'));
     }
 
 
@@ -105,7 +104,7 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
-        
+
         $request->validate([
             'nombre' => 'required',
             'paterno' => 'required',
@@ -113,16 +112,15 @@ class EmployeeController extends Controller
             'fecha_cumple' => 'required',
             'fecha_ingreso' => 'required',
             'status' => 'required',
-        ]); 
- 
+        ]);
+
         $employee->update($request->all());
 
         $employee->companies()->sync($request->companies);
 
         $employee->positions()->sync($request->position);
 
-        $employees =  Employee::all();
-        return view('admin.employee.index', compact('employees'));
+        return redirect()->action([EmployeeController::class, 'index']);
     }
 
     /**
@@ -139,9 +137,9 @@ class EmployeeController extends Controller
         return view('admin.employee.index', compact('employees'));
     }
 
-    public function getPositions($id) 
-    {        
-            $positions = Position::all()->where("department_id",$id)->pluck("name","id");
-            return json_encode($positions);
+    public function getPositions($id)
+    {
+        $positions = Position::all()->where("department_id", $id)->pluck("name", "id");
+        return json_encode($positions);
     }
 }

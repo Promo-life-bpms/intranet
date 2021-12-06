@@ -12,7 +12,7 @@ class Department extends Model
         'name'
     ];
 
-    public function positionAttachment()
+    public function positions()
     {
         return $this->hasMany(Position::class);
     }

@@ -28,7 +28,7 @@
                     </div>
                     <div class="mb-2">
                         <label for="formFile" class="form-label">Imagen</label>
-                        <input class="form-control" type="file" name="image" id="formFile">
+                        <input class="form-control" type="file" name="images" id="formFile">
 
                         @error('image')
                             <small>
@@ -36,7 +36,6 @@
                             </small>
                             <br>
                         @enderror
-
                     </div>
                     <div class="mb-2">
                         <label for="formFile" class="form-label">Archivos</label>
@@ -48,7 +47,6 @@
                             </small>
                             <br>
                         @enderror
-
                     </div>
                 </div>
                 <div class="col-md-5">
@@ -96,16 +94,12 @@
                     </div>
                 </div>
             </div>
-
             <input type="submit" class="btnCreate" value="CREAR COMUNICADO"></button>
         </form>
     </div>
-
 @stop
 
-
 @section('styles')
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/quill/quill.bubble.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/quill/quill.snow.css') }}">
 @stop

@@ -41,50 +41,68 @@ class CommuniqueController extends Controller
      */
     public function store(Request $request)
     {
-        // request()->validate([
-        //     'title' => 'required',
-        //     'images' => 'mimes:png,jpg|image',
-        //     'files' => 'mimes:png,jpg|image',
-        //     'description' => 'required'
-        // ]);
-        // if ($request->companies == '' || $request->departments == '') {
-        //     return back()->with('message', 'No es posible registrar el comunicado por que no has seleccionado a los destinatarios');
-        // }
-        // $imagen = $request->file("image");
-        // $nombreimagen = $request->title . "." . $imagen->getClientOriginalName();
-        // $ruta = public_path("storage/post/");
+        request()->validate([
+            'title' => 'required',
+            'images' => 'required',
+            'files' => 'required',
+            'description' => 'required'
+        ]);
+        if ($request->companies == '' || $request->departments == '') {
+            return back()->with('message', 'No es posible registrar el comunicado por que no has seleccionado a los destinatarios');
+        }
+        $imagen = $request->file("images");
+        $nombreimagen = $request->title . "." . $imagen->getClientOriginalName();
+        $ruta = public_path("storage/post/");
 
-        //$imagen->move($ruta,$nombreimagen);
-        // $imagen->move($ruta, $nombreimagen);
+        $imagen->move($ruta, $nombreimagen);
 
-        // $communique = new Communique();
-        // $communique->title = $request->title;
-        // $communique->images = "storage/post/" . $nombreimagen;
-        // $communique->description = $request->description;
-        // $communique->save();
+        $communique = new Communique();
+        $communique->title = $request->title;
+        $communique->images = "storage/post/" . $nombreimagen;
+        $communique->files = $request->description;
+        $communique->description = $request->description;
+        $communique->creator_id = auth()->user()->employee->id;
+        $communique->save();
 
         //Quien recibe el comunicado
+        $employees_id = [];
         if ($request->departments && !$request->companies) {
             foreach ($request->departments as $value) {
                 $department = Department::find($value);
-                foreach ($department->positionAttachment as $position) {
-                    $position->users;
-                    print_r();
+                foreach ($department->positions as $position) {
+                    foreach ($position->employees as $employee) {
+                        array_push($employees_id, $employee->id);
+                    }
                 }
             }
-            echo 1;
         } else if (!$request->departments && $request->companies) {
             foreach ($request->companies as $value) {
+                $company = Company::find($value);
+                foreach ($company->employees as $employee) {
+                    array_push($employees_id, $employee->id);
+                    $employees_id = array_unique($employees_id);
+                }
             }
-            echo 2;
         } else if ($request->departments && $request->companies) {
             foreach ($request->companies as $value) {
+                $company = Company::find($value);
                 foreach ($request->departments as $value) {
+                    $department = Department::find($value);
+                    foreach ($department->positions as $position) {
+                        foreach ($position->employees as $employee) {
+                            foreach ($employee->companies as $com) {
+                                if ($com->id == $company->id) {
+                                    array_push($employees_id, $employee->id);
+                                    $employees_id = array_unique($employees_id);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-        return;
-        // $communique->employeesAttachment()->attach(1);
+
+        $communique->employeesAttachment()->attach($employees_id);
 
         return redirect()->action([CommuniqueController::class, 'index']);
     }
@@ -97,9 +115,8 @@ class CommuniqueController extends Controller
      */
     public function show(Communique $communique)
     {
-        $communiques =  Communique::all();
-        $communiquesPrincipal =  Communique::paginate(5);
-        return view('communique.show', compact('communiques', 'communiquesPrincipal'));
+        $communiques =  auth()->user()->employee->communiques;
+        return view('communique.show', compact('communiques'));
     }
 
     /**
@@ -124,35 +141,69 @@ class CommuniqueController extends Controller
      */
     public function update(Request $request, Communique $communique)
     {
-
         request()->validate([
             'title' => 'required',
-            'image' => 'required|mimes:png,jpg',
+            'images' => 'required',
+            'files' => 'required',
             'description' => 'required'
         ]);
-
         if ($request->companies == '' || $request->departments == '') {
             return back()->with('message', 'No es posible registrar el comunicado por que no has seleccionado a los destinatarios');
         }
-
-        if (!$request->hasFile("image")) {
-            return;
-        }
-        $imagen = $request->file("image");
+        $imagen = $request->file("images");
         $nombreimagen = $request->title . "." . $imagen->getClientOriginalName();
-        $ruta = public_path("img/post/");
+        $ruta = public_path("storage/post/");
 
-        //$imagen->move($ruta,$nombreimagen);
         $imagen->move($ruta, $nombreimagen);
-        $request->image = $ruta . $nombreimagen;
 
-
-        $communique->update($request->all());
-
+        $communique = new Communique();
+        $communique->title = $request->title;
+        $communique->images = "storage/post/" . $nombreimagen;
+        $communique->files = $request->description;
+        $communique->description = $request->description;
+        $communique->creator_id = auth()->user()->employee->id;
+        $communique->save();
 
         //Quien recibe el comunicado
+        $employees_id = [];
+        if ($request->departments && !$request->companies) {
+            foreach ($request->departments as $value) {
+                $department = Department::find($value);
+                foreach ($department->positions as $position) {
+                    foreach ($position->employees as $employee) {
+                        array_push($employees_id, $employee->id);
+                    }
+                }
+            }
+        } else if (!$request->departments && $request->companies) {
+            foreach ($request->companies as $value) {
+                $company = Company::find($value);
+                foreach ($company->employees as $employee) {
+                    array_push($employees_id, $employee->id);
+                    $employees_id = array_unique($employees_id);
+                }
+            }
+        } else if ($request->departments && $request->companies) {
+            foreach ($request->companies as $value) {
+                $company = Company::find($value);
+                foreach ($request->departments as $value) {
+                    $department = Department::find($value);
+                    foreach ($department->positions as $position) {
+                        foreach ($position->employees as $employee) {
+                            foreach ($employee->companies as $com) {
+                                if ($com->id == $company->id) {
+                                    array_push($employees_id, $employee->id);
+                                    $employees_id = array_unique($employees_id);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         $communique->employeesAttachment()->detach();
-        $communique->employeesAttachment()->attach([1, 2, 3]);
+        $communique->employeesAttachment()->attach($employees_id);
 
         return redirect()->action([CommuniqueController::class, 'index']);
     }
@@ -165,9 +216,8 @@ class CommuniqueController extends Controller
      */
     public function destroy(Communique $communique)
     {
+        $communique->employeesAttachment()->detach();
         $communique->delete();
-
-        $communiques = Communique::all();
-        return view('communique.show', compact('communiques'));
+        return redirect()->action([CommuniqueController::class, 'index']);
     }
 }

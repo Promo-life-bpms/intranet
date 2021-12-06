@@ -15,4 +15,9 @@ class Company extends Model
         'name_company',
         'description_company'
     ];
+
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'company_employee', 'company_id', 'employee_id');
+    }
 }

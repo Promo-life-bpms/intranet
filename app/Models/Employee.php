@@ -33,4 +33,9 @@ class Employee extends Model
     {
         return $this->belongsToMany(Position::class);
     }
+
+    public function communiques()
+    {
+        return $this->hasMany(Communique::class, 'creator_id');
+    }
 }

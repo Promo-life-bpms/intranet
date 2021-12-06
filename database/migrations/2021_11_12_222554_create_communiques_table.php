@@ -19,6 +19,7 @@ class CreateCommuniquesTable extends Migration
             $table->text('images')->nullable();
             $table->text('files');
             $table->text('description');
+            $table->foreignId('creator_id')->references('id')->on('employees');
             $table->timestamps();
         });
     }
