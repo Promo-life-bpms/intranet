@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
+use App\Models\Department;
+use App\Models\Employee;
+use App\Models\Position;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -24,21 +28,14 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function create()
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required'
-        ]);
-
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi';
-        $user->save();
-
-        $user->roles()->sync($request->roles);
-        return redirect()->action([UserController::class, 'index']);
+        $roles = Role::all();
+        $employees = Employee::all();
+        $departments  = Department::pluck('name', 'id')->toArray();
+        $positions  = Position::pluck('name', 'id')->toArray();
+        $companies = Company::all();
+        return view('admin.user.create', compact('roles', 'employees', 'departments', 'positions', 'companies'));
     }
 
     /**
@@ -46,12 +43,24 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function store(Request $request)
     {
-        $roles = Role::all();
-        return view('admin.user.create', compact('roles'));
-    }
+        $request->validate([
+            'name' => 'required',
+            'lastname' => 'required',
+            'email' => 'required'
+        ]);
 
+        $user = new User();
+        $user->name = $request->name;
+        $user->lastname = $request->lastname;
+        $user->email = $request->email;
+        $user->password = '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi';
+        $user->save();
+
+        $user->roles()->sync($request->roles);
+        return redirect()->action([UserController::class, 'index']);
+    }
 
     /**
      * Display the specified resource.
@@ -87,14 +96,15 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required'
+            'email' => 'required',
+            'lastname' => 'required'
         ]);
 
         $user->update($request->all());
 
         $user->roles()->sync($request->roles);
-        $users =  User::all();
-        return view('admin.user.index', compact('users'));
+
+        return redirect()->action([UserController::class, 'index']);
     }
 
     /**
@@ -106,7 +116,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-        $users =  User::all();
-        return view('admin.user.index', compact('users'));
+
+        return redirect()->action([UserController::class, 'index']);
     }
 }

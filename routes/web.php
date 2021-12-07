@@ -121,15 +121,12 @@ Route::middleware(['auth:sanctum', 'verified', 'can:rh'])->delete('/request/{req
 
 
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/organizations', [OrganizationController::class, 'index'])->name('admin.organization.index');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/organizations/create', [OrganizationController::class, 'create'])->name('admin.organization.create');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->post('/organizations/create', [OrganizationController::class, 'store'])->name('admin.organization.store');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/organizations/{organization}/edit', [OrganizationController::class, 'edit'])->name('admin.organization.edit');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->put('/organizations/{organization}', [OrganizationController::class, 'update'])->name('admin.organization.update');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->delete('/organizations/{organization}', [OrganizationController::class, 'destroy'])->name('admin.organization.destroy');
 
 
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/departments', [DepartmentsController::class, 'index'])->name('admin.department.index');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/departments/create', [DepartmentsController::class, 'create'])->name('admin.department.create');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->post('/departments/create', [DepartmentsController::class, 'store'])->name('admin.department.store');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/departments/{department}/edit', [DepartmentsController::class, 'edit'])->name('admin.department.edit');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->put('/departments/{department}', [DepartmentsController::class, 'update'])->name('admin.department.update');
@@ -137,14 +134,12 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->delete('/departmen
 
 
 
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/positions', [PositionController::class, 'index'])->name('admin.position.index');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/positions/create', [PositionController::class, 'create'])->name('admin.position.create');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->post('/positions/create', [PositionController::class, 'store'])->name('admin.position.store');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/positions/{position}/edit', [PositionController::class, 'edit'])->name('admin.position.edit');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->put('/positions/{position}', [PositionController::class, 'update'])->name('admin.position.update');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->delete('/positions/{position}', [PositionController::class, 'destroy'])->name('admin.position.destroy');
 
-/* 
+/*
 
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/managers', [DepartmentManagerController::class, 'index'])->name('admin.manager.index');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/managers/create', [DepartmentManagerController::class, 'create'])->name('admin.manager.create');

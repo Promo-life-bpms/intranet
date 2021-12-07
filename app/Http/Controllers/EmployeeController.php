@@ -48,10 +48,7 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required',
-            'paterno' => 'required',
-            'materno' => 'required',
-            'fecha_cumple' => 'required',
+            'birthday_date' => 'required',
             'fecha_ingreso' => 'required',
             'status' => 'required',
             'deparment' => 'required',
@@ -63,7 +60,7 @@ class EmployeeController extends Controller
         $employee->nombre = $request->nombre;
         $employee->paterno = $request->paterno;
         $employee->materno = $request->materno;
-        $employee->fecha_cumple = $request->fecha_cumple;
+        $employee->birthday_date = $request->birthday_date;
         $employee->fecha_ingreso = $request->fecha_ingreso;
         $employee->status = $request->status;
         $employee->jefe_directo_id = $request->jefe;
@@ -112,10 +109,7 @@ class EmployeeController extends Controller
     {
 
         $request->validate([
-            'nombre' => 'required',
-            'paterno' => 'required',
-            'materno' => 'required',
-            'fecha_cumple' => 'required',
+            'birthday_date' => 'required',
             'fecha_ingreso' => 'required',
             'status' => 'required',
         ]);

@@ -63,30 +63,13 @@
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.organization.index') }}">
-                                    <span>Empresas</span>
-                                </a>
-                            </li>
-
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.department.index') }}">
-                                    <span>Deparamentos</span>
-                                </a>
-                            </li>
-
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.position.index') }}">
-                                    <span>Puestos</span>
+                                    <span>Organizacion</span>
                                 </a>
                             </li>
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin') }}">
                                     <span>Usuarios</span>
-                                </a>
-                            </li>
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.employee') }}">
-                                    <span>Empleados</span>
                                 </a>
                             </li>
                         </ul>
@@ -228,13 +211,13 @@
 
                     <ul class="submenu ">
 
-                        
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('request.create') }}">
-                                    <span>Crear Solicitud</span>
-                                </a>
-                            </li>
-                    
+
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('request.create') }}">
+                                <span>Crear Solicitud</span>
+                            </a>
+                        </li>
+
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('request') }}">
                                 <span>Administrar Solicitudes</span>
@@ -300,4 +283,3 @@
         <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
     </div>
 </div>
-

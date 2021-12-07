@@ -29,13 +29,9 @@ class CreateEmployeeTable extends Migration
 
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre', 100)->nullable();
-            $table->string('paterno', 100)->nullable();
-            $table->string('materno', 100)->nullable();
-            $table->date('fecha_cumple')->nullable();
+            $table->date('birthday_date')->nullable();
             $table->date('fecha_ingreso')->nullable();
             $table->boolean('status')->nullable();
-
             $table->foreignid('jefe_directo_id')->nullable()->references('id')->on('employees');
             $table->foreignid('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
@@ -52,6 +48,5 @@ class CreateEmployeeTable extends Migration
         Schema::dropIfExists('request');
         Schema::dropIfExists('employee');
         Schema::dropIfExists('contact');
-
     }
 }

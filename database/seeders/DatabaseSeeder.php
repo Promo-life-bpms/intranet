@@ -14,11 +14,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        
+
         $this->call(RoleSeeder::class);
 
         User::create([
-            'name' => 'Antonio Tomas',
+            'name' => 'Antonio',
+            'lastname' => 'Tomas',
             'email' => 'admin@admin',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
@@ -26,7 +27,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Admin');;
 
         User::create([
-            'name' => '0scar Chavez',
+            'name' => '0scar',
+            'lastname' => 'Chavez',
             'email' => 'test@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -35,13 +37,12 @@ class DatabaseSeeder extends Seeder
 
 
         User::create([
-            'name' => 'Diego Navarrete',
+            'name' => 'Diego',
+            'lastname' => 'Navarrete',
             'email' => 'empleado@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
             'remember_token' => '',
         ])->assignRole('Empleado');
     }
-
-
 }

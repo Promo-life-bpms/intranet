@@ -9,29 +9,6 @@ use Illuminate\Http\Request;
 class PositionController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $positions = Position::all();
-        $departments = Department::all();
-        return view('admin.positions.index', compact('positions', 'departments'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $departments = Department::all();
-        return view('admin.positions.create', compact('departments'));
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -49,18 +26,7 @@ class PositionController extends Controller
         $position->department_id = $request->department;
         $position->save();
 
-        $positions = Position::all();
-        return view('admin.positions.index', compact('positions'));
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Position  $position
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Position $position)
-    {
+        return redirect()->action([OrganizationController::class, 'index']);
     }
 
     /**
@@ -90,8 +56,7 @@ class PositionController extends Controller
 
         $position->update($request->all());
 
-        $positions = Position::all();
-        return view('admin.positions.index', compact('positions'));
+        return redirect()->action([OrganizationController::class, 'index']);
     }
 
     /**
@@ -103,7 +68,6 @@ class PositionController extends Controller
     public function destroy(Position $position)
     {
         $position->delete();
-        $positions = Position::all();
-        return view('admin.positions.index', compact('positions'));
+        return redirect()->action([OrganizationController::class, 'index']);
     }
 }

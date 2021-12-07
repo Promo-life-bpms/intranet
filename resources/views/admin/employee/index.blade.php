@@ -13,25 +13,16 @@
             <thead>
                 <tr>
                     <th scope="col"># </th>
-                    <th scope="col">Usuario</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Apellidos</th>
                     <th scope="col">Cumpleaños</th>
                     <th scope="col">Ingreso</th>
-                    <th scope="col">Status</th>
                     <th scope="col">Opciones</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach  ($employees as $employee)
                     <tr>
-                        <td>{{ $employee->id }}</td>
-                        <td>{{ $employee->user->name }}</td>
-                        <td>{{ $employee->nombre }}</td>
-                        <td>{{ $employee->paterno . ' ' . $employee->materno }}</td>
-                        <td>{{ $employee->fecha_cumple }}</td>
+                        <td>{{ $employee->birthday_date }}</td>
                         <td>{{ $employee->fecha_ingreso }}</td>
-                        <td>{{ $employee->status }}</td>
                         <td>
                             <a href="{{ route('admin.employee.edit', ['employee' => $employee->id]) }}" type="button"
                                 class="btn btn-primary">Editar</a>

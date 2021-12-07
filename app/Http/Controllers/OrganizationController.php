@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\Organization;
+use App\Models\Position;
 use Illuminate\Http\Request;
 
 class OrganizationController extends Controller
 {
     public function index()
     {
+        $departments = Department::all();
         $organizations = Organization::all();
-        return view('admin.organization.index', compact('organizations'));
+        $positions = Position::all();
+        return view('admin.organization.index', compact('organizations', 'departments', 'positions'));
     }
 
 
@@ -33,17 +37,16 @@ class OrganizationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name_company'=>'required',
-            'description_company'=>'required'
+            'name_company' => 'required',
+            'description_company' => 'required'
         ]);
 
         $organization = new Organization();
-        $organization->name_company = $request-> name_company;
+        $organization->name_company = $request->name_company;
         $organization->description_company = $request->description_company;
         $organization->save();
 
-        $organizations = Organization::all();
-        return view('admin.organization.index', compact('organizations'));
+        return redirect()->action([OrganizationController::class, 'index']);
     }
 
     /**
@@ -54,7 +57,6 @@ class OrganizationController extends Controller
      */
     public function show(Organization $organization)
     {
-      
     }
 
     /**
@@ -79,14 +81,13 @@ class OrganizationController extends Controller
     {
 
         $request->validate([
-            'name_company'=>'required',
-            'description_company'=>'required'
+            'name_company' => 'required',
+            'description_company' => 'required'
         ]);
 
         $organization->update($request->all());
 
-        $organizations = Organization::all();
-        return view('admin.organization.index', compact('organizations'));
+        return redirect()->action([OrganizationController::class, 'index']);
     }
 
     /**
@@ -98,7 +99,6 @@ class OrganizationController extends Controller
     public function destroy(Organization $organization)
     {
         $organization->delete();
-        $organizations = Organization::all();
-        return view('admin.organization.index', compact('organizations'));
+        return redirect()->action([OrganizationController::class, 'index']);
     }
 }

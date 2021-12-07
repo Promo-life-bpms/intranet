@@ -4,32 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\Organization;
 use Illuminate\Http\Request;
 
 class DepartmentsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-
-        $departments = Department::all();
-        return view('admin.departments.index', compact('departments'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('admin.departments.create');
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -39,25 +18,14 @@ class DepartmentsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'=>'required'
+            'name' => 'required'
         ]);
 
         $department = new Department();
-        $department->name = $request-> name;
+        $department->name = $request->name;
         $department->save();
 
-        $departments = Department::all();
-        return view('admin.departments.index', compact('departments'));
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Department $department)
-    {
+        return redirect()->action([OrganizationController::class, 'index']);
     }
 
     /**
@@ -82,13 +50,12 @@ class DepartmentsController extends Controller
     {
 
         $request->validate([
-            'name'=>'required'
+            'name' => 'required'
         ]);
 
         $department->update($request->all());
 
-        $departments = Department::all();
-        return view('admin.departments.index', compact('departments'));
+        return redirect()->action([OrganizationController::class, 'index']);
     }
 
     /**
@@ -100,7 +67,7 @@ class DepartmentsController extends Controller
     public function destroy(Department $department)
     {
         $department->delete();
-        $departments = Department::all();
-        return view('admin.departments.index', compact('departments'));
+
+        return redirect()->action([OrganizationController::class, 'index']);
     }
 }

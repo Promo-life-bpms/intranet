@@ -45,9 +45,9 @@
 
         <div class="row mt-4">
             <div class="col-md-4">
-                {!! Form::label('fecha_cumple', 'Fecha de Cumpleaños') !!}
-                {!! Form::date('fecha_cumple', null, ['class' => 'form-control']) !!}
-                @error('fecha_cumple')
+                {!! Form::label('birthday_date', 'Fecha de Cumpleaños') !!}
+                {!! Form::date('birthday_date', null, ['class' => 'form-control']) !!}
+                @error('birthday_date')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
                     </small>
