@@ -136,8 +136,10 @@ class RequestController extends Controller
      * @param  \App\Models\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(ModelsRequest $request)
     {
+        $request->delete();
+        return redirect()->action([RequestController::class, 'index']);
 
     }
 }
