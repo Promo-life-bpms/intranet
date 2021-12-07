@@ -11,25 +11,45 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('type_request', 'Tipo de Solicitud') !!}
-                        {!! Form::select('type_request', ['0' => 'Seleccione', '1' => 'Salir durante la Jornada', '2' => 'Faltar a sus labores'], '0', ['class' => 'form-control']) !!}
+                        {!! Form::select('type_request', [ 'Salir durante la Jornada' => 'Salir durante la Jornada', 'Faltar a sus labores' => 'Faltar a sus labores'], null, ['class' => 'form-control','placeholder'=>'Seleccione opcion']) !!}
+                        @error('type_request')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                       @enderror
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        {!! Form::label('payment  ', 'Forma de Pago') !!}
-                        {!! Form::select('payment', ['0' => 'Seleccione', '1' => 'Descontar Tiempo/Dia', '2' => 'Pagar Tiempo/Dia', '3' => 'A cuenta de vacaciones'], '0', ['class' => 'form-control']) !!}
+                        {!! Form::label('payment', 'Forma de Pago') !!}
+                        {!! Form::select('payment', ['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia', 'Pagar Tiempo/Dia' => 'Pagar Tiempo/Dia', 'A cuenta de vacaciones' => 'A cuenta de vacaciones'], null, ['class' => 'form-control','placeholder'=>'Seleccione opcion']) !!}
+                        @error('payment')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        @enderror
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('absence', 'Fecha de Ausencia') !!}
                         {!! Form::date('absence', null, ['class' => 'form-control']) !!}
+                        @error('absence')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        @enderror
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('admission ', 'Fecha de Reingreso') !!}
                         {!! Form::date('admission', null, ['class' => 'form-control']) !!}
+                        @error('admission')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        @enderror
                     </div>
                 </div>
                 

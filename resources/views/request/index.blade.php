@@ -13,41 +13,48 @@
             <thead>
                 <tr>
                     <th scope="col"># </th>
+                    <th scope="col">Solicitante</th>
                     <th scope="col">Tipo</th>
                     <th scope="col">Pago</th>
                     <th scope="col">Fecha ausencia</th>
                     <th scope="col">Fecha reingreso</th>
                     <th scope="col">Motivo</th>
-                    <th scope="col">Jefe directo</th>
                     <th scope="col">Jefe status </th>
-                    <th scope="col">RH status</th>     
-                    <th scope="col">Opciones</th>                   
+                    <th scope="col">RH status</th>  
+                    @can('rh')
+                    <th scope="col">Opciones</th> 
+                    @endcan   
+                                      
                 </tr>
             </thead>
             <tbody>
                 @foreach ($requests as $request)
                     <tr>
                         <td>{{ $request->id }}</td>
-                        <td>{{ $request->type_request}}</td>
-                        <td>{{ $request->payment}}</td>
+                        <td>{{ $request->employee->nombre . ' ' .$request->employee->paterno . ' ' .$request->employee->materno}}</td>
+                        <td>{{ $request->type_request }}</td>  
+                        <td>{{ $request->payment }}</td>                           
                         <td>{{ $request->absence }}</td>
                         <td>{{ $request->admission}}</td>
                         <td>{{ $request->reason}}</td>
-                        <td>{{ $request->direct_manager_id}}</td>
                         <td>{{ $request->direct_manager_status}}</td>
                         <td>{{ $request->human_resources_status}}</td>
+
+
+                        @can('rh')
                         <td>
                             <a href="{{ route('request.edit', ['request' => $request->id]) }}" type="button"
                                 class="btn btn-primary">Editar</a>
-
+                            
                             <form class="form-delete" action="{{ route('request.destroy', ['request' => $request->id]) }}"
                                 method="POST">
                                 @csrf
                                 @method('delete')
                                 <button type="submit" class="btn btn-danger">Borrar</button>
-                            </form>
-
+                            </form>                         
                         </td>
+                        @endcan  
+                       
                     </tr>
                 @endforeach
 

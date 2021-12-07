@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DepartmentManager;
-use App\Models\Employee;
-use App\Models\EmployeePosition;
 use App\Models\Request as ModelsRequest;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +16,19 @@ class RequestController extends Controller
      */
     public function index()
     {
-        $requests = ModelsRequest::all();
-      
+        $id = Auth::user()->id;
+        $userID = DB::table('employees')->where('id', $id)->value('id');
+        $rol = DB::table('model_has_roles')->where('model_id', $id)->value('role_id');
+        $rh = DB::table('roles')->where('name', 'RH')->value('id');
+
+
+        if($rol == $rh){
+            $requests = ModelsRequest::all();
+            
+        }else{
+            $requests = ModelsRequest::all()->where('employee_id', $userID );
+        }        
+              
         return view('request.index', compact('requests'));
     }
 
@@ -53,22 +60,19 @@ class RequestController extends Controller
             'reason' => 'required'
         ]);
 
+        $id = Auth::user()->id;
+        $userID = DB::table('employees')->where('id', $id)->value('id');
+        $userPosition = DB::table('employee_position')->where('employee_id', $userID )->value('position_id');
+        $position = DB::table('positions')->where('id',$userPosition)->value('department_id');
+        $manager = DB::table('department_manager')->where('department_id', $position)->value('employee_id');
+
         $req = new ModelsRequest();
+        $req->employee_id=$userID; 
         $req->type_request = $request->type_request; 
         $req->payment = $request->payment;
         $req->absence = $request->absence;
         $req->admission = $request->admission;
         $req->reason = $request->reason;
-
-        $id = Auth::user()->id;
-
-        $userID = DB::table('employees')->where('id', $id)->value('id');
-
-        $userPosition = DB::table('employee_position')->where('employee_id', $userID )->value('position_id');
-
-        $position = DB::table('positions')->where('id',$userPosition)->value('department_id');
-
-        $manager = DB::table('department_manager')->where('department_id', $position)->value('employee_id');
 
         $req->direct_manager_id = $manager;
 
@@ -78,9 +82,7 @@ class RequestController extends Controller
 
         $req->save();
 
-
-        $requests = ModelsRequest::all();
-        return view('request.index', compact('requests'));
+        return redirect()->action([RequestController::class, 'index']);
     }
 
     /**
@@ -100,9 +102,9 @@ class RequestController extends Controller
      * @param  \App\Models\Request  $communique
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request)
+    public function edit(Request $req, ModelsRequest $request)
     {
-
+        return view('request.edit', compact('request'));
     }
 
     /**
@@ -112,8 +114,19 @@ class RequestController extends Controller
      * @param  \App\Models\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $req , ModelsRequest $request)
     {
+        $req->validate([
+            'type_request' => 'required',
+            'payment' => 'required',
+            'absence' => 'required',
+            'admission' => 'required',
+            'reason' => 'required'
+        ]);
+
+        $request->update($req->all());
+
+        return redirect()->action([RequestController::class, 'index']);
 
     }
 

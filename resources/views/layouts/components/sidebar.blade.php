@@ -46,10 +46,10 @@
         <div class="sidebar-menu">
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
-                @can('admin.users')
-                    <li class="sidebar-item has-sub {{ request()->is('admin.users') ? 'active' : '' }}">
+                @can('admin')
+                    <li class="sidebar-item has-sub {{ request()->is('admin') ? 'active' : '' }}">
 
-                        <a href="{{ route('admin.users') }}" class='sidebar-link'>
+                        <a href="{{ route('admin') }}" class='sidebar-link'>
                             <i class="fa fa-wrench" aria-hidden="true"></i>
                             <span>Administrador</span>
                         </a>
@@ -80,7 +80,7 @@
                             </li>
 
                             <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.users') }}">
+                                <a class="dropdown-item" href="{{ route('admin') }}">
                                     <span>Usuarios</span>
                                 </a>
                             </li>
@@ -176,7 +176,7 @@
                     </a>
                     <ul class="submenu ">
 
-                        @can('communique.create')
+                        @can('admin.rh.sistemas')
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('communique.create') }}">
                                     <span>Crear comunicados</span>
@@ -188,7 +188,7 @@
                                 <span>Ver comunicados</span>
                             </a>
                         </li>
-                        @can('communique.create')
+                        @can('admin.rh.sistemas')
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('communique.show') }}">
                                     <span>Administrar comunicados</span>
