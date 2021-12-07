@@ -52,7 +52,8 @@ class EmployeeController extends Controller
             'fecha_ingreso' => 'required',
             'status' => 'required',
             'deparment' => 'required',
-            'company' => 'required'
+            'company' => 'required',
+            'jefe' => 'required'
         ]);
 
         $employee = new Employee();
@@ -62,6 +63,7 @@ class EmployeeController extends Controller
         $employee->fecha_cumple = $request->fecha_cumple;
         $employee->fecha_ingreso = $request->fecha_ingreso;
         $employee->status = $request->status;
+        $employee->jefe_directo_id = $request->jefe;
         $employee->save();
 
         return redirect()->action(EmployeeController::class, 'index');
@@ -90,8 +92,9 @@ class EmployeeController extends Controller
         $departments  = Department::pluck('name', 'id')->toArray();
         $positions  = Position::pluck('name', 'id')->toArray();
         $companies = Company::all();
+        $employees  = Employee::pluck('nombre', 'id')->toArray();
 
-        return view('admin.employee.edit', compact('employee', 'departments', 'positions', 'companies'));
+        return view('admin.employee.edit', compact('employee', 'departments', 'positions', 'companies', 'employees'));
     }
 
 

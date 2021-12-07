@@ -52,6 +52,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/company', [CompanyController::class, 'index'])->name('company');
     Route::get('company/getPosition/{id}',[CompanyController::class,'getPositions']);
+    Route::get('company/getEmployees',[CompanyController::class,'getEmployees']);
 
 
     Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');

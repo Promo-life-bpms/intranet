@@ -1,7 +1,13 @@
 @extends('layouts.app')
 
-@section('dashboard')
-    <div class="tabs">
+@section('content')
+    <div class="card-header">
+        <h3>Organigrama</h3>
+    </div>
+    <div class="card-body">
+        <div id="tree"></div>
+    </div>
+    {{-- <div class="tabs">
         <input type="radio" id="tab1" name="tab-control" checked>
         <input type="radio" id="tab2" name="tab-control">
         <input type="radio" id="tab3" name="tab-control">
@@ -24,16 +30,14 @@
                 {!! Form::open() !!}
                 <div class="row">
                     <div class="col-4">
-
-                            {!! Form::label('department', 'Departamento') !!}
-                            {!! Form::select('department', $departments, null, ['class' => 'form-control mt-2','placeholder'=>'Selecciona Departamento']) !!}
-                           
+                        {!! Form::label('department', 'Departamento') !!}
+                        {!! Form::select('department', $departments, null, ['class' => 'form-control mt-2', 'placeholder' => 'Selecciona Departamento']) !!}
                     </div>
 
                     <div class="row mt-4">
                         <div class="contenedor">
 
-                            <ul name="position" class="access_list" >
+                            <ul name="position" class="access_list">
                                 <li></li>
                             </ul>
                         </div>
@@ -289,7 +293,7 @@
                 </div>
             </section>
         </div>
-    </div>
+    </div> --}}
 @stop
 
 @section('styles')
@@ -614,33 +618,77 @@
 @stop
 
 @section('scripts')
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
- <script type="text/javascript">
-    jQuery(document).ready(function ()
-    {
-            jQuery('select[name="department"]').on('change',function(){
-               var id = jQuery(this).val();
-               if(id)
-               {
-                  jQuery.ajax({
-                     url : '/company/getPosition/' +id,
-                     type : "GET",
-                     dataType : "json",
-                     success:function(data)
-                     {
-                        console.log(data);
-                        jQuery('ul[name="position"]').empty();
-                        jQuery.each(data, function(key,value){
-                            $('ul[name="position"]').append('<li>'+ value +'</li>');
-                        });
-                     }
-                  });
-               }
-               else
-               {
-                  $('select[name="position"]').empty();
-               }
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="{{ asset('assets\vendors\orgchartjs\orgchart.js') }}"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery('select[name="department"]').on('change', function() {
+                var id = jQuery(this).val();
+                if (id) {
+                    jQuery.ajax({
+                        url: '/company/getPosition/' + id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            console.log(data);
+                            jQuery('ul[name="position"]').empty();
+                            jQuery.each(data, function(key, value) {
+                                $('ul[name="position"]').append('<li>' + value +
+                                    '</li>');
+                            });
+                        }
+                    });
+                } else {
+                    $('select[name="position"]').empty();
+                }
             });
-    });
-</script>
+        });
+        let values = [{
+                id: 1,
+                pid: null,
+                name: "Amber McKenzie"
+            },
+            {
+                id: 2,
+                pid: 1,
+                name: "Ava Field"
+            }, {
+                id: 3,
+                pid: 1,
+                name: "Peter Stevens"
+            }, {
+                id: 5,
+                pid: 1,
+                name: "Peter Stevens"
+            }
+        ]
+
+
+        obtenerEmpleados()
+
+        async function obtenerEmpleados() {
+            try {
+                let res = await axios.get("/company/getEmployees/");
+                let data = res.data;
+                var chart = new OrgChart(document.getElementById("tree"), {
+                    template: "ula",
+                    nodeBinding: {
+                        field_0: "Nombre",
+                        field_1: "Puesto",
+                        img_0: "Photo"
+                    },
+                });
+
+                nodes = data;
+
+                chart.on('init', function(sender) {
+                    sender.editUI.show(1);
+                });
+
+                chart.load(nodes);
+            } catch {
+                console.log(error);
+            }
+        }
+    </script>
 @stop

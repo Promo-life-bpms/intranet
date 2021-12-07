@@ -35,8 +35,9 @@ class CreateEmployeeTable extends Migration
             $table->date('fecha_cumple')->nullable();
             $table->date('fecha_ingreso')->nullable();
             $table->boolean('status')->nullable();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->foreignid('jefe_directo_id')->nullable()->references('id')->on('employees');
+            $table->foreignid('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

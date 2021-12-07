@@ -17,6 +17,7 @@ class Employee extends Model
         'fecha_cumple',
         'fecha_ingreso',
         'status',
+        'jefe_directo_id'
     ];
 
     public function user()
@@ -37,5 +38,15 @@ class Employee extends Model
     public function communiques()
     {
         return $this->hasMany(Communique::class, 'creator_id');
+    }
+
+    public function jefeDirecto()
+    {
+        return $this->hasOne(Employee::class, 'id', 'jefe_directo_id',);
+    }
+
+    public function subordinados()
+    {
+        return $this->hasMany(Employee::class, 'jefe_directo_id', 'id');
     }
 }

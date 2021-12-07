@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\Department;
+use App\Models\Employee;
 use App\Models\Position;
 use Illuminate\Http\Request;
 
@@ -16,12 +17,20 @@ class CompanyController extends Controller
      */
     public function index()
     {
-
         $departments  = Department::pluck('name', 'id')->toArray();
-
-        return view('company.index',compact('departments'));
+        $employees = Employee::all();
+        $dataEmployees = [];
+        foreach ($employees as $employee) {
+            array_push($dataEmployees, [
+                "id" => $employee->id,
+                "pid" => $employee->jefe_directo_id,
+                "name" => $employee->nombre
+            ]);
+        }
+        $dataEmployees = (object) $dataEmployees;
+        // dd($dataEmployees);
+        return view('company.index', compact('departments', 'dataEmployees'));
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -88,9 +97,25 @@ class CompanyController extends Controller
         //
     }
 
-    public function getPositions($id) 
-    {        
-            $positions = Position::all()->where("department_id",$id)->pluck("name","id");
-            return json_encode($positions);
+    public function getPositions($id)
+    {
+        $positions = Position::all()->where("department_id", $id)->pluck("name", "id");
+        return json_encode($positions);
+    }
+    public function getEmployees()
+    {
+        $employees = Employee::all();
+        $dataEmployees = [];
+        foreach ($employees as $employee) {
+            array_push($dataEmployees, [
+                "id" => $employee->id,
+                "pid" => $employee->jefe_directo_id,
+                "Nombre" => $employee->nombre,
+                "Puesto" => $employee->nombre,
+                "Photo" => 'https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png',
+            ]);
+        }
+        // $dataEmployees = (object) $dataEmployees;
+        return json_encode($dataEmployees);
     }
 }
