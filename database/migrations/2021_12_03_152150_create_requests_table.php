@@ -15,11 +15,14 @@ class CreateRequestsTable extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->string('type_request');
+            $table->string('payment');
             $table->date('absence');
             $table->date('admission');
             $table->string('reason');
-            $table->string('direct_manager_id');
+            $table->unsignedBigInteger('direct_manager_id');
+            $table->foreign('direct_manager_id')->references('id')->on('employees')->onDelete('cascade');
             $table->string('direct_manager_status');
             $table->string('human_resources_status');
             $table->timestamps();

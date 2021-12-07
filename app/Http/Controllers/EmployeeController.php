@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\Contact;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\EmployeePosition;
 use App\Models\Position;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,7 +22,9 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees =  Employee::all();
-        return view('admin.employee.index', compact('employees'));
+        $employePos = EmployeePosition::all();
+
+        return view('admin.employee.index', compact('employees','employePos'));
     }
 
     /**
@@ -137,7 +140,9 @@ class EmployeeController extends Controller
         $employee->delete();
 
         $employees =  Employee::all();
-        return view('admin.employee.index', compact('employees'));
+        $employePos = EmployeePosition::all();
+
+        return view('admin.employee.index', compact('employees','employePos'));
     }
 
     public function getPositions($id)

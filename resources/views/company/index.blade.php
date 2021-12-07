@@ -663,7 +663,6 @@
             }
         ]
 
-
         obtenerEmpleados()
 
         async function obtenerEmpleados() {
@@ -677,6 +676,13 @@
                         field_1: "Puesto",
                         img_0: "Photo"
                     },
+                    editForm: {
+                        buttons: {
+                            pdf: null,
+                            share: null,
+                            edit: null
+                        }
+                    }
                 });
 
                 nodes = data;

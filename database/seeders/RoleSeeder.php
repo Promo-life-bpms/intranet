@@ -23,10 +23,22 @@ class RoleSeeder extends Seeder
         $role5 = Role::create(['name'=>'Empleado']);
 
 
-        Permission::create(['name'=>'communique.create',"description"=>"Administrar comunicados"])->syncRoles([$role1,$role2]);
-        Permission::create(['name'=>'admin.users',"description"=>"Administrar usuarios"])->syncRoles([$role1]);
-        Permission::create(['name'=>'admin.employees',"description"=>"Administrar empleados"])->syncRoles([$role1]);
+
+
+        Permission::create(['name'=>'admin',"description"=>"Permisos admin"])->syncRoles([$role1]);
+        Permission::create(['name'=>'rh',"description"=>"Permisos RH"])->syncRoles([$role2]);
         Permission::create(['name'=>'sistemas',"description"=>"Permisos Sistemas"])->syncRoles([$role3]);
+        Permission::create(['name'=>'superior',"description"=>"Permisos Superior"])->syncRoles([$role4]);
+
+        Permission::create(['name'=>'admin.rh',"description"=>"Permisos Admin y RH"])->syncRoles([$role1,$role2]);
+        Permission::create(['name'=>'admin.sistemas',"description"=>"Permisos Admin y Sistemas"])->syncRoles([$role1,$role3]);
+        Permission::create(['name'=>'admin.superior',"description"=>"Permisos Admin y Superior"])->syncRoles([$role1,$role4]);
+
+        Permission::create(['name'=>'rh.superior',"description"=>"RH y Superior"])->syncRoles([$role2,$role4]);
+
+        Permission::create(['name'=>'admin.rh.sistemas',"description"=>"Permisos Admin, RH y Sistemas"])->syncRoles([$role1,$role2, $role3]);
+        Permission::create(['name'=>'admin.rh.sistemas.superior',"description"=>"Permisos Admin, RH, Sistemas y Superior"])->syncRoles([$role1,$role2, $role3,$role4]);
+
 
     }
 }

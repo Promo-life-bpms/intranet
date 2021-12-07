@@ -32,7 +32,7 @@ class Employee extends Model
 
     public function positions()
     {
-        return $this->belongsToMany(Position::class);
+        return $this->belongsTo(Position::class);
     }
 
     public function communiques()

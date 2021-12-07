@@ -9,14 +9,29 @@ class Request extends Model
 {
     use HasFactory;
 
-    public $table = "request";
+    public $table = "requests";
 
     protected $fillable = [
+        'id',
         'type_request',
-        'days_absence',
+        'payment',
+        'absence',
+        'admission',
         'reason',
         'direct_manager_id',
         'direct_manager_status',
-        'human_resources_status',
+        'human_resources_status'
     ];
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
+
+    public function manager()
+    {
+        return $this->belongsTo(Employee::class);
+    }
+
+
 }
