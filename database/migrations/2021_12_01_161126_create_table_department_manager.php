@@ -17,6 +17,7 @@ class CreateTableDepartmentManager extends Migration
             $table->id();
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->foreignId('department_id')->constrained()->onDelete('cascade');
+            $table->timestamp('created_at')->nullable();
         });
     }
 
