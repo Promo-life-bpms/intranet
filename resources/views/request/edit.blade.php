@@ -55,26 +55,29 @@
                 </div>
 
                 <div class="row">
-
-                    <div class="col ">
-                        {!! Form::label('direct_manager_status', 'Autorizacion Superior') !!}
-                        {!! Form::select('direct_manager_status', [ 'Pendiente' => 'Pendiente', 'Aprobado' => 'Aprobado'], null, ['class' => 'form-control','placeholder'=>'Seleccione opcion']) !!}
-                        @error('type_request')
-                        <small>
-                            <font color="red"> *Este campo es requerido* </font>
-                        </small>
-                       @enderror
-                    </div>
-
-                    <div class="col ">
-                        {!! Form::label('human_resources_status', 'Autorizacion RH') !!}
-                        {!! Form::select('human_resources_status', [ 'Pendiente' => 'Pendiente', 'Aprobado' => 'Aprobado'], null, ['class' => 'form-control','placeholder'=>'Seleccione opcion']) !!}
-                        @error('type_request')
-                        <small>
-                            <font color="red"> *Este campo es requerido* </font>
-                        </small>
-                       @enderror
-                    </div>
+                    @can('rh')
+                        <div class="col ">
+                            {!! Form::label('direct_manager_status', 'Autorizacion de RH') !!}
+                            {!! Form::select('direct_manager_status', [ 'Pendiente' => 'Pendiente', 'Aprobado' => 'Aprobado'], null, ['class' => 'form-control','placeholder'=>'Seleccione opcion']) !!}
+                            @error('type_request')
+                            <small>
+                                <font color="red"> *Este campo es requerido* </font>
+                            </small>
+                            @enderror
+                        </div>
+                    @endcan
+                    
+                    @can('superior')
+                        <div class="col ">
+                                {!! Form::label('human_resources_status', 'Autorizacion de encargado') !!}
+                                {!! Form::select('human_resources_status', [ 'Pendiente' => 'Pendiente', 'Aprobado' => 'Aprobado'], null, ['class' => 'form-control','placeholder'=>'Seleccione opcion']) !!}
+                                @error('type_request')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                @enderror
+                        </div>
+                    @endcan
                 </div>
 
                 

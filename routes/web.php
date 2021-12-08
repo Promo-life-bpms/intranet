@@ -114,9 +114,9 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->delete('/communiqu
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/request/create', [RequestController::class, 'create'])->name('request.create');
 Route::middleware(['auth:sanctum', 'verified'])->post('/request', [RequestController::class, 'store'])->name('request.store');
-Route::middleware(['auth:sanctum', 'verified', 'can:rh'])->get('/request/{request}/edit', [RequestController::class, 'edit'])->name('request.edit');
-Route::middleware(['auth:sanctum', 'verified', 'can:rh'])->put('/request/{request}', [RequestController::class, 'update'])->name('request.update');
-Route::middleware(['auth:sanctum', 'verified', 'can:rh'])->delete('/request/{request}', [RequestController::class, 'destroy'])->name('request.destroy');
+Route::middleware(['auth:sanctum', 'verified', 'can:rh.superior'])->get('/request/{request}/edit', [RequestController::class, 'edit'])->name('request.edit');
+Route::middleware(['auth:sanctum', 'verified', 'can:rh.superior'])->put('/request/{request}', [RequestController::class, 'update'])->name('request.update');
+Route::middleware(['auth:sanctum', 'verified', 'can:rh.superior'])->delete('/request/{request}', [RequestController::class, 'destroy'])->name('request.destroy');
 
 
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/organizations', [OrganizationController::class, 'index'])->name('admin.organization.index');
