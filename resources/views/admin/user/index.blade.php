@@ -38,6 +38,8 @@
                 @endforeach
             </tbody>
         </table>
+
+        {{$users ->links() }}
     </div>
 @stop
 @section('scripts')

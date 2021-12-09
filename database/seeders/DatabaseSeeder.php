@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'name' => '0scar Chavez',
-            'email' => 'test@test.com',
+            'email' => 'oscar@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
             'remember_token' => '',
@@ -38,7 +38,111 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'name' => 'Diego Navarrete',
-            'email' => 'empleado@test.com',
+            'email' => 'diego@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'Jose Navarrete',
+            'email' => 'jose@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'Bradon Iriarte',
+            'email' => 'brandon@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'Andres Lopez',
+            'email' => 'andres@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'Mauricio Sosa',
+            'email' => 'mau@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'Ricardo Zuniga',
+            'email' => 'ricado@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'Diego Lozano',
+            'email' => 'diegol@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'David Huerta',
+            'email' => 'davidh@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'Samuel Hernandez',
+            'email' => 'samuel@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'Horacio Martinez',
+            'email' => 'horacio@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'Humberto Roman',
+            'email' => 'humberto@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'Benda Matinez',
+            'email' => 'brenda@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'Pablo Saucedo',
+            'email' => 'pablo@test.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'remember_token' => '',
+        ])->assignRole('Empleado');
+
+        User::create([
+            'name' => 'Ana Lopez',
+            'email' => 'ana@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
             'remember_token' => '',

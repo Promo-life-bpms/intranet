@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users =  User::all();
+        $users =  User::paginate(15);
         return view('admin.user.index', compact('users'));
     }
 
@@ -94,7 +94,7 @@ class UserController extends Controller
 
         $user->roles()->sync($request->roles);
         $users =  User::all();
-        return view('admin.user.index', compact('users'));
+        return redirect()->action([UserController::class, 'index']);
     }
 
     /**
@@ -106,7 +106,6 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-        $users =  User::all();
-        return view('admin.user.index', compact('users'));
+        return redirect()->action([UserController::class, 'index']);
     }
 }

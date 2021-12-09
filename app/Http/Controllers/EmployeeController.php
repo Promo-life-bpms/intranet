@@ -6,7 +6,6 @@ use App\Models\Company;
 use App\Models\Contact;
 use App\Models\Department;
 use App\Models\Employee;
-use App\Models\EmployeePosition;
 use App\Models\Position;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,10 +20,9 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees =  Employee::all();
-        $employePos = EmployeePosition::all();
+        $employees =  Employee::paginate(15);
 
-        return view('admin.employee.index', compact('employees','employePos'));
+        return view('admin.employee.index', compact('employees'));
     }
 
     /**
@@ -69,7 +67,7 @@ class EmployeeController extends Controller
         $employee->jefe_directo_id = $request->jefe;
         $employee->save();
 
-        return redirect()->action(EmployeeController::class, 'index');
+        return redirect()->action([EmployeeController::class, 'index']);
     }
 
     /**
@@ -139,10 +137,7 @@ class EmployeeController extends Controller
     {
         $employee->delete();
 
-        $employees =  Employee::all();
-        $employePos = EmployeePosition::all();
-
-        return view('admin.employee.index', compact('employees','employePos'));
+        return redirect()->action([EmployeeController::class, 'index']);
     }
 
     public function getPositions($id)

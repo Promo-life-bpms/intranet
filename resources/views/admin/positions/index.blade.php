@@ -21,7 +21,7 @@
             <tbody>
                 @foreach ($positions  as $position)
                     <tr>
-                        <td>{{ $position->id }}</td>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $position->name }}</td>
                         <td>{{ $position->department->name }}</td>
                         <td>
@@ -38,9 +38,12 @@
                 @endforeach
 
             </tbody>
-            {{ $positions ->links() }}
-            
+
         </table>
+        {{ $positions ->links() }} 
+    </div>
+
+    <div class="paginator">
     </div>
 @stop
 

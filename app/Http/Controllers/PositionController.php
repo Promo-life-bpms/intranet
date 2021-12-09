@@ -15,8 +15,8 @@ class PositionController extends Controller
      */
     public function index()
     {
-        $positions = Position::paginate(15);
-        $departments = Department::paginate(15);
+        $positions = Position::orderBy('department_id', 'asc')->paginate(15);
+        $departments = Department::all();
         return view('admin.positions.index', compact('positions', 'departments'));
     }
 
@@ -49,8 +49,8 @@ class PositionController extends Controller
         $position->department_id = $request->department;
         $position->save();
 
-        $positions = Position::all();
-        return view('admin.positions.index', compact('positions'));
+        return redirect()->action([PositionController::class, 'index']);
+
     }
 
     /**
@@ -90,8 +90,7 @@ class PositionController extends Controller
 
         $position->update($request->all());
 
-        $positions = Position::all();
-        return view('admin.positions.index', compact('positions'));
+        return redirect()->action([PositionController::class, 'index']);
     }
 
     /**
@@ -103,7 +102,8 @@ class PositionController extends Controller
     public function destroy(Position $position)
     {
         $position->delete();
-        $positions = Position::all();
-        return view('admin.positions.index', compact('positions'));
+        
+        return redirect()->action([PositionController::class, 'index']);
+
     }
 }
