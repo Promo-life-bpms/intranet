@@ -120,7 +120,6 @@ class UserController extends Controller
         $user->password = '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi';
         $user->save();
 
-<<<<<<< HEAD
         $user->employee->birthday_date = $request->birthday_date;
         $user->employee->date_admission = $request->date_admission;
         $user->employee->status = $request->status;
@@ -135,10 +134,6 @@ class UserController extends Controller
         $user->employee->companies()->attach($request->companies);
         $user->employee->positions()->attach($request->position);
 
-=======
-        $user->roles()->sync($request->roles);
-        $users =  User::all();
->>>>>>> c8ceafbb3ca6a0050e8aa43ffccf95c616c96911
         return redirect()->action([UserController::class, 'index']);
     }
 
