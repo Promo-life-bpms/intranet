@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="card-header">
-        <h3>Asignar Manager</h3>
+        <h3>Editar Manager</h3>
     </div>
     <div class="card-body">
         {!! Form::model($manager, ['route' => ['admin.manager.update', $manager], 'method' => 'put']) !!}
