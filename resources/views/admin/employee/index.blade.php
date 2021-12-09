@@ -3,8 +3,8 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Managers</h3>
-            <a href="{{ route('admin.manager.create') }}" type="button" class="btn btn-success">Agregar</a> 
+            <h3>Empleados</h3>
+            <!-- <a href="{{ route('admin.employee.create') }}" type="button" class="btn btn-success">Agregar</a> -->
         </div>
     </div>
     <div class="card-body">
@@ -13,22 +13,30 @@
             <thead>
                 <tr>
                     <th scope="col"># </th>
+                    <th scope="col">Usuario</th>
                     <th scope="col">Nombre</th>
-                    <th scope="col">Departamento</th>
+                    <th scope="col">Apellidos</th>
+                    <th scope="col">Cumpleaños</th>
+                    <th scope="col">Ingreso</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Opciones</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach  ($managers as $manager)
+                @foreach  ($employees as $employee)
                     <tr>
-                        <td>{{ $manager->id }}</td>
-                        <td>{{ $manager->employee->nombre. ' '.$manager->employee->paterno . ' '.$manager->employee->materno  }}</td>
-                        <td>{{ $manager->department->name }}</td>
+                        <td>{{ $employee->id }}</td>
+                        <td>{{ $employee->user->name }}</td>
+                        <td>{{ $employee->nombre }}</td>
+                        <td>{{ $employee->paterno . ' ' . $employee->materno }}</td>
+                        <td>{{ $employee->fecha_cumple }}</td>
+                        <td>{{ $employee->fecha_ingreso }}</td>
+                        <td>{{ $employee->status }}</td>
                         <td>
-                            <a href="{{ route('admin.manager.edit', ['manager' => $manager->id]) }}" type="button"
+                            <a href="{{ route('admin.employee.edit', ['employee' => $employee->id]) }}" type="button"
                                 class="btn btn-primary">Editar</a>
                             <form class="form-delete"
-                                action="{{ route('admin.manager.destroy', ['manager' => $manager->id]) }}"
+                                action="{{ route('admin.employee.destroy', ['employee' => $employee->id]) }}"
                                 method="POST">
                                 @csrf
                                 @method('delete')
@@ -40,7 +48,7 @@
 
             </tbody>
         </table>
-
+        {{$employees ->links() }}
     </div>
 
 

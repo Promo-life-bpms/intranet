@@ -55,11 +55,6 @@
                         </a>
 
                         <ul class="submenu">
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.roles') }}">
-                                    <span>Roles</span>
-                                </a>
-                            </li>
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.organization.index') }}">
@@ -68,10 +63,32 @@
                             </li>
 
                             <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.employee') }}">
+                                    <span>Empleados</span>
+                                </a>
+                            </li>
+
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.manager.index') }}">
+                                    <span>Managers</span>
+                                </a>
+                            </li>
+
+                            <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin') }}">
                                     <span>Usuarios</span>
                                 </a>
                             </li>
+<<<<<<< HEAD
+=======
+
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.roles') }}">
+                                    <span>Roles</span>
+                                </a>
+                            </li>                            
+        
+>>>>>>> c8ceafbb3ca6a0050e8aa43ffccf95c616c96911
                         </ul>
                     </li>
                 @endcan

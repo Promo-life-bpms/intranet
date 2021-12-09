@@ -23,6 +23,7 @@ class Request extends Model
         'human_resources_status'
     ];
 
+
     public function employee()
     {
         return $this->belongsTo(Employee::class);

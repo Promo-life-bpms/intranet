@@ -21,7 +21,7 @@
                     <th scope="col">Motivo</th>
                     <th scope="col">Jefe status </th>
                     <th scope="col">RH status</th>  
-                    @can('rh')
+                    @can('rh.superior')
                     <th scope="col">Opciones</th> 
                     @endcan   
                                       
@@ -41,11 +41,13 @@
                         <td>{{ $request->human_resources_status}}</td>
 
 
-                        @can('rh')
+                        @can('rh.superior')
                         <td>
                             <a href="{{ route('request.edit', ['request' => $request->id]) }}" type="button"
-                                class="btn btn-primary">Editar</a>
-                            
+                                class="btn btn-primary">Detalles</a>
+                        @endcan 
+
+                        @can('rh')
                             <form class="form-delete" action="{{ route('request.destroy', ['request' => $request->id]) }}"
                                 method="POST">
                                 @csrf
@@ -53,8 +55,7 @@
                                 <button type="submit" class="btn btn-danger">Borrar</button>
                             </form>                         
                         </td>
-                        @endcan  
-                       
+                        @endcan 
                     </tr>
                 @endforeach
 
