@@ -52,8 +52,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/about/trademarket', [AboutController::class, 'trademarket'])->name('about_trademarket');
 
     Route::get('/company', [CompanyController::class, 'index'])->name('company');
-    Route::get('company/getPosition/{id}',[CompanyController::class,'getPositions']);
-    Route::get('company/getEmployees',[CompanyController::class,'getEmployees']);
+    Route::get('company/getPosition/{id}', [CompanyController::class, 'getPositions']);
+    Route::get('company/getEmployees', [CompanyController::class, 'getAllEmployees']);
+    Route::get('company/getEmployees/{organization}', [CompanyController::class, 'getEmployeesByCompany']);
 
 
     Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
@@ -66,9 +67,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/request', [RequestController::class, 'index'])->name('request');
 
     Route::get('/work', WorkController::class)->name('work');
-    /* Route::resource('company', CompanyController::class);
+    /*
+    Route::resource('company', CompanyController::class);
     Route::resource('departmens', CompanyController::class);
-    Route::resource('company', CompanyController::class); */
+    Route::resource('company', CompanyController::class);
+    */
 });
 
 
@@ -96,14 +99,7 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->put('/admin/roles/
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->delete('/admin/roles/{role}', [RoleController::class, 'destroy'])->name('admin.roles.destroy');
 
 
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/admin/employees', [EmployeeController::class, 'index'])->name('admin.employee');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/admin/employees/create', [EmployeeController::class, 'create'])->name('admin.employee.create');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->post('/admin/employees/create', [EmployeeController::class, 'store'])->name('admin.employee.store');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/admin/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('admin.employee.edit');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->put('/admin/employees/{employee}', [EmployeeController::class, 'update'])->name('admin.employee.update');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->delete('/admin/employees/{employee}', [EmployeeController::class, 'destroy'])->name('admin.employee.destroy');
-
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('dropdownlist/getPosition/{id}',[EmployeeController::class,'getPositions']);
+Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
 
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/communiques/create', [CommuniqueController::class, 'create'])->name('communique.create');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/communiques', [CommuniqueController::class, 'show'])->name('communique.show');
@@ -140,7 +136,6 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->put('/positions/{p
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->delete('/positions/{position}', [PositionController::class, 'destroy'])->name('admin.position.destroy');
 
 /*
-
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/managers', [DepartmentManagerController::class, 'index'])->name('admin.manager.index');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/managers/create', [DepartmentManagerController::class, 'create'])->name('admin.manager.create');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->post('/managers/create', [DepartmentManagerController::class, 'store'])->name('admin.manager.store');

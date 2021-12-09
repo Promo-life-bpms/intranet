@@ -11,7 +11,7 @@ class Employee extends Model
 
     protected $fillable = [
         'birthday_date',
-        'fecha_ingreso',
+        'date_admission',
         'status',
         'jefe_directo_id'
     ];
@@ -28,7 +28,7 @@ class Employee extends Model
 
     public function positions()
     {
-        return $this->belongsTo(Position::class);
+        return $this->belongsToMany(Position::class);
     }
 
     public function communiques()
@@ -38,7 +38,7 @@ class Employee extends Model
 
     public function jefeDirecto()
     {
-        return $this->hasOne(Employee::class, 'id', 'jefe_directo_id',);
+        return $this->hasOne(Employee::class, 'id', 'jefe_directo_id');
     }
 
     public function subordinados()

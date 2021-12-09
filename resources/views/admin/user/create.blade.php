@@ -48,19 +48,9 @@
                 @enderror
             </div>
             <div class="form-group col-md-4">
-                {!! Form::label('fecha_ingreso', 'Fecha de Ingreso') !!}
-                {!! Form::date('fecha_ingreso', null, ['class' => 'form-control']) !!}
-                @error('fecha_ingreso')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-            <div class="form-group col-md-4">
-                {!! Form::label('fecha_ingreso', 'Fecha de Ingreso') !!}
-                {!! Form::date('fecha_ingreso', null, ['class' => 'form-control']) !!}
-                @error('fecha_ingreso')
+                {!! Form::label('date_admission', 'Fecha de Ingreso') !!}
+                {!! Form::date('date_admission', null, ['class' => 'form-control']) !!}
+                @error('date_admission')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
                     </small>
@@ -82,13 +72,42 @@
                     <br>
                 @enderror
             </div>
-            <div class="col-4">
+            <div class="form-group col-md-4">
                 {!! Form::label('department', 'Departamento') !!}
                 {!! Form::select('department', $departments, null, ['class' => 'form-control', 'placeholder' => 'Selecciona Departamento']) !!}
+                @error('department')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
             </div>
-            <div class="col-4">
+            <div class="form-group col-md-4">
                 {!! Form::label('position', 'Puesto') !!}
                 {!! Form::select('position', $positions, null, ['class' => 'form-control', 'placeholder' => 'Selecciona Puesto']) !!}
+                @error('position')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+            <div class="form-group col-md-4 ">
+                {!! Form::label('empresas', 'Empresas a las que pertenece') !!}
+                @foreach ($companies as $company)
+                    <div>
+                        <label>
+                            {!! Form::checkbox('companies[]', $company->id, null, ['class' => 'mr-4']) !!}
+                            {{ $company->name_company }}
+                        </label>
+                    </div>
+                @endforeach
+                @error('companies')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
             </div>
             <div class="form-group col-md-4">
                 {!! Form::label('roles', 'Roles') !!}
@@ -100,6 +119,12 @@
                         </label>
                     </div>
                 @endforeach
+                @error('roles')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
             </div>
         </div>
         {!! Form::submit('CREAR USUARIO', ['class' => 'btnCreate mt-4']) !!}

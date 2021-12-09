@@ -45,12 +45,17 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        request()->validate([
             'name' => 'required',
             'lastname' => 'required',
-            'email' => 'required'
+            'email' => 'required',
+            'birthday_date' => 'required',
+            'date_admission' => 'required',
+            'department' => 'required',
+            'companies' => 'required',
+            'position' => 'required',
+            'roles' => 'required',
         ]);
-
         $user = new User();
         $user->name = $request->name;
         $user->lastname = $request->lastname;
@@ -58,19 +63,18 @@ class UserController extends Controller
         $user->password = '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi';
         $user->save();
 
-        $user->roles()->sync($request->roles);
-        return redirect()->action([UserController::class, 'index']);
-    }
+        $user->employee->birthday_date = $request->birthday_date;
+        $user->employee->date_admission = $request->date_admission;
+        $user->employee->status = $request->status;
+        $user->employee->jefe_directo_id = $request->jefe;
+        $user->employee->status = 1;
+        $user->employee->save();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        $user->roles()->attach($request->roles);
+        $user->employee->companies()->attach($request->companies);
+        $user->employee->positions()->attach($request->position);
+
+        return redirect()->action([UserController::class, 'index']);
     }
 
     /**
@@ -82,7 +86,11 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = Role::all();
-        return view('admin.user.edit', compact('roles', 'user'));
+        $employees = Employee::all();
+        $departments  = Department::pluck('name', 'id')->toArray();
+        $positions  = Position::pluck('name', 'id')->toArray();
+        $companies = Company::all();
+        return view('admin.user.edit', compact('roles', 'employees', 'departments', 'positions', 'companies', 'user'));
     }
 
     /**
@@ -94,15 +102,37 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
+        request()->validate([
             'name' => 'required',
+            'lastname' => 'required',
             'email' => 'required',
-            'lastname' => 'required'
+            'birthday_date' => 'required',
+            'date_admission' => 'required',
+            'department' => 'required',
+            'companies' => 'required',
+            'position' => 'required',
+            'roles' => 'required',
         ]);
 
-        $user->update($request->all());
+        $user->name = $request->name;
+        $user->lastname = $request->lastname;
+        $user->email = $request->email;
+        $user->password = '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi';
+        $user->save();
 
-        $user->roles()->sync($request->roles);
+        $user->employee->birthday_date = $request->birthday_date;
+        $user->employee->date_admission = $request->date_admission;
+        $user->employee->status = $request->status;
+        $user->employee->jefe_directo_id = $request->jefe;
+        $user->employee->status = 1;
+        $user->employee->save();
+
+        $user->roles()->detach();
+        $user->employee->companies()->detach();
+        $user->employee->positions()->detach();
+        $user->roles()->attach($request->roles);
+        $user->employee->companies()->attach($request->companies);
+        $user->employee->positions()->attach($request->position);
 
         return redirect()->action([UserController::class, 'index']);
     }
@@ -115,8 +145,10 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $user->roles()->detach();
+        $user->employee->companies()->detach();
+        $user->employee->positions()->detach();
         $user->delete();
-
         return redirect()->action([UserController::class, 'index']);
     }
 }

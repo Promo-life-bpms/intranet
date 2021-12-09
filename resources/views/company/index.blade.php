@@ -5,295 +5,37 @@
         <h3>Organigrama</h3>
     </div>
     <div class="card-body">
-        <div id="tree"></div>
-    </div>
-    {{-- <div class="tabs">
-        <input type="radio" id="tab1" name="tab-control" checked>
-        <input type="radio" id="tab2" name="tab-control">
-        <input type="radio" id="tab3" name="tab-control">
-        <input type="radio" id="tab4" name="tab-control">
-        <ul>
-            <li title="Features"><label for="tab1" role="button">
-                    <br><span>BH Trademarket</span></label></li>
-            <li title="Delivery Contents"><label for="tab2" role="button">
-                    <br><span>Promolife</span></label></li>
-            <li title="Shipping"><label for="tab3" role="button">
-                    <br><span>PromoDreams</span></label></li>
-            <li title="Returns"><label for="tab4" role="button">
-                    <br><span>TradeMarket 57</span></label></li>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                    role="tab" aria-controls="home" aria-selected="true">General</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
+                    role="tab" aria-controls="profile" aria-selected="false">Promo Life</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button"
+                    role="tab" aria-controls="contact" aria-selected="false">BH</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button"
+                    role="tab" aria-controls="info" aria-selected="false">Promo Zale</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button"
+                    role="tab" aria-controls="all" aria-selected="false">Trademarket</button>
+            </li>
         </ul>
-        <div class="slider">
-            <div class="indicator"></div>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div id="tree"></div>
+            </div>
+            <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div id="tree"></div>
+            </div>
         </div>
-        <div class="content">
-            <section>
-                {!! Form::open() !!}
-                <div class="row">
-                    <div class="col-4">
-                        {!! Form::label('department', 'Departamento') !!}
-                        {!! Form::select('department', $departments, null, ['class' => 'form-control mt-2', 'placeholder' => 'Selecciona Departamento']) !!}
-                    </div>
-
-                    <div class="row mt-4">
-                        <div class="contenedor">
-
-                            <ul name="position" class="access_list">
-                                <li></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                {!! Form::close() !!}
-            </section>
-
-            <section>
-
-                <div class="row">
-                    <div class="col-4">
-                        <div class="mb-2">
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>Seleccionar area</option>
-                                <option value="1">Ventas</option>
-                                <option value="2">Sistemas</option>
-                                <option value="3">Administradores</option>
-                                <option value="4">Contable</option>
-                                <option value="5">Marketing</option>
-                                <option value="6">Desarrollo</option>
-                            </select>
-                            <br>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="contenedor">
-                            <ul class="access_list" style="padding: 0;">
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section>
-
-                <div class="row">
-                    <div class="col-4">
-                        <div class="mb-2">
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>Seleccionar area</option>
-                                <option value="1">Ventas</option>
-                                <option value="2">Sistemas</option>
-                                <option value="3">Administradores</option>
-                                <option value="4">Contable</option>
-                                <option value="5">Marketing</option>
-                                <option value="6">Desarrollo</option>
-                            </select>
-                            <br>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="contenedor">
-                            <ul class="access_list" style="padding: 0;">
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-
-
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section>
-
-                <div class="row">
-                    <div class="col-4">
-                        <div class="mb-2">
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>Seleccionar area</option>
-                                <option value="1">Ventas</option>
-                                <option value="2">Sistemas</option>
-                                <option value="3">Administradores</option>
-                                <option value="4">Contable</option>
-                                <option value="5">Marketing</option>
-                                <option value="6">Desarrollo</option>
-                            </select>
-                            <br>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="contenedor">
-                            <ul class="access_list" style="padding: 0;">
-                                <li class="access_item">
-                                    <div class="card" style="width: 200px; height:210px;">
-                                        <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                            style="width: 100%; height:140px;  object-fit: contain;" class="card-img-top"
-                                            alt="imagen">
-                                        <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                            <p class="card-title" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Nombre</p>
-                                            <p class="card-text" style=" white-space: nowrap; margin-bottom:5px;">
-                                                Puesto</p>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </div> --}}
+    </div>
 @stop
 
 @section('styles')
@@ -613,8 +355,6 @@
         }
 
     </style>
-
-
 @stop
 
 @section('scripts')
@@ -643,31 +383,11 @@
                 }
             });
         });
-        let values = [{
-                id: 1,
-                pid: null,
-                name: "Amber McKenzie"
-            },
-            {
-                id: 2,
-                pid: 1,
-                name: "Ava Field"
-            }, {
-                id: 3,
-                pid: 1,
-                name: "Peter Stevens"
-            }, {
-                id: 5,
-                pid: 1,
-                name: "Peter Stevens"
-            }
-        ]
-
         obtenerEmpleados()
 
         async function obtenerEmpleados() {
             try {
-                let res = await axios.get("/company/getEmployees/");
+                let res = await axios.get("/company/getEmployees");
                 let data = res.data;
                 var chart = new OrgChart(document.getElementById("tree"), {
                     template: "ula",

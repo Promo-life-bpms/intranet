@@ -2,29 +2,129 @@
 
 @section('content')
     <div class="card-header">
-        <h3>Editar Usuario</h3>
+        <h3>Editar usuario</h3>
     </div>
     <div class="card-body">
         {!! Form::model($user, ['route' => ['admin.user.update', $user], 'method' => 'put']) !!}
-        <div class="form-group">
-            {!! Form::label('name', 'Nombre') !!}
-            {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
-            @error('name')
-                <small>
-                    <font color="red"> *Este campo es requerido* </font>
-                </small>
-                <br>
-            @enderror
-            {!! Form::label('name', 'Correo') !!}
-            {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el correo de acceso']) !!}
-            @error('email')
-                <small>
-                    <font color="red"> *Este campo es requerido* </font>
-                </small>
-                <br>
-            @enderror
+        <div class="row">
+            <div class="form-group col-md-4">
+                {!! Form::label('name', 'Nombre') !!}
+                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
+                @error('name')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+            <div class="form-group col-md-4">
+                {!! Form::label('lastname', 'Apellidos') !!}
+                {!! Form::text('lastname', null, ['class' => 'form-control', 'placeholder' => 'Ingrese los apellidos']) !!}
+                @error('lastname')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+            <div class="form-group col-md-4">
+                {!! Form::label('name', 'Correo') !!}
+                {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el correo de acceso']) !!}
+                @error('email')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+            <div class="form-group col-md-4">
+                {!! Form::label('birthday_date', 'Fecha de Cumpleaños') !!}
+                {!! Form::date('birthday_date', $user->employee->birthday_date, ['class' => 'form-control']) !!}
+                @error('birthday_date')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+            <div class="form-group col-md-4">
+                {!! Form::label('date_admission', 'Fecha de Ingreso') !!}
+                {!! Form::date('date_admission', $user->employee->date_admission, ['class' => 'form-control']) !!}
+                @error('date_admission')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+            <div class="form-group col-md-4">
+                {!! Form::label('jefe', 'Jefe Directo') !!}
+                <select name="jefe" id="" class="form-control">
+                    <option value="">Seleccione</option>
+                    @foreach ($employees as $employee)
+                        <option value="{{ $employee->id }}"
+                            {{ $user->employee->jefe_directo_id == $employee->id ? 'selected' : '' }}>
+                            {{ $employee->user->name }}</option>
+                    @endforeach
+                </select>
+                @error('jefe')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+            <div class="form-group col-md-4">
+                {!! Form::label('department', 'Departamento') !!}
+                {!! Form::select('department', $departments, $user->employee->positions[0]->department->id, ['class' => 'form-control', 'placeholder' => 'Selecciona Departamento']) !!}
+                @error('department')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+            <div class="form-group col-md-4">
+                {!! Form::label('position', 'Puesto') !!}
+                {!! Form::select('position', $positions, $user->employee->positions[0]->id, ['class' => 'form-control', 'placeholder' => 'Selecciona Puesto']) !!}
+                @error('position')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+            <div class="form-group col-md-4 ">
+                {!! Form::label('empresas', 'Empresas a las que pertenece') !!}
+                @foreach ($companies as $company)
+                    <div>
+                        <label>
+                            @php
+                                $checked = false;
+                            @endphp
+                            @foreach ($user->employee->companies as $companyUser)
+                                @if ($company->id == $companyUser->id)
+                                    @php
+                                        $checked = true;
+                                    @endphp
+                                @break
+                            @endif
 
-            <p class="mt-4">Roles</p>
+                @endforeach
+                {!! Form::checkbox('companies[]', $company->id, $checked, ['class' => 'mr-4']) !!}
+                {{ $company->name_company }}
+                </label>
+            </div>
+            @endforeach
+            @error('companies')
+                <small>
+                    <font color="red"> *Este campo es requerido* </font>
+                </small>
+                <br>
+            @enderror
+        </div>
+        <div class="form-group col-md-4">
+            {!! Form::label('roles', 'Roles') !!}
             @foreach ($roles as $role)
                 <div>
                     <label>
@@ -33,10 +133,45 @@
                     </label>
                 </div>
             @endforeach
-
-            {!! Form::submit('ACTUALIZAR USUARIO', ['class' => 'btnCreate mt-4']) !!}
+            @error('roles')
+                <small>
+                    <font color="red"> *Este campo es requerido* </font>
+                </small>
+                <br>
+            @enderror
         </div>
-
-        {!! Form::close() !!}
     </div>
+    {!! Form::submit('CREAR USUARIO', ['class' => 'btnCreate mt-4']) !!}
+    </div>
+
+    {!! Form::close() !!}
+    </div>
+@stop
+
+@section('scripts')
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery('select[name="department"]').on('change', function() {
+                var id = jQuery(this).val();
+                if (id) {
+                    jQuery.ajax({
+                        url: '/dropdownlist/getPosition/' + id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            console.log(data);
+                            jQuery('select[name="position"]').empty();
+                            jQuery.each(data, function(key, value) {
+                                $('select[name="position"]').append('<option value="' +
+                                    key + '">' + value + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('select[name="position"]').empty();
+                }
+            });
+        });
+    </script>
 @stop

@@ -14,6 +14,12 @@
                     <th scope="col">#</th>
                     <th scope="col">Nombre</th>
                     <th scope="col">Correo</th>
+                    <th scope="col">Area</th>
+                    <th scope="col">Puesto</th>
+                    <th scope="col">Empresas</th>
+                    <th scope="col">Ingreso</th>
+                    <th scope="col">Jefe Directo</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Opciones</th>
                 </tr>
             </thead>
@@ -23,6 +29,32 @@
                         <th>{{ $user->id }}</th>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
+                        <td>
+                            @if (count($user->employee->positions) > 0)
+                                {{ $user->employee->positions[0]->department->name }}
+                            @endif
+                        </td>
+                        <td>
+                            @if (count($user->employee->positions) > 0)
+                                {{ $user->employee->positions[0]->name }}
+                            @endif
+                        </td>
+                        <td>
+                            @foreach ($user->employee->companies as $company)
+                                {{ $company->name_company }}
+                            @endforeach
+                        </td>
+                        <td>{{ $user->employee->date_admission }}</td>
+                        <td>
+                            @if ($user->employee->jefeDirecto)
+                                {{ $user->employee->jefeDirecto->user->name }}
+                            @endif
+                        </td>
+                        <td>
+                            @if ($user->employee->jefeDirecto)
+                                {{ $user->employee->status == 1 ? 'Activo' : 'Inactivo' }}
+                            @endif
+                        </td>
                         <td>
                             <a href="{{ route('admin.user.edit', ['user' => $user->id]) }}" type="button"
                                 class="btn btn-primary">EDITAR</a>

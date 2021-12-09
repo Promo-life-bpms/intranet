@@ -12,13 +12,15 @@ use Spatie\Permission\Models\Role as ModelsRole;
 class AdminController extends Controller
 {
 
-    public function contact(){
+    public function contact()
+    {
         $contacts = Contact::all();
         return view('admin.contact.index', compact('contacts'));
     }
- 
 
-    public function contactCreate(){
+
+    public function contactCreate()
+    {
         return view('admin.contact.create');
     }
 
@@ -31,7 +33,7 @@ class AdminController extends Controller
     public function contactStore(Request $request)
     {
         $request->validate([
-            'num_tel'=>'required'
+            'num_tel' => 'required'
         ]);
 
         $contacts = new Contact();
@@ -45,10 +47,9 @@ class AdminController extends Controller
         $contacts = Contact::all();
 
         return view('admin.contact.index', compact('contacts'));
-       
     }
 
-   
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -57,9 +58,7 @@ class AdminController extends Controller
      */
     public function contactEdit(Contact $contact)
     {
-         
         return view('admin.contact.edit', compact('contact'));
-
     }
 
     /**
@@ -78,7 +77,6 @@ class AdminController extends Controller
         $contacts = Contact::all();
 
         return view('admin.contact.index', compact('contacts'));
-       
     }
 
     /**
@@ -107,7 +105,7 @@ class AdminController extends Controller
     public function userStore(Request $request)
     {
         $request->validate([
-            'num_tel'=>'required'
+            'num_tel' => 'required'
         ]);
 
         $contacts = new Contact();
@@ -121,10 +119,5 @@ class AdminController extends Controller
         $contacts = Contact::all();
 
         return view('admin.contact.index', compact('contacts'));
-       
     }
-
-   
-
-
 }

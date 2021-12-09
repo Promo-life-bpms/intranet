@@ -30,7 +30,7 @@ class CreateEmployeeTable extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->date('birthday_date')->nullable();
-            $table->date('fecha_ingreso')->nullable();
+            $table->date('date_admission')->nullable();
             $table->boolean('status')->nullable();
             $table->foreignid('jefe_directo_id')->nullable()->references('id')->on('employees');
             $table->foreignid('user_id')->references('id')->on('users')->onDelete('cascade');
