@@ -20,15 +20,22 @@ class RequestController extends Controller
         $userID = DB::table('employees')->where('id', $id)->value('id');
         $rol = DB::table('model_has_roles')->where('model_id', $id)->value('role_id');
         $rh = DB::table('roles')->where('name', 'RH')->value('id');
+        $superior = DB::table('roles')->where('name', 'Superior')->value('id');
+        $userPosition = DB::table('employee_position')->where('employee_id', $userID )->value('position_id');
+        $position = DB::table('positions')->where('id',$userPosition)->value('department_id');
+        $manager = DB::table('department_manager')->where('department_id', $position)->value('employee_id');
 
-
+        
         if($rol == $rh){
             $requests = ModelsRequest::all();
-            
+        }elseif($rol == $superior) {
+            $requests = ModelsRequest::all()->where('direct_manager_id', $manager );
         }else{
             $requests = ModelsRequest::all()->where('employee_id', $userID );
-        }        
+        }         
               
+    
+
         return view('request.index', compact('requests'));
     }
 

@@ -3,46 +3,51 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Encargados de Departamentos</h3>
-{{--                 <a href="{{ route('admin.department.create') }}" type="button" class="btn btn-success">Agregar</a>
- --}}        </div>
+            <h3>Managers</h3>
+            <a href="{{ route('admin.manager.create') }}" type="button" class="btn btn-success">Agregar</a> 
+        </div>
     </div>
     <div class="card-body">
+
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Empleado</th>
+                    <th scope="col"># </th>
+                    <th scope="col">Nombre</th>
                     <th scope="col">Departamento</th>
+                    <th scope="col">Opciones</th>
                 </tr>
             </thead>
-
             <tbody>
-                {{-- @foreach ($departments  as $department)
+                @foreach  ($managers as $manager)
                     <tr>
-                        <td>{{ $department->id }}</td>
-                        <td>{{ $department->name }}</td>
+                        <td>{{ $manager->id }}</td>
+                        <td>{{ $manager->employee->nombre. ' '.$manager->employee->paterno . ' '.$manager->employee->materno  }}</td>
+                        <td>{{ $manager->department->name }}</td>
                         <td>
-                            <a style="width: 100%;" href="{{ route('admin.department.edit', ['department' => $department->id]) }}"
-                                type="button" class="btn btn-primary">EDITAR</a>
+                            <a href="{{ route('admin.manager.edit', ['manager' => $manager->id]) }}" type="button"
+                                class="btn btn-primary">Editar</a>
                             <form class="form-delete"
-                                action="{{ route('admin.department.destroy', ['department' => $department->id]) }}" method="POST">
+                                action="{{ route('admin.manager.destroy', ['manager' => $manager->id]) }}"
+                                method="POST">
                                 @csrf
                                 @method('delete')
-                                <button style="width: 100%;" type="submit" class="btn btn-danger">BORRAR</button>
+                                <button type="submit" class="btn btn-danger">Borrar</button>
                             </form>
                         </td>
                     </tr>
-                @endforeach --}}
+                @endforeach
 
             </tbody>
         </table>
+
     </div>
+
+
 @stop
 
 @section('scripts')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
         $('.form-delete').submit(function(e) {
             e.preventDefault();
@@ -63,5 +68,6 @@
             })
         });
     </script>
+
 
 @stop
