@@ -15,8 +15,8 @@ class PositionController extends Controller
      */
     public function index()
     {
-        $positions = Position::all();
-        $departments = Department::all();
+        $positions = Position::paginate(15);
+        $departments = Department::paginate(15);
         return view('admin.positions.index', compact('positions', 'departments'));
     }
 

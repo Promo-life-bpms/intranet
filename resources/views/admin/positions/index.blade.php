@@ -38,6 +38,8 @@
                 @endforeach
 
             </tbody>
+            {{ $positions ->links() }}
+            
         </table>
     </div>
 @stop
