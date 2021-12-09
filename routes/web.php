@@ -135,24 +135,14 @@ Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/positions/{p
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->put('/positions/{position}', [PositionController::class, 'update'])->name('admin.position.update');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->delete('/positions/{position}', [PositionController::class, 'destroy'])->name('admin.position.destroy');
 
-<<<<<<< HEAD
-/*
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/managers', [DepartmentManagerController::class, 'index'])->name('admin.manager.index');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/managers/create', [DepartmentManagerController::class, 'create'])->name('admin.manager.create');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->post('/managers/create', [DepartmentManagerController::class, 'store'])->name('admin.manager.store');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/managers/{manager}/edit', [DepartmentManagerController::class, 'edit'])->name('admin.manager.edit');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->put('/managers/{manager}', [DepartmentManagerController::class, 'update'])->name('admin.manager.update');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->delete('/managers/{manager}', [DepartmentManagerController::class, 'destroy'])->name('admin.manager.destroy'); */
-=======
 
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/managers', [ManagerController::class, 'index'])->name('admin.manager.index');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/managers/create', [ManagerController::class, 'create'])->name('admin.manager.create');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->post('/managers', [ManagerController::class, 'store'])->name('admin.manager.store');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('/managers/{manager}/edit', [ManagerController::class, 'edit'])->name('admin.manager.edit');
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->put('/managers/{manager}', [ManagerController::class, 'update'])->name('admin.manager.update');
-Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->delete('/managers/{manager}', [ManagerController::class, 'destroy'])->name('admin.manager.destroy'); 
+Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->delete('/managers/{manager}', [ManagerController::class, 'destroy'])->name('admin.manager.destroy');
 
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('manager/getPosition/{id}',[ManagerController::class,'getPosition']);
 Route::middleware(['auth:sanctum', 'verified', 'can:admin'])->get('manager/getEmployee/{id}',[ManagerController::class,'getEmployee']);
 
->>>>>>> c8ceafbb3ca6a0050e8aa43ffccf95c616c96911
