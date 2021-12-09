@@ -2,108 +2,42 @@
 
 @section('content')
     <div class="card-header">
-        <h3>Asignar nuevo Manager</h3>
+        <h3>Asignar Manager</h3>
     </div>
     <div class="card-body">
-        {!! Form::model($employee, ['route' => ['admin.employee.update', $employee], 'method' => 'put']) !!}
-        <div class="row">
-            <div class="col">
-                {!! Form::label('nombre', 'Nombre del Empleado') !!}
-                {!! Form::text('nombre', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre ']) !!}
-                @error('nombre')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-        </div>
+        {!! Form::model($manager, ['route' => ['admin.manager.update', $manager], 'method' => 'put']) !!}
 
-        <div class="row mt-4">
-            <div class="col-6">
-                {!! Form::label('paterno', 'Apellido Paterno') !!}
-                {!! Form::text('paterno', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el/los nombres ']) !!}
-                @error('paterno')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
+        <div class="row ">
 
-            <div class="col-6">
-                {!! Form::label('materno', 'Apellido Materno') !!}
-                {!! Form::text('materno', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el/los nombres ']) !!}
-                @error('materno')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-6">
-                {!! Form::label('fecha_cumple', 'Fecha de Cumpleaños') !!}
-                {!! Form::date('fecha_cumple', null, ['class' => 'form-control']) !!}
-                @error('fecha_cumple')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-            <div class="col-6">
-                {!! Form::label('fecha_ingreso', 'Fecha de Ingreso') !!}
-                {!! Form::date('fecha_ingreso', null, ['class' => 'form-control']) !!}
-                @error('fecha_ingreso')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-        </div>
-
-        <div class="row mt-4">
             <div class="col-4">
-                {!! Form::label('status', 'Status') !!}
-                {!! Form::select('status', ['1' => 'Activo', '0' => 'No Activo'], null, ['class' => 'form-control']) !!}
-                @error('status')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
+                {!! Form::label('department_id', 'Departamento') !!}
+                {!! Form::select('department_id', $departments, null, ['class' => 'form-control','placeholder'=>'Selecciona Departamento']) !!}
+                @error('department_id')
+                <small>
+                    <font color="red"> *Este campo es requerido* </font>
+                </small>
+                <br>
                 @enderror
+
             </div>
+            
             <div class="col-4">
-                {!! Form::label('department', 'Departamento') !!}
-                {!! Form::select('department', $departments, null, ['class' => 'form-control','placeholder'=>'Selecciona Departamento']) !!}
-            </div>
-            <div class="col-4">
-                {!! Form::label('position', 'Puesto') !!}
-                {!! Form::select('position', $positions, null, ['class' => 'form-control','placeholder'=>'Selecciona Puesto']) !!}
+                {!! Form::label('position', 'Puesto actual') !!}
+                {!! Form::select('position', $positions, null, ['class' => 'form-control','placeholder'=>'Selecciona un Puesto']) !!}
             </div> 
 
-        </div>
+            <div class="col-4">
+                {!! Form::label('employee_id', 'Nombre del Empleado') !!}
+                {!! Form::select('employee_id', $employees, null, ['class' => 'form-control','placeholder'=>'Selecciona un Empleado']) !!}
+                @error('employee_id')
+                <small>
+                    <font color="red"> *Este campo es requerido* </font>
+                </small>
+                <br>
+                @enderror
+            </div> 
+            {!! Form::submit('ACTUALIZAR MANAGER', ['class' => 'btnCreate mt-4']) !!}
 
-        <div class="row">
-            <div class="col mt-4">
-                <div class="col mt-4">
-                    <h5>Empresas a las que pertenece</h5>                    
-                    @foreach ($companies as $company)
-                    <div>
-                        <label>
-                            {!! Form::checkbox('companies[]', $company->id, null, ['class' => 'mr-4']) !!}
-                            {{ $company->name_company }}
-                        </label>
-                    </div>
-                @endforeach
-                {!! Form::submit('ACTUALIZAR EMPLEADO', ['class' => 'btnCreate mt-4']) !!}
-
-                </div>
-            </div>
         </div>
         {!! Form::close() !!}
     </div>
@@ -111,36 +45,66 @@
 
 @stop
 
-
 @section('scripts')
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
+<script type="text/javascript">
+   jQuery(document).ready(function ()
+   {
+           jQuery('select[name="department_id"]').on('change',function(){
+              var id = jQuery(this).val();
+              if(id)
+              {
+                 jQuery.ajax({
+                    url : '/manager/getPosition/' +id,
+                    type : "GET",
+                    dataType : "json",
+                    success:function(data)
+                    {
+                       console.log(data);
+                       jQuery('select[name="position"]').empty();
+                       jQuery.each(data, function(key,value){
+                          $('select[name="position"]').append('<option value="'+ key +'">'+ value +'</option>');
+                       });
+                    }
+                 });
+              }
+              else
+              {
+                 $('select[name="position"]').empty();
+              }
+           });
+   });
+</script>
+
+
 <script type="text/javascript">
     jQuery(document).ready(function ()
     {
-            jQuery('select[name="department"]').on('change',function(){
+            jQuery('select[name="position"]').on('change',function(){
                var id = jQuery(this).val();
                if(id)
                {
                   jQuery.ajax({
-                     url : '/dropdownlist/getPosition/' +id,
+                     url : '/manager/getEmployee/' +id,
                      type : "GET",
                      dataType : "json",
                      success:function(data)
                      {
                         console.log(data);
-                        jQuery('select[name="position"]').empty();
+                        jQuery('select[name="employee_id"]').empty();
                         jQuery.each(data, function(key,value){
-                           $('select[name="position"]').append('<option value="'+ key +'">'+ value +'</option>');
+                           $('select[name="employee_id"]').append('<option value="'+ key +'">'+ value +'</option>');
                         });
                      }
                   });
                }
                else
                {
-                  $('select[name="position"]').empty();
+                  $('select[name="employee_id"]').empty();
                }
             });
     });
-</script>
+ </script>
 @stop
+
 

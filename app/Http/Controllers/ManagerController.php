@@ -8,7 +8,6 @@ use App\Models\EmployeePosition;
 use App\Models\Manager;
 use App\Models\Position;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ManagerController extends Controller
 {
@@ -32,8 +31,6 @@ class ManagerController extends Controller
      */
     public function create()
     {
-        
-
         $positions  = Position::pluck('name', 'id')->toArray();
         $departments  = Department::pluck('name', 'id')->toArray();
         $employees = Employee::pluck('nombre', 'id')->toArray();
@@ -73,11 +70,12 @@ class ManagerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-
-        
-        return view('admin.manager.edit');
+    public function edit(Manager $manager)
+    {   
+        $positions  = Position::pluck('name', 'id')->toArray();
+        $departments  = Department::pluck('name', 'id')->toArray();
+        $employees = Employee::pluck('nombre', 'id')->toArray();
+        return view('admin.manager.edit',compact('positions','departments','employees','manager'));
 
     }
 
@@ -88,9 +86,17 @@ class ManagerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Manager $manager)
     {
-        //
+        
+        $request->validate([
+            'employee_id'=>'required',
+            'department_id'=>'required'
+        ]);
+
+        $manager->update($request->all());
+
+        return redirect()->action([ManagerController::class, 'index']);
     }
 
     /**
@@ -99,9 +105,11 @@ class ManagerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy( Manager $manager)
     {
-        //
+        $manager->delete();
+        return redirect()->action([ManagerController::class, 'index']);
+
     }
 
     public function getPosition($id) 

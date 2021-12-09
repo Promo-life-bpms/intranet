@@ -11,6 +11,13 @@ class Manager extends Model
 
     public $table = "department_manager";
 
+    protected $fillable = [
+        'id',
+        'employee_id',
+        'department_id'
+    ];
+
+
 
     public function employee()
     {
