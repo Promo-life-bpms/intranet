@@ -76,9 +76,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
 
     Route::resource('communiques', CommuniqueController::class);
-    Route::resource('request', RequestController::class);
+    Route::resource('request', RequestController::class)->except('show');
+    Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
+    Route::get('request/show-all', [RequestController::class, 'showAll'])->name('request.showAll');
 
-    Route::middleware(['can:admin'])->get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
-    Route::middleware(['can:admin'])->get('manager/getPosition/{id}', [ManagerController::class, 'getPosition']);
-    Route::middleware(['can:admin'])->get('manager/getEmployee/{id}', [ManagerController::class, 'getEmployee']);
+    Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
+    Route::get('manager/getPosition/{id}', [ManagerController::class, 'getPosition']);
+    Route::get('manager/getEmployee/{id}', [ManagerController::class, 'getEmployee']);
 });

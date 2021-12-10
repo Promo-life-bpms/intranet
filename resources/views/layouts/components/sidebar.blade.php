@@ -124,7 +124,26 @@
                         </li>
                     </ul>
                 </li>
-
+                @can('rh')
+                    <li class="sidebar-item has-sub">
+                        <a href="#" class='sidebar-link'>
+                            <i class="bi bi-info-circle-fill"></i>
+                            <span>Gestion de ausencias</span>
+                        </a>
+                        <ul class="submenu ">
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('request.showAll') }}">
+                                    <span>Ver solicitudes</span>
+                                </a>
+                            </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('about_trade') }}">
+                                    <span>Reportes de ausencias</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
                 <li class="sidebar-item {{ request()->is('company') ? 'active' : '' }}">
                     <a href="{{ route('company') }}" class='sidebar-link'>
                         <i class="bi bi-diagram-3-fill"></i>
@@ -231,16 +250,11 @@
                         </li>
                         @if (count(auth()->user()->employee->subordinados) > 0)
                             <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('request.index') }}">
+                                <a class="dropdown-item" href="{{ route('request.authorizeManager') }}">
                                     <span>Autorizar Solicitudes</span>
                                 </a>
                             </li>
                         @endif
-                        <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('request.index') }}">
-                                <span>Revisar Solicitudes</span>
-                            </a>
-                        </li>
                     </ul>
 
                 </li>

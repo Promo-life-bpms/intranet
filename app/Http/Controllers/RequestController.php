@@ -20,11 +20,16 @@ class RequestController extends Controller
         return view('request.index', compact('requests'));
     }
 
-    public function authorizeRequest()
+    public function authorizeRequestManager()
     {
-        $requests = auth()->user()->employee->yourRequests;
-        dd($requests);
+        $requests = auth()->user()->employee->yourAuthRequests;
         return view('request.authorize', compact('requests'));
+    }
+
+    public function showAll()
+    {
+        $requests = ModelsRequest::where('jefe_status', '=', 1);
+        return view('request.show', compact('requests'));
     }
 
     /**
@@ -45,6 +50,9 @@ class RequestController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->user()->employee->jefe_directo_id == null) {
+            return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado');
+        }
         $request->validate([
             'type_request' => 'required',
             'payment' => 'required',
@@ -53,14 +61,8 @@ class RequestController extends Controller
             'reason' => 'required'
         ]);
 
-        $id = Auth::user()->id;
-        $userID = DB::table('employees')->where('id', $id)->value('id');
-        $userPosition = DB::table('employee_position')->where('employee_id', $userID)->value('position_id');
-        $position = DB::table('positions')->where('id', $userPosition)->value('department_id');
-        // $manager = DB::table('department_manager')->where('department_id', $position)->value('employee_id');
-
         $req = new ModelsRequest();
-        $req->employee_id = $userID;
+        $req->employee_id = auth()->user()->employee->id;
         $req->type_request = $request->type_request;
         $req->payment = $request->payment;
         $req->absence = $request->absence;

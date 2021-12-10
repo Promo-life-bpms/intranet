@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Chavez',
             'email' => 'test@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Admin');
 
@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Navarrete',
             'email' => 'empleado@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Navarrete',
             'email' => 'jose@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Iriarte',
             'email' => 'brandon@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -70,7 +70,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Lopez',
             'email' => 'andres@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -79,7 +79,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Sosa',
             'email' => 'mau@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -88,7 +88,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Zuniga',
             'email' => 'ricado@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -97,7 +97,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Lozano',
             'email' => 'diegol@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -106,7 +106,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Huerta',
             'email' => 'davidh@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -115,7 +115,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Hernandez',
             'email' => 'samuel@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -124,7 +124,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Martinez',
             'email' => 'horacio@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -133,7 +133,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Roman',
             'email' => 'humberto@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -142,7 +142,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Matinez',
             'email' => 'brenda@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -151,7 +151,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Saucedo',
             'email' => 'pablo@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 
@@ -160,7 +160,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Lopez',
             'email' => 'ana@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->assignRole('Empleado');
 

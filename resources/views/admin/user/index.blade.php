@@ -59,7 +59,7 @@
                             <a href="{{ route('admin.users.edit', ['user' => $user->id]) }}" type="button"
                                 class="btn btn-primary">EDITAR</a>
 
-                            <form class="form-delete" action="{{ route('admin.user.destroy', ['user' => $user->id]) }}"
+                            <form class="form-delete" action="{{ route('admin.users.destroy', ['user' => $user->id]) }}"
                                 method="POST">
                                 @csrf
                                 @method('delete')

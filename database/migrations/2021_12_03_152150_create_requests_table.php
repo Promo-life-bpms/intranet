@@ -21,8 +21,7 @@ class CreateRequestsTable extends Migration
             $table->date('absence');
             $table->date('admission');
             $table->string('reason');
-            $table->unsignedBigInteger('direct_manager_id');
-            $table->foreign('direct_manager_id')->references('id')->on('employees')->onDelete('cascade');
+            $table->foreignId('direct_manager_id')->references('id')->on('employees');
             $table->string('direct_manager_status');
             $table->string('human_resources_status');
             $table->timestamps();
