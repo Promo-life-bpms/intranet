@@ -32,6 +32,7 @@ class CreateEmployeeTable extends Migration
             $table->date('birthday_date')->nullable();
             $table->date('date_admission')->nullable();
             $table->boolean('status')->nullable();
+            $table->foreignId('position_id')->nullable()->constrained();
             $table->foreignid('jefe_directo_id')->nullable()->references('id')->on('employees');
             $table->foreignid('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

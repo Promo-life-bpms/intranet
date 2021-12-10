@@ -12,7 +12,6 @@ class Request extends Model
     public $table = "requests";
 
     protected $fillable = [
-        'id',
         'type_request',
         'payment',
         'absence',
@@ -20,7 +19,8 @@ class Request extends Model
         'reason',
         'direct_manager_id',
         'direct_manager_status',
-        'human_resources_status'
+        'human_resources_status',
+        'employee_id'
     ];
 
 
@@ -33,6 +33,4 @@ class Request extends Model
     {
         return $this->belongsTo(Employee::class);
     }
-
-
 }

@@ -5,7 +5,7 @@
         <h3>Actualizar Departamento</h3>
     </div>
     <div class="card-body">
-        {!! Form::model($department, ['route' => ['admin.department.update', $department], 'method' => 'put']) !!}
+        {!! Form::model($department, ['route' => ['admin.departments.update', $department], 'method' => 'put']) !!}
             <div class="row">
                 <div class="col">
                     {!! Form::label('name', 'Nombre departamento') !!}

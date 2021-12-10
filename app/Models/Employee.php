@@ -13,7 +13,8 @@ class Employee extends Model
         'birthday_date',
         'date_admission',
         'status',
-        'jefe_directo_id'
+        'jefe_directo_id',
+        'position_id'
     ];
 
     public function user()
@@ -21,14 +22,19 @@ class Employee extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function yourRequests()
+    {
+        return $this->hasMany(Request::class);
+    }
+
     public function companies()
     {
         return $this->belongsToMany(Company::class);
     }
 
-    public function positions()
+    public function position()
     {
-        return $this->belongsToMany(Position::class);
+        return $this->belongsTo(Position::class);
     }
 
     public function communiques()

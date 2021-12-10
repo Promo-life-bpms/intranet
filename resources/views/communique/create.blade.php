@@ -10,7 +10,7 @@
                 {{ session('message') }}
             </div>
         @endif
-        <form action="{{ route('communique.store') }}" enctype="multipart/form-data" method="POST">
+        <form action="{{ route('communiques.store') }}" enctype="multipart/form-data" method="POST">
             @csrf
             @method('POST')
             <div class="row">

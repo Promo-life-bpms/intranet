@@ -5,7 +5,7 @@
         <h3>Editar Contacto</h3>
     </div>
     <div class="card-body">
-        <form action="{{ route('admin.contact.update', $contact) }}" enctype="multipart/form-data" method="POST">
+        <form action="{{ route('admin.contacts.update', $contact) }}" enctype="multipart/form-data" method="POST">
             @csrf
             @method('PUT')
             <label for="exampleFormControlInput1" class="form-label mt-4"> Telefono </label>

@@ -4,7 +4,7 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Lista de usuarios</h3>
-            <a href="{{ route('admin.user.create') }}" type="button" class="btn btn-success">Agregar</a>
+            <a href="{{ route('admin.users.create') }}" type="button" class="btn btn-success">Agregar</a>
         </div>
     </div>
     <div class="card-body">
@@ -30,13 +30,13 @@
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>
-                            @if (count($user->employee->positions) > 0)
-                                {{ $user->employee->positions[0]->department->name }}
+                            @if ($user->employee->position)
+                                {{ $user->employee->position->department->name }}
                             @endif
                         </td>
                         <td>
-                            @if (count($user->employee->positions) > 0)
-                                {{ $user->employee->positions[0]->name }}
+                            @if ($user->employee->position)
+                                {{ $user->employee->position->name }}
                             @endif
                         </td>
                         <td>
@@ -56,7 +56,7 @@
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('admin.user.edit', ['user' => $user->id]) }}" type="button"
+                            <a href="{{ route('admin.users.edit', ['user' => $user->id]) }}" type="button"
                                 class="btn btn-primary">EDITAR</a>
 
                             <form class="form-delete" action="{{ route('admin.user.destroy', ['user' => $user->id]) }}"
@@ -70,8 +70,7 @@
                 @endforeach
             </tbody>
         </table>
-
-        {{$users ->links() }}
+        {{ $users->links() }}
     </div>
 @stop
 @section('scripts')
@@ -97,6 +96,4 @@
             })
         });
     </script>
-
-
 @stop

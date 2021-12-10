@@ -4,7 +4,7 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Departamentos</h3>
-                <a href="{{ route('admin.department.create') }}" type="button" class="btn btn-success">Agregar</a>
+                <a href="{{ route('admin.departments.create') }}" type="button" class="btn btn-success">Agregar</a>
         </div>
     </div>
     <div class="card-body">
@@ -23,10 +23,10 @@
                         <td>{{ $department->id }}</td>
                         <td>{{ $department->name }}</td>
                         <td>
-                            <a style="width: 100%;" href="{{ route('admin.department.edit', ['department' => $department->id]) }}"
+                            <a style="width: 100%;" href="{{ route('admin.departments.edit', ['department' => $department->id]) }}"
                                 type="button" class="btn btn-primary">EDITAR</a>
                             <form class="form-delete"
-                                action="{{ route('admin.department.destroy', ['department' => $department->id]) }}" method="POST">
+                                action="{{ route('admin.departments.destroy', ['department' => $department->id]) }}" method="POST">
                                 @csrf
                                 @method('delete')
                                 <button style="width: 100%;" type="submit" class="btn btn-danger">BORRAR</button>

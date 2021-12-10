@@ -28,8 +28,8 @@ class CompanyController extends Controller
         $dataEmployees = [];
         foreach ($employees as $employee) {
             $position = '';
-            if (count($employee->positions) > 0) {
-                $position = $employee->positions[0]->name;
+            if ($employee->positions > 0) {
+                $position = $employee->positions->name;
             }
             array_push($dataEmployees, [
                 "id" => $employee->id,

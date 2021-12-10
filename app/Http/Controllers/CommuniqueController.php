@@ -47,7 +47,8 @@ class CommuniqueController extends Controller
             'files' => 'required',
             'description' => 'required'
         ]);
-        if ($request->companies == '' || $request->departments == '') {
+
+        if (!$request->companies  && !$request->departments) {
             return back()->with('message', 'No es posible registrar el comunicado por que no has seleccionado a los destinatarios');
         }
         $imagen = $request->file("images");

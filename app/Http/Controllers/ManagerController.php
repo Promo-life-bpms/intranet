@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\EmployeePosition;
 use App\Models\Manager;
 use App\Models\Position;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ManagerController extends Controller
@@ -17,11 +18,11 @@ class ManagerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {      
+    {
         $managers = Manager::all();
         $positions = Position::all();
 
-        return view('admin.manager.index',compact('managers','positions'));
+        return view('admin.manager.index', compact('managers', 'positions'));
     }
 
     /**
@@ -33,8 +34,8 @@ class ManagerController extends Controller
     {
         $positions  = Position::pluck('name', 'id')->toArray();
         $departments  = Department::pluck('name', 'id')->toArray();
-        $employees = Employee::pluck('nombre', 'id')->toArray();
-        return view('admin.manager.create', compact('positions','departments','employees'));
+        $employees = User::pluck('name', 'id')->toArray();
+        return view('admin.manager.create', compact('positions', 'departments', 'employees'));
     }
 
     /**
@@ -46,22 +47,11 @@ class ManagerController extends Controller
     public function store(Request $request)
     {
         $manager = new Manager();
-        $manager -> employee_id = $request-> employee_id;
-        $manager -> department_id = $request ->department_id;
+        $manager->employee_id = $request->employee_id;
+        $manager->department_id = $request->department_id;
         $manager->save();
 
         return redirect()->action([ManagerController::class, 'index']);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -71,12 +61,11 @@ class ManagerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(Manager $manager)
-    {   
+    {
         $positions  = Position::pluck('name', 'id')->toArray();
         $departments  = Department::pluck('name', 'id')->toArray();
         $employees = Employee::pluck('nombre', 'id')->toArray();
-        return view('admin.manager.edit',compact('positions','departments','employees','manager'));
-
+        return view('admin.manager.edit', compact('positions', 'departments', 'employees', 'manager'));
     }
 
     /**
@@ -88,14 +77,12 @@ class ManagerController extends Controller
      */
     public function update(Request $request, Manager $manager)
     {
-        
         $request->validate([
-            'employee_id'=>'required',
-            'department_id'=>'required'
+            'employee_id' => 'required',
+            'department_id' => 'required'
         ]);
 
         $manager->update($request->all());
-
         return redirect()->action([ManagerController::class, 'index']);
     }
 
@@ -105,25 +92,23 @@ class ManagerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy( Manager $manager)
+    public function destroy(Manager $manager)
     {
         $manager->delete();
         return redirect()->action([ManagerController::class, 'index']);
-
     }
 
-    public function getPosition($id) 
-    {               
-      
-        $positions = Position::all()->where('department_id', $id )->pluck('name','id');
+    public function getPosition($id)
+    {
+        $positions = Position::all()->where('department_id', $id)->pluck('name', 'id');
         return json_encode($positions);
     }
 
-    public function getEmployee($id){
-        $employeesPos = EmployeePosition::all()->where('position_id', $id )->pluck('employee_id','id');
-/*         $employeesPos = DB::table('employee_position')->whereIn('position_id', $id )->value('employee_id');         
- */        
-        $employee = Employee::all()->whereIn('id', $employeesPos  )->pluck('nombre','id');
-        return json_encode($employee );
+    public function getEmployee($id)
+    {
+        $employeesPos = EmployeePosition::all()->where('position_id', $id)->pluck('employee_id', 'id');
+        // $employeesPos = DB::table('employee_position')->whereIn('position_id', $id)->value('employee_id');
+        $employee = Employee::all()->whereIn('id', $employeesPos)->pluck('nombre', 'id');
+        return json_encode($employee);
     }
 }

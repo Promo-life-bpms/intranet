@@ -4,7 +4,7 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Comunicados</h3>
-            <a href="{{ route('communique.create') }}" type="button" class="btn btn-success">Agregar</a>
+            <a href="{{ route('communiques.create') }}" type="button" class="btn btn-success">Agregar</a>
         </div>
     </div>
     <div class="card-body">
@@ -27,10 +27,10 @@
                         <td>{{ $communique->images }}</td>
                         <td>{{ $communique->description }}</td>
                         <td>
-                            <a href="{{ route('communique.edit', ['communique' => $communique->id]) }}" type="button"
+                            <a href="{{ route('communiques.edit', ['communique' => $communique->id]) }}" type="button"
                                 class="btn btn-primary">Editar</a>
 
-                            <form class="form-delete" action="{{ route('communique.destroy', ['communique' => $communique->id]) }}"
+                            <form class="form-delete" action="{{ route('communiques.destroy', ['communique' => $communique->id]) }}"
                                 method="POST">
                                 @csrf
                                 @method('delete')

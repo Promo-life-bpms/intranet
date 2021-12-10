@@ -4,9 +4,9 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Directorio telefonico y correos</h3>
-            @can('sistemas')
-                <a href="{{ route('admin.contact.create') }}" type="button" class="btn btn-success">Agregar</a>
-            @endcan
+            {{-- @can('sistemas')
+                <a href="{{ route('admin.contacts.create') }}" type="button" class="btn btn-success">Agregar</a>
+            @endcan --}}
         </div>
     </div>
     <div class="card-body">
@@ -36,21 +36,18 @@
                         <td>{{ $contact->correo2 }}</td>
                         <td>{{ $contact->correo3 }}</td>
                         <td>{{ $contact->correo4 }}</td>
-                        <td>
-
-                            @can('sistemas')
-                                <a style="width: 100%;" href="{{ route('admin.contact.edit', ['contact' => $contact->id]) }}"
+                        @can('sistemas')
+                            <td>
+                                <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                     type="button" class="btn btn-primary">EDITAR</a>
-                                <form class="form-delete"
+                                {{-- <form class="form-delete"
                                     action="{{ route('admin.contact.destroy', ['contact' => $contact->id]) }}" method="POST">
                                     @csrf
                                     @method('delete')
                                     <button style="width: 100%;" type="submit" class="btn btn-danger">BORRAR</button>
-                                </form>
-                            @endcan
-                            
-
-                        </td>
+                                </form> --}}
+                            </td>
+                        @endcan
                     </tr>
                 @endforeach
 

@@ -68,11 +68,12 @@ class UserController extends Controller
         $user->employee->status = $request->status;
         $user->employee->jefe_directo_id = $request->jefe;
         $user->employee->status = 1;
+        $user->employee->position_id = $request->position;
         $user->employee->save();
 
         $user->roles()->attach($request->roles);
         $user->employee->companies()->attach($request->companies);
-        $user->employee->positions()->attach($request->position);
+        // $user->employee->positions()->attach($request->position);
 
         return redirect()->action([UserController::class, 'index']);
     }
@@ -125,14 +126,15 @@ class UserController extends Controller
         $user->employee->status = $request->status;
         $user->employee->jefe_directo_id = $request->jefe;
         $user->employee->status = 1;
+        $user->employee->position_id = $request->position;
         $user->employee->save();
 
         $user->roles()->detach();
         $user->employee->companies()->detach();
-        $user->employee->positions()->detach();
+        // $user->employee->positions()->detach();
         $user->roles()->attach($request->roles);
         $user->employee->companies()->attach($request->companies);
-        $user->employee->positions()->attach($request->position);
+        // $user->employee->positions()->attach($request->position);
 
         return redirect()->action([UserController::class, 'index']);
     }

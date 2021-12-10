@@ -48,7 +48,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Empleado');
 
         User::create([
-            'name' => 'Jose Navarrete',
+            'name' => 'Jose',
+            'lastname' => 'Navarrete',
             'email' => 'jose@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -57,6 +58,7 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'name' => 'Bradon Iriarte',
+            'lastname' => 'Iriarte',
             'email' => 'brandon@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -64,7 +66,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Empleado');
 
         User::create([
-            'name' => 'Andres Lopez',
+            'name' => 'Andres',
+            'lastname' => 'Lopez',
             'email' => 'andres@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -72,7 +75,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Empleado');
 
         User::create([
-            'name' => 'Mauricio Sosa',
+            'name' => 'Mauricio',
+            'lastname' => 'Sosa',
             'email' => 'mau@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -80,7 +84,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Empleado');
 
         User::create([
-            'name' => 'Ricardo Zuniga',
+            'name' => 'Ricardo',
+            'lastname' => 'Zuniga',
             'email' => 'ricado@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -88,7 +93,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Empleado');
 
         User::create([
-            'name' => 'Diego Lozano',
+            'name' => 'Diego',
+            'lastname' => 'Lozano',
             'email' => 'diegol@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -96,7 +102,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Empleado');
 
         User::create([
-            'name' => 'David Huerta',
+            'name' => 'David',
+            'lastname' => 'Huerta',
             'email' => 'davidh@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -104,7 +111,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Empleado');
 
         User::create([
-            'name' => 'Samuel Hernandez',
+            'name' => 'Samuel',
+            'lastname' => 'Hernandez',
             'email' => 'samuel@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -112,7 +120,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Empleado');
 
         User::create([
-            'name' => 'Horacio Martinez',
+            'name' => 'Horacio',
+            'lastname' => 'Martinez',
             'email' => 'horacio@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -120,7 +129,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Empleado');
 
         User::create([
-            'name' => 'Humberto Roman',
+            'name' => 'Humberto ',
+            'lastname' => 'Roman',
             'email' => 'humberto@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -128,7 +138,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Empleado');
 
         User::create([
-            'name' => 'Benda Matinez',
+            'name' => 'Benda',
+            'lastname' => 'Matinez',
             'email' => 'brenda@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -136,7 +147,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Empleado');
 
         User::create([
-            'name' => 'Pablo Saucedo',
+            'name' => 'Pablo',
+            'lastname' => 'Saucedo',
             'email' => 'pablo@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -144,7 +156,8 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Empleado');
 
         User::create([
-            'name' => 'Ana Lopez',
+            'name' => 'Ana',
+            'lastname' => 'Lopez',
             'email' => 'ana@test.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
@@ -154,491 +167,486 @@ class DatabaseSeeder extends Seeder
         /* Empresas */
 
         Company::create([
-            'name_company'=> 'Promolife',
-            'description_company'=> 'San Andrés Atoto No. 155 Piso 1 Local B, 53550 Naucalpan de Juárez, México'
+            'name_company' => 'Promolife',
+            'description_company' => 'San Andrés Atoto No. 155 Piso 1 Local B, 53550 Naucalpan de Juárez, México'
         ]);
 
         Company::create([
-            'name_company'=> 'BH Trademarket',
-            'description_company'=> 'San Andrés Atoto No. 155 Piso 1 Local B, 53550 Naucalpan de Juárez, México'
+            'name_company' => 'BH Trademarket',
+            'description_company' => 'San Andrés Atoto No. 155 Piso 1 Local B, 53550 Naucalpan de Juárez, México'
         ]);
 
         Company::create([
-            'name_company'=> 'Promodreams',
-            'description_company'=> 'San Andrés Atoto No. 155 Piso 1 Local B, 53550 Naucalpan de Juárez, México'
+            'name_company' => 'Promodreams',
+            'description_company' => 'San Andrés Atoto No. 155 Piso 1 Local B, 53550 Naucalpan de Juárez, México'
         ]);
 
         Company::create([
-            'name_company'=> 'Trademarket',
-            'description_company'=> 'San Andrés Atoto No. 155 Piso 1 Local B, 53550 Naucalpan de Juárez, México'
+            'name_company' => 'Trademarket',
+            'description_company' => 'San Andrés Atoto No. 155 Piso 1 Local B, 53550 Naucalpan de Juárez, México'
         ]);
 
         /* Departamentos */
 
         Department::Create([
-            'id'=>1,
-            'name'=>'Recursos Humanos'
+            'id' => 1,
+            'name' => 'Recursos Humanos'
         ]);
 
         Department::Create([
-            'id'=>2,
-            'name'=>'Administracion'
+            'id' => 2,
+            'name' => 'Administracion'
         ]);
 
         Department::Create([
-            'id'=>3,
-            'name'=>'Ventas BH'
+            'id' => 3,
+            'name' => 'Ventas BH'
         ]);
 
         Department::Create([
-            'id'=>4,
-            'name'=>'Importaciones'
+            'id' => 4,
+            'name' => 'Importaciones'
         ]);
 
         Department::Create([
-            'id'=>5,
-            'name'=>'Diseno'
+            'id' => 5,
+            'name' => 'Diseno'
         ]);
 
         Department::Create([
-            'id'=>6,
-            'name'=>'Sistemas'
+            'id' => 6,
+            'name' => 'Sistemas'
         ]);
 
         Department::Create([
-            'id'=>7,
-            'name'=>'Operaciones'
+            'id' => 7,
+            'name' => 'Operaciones'
         ]);
 
         Department::Create([
-            'id'=>8,
-            'name'=>'Ventas PL'
+            'id' => 8,
+            'name' => 'Ventas PL'
         ]);
 
         Department::Create([
-            'id'=>9,
-            'name'=>'Tecnologia e Innovacion'
+            'id' => 9,
+            'name' => 'Tecnologia e Innovacion'
         ]);
 
         Department::Create([
-            'id'=>10,
-            'name'=>'E-commerce'
+            'id' => 10,
+            'name' => 'E-commerce'
         ]);
 
         Department::Create([
-            'id'=>11,
-            'name'=>'Cancun'
+            'id' => 11,
+            'name' => 'Cancun'
         ]);
 
 
         /* Puestos */
 
         Position::create([
-            'name'=>'Director BH Recursos Humanos',
-            'department_id'=>1
+            'name' => 'Director BH Recursos Humanos',
+            'department_id' => 1
         ]);
 
         Position::create([
-            'name'=>'Director PL Recursos Humanos',
-            'department_id'=>1
+            'name' => 'Director PL Recursos Humanos',
+            'department_id' => 1
         ]);
 
         Position::create([
-            'name'=>'Gerente Recursos Humanos',
-            'department_id'=>1
+            'name' => 'Gerente Recursos Humanos',
+            'department_id' => 1
         ]);
 
         Position::create([
-            'name'=>'Recepcion',
-            'department_id'=>1
+            'name' => 'Recepcion',
+            'department_id' => 1
         ]);
 
 
         Position::create([
-            'name'=>'Asistente de Recursos Humanos',
-            'department_id'=>1
+            'name' => 'Asistente de Recursos Humanos',
+            'department_id' => 1
         ]);
 
 
         Position::create([
-            'name'=>'Limpieza',
-            'department_id'=>1
+            'name' => 'Limpieza',
+            'department_id' => 1
         ]);
 
 
         Position::create([
-            'name'=>'Director BH Administracion',
-            'department_id'=>2
+            'name' => 'Director BH Administracion',
+            'department_id' => 2
         ]);
 
         Position::create([
-            'name'=>'Director PL Administracion',
-            'department_id'=>2
+            'name' => 'Director PL Administracion',
+            'department_id' => 2
         ]);
 
         Position::create([
-            'name'=>'Gerente Administrativo',
-            'department_id'=>2
+            'name' => 'Gerente Administrativo',
+            'department_id' => 2
         ]);
 
         Position::create([
-            'name'=>'Tesoreria',
-            'department_id'=>2
+            'name' => 'Tesoreria',
+            'department_id' => 2
         ]);
 
         Position::create([
-            'name'=>'Facturacion',
-            'department_id'=>2
+            'name' => 'Facturacion',
+            'department_id' => 2
         ]);
 
         Position::create([
-            'name'=>'Asistente Factural PL',
-            'department_id'=>2
+            'name' => 'Asistente Factural PL',
+            'department_id' => 2
         ]);
 
         Position::create([
-            'name'=>'Asistente CXC BH',
-            'department_id'=>2
+            'name' => 'Asistente CXC BH',
+            'department_id' => 2
         ]);
 
         Position::create([
-            'name'=>'CXC BH',
-            'department_id'=>2
+            'name' => 'CXC BH',
+            'department_id' => 2
         ]);
 
         Position::create([
-            'name'=>'CXC PL',
-            'department_id'=>2
+            'name' => 'CXC PL',
+            'department_id' => 2
         ]);
 
         Position::create([
-            'name'=>'CXC PL',
-            'department_id'=>2
+            'name' => 'CXC PL',
+            'department_id' => 2
         ]);
 
         Position::create([
-            'name'=>'Asistente DUAL',
-            'department_id'=>2
+            'name' => 'Asistente DUAL',
+            'department_id' => 2
         ]);
 
         Position::create([
-            'name'=>'Director BH Ventas',
-            'department_id'=>3
+            'name' => 'Director BH Ventas',
+            'department_id' => 3
         ]);
 
         Position::create([
-            'name'=>'Asistente de Direccion',
-            'department_id'=>3
+            'name' => 'Asistente de Direccion',
+            'department_id' => 3
         ]);
 
         Position::create([
-            'name'=>'Gerente Comercial Ventas BH',
-            'department_id'=>3
+            'name' => 'Gerente Comercial Ventas BH',
+            'department_id' => 3
         ]);
 
         Position::create([
-            'name'=>'Ejecutivo de Ventas BH',
-            'department_id'=>3
+            'name' => 'Ejecutivo de Ventas BH',
+            'department_id' => 3
         ]);
 
         Position::create([
-            'name'=>'Asistente de Ventas BH',
-            'department_id'=>3
+            'name' => 'Asistente de Ventas BH',
+            'department_id' => 3
         ]);
 
         Position::create([
-            'name'=>'Ejecutivo de Ventas EUA',
-            'department_id'=>3
+            'name' => 'Ejecutivo de Ventas EUA',
+            'department_id' => 3
         ]);
 
         Position::create([
-            'name'=>'Asistente de Dirección Comercial BH',
-            'department_id'=>3
+            'name' => 'Asistente de Dirección Comercial BH',
+            'department_id' => 3
         ]);
 
         Position::create([
-            'name'=>'Asistente de Ventas PL',
-            'department_id'=>3
+            'name' => 'Asistente de Ventas PL',
+            'department_id' => 3
         ]);
 
         Position::create([
-            'name'=>'Director BH Importaciones',
-            'department_id'=>4
+            'name' => 'Director BH Importaciones',
+            'department_id' => 4
         ]);
 
         Position::create([
-            'name'=>'Gerente de importaciones',
-            'department_id'=>4
+            'name' => 'Gerente de importaciones',
+            'department_id' => 4
         ]);
 
         Position::create([
-            'name'=>'Ejecutivo de importaciones',
-            'department_id'=>4
+            'name' => 'Ejecutivo de importaciones',
+            'department_id' => 4
         ]);
 
         Position::create([
-            'name'=>'Asistente de importaciones',
-            'department_id'=>4
+            'name' => 'Asistente de importaciones',
+            'department_id' => 4
         ]);
 
         Position::create([
-            'name'=>'Importaciones DUAL',
-            'department_id'=>4
+            'name' => 'Importaciones DUAL',
+            'department_id' => 4
         ]);
 
         Position::create([
-            'name'=>'Director General PL Diseno',
-            'department_id'=>5
+            'name' => 'Director General PL Diseno',
+            'department_id' => 5
         ]);
 
         Position::create([
-            'name'=>'Diseñador gráfico',
-            'department_id'=>5
+            'name' => 'Diseñador gráfico',
+            'department_id' => 5
         ]);
 
         Position::create([
-            'name'=>'Residencias diseño',
-            'department_id'=>5
+            'name' => 'Residencias diseño',
+            'department_id' => 5
         ]);
 
         Position::create([
-            'name'=>'Director General PL Sistemas',
-            'department_id'=>6
+            'name' => 'Director General PL Sistemas',
+            'department_id' => 6
         ]);
 
         Position::create([
-            'name'=>'Sistemas',
-            'department_id'=>6
+            'name' => 'Sistemas',
+            'department_id' => 6
         ]);
 
         Position::create([
-            'name'=>'Director General BH Operaciones',
-            'department_id'=>7
+            'name' => 'Director General BH Operaciones',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Director General PL',
-            'department_id'=>7
+            'name' => 'Director General PL',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Gerente de compras, mesa de control y calidad',
-            'department_id'=>7
+            'name' => 'Gerente de compras, mesa de control y calidad',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Asistente de operaciones',
-            'department_id'=>7
+            'name' => 'Asistente de operaciones',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Auxiliar de calidad',
-            'department_id'=>7
+            'name' => 'Auxiliar de calidad',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Mesa de control PL',
-            'department_id'=>7
+            'name' => 'Mesa de control PL',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Mesa de control BH',
-            'department_id'=>7
+            'name' => 'Mesa de control BH',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Compras estratégicas nacionales',
-            'department_id'=>7
+            'name' => 'Compras estratégicas nacionales',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Compras',
-            'department_id'=>7
+            'name' => 'Compras',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Residencias Compras',
-            'department_id'=>7
+            'name' => 'Residencias Compras',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Jefe de tráfico',
-            'department_id'=>7
+            'name' => 'Jefe de tráfico',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Jefe de tráfico',
-            'department_id'=>7
+            'name' => 'Jefe de tráfico',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Ayudante de Almacen',
-            'department_id'=>7
+            'name' => 'Ayudante de Almacen',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Mensajería',
-            'department_id'=>7
+            'name' => 'Mensajería',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Jefe de Almacén y Empaque',
-            'department_id'=>7
+            'name' => 'Jefe de Almacén y Empaque',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Asistente de Almacen',
-            'department_id'=>7
+            'name' => 'Asistente de Almacen',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Jefe de Logística',
-            'department_id'=>7
+            'name' => 'Jefe de Logística',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Operador de grabado láser',
-            'department_id'=>7
+            'name' => 'Operador de grabado láser',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Chofer',
-            'department_id'=>7
+            'name' => 'Chofer',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Mensajero/Chofer/Almacenista',
-            'department_id'=>7
+            'name' => 'Mensajero/Chofer/Almacenista',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Chofer/Almacenista',
-            'department_id'=>7
+            'name' => 'Chofer/Almacenista',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Mensajería',
-            'department_id'=>7
+            'name' => 'Mensajería',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Paquetería e inventario de Stock',
-            'department_id'=>7
+            'name' => 'Paquetería e inventario de Stock',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Auxiliar de calidad',
-            'department_id'=>7
+            'name' => 'Auxiliar de calidad',
+            'department_id' => 7
         ]);
 
         Position::create([
-            'name'=>'Director General PL Ventas',
-            'department_id'=>8
+            'name' => 'Director General PL Ventas',
+            'department_id' => 8
         ]);
 
         Position::create([
-            'name'=>'Asistente de Dirección PL',
-            'department_id'=>8
+            'name' => 'Asistente de Dirección PL',
+            'department_id' => 8
         ]);
 
         Position::create([
-            'name'=>'Gerente Comercial Ventas PL',
-            'department_id'=>8
+            'name' => 'Gerente Comercial Ventas PL',
+            'department_id' => 8
         ]);
 
         Position::create([
-            'name'=>'Director General PL Ventas',
-            'department_id'=>8
+            'name' => 'Director General PL Ventas',
+            'department_id' => 8
         ]);
 
         Position::create([
-            'name'=>'Asisente de Gerente Comercial Ventas PL',
-            'department_id'=>8
+            'name' => 'Asisente de Gerente Comercial Ventas PL',
+            'department_id' => 8
         ]);
 
         Position::create([
-            'name'=>'Subgerente Comercial',
-            'department_id'=>8
+            'name' => 'Subgerente Comercial',
+            'department_id' => 8
         ]);
 
         Position::create([
-            'name'=>'Ejecutivo de ventas',
-            'department_id'=>8
+            'name' => 'Ejecutivo de ventas',
+            'department_id' => 8
         ]);
 
         Position::create([
-            'name'=>'Asistente de Ventas PL',
-            'department_id'=>8
+            'name' => 'Asistente de Ventas PL',
+            'department_id' => 8
         ]);
 
         Position::create([
-            'name'=>'Prospección',
-            'department_id'=>8
+            'name' => 'Prospección',
+            'department_id' => 8
         ]);
 
         Position::create([
-            'name'=>'Director General PL Tecnologia e Innovacion',
-            'department_id'=>9
+            'name' => 'Director General PL Tecnologia e Innovacion',
+            'department_id' => 9
         ]);
 
         Position::create([
-            'name'=>'Project Manager',
-            'department_id'=>9
+            'name' => 'Project Manager',
+            'department_id' => 9
         ]);
 
         Position::create([
-            'name'=>'Desarrollador DUAL',
-            'department_id'=>9
+            'name' => 'Desarrollador DUAL',
+            'department_id' => 9
         ]);
 
         Position::create([
-            'name'=>'Director General PL E-Commerce',
-            'department_id'=>10
+            'name' => 'Director General PL E-Commerce',
+            'department_id' => 10
         ]);
 
         Position::create([
-            'name'=>'Director General BH E-Commerce',
-            'department_id'=>10
+            'name' => 'Director General BH E-Commerce',
+            'department_id' => 10
         ]);
 
         Position::create([
-            'name'=>'Project Manager',
-            'department_id'=>10
+            'name' => 'Project Manager',
+            'department_id' => 10
         ]);
 
         Position::create([
-            'name'=>'E-Commerce',
-            'department_id'=>10
+            'name' => 'E-Commerce',
+            'department_id' => 10
         ]);
 
         Position::create([
-            'name'=>'Director BH Cancun',
-            'department_id'=>11
+            'name' => 'Director BH Cancun',
+            'department_id' => 11
         ]);
 
         Position::create([
-            'name'=>'Gerente de Ventas Cancun',
-            'department_id'=>11
+            'name' => 'Gerente de Ventas Cancun',
+            'department_id' => 11
         ]);
 
         Position::create([
-            'name'=>'Administración Ventas Cancun',
-            'department_id'=>11
+            'name' => 'Administración Ventas Cancun',
+            'department_id' => 11
         ]);
 
         Position::create([
-            'name'=>'Ejecutivo de Ventas Cancun',
-            'department_id'=>11
+            'name' => 'Ejecutivo de Ventas Cancun',
+            'department_id' => 11
         ]);
 
         Position::create([
-            'name'=>'Mensajero',
-            'department_id'=>11
+            'name' => 'Mensajero',
+            'department_id' => 11
         ]);
-
-
-
-
     }
-
 }

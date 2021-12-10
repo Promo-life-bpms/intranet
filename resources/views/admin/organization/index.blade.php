@@ -114,10 +114,10 @@
                                     <td>{{ $department->id }}</td>
                                     <td>{{ $department->name }}</td>
                                     <td class="d-flex justify-content-center">
-                                        <a href="{{ route('admin.department.edit', ['department' => $department->id]) }}"
+                                        <a href="{{ route('admin.departments.edit', ['department' => $department->id]) }}"
                                             type="button" class="btn btn-primary">E</a>
                                         <form class="form-delete"
-                                            action="{{ route('admin.department.destroy', ['department' => $department->id]) }}"
+                                            action="{{ route('admin.departments.destroy', ['department' => $department->id]) }}"
                                             method="POST">
                                             @csrf
                                             @method('delete')
@@ -175,7 +175,7 @@
                     <h5 class="modal-title" id="modalDepartamentoLabel">Crear departamento</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                {!! Form::open(['route' => 'admin.department.store']) !!}
+                {!! Form::open(['route' => 'admin.departments.store']) !!}
                 <div class="modal-body">
                     <div class="row">
                         <div class="col">

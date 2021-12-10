@@ -5,7 +5,7 @@
         <h3>Agregar contacto</h3>
     </div>
     <div class="card-body">
-        <form action="{{ route('admin.contact.store') }}" enctype="multipart/form-data" method="POST">
+        <form action="{{ route('admin.contacts.store') }}" enctype="multipart/form-data" method="POST">
             @csrf
             @method('POST')
 

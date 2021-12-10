@@ -4,7 +4,7 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Managers</h3>
-            <a href="{{ route('admin.manager.create') }}" type="button" class="btn btn-success">Agregar</a> 
+            <a href="{{ route('admin.manager.create') }}" type="button" class="btn btn-success">Agregar</a>
         </div>
     </div>
     <div class="card-body">
@@ -19,17 +19,17 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach  ($managers as $manager)
+                @foreach ($managers as $manager)
                     <tr>
                         <td>{{ $manager->id }}</td>
-                        <td>{{ $manager->employee->nombre. ' '.$manager->employee->paterno . ' '.$manager->employee->materno  }}</td>
+                        <td>{{ $manager->employee->user->name . ' ' . $manager->employee->paterno . ' ' . $manager->employee->materno }}
+                        </td>
                         <td>{{ $manager->department->name }}</td>
                         <td>
                             <a href="{{ route('admin.manager.edit', ['manager' => $manager->id]) }}" type="button"
                                 class="btn btn-primary">Editar</a>
                             <form class="form-delete"
-                                action="{{ route('admin.manager.destroy', ['manager' => $manager->id]) }}"
-                                method="POST">
+                                action="{{ route('admin.manager.destroy', ['manager' => $manager->id]) }}" method="POST">
                                 @csrf
                                 @method('delete')
                                 <button type="submit" class="btn btn-danger">Borrar</button>

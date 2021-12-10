@@ -5,7 +5,7 @@
         <h3>Editar usuario</h3>
     </div>
     <div class="card-body">
-        {!! Form::model($user, ['route' => ['admin.user.update', $user], 'method' => 'put']) !!}
+        {!! Form::model($user, ['route' => ['admin.users.update', $user], 'method' => 'put']) !!}
         <div class="row">
             <div class="form-group col-md-4">
                 {!! Form::label('name', 'Nombre') !!}
@@ -74,9 +74,17 @@
                     <br>
                 @enderror
             </div>
+            @php
+                $department_id = null;
+                $position_id = null;
+                if ($user->employee->position) {
+                    $department_id = $user->employee->position->department->id;
+                    $position_id = $user->employee->position->id;
+                }
+            @endphp
             <div class="form-group col-md-4">
                 {!! Form::label('department', 'Departamento') !!}
-                {!! Form::select('department', $departments, $user->employee->positions[0]->department->id, ['class' => 'form-control', 'placeholder' => 'Selecciona Departamento']) !!}
+                {!! Form::select('department', $departments, $department_id, ['class' => 'form-control', 'placeholder' => 'Selecciona Departamento']) !!}
                 @error('department')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -86,7 +94,7 @@
             </div>
             <div class="form-group col-md-4">
                 {!! Form::label('position', 'Puesto') !!}
-                {!! Form::select('position', $positions, $user->employee->positions[0]->id, ['class' => 'form-control', 'placeholder' => 'Selecciona Puesto']) !!}
+                {!! Form::select('position', $positions, $position_id, ['class' => 'form-control', 'placeholder' => 'Selecciona Puesto']) !!}
                 @error('position')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -141,7 +149,7 @@
             @enderror
         </div>
     </div>
-    {!! Form::submit('CREAR USUARIO', ['class' => 'btnCreate mt-4']) !!}
+    {!! Form::submit('Editar USUARIO', ['class' => 'btnCreate mt-4']) !!}
     </div>
 
     {!! Form::close() !!}

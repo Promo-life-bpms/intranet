@@ -5,7 +5,7 @@
         <h3>Crear usuario</h3>
     </div>
     <div class="card-body">
-        {!! Form::open(['route' => 'admin.user.store']) !!}
+        {!! Form::open(['route' => 'admin.users.store']) !!}
         <div class="row">
             <div class="form-group col-md-4">
                 {!! Form::label('name', 'Nombre') !!}
