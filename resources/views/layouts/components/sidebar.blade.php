@@ -190,26 +190,21 @@
                         <span>Comunicados</span>
                     </a>
                     <ul class="submenu ">
-
-                        @can('admin.rh.sistemas')
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('communiques.create') }}">
-                                    <span>Crear comunicados</span>
-                                </a>
-                            </li>
-                        @endcan
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('communiques.create') }}">
+                                <span>Crear comunicados</span>
+                            </a>
+                        </li>
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('communiques.index') }}">
                                 <span>Ver comunicados</span>
                             </a>
                         </li>
-                        @can('admin.rh.sistemas')
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('communiques.index') }}">
-                                    <span>Administrar comunicados</span>
-                                </a>
-                            </li>
-                        @endcan
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('communiques.index') }}">
+                                <span>Administrar comunicados</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
@@ -218,7 +213,6 @@
                         <i class="fa fa-book" aria-hidden="true"></i>
                         <span>Manuales</span>
                     </a>
-
                 </li>
 
                 <li class="sidebar-item {{ request()->is('access') ? 'active' : '' }}">

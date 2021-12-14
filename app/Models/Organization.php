@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Organization extends Model
 {
     use HasFactory;
-    
+
     public $table = "companies";
 
     protected $fillable = [
@@ -17,6 +17,8 @@ class Organization extends Model
         'description_company'
     ];
 
-
-
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'company_employee', 'company_id', 'employee_id');
+    }
 }

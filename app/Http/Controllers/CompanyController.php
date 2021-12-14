@@ -13,7 +13,7 @@ class CompanyController extends Controller
     {
         $organizations = Organization::all();
         $departments = Department::all();
-        return view('company.index', compact('departments'));
+        return view('company.index', compact('departments', 'organizations'));
     }
 
     public function getPositions($id)
@@ -43,14 +43,14 @@ class CompanyController extends Controller
         return json_encode($dataEmployees);
     }
 
-    public function getAllEmployeesByComapany(Organization $organization)
+    public function getEmployeesByOrganization(Organization $organization)
     {
-        $employees = Employee::all();
+        $employees = $organization->employees;
         $dataEmployees = [];
         foreach ($employees as $employee) {
             $position = '';
-            if (count($employee->positions) > 0) {
-                $position = $employee->positions[0]->name;
+            if ($employee->positions > 0) {
+                $position = $employee->positions->name;
             }
             array_push($dataEmployees, [
                 "id" => $employee->id,
@@ -60,7 +60,32 @@ class CompanyController extends Controller
                 "Photo" => 'https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png',
             ]);
         }
+        return response()->json($dataEmployees);
+    }
 
-        return json_encode($dataEmployees);
+    public function getEmployeesByDepartment(Department $department)
+    {
+        $employees = [];
+        foreach ($department->positions as $position) {
+            foreach ($position->getEmployees as $employee) {
+                array_push($employees, $employee);
+
+            }
+        }
+        $dataEmployees = [];
+        foreach ($employees as $employee) {
+            $position = '';
+            if ($employee->positions > 0) {
+                $position = $employee->positions->name;
+            }
+            array_push($dataEmployees, [
+                "id" => $employee->id,
+                "pid" => $employee->jefe_directo_id,
+                "Nombre" => $employee->user->name,
+                "Puesto" => $position,
+                "Photo" => 'https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png',
+            ]);
+        }
+        return response()->json($dataEmployees);
     }
 }

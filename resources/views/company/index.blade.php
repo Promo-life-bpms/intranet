@@ -12,349 +12,38 @@
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
-                    role="tab" aria-controls="profile" aria-selected="false">Promo Life</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button"
-                    role="tab" aria-controls="contact" aria-selected="false">BH</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button"
-                    role="tab" aria-controls="info" aria-selected="false">Promo Zale</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button"
-                    role="tab" aria-controls="all" aria-selected="false">Trademarket</button>
+                    role="tab" aria-controls="profile" aria-selected="false">Especifico</button>
             </li>
         </ul>
-        <div class="tab-content" id="myTabContent">
+        <div class="tab-content mx-2" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 <div id="tree"></div>
             </div>
-            <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                <div id="tree"></div>
+            <div class="tab-pane fade show" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div id="tree-especifico"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Empresas</h5>
+                        @foreach ($organizations as $org)
+                            <input class="checksEspecificos org" type="checkbox" name="{{ trim($org->name_company) }}"
+                                id="" value="{{ $org->id }}">
+                            {{ $org->name_company }}
+                            <br>
+                        @endforeach
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Departamentos</h5>
+                        @foreach ($departments as $department)
+                            <input class="checksEspecificos position" type="checkbox" name="{{ trim($department->name) }}"
+                                id="" value="{{ $department->id }}">
+                            {{ $department->name }}
+                            <br>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-@stop
-
-@section('styles')
-    <style>
-        html {
-            width: 100%;
-            height: 100%;
-        }
-
-        body {
-            color: #333;
-            font-family: "Raleway";
-            height: 100%;
-        }
-
-        body h1 {
-            text-align: center;
-            color: #428bff;
-            font-weight: 300;
-            padding: 40px 0 20px 0;
-            margin: 0;
-        }
-
-        .row {
-            background-color: #ffffff
-        }
-
-        .tabs {
-            left: 50%;
-            transform: translateX(-50%);
-            position: relative;
-            background: white;
-            padding: 50px;
-            padding-bottom: 80px;
-            width: 100%;
-            height: auto;
-            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-            border-radius: 5px;
-            min-width: 240px;
-        }
-
-        .tabs input[name=tab-control] {
-            display: none;
-        }
-
-        .tabs .content section h2,
-        .tabs ul li label {
-
-            font-weight: bold;
-            font-size: 18px;
-            color: #428bff;
-        }
-
-        .tabs ul {
-            list-style-type: none;
-            padding-left: 0;
-            display: flex;
-            flex-direction: row;
-            margin-bottom: 10px;
-            justify-content: space-between;
-            align-items: flex-end;
-            flex-wrap: wrap;
-        }
-
-        .tabs ul li {
-            box-sizing: border-box;
-            flex: 1;
-            width: 25%;
-            padding: 0 10px;
-            text-align: center;
-        }
-
-        .tabs ul li label {
-            transition: all 0.3s ease-in-out;
-            color: #929daf;
-            padding: 5px auto;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            white-space: nowrap;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        .tabs ul li label br {
-            display: none;
-        }
-
-        .tabs ul li label svg {
-            fill: #929daf;
-            height: 1.2em;
-            vertical-align: bottom;
-            margin-right: 0.2em;
-            transition: all 0.2s ease-in-out;
-        }
-
-        .tabs ul li label:hover,
-        .tabs ul li label:focus,
-        .tabs ul li label:active {
-            outline: 0;
-            color: #bec5cf;
-        }
-
-        .tabs ul li label:hover svg,
-        .tabs ul li label:focus svg,
-        .tabs ul li label:active svg {
-            fill: #bec5cf;
-        }
-
-        .tabs .slider {
-            position: relative;
-            width: 25%;
-            transition: all 0.33s cubic-bezier(0.38, 0.8, 0.32, 1.07);
-        }
-
-        .tabs .slider .indicator {
-            position: relative;
-            width: 50px;
-            max-width: 100%;
-            margin: 0 auto;
-            height: 4px;
-            background: #1A74BB;
-            border-radius: 1px;
-        }
-
-        .tabs .content {
-            margin-top: 30px;
-        }
-
-        .tabs .content section {
-            display: none;
-            -webkit-animation-name: content;
-            animation-name: content;
-            -webkit-animation-direction: normal;
-            animation-direction: normal;
-            -webkit-animation-duration: 0.3s;
-            animation-duration: 0.3s;
-            -webkit-animation-timing-function: ease-in-out;
-            animation-timing-function: ease-in-out;
-            -webkit-animation-iteration-count: 1;
-            animation-iteration-count: 1;
-            line-height: 1.4;
-        }
-
-        .tabs .content section h2 {
-            color: #1A74BB;
-            display: none;
-        }
-
-        .tabs .content section h2::after {
-            content: "";
-            position: relative;
-            display: block;
-            width: 30px;
-            height: 3px;
-            background: #1A74BB;
-            margin-top: 5px;
-            left: 1px;
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(1):checked~ul>li:nth-child(1)>label {
-            cursor: default;
-            color: #1A74BB;
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(1):checked~ul>li:nth-child(1)>label svg {
-            fill: #1A74BB;
-        }
-
-        @media (max-width: 600px) {
-            .tabs input[name=tab-control]:nth-of-type(1):checked~ul>li:nth-child(1)>label {
-                background: rgba(0, 0, 0, 0.08);
-            }
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(1):checked~.slider {
-            transform: translateX(0%);
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(1):checked~.content>section:nth-child(1) {
-            display: block;
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(2):checked~ul>li:nth-child(2)>label {
-            cursor: default;
-            color: #1A74BB;
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(2):checked~ul>li:nth-child(2)>label svg {
-            fill: #1A74BB;
-        }
-
-        @media (max-width: 600px) {
-            .tabs input[name=tab-control]:nth-of-type(2):checked~ul>li:nth-child(2)>label {
-                background: rgba(0, 0, 0, 0.08);
-            }
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(2):checked~.slider {
-            transform: translateX(100%);
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(2):checked~.content>section:nth-child(2) {
-            display: block;
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(3):checked~ul>li:nth-child(3)>label {
-            cursor: default;
-            color: #1A74BB;
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(3):checked~ul>li:nth-child(3)>label svg {
-            fill: #435EBE;
-        }
-
-        @media (max-width: 600px) {
-            .tabs input[name=tab-control]:nth-of-type(3):checked~ul>li:nth-child(3)>label {
-                background: rgba(0, 0, 0, 0.08);
-            }
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(3):checked~.slider {
-            transform: translateX(200%);
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(3):checked~.content>section:nth-child(3) {
-            display: block;
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(4):checked~ul>li:nth-child(4)>label {
-            cursor: default;
-            color: #1A74BB;
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(4):checked~ul>li:nth-child(4)>label svg {
-            fill: #1A74BB;
-        }
-
-        @media (max-width: 600px) {
-            .tabs input[name=tab-control]:nth-of-type(4):checked~ul>li:nth-child(4)>label {
-                background: rgba(0, 0, 0, 0.08);
-            }
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(4):checked~.slider {
-            transform: translateX(300%);
-        }
-
-        .tabs input[name=tab-control]:nth-of-type(4):checked~.content>section:nth-child(4) {
-            display: block;
-        }
-
-        @-webkit-keyframes content {
-            from {
-                opacity: 0;
-                transform: translateY(5%);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0%);
-            }
-        }
-
-        @keyframes content {
-            from {
-                opacity: 0;
-                transform: translateY(5%);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0%);
-            }
-        }
-
-        @media (max-width: 1000px) {
-            .tabs ul li label {
-                white-space: initial;
-            }
-
-            .tabs ul li label br {
-                display: initial;
-            }
-
-            .tabs ul li label svg {
-                height: 1.5em;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .tabs ul li label {
-                padding: 5px;
-                border-radius: 5px;
-            }
-
-            .tabs ul li label span {
-                display: none;
-            }
-
-            .tabs .slider {
-                display: none;
-            }
-
-            .tabs .content {
-                margin-top: 20px;
-            }
-
-            .tabs .content section h2 {
-                display: block;
-            }
-        }
-
-    </style>
 @stop
 
 @section('scripts')
@@ -412,6 +101,54 @@
                 });
 
                 chart.load(nodes);
+            } catch {
+                console.log(error);
+            }
+        }
+
+        const checksEspecificos = document.querySelectorAll('.checksEspecificos')
+        checksEspecificos.forEach(check => {
+            check.addEventListener('change', () => {
+                crearOrganigrama(check)
+            })
+        });
+
+        async function crearOrganigrama(check) {
+            checksEspecificos.forEach(ch => {
+                ch.checked = false
+            });
+            check.checked = true
+            let url = check.classList.contains('org') ?
+                "/company/getEmployeesByOrganization" :
+                "/company/getEmployeesByDepartment";
+            try {
+                let res = await axios.get(`${url}/${check.value}`);
+                let data = res.data;
+                if (data.length > 0) {
+                    var chart = new OrgChart(document.getElementById("tree-especifico"), {
+                        template: "ula",
+                        nodeBinding: {
+                            field_0: "Nombre",
+                            field_1: "Puesto",
+                            img_0: "Photo"
+                        },
+                        editForm: {
+                            buttons: {
+                                pdf: null,
+                                share: null,
+                                edit: null
+                            }
+                        }
+                    });
+
+                    nodes = data;
+
+                    chart.on('init', function(sender) {
+                        sender.editUI.show(1);
+                    });
+
+                    chart.load(nodes);
+                }
             } catch {
                 console.log(error);
             }
