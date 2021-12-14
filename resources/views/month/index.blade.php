@@ -50,3 +50,18 @@
     </div>
 
 @stop
+
+@section('scripts')
+    <script>
+        async function obtenerEmpleados() {
+            try {
+                let res = await axios.get('https://evaluacion.promolife.lat/empleado-del-mes');
+                let data = res.data;
+                console.log('data');
+            } catch {
+                console.log(error);
+            }
+        }
+        obtenerEmpleados()
+    </script>
+@endsection
