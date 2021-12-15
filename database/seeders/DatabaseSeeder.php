@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Chavez',
             'email' => 'test@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi', //123456789
             'remember_token' => '',
         ])->assignRole('Admin');
 
@@ -43,27 +43,27 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Navarrete',
             'email' => 'empleado@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
             'remember_token' => '',
-        ])->assignRole('Empleado');
+        ])->assignRole('RH');
 
         User::create([
             'name' => 'Jose',
             'lastname' => 'Navarrete',
             'email' => 'jose@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
             'remember_token' => '',
-        ])->assignRole('Empleado');
+        ])->assignRole('Sistemas');
 
         User::create([
             'name' => 'Bradon Iriarte',
             'lastname' => 'Iriarte',
             'email' => 'brandon@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
             'remember_token' => '',
-        ])->assignRole('Empleado');
+        ])->assignRole('Superior');
 
         User::create([
             'name' => 'Andres',

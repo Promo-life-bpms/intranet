@@ -17,12 +17,36 @@ class RequestController extends Controller
     public function index()
     {
         $requests = auth()->user()->employee->yourRequests;
+
         return view('request.index', compact('requests'));
     }
 
     public function authorizeRequestManager()
     {
-        $requests = auth()->user()->employee->yourAuthRequests;
+       /*  $requests = auth()->user()->employee->yourAuthRequests; */
+
+        $id = Auth::user()->id;
+        $userID = DB::table('employees')->where('id', $id)->value('id');
+        $manager = DB::table('employees')->where('id', $userID )->value('jefe_directo_id');
+        $departmentID = DB::table('employees')->where('id', $userID )->value('position_id');
+        $positionDepartment = DB::table('positions')->where('id', $departmentID )->value('department_id');
+        $requestManager = DB::table('department_manager')->where('employee_id', $userID )->value('employee_id');
+
+
+        if($requestManager==$userID){
+            if($positionDepartment == 1){
+                $requests = ModelsRequest::all();
+            }else{
+                $requests = ModelsRequest::all()->where('direct_manager_id',$userID);
+            } 
+        }else{
+            if($positionDepartment == 1){
+                $requests = ModelsRequest::all();
+            }else{
+                $requests = ModelsRequest::all()->where('employee_id', $userID );
+            }   
+        }   
+
         return view('request.authorize', compact('requests'));
     }
 
@@ -107,7 +131,7 @@ class RequestController extends Controller
 
         $request->update($req->all());
 
-        return redirect()->action([RequestController::class, 'index']);
+        return redirect()->action([RequestController::class, 'authorizeRequestManager']);
     }
 
     /**
@@ -119,6 +143,9 @@ class RequestController extends Controller
     public function destroy(ModelsRequest $request)
     {
         $request->delete();
-        return redirect()->action([RequestController::class, 'index']);
+        return redirect()->action([RequestController::class, 'authorizeRequestManager']);
     }
+
+
+
 }

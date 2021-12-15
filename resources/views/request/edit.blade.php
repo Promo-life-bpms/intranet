@@ -57,8 +57,8 @@
                 <div class="row">
                     @can('rh')
                         <div class="col ">
-                            {!! Form::label('direct_manager_status', 'Autorizacion de RH') !!}
-                            {!! Form::select('direct_manager_status', [ 'Pendiente' => 'Pendiente', 'Aprobado' => 'Aprobado'], null, ['class' => 'form-control','placeholder'=>'Seleccione opcion']) !!}
+                            {!! Form::label('human_resources_status', 'Autorizacion de RH') !!}
+                            {!! Form::select('human_resources_status', [ 'Pendiente' => 'Pendiente', 'Aprobado' => 'Aprobado'], null, ['class' => 'form-control','placeholder'=>'Seleccione opcion']) !!}
                             @error('type_request')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
@@ -69,8 +69,8 @@
                     
                     @can('superior')
                         <div class="col ">
-                                {!! Form::label('human_resources_status', 'Autorizacion de encargado') !!}
-                                {!! Form::select('human_resources_status', [ 'Pendiente' => 'Pendiente', 'Aprobado' => 'Aprobado'], null, ['class' => 'form-control','placeholder'=>'Seleccione opcion']) !!}
+                                {!! Form::label('direct_manager_status', 'Autorizacion de Jefe directo') !!}
+                                {!! Form::select('direct_manager_status', [ 'Pendiente' => 'Pendiente', 'Aprobado' => 'Aprobado'], null, ['class' => 'form-control','placeholder'=>'Seleccione opcion']) !!}
                                 @error('type_request')
                                 <small>
                                     <font color="red"> *Este campo es requerido* </font>
@@ -93,7 +93,7 @@
                     </div>
                 </div>
             </div>
-            {!! Form::submit('Actualizar solicitud', ['class' => 'btnCreate mt-4']) !!}
+            {!! Form::submit('ACTUALIZAR SOLICITUD', ['class' => 'btnCreate mt-4']) !!}
         </div>
         {!! Form::close() !!}
     </div>

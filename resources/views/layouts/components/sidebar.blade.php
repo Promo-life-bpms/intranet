@@ -242,13 +242,16 @@
                                 <span>Mis Solicitudes</span>
                             </a>
                         </li>
-                        @if (count(auth()->user()->employee->subordinados) > 0)
+                        {{-- @if (count(auth()->user()->employee->subordinados) > 0) --}}
+                        @can('rh.superior')
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.authorizeManager') }}">
                                     <span>Autorizar Solicitudes</span>
                                 </a>
                             </li>
-                        @endif
+                        @endcan
+                           
+                        {{-- @endif --}}
                     </ul>
 
                 </li>

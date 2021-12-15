@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="card-header">
-        <h3>Aniversarios de Diciembre</h3>
+        <h3>Aniversarios de {{$monthAniversary}}</h3>
     </div>
     <div class="card-body">
         <div class="row">

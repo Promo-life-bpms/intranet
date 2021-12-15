@@ -64,8 +64,8 @@ class ManagerController extends Controller
     {
         $positions  = Position::pluck('name', 'id')->toArray();
         $departments  = Department::pluck('name', 'id')->toArray();
-        $employees = Employee::pluck('nombre', 'id')->toArray();
-        return view('admin.manager.edit', compact('positions', 'departments', 'employees', 'manager'));
+        $users = User::pluck('name', 'id')->toArray();
+        return view('admin.manager.edit', compact('positions', 'departments', 'users', 'manager'));
     }
 
     /**
@@ -108,7 +108,7 @@ class ManagerController extends Controller
     {
         $employeesPos = EmployeePosition::all()->where('position_id', $id)->pluck('employee_id', 'id');
         // $employeesPos = DB::table('employee_position')->whereIn('position_id', $id)->value('employee_id');
-        $employee = Employee::all()->whereIn('id', $employeesPos)->pluck('nombre', 'id');
+        $employee = User::all()->whereIn('id', $employeesPos)->pluck('name', 'id');
         return json_encode($employee);
     }
 }
