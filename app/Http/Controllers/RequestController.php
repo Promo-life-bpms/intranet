@@ -6,6 +6,8 @@ use App\Models\Request as ModelsRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class RequestController extends Controller
 {
@@ -144,6 +146,53 @@ class RequestController extends Controller
     {
         $request->delete();
         return redirect()->action([RequestController::class, 'authorizeRequestManager']);
+    }
+
+    
+
+    public function export() 
+    {
+        $request=ModelsRequest::all()->toArray();
+               
+        $spreadsheet = new Spreadsheet();
+
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
+
+        $spreadsheet->getActiveSheet()->setCellValue('A1', '#');
+        $spreadsheet->getActiveSheet()->setCellValue('B1', 'ID Usuario');
+        $spreadsheet->getActiveSheet()->setCellValue('C1', 'Tipo Solicitud');
+        $spreadsheet->getActiveSheet()->setCellValue('D1', 'Pago');
+        $spreadsheet->getActiveSheet()->setCellValue('E1', 'Fecha Ausencia');
+        $spreadsheet->getActiveSheet()->setCellValue('F1', 'Fecha Reingreso');
+        $spreadsheet->getActiveSheet()->setCellValue('G1', 'Motivo');
+        $spreadsheet->getActiveSheet()->setCellValue('H1', 'ID Jefe');
+        $spreadsheet->getActiveSheet()->setCellValue('I1', 'Jefe Status');
+        $spreadsheet->getActiveSheet()->setCellValue('J1', 'RH Status');
+        $spreadsheet->getActiveSheet()->setCellValue('K1', 'Creado');
+        $spreadsheet->getActiveSheet()->setCellValue('L1', 'Ultima modificacion');
+
+        $spreadsheet->getActiveSheet()->fromArray($request, NULL,'A2');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('Solicitudes.xlsx');
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="solicitud.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
     }
 
 
