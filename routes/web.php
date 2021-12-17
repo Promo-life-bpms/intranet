@@ -84,4 +84,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
     Route::get('manager/getPosition/{id}', [ManagerController::class, 'getPosition']);
     Route::get('manager/getEmployee/{id}', [ManagerController::class, 'getEmployee']);
+
+    Route::get('test/export/', [RequestController::class, 'export']);
 });
