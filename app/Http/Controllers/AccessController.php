@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 
 class AccessController extends Controller
 {
-    public function __invoke(){
-
+    public function __invoke()
+    {
         return view('access.index');
     }
 }

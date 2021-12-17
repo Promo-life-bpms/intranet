@@ -3,7 +3,7 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Solicitudes recibidas</h3>
+            <h3>Mis Solicitudes</h3>
             <a href="{{ route('request.create') }}" type="button" class="btn btn-success">Agregar</a>
         </div>
     </div>
@@ -11,7 +11,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col"># </th>
+                    <th scope="col">#</th>
                     <th scope="col">Solicitante</th>
                     <th scope="col">Tipo</th>
                     <th scope="col">Pago</th>
@@ -39,6 +39,7 @@
                         <td>
                             <a href="{{ route('request.edit', ['request' => $request->id]) }}" type="button"
                                 class="btn btn-primary">Detalles</a>
+
                             <form class="form-delete"
                                 action="{{ route('request.destroy', ['request' => $request->id]) }}" method="POST">
                                 @csrf

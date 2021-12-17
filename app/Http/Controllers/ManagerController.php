@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
-use App\Models\Employee;
 use App\Models\EmployeePosition;
 use App\Models\Manager;
 use App\Models\Position;

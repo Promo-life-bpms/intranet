@@ -51,16 +51,14 @@
                             @endif
                         </td>
                         <td>
-                            @if ($user->employee->jefeDirecto)
-                                {{ $user->employee->status == 1 ? 'Activo' : 'Inactivo' }}
-                            @endif
+                            {{ $user->employee->status == 1 ? 'Activo' : 'Inactivo' }}
                         </td>
                         <td>
                             <a href="{{ route('admin.users.edit', ['user' => $user->id]) }}" type="button"
                                 class="btn btn-primary">EDITAR</a>
 
-                            <form class="form-delete" action="{{ route('admin.users.destroy', ['user' => $user->id]) }}"
-                                method="POST">
+                            <form class="form-delete"
+                                action="{{ route('admin.users.destroy', ['user' => $user->id]) }}" method="POST">
                                 @csrf
                                 @method('delete')
                                 <button type="submit" class="btn btn-danger">BORRAR</button>

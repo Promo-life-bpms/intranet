@@ -42,7 +42,6 @@
             </div>
         </div>
 
-
         <div class="sidebar-menu">
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
@@ -242,16 +241,13 @@
                                 <span>Mis Solicitudes</span>
                             </a>
                         </li>
-                        {{-- @if (count(auth()->user()->employee->subordinados) > 0) --}}
-                        @can('rh.superior')
+                        @if (count(auth()->user()->employee->subordinados) > 0)
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.authorizeManager') }}">
                                     <span>Autorizar Solicitudes</span>
                                 </a>
                             </li>
-                        @endcan
-                           
-                        {{-- @endif --}}
+                        @endif
                     </ul>
 
                 </li>

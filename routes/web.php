@@ -12,7 +12,6 @@ use App\Http\Controllers\AccessController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\WorkController;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\UserController;
@@ -21,6 +20,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\NoWorkingDaysController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +76,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
 
     Route::resource('communiques', CommuniqueController::class);
+    Route::resource('days-no-working', NoWorkingDaysController::class);
     Route::resource('request', RequestController::class)->except('show');
     Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
     Route::get('request/show-all', [RequestController::class, 'showAll'])->name('request.showAll');

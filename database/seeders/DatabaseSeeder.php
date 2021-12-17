@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi', //123456789
             'remember_token' => '',
-        ])->assignRole('Admin');
+        ])->assignRole('Recursos Humanos');
 
         User::create([
             'name' => 'Diego',
@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
             'remember_token' => '',
-        ])->assignRole('RH');
+        ])->assignRole('Recursos Humanos');
 
         User::create([
             'name' => 'Jose',
@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
             'remember_token' => '',
-        ])->assignRole('Superior');
+        ])->assignRole('Empleado');
 
         User::create([
             'name' => 'Andres',
