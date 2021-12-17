@@ -6,8 +6,6 @@ use App\Models\Contact;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Spatie\Permission\Contracts\Role;
-use Spatie\Permission\Models\Role as ModelsRole;
 
 class AdminController extends Controller
 {
