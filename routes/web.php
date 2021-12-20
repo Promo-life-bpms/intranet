@@ -61,7 +61,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/month', MonthController::class)->name('month');
     Route::get('/manual', ManualController::class)->name('manual');
-    Route::get('/access', AccessController::class)->name('access');
     Route::get('/folder', FolderController::class)->name('folder');
     Route::get('/work', WorkController::class)->name('work');
 
@@ -75,8 +74,24 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::resource('organization', OrganizationController::class);
     });
 
+    
     Route::resource('communiques', CommuniqueController::class);
-    Route::resource('days-no-working', NoWorkingDaysController::class);
+/*     Route::resource('days-no-working', NoWorkingDaysController::class);
+ */    
+    Route::get('/days-no-working', [NoWorkingDaysController::class,'index'])->name('admin.noworkingdays.index');
+    Route::get('/days-no-working/create', [NoWorkingDaysController::class,'create'])->name('admin.noworkingdays.create');
+    Route::post('/days-no-working', [NoWorkingDaysController::class,'store'])->name('admin.noworkingdays.store');
+    Route::get('/days-no-working/{noworkingday}/edit', [NoWorkingDaysController::class,'edit'])->name('admin.noworkingdays.edit');
+    Route::put('/days-no-working/{noworkingday}', [NoWorkingDaysController::class,'update'])->name('admin.noworkingdays.update');
+    Route::delete('/days-no-working/{noworkingday}', [NoWorkingDaysController::class,'destroy'])->name('admin.noworkingdays.delete'); 
+
+    Route::get('/access', [AccessController::class,'index'])->name('access');
+    Route::get('/access/create', [AccessController::class,'create'])->name('access.create');
+    Route::post('/access', [AccessController::class,'store'])->name('access.store');
+    Route::get('/access/{acc}/edit', [AccessController::class,'edit'])->name('access.edit');
+    Route::put('/access/{acc}', [AccessController::class,'update'])->name('access.update');
+    Route::delete('/access/{acc}', [AccessController::class,'destroy'])->name('access.delete'); 
+
     Route::resource('request', RequestController::class)->except('show');
     Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
     Route::get('request/show-all', [RequestController::class, 'showAll'])->name('request.showAll');

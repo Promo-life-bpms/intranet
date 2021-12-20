@@ -15,7 +15,9 @@ class CreateNoWorkingDaysTable extends Migration
     {
         Schema::create('no_working_days', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
+            $table->date('day');
+            $table->string('reason');
+            $table->foreignId('companies_id')->references('id')->on('companies');
         });
     }
 
