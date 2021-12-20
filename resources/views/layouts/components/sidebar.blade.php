@@ -84,6 +84,12 @@
                                 </a>
                             </li>
 
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.noworkingdays.index') }}">
+                                    <span>Dias no laborales</span>
+                                </a>
+                            </li>
+
                             {{-- <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.roles.index') }}">
                                     <span>Roles</span>
