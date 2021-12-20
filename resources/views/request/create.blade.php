@@ -81,8 +81,6 @@
 @stop
 
 @section('styles')
-    {{-- <link rel="stylesheet" href="{{ asset('assets/vendors/quill/quill.bubble.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendors/quill/quill.snow.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('assets/vendors/fullcalendar/main.min.css') }}">
     <style>
         body {
@@ -101,11 +99,20 @@
 @stop
 
 @section('scripts')
-    {{-- <script src="{{ asset('assets/vendors/quill/quill.min.js') }}"></script>
-    <script src="{{ asset('assets\js\pages\form-editor.js') }}"></script> --}}
     <script src="{{ asset('assets/vendors/fullcalendar/main.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            let noworkingdays = @json($noworkingdays)
+
+            events = []
+            noworkingdays.forEach(element => {
+                events.push({
+                    title: element.reason,
+                    start: element.day,
+                    type: 'noworking'
+                })
+            });
+
             let dateActual = moment().format('YYYY-MM-DD');
             const fechasSeleccionadasEl = document.querySelector('#fechasSeleccionadas')
             var calendarEl = document.getElementById('calendar');
@@ -114,24 +121,33 @@
                 initialDate: dateActual,
                 selectable: true,
                 select: function(arg) {
-                    var r = confirm("Seleccionar este dia");
-
-                    if (r) {
-                        if (!daysSelecteds.has(arg.startStr)) {
-                            calendar.addEvent({
-                                title: 'OK',
-                                start: arg.start,
-                                startStr: arg.startStr,
-                                end: arg.end,
-                                allDay: arg.allDay
-                            })
-                            daysSelecteds = actualizarFechas(calendar.getEvents())
-
-                            let lista = [...daysSelecteds]
-                            fechasSeleccionadasEl.value = lista.toString()
+                    var fecha1 = moment(arg.startStr);
+                    var fecha2 = moment(arg.endStr);
+                    dateActual = moment(dateActual)
+                    if (fecha2.diff(fecha1, 'days') == 1) {
+                        if (fecha1.diff(dateActual, 'days') > 0) {
+                            if (!daysSelecteds.has(arg.startStr)) {
+                                if (fecha1.isoWeekday() !== 6 && fecha1.isoWeekday() !== 7) {
+                                    var r = confirm("Seleccionar este dia");
+                                    if (r) {
+                                        calendar.addEvent({
+                                            title: 'OK',
+                                            start: arg.start,
+                                            startStr: arg.startStr,
+                                            end: arg.end,
+                                            allDay: arg.allDay
+                                        })
+                                        daysSelecteds = actualizarFechas(calendar.getEvents())
+                                        let lista = [...daysSelecteds]
+                                        fechasSeleccionadasEl.value = lista.toString()
+                                    }
+                                } else {
+                                    alert('No puedes seleccionar el fin de semana')
+                                }
+                            }
                         }
+                        calendar.unselect()
                     }
-                    calendar.unselect()
                 },
                 eventClick: function(arg) {
                     if (confirm('Deseas desmarcar este dia?')) {
@@ -143,9 +159,7 @@
                 },
                 editable: true,
                 dayMaxEvents: 1, // allow "more" link when too many events
-                events: [
-
-                ]
+                events
             });
 
             calendar.render();

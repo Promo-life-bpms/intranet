@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\NoWorkingDays;
 use App\Models\Request as ModelsRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,29 +26,29 @@ class RequestController extends Controller
 
     public function authorizeRequestManager()
     {
-       /*  $requests = auth()->user()->employee->yourAuthRequests; */
+        /*  $requests = auth()->user()->employee->yourAuthRequests; */
 
         $id = Auth::user()->id;
         $userID = DB::table('employees')->where('id', $id)->value('id');
-        $manager = DB::table('employees')->where('id', $userID )->value('jefe_directo_id');
-        $departmentID = DB::table('employees')->where('id', $userID )->value('position_id');
-        $positionDepartment = DB::table('positions')->where('id', $departmentID )->value('department_id');
-        $requestManager = DB::table('department_manager')->where('employee_id', $userID )->value('employee_id');
+        $manager = DB::table('employees')->where('id', $userID)->value('jefe_directo_id');
+        $departmentID = DB::table('employees')->where('id', $userID)->value('position_id');
+        $positionDepartment = DB::table('positions')->where('id', $departmentID)->value('department_id');
+        $requestManager = DB::table('department_manager')->where('employee_id', $userID)->value('employee_id');
 
 
-        if($requestManager==$userID){
-            if($positionDepartment == 1){
+        if ($requestManager == $userID) {
+            if ($positionDepartment == 1) {
                 $requests = ModelsRequest::all();
-            }else{
-                $requests = ModelsRequest::all()->where('direct_manager_id',$userID);
-            } 
-        }else{
-            if($positionDepartment == 1){
+            } else {
+                $requests = ModelsRequest::all()->where('direct_manager_id', $userID);
+            }
+        } else {
+            if ($positionDepartment == 1) {
                 $requests = ModelsRequest::all();
-            }else{
-                $requests = ModelsRequest::all()->where('employee_id', $userID );
-            }   
-        }   
+            } else {
+                $requests = ModelsRequest::all()->where('employee_id', $userID);
+            }
+        }
 
         return view('request.authorize', compact('requests'));
     }
@@ -65,7 +66,8 @@ class RequestController extends Controller
      */
     public function create()
     {
-        return view('request.create');
+        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
+        return view('request.create', compact('noworkingdays'));
     }
 
     /**
@@ -148,12 +150,12 @@ class RequestController extends Controller
         return redirect()->action([RequestController::class, 'authorizeRequestManager']);
     }
 
-    
 
-    public function export() 
+
+    public function export()
     {
-        $request=ModelsRequest::all()->toArray();
-               
+        $request = ModelsRequest::all()->toArray();
+
         $spreadsheet = new Spreadsheet();
 
         $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
@@ -182,7 +184,7 @@ class RequestController extends Controller
         $spreadsheet->getActiveSheet()->setCellValue('K1', 'Creado');
         $spreadsheet->getActiveSheet()->setCellValue('L1', 'Ultima modificacion');
 
-        $spreadsheet->getActiveSheet()->fromArray($request, NULL,'A2');
+        $spreadsheet->getActiveSheet()->fromArray($request, NULL, 'A2');
 
         $writer = new Xlsx($spreadsheet);
         $writer->save('Solicitudes.xlsx');
@@ -194,7 +196,4 @@ class RequestController extends Controller
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
     }
-
-
-
 }
