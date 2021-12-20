@@ -68,7 +68,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('contacts', ContactController::class);
-        Route::resource('roles', RoleController::class);
+        // Route::resource('roles', RoleController::class);
         Route::resource('departments', DepartmentsController::class);
         Route::resource('position', PositionController::class);
         Route::resource('manager', ManagerController::class);

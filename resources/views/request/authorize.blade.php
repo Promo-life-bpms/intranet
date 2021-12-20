@@ -4,7 +4,6 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Solicitudes recibidas</h3>
-            <a href="{{ route('request.create') }}" type="button" class="btn btn-success">Agregar</a>
         </div>
     </div>
     <div class="card-body">
@@ -18,8 +17,6 @@
                     <th scope="col">Fecha ausencia</th>
                     <th scope="col">Fecha reingreso</th>
                     <th scope="col">Motivo</th>
-                    <th scope="col">Jefe status </th>
-                    <th scope="col">RH status</th>
                     <th scope="col">Opciones</th>
                 </tr>
             </thead>

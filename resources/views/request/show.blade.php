@@ -3,8 +3,7 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Mis Solicitudes</h3>
-            <a href="{{ route('request.create') }}" type="button" class="btn btn-success">Agregar</a>
+            <h3>Solicitudes autorizadas</h3>
         </div>
     </div>
     <div class="card-body">
@@ -18,8 +17,6 @@
                     <th scope="col">Fecha ausencia</th>
                     <th scope="col">Fecha reingreso</th>
                     <th scope="col">Motivo</th>
-                    <th scope="col">Jefe status </th>
-                    <th scope="col">RH status</th>
                     <th scope="col">Opciones</th>
                 </tr>
             </thead>
@@ -27,8 +24,7 @@
                 @foreach ($requests as $request)
                     <tr>
                         <td>{{ $request->id }}</td>
-                        <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }}
-                        </td>
+                        <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }}</td>
                         <td>{{ $request->type_request }}</td>
                         <td>{{ $request->payment }}</td>
                         <td>{{ $request->absence }}</td>

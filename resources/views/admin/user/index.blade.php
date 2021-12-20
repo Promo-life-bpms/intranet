@@ -20,6 +20,7 @@
                     <th scope="col">Ingreso</th>
                     <th scope="col">Jefe Directo</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Rol</th>
                     <th scope="col">Opciones</th>
                 </tr>
             </thead>
@@ -52,6 +53,11 @@
                         </td>
                         <td>
                             {{ $user->employee->status == 1 ? 'Activo' : 'Inactivo' }}
+                        </td>
+                        <td>
+                            @if ($user->roles)
+                                {{ $user->roles[0]->display_name }}
+                            @endif
                         </td>
                         <td>
                             <a href="{{ route('admin.users.edit', ['user' => $user->id]) }}" type="button"

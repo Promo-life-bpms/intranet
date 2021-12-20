@@ -20,9 +20,9 @@
                     <th scope="col">BH-Trademarket</th>
                     <th scope="col">Trademarket</th>
                     <th scope="col">PormoDreams</th>
-                    @can('sistemas')
+                    @role('systems')
                         <th scope="col">Opciones</th>
-                    @endcan
+                    @endrole
                 </tr>
             </thead>
 
@@ -36,7 +36,7 @@
                         <td>{{ $contact->correo2 }}</td>
                         <td>{{ $contact->correo3 }}</td>
                         <td>{{ $contact->correo4 }}</td>
-                        @can('sistemas')
+                        @role('sistemas')
                             <td>
                                 <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                     type="button" class="btn btn-primary">EDITAR</a>
@@ -47,7 +47,7 @@
                                     <button style="width: 100%;" type="submit" class="btn btn-danger">BORRAR</button>
                                 </form> --}}
                             </td>
-                        @endcan
+                        @endrole
                     </tr>
                 @endforeach
 

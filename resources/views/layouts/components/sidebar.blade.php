@@ -35,7 +35,7 @@
                             {{ auth()->user()->name . ' ' . auth()->user()->lastname }}
                         </h5>
                         <h6 class="text-muted mb-0">
-                            {{ Auth::user()->roles->pluck('name') }}
+                            {{ Auth::user()->roles[0]->display_name }}
                         </h6>
                     </div>
                 </div>
@@ -45,7 +45,13 @@
         <div class="sidebar-menu">
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
-                @can('admin')
+                <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
+                    <a href="{{ route('home') }}" class='sidebar-link'>
+                        <i class="bi bi-house-door-fill"></i>
+                        <span>Inicio</span>
+                    </a>
+                </li>
+                @role('admin')
                     <li class="sidebar-item has-sub {{ request()->is('admin') ? 'active' : '' }}">
 
                         <a href="{{ route('admin.users.index') }}" class='sidebar-link'>
@@ -78,22 +84,35 @@
                                 </a>
                             </li>
 
-                            <li class="submenu-item ">
+                            {{-- <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.roles.index') }}">
                                     <span>Roles</span>
                                 </a>
-                            </li>
+                            </li> --}}
 
                         </ul>
                     </li>
-                @endcan
-
-                <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
-                    <a href="{{ route('home') }}" class='sidebar-link'>
-                        <i class="bi bi-house-door-fill"></i>
-                        <span>Inicio</span>
-                    </a>
-                </li>
+                @endrole
+                @role('rh')
+                    <li class="sidebar-item has-sub">
+                        <a href="#" class='sidebar-link'>
+                            <i class="bi bi-info-circle-fill"></i>
+                            <span>Gestion de ausencias</span>
+                        </a>
+                        <ul class="submenu ">
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('request.showAll') }}">
+                                    <span>Ver solicitudes</span>
+                                </a>
+                            </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('about_trade') }}">
+                                    <span>Reportes de ausencias</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endrole('rh')
 
                 <li class="sidebar-item has-sub {{ request()->is('about') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
@@ -123,31 +142,35 @@
                         </li>
                     </ul>
                 </li>
-                @can('rh')
-                    <li class="sidebar-item has-sub">
-                        <a href="#" class='sidebar-link'>
-                            <i class="bi bi-info-circle-fill"></i>
-                            <span>Gestion de ausencias</span>
-                        </a>
-                        <ul class="submenu ">
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('request.showAll') }}">
-                                    <span>Ver solicitudes</span>
-                                </a>
-                            </li>
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('about_trade') }}">
-                                    <span>Reportes de ausencias</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endcan
+
                 <li class="sidebar-item {{ request()->is('company') ? 'active' : '' }}">
                     <a href="{{ route('company') }}" class='sidebar-link'>
                         <i class="bi bi-diagram-3-fill"></i>
                         <span>Organigrama</span>
                     </a>
+                </li>
+
+                <li class="sidebar-item  has-sub {{ request()->is('request') ? 'active' : '' }}">
+                    <a href="{{ route('request.index') }}" class='sidebar-link'>
+                        <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                        <span>Solicitudes</span>
+                    </a>
+
+                    <ul class="submenu ">
+
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('request.index') }}">
+                                <span>Mis Solicitudes</span>
+                            </a>
+                        </li>
+                        @if (count(auth()->user()->employee->subordinados) > 0)
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('request.authorizeManager') }}">
+                                    <span>Autorizar Solicitudes</span>
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
                 </li>
 
                 <li class="sidebar-item {{ request()->is('admin.contacts') ? 'active' : '' }}">
@@ -228,30 +251,6 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item  has-sub {{ request()->is('request') ? 'active' : '' }}">
-                    <a href="{{ route('request.index') }}" class='sidebar-link'>
-                        <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                        <span>Solicitudes</span>
-                    </a>
-
-                    <ul class="submenu ">
-
-                        <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('request.index') }}">
-                                <span>Mis Solicitudes</span>
-                            </a>
-                        </li>
-                        @if (count(auth()->user()->employee->subordinados) > 0)
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('request.authorizeManager') }}">
-                                    <span>Autorizar Solicitudes</span>
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-
-                </li>
-
                 {{-- <li class="sidebar-item {{ request()->is('work') ? 'active' : '' }}">
                     <a href="{{ route('work') }}" class='sidebar-link'>
                         <i class="fa fa-trello" aria-hidden="true"></i>
@@ -261,17 +260,17 @@
 
 
                 <!-- <li class="sidebar-item  {{ request()->is('users') ? 'active' : '' }}">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-grid-fill"></i>
-                        <span>Ver Usuarios</span>
-                    </a>
-                </li>
-                <li class="sidebar-item  {{ request()->is('temas') ? 'active' : '' }}">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-grid-fill"></i>
-                        <span>Ver Equipos</span>
-                    </a>
-                </li> -->
+                                    <a href="#" class='sidebar-link'>
+                                        <i class="bi bi-grid-fill"></i>
+                                        <span>Ver Usuarios</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item  {{ request()->is('temas') ? 'active' : '' }}">
+                                    <a href="#" class='sidebar-link'>
+                                        <i class="bi bi-grid-fill"></i>
+                                        <span>Ver Equipos</span>
+                                    </a>
+                                </li> -->
                 <!-- Authentication Links -->
                 @guest
                     <li class="sidebar-item">
