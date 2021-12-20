@@ -35,7 +35,7 @@
                         @enderror
                     </div>
                 </div>
-                <div class="col-md-6">
+                {{-- <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('absence', 'Fecha de Ausencia') !!}
                         {!! Form::date('absence', null, ['class' => 'form-control']) !!}
@@ -56,9 +56,9 @@
                             </small>
                         @enderror
                     </div>
-                </div>
+                </div> --}}
 
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="mb-2 form-group">
                         {!! Form::label('reason', 'Motivo') !!}
                         {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo']) !!}
@@ -69,6 +69,10 @@
                         @enderror
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <input type="hidden" id="fechasSeleccionadas">
+                    <div id='calendar'></div>
+                </div>
             </div>
             {!! Form::submit('Crear solicitud', ['class' => 'btnCreate mt-4']) !!}
         </div>
@@ -77,20 +81,83 @@
 @stop
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendors/quill/quill.bubble.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendors/quill/quill.snow.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('assets/vendors/quill/quill.bubble.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/quill/quill.snow.css') }}"> --}}
+    <link rel="stylesheet" href="{{ asset('assets/vendors/fullcalendar/main.min.css') }}">
+    <style>
+        body {
+            margin: 40px 10px;
+            padding: 0;
+            font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+            font-size: 14px;
+        }
+
+        #calendar {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+    </style>
 @stop
 
 @section('scripts')
-    <script src="{{ asset('assets/vendors/quill/quill.min.js') }}"></script>
-    <script src="{{ asset('assets\js\pages\form-editor.js') }}"></script>
+    {{-- <script src="{{ asset('assets/vendors/quill/quill.min.js') }}"></script>
+    <script src="{{ asset('assets\js\pages\form-editor.js') }}"></script> --}}
+    <script src="{{ asset('assets/vendors/fullcalendar/main.min.js') }}"></script>
     <script>
-        const editor = document.querySelector('.text-desc')
-        const textDescription = document.querySelector('.text-description')
+        document.addEventListener('DOMContentLoaded', function() {
+            let dateActual = moment().format('YYYY-MM-DD');
+            const fechasSeleccionadasEl = document.querySelector('#fechasSeleccionadas')
+            var calendarEl = document.getElementById('calendar');
+            var daysSelecteds = new Set();
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialDate: dateActual,
+                selectable: true,
+                select: function(arg) {
+                    var r = confirm("Seleccionar este dia");
 
-        editor.addEventListener('keypress', (e) => {
-            console.log('a');
-            textDescription.value = editor.firstChild.innerHTML
-        })
+                    if (r) {
+                        if (!daysSelecteds.has(arg.startStr)) {
+                            calendar.addEvent({
+                                title: 'OK',
+                                start: arg.start,
+                                startStr: arg.startStr,
+                                end: arg.end,
+                                allDay: arg.allDay
+                            })
+                            daysSelecteds = actualizarFechas(calendar.getEvents())
+
+                            let lista = [...daysSelecteds]
+                            fechasSeleccionadasEl.value = lista.toString()
+                        }
+                    }
+                    calendar.unselect()
+                },
+                eventClick: function(arg) {
+                    if (confirm('Deseas desmarcar este dia?')) {
+                        arg.event.remove()
+                        daysSelecteds = actualizarFechas(calendar.getEvents(), 0)
+                        let lista = [...daysSelecteds]
+                        fechasSeleccionadasEl.value = lista.toString()
+                    }
+                },
+                editable: true,
+                dayMaxEvents: 1, // allow "more" link when too many events
+                events: [
+
+                ]
+            });
+
+            calendar.render();
+            calendar.setOption('locale', 'mx');
+        });
+
+        function actualizarFechas(events, estado = 1) {
+            days = new Set();
+            events.forEach(element => {
+                days.add(element._def.extendedProps.startStr);
+            });
+            return days
+        }
     </script>
 @stop
