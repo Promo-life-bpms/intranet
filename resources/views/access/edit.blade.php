@@ -54,7 +54,7 @@
             </div>
             <div class="col">
                 <div class="mb-2 form-group">
-                    {!! Form::label('image', 'Imagen representativa') !!}
+                    {!! Form::label('image', 'Imagen representativa (opcional)') !!}
                     {!! Form::file('image',  ['class' => 'form-control']) !!}
                 </div>
             </div>

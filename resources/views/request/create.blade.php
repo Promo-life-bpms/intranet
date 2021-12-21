@@ -74,7 +74,7 @@
                     <div id='calendar'></div>
                 </div>
             </div>
-            {!! Form::submit('Crear solicitud', ['class' => 'btnCreate mt-4']) !!}
+            {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4']) !!}
         </div>
         {!! Form::close() !!}
     </div>
