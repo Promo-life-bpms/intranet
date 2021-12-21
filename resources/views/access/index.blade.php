@@ -13,18 +13,18 @@
 
             @foreach ($access as $acc)
             <div class="content" style="background: #ffffff; width:280px;" >
-                <div class="card m-1 "style="border: 1px solid #002235;"  >
+                <div class="card m-1 "style="border: 1px solid #032A3D;"  >
                     <div class="card-header p-2" >
                         <h4 class="text-center" > {{$acc->title}}</h4>
                         </div>
                     <div class="card-body" >
                         <img style="width: 100%; max-height:120px;  object-fit: contain;" src="{{$acc->image}}">
                     
-                        <a style="width: 100%; justify-content:center;" href="{{$acc->link}}" type="button"
+                        <a style="width: 100%; justify-content:center;" target="_blank" href="{{$acc->link}}" type="button"
                         class="btn btn-primary d-flex align-items-center mt-2 mb-2">INGRESAR</a>
 
                         <div class="d-flex justify-content-center">
-                            <a style="width: 80px"  href="{{ route('access.edit', ['acc' => $acc->id]) }}" type="button"  class="btn btn-outline-success m-2">VER</a>
+                            <a style="width: 80px"  href="{{ route('access.edit', ['acc' => $acc->id]) }}" type="button" class="btn btn-outline-success m-2">VER</a>
                             <form class="form-delete"
                                 action="{{ route('access.delete', ['acc' => $acc->id]) }}" method="POST">
                                 @csrf
