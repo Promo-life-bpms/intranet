@@ -31,7 +31,7 @@
 
             <div class="col mt-4">
                 {!! Form::label('reason', 'Celebreacion') !!}
-                {!!  Form::text('reason',null,['class' => 'form-control', 'placeholder' => 'Ingrese la descripcion de la celebracion']) !!}
+                {!!Form::text('reason',null,['class' => 'form-control', 'placeholder' => 'Ingrese la descripcion de la celebracion']) !!}
                 @error('reason')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>

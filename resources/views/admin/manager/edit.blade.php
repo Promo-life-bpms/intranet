@@ -39,7 +39,7 @@
                  <br>
              @enderror
          </div>
-         {!! Form::submit('ASIGNAR COMO MANAGER', ['class' => 'btnCreate mt-4']) !!}
+         {!! Form::submit('ACTUALIZAR MANAGER', ['class' => 'btnCreate mt-4']) !!}
      </div>
      {!! Form::close() !!}
  </div>

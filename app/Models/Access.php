@@ -11,10 +11,13 @@ class Access extends Model
 
     public $table = "access";
 
+    public $timestamps = false;
+
     protected $fillable = [
         'link',
         'user',
         'password',
         'image'
     ];
+    
 }

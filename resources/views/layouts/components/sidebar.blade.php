@@ -102,6 +102,12 @@
                                     <span>Dias no laborales</span>
                                 </a>
                             </li>
+
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">
+                                    <span>Vacaciones</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endrole('rh')

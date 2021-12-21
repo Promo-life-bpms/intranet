@@ -149,7 +149,7 @@
             @enderror
         </div>
     </div>
-    {!! Form::submit('Editar USUARIO', ['class' => 'btnCreate mt-4']) !!}
+    {!! Form::submit('ACTUALIZAR USUARIO', ['class' => 'btnCreate mt-4']) !!}
     </div>
 
     {!! Form::close() !!}
