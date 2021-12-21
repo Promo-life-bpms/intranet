@@ -9,8 +9,7 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-        $com = Communique::all();
-        $communique = $com->last();
-        return view('home.index', compact('communique'));
+        $communiques = Communique::paginate(3);
+        return view('home.index', compact('communiques'));
     }
 }

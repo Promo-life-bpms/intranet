@@ -66,12 +66,6 @@
                                     <span>Organizacion</span>
                                 </a>
                             </li>
-                            {{-- <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.employee') }}">
-                                    <span>Empleados</span>
-                                </a>
-                            </li> --}}
-
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.manager.index') }}">
                                     <span>Managers</span>
@@ -83,19 +77,6 @@
                                     <span>Usuarios</span>
                                 </a>
                             </li>
-
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.noworkingdays.index') }}">
-                                    <span>Dias no laborales</span>
-                                </a>
-                            </li>
-
-                            {{-- <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.roles.index') }}">
-                                    <span>Roles</span>
-                                </a>
-                            </li> --}}
-
                         </ul>
                     </li>
                 @endrole
@@ -114,6 +95,11 @@
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('about_trade') }}">
                                     <span>Reportes de ausencias</span>
+                                </a>
+                            </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.noworkingdays.index') }}">
+                                    <span>Dias no laborales</span>
                                 </a>
                             </li>
                         </ul>

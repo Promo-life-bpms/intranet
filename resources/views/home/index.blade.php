@@ -1,70 +1,85 @@
 @extends('layouts.app')
 
 @section('dashboard')
-    <div class="px-5 text-center">
-        <h2>Promo The New York Times</h2>
-        <hr>
-        @php
-            $carbon = new \Carbon\Carbon();
-            $date = $carbon->now();
-            $date = $date->format('d-m-Y');
-        @endphp
-        <h4 class="text-center">
-            {{ $date }}
-        </h4>
-        <hr>
-        <h3>{{ $communique->title }}</h3>
-        <div class="row">
-            <div class="col-md-4">
-                <h4>Vacaciones</h4>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card p-3">
+                <div class="row">
+                    <div class="col-md-6">
+                        @if ($communiques)
+                            @foreach ($communiques as $communique)
+                                <img class="img-fluid rounded" src="{{ asset($communique->images) }}" alt="" srcset="">
+                            @endforeach
+                        @endif
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4>Ultimos comunicados</h4>
+                            <a href="{{ route('communiques.index') }}" class="btn btn-primary btn-sm">Todos</a>
+                        </div>
+                        <hr>
+                        <ul class="list-group">
+                            @if ($communiques)
+                                @foreach ($communiques as $communique)
+                                    <li class="list-group-item">
+                                        {{ $communique->title }}
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <img src="{{ asset('') . $communique->images }}" alt="" srcset="" class="img-fluid rounded shadow-sm">
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h4>CEO Message</h4>
+                <hr>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eligendi magnam sit inventore qui
+                    laudantium repellendus numquam saepe eaque sed. Inventore commodi pariatur facere quae ducimus
+                    laudantium impedit veniam molestias.</p>
+                <span class="text-left">-David Levy</span>
             </div>
-            <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
                 <h4>Cumpleaños</h4>
+                <hr>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <h3>Aniversarios</h3>
-            </div>
-            <div class="col-md-8">
-                <h3>Segundo comunicado</h3>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h4>Vacaciones</h4>
+                <hr>
             </div>
         </div>
-        <img class="promonews" style="width:90%; " src="{{ asset('/img/diseno.jpeg') }}" alt="diseno">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h4>Aniversarios</h4>
+                <hr>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h4>Empleado del Mes</h4>
+                <hr>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card p-3">
+                <h4>Calendario</h4>
+                <hr>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h4>Nuevos ingresos</h4>
+                <hr>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
     </div>
 @stop
 
 @section('styles')
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noticia+Text:wght@700&display=swap" rel="stylesheet">
-    <style>
-        h2 {
-            font-family: 'Noticia Text', serif;
-            font-size: 3.5rem;
-        }
-
-        h3 {
-            font-family: 'Noticia Text', serif;
-            font-size: 2.5rem;
-        }
-
-        h4 {
-            font-family: 'Noticia Text', serif;
-            font-size: 1.5rem;
-        }
-
-        hr:not([size]) {
-            height: 2px;
-            background-color: #000;
-        }
-
-        #main {
-            background-color: #DDDDDD;
-        }
-
-    </style>
 @stop
