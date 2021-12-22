@@ -108,6 +108,12 @@
                                     <span>Vacaciones</span>
                                 </a>
                             </li>
+
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.events.index') }}">
+                                    <span>Eventos</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endrole('rh')

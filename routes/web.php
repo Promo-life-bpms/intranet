@@ -17,6 +17,7 @@ use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\EventsController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ManagerController;
@@ -107,6 +108,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
     Route::get('manager/getPosition/{id}', [ManagerController::class, 'getPosition']);
     Route::get('manager/getEmployee/{id}', [ManagerController::class, 'getEmployee']);
+    Route::get('request/getData//{lista}', [EmployeeController::class, 'getData']);
 
     Route::get('test/export/', [RequestController::class, 'export']);
+
+    Route::get('events', [EventsController::class, 'index'])->name('admin.events.index');
+    Route::post('fullcalenderAjax', [EventsController::class, 'ajax']);
+/*     Route::get('events', [EventsController::class, 'index'])->name('admin.events.index');
+    Route::post('eventsAjax', [EventsController::class, 'ajax']); */
+
 });
+

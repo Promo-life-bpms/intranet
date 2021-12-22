@@ -74,7 +74,7 @@
                     <div id='calendar'></div>
                 </div>
             </div>
-            {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4']) !!}
+            {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name'=>'submit']) !!}
         </div>
         {!! Form::close() !!}
     </div>
@@ -93,15 +93,18 @@
         #calendar {
             max-width: 600px;
             margin: 0 auto;
+            color: black;
         }
 
-    </style>
+       
+    </style>
 @stop
 
 @section('scripts')
     <script src="{{ asset('assets/vendors/fullcalendar/main.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            
             let noworkingdays = @json($noworkingdays)
 
             events = []
@@ -109,7 +112,9 @@
                 events.push({
                     title: element.reason,
                     start: element.day,
-                    type: 'noworking'
+                    type: 'noworking',
+                    display: 'background',
+                    editable: false,
                 })
             });
 
@@ -139,7 +144,9 @@
                                         })
                                         daysSelecteds = actualizarFechas(calendar.getEvents())
                                         let lista = [...daysSelecteds]
+                                        alert(lista)
                                         fechasSeleccionadasEl.value = lista.toString()
+
                                     }
                                 } else {
                                     alert('No puedes seleccionar el fin de semana')
@@ -174,4 +181,5 @@
             return days
         }
     </script>
+
 @stop
