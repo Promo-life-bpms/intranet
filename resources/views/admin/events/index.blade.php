@@ -15,7 +15,6 @@
       
     </div>
     
-
 @stop
 
 @section('styles')
@@ -23,6 +22,23 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+<style>
+    body {
+        margin: 40px 10px;
+        padding: 0;
+        font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+        font-size: 14px;
+    }
+
+    #calendar a{
+        margin: 0 auto;
+        font-size: 16px;
+        color: #ffffff;
+    }
+
+   
+</style>
 @stop
 
 @section('scripts')
@@ -41,49 +57,92 @@
         }
     });
       
+
+    let noworkingdays = @json($noworkingdays)
+
+    events = []
+    noworkingdays.forEach(element => {
+        events.push({
+            title: element.reason,
+            start: element.day,
+            display: 'background',
+            editable: false,
+        })
+    });
+
+    let dateActual = moment().format('YYYY-MM-DD');
+    const fechasSeleccionadasEl = document.querySelector('#fechasSeleccionadas')
+    var calendarEl = document.getElementById('calendar');
+    var daysSelecteds = new Set();
+
     var calendar = $('#calendar').fullCalendar({
                         editable: true,
                         events: SITEURL + "/events",
                         displayEventTime: false,
-                        editable: true,
-                        eventRender: function (event, element, view) {
-                            if (event.allDay === 'true') {
-                                    event.allDay = true;
-                            } else {
-                                    event.allDay = false;
-                            }
-                        },
+                        allDay: true,
+                        events,
                         selectable: true,
                         selectHelper: true,
-                        select: function (start, end, allDay) {
-                            var title = prompt('Event Title:');
+                        select: function (start, end, allDay) {                           
+                            var title = 'Agregado' /* prompt('Event Title:'); */
                             if (title) {
+                                
+
+                            var startDate = moment(start),
+                            endDate = moment(end),
+                            date = startDate.clone(),
+                            isWeekend = false;
+
+                            while (date.isBefore(endDate)) {
+                            if (date.isoWeekday() == 6 || date.isoWeekday() == 7) {
+                                isWeekend = true;
+                                }    
+                                date.add(1, 'day');
+                            }
+
+                            if (isWeekend) {
+                                alert('No se puede seleccionar fin de semana');
+
+                                return false;
+                            }else{
                                 var start = $.fullCalendar.formatDate(start, "Y-MM-DD");
                                 var end = $.fullCalendar.formatDate(end, "Y-MM-DD");
-                                $.ajax({
-                                    url: SITEURL + "/fullcalenderAjax",
-                                    data: {
-                                        title: title,
-                                        start: start,
-                                        end: end,
-                                        type: 'add'
-                                    },
-                                    type: "POST",
-                                    success: function (data) {
-                                        displayMessage("Event Created Successfully");
-      
-                                        calendar.fullCalendar('renderEvent',
-                                            {
-                                                id: data.id,
-                                                title: title,
-                                                start: start,
-                                                end: end,
-                                                allDay: allDay
-                                            },true);
-      
-                                        calendar.fullCalendar('unselect');
-                                    }
-                                });
+
+                                if(dateActual<=start){
+
+                                    
+                                        $.ajax({
+                                        url: SITEURL + "/fullcalenderAjax",
+                                        data: {
+                                            title: title,
+                                            start: start,
+                                            end: end,
+                                            type: 'add'
+                                        },
+                                        type: "POST",
+                                        success: function (data) {
+                                            displayMessage("Event Created Successfully");
+        
+                                            calendar.fullCalendar('renderEvent',
+                                                {
+                                                    id: data.id,
+                                                    title: title,
+                                                    start: start,
+                                                    end: end,
+                                                    allDay: allDay
+                                                },true);
+        
+                                            calendar.fullCalendar('unselect');
+                                            }
+                                        });
+                                        
+                                }else{
+                                    alert('No puedes seleccionar fechas atrasadas ')
+                                }
+                            }
+
+                                
+                               
                             }
                         },
                         eventDrop: function (event, delta) {

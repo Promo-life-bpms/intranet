@@ -97,7 +97,7 @@
         }
 
        
-    </style>
+    </style>
 @stop
 
 @section('scripts')
