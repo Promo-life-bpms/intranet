@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Events;
 use App\Models\NoWorkingDays;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EventsController extends Controller
 {
@@ -16,7 +17,6 @@ class EventsController extends Controller
     public function index(Request $request)
     {
         
-
         if($request->ajax()) {
             
              $data = Events::whereDate('start', '>=', $request->start)
@@ -38,6 +38,7 @@ class EventsController extends Controller
      */
     public function ajax(Request $request)
     {
+        $id = Auth::id(); 
  
         switch ($request->type) {
            case 'add':
@@ -45,6 +46,7 @@ class EventsController extends Controller
                   'title' => $request->title,
                   'start' => $request->start,
                   'end' => $request->end,
+                  'users_id'=>$id
               ]);
  
               return response()->json($event);
@@ -55,6 +57,7 @@ class EventsController extends Controller
                   'title' => $request->title,
                   'start' => $request->start,
                   'end' => $request->end,
+                  'user_id'=>$id
               ]);
  
               return response()->json($event);
