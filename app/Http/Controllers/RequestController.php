@@ -66,8 +66,16 @@ class RequestController extends Controller
      */
     public function create()
     {
+
+        $id = Auth::id();
+
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        return view('request.create', compact('noworkingdays'));
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
+        if ($vacations == null) {
+            $vacations = 0;
+        }
+
+        return view('request.create', compact('noworkingdays', 'vacations'));
     }
 
     /**
@@ -196,5 +204,4 @@ class RequestController extends Controller
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
     }
-
 }

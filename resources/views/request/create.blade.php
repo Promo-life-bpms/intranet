@@ -60,7 +60,7 @@
 
                 <div class="col-md-6">
                     <div class="mb-2 form-group">
-                        {!! Form::label('reason', 'Motivo') !!}
+                        {!! Form::label('reason', 'Motivo') !!} 
                         {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo']) !!}
                         @error('reason')
                             <small>
@@ -71,13 +71,15 @@
                 </div>
                 <div class="col-md-6">
                     <div class="mb-2 form-group">
-                    {!! Form::label('days', 'Seleccionar dias') !!}
+                    {!! Form::label('days', 'Seleccionar dias ') !!}
                     <div id='calendar'></div>
+                    <p>Dias de vacaciones diponibles:  {{$vacations}}  </p>
                 </div>
                 <div>
             </div>
-            {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name'=>'submit']) !!}
         </div>
+        {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name'=>'submit']) !!}
+
         {!! Form::close() !!}
     </div>
 @stop
@@ -138,14 +140,13 @@
         events.push({
             title: element.reason,
             start: element.day,
+            description:element.reason,
             rendering: 'background',
             editable: false,
             eventStartEditable:false,
         })
     });
     
-
-  
 
 
     let dateActual = moment().format('YYYY-MM-DD');
@@ -168,8 +169,10 @@
                             
                             events.forEach(function(e) {
                             if (dates == e.start){
+                                
                                 alert("No puedes seleccionar un día festivo")
                                 throw BreakException
+                            
 
                             }else{
                                 check=true
@@ -215,7 +218,7 @@
                                         },
                                         type: "POST",
                                         success: function (data) {
-                                            displayMessage("Event Created Successfully");
+                                            displayMessage("Día seleccionado satisfactoriamente");
         
                                             calendar.fullCalendar('renderEvent',
                                                 {
@@ -255,7 +258,7 @@
                                 },
                                 type: "POST",
                                 success: function (response) {
-                                    displayMessage("Event Updated Successfully");
+                                    displayMessage("Dia actualizado satisfactoriaente");
                                 }
                             });
                         },
@@ -273,7 +276,7 @@
                                     },
                                     success: function (response) {
                                         calendar.fullCalendar('removeEvents', event.id);
-                                        displayMessage("Event Deleted Successfully");
+                                        displayMessage("Día borrado satisfactoriamente");
                                     }
                                 });
                             }
