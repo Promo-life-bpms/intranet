@@ -15,8 +15,7 @@
                     <th scope="col">Solicitante</th>
                     <th scope="col">Tipo</th>
                     <th scope="col">Pago</th>
-                    <th scope="col">Fecha ausencia</th>
-                    <th scope="col">Fecha reingreso</th>
+                    <th scope="col">Fechas de ausencia</th>
                     <th scope="col">Motivo</th>
                     <th scope="col">Jefe status </th>
                     <th scope="col">RH status</th>
@@ -24,15 +23,22 @@
                 </tr>
             </thead>
             <tbody>
+         
                 @foreach ($myrequests as $request)
                     <tr>
+
                         <td>{{ $request->id }}</td>
-                        <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }}
-                        </td>
+                        <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }} </td>
                         <td>{{ $request->type_request }}</td>
-                        <td>{{ $request->payment }}</td>
-                        <td>{{ $request->absence }}</td>
-                        <td>{{ $request->admission }}</td>
+                        <td>{{ $request->payment }}</td>        
+                            <td>
+                                @foreach ($requestDays as $requestDay)
+                                    @if ($request->id == $requestDay->requests_id)
+                                        '{{ $requestDay->start  }} '
+                                        
+                                    @endif
+                                @endforeach
+                            </td>
                         <td>{{ $request->reason }}</td>
                         <td>{{ $request->direct_manager_status }}</td>
                         <td>{{ $request->human_resources_status }}</td>
@@ -47,6 +53,7 @@
                             </form>
                         </td>
                     </tr>
+              
                 @endforeach
 
             </tbody>

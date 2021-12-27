@@ -14,8 +14,8 @@ class Request extends Model
     protected $fillable = [
         'type_request',
         'payment',
-        'absence',
-        'admission',
+        'days',
+        /* 'admission', */ 
         'reason',
         'direct_manager_id',
         'direct_manager_status',
@@ -33,4 +33,5 @@ class Request extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+
 }

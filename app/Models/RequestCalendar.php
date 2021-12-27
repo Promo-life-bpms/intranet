@@ -11,6 +11,12 @@ class RequestCalendar extends Model
 
     public $table = "request_calendars";
     protected $fillable = [
-        'title', 'start', 'end', 'users_id'
+        'title', 'start', 'end', 'users_id','requests_id'
     ];
+
+    public function request()
+    {
+        return $this->belongsTo(Request::class);
+    }
+
 }

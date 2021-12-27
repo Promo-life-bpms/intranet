@@ -35,28 +35,6 @@
                         @enderror
                     </div>
                 </div>
-                {{-- <div class="col-md-6">
-                    <div class="form-group">
-                        {!! Form::label('absence', 'Fecha de Ausencia') !!}
-                        {!! Form::date('absence', null, ['class' => 'form-control']) !!}
-                        @error('absence')
-                            <small>
-                                <font color="red"> *Este campo es requerido* </font>
-                            </small>
-                        @enderror
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {!! Form::label('admission ', 'Fecha de Reingreso') !!}
-                        {!! Form::date('admission', null, ['class' => 'form-control']) !!}
-                        @error('admission')
-                            <small>
-                                <font color="red"> *Este campo es requerido* </font>
-                            </small>
-                        @enderror
-                    </div>
-                </div> --}}
 
                 <div class="col-md-6">
                     <div class="mb-2 form-group">
@@ -72,7 +50,7 @@
                 <div class="col-md-6">
                     <div class="mb-2 form-group">
                     {!! Form::label('days', 'Seleccionar dias ') !!}
-                    <div id='calendar'></div>
+                    <div class="days" id='calendar'></div>
                     <p>Dias de vacaciones diponibles:  {{$vacations}}  </p>
                 </div>
                 <div>
@@ -158,21 +136,27 @@
                         editable: true,
                         events: SITEURL + "/event",
                         displayEventTime: false,
-                        allDay: true,
+                        allDay: false,
                         events,
                         selectable: true,
                         selectHelper: true,
+                        eventMaxStack:1,
+                      
                         select: function (start, end, allDay) {    
                             //Valida si selecciona un dia festivo
                             var dates = start.format('YYYY-MM-DD');
                             var check=false;
                             
+                            if(events.length === 0){
+                                check=true
+                                displayAlert("No hay dias festivos asignados")
+                            }
+
                             events.forEach(function(e) {
                             if (dates == e.start){
                                 
                                 alert("No puedes seleccionar un día festivo")
                                 throw BreakException
-                            
 
                             }else{
                                 check=true
@@ -184,7 +168,6 @@
                             
                             check=false
                             var title = 'Agregado' 
-
                             var startDate = moment(start),
                             endDate = moment(end),
                             date = startDate.clone(),
@@ -199,7 +182,6 @@
 
                             if (isWeekend) {
                                 alert('No se puede seleccionar fin de semana');
-
                                 return false;
                             }else{
                                 var start = $.fullCalendar.formatDate(start, "Y-MM-DD");
@@ -239,7 +221,6 @@
                                 }
                             }
 
-                                
                                
                             }
                         },
@@ -280,6 +261,14 @@
                                     }
                                 });
                             }
+                        },
+                        dayClick: function(date, allDay, jsEvent, view) {
+                            $('#calendar').fullCalendar('clientEvents', function(event) {
+                                if(event.start <= date && event.end >= date) {
+                                    return true;
+                                }
+                                return false;
+                            });
                         }
      
                     });
@@ -289,6 +278,10 @@
     function displayMessage(message) {
         toastr.success(message, 'Solicitud');
     } 
+
+    function displayAlert(message) {
+        toastr.warning(message, 'Advertencia');
+    }
       
  </script>
 

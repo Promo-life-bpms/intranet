@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\NoWorkingDays;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +41,13 @@ class RequestController extends Controller
             $vacations = 0;
         }
 
-        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests'));
+
+        $requestDays=RequestCalendar::all();
+       
+/*         $userDays= RequestCalendar::all()->where('users_id',$id)->unique();
+ */
+     /*    dd($userDays); */
+        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests','requestDays'));
     }
 
     /**
@@ -58,7 +65,9 @@ class RequestController extends Controller
                     'title' => $request->title,
                     'start' => $request->start,
                     'end' => $request->end,
-                    'users_id' => $id
+                    'users_id' => $id,
+                    'requests_id' => $request->id,
+
                 ]);
 
                 return response()->json($event);
@@ -150,23 +159,23 @@ class RequestController extends Controller
      */
     public function store(Request $request)
     {
+
+        
         if (auth()->user()->employee->jefe_directo_id == null) {
             return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado');
         }
+
         $request->validate([
             'type_request' => 'required',
             'payment' => 'required',
-            'absence' => 'required',
-            'admission' => 'required',
-            'reason' => 'required'
+            'reason' => 'required',
         ]);
 
+        $id = Auth::id();
         $req = new ModelsRequest();
         $req->employee_id = auth()->user()->employee->id;
         $req->type_request = $request->type_request;
         $req->payment = $request->payment;
-        $req->absence = $request->absence;
-        $req->admission = $request->admission;
         $req->reason = $request->reason;
 
         $req->direct_manager_id = auth()->user()->employee->jefe_directo_id;
@@ -175,7 +184,13 @@ class RequestController extends Controller
 
         $req->save();
 
+        //Obtiene el id de la solicitud despues de crearla para asignar a la vista del calendario
+        $lastRequest = DB::table('requests')->latest('id')->value('id');
+        DB::table('request_calendars')->where('users_id',$id)->where('requests_id',null)->update(['requests_id'=>$lastRequest]);
+            
         return redirect()->action([RequestController::class, 'index']);
+
+
     }
     /**
      * Show the form for editing the specified resource.
@@ -185,7 +200,22 @@ class RequestController extends Controller
      */
     public function edit(Request $req, ModelsRequest $request)
     {
-        return view('request.edit', compact('request'));
+
+        $myrequests = auth()->user()->employee->yourRequests;
+
+        $id = Auth::id();
+        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
+        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        if ($vacations == null) {
+            $vacations = 0;
+        }
+
+       
+        $daysSelected=RequestCalendar::where('requests_id',$request->id)->get();
+       
+       
+        return view('request.edit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests','daysSelected','request'));
     }
 
     /**
@@ -200,8 +230,6 @@ class RequestController extends Controller
         $req->validate([
             'type_request' => 'required',
             'payment' => 'required',
-            'absence' => 'required',
-            'admission' => 'required',
             'reason' => 'required'
         ]);
 
@@ -218,6 +246,9 @@ class RequestController extends Controller
      */
     public function destroy(ModelsRequest $request)
     {
+      /*   $daysDelete=RequestCalendar::where('requests_id',$request->id)->get();
+
+        $daysDelete->delete(); */
         $request->delete();
         return redirect()->action([RequestController::class, 'authorizeRequestManager']);
     }
