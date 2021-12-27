@@ -23,6 +23,8 @@ use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\NoWorkingDaysController;
 use App\Http\Controllers\VacationsController;
+use App\Http\Controllers\RequestCalendarController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,32 +78,32 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::resource('organization', OrganizationController::class);
     });
 
-    
+
     Route::resource('communiques', CommuniqueController::class);
-/*     Route::resource('days-no-working', NoWorkingDaysController::class);
- */    
-    Route::get('/days-no-working', [NoWorkingDaysController::class,'index'])->name('admin.noworkingdays.index');
-    Route::get('/days-no-working/create', [NoWorkingDaysController::class,'create'])->name('admin.noworkingdays.create');
-    Route::post('/days-no-working', [NoWorkingDaysController::class,'store'])->name('admin.noworkingdays.store');
-    Route::get('/days-no-working/{noworkingday}/edit', [NoWorkingDaysController::class,'edit'])->name('admin.noworkingdays.edit');
-    Route::put('/days-no-working/{noworkingday}', [NoWorkingDaysController::class,'update'])->name('admin.noworkingdays.update');
-    Route::delete('/days-no-working/{noworkingday}', [NoWorkingDaysController::class,'destroy'])->name('admin.noworkingdays.delete'); 
 
-    Route::get('/access', [AccessController::class,'index'])->name('access');
-    Route::get('/access/create', [AccessController::class,'create'])->name('access.create');
-    Route::post('/access', [AccessController::class,'store'])->name('access.store');
-    Route::get('/access/{acc}/edit', [AccessController::class,'edit'])->name('access.edit');
-    Route::put('/access/{acc}', [AccessController::class,'update'])->name('access.update');
-    Route::delete('/access/{acc}', [AccessController::class,'destroy'])->name('access.delete'); 
+    /*     Route::resource('days-no-working', NoWorkingDaysController::class);
+ */
+    Route::get('/days-no-working', [NoWorkingDaysController::class, 'index'])->name('admin.noworkingdays.index');
+    Route::get('/days-no-working/create', [NoWorkingDaysController::class, 'create'])->name('admin.noworkingdays.create');
+    Route::post('/days-no-working', [NoWorkingDaysController::class, 'store'])->name('admin.noworkingdays.store');
+    Route::get('/days-no-working/{noworkingday}/edit', [NoWorkingDaysController::class, 'edit'])->name('admin.noworkingdays.edit');
+    Route::put('/days-no-working/{noworkingday}', [NoWorkingDaysController::class, 'update'])->name('admin.noworkingdays.update');
+    Route::delete('/days-no-working/{noworkingday}', [NoWorkingDaysController::class, 'destroy'])->name('admin.noworkingdays.delete');
 
-    Route::get('/vacations', [VacationsController::class,'index'])->name('admin.vacations.index');
-    Route::get('/vacations/create', [VacationsController::class,'create'])->name('admin.vacations.create');
-    Route::post('/vacations', [VacationsController::class,'store'])->name('admin.vacations.store');
-    Route::get('/vacations/{vacation}/edit', [VacationsController::class,'edit'])->name('admin.vacations.edit');
-    Route::put('/vacations/{vacation}', [VacationsController::class,'update'])->name('admin.vacations.update');
-    Route::delete('/vacations/{vacation}', [VacationsController::class,'destroy'])->name('admin.vacations.destroy'); 
+    Route::get('/access', [AccessController::class, 'index'])->name('access');
+    Route::get('/access/create', [AccessController::class, 'create'])->name('access.create');
+    Route::post('/access', [AccessController::class, 'store'])->name('access.store');
+    Route::get('/access/{acc}/edit', [AccessController::class, 'edit'])->name('access.edit');
+    Route::put('/access/{acc}', [AccessController::class, 'update'])->name('access.update');
+    Route::delete('/access/{acc}', [AccessController::class, 'destroy'])->name('access.delete');
 
-    Route::resource('request', RequestController::class)->except('show');
+    Route::get('/vacations', [VacationsController::class, 'index'])->name('admin.vacations.index');
+    Route::get('/vacations/create', [VacationsController::class, 'create'])->name('admin.vacations.create');
+    Route::post('/vacations', [VacationsController::class, 'store'])->name('admin.vacations.store');
+    Route::get('/vacations/{vacation}/edit', [VacationsController::class, 'edit'])->name('admin.vacations.edit');
+    Route::put('/vacations/{vacation}', [VacationsController::class, 'update'])->name('admin.vacations.update');
+    Route::delete('/vacations/{vacation}', [VacationsController::class, 'destroy'])->name('admin.vacations.destroy');
+
     Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
     Route::get('request/show-all', [RequestController::class, 'showAll'])->name('request.showAll');
 
@@ -111,11 +113,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('request/getData//{lista}', [EmployeeController::class, 'getData']);
 
     Route::get('test/export/', [RequestController::class, 'export']);
+    Route::get('/request', [RequestController::class, 'index'])->name('request.index');
+    Route::post('fullcalenderAjax', [RequestController::class, 'ajax']);
 
-    Route::get('events', [EventsController::class, 'index'])->name('admin.events.index');
-    Route::post('fullcalenderAjax', [EventsController::class, 'ajax']);
-/*     Route::get('events', [EventsController::class, 'index'])->name('admin.events.index');
+    Route::resource('request', RequestController::class);
+
+    /*     Route::get('events', [EventsController::class, 'index'])->name('admin.events.index');
     Route::post('eventsAjax', [EventsController::class, 'ajax']); */
-
 });
-

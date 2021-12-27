@@ -156,7 +156,7 @@
 
     var calendar = $('#calendar').fullCalendar({
                         editable: true,
-                        events: SITEURL + "/events",
+                        events: SITEURL + "/event",
                         displayEventTime: false,
                         allDay: true,
                         events,
@@ -287,7 +287,7 @@
     });
      
     function displayMessage(message) {
-        toastr.success(message, 'Event');
+        toastr.success(message, 'Solicitud');
     } 
       
  </script>

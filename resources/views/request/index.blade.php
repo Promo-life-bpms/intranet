@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($requests as $request)
+                @foreach ($myrequests as $request)
                     <tr>
                         <td>{{ $request->id }}</td>
                         <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }}

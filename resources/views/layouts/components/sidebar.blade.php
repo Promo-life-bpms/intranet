@@ -109,11 +109,11 @@
                                 </a>
                             </li>
 
-                            <li class="submenu-item ">
+                          {{--   <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.events.index') }}">
                                     <span>Eventos</span>
                                 </a>
-                            </li>
+                            </li> --}}
                         </ul>
                     </li>
                 @endrole('rh')

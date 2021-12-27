@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Events;
 use App\Models\NoWorkingDays;
+use App\Models\RequestCalendar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,7 @@ class EventsController extends Controller
 
         if ($request->ajax()) {
 
-            $data = Events::whereDate('start', '>=', $request->start)
+            $data = RequestCalendar::whereDate('start', '>=', $request->start)
                 ->whereDate('end',   '<=', $request->end)
                 ->get(['id', 'title', 'start', 'end']);
 
@@ -50,7 +51,7 @@ class EventsController extends Controller
 
         switch ($request->type) {
             case 'add':
-                $event = Events::create([
+                $event = RequestCalendar::create([
                     'title' => $request->title,
                     'start' => $request->start,
                     'end' => $request->end,
@@ -61,7 +62,7 @@ class EventsController extends Controller
                 break;
 
             case 'update':
-                $event = Events::find($request->id)->update([
+                $event = RequestCalendar::find($request->id)->update([
                     'title' => $request->title,
                     'start' => $request->start,
                     'end' => $request->end,
@@ -72,7 +73,7 @@ class EventsController extends Controller
                 break;
 
             case 'delete':
-                $event = Events::find($request->id)->delete();
+                $event = RequestCalendar::find($request->id)->delete();
 
                 return response()->json($event);
                 break;
