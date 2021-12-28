@@ -159,11 +159,14 @@
     var daysSelecteds = new Set();
 
     var calendar = $('#calendar').fullCalendar({
-                        editable: false,
+                        editable: true,
                         events: SITEURL + "/event",
                         displayEventTime: false,
                         allDay: false,
                         events,
+                        selectable: true,
+                        selectHelper: true,
+                        eventMaxStack:1,
                         select: function (start, end, allDay) {    
                             //Valida si selecciona un dia festivo
                             var dates = start.format('YYYY-MM-DD');
