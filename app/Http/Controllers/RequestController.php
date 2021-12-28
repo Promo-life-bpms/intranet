@@ -42,12 +42,12 @@ class RequestController extends Controller
         }
 
 
-        $requestDays=RequestCalendar::all();
-       
-/*         $userDays= RequestCalendar::all()->where('users_id',$id)->unique();
+        $requestDays = RequestCalendar::all();
+
+        /*         $userDays= RequestCalendar::all()->where('users_id',$id)->unique();
  */
-     /*    dd($userDays); */
-        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests','requestDays'));
+        /*    dd($userDays); */
+        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays'));
     }
 
     /**
@@ -112,7 +112,7 @@ class RequestController extends Controller
             if ($positionDepartment == 1) {
                 $requests = ModelsRequest::all();
             } else {
-                $requests = ModelsRequest::all()->where('direct_manager_id', $userID);
+                $requests = ModelsRequest::all()->where('direct_manager_id', $id);
             }
         } else {
             if ($positionDepartment == 1) {
@@ -122,7 +122,9 @@ class RequestController extends Controller
             }
         }
 
-        return view('request.authorize', compact('requests'));
+        $requestDays = RequestCalendar::all();
+
+        return view('request.authorize', compact('requests', 'requestDays'));
     }
 
     public function showAll()
@@ -160,7 +162,7 @@ class RequestController extends Controller
     public function store(Request $request)
     {
 
-        
+
         if (auth()->user()->employee->jefe_directo_id == null) {
             return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado');
         }
@@ -186,11 +188,9 @@ class RequestController extends Controller
 
         //Obtiene el id de la solicitud despues de crearla para asignar a la vista del calendario
         $lastRequest = DB::table('requests')->latest('id')->value('id');
-        DB::table('request_calendars')->where('users_id',$id)->where('requests_id',null)->update(['requests_id'=>$lastRequest]);
-            
+        DB::table('request_calendars')->where('users_id', $id)->where('requests_id', null)->update(['requests_id' => $lastRequest]);
+
         return redirect()->action([RequestController::class, 'index']);
-
-
     }
     /**
      * Show the form for editing the specified resource.
@@ -211,11 +211,11 @@ class RequestController extends Controller
             $vacations = 0;
         }
 
-       
-        $daysSelected=RequestCalendar::where('requests_id',$request->id)->get();
-       
-       
-        return view('request.edit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests','daysSelected','request'));
+
+        $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
+
+
+        return view('request.edit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request'));
     }
 
     /**
@@ -246,9 +246,7 @@ class RequestController extends Controller
      */
     public function destroy(ModelsRequest $request)
     {
-      /*   $daysDelete=RequestCalendar::where('requests_id',$request->id)->get();
-
-        $daysDelete->delete(); */
+        DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
         $request->delete();
         return redirect()->action([RequestController::class, 'authorizeRequestManager']);
     }

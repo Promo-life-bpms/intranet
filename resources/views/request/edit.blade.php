@@ -6,11 +6,10 @@
             <h3>Detalles de la solicitud</h3>
         </div>
         <div class="card-body">
-
             {!! Form::model($request, ['route' => ['request.update', $request], 'method' => 'put']) !!}
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6">
                         {!! Form::label('type_request', 'Tipo de Solicitud') !!}
                         {!! Form::select('type_request', ['Salir durante la Jornada' => 'Salir durante la Jornada', 'Faltar a sus labores' => 'Faltar a sus labores'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
                         @error('type_request')
@@ -19,43 +18,64 @@
                             </small>
                         @enderror
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
+                    <div class="col-md-6">
                         {!! Form::label('payment', 'Forma de Pago') !!}
                         {!! Form::select('payment', ['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia', 'Pagar Tiempo/Dia' => 'Pagar Tiempo/Dia', 'A cuenta de vacaciones' => 'A cuenta de vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
                         @error('payment')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
                             </small>
-                        @enderror
+                         @enderror
                     </div>
-                </div>
+                    <div class="row">
+                        @role('rh')
+                        <div class="col-md-6 mt-4"> 
+                            {!! Form::label('human_resources_status', 'Autorizacion de RH') !!}
+                            {!! Form::select('human_resources_status', ['Pendiente' => 'Pendiente', 'Aprobado' => 'Aprobado'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                            @error('type_request')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                            @enderror
+                        </div>
+                        @endrole
+    
+                        @role('manager')
+                        <div class="col-md-6 mt-4">
+                            {!! Form::label('direct_manager_status', 'Autorizacion de Jefe directo') !!}
+                            {!! Form::select('direct_manager_status', ['Pendiente' => 'Pendiente', 'Aprobado' => 'Aprobado'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                            @error('type_request')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                            @enderror
+                        </div>
+                        @endrole
+                    </div>
+                 
 
-                <div class="col-md-6">
-                    <div class="mb-2 form-group">
+                    <div class="col-md-6 mt-4">
                         {!! Form::label('reason', 'Motivo') !!} 
                         {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo','readonly']) !!}
                         @error('reason')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
                             </small>
-                        @enderror
+                        @enderror 
                     </div>
+
+                    <div class="col-md-6 mt-4">
+                        {!! Form::label('days', 'Seleccionar dias ') !!}
+                        <div class="days" id='calendar'></div>
+                        <p>Dias de vacaciones diponibles:  {{$vacations}}  </p>
+                    <div>
                 </div>
-                <div class="col-md-6">
-                    <div class="mb-2 form-group">
-                    {!! Form::label('days', 'Seleccionar dias ') !!}
-                    <div class="days" id='calendar'></div>
-                    <p>Dias de vacaciones diponibles:  {{$vacations}}  </p>
-                </div>
-                <div>
-            </div>
         </div>
-        {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name'=>'submit']) !!}
+        {!! Form::submit('ACTUALIZAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name'=>'submit']) !!}
 
         {!! Form::close() !!}
     </div>
+</div>
 @stop
 
 @section('styles')
@@ -144,10 +164,6 @@
                         displayEventTime: false,
                         allDay: false,
                         events,
-                        selectable: true,
-                        selectHelper: true,
-                        eventMaxStack:1,
-                      
                         select: function (start, end, allDay) {    
                             //Valida si selecciona un dia festivo
                             var dates = start.format('YYYY-MM-DD');

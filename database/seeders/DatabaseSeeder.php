@@ -42,6 +42,12 @@ class DatabaseSeeder extends Seeder
             'description' => '', // optional
         ]);
 
+        $manager = Role::create([
+            'name' => 'manager',
+            'display_name' => 'Manager', // optional
+            'description' => '', // optional
+        ]);
+
         User::create([
             'name' => 'Antonio',
             'lastname' => 'Tomas',
