@@ -25,7 +25,6 @@
          
                 @foreach ($requests as $request)
                     <tr>
-
                         <td>{{ $request->id }}</td>
                         <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }} </td>
                         <td>{{ $request->type_request }}</td>
@@ -52,12 +51,9 @@
                             </form>
                         </td>
                     </tr>
-              
                 @endforeach
-
             </tbody>
         </table>
-
     </div>
 @stop
 
