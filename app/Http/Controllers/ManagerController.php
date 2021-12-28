@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\Employee;
 use App\Models\EmployeePosition;
 use App\Models\Manager;
 use App\Models\Position;
@@ -112,8 +113,8 @@ class ManagerController extends Controller
 
     public function getEmployee($id)
     {
-        $employeesPos = DB::table('employees')->where('position_id', $id)->value('user_id');
-        $employee = User::all()->whereIn('id', $employeesPos)->pluck('name', 'id');
-        return json_encode($employee);
+        $employeesPos = Employee::all()->where('position_id',$id)->pluck('id','user_id');
+        $employees = User::all()->whereIn('id', $employeesPos)->pluck('name', 'id');
+        return json_encode($employees);
     }
 }

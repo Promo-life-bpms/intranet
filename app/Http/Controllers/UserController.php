@@ -71,7 +71,7 @@ class UserController extends Controller
         $user->employee->birthday_date = $request->birthday_date;
         $user->employee->date_admission = $request->date_admission;
         $user->employee->status = $request->status;
-        $user->employee->jefe_directo_id = $request->jefe;
+        $user->employee->jefe_directo_id = $request->jefe_directo_id;
         $user->employee->status = 1;
         $user->employee->position_id = $request->position;
         $user->employee->save();
@@ -129,7 +129,7 @@ class UserController extends Controller
         $user->employee->birthday_date = $request->birthday_date;
         $user->employee->date_admission = $request->date_admission;
         $user->employee->status = $request->status;
-        $user->employee->jefe_directo_id = $request->jefe;
+        $user->employee->jefe_directo_id = $request->jefe_directo_id;
         $user->employee->status = 1;
         $user->employee->position_id = $request->position;
         $user->employee->save();
@@ -168,8 +168,13 @@ class UserController extends Controller
     public function getManager($id)
     {
         $departmentID = DB::table('positions')->where('id',$id)->value('department_id');
-        $managers = Manager::all()->where('department_id',$departmentID)->pluck('department_id','users_id');
-        $users = User::all()->whereIn('id',$managers)->pluck('name','id');
+ 
+        if( $departmentID ==null){
+            $users = User::all()->pluck('name','id');
+        }else{
+            $managers = Manager::all()->where('department_id',$departmentID)->pluck('users_id','users_id');
+            $users = User::all()->whereIn('id',$managers)->pluck('name','id'); 
+        }
 
         return json_encode($users);
     }

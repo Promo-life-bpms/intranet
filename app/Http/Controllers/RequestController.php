@@ -101,30 +101,24 @@ class RequestController extends Controller
         /*  $requests = auth()->user()->employee->yourAuthRequests; */
 
         $id = Auth::user()->id;
-        $userID = DB::table('employees')->where('id', $id)->value('id');
-        $manager = DB::table('employees')->where('id', $userID)->value('jefe_directo_id');
-        $departmentID = DB::table('employees')->where('id', $userID)->value('position_id');
-        $positionDepartment = DB::table('positions')->where('id', $departmentID)->value('department_id');
-        $requestManager = DB::table('department_manager')->where('employee_id', $userID)->value('employee_id');
+        $manager = DB::table('manager')->where('id', $id)->value('users_id');
+        $position = DB::table('employees')->where('user_id',$id)->value('position_id');
+        $rh = DB::table('positions')->where('id',$position)->value('department_id');
+      
 
-
-        if ($requestManager == $userID) {
-            if ($positionDepartment == 1) {
-                $requests = ModelsRequest::all();
-            } else {
-                $requests = ModelsRequest::all()->where('direct_manager_id', $id);
-            }
-        } else {
-            if ($positionDepartment == 1) {
-                $requests = ModelsRequest::all();
-            } else {
-                $requests = ModelsRequest::all()->where('employee_id', $userID);
+        $requests = ModelsRequest::all();
+        if($manager ==$id){
+            $requests = ModelsRequest::all()->where('direct_manager_id',$id);
+        }else{
+            if($rh==1){
+                $requests = ModelsRequest::all()->where('direct_manager_status','Aprobado');
             }
         }
 
+       
         $requestDays = RequestCalendar::all();
 
-        return view('request.authorize', compact('requests', 'requestDays'));
+        return view('request.authorize', compact('requestDays','requests'));
     }
 
     public function showAll()
