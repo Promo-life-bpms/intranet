@@ -9,15 +9,20 @@ class Manager extends Model
 {
     use HasFactory;
 
-    public $table = "department_manager";
+    public $table = "manager";
 
     protected $fillable = [
         'id',
-        'employee_id',
+        'users_id',
         'department_id'
     ];
 
 
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'users_id');
+    }
 
     public function employee()
     {

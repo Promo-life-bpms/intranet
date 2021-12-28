@@ -22,7 +22,7 @@
                 @foreach ($managers as $manager)
                     <tr>
                         <td>{{ $manager->id }}</td>
-                        <td>{{ $manager->employee->user->name . ' ' . $manager->employee->paterno . ' ' . $manager->employee->materno }}
+                        <td>{{ $manager->user->name . ' ' . $manager->user->lastname }}
                         </td>
                         <td>{{ $manager->department->name }}</td>
                         <td>

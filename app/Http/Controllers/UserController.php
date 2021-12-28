@@ -8,7 +8,10 @@ use App\Models\Employee;
 use App\Models\Position;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Manager;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class UserController extends Controller
 {
@@ -35,7 +38,9 @@ class UserController extends Controller
         $departments  = Department::pluck('name', 'id')->toArray();
         $positions  = Position::pluck('name', 'id')->toArray();
         $companies = Company::all();
-        return view('admin.user.create', compact('roles', 'employees', 'departments', 'positions', 'companies'));
+        $manager = User::all()->pluck('name','id');
+        
+        return view('admin.user.create', compact('roles', 'employees', 'departments', 'positions', 'companies','manager'));
     }
 
     /**
@@ -91,7 +96,8 @@ class UserController extends Controller
         $departments  = Department::pluck('name', 'id')->toArray();
         $positions  = Position::pluck('name', 'id')->toArray();
         $companies = Company::all();
-        return view('admin.user.edit', compact('roles', 'employees', 'departments', 'positions', 'companies', 'user'));
+        $manager = User::all()->pluck('name','id');
+        return view('admin.user.edit', compact('roles', 'employees', 'departments', 'positions', 'companies', 'user','manager'));
     }
 
     /**
@@ -146,10 +152,25 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->roles()->detach();
-        $user->employee->companies()->detach();
-        $user->employee->positions()->detach();
-        $user->delete();
+        DB::table('users')->where('id',  $user->id)->delete();
+        DB::table('employees')->where('user_id',  $user->id)->delete();
+        DB::table('manager')->where('users_id',  $user->id)->delete();
+
         return redirect()->action([UserController::class, 'index']);
+    }
+
+    public function getPosition($id)
+    {
+        $positions = Position::all()->where('department_id', $id)->pluck('name', 'id');
+        return json_encode($positions);
+    }
+
+    public function getManager($id)
+    {
+        $departmentID = DB::table('positions')->where('id',$id)->value('department_id');
+        $managers = Manager::all()->where('department_id',$departmentID)->pluck('department_id','users_id');
+        $users = User::all()->whereIn('id',$managers)->pluck('name','id');
+
+        return json_encode($users);
     }
 }

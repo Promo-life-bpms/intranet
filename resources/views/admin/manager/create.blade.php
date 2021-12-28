@@ -30,20 +30,19 @@
             </div>
 
             <div class="col-4">
-                {!! Form::label('employee_id', 'Nombre del Empleado') !!}
-                {!! Form::select('employee_id', $employees, null, ['class' => 'form-control', 'placeholder' => 'Selecciona un Empleado']) !!}
-                @error('employee_id')
+                {!! Form::label('users_id', 'Nombre del Empleado') !!}
+                {!! Form::select('users_id', $users, null, ['class' => 'form-control', 'placeholder' => 'Selecciona un Empleado']) !!}
+                @error('users_id')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
                     </small>
                     <br>
                 @enderror
             </div>
-            {!! Form::submit('CREAR MANAGER', ['class' => 'btnCreate mt-4']) !!}
+            {!! Form::submit('ACTUALIZAR MANAGER', ['class' => 'btnCreate mt-4']) !!}
         </div>
         {!! Form::close() !!}
     </div>
-
 
 @stop
 
@@ -76,28 +75,27 @@
 
 
     <script type="text/javascript">
-        // jQuery(document).ready(function() {
-        //     jQuery('select[name="position"]').on('change', function() {
-        //         var id = jQuery(this).val();
-        //         if (id) {
-        //             jQuery.ajax({
-        //                 url: '/manager/getEmployee/' + id,
-        //                 type: "GET",
-        //                 dataType: "json",
-        //                 success: function(data) {
-        //                     console.log(data);
-        //                     jQuery('select[name="employee_id"]').empty();
-        //                     jQuery.each(data, function(key, value) {
-        //                         $('select[name="employee_id"]').append(
-        //                             '<option value="' + key + '">' + value +
-        //                             '</option>');
-        //                     });
-        //                 }
-        //             });
-        //         } else {
-        //             $('select[name="employee_id"]').empty();
-        //         }
-        //     });
-        // });
+        jQuery(document).ready(function() {
+            jQuery('select[name="position"]').on('change', function() {
+                var id = jQuery(this).val();
+                if (id) {
+                    jQuery.ajax({
+                        url: '/manager/getEmployee/' + id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            jQuery('select[name="users_id"]').empty();
+                            jQuery.each(data, function(key, value) {
+                                $('select[name="users_id"]').append(
+                                    '<option value="' + key + '">' + value +
+                                    '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('select[name="employee_id"]').empty();
+                }
+            });
+        });
     </script>
 @stop

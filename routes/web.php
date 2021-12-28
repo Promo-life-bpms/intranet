@@ -108,9 +108,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('request/show-all', [RequestController::class, 'showAll'])->name('request.showAll');
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
+    Route::get('request/getData//{lista}', [EmployeeController::class, 'getData']);
     Route::get('manager/getPosition/{id}', [ManagerController::class, 'getPosition']);
     Route::get('manager/getEmployee/{id}', [ManagerController::class, 'getEmployee']);
-    Route::get('request/getData//{lista}', [EmployeeController::class, 'getData']);
+    Route::get('user/getPosition/{id}', [UserController::class, 'getPosition']);
+    Route::get('user/getManager/{id}', [UserController::class, 'getManager']);
 
     Route::get('test/export/', [RequestController::class, 'export']);
     Route::get('/request', [RequestController::class, 'index'])->name('request.index');

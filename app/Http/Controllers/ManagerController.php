@@ -8,6 +8,7 @@ use App\Models\Manager;
 use App\Models\Position;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ManagerController extends Controller
 {
@@ -33,8 +34,8 @@ class ManagerController extends Controller
     {
         $positions  = Position::pluck('name', 'id')->toArray();
         $departments  = Department::pluck('name', 'id')->toArray();
-        $employees = User::pluck('name', 'id')->toArray();
-        return view('admin.manager.create', compact('positions', 'departments', 'employees'));
+        $users = User::pluck('name', 'id')->toArray();
+        return view('admin.manager.create', compact('positions', 'departments', 'users'));
     }
 
     /**
@@ -45,8 +46,14 @@ class ManagerController extends Controller
      */
     public function store(Request $request)
     {
+
+        $request->validate([
+            'users_id' => 'required',
+            'department_id' => 'required'
+        ]);
+        
         $manager = new Manager();
-        $manager->employee_id = $request->employee_id;
+        $manager->users_id = $request->users_id;
         $manager->department_id = $request->department_id;
         $manager->save();
 
@@ -77,7 +84,7 @@ class ManagerController extends Controller
     public function update(Request $request, Manager $manager)
     {
         $request->validate([
-            'employee_id' => 'required',
+            'users_id' => 'required',
             'department_id' => 'required'
         ]);
 
@@ -105,8 +112,7 @@ class ManagerController extends Controller
 
     public function getEmployee($id)
     {
-        $employeesPos = EmployeePosition::all()->where('position_id', $id)->pluck('employee_id', 'id');
-        // $employeesPos = DB::table('employee_position')->whereIn('position_id', $id)->value('employee_id');
+        $employeesPos = DB::table('employees')->where('position_id', $id)->value('user_id');
         $employee = User::all()->whereIn('id', $employeesPos)->pluck('name', 'id');
         return json_encode($employee);
     }

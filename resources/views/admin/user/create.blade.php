@@ -37,7 +37,7 @@
                     <br>
                 @enderror
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 {!! Form::label('birthday_date', 'Fecha de Cumpleaños') !!}
                 {!! Form::date('birthday_date', null, ['class' => 'form-control']) !!}
                 @error('birthday_date')
@@ -47,7 +47,7 @@
                     <br>
                 @enderror
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 {!! Form::label('date_admission', 'Fecha de Ingreso') !!}
                 {!! Form::date('date_admission', null, ['class' => 'form-control']) !!}
                 @error('date_admission')
@@ -57,21 +57,9 @@
                     <br>
                 @enderror
             </div>
-            <div class="form-group col-md-4">
-                {!! Form::label('jefe', 'Jefe Directo') !!}
-                <select name="jefe" id="" class="form-control">
-                    <option value="">Seleccione</option>
-                    @foreach ($employees as $employee)
-                        <option value="{{ $employee->id }}">{{ $employee->user->name }}</option>
-                    @endforeach
-                </select>
-                @error('jefe')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
+
+           
+            
             <div class="form-group col-md-4">
                 {!! Form::label('department', 'Departamento') !!}
                 {!! Form::select('department', $departments, null, ['class' => 'form-control', 'placeholder' => 'Selecciona Departamento']) !!}
@@ -82,6 +70,7 @@
                     <br>
                 @enderror
             </div>
+            
             <div class="form-group col-md-4">
                 {!! Form::label('position', 'Puesto') !!}
                 {!! Form::select('position', $positions, null, ['class' => 'form-control', 'placeholder' => 'Selecciona Puesto']) !!}
@@ -91,6 +80,21 @@
                     </small>
                     <br>
                 @enderror
+            </div>
+            <div class="form-group col-md-4">
+                {!! Form::label('jefe_directo_id', 'Jefe Directo') !!}
+                {!! Form::select('jefe_directo_id', $manager, null, ['class' => 'form-control', 'placeholder' => 'Selecciona jefe directo ']) !!}
+                
+                @error('jefe_directo_id')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+
+            <div class="row">
+
             </div>
             <div class="form-group col-md-4 ">
                 {!! Form::label('empresas', 'Empresas a las que pertenece') !!}
@@ -142,7 +146,7 @@
                 var id = jQuery(this).val();
                 if (id) {
                     jQuery.ajax({
-                        url: '/dropdownlist/getPosition/' + id,
+                        url: '/user/getPosition/' + id,
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
@@ -160,4 +164,29 @@
             });
         });
     </script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery('select[name="position"]').on('change', function() {
+            var id = jQuery(this).val();
+            if (id) {
+                jQuery.ajax({
+                    url: '/user/getManager/' + id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        jQuery('select[name="jefe_directo_id"]').empty();
+                        jQuery.each(data, function(key, value) {
+                            $('select[name="jefe_directo_id"]').append(
+                                '<option value="' + key + '">' + value +
+                                '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('select[name="employee_id"]').empty();
+            }
+        });
+    });
+</script>
 @stop

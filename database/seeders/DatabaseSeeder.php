@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Chavez',
             'email' => 'test@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi', //123456789
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //123456789
             'remember_token' => '',
         ])->attachRole($rh);
 
@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Navarrete',
             'email' => 'empleado@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->attachRole($rh);
 
@@ -80,7 +80,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Navarrete',
             'email' => 'jose@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->attachRole($systems);
 
@@ -89,7 +89,7 @@ class DatabaseSeeder extends Seeder
             'lastname' => 'Iriarte',
             'email' => 'brandon@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$syIdnDjSzM7PZ7PvA1Irl.oIA3g4Gv712wcoBHkTArOWxNs5/hAoi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => '',
         ])->attachRole($empleado);
 
