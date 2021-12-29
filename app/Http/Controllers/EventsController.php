@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Events;
 use App\Models\Event;
+use App\Models\NoWorkingDays;
 use Illuminate\Http\Request;
 
 class EventsController extends Controller
@@ -37,6 +38,11 @@ class EventsController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'title' => 'required',
+            'start'=>'required'
+        ]);
+
         $day = $request->start;
 
         $time = $request->time;
@@ -57,9 +63,14 @@ class EventsController extends Controller
      * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
      */
-    public function show(Events $event)
+    public function calendar()
     {
-        //
+
+        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
+        $eventos = Events::all();
+
+        return view('admin.events.edit', compact('noworkingdays','eventos'));
+
     }
 
     /**
@@ -70,7 +81,7 @@ class EventsController extends Controller
      */
     public function edit(Events $event)
     {
-        return view('admin.events.edit');
+        return view('admin.events.edit', compact('event'));
     }
 
     /**
@@ -82,7 +93,15 @@ class EventsController extends Controller
      */
     public function update(Request $request, Events $event)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'start'=>'required'
+        ]);
+
+        $event->update($request->all());
+
+        return redirect()->action([EventsController::class, 'index']);
+
     }
 
     /**
@@ -93,6 +112,8 @@ class EventsController extends Controller
      */
     public function destroy(Events $event)
     {
-        //
+        $event -> delete();
+        return redirect()->action([EventsController::class, 'index']);
+
     }
 }

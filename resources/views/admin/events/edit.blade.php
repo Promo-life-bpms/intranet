@@ -32,7 +32,7 @@
                 <div class="col-6">
                     {!! Form::label('time', 'Hora') !!}
                     {!! Form::time('time',  null, ['class' => 'form-control', 'placeholder' => 'Selecciona hora del evento']) !!}
-                    @error('start')
+                    @error('time')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>
                         </small>
@@ -41,7 +41,7 @@
                 </div>
             </div>
             
-            {!! Form::submit('CREAR DIA NO LABORAL', ['class' => 'btnCreate mt-4']) !!}
+            {!! Form::submit('ACTUALIZAR EVENTO', ['class' => 'btnCreate mt-4']) !!}
         </div>
         {!! Form::close() !!}
     </div>

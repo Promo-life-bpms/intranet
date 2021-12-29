@@ -254,6 +254,8 @@
     });
       
     let noworkingdays = @json($noworkingdays);
+    let eventos =  @json($eventos);
+
 
     events = []
     noworkingdays.forEach(element => {
@@ -267,7 +269,14 @@
         })
     });
     
-
+    eventos.forEach(element => {
+        events.push({
+            title: element.title,
+            start: element.start,
+            editable: false,
+            eventStartEditable:false,
+        })
+    });
 
     let dateActual = moment().format('YYYY-MM-DD');
     const fechasSeleccionadasEl = document.querySelector('#fechasSeleccionadas')
@@ -277,12 +286,13 @@
     var calendar = $('#calendar').fullCalendar({
                         editable: true,
                         events: SITEURL + "/event",
-                        displayEventTime: false,
-                        allDay: false,
+                        displayEventTime: true,
+                        allDay: true,
                         events,
                         selectable: true,
                         selectHelper: true,
                         eventMaxStack:1,
+                        timeFormat: 'h:mm', 
                         
                     });
     });

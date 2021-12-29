@@ -4,45 +4,108 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Calendario de Eventos</h3>
-            <a href="{{ route('admin.events.create') }} " type="button" class="btn btn-success">Agregar</a>
         </div>
     </div>
     <div class="card-body">
-        <form action="{{ route('admin.events.show') }}" method="GET">
-            Venue:
-            <select name="venue_id">
-                <option value="">-- all venues --</option>
-                @foreach($venues as $venue)
-                    <option value="{{ $venue->id }}"
-                            @if (request('venue_id') == $venue->id) selected @endif>{{ $venue->name }}</option>
-                @endforeach
-            </select>
-            <button type="submit" class="btn btn-sm btn-primary">Filter</button>
-        </form>
-
-        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css' />
-
-        <div id='calendar'></div>
-
-
+        <div  id='calendar'></div>
     </div>
 </div>
 @endsection
+@section('styles')
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+<style>
+    body {
+        margin: 40px 10px;
+        padding: 0;
+        font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+        font-size: 14px;
+    }
+
+    #calendar{
+        width: 100%;
+    }
+
+    #calendar h2{
+        font-size: 12px;
+    }
+    #calendar a{
+        margin: 0 auto;
+        font-size: 16px;
+        color: #ffffff;
+    }
+
+
+   
+</style>
+@stop
+
 
 @section('scripts')
-@parent
-<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     $(document).ready(function () {
-            // page is now ready, initialize the calendar...
-            events={!! json_encode($events) !!};
-            $('#calendar').fullCalendar({
-                // put your options and callbacks here
-                events: events,
+       
+    var SITEURL = "{{ url('/') }}";
+      
+    $.ajaxSetup({
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+      
+    let noworkingdays = @json($noworkingdays);
+    let eventos =  @json($eventos);
+
+    events = []
+    noworkingdays.forEach(element => {
+        events.push({
+            title: element.reason,
+            start: element.day,
+            description:element.reason,
+            rendering: 'background',
+            editable: false,
+            eventStartEditable:false,
+        })
+    });
+
+    eventos.forEach(element => {
+        events.push({
+            title: element.title,
+            start: element.start,
+            editable: false,
+            eventStartEditable:false,
+        })
+    });
+    
 
 
-            })
-        });
-</script>
+    let dateActual = moment().format('YYYY-MM-DD');
+    const fechasSeleccionadasEl = document.querySelector('#fechasSeleccionadas')
+    var calendarEl = document.getElementById('calendar');
+    var daysSelecteds = new Set();
+
+    var calendar = $('#calendar').fullCalendar({
+                        editable: true,
+                        events: SITEURL + "/event",
+                        displayEventTime: false,
+                        allDay: false,
+                        events,
+                        selectable: true,
+                        selectHelper: true,
+                        eventMaxStack:1,
+                        displayEventTime : false
+                    });
+    });
+     
+      
+ </script>
+
 @stop
+

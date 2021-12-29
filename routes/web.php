@@ -116,7 +116,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/events', [EventsController::class, 'index'])->name('admin.events.index');
     Route::get('/events/create', [EventsController::class, 'create'])->name('admin.events.create');
-    Route::get('/events/show', [EventsController::class, 'show'])->name('admin.events.show');
+    Route::get('/events/show', [EventsController::class, 'calendar'])->name('admin.events.show');
     Route::post('/events', [EventsController::class, 'store'])->name('admin.events.store');
     Route::get('/events/{event}/edit', [EventsController::class, 'edit'])->name('admin.events.edit');
     Route::put('/events/{event}', [EventsController::class, 'update'])->name('admin.events.update');

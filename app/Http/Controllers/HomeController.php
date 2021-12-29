@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Communique;
 use App\Models\Employee;
+use App\Models\Events;
 use App\Models\NoWorkingDays;
 use Illuminate\Http\Request;
 
@@ -84,8 +85,11 @@ class HomeController extends Controller
             $monthAniversary = 'Enero';
         }
 
+        $eventos = Events::all();
+
+
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
         $communiques = Communique::paginate(3);
-        return view('home.index', compact('communiques','employees','monthBirthday','monthAniversary','noworkingdays'));
+        return view('home.index', compact('communiques','employees','monthBirthday','monthAniversary','noworkingdays','eventos'));
     }
 }
