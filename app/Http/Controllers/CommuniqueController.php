@@ -43,8 +43,6 @@ class CommuniqueController extends Controller
     {
         request()->validate([
             'title' => 'required',
-            'images' => 'required',
-            'files' => 'required',
             'description' => 'required'
         ]);
 
