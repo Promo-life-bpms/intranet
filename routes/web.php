@@ -114,6 +114,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('user/getPosition/{id}', [UserController::class, 'getPosition']);
     Route::get('user/getManager/{id}', [UserController::class, 'getManager']);
 
+    Route::get('/events', [EventsController::class, 'index'])->name('admin.events.index');
+    Route::get('/events/create', [EventsController::class, 'create'])->name('admin.events.create');
+    Route::get('/events/show', [EventsController::class, 'show'])->name('admin.events.show');
+    Route::post('/events', [EventsController::class, 'store'])->name('admin.events.store');
+    Route::get('/events/{event}/edit', [EventsController::class, 'edit'])->name('admin.events.edit');
+    Route::put('/events/{event}', [EventsController::class, 'update'])->name('admin.events.update');
+    Route::delete('/events/{event}', [EventsController::class, 'destroy'])->name('admin.events.destroy');
+
     Route::get('test/export/', [RequestController::class, 'export']);
     Route::get('/request', [RequestController::class, 'index'])->name('request.index');
     Route::post('fullcalenderAjax', [RequestController::class, 'ajax']);

@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Events;
-use App\Models\NoWorkingDays;
-use App\Models\RequestCalendar;
+use App\Models\Event;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class EventsController extends Controller
 {
@@ -18,69 +15,84 @@ class EventsController extends Controller
      */
     public function index(Request $request)
     {
-
-        if ($request->ajax()) {
-
-            $data = RequestCalendar::whereDate('start', '>=', $request->start)
-                ->whereDate('end',   '<=', $request->end)
-                ->get(['id', 'title', 'start', 'end']);
-
-            return response()->json($data);
-        }
-
-
-        $id = Auth::id();
-        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
-        if ($vacations == null) {
-            $vacations = 0;
-        }
-
-        return view('admin.events.index', compact('noworkingdays', 'vacations', 'expiration'));
+        $events = Events::all();
+        return view('admin.events.index', compact('events'));
     }
 
     /**
-     * Write code on Method
+     * Show the form for creating a new resource.
      *
-     * @return response()
+     * @return \Illuminate\Http\Response
      */
-    public function ajax(Request $request)
+    public function create()
     {
-        $id = Auth::id();
+        return view('admin.events.create');
+    }
 
-        switch ($request->type) {
-            case 'add':
-                $event = RequestCalendar::create([
-                    'title' => $request->title,
-                    'start' => $request->start,
-                    'end' => $request->end,
-                    'users_id' => $id
-                ]);
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $day = $request->start;
 
-                return response()->json($event);
-                break;
+        $time = $request->time;
+        $datetime = $day . ' ' . $time;
 
-            case 'update':
-                $event = RequestCalendar::find($request->id)->update([
-                    'title' => $request->title,
-                    'start' => $request->start,
-                    'end' => $request->end,
-                    'user_id' => $id
-                ]);
+        $events = new Events();
+        $events->title = $request->title;
+        $events->start = $datetime;
+        $events->end = $datetime;
+        $events->save();
 
-                return response()->json($event);
-                break;
+        return redirect()->action([EventsController::class, 'index']);
+    }
 
-            case 'delete':
-                $event = RequestCalendar::find($request->id)->delete();
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Business  $business
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Events $event)
+    {
+        //
+    }
 
-                return response()->json($event);
-                break;
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Events  $event
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Events $event)
+    {
+        return view('admin.events.edit');
+    }
 
-            default:
-                # code...
-                break;
-        }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Events  $event
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Events $event)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Events  $event
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Events $event)
+    {
+        //
     }
 }

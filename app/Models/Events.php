@@ -9,8 +9,8 @@ class Events extends Model
 {
     use HasFactory;
 
-    public $table = "request_calendars";
+    public $table = "events";
     protected $fillable = [
-        'title', 'start', 'end', 'users_id'
+        'title', 'start', 'end'
     ];
 }
