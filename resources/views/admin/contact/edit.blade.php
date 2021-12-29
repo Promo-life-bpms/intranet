@@ -5,31 +5,74 @@
         <h3>Editar Contacto</h3>
     </div>
     <div class="card-body">
-        <form action="{{ route('admin.contacts.update', $contact) }}" enctype="multipart/form-data" method="POST">
-            @csrf
-            @method('PUT')
-            <label for="exampleFormControlInput1" class="form-label mt-4"> Telefono </label>
-            <input type="text" class="form-control" maxlength="10" name="num_tel"
-                placeholder="Ingrese el numero de telefono" value="{{ $contact->num_tel }}">
+        {!! Form::model($contact, ['route' => ['admin.contacts.update', $contact], 'method' => 'put']) !!}
 
-            <label for="exampleFormControlInput1" class="form-label mt-4">Correo Promolife </label>
-            <input type="text" class="form-control" name="correo1" placeholder="Ingrese el correo"
-                value="{{ $contact->correo1 }}">
+            <div class="row ">
+                <div class="col">
+                    {!! Form::label('num_tel', 'Numero de telefono') !!}
+                    {!! Form::text('num_tel', null,  ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono']) !!}
+                    @error('num_tel')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+            </div>
 
-            <label for="exampleFormControlInput1" class="form-label mt-4">Correo BH-Trademarket </label>
-            <input type="text" class="form-control" name="correo2" placeholder="Ingrese el correo"
-                value="{{ $contact->correo2 }}">
+            <div class="row ">
+                <div class="col-6">
+                    {!! Form::label('correo1', 'Correo Promolife') !!}
+                    {!! Form::email('correo1', null,  ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono']) !!}
+                    @error('num_tel')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
 
-            <label for="exampleFormControlInput1" class="form-label mt-4">Correo Trademarket </label>
-            <input type="text" class="form-control" name="correo3" placeholder="Ingrese el correo"
-                value="{{ $contact->correo3 }}">
+                <div class="col-6">
+                    {!! Form::label('correo2', 'Correo BH-Trademarket') !!}
+                    {!! Form::email('correo2', null,  ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono']) !!}
+                    @error('num_tel')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+            </div>
 
-            <label for="exampleFormControlInput1" class="form-label mt-4">Correo Promodreams </label>
-            <input type="text" class="form-control" name="correo4" placeholder="Ingrese el correo"
-                value="{{ $contact->correo4 }}">
+            <div class="row ">
+                <div class="col-6">
+                    {!! Form::label('correo3', 'Correo Trademarket') !!}
+                    {!! Form::email('correo3', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono']) !!}
+                    @error('num_tel')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
 
-            <input type="submit" class="btnCreate mt-4" value="ACTUALIZAR CONTACTO"></button>
-        </form>
+                <div class="col-6">
+                    {!! Form::label('correo4', 'Correo PromoDreams') !!}
+                    {!! Form::email('correo4', null,  ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono']) !!}
+                    @error('num_tel')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+            </div>
+
+            {!! Form::submit('ACTUALIZAR CONTACTO', ['class' => 'btnCreate mt-4']) !!}
+            
+        {!! Form::close() !!}
+            
+
     </div>
 @stop
 
