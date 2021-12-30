@@ -97,15 +97,16 @@
                                     <span>Reportes de ausencias</span>
                                 </a>
                             </li>
+                            
                             <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.noworkingdays.index') }}">
-                                    <span>Dias no laborales</span>
+                                <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">
+                                    <span>Vacaciones</span>
                                 </a>
                             </li>
 
                             <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">
-                                    <span>Vacaciones</span>
+                                <a class="dropdown-item" href="{{ route('admin.noworkingdays.index') }}">
+                                    <span>Dias no laborales</span>
                                 </a>
                             </li>
 

@@ -105,15 +105,12 @@ class RequestController extends Controller
         $position = DB::table('employees')->where('user_id',$id)->value('position_id');
         $rh = DB::table('positions')->where('id',$position)->value('department_id');
       
-
-        $requests = ModelsRequest::all();
-        if($manager ==$id){
-            $requests = ModelsRequest::all()->where('direct_manager_id',$id);
+        if($rh==1){
+            $requests = ModelsRequest::all()->where('direct_manager_status','Aprobado');
         }else{
-            if($rh==1){
-                $requests = ModelsRequest::all()->where('direct_manager_status','Aprobado');
-            }
+            $requests = ModelsRequest::all()->where('direct_manager_id',$id);
         }
+        
 
        
         $requestDays = RequestCalendar::all();
@@ -123,8 +120,9 @@ class RequestController extends Controller
 
     public function showAll()
     {
+        $requestDays = RequestCalendar::all();
         $requests = ModelsRequest::all()->where('direct_manager_status','Aprobado');
-        return view('request.show', compact('requests'));
+        return view('request.show', compact('requests','requestDays'));
     }
 
     public function reportRequest()
@@ -142,6 +140,9 @@ class RequestController extends Controller
     {
 
         $id = Auth::id();
+
+        DB::table('request_calendars')->where('requests_id', null)->where('users_id', $id )->delete();
+
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
         $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
         $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
@@ -162,9 +163,8 @@ class RequestController extends Controller
     public function store(Request $request)
     {
 
-
         if (auth()->user()->employee->jefe_directo_id == null) {
-            return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado');
+            return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado o no llenaste todos los campos');
         }
 
         $request->validate([
@@ -189,6 +189,13 @@ class RequestController extends Controller
         //Obtiene el id de la solicitud despues de crearla para asignar a la vista del calendario
         $lastRequest = DB::table('requests')->latest('id')->value('id');
         DB::table('request_calendars')->where('users_id', $id)->where('requests_id', null)->update(['requests_id' => $lastRequest]);
+
+        $validateRequest=RequestCalendar::all()->where('requests_id', $lastRequest)->pluck('id','title');
+        if($validateRequest == null){
+            DB::table('request')->where('users_id', $id)->where('id', $lastRequest )->delete();
+            return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado o no llenaste todos los campos');
+        }
+
 
         return redirect()->action([RequestController::class, 'index']);
     }
