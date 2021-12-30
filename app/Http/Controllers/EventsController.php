@@ -6,6 +6,7 @@ use App\Models\Events;
 use App\Models\Event;
 use App\Models\NoWorkingDays;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EventsController extends Controller
 {
@@ -40,18 +41,21 @@ class EventsController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            'start'=>'required'
-        ]);
+            'start'=>'required',
+            'time'=>'required'
+        ]);  
 
+        $id = Auth::user()->id;
         $day = $request->start;
-
         $time = $request->time;
-        $datetime = $day . ' ' . $time;
+        $datetime = $day . 'T' . $time;
 
         $events = new Events();
         $events->title = $request->title;
         $events->start = $datetime;
-        $events->end = $datetime;
+        $events->time = $request->time;
+        $events->description = $request->description;
+        $events->users_id=$id;
         $events->save();
 
         return redirect()->action([EventsController::class, 'index']);
@@ -63,13 +67,13 @@ class EventsController extends Controller
      * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
      */
-    public function calendar()
+    public function showEvents()
     {
 
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
         $eventos = Events::all();
 
-        return view('admin.events.edit', compact('noworkingdays','eventos'));
+        return view('admin.events.show', compact('noworkingdays','eventos'));
 
     }
 
@@ -95,10 +99,22 @@ class EventsController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            'start'=>'required'
+            'start'=>'required',
+            'time'=>'required'
         ]);
 
-        $event->update($request->all());
+        $id = Auth::user()->id;
+        $day = $request->start;
+        $time = $request->time;
+        $datetime = $day . 'T' . $time;
+
+      
+        $event->title = $request->title;
+        $event->start = $datetime;
+        $event->time = $request->time;
+        $event->description = $request->description;
+        $event->users_id=$id;
+        $event->save();
 
         return redirect()->action([EventsController::class, 'index']);
 

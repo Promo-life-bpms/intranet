@@ -11,6 +11,12 @@ class Events extends Model
 
     public $table = "events";
     protected $fillable = [
-        'title', 'start', 'end'
+        'title', 'start', 'time','description','users_id'
     ];
+
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'users_id');
+    }
+
 }

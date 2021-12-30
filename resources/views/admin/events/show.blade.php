@@ -4,6 +4,9 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Calendario de Eventos</h3>
+            <div class="d-flex justify-content-end">
+                <a href="{{ route('admin.events.index') }} " type="button" class="btn btn-success" style="margin-right: 10px;">Regresar</a>
+            </div>
         </div>
     </div>
     <div class="card-body">
@@ -30,7 +33,7 @@
     }
 
     #calendar h2{
-        font-size: 12px;
+        font-size: 1.8rem;
     }
     #calendar a{
         margin: 0 auto;
@@ -48,7 +51,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(document).ready(function () {
        
@@ -63,6 +67,7 @@
     let noworkingdays = @json($noworkingdays);
     let eventos =  @json($eventos);
 
+
     events = []
     noworkingdays.forEach(element => {
         events.push({
@@ -74,17 +79,16 @@
             eventStartEditable:false,
         })
     });
-
+    
     eventos.forEach(element => {
         events.push({
             title: element.title,
             start: element.start,
+            description:element.description,
             editable: false,
             eventStartEditable:false,
         })
     });
-    
-
 
     let dateActual = moment().format('YYYY-MM-DD');
     const fechasSeleccionadasEl = document.querySelector('#fechasSeleccionadas')
@@ -94,13 +98,29 @@
     var calendar = $('#calendar').fullCalendar({
                         editable: true,
                         events: SITEURL + "/event",
-                        displayEventTime: false,
-                        allDay: false,
+                        displayEventTime: true,
+                        allDay: true,
                         events,
                         selectable: true,
                         selectHelper: true,
                         eventMaxStack:1,
-                        displayEventTime : false
+                       
+                        eventClick: function (event) {
+                         
+                            Swal.fire({
+                                title: event.title,
+                                html:
+                                '<h4>'+event.description+'</h4>' ,
+                                showClass: {
+                                    popup: 'animate__animated animate__fadeInDown'
+                                },
+                                hideClass: {
+                                    popup: 'animate__animated animate__fadeOutUp'
+                                }
+                            })
+                            
+                        },
+                        
                     });
     });
      

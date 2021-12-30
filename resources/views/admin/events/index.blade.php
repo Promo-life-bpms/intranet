@@ -4,27 +4,34 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Eventos</h3>
-            <a href="{{ route('admin.events.create') }} " type="button" class="btn btn-success">Agregar</a>
+            <div class="d-flex justify-content-end">
+                <a href="{{ route('admin.events.showEvents') }} " type="button" class="btn btn-success" style="margin-right: 10px;">Ver calendario de eventos</a>
+                <a href="{{ route('admin.events.create') }} " type="button" class="btn btn-success">Agregar</a>
+            </div>
+
         </div>
     </div>
     <div class="card-body">
 
-        <table class="table">
+        <table class="table display nowrap" >
             <thead>
                 <tr>
-                    <th scope="col"># </th>
-                    <th scope="col">Evento</th>
-                    <th scope="col">Fecha Inicio</th>
-                    {{-- <th scope="col">Fecha Fin</th> --}}
-                    <th scope="col">Opciones</th>
+                    <th class="number" scope="col"># </th>
+                    <th style="max-width: 20%" scope="col">Evento</th>
+                    <th style="width: 40%"  scope="col">Descripcion</th>
+                    <th style="max-width: 10%"  scope="col">Fecha Inicio</th>
+                    <th style="max-width: 10%"  scope="col">Creador de solicitud</th>
+                    <th style="max-width: 10%"  scope="col">Opciones</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach  ($events as $event)
                     <tr>
-                        <td>{{ $event->id }}</td>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $event->title }}</td>
+                        <td>{{ $event->description }}</td>
                         <td>{{ $event->start }}</td>
+                        <td>{{ $event->users->name.' '.$event->users->lastname }}</td>
 {{--                         <td>{{ $event->end }}</td>
  --}}                    <td>
                             <a href="{{ route('admin.events.edit', ['event' => $event->id]) }}" type="button"
@@ -46,6 +53,16 @@
 
 
 @stop
+@section('styles')
+
+<style>
+    table { table-layout: fixed; }
+    table th, table td { overflow: hidden; }
+    .number{width: 4%;}
+
+</style>
+@stop
+
 
 @section('scripts')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -185,6 +185,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         const dataHtml = document.querySelector('.content-employees')
         async function obtenerEmpleados() {
@@ -273,6 +275,7 @@
         events.push({
             title: element.title,
             start: element.start,
+            description:element.description,
             editable: false,
             eventStartEditable:false,
         })
@@ -292,7 +295,22 @@
                         selectable: true,
                         selectHelper: true,
                         eventMaxStack:1,
-                        timeFormat: 'h:mm', 
+                       
+                        eventClick: function (event) {
+                         
+                            Swal.fire({
+                                title: event.title,
+                                html:
+                                '<h4>'+event.description+'</h4>' ,
+                                showClass: {
+                                    popup: 'animate__animated animate__fadeInDown'
+                                },
+                                hideClass: {
+                                    popup: 'animate__animated animate__fadeOutUp'
+                                }
+                            })
+                            
+                        },
                         
                     });
     });
