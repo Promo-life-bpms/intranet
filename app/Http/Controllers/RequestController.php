@@ -188,12 +188,15 @@ class RequestController extends Controller
 
         //Obtiene el id de la solicitud despues de crearla para asignar a la vista del calendario
         $lastRequest = DB::table('requests')->latest('id')->value('id');
+        $validateRequest= DB::table('request_calendars')->where('users_id', $id)->where('requests_id', null)->update(['requests_id' => $lastRequest]);
+
         DB::table('request_calendars')->where('users_id', $id)->where('requests_id', null)->update(['requests_id' => $lastRequest]);
 
-        $validateRequest=RequestCalendar::all()->where('requests_id', $lastRequest)->pluck('id','title');
-        if($validateRequest == null){
-            DB::table('request')->where('users_id', $id)->where('id', $lastRequest )->delete();
-            return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado o no llenaste todos los campos');
+        //$validateRequest=RequestCalendar::all()->where('requests_id', $lastRequest)->pluck('id','title');
+
+        if($validateRequest == 0  ){
+            //DB::table('requests')->where('users_id', $id)->where('id', $lastRequest )->delete();
+            return redirect()->action([RequestController::class, 'index']);
         }
 
 
