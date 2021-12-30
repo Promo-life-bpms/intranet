@@ -123,8 +123,14 @@ class RequestController extends Controller
 
     public function showAll()
     {
-        $requests = ModelsRequest::where('jefe_status', '=', 1);
+        $requests = ModelsRequest::all()->where('direct_manager_status','Aprobado');
         return view('request.show', compact('requests'));
+    }
+
+    public function reportRequest()
+    {
+        $requests = ModelsRequest::all()->where('direct_manager_status','Aprobado')->where('human_resources_status','Aprobado');
+        return view('request.reports', compact('requests'));
     }
 
     /**

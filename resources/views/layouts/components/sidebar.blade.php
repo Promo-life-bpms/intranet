@@ -93,7 +93,7 @@
                                 </a>
                             </li>
                             <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('about_trade') }}">
+                                <a class="dropdown-item" href="{{ route('request.reportRequest') }}">
                                     <span>Reportes de ausencias</span>
                                 </a>
                             </li>

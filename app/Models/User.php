@@ -56,6 +56,10 @@ class User extends Authenticatable
         static::created(function ($user) {
             $user->contact()->create();
         });
+
+        static::created(function($user){
+            $user->vacation()->create();
+        });
     }
 
     public function employee()
@@ -66,5 +70,10 @@ class User extends Authenticatable
     public function contact()
     {
         return $this->hasOne(Contact::class);
+    }
+
+    public function vacation()
+    {
+        return $this->hasOne(Vacations::class,'users_id');
     }
 }

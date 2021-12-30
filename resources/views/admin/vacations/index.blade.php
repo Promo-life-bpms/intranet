@@ -40,9 +40,9 @@
                         </td>
                     </tr>
                 @endforeach
-
             </tbody>
         </table>
+        {{ $vacations->links() }}
     </div>
 @stop
 
