@@ -6,6 +6,7 @@ use App\Models\NoWorkingDays;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
 use App\Models\Role;
+use App\Models\Vacations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +41,6 @@ class RequestController extends Controller
         if ($vacations == null) {
             $vacations = 0;
         }
-
 
         $requestDays = RequestCalendar::all();
 
@@ -127,8 +127,10 @@ class RequestController extends Controller
 
     public function reportRequest()
     {
+        $vacations = Vacations::all();
+        $requestDays = RequestCalendar::all();
         $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobado')->where('human_resources_status', 'Aprobado');
-        return view('request.reports', compact('requests'));
+        return view('request.reports', compact('requests','requestDays','vacations'));
     }
 
     /**
@@ -185,25 +187,22 @@ class RequestController extends Controller
         $req->human_resources_status = "Pendiente";
         $req->save();
 
+        $lastRequest = $req->id;
         //Obtiene el id de la solicitud despues de crearla para asignar a la vista del calendario
-        $lastRequest = DB::table('requests')->latest('id')->value('id');
+        // $lastRequest = DB::table('requests')->latest('id')->value('id');
         DB::table('request_calendars')->where('users_id', $id)->where('requests_id', null)->update(['requests_id' => $lastRequest]);
 
         //Pruebas para validar si el calendario esta vacio
 
         //Valida que el usuario no envie solicitudes sin dias asignados
-        //$validateRequest = RequestCalendar::all()->where('users_id', $id)->where('requests_id', null)->pluck('requests_id', 'requests_id');
-        //dd($validateRequest);
+        $lastRequestUser = DB::table('request_calendars')->where('users_id',$id)->where('requests_id', $lastRequest)->latest('id')->value('users_id');
+        if($lastRequestUser==null){
 
-        // DB::table('request_calendars')->where('users_id', $id)->where('requests_id', null)->value('id');
-        //if ($validateRequest == null) {
+            $employee_id = DB::table('employees')->where('id', $id)->value('id');
+            DB::table('requests')->where('employee_id', $employee_id)->where('id',$lastRequest)->delete();
+            return back()->with('message', 'No puedes crear solicitudes por que no agregaste dias en el calendario');
 
-        /*         $employee_id = DB::table('employees')->where('id', $id)->value('id');
-            DB::table('requests')->where('employee_id', $employee_id)->latest('id')->delete(); */
-
-        //    return redirect()->action([RequestController::class, 'index'])->with('message', 'No puedes crear solicitudes por que no llenaste todos los campos');
-        //} else {
-        //}
+        }
 
         return redirect()->action([RequestController::class, 'index']);
     }
@@ -226,13 +225,31 @@ class RequestController extends Controller
             $vacations = 0;
         }
 
-
         $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
-
 
         return view('request.edit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request'));
     }
 
+
+    public function authorizeEdit(Request $req, ModelsRequest $request)
+    {
+
+        $myrequests = auth()->user()->employee->yourRequests;
+
+        $id = Auth::id();
+        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
+        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        if ($vacations == null) {
+            $vacations = 0;
+        }
+
+
+        $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
+
+
+        return view('request.authorizeEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request'));
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -241,6 +258,28 @@ class RequestController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $req, ModelsRequest $request)
+    {
+        $req->validate([
+            'type_request' => 'required',
+            'payment' => 'required',
+            'reason' => 'required'
+        ]);
+
+        $request->update($req->all());
+
+        $id = Auth::user()->id;
+        $position = DB::table('employees')->where('user_id', $id)->value('position_id');
+        $rh = DB::table('positions')->where('id', $position)->value('department_id');
+
+        if ($rh == 1) {
+            return redirect()->action([RequestController::class, 'showAll']);
+        } else {
+            return redirect()->action([RequestController::class, 'index']);
+
+        }
+    }
+
+    public function authorizeUpdate(Request $req, ModelsRequest $request)
     {
         $req->validate([
             'type_request' => 'required',
@@ -263,9 +302,8 @@ class RequestController extends Controller
     {
         DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
         $request->delete();
-        return redirect()->action([RequestController::class, 'authorizeRequestManager']);
+        return redirect()->action([RequestController::class, 'index']);
     }
-
 
 
     public function export()

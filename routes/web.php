@@ -24,6 +24,7 @@ use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\NoWorkingDaysController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\RequestCalendarController;
+use App\Models\RequestCalendar;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -107,6 +108,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
     Route::get('request/show-all', [RequestController::class, 'showAll'])->name('request.showAll');
     Route::get('request/reports', [RequestController::class, 'reportRequest'])->name('request.reportRequest');
+    Route::put('request-auth/{request}', [RequestController::class, 'authorizeUpdate'])->name('request.authorize.update');
+    Route::get('request/{request}/auth-edit', [RequestController::class, 'authorizeEdit'])->name('request.authorize.edit');
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
     Route::get('request/getData//{lista}', [EmployeeController::class, 'getData']);

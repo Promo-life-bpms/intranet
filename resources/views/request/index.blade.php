@@ -34,7 +34,7 @@
                             <td>
                                 @foreach ($requestDays as $requestDay)
                                     @if ($request->id == $requestDay->requests_id)
-                                        '{{ $requestDay->start  }} '
+                                        {{ $requestDay->start  }} ,
                                         
                                     @endif
                                 @endforeach

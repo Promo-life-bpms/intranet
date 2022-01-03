@@ -32,7 +32,7 @@
                             <td>
                                 @foreach ($requestDays as $requestDay)
                                     @if ($request->id == $requestDay->requests_id)
-                                        '{{ $requestDay->start  }} '
+                                        {{ $requestDay->start  }} ,
                                         
                                     @endif
                                 @endforeach
@@ -41,7 +41,7 @@
                         <td>{{ $request->direct_manager_status }}</td>
                         <td>{{ $request->human_resources_status }}</td>
                         <td>
-                            <a href="{{ route('request.edit', ['request' => $request->id]) }}" type="button"
+                            <a href="{{ route('request.authorize.edit', ['request' => $request->id]) }}" type="button"
                                 class="btn btn-primary">Detalles</a>
                             <form class="form-delete"
                                 action="{{ route('request.destroy', ['request' => $request->id]) }}" method="POST">

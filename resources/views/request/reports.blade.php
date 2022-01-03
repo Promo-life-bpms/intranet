@@ -27,21 +27,22 @@
                         <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }}</td>
                         <td>{{ $request->type_request }}</td>
                         <td>{{ $request->payment }}</td>
-                        <td>{{ $request->absence }}</td>
-                        <td>{{ $request->admission }}</td>
-                        <td>{{ $request->reason }}</td>
-                        <td>{{ $request->direct_manager_status }}</td>
-                        <td>{{ $request->human_resources_status }}</td>
                         <td>
-                            <a href="{{ route('request.edit', ['request' => $request->id]) }}" type="button"
-                                class="btn btn-primary">Detalles</a>
+                            @foreach ($requestDays as $requestDay)
+                                @if ($request->id == $requestDay->requests_id)
+                                    '{{ $requestDay->start  }} '
+                                    
+                                @endif
+                            @endforeach
+                        </td>
+                        <td>{{ $request->reason }}</td>
+                        <td>{{ $request->vacations->days_availables  }} </td>
+                        <td>
+                            <a href="{{-- {{ route('request.edit', ['request' => $request->id]) }} --}}" type="button"
+                                class="btn btn btn-success">Exportar Excel</a>
 
-                            <form class="form-delete"
-                                action="{{ route('request.destroy', ['request' => $request->id]) }}" method="POST">
-                                @csrf
-                                @method('delete')
-                                <button type="submit" class="btn btn-danger">Borrar</button>
-                            </form>
+                                <a href="{{-- {{ route('request.edit', ['request' => $request->id]) }} --}}" type="button"
+                                    class="btn btn-danger">Exportar PDF</a>
                         </td>
                     </tr>
                 @endforeach

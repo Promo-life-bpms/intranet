@@ -34,4 +34,15 @@ class Request extends Model
         return $this->belongsTo(Employee::class);
     }
 
+    public function requestdays()
+    {
+        return $this->hasMany(RequestCalendar::class, 'requests_id');
+    }
+
+    public function vacations()
+    {
+        return $this->belongsTo(Vacations::class, 'employee_id');
+    }
+
+    
 }

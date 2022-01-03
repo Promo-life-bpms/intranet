@@ -25,7 +25,7 @@
          
                 @foreach ($requests as $request)
                     <tr>
-                        <td>{{ $request->id }}</td>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }} </td>
                         <td>{{ $request->type_request }}</td>
                         <td>{{ $request->payment }}</td>        
