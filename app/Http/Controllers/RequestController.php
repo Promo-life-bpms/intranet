@@ -102,32 +102,32 @@ class RequestController extends Controller
 
         $id = Auth::user()->id;
         $manager = DB::table('manager')->where('id', $id)->value('users_id');
-        $position = DB::table('employees')->where('user_id',$id)->value('position_id');
-        $rh = DB::table('positions')->where('id',$position)->value('department_id');
-      
-        if($rh==1){
-            $requests = ModelsRequest::all()->where('direct_manager_status','Aprobado');
-        }else{
-            $requests = ModelsRequest::all()->where('direct_manager_id',$id);
-        }
-        
+        $position = DB::table('employees')->where('user_id', $id)->value('position_id');
+        $rh = DB::table('positions')->where('id', $position)->value('department_id');
 
-       
+        if ($rh == 1) {
+            $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobado');
+        } else {
+            $requests = ModelsRequest::all()->where('direct_manager_id', $id);
+        }
+
+
+
         $requestDays = RequestCalendar::all();
 
-        return view('request.authorize', compact('requestDays','requests'));
+        return view('request.authorize', compact('requestDays', 'requests'));
     }
 
     public function showAll()
     {
         $requestDays = RequestCalendar::all();
-        $requests = ModelsRequest::all()->where('direct_manager_status','Aprobado');
-        return view('request.show', compact('requests','requestDays'));
+        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobado');
+        return view('request.show', compact('requests', 'requestDays'));
     }
 
     public function reportRequest()
     {
-        $requests = ModelsRequest::all()->where('direct_manager_status','Aprobado')->where('human_resources_status','Aprobado');
+        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobado')->where('human_resources_status', 'Aprobado');
         return view('request.reports', compact('requests'));
     }
 
@@ -141,7 +141,7 @@ class RequestController extends Controller
 
         $id = Auth::id();
 
-        DB::table('request_calendars')->where('requests_id', null)->where('users_id', $id )->delete();
+        DB::table('request_calendars')->where('requests_id', null)->where('users_id', $id)->delete();
 
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
         $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
@@ -183,22 +183,27 @@ class RequestController extends Controller
         $req->direct_manager_id = auth()->user()->employee->jefe_directo_id;
         $req->direct_manager_status = "Pendiente";
         $req->human_resources_status = "Pendiente";
-
         $req->save();
 
         //Obtiene el id de la solicitud despues de crearla para asignar a la vista del calendario
         $lastRequest = DB::table('requests')->latest('id')->value('id');
-        $validateRequest= DB::table('request_calendars')->where('users_id', $id)->where('requests_id', null)->update(['requests_id' => $lastRequest]);
-
         DB::table('request_calendars')->where('users_id', $id)->where('requests_id', null)->update(['requests_id' => $lastRequest]);
 
-        //$validateRequest=RequestCalendar::all()->where('requests_id', $lastRequest)->pluck('id','title');
+        //Pruebas para validar si el calendario esta vacio
 
-        if($validateRequest == 0  ){
-            //DB::table('requests')->where('users_id', $id)->where('id', $lastRequest )->delete();
-            return redirect()->action([RequestController::class, 'index']);
-        }
+        //Valida que el usuario no envie solicitudes sin dias asignados
+        //$validateRequest = RequestCalendar::all()->where('users_id', $id)->where('requests_id', null)->pluck('requests_id', 'requests_id');
+        //dd($validateRequest);
 
+        // DB::table('request_calendars')->where('users_id', $id)->where('requests_id', null)->value('id');
+        //if ($validateRequest == null) {
+
+        /*         $employee_id = DB::table('employees')->where('id', $id)->value('id');
+            DB::table('requests')->where('employee_id', $employee_id)->latest('id')->delete(); */
+
+        //    return redirect()->action([RequestController::class, 'index'])->with('message', 'No puedes crear solicitudes por que no llenaste todos los campos');
+        //} else {
+        //}
 
         return redirect()->action([RequestController::class, 'index']);
     }
