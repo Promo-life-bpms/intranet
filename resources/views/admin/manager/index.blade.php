@@ -9,38 +9,39 @@
     </div>
     <div class="card-body">
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col"># </th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Departamento</th>
-                    <th scope="col">Opciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($managers as $manager)
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>{{ $manager->id }}</td>
-                        <td>{{ $manager->user->name . ' ' . $manager->user->lastname }}
-                        </td>
-                        <td>{{ $manager->department->name }}</td>
-                        <td>
-                            <a href="{{ route('admin.manager.edit', ['manager' => $manager->id]) }}" type="button"
-                                class="btn btn-primary">Editar</a>
-                            <form class="form-delete"
-                                action="{{ route('admin.manager.destroy', ['manager' => $manager->id]) }}" method="POST">
-                                @csrf
-                                @method('delete')
-                                <button type="submit" class="btn btn-danger">Borrar</button>
-                            </form>
-                        </td>
+                        <th style="width: 5%" scope="col"># </th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Departamento</th>
+                        <th style="width: 20%" scope="col">Opciones</th>
                     </tr>
-                @endforeach
-
-            </tbody>
-        </table>
-
+                </thead>
+                <tbody>
+                    @foreach ($managers as $manager)
+                        <tr>
+                            <td>{{ $manager->id }}</td>
+                            <td>{{ $manager->user->name . ' ' . $manager->user->lastname }}
+                            </td>
+                            <td>{{ $manager->department->name }}</td>
+                            <td class="d-flex flex-wrap">
+                                <a  style="width:80px;" href="{{ route('admin.manager.edit', ['manager' => $manager->id]) }}" type="button"
+                                    class="btn btn-primary">Editar</a>
+                                <form class="form-delete"
+                                    action="{{ route('admin.manager.destroy', ['manager' => $manager->id]) }}" method="POST">
+                                    @csrf
+                                    @method('delete')
+                                    <button style="width:80px;" type="submit" class="btn btn-danger">Borrar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+    
+                </tbody>
+            </table>
+        </div>
     </div>
 
 

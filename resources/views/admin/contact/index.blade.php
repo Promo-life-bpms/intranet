@@ -10,49 +10,52 @@
         </div>
     </div>
     <div class="card-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Usuario</th>
-                    <th scope="col">Numero</th>
-                    <th scope="col">Promolife</th>
-                    <th scope="col">BH-Trademarket</th>
-                    <th scope="col">Trademarket</th>
-                    <th scope="col">PormoDreams</th>
-                    @role('systems')
-                        <th scope="col">Opciones</th>
-                    @endrole
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach ($contacts as $contact)
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $contact->user->name }}</td>
-                        <td>{{ $contact->num_tel }}</td>
-                        <td>{{ $contact->correo1 }}</td>
-                        <td>{{ $contact->correo2 }}</td>
-                        <td>{{ $contact->correo3 }}</td>
-                        <td>{{ $contact->correo4 }}</td>
+                        <th scope="col">#</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Numero</th>
+                        <th scope="col">Promolife</th>
+                        <th scope="col">BH-Trademarket</th>
+                        <th scope="col">Trademarket</th>
+                        <th scope="col">PormoDreams</th>
                         @role('systems')
-                            <td>
-                                <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                    type="button" class="btn btn-primary">EDITAR</a>
-                                {{-- <form class="form-delete"
-                                    action="{{ route('admin.contact.destroy', ['contact' => $contact->id]) }}" method="POST">
-                                    @csrf
-                                    @method('delete')
-                                    <button style="width: 100%;" type="submit" class="btn btn-danger">BORRAR</button>
-                                </form>  --}}
-                            </td>
+                            <th style="width: 10%" scope="col">Opciones</th>
                         @endrole
                     </tr>
-                @endforeach
-
-            </tbody>
-        </table>
+                </thead>
+    
+                <tbody>
+                    @foreach ($contacts as $contact)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $contact->user->name }}</td>
+                            <td>{{ $contact->num_tel }}</td>
+                            <td>{{ $contact->correo1 }}</td>
+                            <td>{{ $contact->correo2 }}</td>
+                            <td>{{ $contact->correo3 }}</td>
+                            <td>{{ $contact->correo4 }}</td>
+                            @role('systems')
+                                <td> 
+                                    <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                        type="button" class="btn btn-primary">Editar</a>
+                                    {{-- <form class="form-delete"
+                                        action="{{ route('admin.contact.destroy', ['contact' => $contact->id]) }}" method="POST">
+                                        @csrf
+                                        @method('delete')
+                                        <button style="width: 100%;" type="submit" class="btn btn-danger">BORRAR</button>
+                                    </form>  --}}
+                                </td>
+                            @endrole
+                        </tr>
+                    @endforeach
+    
+                </tbody>
+            </table>
+        </div>
+        
         {{ $contacts->links() }}
     </div>
 @stop

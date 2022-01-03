@@ -8,72 +8,75 @@
         </div>
     </div>
     <div class="card-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Correo</th>
-                    <th scope="col">Area</th>
-                    <th scope="col">Puesto</th>
-                    <th scope="col">Empresas</th>
-                    <th scope="col">Ingreso</th>
-                    <th scope="col">Jefe Directo</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Rol</th>
-                    <th scope="col">Opciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($users as $user)
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <th>{{ $user->id }}</th>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>
-                            @if ($user->employee->position)
-                                {{ $user->employee->position->department->name }}
-                            @endif
-                        </td>
-                        <td>
-                            @if ($user->employee->position)
-                                {{ $user->employee->position->name }}
-                            @endif
-                        </td>
-                        <td>
-                            @foreach ($user->employee->companies as $company)
-                                {{ $company->name_company }}
-                            @endforeach
-                        </td>
-                        <td>{{ $user->employee->date_admission }}</td>
-                        <td>
-                            @if ($user->employee->jefeDirecto)
-                                {{ $user->employee->jefeDirecto->user->name }}
-                            @endif
-                        </td>
-                        <td>
-                            {{ $user->employee->status == 1 ? 'Activo' : 'Inactivo' }}
-                        </td>
-                        <td>
-                            @if ($user->roles)
-                                {{ $user->roles[0]->display_name }}
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('admin.users.edit', ['user' => $user->id]) }}" type="button"
-                                class="btn btn-primary">EDITAR</a>
-
-                            <form class="form-delete"
-                                action="{{ route('admin.users.destroy', ['user' => $user->id]) }}" method="POST">
-                                @csrf
-                                @method('delete')
-                                <button type="submit" class="btn btn-danger">BORRAR</button>
-                            </form>
-                        </td>
+                        <th class="text-center" scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Correo</th>
+                        <th scope="col">Area</th>
+                        <th scope="col">Puesto</th>
+                        <th scope="col">Empresas</th>
+                        <th scope="col">Ingreso</th>
+                        <th scope="col">Jefe Directo</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Rol</th>
+                        <th scope="col">Opciones</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach ($users as $user)
+                        <tr>
+                            <th  class="text-center" >{{ $user->id }}</th>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>
+                                @if ($user->employee->position)
+                                    {{ $user->employee->position->department->name }}
+                                @endif
+                            </td>
+                            <td>
+                                @if ($user->employee->position)
+                                    {{ $user->employee->position->name }}
+                                @endif
+                            </td>
+                            <td>
+                                @foreach ($user->employee->companies as $company)
+                                    {{ $company->name_company }}
+                                @endforeach
+                            </td>
+                            <td>{{ $user->employee->date_admission }}</td>
+                            <td>
+                                @if ($user->employee->jefeDirecto)
+                                    {{ $user->employee->jefeDirecto->user->name }}
+                                @endif
+                            </td>
+                            <td>
+                                {{ $user->employee->status == 1 ? 'Activo' : 'Inactivo' }}
+                            </td>
+                            <td>
+                                @if ($user->roles)
+                                    {{ $user->roles[0]->display_name }}
+                                @endif
+                            </td>
+                            <td class="d-flex flex-wrap">
+                                <a style="width: 80px" href="{{ route('admin.users.edit', ['user' => $user->id]) }}" type="button"
+                                    class="btn btn-primary">Editar</a>
+    
+                                <form class="form-delete"
+                                    action="{{ route('admin.users.destroy', ['user' => $user->id]) }}" method="POST">
+                                    @csrf
+                                    @method('delete')
+                                    <button style="width: 80px" type="submit" class="btn btn-danger">Borrar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
         {{ $users->links() }}
     </div>
 @stop

@@ -16,7 +16,7 @@
                     <th scope="col">Dia</th>
                     <th scope="col">Festividad</th>
                     <th scope="col">Empresa</th>
-                    <th scope="col">Opciones</th>
+                    <th style="width: 20%" scope="col">Opciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,14 +26,14 @@
                         <td>{{ $noworkingday->day }}</td>
                         <td>{{ $noworkingday->reason }}</td>
                         <td>{{ $noworkingday->company->name_company}}</td>
-                        <td>
-                            <a href="{{ route('admin.noworkingdays.edit', ['noworkingday' => $noworkingday->id]) }}" type="button"
+                        <td class="d-flex flex-wrap">
+                            <a style="width: 80px" href="{{ route('admin.noworkingdays.edit', ['noworkingday' => $noworkingday->id]) }}" type="button"
                                 class="btn btn-primary">Editar</a>
                             <form class="form-delete"
                                 action="{{ route('admin.noworkingdays.delete', ['noworkingday' => $noworkingday->id]) }}" method="POST">
                                 @csrf
                                 @method('delete')
-                                <button type="submit" class="btn btn-danger">Borrar</button>
+                                <button style="width: 80px" type="submit" class="btn btn-danger">Borrar</button>
                             </form>
                         </td>
                     </tr>

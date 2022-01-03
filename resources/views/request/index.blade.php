@@ -19,7 +19,7 @@
                     <th scope="col">Motivo</th>
                     <th scope="col">Jefe status </th>
                     <th scope="col">RH status</th>
-                    <th scope="col">Opciones</th>
+                    <th style="width: 10%" scope="col">Opciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,13 +43,13 @@
                         <td>{{ $request->direct_manager_status }}</td>
                         <td>{{ $request->human_resources_status }}</td>
                         <td>
-                            <a href="{{ route('request.edit', ['request' => $request->id]) }}" type="button"
+                            <a style="width: 100%" href="{{ route('request.edit', ['request' => $request->id]) }}" type="button"
                                 class="btn btn-primary">Detalles</a>
                             <form class="form-delete"
                                 action="{{ route('request.destroy', ['request' => $request->id]) }}" method="POST">
                                 @csrf
                                 @method('delete')
-                                <button type="submit" class="btn btn-danger">Borrar</button>
+                                <button style="width: 100%" type="submit" class="btn btn-danger">Borrar</button>
                             </form>
                         </td>
                     </tr>

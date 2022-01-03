@@ -4,10 +4,14 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Generar reportes</h3>
+
+            
+            <a href="{{-- {{ route('request.edit', ['request' => $request->id]) }} --}}" type="button"
+                class="btn btn btn-success">Exportar Excel</a>
         </div>
     </div>
     <div class="card-body">
-        <table class="table">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -17,7 +21,6 @@
                     <th scope="col">Fechas ausencia</th>
                     <th scope="col">Motivo</th>
                     <th scope="col">Vacaciones disponibles</th>
-                    <th scope="col">Opciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,20 +33,13 @@
                         <td>
                             @foreach ($requestDays as $requestDay)
                                 @if ($request->id == $requestDay->requests_id)
-                                    '{{ $requestDay->start  }} '
+                                    {{ $requestDay->start  }} ,
                                     
                                 @endif
                             @endforeach
                         </td>
                         <td>{{ $request->reason }}</td>
                         <td>{{ $request->vacations->days_availables  }} </td>
-                        <td>
-                            <a href="{{-- {{ route('request.edit', ['request' => $request->id]) }} --}}" type="button"
-                                class="btn btn btn-success">Exportar Excel</a>
-
-                                <a href="{{-- {{ route('request.edit', ['request' => $request->id]) }} --}}" type="button"
-                                    class="btn btn-danger">Exportar PDF</a>
-                        </td>
                     </tr>
                 @endforeach
 

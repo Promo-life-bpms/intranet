@@ -8,40 +8,44 @@
         </div>
     </div>
     <div class="card-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Apellidos</th>
-                    <th scope="col">Dias disponibles</th>
-                    <th scope="col">Fecha de Vencimiento</th>
-                    <th scope="col">Opciones</th>
-                </tr>
-            </thead>
 
-            <tbody>
-                @foreach ($vacations as $vacation)
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $vacation->user->name }}</td>
-                        <td>{{ $vacation->user->lastname }}</td>
-                        <td>{{ $vacation->days_availables}}</td>
-                        <td>{{ $vacation->expiration}}</td>                       
-                        <td>
-                            <a style="width: 100%;" href="{{ route('admin.vacations.edit', ['vacation' => $vacation->id]) }}"
-                                type="button" class="btn btn-primary">EDITAR</a>
-                                <form class="form-delete"
-                                    action="{{ route('admin.vacations.destroy', ['vacation' => $vacation->id]) }}" method="POST">
-                                    @csrf
-                                    @method('delete')
-                                    <button style="width: 100%;" type="submit" class="btn btn-danger">BORRAR</button>
-                                </form>
-                        </td>
+                        <th style="width: 5%" scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Apellidos</th>
+                        <th scope="col">Dias disponibles</th>
+                        <th scope="col">Fecha de Vencimiento</th>
+                        <th scope="col">Opciones</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+    
+                <tbody>
+                    @foreach ($vacations as $vacation)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $vacation->user->name }}</td>
+                            <td>{{ $vacation->user->lastname }}</td>
+                            <td>{{ $vacation->days_availables}}</td>
+                            <td>{{ $vacation->expiration}}</td>                       
+                            <td class="d-flex flex-wrap">
+                                <a style="width:100px;" href="{{ route('admin.vacations.edit', ['vacation' => $vacation->id]) }}"
+                                    type="button" class="btn btn-primary">Editar</a>
+                                    <form class="form-delete"
+                                        action="{{ route('admin.vacations.destroy', ['vacation' => $vacation->id]) }}" method="POST">
+                                        @csrf
+                                        @method('delete')
+                                        <button style="width:100px;" type="submit" class="btn btn-danger">Borrar</button>
+                                    </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        
         {{ $vacations->links() }}
     </div>
 @stop

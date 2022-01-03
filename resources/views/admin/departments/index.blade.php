@@ -24,12 +24,12 @@
                         <td>{{ $department->name }}</td>
                         <td>
                             <a style="width: 100%;" href="{{ route('admin.departments.edit', ['department' => $department->id]) }}"
-                                type="button" class="btn btn-primary">EDITAR</a>
+                                type="button" class="btn btn-primary">Editar</a>
                             <form class="form-delete"
                                 action="{{ route('admin.departments.destroy', ['department' => $department->id]) }}" method="POST">
                                 @csrf
                                 @method('delete')
-                                <button style="width: 100%;" type="submit" class="btn btn-danger">BORRAR</button>
+                                <button style="width: 100%;" type="submit" class="btn btn-danger">Borrar</button>
                             </form>
                         </td>
                     </tr>
