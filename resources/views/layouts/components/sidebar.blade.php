@@ -83,7 +83,7 @@
                 @role('rh')
                     <li class="sidebar-item has-sub">
                         <a href="#" class='sidebar-link'>
-                            <i class="bi bi-info-circle-fill"></i>
+                            <i class="fa fa-users" aria-hidden="true"></i>
                             <span>Gestion de ausencias</span>
                         </a>
                         <ul class="submenu ">

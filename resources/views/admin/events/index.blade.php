@@ -13,15 +13,15 @@
     </div>
     <div class="card-body">
 
-        <table class="table display nowrap" >
+        <table class="table table-striped" >
             <thead>
                 <tr>
                     <th class="number" scope="col"># </th>
-                    <th style="max-width: 20%" scope="col">Evento</th>
-                    <th style="width: 40%"  scope="col">Descripcion</th>
-                    <th style="max-width: 10%"  scope="col">Fecha Inicio</th>
-                    <th style="max-width: 10%"  scope="col">Creador de solicitud</th>
-                    <th style="max-width: 10%"  scope="col">Opciones</th>
+                    <th scope="col">Evento</th>
+                    <th scope="col">Descripcion</th>
+                    <th scope="col">Fecha Inicio</th>
+                    <th scope="col">Creador de solicitud</th>
+                    <th style="max-width: 20%"  scope="col">Opciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,15 +33,15 @@
                         <td>{{ $event->start }}</td>
                         <td>{{ $event->users->name.' '.$event->users->lastname }}</td>
 {{--                         <td>{{ $event->end }}</td>
- --}}                    <td>
-                            <a href="{{ route('admin.events.edit', ['event' => $event->id]) }}" type="button"
+ --}}                    <td class="d-flex flex-wrap " >
+                            <a style="width: 80px" href="{{ route('admin.events.edit', ['event' => $event->id]) }}" type="button"
                                 class="btn btn-primary">Editar</a>
                             <form class="form-delete"
                                 action="{{ route('admin.events.destroy', ['event' => $event->id]) }}"
                                 method="POST">
                                 @csrf
                                 @method('delete')
-                                <button type="submit" class="btn btn-danger">Borrar</button>
+                                <button style="width: 80px;" type="submit" class="btn btn-danger">Borrar</button>
                             </form>
                         </td>
                     </tr>

@@ -7,7 +7,7 @@
     <div class="card-body">
         {!! Form::open(['route' => 'admin.events.store']) !!}
         <div class="row ">
-            <div class="col">
+            <div class="form-group col">
                 {!! Form::label('title', 'Titulo') !!}
                 {!! Form::text('title', null, ['class' => 'form-control', 'placeholder' => 'Titulo del evento']) !!}
                 @error('title')
@@ -19,7 +19,7 @@
             </div>
         </div>
 
-        <div class="row mt-4">
+        <div class=" form-group row mt-4">
             <div class="col-6">
                 {!! Form::label('start', 'Dia del evento') !!}
                 {!! Form::date('start', null, ['class' => 'form-control', 'placeholder' => 'Selecciona dia del evento']) !!}
@@ -31,7 +31,7 @@
                 @enderror
             </div>
 
-            <div class="col-6">
+            <div class="form-group col-6">
                 {!! Form::label('time', 'Hora') !!}
                 {!! Form::time('time',  null, ['class' => 'form-control', 'placeholder' => 'Selecciona hora del evento']) !!}
                 @error('time')
@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div class="row mt-4">
+        <div class="form-group row mt-4">
             <div class="col">
                 {!! Form::label('description', 'Breve descripcion del evento (opcional) ') !!}
                 {!! Form::textarea('description',  null, ['class' => 'form-control', 'placeholder' => 'Selecciona hora del evento', 'maxlength' =>'200']) !!}

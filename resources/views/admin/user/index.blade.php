@@ -12,7 +12,7 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th class="text-center" scope="col">#</th>
+                        <th scope="col">#</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Correo</th>
                         <th scope="col">Area</th>
@@ -28,7 +28,7 @@
                 <tbody>
                     @foreach ($users as $user)
                         <tr>
-                            <th  class="text-center" >{{ $user->id }}</th>
+                            <td  class="text-center" >{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>
