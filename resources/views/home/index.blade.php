@@ -176,6 +176,7 @@
     td.fc-day.fc-past {
     background-color: #ECECEC;
     }
+    
 
    
 </style>

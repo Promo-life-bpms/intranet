@@ -22,4 +22,20 @@ class Contact extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class,'users_id');
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'user_id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
 }

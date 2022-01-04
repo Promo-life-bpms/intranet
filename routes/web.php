@@ -60,6 +60,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('company/getEmployees', [CompanyController::class, 'getAllEmployees']);
     Route::get('company/getEmployeesByOrganization/{organization}', [CompanyController::class, 'getEmployeesByOrganization']);
     Route::get('company/getEmployeesByDepartment/{department}', [CompanyController::class, 'getEmployeesByDepartment']);
+    Route::get('contact/getContacts/{contact}', [ContactController::class, 'getContacts']);
 
     Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');

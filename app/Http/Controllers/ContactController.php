@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use App\Models\Department;
+use App\Models\Employee;
+use App\Models\Position;
+use App\Models\User;
 use Illuminate\Http\Request;
+use PhpParser\Node\Expr\AssignOp\Plus;
 
 class ContactController extends Controller
 {
@@ -13,9 +18,10 @@ class ContactController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {   
+        $departments = Department::all()->pluck('name','id');
         $contacts = Contact::paginate(15);
-        return view('admin.contact.index', compact('contacts'));
+        return view('admin.contact.index', compact('contacts','departments'));
     }
 
     /**
@@ -96,5 +102,19 @@ class ContactController extends Controller
     {
         $contact->delete();
         return redirect()->action([ContactController::class,'index']);
+    }
+
+    public function getContacts($id)
+    {
+
+     
+        $positions = Position::all()->where('department_id',$id)->pluck('id','id');
+        //dd($positions);
+        $employeesPos = Employee::all()->whereIn('position_id',$positions)->pluck('id','user_id');
+        //dd($employeesPos);
+        $contacts = User::all()->whereIn('id', $employeesPos)->pluck('name', 'id');
+        //dd($contacts);
+
+        return json_encode($contacts);
     }
 }

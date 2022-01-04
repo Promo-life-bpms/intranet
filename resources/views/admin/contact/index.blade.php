@@ -10,12 +10,24 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="form-group col-6">
+            {!! Form::label('department_id', 'Departamento') !!}
+            {!! Form::select('department_id', $departments, null, ['class' => 'form-control', 'placeholder' => 'Selecciona Departamento']) !!}
+            @error('department_id')
+                <small>
+                    <font color="red"> *Este campo es requerido* </font>
+                </small>
+                <br>
+            @enderror
+        </div>
+        
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Usuario</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Apellidos</th>
                         <th scope="col">Numero</th>
                         <th scope="col">Promolife</th>
                         <th scope="col">BH-Trademarket</th>
@@ -29,9 +41,10 @@
     
                 <tbody>
                     @foreach ($contacts as $contact)
-                        <tr>
+                        <tr name="contact">
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $contact->user->name }}</td>
+                            <td name="contacts" >{{ $contact->user->name }}</td>
+                            <td name="name">{{ $contact->user->lastname }}</td>
                             <td>{{ $contact->num_tel }}</td>
                             <td>{{ $contact->correo1 }}</td>
                             <td>{{ $contact->correo2 }}</td>
@@ -62,6 +75,7 @@
 
 @section('scripts')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
 
     <script>
         $('.form-delete').submit(function(e) {
@@ -83,5 +97,29 @@
             })
         });
     </script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery('select[name="department_id"]').on('change', function() {
+            var id = jQuery(this).val();
+            if (id) {
+                jQuery.ajax({
+                    url: '/contact/getContacts/' + id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        console.log(data);
+                        jQuery('tr[name="contact"]').empty();
+                        jQuery.each(data, function(key, value) {
+                            $('tr[name="contact').append('<td>' + key '</td>');
+                        });
+                    }
+                });
+            } else {
+                $('td[name="contacts"]').empty();
+            }
+        });
+    });
+</script>
 
 @stop

@@ -8,7 +8,7 @@
         {!! Form::model($contact, ['route' => ['admin.contacts.update', $contact], 'method' => 'put']) !!}
 
             <div class="row ">
-                <div class="col">
+                <div class="form-group col">
                     {!! Form::label('num_tel', 'Numero de telefono') !!}
                     {!! Form::text('num_tel', null,  ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono']) !!}
                     @error('num_tel')
@@ -21,7 +21,7 @@
             </div>
 
             <div class="row ">
-                <div class="col-6">
+                <div class="form-group col-6">
                     {!! Form::label('correo1', 'Correo Promolife') !!}
                     {!! Form::email('correo1', null,  ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono']) !!}
                     @error('num_tel')
@@ -32,7 +32,7 @@
                     @enderror
                 </div>
 
-                <div class="col-6">
+                <div class="form-group col-6">
                     {!! Form::label('correo2', 'Correo BH-Trademarket') !!}
                     {!! Form::email('correo2', null,  ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono']) !!}
                     @error('num_tel')
@@ -45,7 +45,7 @@
             </div>
 
             <div class="row ">
-                <div class="col-6">
+                <div class="form-group col-6">
                     {!! Form::label('correo3', 'Correo Trademarket') !!}
                     {!! Form::email('correo3', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono']) !!}
                     @error('num_tel')
@@ -56,7 +56,7 @@
                     @enderror
                 </div>
 
-                <div class="col-6">
+                <div class="form-group col-6">
                     {!! Form::label('correo4', 'Correo PromoDreams') !!}
                     {!! Form::email('correo4', null,  ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono']) !!}
                     @error('num_tel')
