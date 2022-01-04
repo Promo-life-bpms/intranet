@@ -51,7 +51,7 @@
                     <div class="mb-2 form-group">
                     {!! Form::label('days', 'Seleccionar dias ') !!}
                     <div class="days" id='calendar'></div>
-                    <p>Dias de vacaciones diponibles:  {{$vacations}}  </p>
+                    <p class="mt-2">Dias de vacaciones diponibles: <b> {{$vacations}}  </b> </p>
                 </div>
                 <div>
             </div>
@@ -89,6 +89,9 @@
         color: #ffffff;
     }
 
+    td.fc-day.fc-past {
+    background-color: #ECECEC;
+    }
 
    
 </style>
@@ -99,6 +102,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function () {
        
@@ -141,7 +145,10 @@
                         selectable: true,
                         selectHelper: true,
                         eventMaxStack:1,
-                      
+                        monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+                        monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+                        dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+                        dayNamesShort: ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],
                         select: function (start, end, allDay) {    
                             //Valida si selecciona un dia festivo
                             var dates = start.format('YYYY-MM-DD');
@@ -155,7 +162,7 @@
                             events.forEach(function(e) {
                             if (dates == e.start){
                                 
-                                alert("No puedes seleccionar un día festivo")
+                                displayInfo("No puedes seleccionar un día festivo")
                                 throw BreakException
 
                             }else{
@@ -167,7 +174,7 @@
                             if (check==true) {
                             
                             check=false
-                            var title = 'Agregado' 
+                            var title = 'Día seleccionado' 
                             var startDate = moment(start),
                             endDate = moment(end),
                             date = startDate.clone(),
@@ -181,7 +188,7 @@
                             }
 
                             if (isWeekend) {
-                                alert('No se puede seleccionar fin de semana');
+                                displayInfo('No se puede seleccionar fin de semana');
                                 return false;
                             }else{
                                 var start = $.fullCalendar.formatDate(start, "Y-MM-DD");
@@ -217,7 +224,7 @@
                                         });
                                         
                                 }else{
-                                    alert('No puedes seleccionar fechas atrasadas ')
+                                    displayInfo('No puedes seleccionar fechas atrasadas ')
                                 }
                             }
 
@@ -244,10 +251,17 @@
                             });
                         },
                         eventClick: function (event) {
-                            var deleteMsg = confirm("Do you really want to delete?");
-
-                            
-                            if (deleteMsg) {
+                            Swal.fire({
+                            title: '¿Estás seguro?',
+                            text: "¡El día seleccionado se eliminará!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: '¡Si, eliminar!',
+                            cancelButtonText: 'Cancelar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
                                 $.ajax({
                                     type: "POST",
                                     url: SITEURL + '/fullcalenderAjax',
@@ -261,6 +275,7 @@
                                     }
                                 });
                             }
+                        })
                         },
                         dayClick: function(date, allDay, jsEvent, view) {
                             $('#calendar').fullCalendar('clientEvents', function(event) {
@@ -282,7 +297,17 @@
     function displayAlert(message) {
         toastr.warning(message, 'Advertencia');
     }
-      
+
+    function displayInfo(message) {
+        toastr.info(message, 'Advertencia');
+    }
+
+    function displayError(message) {
+        toastr.error(message, 'Error');
+    }
+    
+    
+
  </script>
 
 @stop

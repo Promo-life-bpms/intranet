@@ -40,7 +40,9 @@
         font-size: 16px;
         color: #ffffff;
     }
-
+    td.fc-day.fc-past {
+    background-color: #ECECEC;
+    }
 
    
 </style>
@@ -104,7 +106,10 @@
                         selectable: true,
                         selectHelper: true,
                         eventMaxStack:1,
-                       
+                        monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+                        monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+                        dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+                        dayNamesShort: ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],
                         eventClick: function (event) {
                          
                             Swal.fire({
