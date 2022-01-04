@@ -309,6 +309,7 @@ class RequestController extends Controller
     public function export()
     {
         $request = ModelsRequest::all()->toArray();
+        $requests = ModelsRequest::select('','','')->where('direct_manager_status', 'Aprobado')->where('human_resources_status', 'Aprobado')->toArray();
 
         $spreadsheet = new Spreadsheet();
 
@@ -319,25 +320,15 @@ class RequestController extends Controller
         $spreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
 
         $spreadsheet->getActiveSheet()->setCellValue('A1', '#');
-        $spreadsheet->getActiveSheet()->setCellValue('B1', 'ID Usuario');
-        $spreadsheet->getActiveSheet()->setCellValue('C1', 'Tipo Solicitud');
-        $spreadsheet->getActiveSheet()->setCellValue('D1', 'Pago');
-        $spreadsheet->getActiveSheet()->setCellValue('E1', 'Fecha Ausencia');
-        $spreadsheet->getActiveSheet()->setCellValue('F1', 'Fecha Reingreso');
-        $spreadsheet->getActiveSheet()->setCellValue('G1', 'Motivo');
-        $spreadsheet->getActiveSheet()->setCellValue('H1', 'ID Jefe');
-        $spreadsheet->getActiveSheet()->setCellValue('I1', 'Jefe Status');
-        $spreadsheet->getActiveSheet()->setCellValue('J1', 'RH Status');
-        $spreadsheet->getActiveSheet()->setCellValue('K1', 'Creado');
-        $spreadsheet->getActiveSheet()->setCellValue('L1', 'Ultima modificacion');
-
+        $spreadsheet->getActiveSheet()->setCellValue('B1', 'Nombre');
+        $spreadsheet->getActiveSheet()->setCellValue('C1', 'Apellidos');
+        $spreadsheet->getActiveSheet()->setCellValue('D1', 'Tipo solicitud');
+        $spreadsheet->getActiveSheet()->setCellValue('E1', 'Forma de pago');
+        $spreadsheet->getActiveSheet()->setCellValue('F1', 'Fechas de ausencia');
+        $spreadsheet->getActiveSheet()->setCellValue('G1', 'Vacaciones restantes');
+ 
         $spreadsheet->getActiveSheet()->fromArray($request, NULL, 'A2');
 
         $writer = new Xlsx($spreadsheet);

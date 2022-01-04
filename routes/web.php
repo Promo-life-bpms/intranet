@@ -126,7 +126,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::put('/events/{event}', [EventsController::class, 'update'])->name('admin.events.update');
     Route::delete('/events/{event}', [EventsController::class, 'destroy'])->name('admin.events.destroy');
 
-    Route::get('test/export/', [RequestController::class, 'export']);
+    Route::get('request/export/', [RequestController::class, 'export'])->name('request.export');
     Route::get('/request', [RequestController::class, 'index'])->name('request.index');
     Route::post('fullcalenderAjax', [RequestController::class, 'ajax']);
 

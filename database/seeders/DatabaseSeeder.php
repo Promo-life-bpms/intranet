@@ -51,146 +51,196 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Antonio',
             'lastname' => 'Tomas',
-            'email' => 'admin@admin',
+            'email' => 'admin@admin.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => '',
         ])->attachRole($admin);
 
         User::create([
-            'name' => '0scar',
-            'lastname' => 'Chavez',
-            'email' => 'test@test.com',
+            'name' => 'Jacobo ',
+            'lastname' => 'Levy Hano',
+            'email' => 'jacobo@trademarket.com.mx',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //123456789
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
-        ])->attachRole($rh);
+        ])->attachRole($manager);
 
         User::create([
-            'name' => 'Diego',
-            'lastname' => 'Navarrete',
-            'email' => 'empleado@test.com',
+            'name' => 'Daniel ',
+            'lastname' => 'Levy Hano',
+            'email' => 'daniel@trademarket.com.mx',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
-        ])->attachRole($rh);
+        ])->attachRole($manager);
 
-        User::create([
-            'name' => 'Jose',
-            'lastname' => 'Navarrete',
-            'email' => 'jose@test.com',
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-            'remember_token' => '',
-        ])->attachRole($systems);
-
-        User::create([
-            'name' => 'Bradon Iriarte',
-            'lastname' => 'Iriarte',
-            'email' => 'brandon@test.com',
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-            'remember_token' => '',
-        ])->attachRole($empleado);
-
-        User::create([
-            'name' => 'Andres',
-            'lastname' => 'Lopez',
-            'email' => 'andres@test.com',
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-            'remember_token' => '',
-        ])->attachRole($empleado);
-
-        User::create([
-            'name' => 'Mauricio',
-            'lastname' => 'Sosa',
-            'email' => 'mau@test.com',
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-            'remember_token' => '',
-        ])->attachRole($empleado);
-
-        User::create([
-            'name' => 'Ricardo',
-            'lastname' => 'Zuniga',
-            'email' => 'ricado@test.com',
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-            'remember_token' => '',
-        ])->attachRole($empleado);
-
-        User::create([
-            'name' => 'Diego',
-            'lastname' => 'Lozano',
-            'email' => 'diegol@test.com',
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-            'remember_token' => '',
-        ])->attachRole($empleado);
 
         User::create([
             'name' => 'David',
-            'lastname' => 'Huerta',
-            'email' => 'davidh@test.com',
+            'lastname' => 'Levy Hano',
+            'email' => 'david@trademarket.com.mx',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
+            'remember_token' => '',
+        ])->attachRole($manager);
+        
+        User::create([
+            'name' => 'Raul',
+            'lastname' => 'Torres Marquez',
+            'email' => 'raul.torres@promolife.com.mx',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
+            'remember_token' => '',
+        ])->attachRole($manager);
+
+        //Asistente Direccion
+        User::create([
+            'name' => 'Ana Victoria',
+            'lastname' => 'Sosa Juarez',
+            'email' => 'victoria@trademarket.com.mx',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
         ])->attachRole($empleado);
 
         User::create([
-            'name' => 'Samuel',
-            'lastname' => 'Hernandez',
-            'email' => 'samuel@test.com',
+            'name' => 'Rosa Elba',
+            'lastname' => 'Montesinos Licona',
+            'email' => 'administracionventas@promolife.com.mx',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
+            'remember_token' => '',
+        ])->attachRole($empleado);
+
+        //Recursos Humanos
+        User::create([
+            'name' => 'Denisse Adriana',
+            'lastname' => 'Murillo Mayen',
+            'email' => 'denisse@trademarket.com.mx',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
+            'remember_token' => '',
+        ])->attachRole($rh);
+
+        User::create([
+            'name' => 'Ana Maria',
+            'lastname' => 'Jiménez Martínez',
+            'email' => 'maria@trademarket.com.mx',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
+            'remember_token' => '',
+        ])->attachRole($rh);
+
+        User::create([
+            'name' => 'Ana Miriam',
+            'lastname' => 'Pérez Maya',
+            'email' => 'miriam@trademarket.com.mx',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
+            'remember_token' => '',
+        ])->attachRole($rh);
+        
+        //Sistemas
+        User::create([
+            'name' => 'Ricardo Eusebio',
+            'lastname' => 'Morales Negrin',
+            'email' => 'sistemas@trademarket.com.mx',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
+            'remember_token' => '',
+        ])->attachRole($systems);
+        
+        //Administracion
+        User::create([
+            'name' => 'Monica',
+            'lastname' => 'Reyes Resendiz',
+            'email' => 'monica@trademarket.com.mx',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
+            'remember_token' => '',
+        ])->attachRole($manager);
+
+        User::create([
+            'name' => 'Guillermo David',
+            'lastname' => 'Ramírez Romero',
+            'email' => 'tesoreria@trademarket.com.mx',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
         ])->attachRole($empleado);
 
         User::create([
-            'name' => 'Horacio',
-            'lastname' => 'Martinez',
-            'email' => 'horacio@test.com',
+            'name' => 'Shanat Mirelle',
+            'lastname' => 'Aquino Carachure',
+            'email' => 'facturas@trademarket.com.mx',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
         ])->attachRole($empleado);
 
-        User::create([
-            'name' => 'Humberto ',
-            'lastname' => 'Roman',
-            'email' => 'humberto@test.com',
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-            'remember_token' => '',
-        ])->attachRole($empleado);
 
+        //Ventas VH
         User::create([
-            'name' => 'Benda',
-            'lastname' => 'Matinez',
-            'email' => 'brenda@test.com',
+            'name' => 'Ricardo Alberto',
+            'lastname' => 'Zamora Rodríguez',
+            'email' => 'ricardo@trademarket.com.mx',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
-        ])->attachRole($empleado);
+        ])->attachRole($manager);
 
+        //Importaciones
         User::create([
-            'name' => 'Pablo',
-            'lastname' => 'Saucedo',
-            'email' => 'pablo@test.com',
+            'name' => 'Jesica',
+            'lastname' => 'González Alvarez',
+            'email' => 'jesica@trademarket.com.mx',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
-        ])->attachRole($empleado);
+        ])->attachRole($manager);
 
+        //Diseno
+
+        //Operaciones
         User::create([
-            'name' => 'Ana',
-            'lastname' => 'Lopez',
-            'email' => 'ana@test.com',
+            'name' => 'Carlos Lenin',
+            'lastname' => 'Reyes Ramos',
+            'email' => 'lenin@trademarket.com.mx',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
-        ])->attachRole($empleado);
+        ])->attachRole($manager);
+
+        //Ventas PL
+        User::create([
+            'name' => 'Jaime',
+            'lastname' => 'González Rueda',
+            'email' => 'jaime.gonzalez@promolife.com.mx',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
+            'remember_token' => '',
+        ])->attachRole($manager);
+       
+        //Tecnologia e Innovacion
+        User::create([
+            'name' => 'Federico',
+            'lastname' => 'Solano Reyes',
+            'email' => 'federico@trademarket.com.mx',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
+            'remember_token' => '',
+        ])->attachRole($manager);
+
+           //Cancun
+           User::create([
+            'name' => 'Abel',
+            'lastname' => 'Ramírez Cortes',
+            'email' => 'abel@trademarket.com.mx',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
+            'remember_token' => '',
+        ])->attachRole($manager);
 
         /* Empresas */
 
@@ -215,7 +265,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         /* Departamentos */
-
         Department::Create([
             'id' => 1,
             'name' => 'Recursos Humanos'
