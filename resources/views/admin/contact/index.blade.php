@@ -10,51 +10,550 @@
         </div>
     </div>
     <div class="card-body">
-        
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Apellidos</th>
-                        <th scope="col">Numero</th>
-                        <th scope="col">Promolife</th>
-                        <th scope="col">BH-Trademarket</th>
-                        <th scope="col">Trademarket</th>
-                        <th scope="col">PormoDreams</th>
-                        @role('systems')
-                            <th style="width: 10%" scope="col">Opciones</th>
-                        @endrole
-                    </tr>
-                </thead>
-    
-                <tbody>
-                    @foreach ($contacts as $contact)
-                        <tr name="contact">
-                            <td>{{ $loop->iteration }}</td>
-                            <td name="contacts" >{{ $contact->user->name }}</td>
-                            <td name="name">{{ $contact->user->lastname }}</td>
-                            <td>{{ $contact->num_tel }}</td>
-                            <td>{{ $contact->correo1 }}</td>
-                            <td>{{ $contact->correo2 }}</td>
-                            <td>{{ $contact->correo3 }}</td>
-                            <td>{{ $contact->correo4 }}</td>
+
+        <div class="tab">
+            <button class="tablinks" onclick="openDepartment(event, 'General')" id="defaultOpen">General</button>
+            <button class="tablinks" onclick="openDepartment(event, 'RH')">Recursos Humamos</button>
+            <button class="tablinks" onclick="openDepartment(event, 'Administracion')">Administracion</button>
+            <button class="tablinks" onclick="openDepartment(event, 'VentasBH')">Ventas BH</button>
+            <button class="tablinks" onclick="openDepartment(event, 'VentasPL')">Ventas PL</button>
+            <button class="tablinks" onclick="openDepartment(event, 'Importaciones')">Importaciones</button>
+            <button class="tablinks" onclick="openDepartment(event, 'Diseno')">Diseno</button>
+            <button class="tablinks" onclick="openDepartment(event, 'Sistemas')">Sistemas</button>
+            <button class="tablinks" onclick="openDepartment(event, 'Operaciones')">Operaciones</button>
+            <button class="tablinks" onclick="openDepartment(event, 'Tecnologia')">Tecnologia e Innovacion</button>
+            <button class="tablinks" onclick="openDepartment(event, 'Cancun')">Cancun</button>
+          </div>
+          
+          <div id="General" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
                             @role('systems')
-                                <td> 
-                                    <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
+                                <th style="width: 10%" scope="col">Opciones</th>
                             @endrole
                         </tr>
-                    @endforeach
-    
-                </tbody>
-            </table>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($contacts as $contact)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+            
+            {{ $contacts->links() }}
+          </div>
+          
+          <div id="RH" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
+                            @role('systems')
+                                <th style="width: 10%" scope="col">Opciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($rh as $contact)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+
+          </div>
+          
+          <div id="Administracion" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
+                            @role('systems')
+                                <th style="width: 10%" scope="col">Opciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($admin as $contact)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+          </div>
+          
+          <div id="VentasBH" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
+                            @role('systems')
+                                <th style="width: 10%" scope="col">Opciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($ventasBH as $contact)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="VentasPL" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
+                            @role('systems')
+                                <th style="width: 10%" scope="col">Opciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($ventasPL as $contact)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="Importaciones" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
+                            @role('systems')
+                                <th style="width: 10%" scope="col">Opciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($importaciones as $contact)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>  
+        </div>
+
+        <div id="Diseno" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
+                            @role('systems')
+                                <th style="width: 10%" scope="col">Opciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($diseno as $contact)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="Sistemas" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
+                            @role('systems')
+                                <th style="width: 10%" scope="col">Opciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($sistemas as $contact)
+                            <tr name="contact">
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="Operaciones" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
+                            @role('systems')
+                                <th style="width: 10%" scope="col">Opciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($operaciones as $contact)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+         </div>
+ 
+
+        <div id="Tecnologia" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
+                            @role('systems')
+                                <th style="width: 10%" scope="col">Opciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($tecnologia as $contact)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+            
+        <div id="Cancun" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
+                            @role('systems')
+                                <th style="width: 10%" scope="col">Opciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($cancun as $contact)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
         </div>
         
-        {{ $contacts->links() }}
     </div>
+@stop
+@section('styles')
+<style>
+
+    .tab {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+    }
+    
+    /* Style the buttons inside the tab */
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+      font-size: 17px;
+    }
+    
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+      background-color: #ddd;
+    }
+    
+    /* Create an active/current tablink class */
+    .tab button.active {
+      background-color: #ccc;
+    }
+    
+    /* Style the tab content */
+    .tabcontent {
+      display: none;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-top: none;
+    }
+    </style>
 @stop
 
 @section('scripts')
@@ -82,4 +581,24 @@
         });
     </script>
 
+    <script>
+        function openDepartment(evt, Department) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(Department).style.display = "block";
+        evt.currentTarget.className += " active";
+        }
+    </script>
+
+    <script>
+    document.getElementById("defaultOpen").click();
+    </script>
+  
 @stop
