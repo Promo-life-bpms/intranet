@@ -14,7 +14,7 @@
                         <div class="card-body" style="padding-top:0; padding-bottom:0">
                             <p class="card-title text-center" style=" white-space: nowrap; margin-bottom:5px;">
                                 {{ $employee->user->name . ' ' . $employee->user->lastname }}</p>
-                            <p class="card-text text-center">{{ $employee->birthday_date }}</p>
+                            <p class="card-text text-center">{{ $employee->date_admission }}</p>
                         </div>
                     </div>
                 </div>
