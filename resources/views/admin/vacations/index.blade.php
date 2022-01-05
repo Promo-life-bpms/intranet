@@ -33,12 +33,12 @@
                             <td class="d-flex flex-wrap">
                                 <a style="width:100px;" href="{{ route('admin.vacations.edit', ['vacation' => $vacation->id]) }}"
                                     type="button" class="btn btn-primary">Editar</a>
-                                    <form class="form-delete"
+                                   {{--  <form class="form-delete"
                                         action="{{ route('admin.vacations.destroy', ['vacation' => $vacation->id]) }}" method="POST">
                                         @csrf
                                         @method('delete')
                                         <button style="width:100px;" type="submit" class="btn btn-danger">Borrar</button>
-                                    </form>
+                                    </form> --}}
                             </td>
                         </tr>
                     @endforeach

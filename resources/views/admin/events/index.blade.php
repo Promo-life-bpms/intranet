@@ -20,7 +20,7 @@
                     <th scope="col">Evento</th>
                     <th scope="col">Descripcion</th>
                     <th scope="col">Fecha Inicio</th>
-                    <th scope="col">Creador de solicitud</th>
+                    <th scope="col">Evento creado por</th>
                     <th style="max-width: 20%"  scope="col">Opciones</th>
                 </tr>
             </thead>
