@@ -104,17 +104,15 @@ class ContactController extends Controller
         return redirect()->action([ContactController::class,'index']);
     }
 
-    public function getContacts($id)
+   /*  public function getContacts($id)
     {
-
-     
         $positions = Position::all()->where('department_id',$id)->pluck('id','id');
         //dd($positions);
         $employeesPos = Employee::all()->whereIn('position_id',$positions)->pluck('id','user_id');
         //dd($employeesPos);
-        $contacts = User::all()->whereIn('id', $employeesPos)->pluck('name', 'id');
+        $data = User::all()->whereIn('id', $employeesPos)->pluck('id','id');
         //dd($contacts);
-
+        $contacts = Contact::all()->whereIn('user_id', $data);
         return json_encode($contacts);
-    }
+    } */
 }

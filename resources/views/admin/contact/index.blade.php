@@ -10,16 +10,6 @@
         </div>
     </div>
     <div class="card-body">
-        <div class="form-group col-6">
-            {!! Form::label('department_id', 'Departamento') !!}
-            {!! Form::select('department_id', $departments, null, ['class' => 'form-control', 'placeholder' => 'Selecciona Departamento']) !!}
-            @error('department_id')
-                <small>
-                    <font color="red"> *Este campo es requerido* </font>
-                </small>
-                <br>
-            @enderror
-        </div>
         
         <div class="table-responsive">
             <table class="table table-striped">
@@ -54,12 +44,6 @@
                                 <td> 
                                     <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                         type="button" class="btn btn-primary">Editar</a>
-                                    {{-- <form class="form-delete"
-                                        action="{{ route('admin.contact.destroy', ['contact' => $contact->id]) }}" method="POST">
-                                        @csrf
-                                        @method('delete')
-                                        <button style="width: 100%;" type="submit" class="btn btn-danger">BORRAR</button>
-                                    </form>  --}}
                                 </td>
                             @endrole
                         </tr>
@@ -97,29 +81,5 @@
             })
         });
     </script>
-
-<script type="text/javascript">
-    jQuery(document).ready(function() {
-        jQuery('select[name="department_id"]').on('change', function() {
-            var id = jQuery(this).val();
-            if (id) {
-                jQuery.ajax({
-                    url: '/contact/getContacts/' + id,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        console.log(data);
-                        jQuery('tr[name="contact"]').empty();
-                        jQuery.each(data, function(key, value) {
-                            $('tr[name="contact').append('<td>' + key '</td>');
-                        });
-                    }
-                });
-            } else {
-                $('td[name="contacts"]').empty();
-            }
-        });
-    });
-</script>
 
 @stop
