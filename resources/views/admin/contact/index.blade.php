@@ -22,7 +22,9 @@
             <button class="tablinks" onclick="openDepartment(event, 'Sistemas')">Sistemas</button>
             <button class="tablinks" onclick="openDepartment(event, 'Operaciones')">Operaciones</button>
             <button class="tablinks" onclick="openDepartment(event, 'Tecnologia')">Tecnologia e Innovacion</button>
+            <button class="tablinks" onclick="openDepartment(event, 'Ecommerce')">E-commcerce</button>
             <button class="tablinks" onclick="openDepartment(event, 'Cancun')">Cancun</button>
+            <button class="tablinks" onclick="openDepartment(event, 'Direccion')">Direccion</button>
           </div>
           
           <div id="General" class="tabcontent">
@@ -468,6 +470,50 @@
                 </table>
             </div>
         </div>
+
+        <div id="Ecommerce" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
+                            @role('systems')
+                                <th style="width: 10%" scope="col">Opciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($ecommerce as $contact)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+        </div>
             
         <div id="Cancun" class="tabcontent">
             <div class="table-responsive">
@@ -490,6 +536,50 @@
         
                     <tbody>
                         @foreach ($cancun as $contact)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $contact->user->name }}</td>
+                                <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->num_tel }}</td>
+                                <td>{{ $contact->correo1 }}</td>
+                                <td>{{ $contact->correo2 }}</td>
+                                <td>{{ $contact->correo3 }}</td>
+                                <td>{{ $contact->correo4 }}</td>
+                                @role('systems')
+                                    <td> 
+                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                            type="button" class="btn btn-primary">Editar</a>
+                                    </td>
+                                @endrole
+                            </tr>
+                        @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="Direccion" class="tabcontent">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Numero</th>
+                            <th scope="col">Promolife</th>
+                            <th scope="col">BH-Trademarket</th>
+                            <th scope="col">Trademarket</th>
+                            <th scope="col">PormoDreams</th>
+                            @role('systems')
+                                <th style="width: 10%" scope="col">Opciones</th>
+                            @endrole
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        @foreach ($direccion as $contact)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $contact->user->name }}</td>

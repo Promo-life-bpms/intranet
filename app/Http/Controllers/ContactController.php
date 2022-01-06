@@ -77,13 +77,25 @@ class ContactController extends Controller
         $tecnologiaData = User::all()->whereIn('id', $tecnologiaEmployeesPos)->pluck('id','id');
         $tecnologia = Contact::all()->whereIn('user_id', $tecnologiaData);
 
+        $ecommerceID = 10;
+        $ecommercePosition = Position::all()->where('department_id',$ecommerceID)->pluck('id','id');
+        $ecommerceEmployeesPos = Employee::all()->whereIn('position_id',$ecommercePosition)->pluck('id','user_id');
+        $ecommerceData = User::all()->whereIn('id', $ecommerceEmployeesPos)->pluck('id','id');
+        $ecommerce = Contact::all()->whereIn('user_id', $ecommerceData);
+
         $cancunID = 11;
         $cancunPosition = Position::all()->where('department_id',$cancunID)->pluck('id','id');
         $cancunEmployeesPos = Employee::all()->whereIn('position_id',$cancunPosition)->pluck('id','user_id');
         $cancunData = User::all()->whereIn('id', $cancunEmployeesPos)->pluck('id','id');
         $cancun = Contact::all()->whereIn('user_id', $cancunData);
 
-        return view('admin.contact.index', compact('contacts','departments','rh','admin', 'ventasBH','importaciones', 'diseno','sistemas', 'operaciones','ventasPL','tecnologia','cancun'));
+        $direccionID = 12;
+        $direccionPosition = Position::all()->where('department_id',$direccionID)->pluck('id','id');
+        $direccionEmployeesPos = Employee::all()->whereIn('position_id',$direccionPosition)->pluck('id','user_id');
+        $direccionData = User::all()->whereIn('id', $direccionEmployeesPos)->pluck('id','id');
+        $direccion = Contact::all()->whereIn('user_id', $direccionData);
+
+        return view('admin.contact.index', compact('contacts','departments','rh','admin', 'ventasBH','importaciones', 'diseno','sistemas', 'operaciones','ventasPL','tecnologia','ecommerce','cancun','direccion'));
     }
 
     /**

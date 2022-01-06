@@ -30,6 +30,12 @@ class DatabaseSeeder extends Seeder
             'description' => '', // optional
         ]);
 
+        $systems = Role::create([
+            'name' => 'boss',
+            'display_name' => 'Jefe', // optional
+            'description' => '', // optional
+        ]);
+
         $rh = Role::create([
             'name' => 'rh',
             'display_name' => 'Recursos Humanos', // optional
@@ -320,6 +326,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Cancun'
         ]);
 
+        Department::Create([
+            'id' => 12,
+            'name' => 'Direccion'
+        ]);
 
         /* Puestos */
 
@@ -724,6 +734,16 @@ class DatabaseSeeder extends Seeder
         Position::create([
             'name' => 'Mensajero',
             'department_id' => 11
+        ]);
+
+        Position::create([
+            'name' => 'Director General BH',
+            'department_id' => 12
+        ]);
+
+        Position::create([
+            'name' => 'Director General PL',
+            'department_id' => 12
         ]);
     }
 }
