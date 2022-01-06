@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             'description' => '', // optional
         ]);
 
-        $systems = Role::create([
+        $boss = Role::create([
             'name' => 'boss',
             'display_name' => 'Jefe', // optional
             'description' => '', // optional
