@@ -249,12 +249,12 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item {{ request()->is('folder') ? 'active' : '' }}">
+               {{--  <li class="sidebar-item {{ request()->is('folder') ? 'active' : '' }}">
                     <a href="{{ route('folder') }}" class='sidebar-link'>
                         <i class="fa fa-folder-open" aria-hidden="true"></i>
                         <span>Carpetas</span>
                     </a>
-                </li>
+                </li> --}}
 
                 {{-- <li class="sidebar-item {{ request()->is('work') ? 'active' : '' }}">
                     <a href="{{ route('work') }}" class='sidebar-link'>

@@ -17,7 +17,7 @@
                             style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
                         <div class="card-body" style="padding-top:0; padding-bottom:0">
                             <h5 class="card-title text-center">ODOO</h5>
-                            <a href="{{ asset('/files/reglamento.pdf') }}" style="width: 100%" target="_blank" class="btn btn-primary with">ABRIR</a>
+                            <a href="#" style="width: 100%" target="_blank" class="btn btn-primary with">ABRIR</a>
                          </div>
                     </div>
                 
@@ -25,7 +25,7 @@
                             style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
                         <div class="card-body" style="padding-top:0; padding-bottom:0">
                             <h5 class="card-title text-center" >Evaluación 360</h5>
-                            <a href="{{ asset('/files/conducta.pdf') }}" style="width: 100%" target="_blank" class="btn btn-primary with">ABRIR</a>
+                            <a href="#" style="width: 100%" target="_blank" class="btn btn-primary with">ABRIR</a>
                         </div>
                     </div>
                     
@@ -33,7 +33,7 @@
                             style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
                         <div class="card-body" style="padding-top:0; padding-bottom:0">
                             <h5 class="card-title text-center" >Cotizador Web</h5>
-                            <a href="{{ asset('/files/conducta.pdf') }}" style="width: 100%" target="_blank" class="btn btn-primary with">ABRIR</a>
+                            <a href="#" style="width: 100%" target="_blank" class="btn btn-primary with">ABRIR</a>
                         </div>
                     </div>
                     
@@ -41,7 +41,7 @@
                             style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
                         <div class="card-body" style="padding-top:0; padding-bottom:0">
                             <h5 class="card-title text-center" >Help Desk</h5>
-                            <a href="{{ asset('/files/conducta.pdf') }}" style="width: 100%" target="_blank" class="btn btn-primary with">ABRIR</a>
+                            <a href="#" style="width: 100%" target="_blank" class="btn btn-primary with">ABRIR</a>
                         </div>
                     </div>
                     
