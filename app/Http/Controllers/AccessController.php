@@ -17,7 +17,7 @@ class AccessController extends Controller
     public function index()
     {
         $id = Auth::user()->id;
-        $access = Access::all()->where('users_id',$id);
+        $access = Access::all()->where('users_id', $id);
         return view('access.index', compact('access'));
     }
 
@@ -43,10 +43,8 @@ class AccessController extends Controller
         $id = Auth::user()->id;
 
         $request->validate([
-            'title'=> 'required',
-            'link'=> 'required',
-            'user'=>'required',
-            'password'=>'required',
+            'title' => 'required',
+            'link' => 'required',
         ]);
 
         if ($request->hasFile('image')) {
@@ -56,25 +54,23 @@ class AccessController extends Controller
             // Get just Extension
             $extension = $request->file('image')->getClientOriginalExtension();
             // Filename To store
-            $fileNameToStore = $filename.'.'.$extension;
+            $fileNameToStore = $filename . '.' . $extension;
             // Upload Image
             $path = $request->file('image')->move('storage/post/', $fileNameToStore);
-
-            }
-            else {
+        } else {
             $path = 'https://image.freepik.com/free-vector/characters-people-holding-internet-search-icons_53876-35212.jpg';
-            }
-    
+        }
+
         $access = new Access();
         $access->title = $request->title;
         $access->link = $request->link;
         $access->user = $request->user;
         $access->password = $request->password;
-        $access->image = $path; 
+        $access->image = $path;
         $access->users_id = $id;
         $access->save();
 
-        return redirect()->action([AccessController::class,'index']);
+        return redirect()->action([AccessController::class, 'index']);
     }
 
     /**
@@ -111,10 +107,8 @@ class AccessController extends Controller
         $id = Auth::user()->id;
 
         $request->validate([
-            'title'=> 'required',
-            'link'=> 'required',
-            'user'=>'required',
-            'password'=>'required',
+            'title' => 'required',
+            'link' => 'required',
         ]);
 
         if ($request->hasFile('image')) {
@@ -124,25 +118,22 @@ class AccessController extends Controller
             // Get just Extension
             $extension = $request->file('image')->getClientOriginalExtension();
             // Filename To store
-            $fileNameToStore = $filename.'.'.$extension;
+            $fileNameToStore = $filename . '.' . $extension;
             // Upload Image
             $path = $request->file('image')->move('storage/post/', $fileNameToStore);
-
-            }
-            else {
+        } else {
             $path = 'https://image.freepik.com/free-vector/characters-people-holding-internet-search-icons_53876-35212.jpg';
-            }
-    
+        }
+
         $acc->title = $request->title;
         $acc->link = $request->link;
         $acc->user = $request->user;
         $acc->password = $request->password;
-        $acc->image = $path; 
+        $acc->image = $path;
         $acc->users_id = $id;
         $acc->save();
 
-        return redirect()->action([AccessController::class,'index']);
-
+        return redirect()->action([AccessController::class, 'index']);
     }
 
     /**
@@ -154,6 +145,6 @@ class AccessController extends Controller
     public function destroy(Access $acc)
     {
         $acc->delete();
-        return redirect()->action([AccessController::class,'index']);
+        return redirect()->action([AccessController::class, 'index']);
     }
 }
