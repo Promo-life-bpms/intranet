@@ -111,6 +111,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('request/reports', [RequestController::class, 'reportRequest'])->name('request.reportRequest');
     Route::put('request-auth/{request}', [RequestController::class, 'authorizeUpdate'])->name('request.authorize.update');
     Route::get('request/{request}/auth-edit', [RequestController::class, 'authorizeEdit'])->name('request.authorize.edit');
+    Route::delete('request/{request}/notification', [RequestController::class, 'deleteNotification'])->name('request.delete.notification');
+    Route::delete('request/{request}/all', [RequestController::class, 'deleteAll'])->name('request.delete.all');
+
+
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
     Route::get('request/getData//{lista}', [EmployeeController::class, 'getData']);

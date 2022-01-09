@@ -58,11 +58,8 @@ class RequestNotification extends Notification
         return [
             'id' =>  $this->request->id,
             'employee_id' =>  $this->request->employee_id,
-            /*             'type_request' =>  $this->request->type_request,
-            'payment' =>  $this->request->payment,
-            'days' =>  $this->request->days,
-            'reason' => $this->request->reason,
-            'employee_id' =>  $this->request->employee_id */
+            'direct_manager_status' =>  $this->request->direct_manager_status,
+            'human_resources_status' =>  $this->request->human_resources_status,
         ];
     }
 }

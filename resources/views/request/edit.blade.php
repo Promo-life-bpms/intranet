@@ -31,7 +31,7 @@
                         @role('rh')
                         <div class="col-md-6 mt-4"> 
                             {!! Form::label('human_resources_status', 'Autorizacion de RH') !!}
-                            {!! Form::select('human_resources_status', ['Pendiente' => 'Pendiente', 'Aprobado' => 'Aprobado'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                            {!! Form::select('human_resources_status', ['Pendiente' => 'Pendiente', 'Aprobada' => 'Aprobada','Rechazada' => 'Rechazada'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
                             @error('type_request')
                                 <small>
                                     <font color="red"> *Este campo es requerido* </font>
@@ -43,7 +43,7 @@
                         @role('manager')
                         <div class="col-md-6 mt-4">
                             {!! Form::label('direct_manager_status', 'Autorizacion de Jefe directo') !!}
-                            {!! Form::select('direct_manager_status', ['Pendiente' => 'Pendiente', 'Aprobado' => 'Aprobado'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                            {!! Form::select('direct_manager_status', ['Pendiente' => 'Pendiente', 'Aprobada' => 'Aprobada','Rechazada' => 'Rechazada'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
                             @error('type_request')
                                 <small>
                                     <font color="red"> *Este campo es requerido* </font>

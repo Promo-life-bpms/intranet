@@ -58,10 +58,8 @@ class UserNotification extends Notification
         return [
             'id' =>  $this->request->id,
             'employee_id' =>  $this->request->employee_id,
-            /*        'type_request' =>  $this->request->type_request,
-            'payment' =>  $this->request->payment,
-            'reason' => $this->request->reason,
-            */
+            'direct_manager_status' =>  $this->request->direct_manager_status,
+            'human_resources_status' =>  $this->request->human_resources_status,
         ];
     }
 }

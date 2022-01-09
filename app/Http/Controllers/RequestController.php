@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\RequestEvent;
 use App\Events\RHRequestEvent;
 use App\Events\UserEvent;
+use App\Models\Notification;
 use App\Models\NoWorkingDays;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
@@ -49,11 +50,13 @@ class RequestController extends Controller
         }
 
         $requestDays = RequestCalendar::all();
+        $notifications = Notification::all();
+
 
         /*         $userDays= RequestCalendar::all()->where('users_id',$id)->unique();
  */
         /*    dd($userDays); */
-        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays'));
+        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays', 'notifications'));
     }
 
     /**
@@ -112,7 +115,7 @@ class RequestController extends Controller
         $rh = DB::table('positions')->where('id', $position)->value('department_id');
 
         if ($rh == 1) {
-            $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobado');
+            $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada');
         } else {
             $requests = ModelsRequest::all()->where('direct_manager_id', $id);
         }
@@ -127,7 +130,7 @@ class RequestController extends Controller
     public function showAll()
     {
         $requestDays = RequestCalendar::all();
-        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobado');
+        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada');
         return view('request.show', compact('requests', 'requestDays'));
     }
 
@@ -135,7 +138,7 @@ class RequestController extends Controller
     {
         $vacations = Vacations::all();
         $requestDays = RequestCalendar::all();
-        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobado')->where('human_resources_status', 'Aprobado');
+        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada');
         return view('request.reports', compact('requests', 'requestDays', 'vacations'));
     }
 
@@ -296,8 +299,11 @@ class RequestController extends Controller
 
         $request->update($req->all());
 
-        if ($req->human_resources_status == "Aprobado") {
+        if ($req->human_resources_status == "Aprobada") {
 
+            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+            self::userNotification($request);
+        } elseif ($req->human_resources_status == "Rechazada") {
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
         }
@@ -325,13 +331,15 @@ class RequestController extends Controller
         $id = Auth::id();
         $request->update($req->all());
 
-        if ($request->direct_manager_status == "Aprobado") {
+        if ($request->direct_manager_status == "Aprobada") {
 
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
 
             self::rhNotification($request);
+        } elseif ($req->direct_manager_status == "Rechazada") {
+            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+            self::userNotification($request);
         }
-
         return redirect()->action([RequestController::class, 'authorizeRequestManager']);
     }
 
@@ -344,15 +352,33 @@ class RequestController extends Controller
     public function destroy(ModelsRequest $request)
     {
         DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
+        DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
         $request->delete();
         return redirect()->action([RequestController::class, 'index']);
     }
 
 
+    public function deleteAll(ModelsRequest $request)
+    {
+        DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
+        DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+        $request->delete();
+        return redirect()->action([RequestController::class, 'index']);
+    }
+
+    public function deleteNotification(ModelsRequest $request)
+    {
+        DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+
+        return redirect()->action([RequestController::class, 'index']);
+    }
+
+
+
     public function export()
     {
         $request = ModelsRequest::all()->toArray();
-        $requests = ModelsRequest::select('', '', '')->where('direct_manager_status', 'Aprobado')->where('human_resources_status', 'Aprobado')->toArray();
+        $requests = ModelsRequest::select('', '', '')->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->toArray();
 
         $spreadsheet = new Spreadsheet();
 
