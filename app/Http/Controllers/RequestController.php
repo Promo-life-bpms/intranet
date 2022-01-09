@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\RequestEvent;
+use App\Events\RHRequestEvent;
+use App\Events\UserEvent;
 use App\Models\NoWorkingDays;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
 use App\Models\Role;
+use App\Models\User;
 use App\Models\Vacations;
+use App\Notifications\RequestNotification;
+use App\Notifications\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -130,7 +136,7 @@ class RequestController extends Controller
         $vacations = Vacations::all();
         $requestDays = RequestCalendar::all();
         $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobado')->where('human_resources_status', 'Aprobado');
-        return view('request.reports', compact('requests','requestDays','vacations'));
+        return view('request.reports', compact('requests', 'requestDays', 'vacations'));
     }
 
     /**
@@ -195,16 +201,39 @@ class RequestController extends Controller
         //Pruebas para validar si el calendario esta vacio
 
         //Valida que el usuario no envie solicitudes sin dias asignados
-        $lastRequestUser = DB::table('request_calendars')->where('users_id',$id)->where('requests_id', $lastRequest)->latest('id')->value('users_id');
-        if($lastRequestUser==null){
+        $lastRequestUser = DB::table('request_calendars')->where('users_id', $id)->where('requests_id', $lastRequest)->latest('id')->value('users_id');
+        if ($lastRequestUser == null) {
 
             $employee_id = DB::table('employees')->where('id', $id)->value('id');
-            DB::table('requests')->where('employee_id', $employee_id)->where('id',$lastRequest)->delete();
+            DB::table('requests')->where('employee_id', $employee_id)->where('id', $lastRequest)->delete();
             return back()->with('message', 'No puedes crear solicitudes por que no agregaste dias en el calendario');
-
         }
 
+        self::managertNotification($req);
+
         return redirect()->action([RequestController::class, 'index']);
+    }
+
+
+    static function managertNotification($req)
+    {
+        event(new RequestEvent($req));
+
+        /*       $id = Auth::id();
+        $manager = DB::table('employees')->where('user_id', $id)->value('jefe_directo_id');
+        User::all()->where('id', $manager)->each(function (User $user) use ($req) {
+            $user->notify(new RequestNotification($req));
+        }); */
+    }
+
+    static function rhNotification($req)
+    {
+        event(new RHRequestEvent($req));
+    }
+
+    static function userNotification($req)
+    {
+        event(new UserEvent($req));
     }
     /**
      * Show the form for editing the specified resource.
@@ -267,6 +296,13 @@ class RequestController extends Controller
 
         $request->update($req->all());
 
+        if ($req->human_resources_status == "Aprobado") {
+
+            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+            self::userNotification($request);
+        }
+
+
         $id = Auth::user()->id;
         $position = DB::table('employees')->where('user_id', $id)->value('position_id');
         $rh = DB::table('positions')->where('id', $position)->value('department_id');
@@ -275,7 +311,6 @@ class RequestController extends Controller
             return redirect()->action([RequestController::class, 'showAll']);
         } else {
             return redirect()->action([RequestController::class, 'index']);
-
         }
     }
 
@@ -287,7 +322,15 @@ class RequestController extends Controller
             'reason' => 'required'
         ]);
 
+        $id = Auth::id();
         $request->update($req->all());
+
+        if ($request->direct_manager_status == "Aprobado") {
+
+            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+
+            self::rhNotification($request);
+        }
 
         return redirect()->action([RequestController::class, 'authorizeRequestManager']);
     }
@@ -309,7 +352,7 @@ class RequestController extends Controller
     public function export()
     {
         $request = ModelsRequest::all()->toArray();
-        $requests = ModelsRequest::select('','','')->where('direct_manager_status', 'Aprobado')->where('human_resources_status', 'Aprobado')->toArray();
+        $requests = ModelsRequest::select('', '', '')->where('direct_manager_status', 'Aprobado')->where('human_resources_status', 'Aprobado')->toArray();
 
         $spreadsheet = new Spreadsheet();
 
@@ -328,7 +371,7 @@ class RequestController extends Controller
         $spreadsheet->getActiveSheet()->setCellValue('E1', 'Forma de pago');
         $spreadsheet->getActiveSheet()->setCellValue('F1', 'Fechas de ausencia');
         $spreadsheet->getActiveSheet()->setCellValue('G1', 'Vacaciones restantes');
- 
+
         $spreadsheet->getActiveSheet()->fromArray($request, NULL, 'A2');
 
         $writer = new Xlsx($spreadsheet);
