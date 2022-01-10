@@ -70,8 +70,9 @@
                         <p>Dias de vacaciones diponibles:  {{$vacations}}  </p>
                     <div>
                 </div>
-        </div>
-        {!! Form::submit('ACTUALIZAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name'=>'submit']) !!}
+
+            </div>
+            {!! Form::submit('ACTUALIZAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name'=>'submit']) !!}            
 
         {!! Form::close() !!}
     </div>

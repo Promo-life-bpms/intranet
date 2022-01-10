@@ -22,7 +22,7 @@
                     @php
                     $contador2 = 0;
                         foreach (auth()->user()->unreadNotifications as $notification){
-                            if ($notification->data['direct_manager_status'] =="Aprobada"){
+                            if ($notification->data['direct_manager_status'] =="Aprobada" && $notification->data['human_resources_status'] =="Aprobada"){
                                 $contador2 = $contador2 + 1;
                             }
                         }
@@ -37,7 +37,7 @@
                       @php
                             $contador3 = 0;
                             foreach (auth()->user()->unreadNotifications as $notification){
-                                if ($notification->data['direct_manager_status'] =="Rechazada"){
+                                if ($notification->data['direct_manager_status'] =="Rechazada" ||$notification->data['human_resources_status'] =="Rechazada"  ){
                                     $contador3 = $contador3 + 1;
                                 }
                              }
@@ -75,7 +75,7 @@
                                 <tbody>
                              
                                     @foreach ($myrequests as $request)
-                                        @if ($request->human_resources_status == "Pendiente" || $request->direct_manager_status== "Pendiente")
+                                        @if (/* $request->human_resources_status == "Pendiente" || */ $request->direct_manager_status== "Pendiente")
                                         <tr>
                     
                                             <td>{{ $request->id }}</td>
