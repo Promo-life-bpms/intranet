@@ -17,7 +17,7 @@
                     @php
                     $contador = 0;
                         foreach (auth()->user()->unreadNotifications as $notification){
-                            if ($notification->data['human_resources_status'] =="Pendiente"){
+                            if ($notification->data['direct_manager_status'] == "Aprobada"){
                                 $contador = $contador + 1;
                             }
                         }
@@ -255,9 +255,16 @@
     </div>
 </div>
 
-
-    
 @stop
+
+@section('styles')
+<style>
+    .nav-link{
+        font-size: 20px;
+    }
+</style>
+@stop
+
 
 @section('scripts')
 

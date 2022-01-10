@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Models\Employee;
 use App\Models\User;
 use App\Notifications\RequestNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -31,8 +32,8 @@ class RHRequestListener
      */
     public function handle($event)
     {
-        $rh = DB::table('employees')->whereIn('position_id', [3, 5])->value('id');
-        User::all()->where('id', $rh)->each(function (User $user) use ($event) {
+        $rh = Employee::all()->whereIn('position_id', [3, 5])->pluck('id', 'id');
+        User::all()->whereIn('id', $rh)->each(function (User $user) use ($event) {
             Notification::send($user, new RequestNotification($event->request));
         });
     }

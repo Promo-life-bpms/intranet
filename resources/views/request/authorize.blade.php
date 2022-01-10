@@ -247,9 +247,16 @@
     </div>
 </div>
 
-
-    
 @stop
+
+@section('styles')
+<style>
+    .nav-link{
+        font-size: 20px;
+    }
+</style>
+@stop
+
 
 @section('scripts')
 
