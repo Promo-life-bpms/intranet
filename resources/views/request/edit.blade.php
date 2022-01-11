@@ -56,7 +56,7 @@
 
                     <div class="col-md-6 mt-4">
                         {!! Form::label('reason', 'Motivo') !!} 
-                        {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo','readonly']) !!}
+                        {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo']) !!}
                         @error('reason')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
@@ -72,7 +72,7 @@
                 </div>
 
             </div>
-            {!! Form::submit('ACTUALIZAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name'=>'submit']) !!}            
+            {!! Form::submit('ACTUALIZAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name'=>'submit']) !!}              
 
         {!! Form::close() !!}
     </div>
@@ -106,7 +106,9 @@
         color: #ffffff;
     }
 
-
+    td.fc-day.fc-past {
+    background-color: #ECECEC;
+    }
    
 </style>
 @stop
@@ -168,135 +170,12 @@
                         selectable: true,
                         selectHelper: true,
                         eventMaxStack:1,
-                        select: function (start, end, allDay) {    
-                            //Valida si selecciona un dia festivo
-                            var dates = start.format('YYYY-MM-DD');
-                            var check=false;
-                            
-                            if(events.length === 0){
-                                check=true
-                                displayAlert("No hay dias festivos asignados")
-                            }
-
-                            events.forEach(function(e) {
-                            if (dates == e.start){
-                                
-                                alert("No puedes seleccionar un día festivo")
-                                throw BreakException
-
-                            }else{
-                                check=true
-                            } 
-                            });
-                            
-                         
-                            if (check==true) {
-                            
-                            check=false
-                            var title = 'Agregado' 
-                            var startDate = moment(start),
-                            endDate = moment(end),
-                            date = startDate.clone(),
-                            isWeekend = false;
-                        
-                            while (date.isBefore(endDate)) {
-                            if (date.isoWeekday() == 6 || date.isoWeekday() == 7) {
-                                isWeekend = true;
-                                }    
-                                date.add(1, 'day');
-                            }
-
-                            if (isWeekend) {
-                                alert('No se puede seleccionar fin de semana');
-                                return false;
-                            }else{
-                                var start = $.fullCalendar.formatDate(start, "Y-MM-DD");
-                                var end = $.fullCalendar.formatDate(end, "Y-MM-DD");
-                                
-                                if(dateActual<=start){
-                                    
-                                        $.ajax({
-                                        url: SITEURL + "/fullcalenderAjax",
-                                        data: {
-                                            title: title,
-                                            start: start,
-                                            end: end,
-                                            type: 'add',
-                                            
-                                        },
-                                        type: "POST",
-                                        success: function (data) {
-                                            displayMessage("Día seleccionado satisfactoriamente");
-        
-                                            calendar.fullCalendar('renderEvent',
-                                                {
-                                                    id: data.id,
-                                                    title: title,
-                                                    start: start,
-                                                    end: end,
-                                                    allDay: allDay,
-                                                    
-                                                },true);
-        
-                                            calendar.fullCalendar('unselect');
-                                            }
-                                        });
-                                        
-                                }else{
-                                    alert('No puedes seleccionar fechas atrasadas ')
-                                }
-                            }
-
-                               
-                            }
-                        },
-                        eventDrop: function (event, delta) {
-                            var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD");
-                            var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD");
-      
-                            $.ajax({
-                                url: SITEURL + '/fullcalenderAjax',
-                                data: {
-                                    title: event.title,
-                                    start: start,
-                                    end: end,
-                                    id: event.id,
-                                    type: 'update'
-                                },
-                                type: "POST",
-                                success: function (response) {
-                                    displayMessage("Dia actualizado satisfactoriaente");
-                                }
-                            });
-                        },
                         eventClick: function (event) {
-                            var deleteMsg = confirm("Do you really want to delete?");
-
-                            
-                            if (deleteMsg) {
-                                $.ajax({
-                                    type: "POST",
-                                    url: SITEURL + '/fullcalenderAjax',
-                                    data: {
-                                            id: event.id,
-                                            type: 'delete'
-                                    },
-                                    success: function (response) {
-                                        calendar.fullCalendar('removeEvents', event.id);
-                                        displayMessage("Día borrado satisfactoriamente");
-                                    }
-                                });
-                            }
+                            displayInfo("No puedes modificar las fechas");
                         },
-                        dayClick: function(date, allDay, jsEvent, view) {
-                            $('#calendar').fullCalendar('clientEvents', function(event) {
-                                if(event.start <= date && event.end >= date) {
-                                    return true;
-                                }
-                                return false;
-                            });
-                        }
-     
+                        select: function (start, end, allDay) {
+                            displayInfo("No puedes modificar las fechas");
+                        },
                     });
 
     });
@@ -309,6 +188,9 @@
         toastr.warning(message, 'Advertencia');
     }
       
+    function displayInfo(message) {
+        toastr.info(message, 'Advertencia');
+    }
  </script>
 
 @stop

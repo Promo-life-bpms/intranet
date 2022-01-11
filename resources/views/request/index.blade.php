@@ -16,6 +16,21 @@
                     aria-controls="home" aria-selected="true">Pendientes</span>
                 </a>
             </li>
+            <li class="nav-item" role="process">
+                <a class="nav-link" id="process-tab" data-bs-toggle="tab" href="#process" role="tab"
+                    aria-controls="process" aria-selected="false">
+                    @php
+                    $contador1 = 0;
+                        foreach ($myrequests as $notification){
+                            if ($notification->direct_manager_status =="Aprobada" && $notification->human_resources_status =="Pendiente"){
+                                $contador1 = $contador1 + 1;
+                            }
+                        }
+                    @endphp
+                    En proceso
+                    <span class="badge bg-primary"><?=$contador1 ?> </span>
+                </a>
+            </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab"
                     aria-controls="profile" aria-selected="false">
@@ -75,7 +90,7 @@
                                 <tbody>
                              
                                     @foreach ($myrequests as $request)
-                                        @if (/* $request->human_resources_status == "Pendiente" || */ $request->direct_manager_status== "Pendiente")
+                                        @if ( $request->human_resources_status == "Pendiente" &&  $request->direct_manager_status== "Pendiente")
                                         <tr>
                     
                                             <td>{{ $request->id }}</td>
@@ -116,6 +131,67 @@
                 
                 </div>
             </div>
+
+            <div class="tab-pane fade" id="process" role="process" aria-labelledby="process-tab">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <h6>Solicitudes en proceso</h6>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"># </th>
+                                        <th scope="col">Solicitante</th>
+                                        <th scope="col">Tipo</th>
+                                        <th scope="col">Pago</th>
+                                        <th scope="col">Fechas de ausencia</th>
+                                        <th scope="col">Motivo</th>
+                                        <th scope="col">Jefe status </th>
+                                        <th scope="col">RH status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                             
+                                    @foreach ($myrequests as $request)
+                                        @if ($request->human_resources_status == "Pendiente" && $request->direct_manager_status== "Aprobada")
+                                        <tr>
+                    
+                                            <td>{{ $request->id }}</td>
+                                            <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }} </td>
+                                            <td>{{ $request->type_request }}</td>
+                                            <td>{{ $request->payment }}</td>        
+                                                <td>
+                                                    @foreach ($requestDays as $requestDay)
+                                                        @if ($request->id == $requestDay->requests_id)
+                                                            {{ $requestDay->start  }} ,
+                                                            
+                                                        @endif
+                                                    @endforeach
+                                                </td>
+                                            <td>{{ $request->reason }}</td>
+                                            <td><b>{{ $request->direct_manager_status }}</b> </td>
+                                            <td><b>{{ $request->human_resources_status }}</b> </td>
+                                        </tr>
+                                        @else
+                
+                                        @endif
+                
+                                    @endforeach
+                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                                
+            </div>
+
+
 
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="card">

@@ -5,7 +5,7 @@
 <div class="card">
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Mis solicitudes</h3>
+            <h3>Solicitudes recibidas</h3>
             <a href="{{ route('request.create') }}" type="button" class="btn btn-success">Agregar</a>
         </div>
     </div>
