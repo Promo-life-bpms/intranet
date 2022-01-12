@@ -16,7 +16,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('type_request', 'Tipo de Solicitud') !!}
-                        {!! Form::select('type_request', ['Salir durante la Jornada' => 'Salir durante la Jornada', 'Faltar a sus labores' => 'Faltar a sus labores'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                        {!! Form::select('type_request', ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones' ], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
                         @error('type_request')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
@@ -140,7 +140,7 @@
                         editable: true,
                         events: SITEURL + "/event",
                         displayEventTime: false,
-                        allDay: false,
+                        allDay: true,
                         events,
                         selectable: true,
                         selectHelper: true,
@@ -158,19 +158,16 @@
                                 check=true
                                 displayAlert("No hay dias festivos asignados")
                             }
-
                             events.forEach(function(e) {
                             if (dates == e.start){
                                 
                                 displayInfo("No puedes seleccionar un día festivo")
                                 throw BreakException
-
                             }else{
                                 check=true
                             } 
                             });
                             
-                         
                             if (check==true) {
                             
                             check=false
@@ -186,7 +183,6 @@
                                 }    
                                 date.add(1, 'day');
                             }
-
                             if (isWeekend) {
                                 displayInfo('No se puede seleccionar fin de semana');
                                 return false;
@@ -215,8 +211,7 @@
                                                     title: title,
                                                     start: start,
                                                     end: end,
-                                                    allDay: allDay,
-                                                    
+                                                    allDay: allDay, 
                                                 },true);
         
                                             calendar.fullCalendar('unselect');
@@ -227,7 +222,6 @@
                                     displayInfo('No puedes seleccionar fechas atrasadas ')
                                 }
                             }
-
                                
                             }
                         },
@@ -277,39 +271,25 @@
                             }
                         })
                         },
-                        dayClick: function(date, allDay, jsEvent, view) {
-                            $('#calendar').fullCalendar('clientEvents', function(event) {
-                                if(event.start <= date && event.end >= date) {
-                                    return true;
-                                }
-                                return false;
-                            });
-                        }
-     
+   
                     });
-
     });
      
     function displayMessage(message) {
         toastr.success(message, 'Solicitud');
     } 
-
     function displayAlert(message) {
         toastr.warning(message, 'Advertencia');
     }
-
     function displayInfo(message) {
         toastr.info(message, 'Advertencia');
     }
-
     function displayError(message) {
         toastr.error(message, 'Error');
     }
     
     
-
  </script>
-
 @stop
 
 

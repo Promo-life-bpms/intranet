@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         {!! Form::label('type_request', 'Tipo de Solicitud') !!}
-                        {!! Form::select('type_request', ['Salir durante la Jornada' => 'Salir durante la Jornada', 'Faltar a sus labores' => 'Faltar a sus labores'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                        {!! Form::select('type_request', ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'A cuenta de vacaciones' => 'A cuenta de vacaciones','Solicitar vacaciones' => 'Solicitar vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
                         @error('type_request')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
@@ -170,6 +170,10 @@
                         selectable: true,
                         selectHelper: true,
                         eventMaxStack:1,
+                        monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+                        monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+                        dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+                        dayNamesShort: ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],
                         eventClick: function (event) {
                             displayInfo("No puedes modificar las fechas");
                         },
