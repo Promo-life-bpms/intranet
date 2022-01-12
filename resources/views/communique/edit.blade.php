@@ -10,88 +10,94 @@
                 {{ session('message') }}
             </div>
         @endif
-        <form action="{{ route('communiques.update', $communique) }}" enctype="multipart/form-data" method="POST">
-            @csrf
-            @method('POST')
-            <div class="row">
-                <div class="col-md-7">
 
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Titulo </label>
-                        <input type="text" class="form-control" name="title" placeholder="Ingrese el titulo del comunicado"
-                            value="{{ $communique->title }}">
+        {!! Form::model($communique, ['route' => ['admin.communique.update', $communique], 'method' => 'put','enctype' => 'multipart/form-data']) !!}
 
-                        @error('title')
-                            <small>
-                                <font color="red"> *Este campo es requerido* </font>
-                            </small>
-                            <br>
-                        @enderror
-                    </div>
+        <div class="row">
+            <div class="col-md-7">
+
+                <div class="mb-3 form-group">
+                    {!! Form::label('title', 'Título') !!}
+                    {!! Form::text('title', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el título']) !!}
+                    @error('title')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
 
 
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-2">
-                                <label for="formFile" class="form-label">Imagen</label>
-                                <input class="form-control" type="file" name="image" id="formFile">
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="mb-2 form-group">
+                            {!! Form::label('image', 'Imagen (opcional)') !!}
+                            {!! Form::file('image',  ['class' => 'form-control']) !!}
+                            @error('image')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
+                            @enderror
 
-                                @error('image')
-                                    <small>
-                                        <font color="red"> *Este campo es requerido* </font>
-                                    </small>
-                                    <br>
-                                @enderror
-
-                            </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">Descripcion</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="4"
-                            name="description">{{ $communique->description }}</textarea>
+                </div>
 
-                        @error('description')
-                            <small>
-                                <font color="red"> *Este campo es requerido* </font>
-                            </small>
-                            <br>
-                        @enderror
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="mb-2 form-group">
+                            {!! Form::label('file', 'Archivo (opcional)') !!}
+                            {!! Form::file('file',  ['class' => 'form-control']) !!}
 
+                        </div>
                     </div>
+                </div>
+
+                <div class="mb-3 mt-4 form-group">
+                    {!! Form::label('description', 'Descripción') !!}
+                    {!! Form::textarea('description',  null, ['class' => 'form-control', 'placeholder' => 'Ingresar descripción del comunicado']) !!}
+                    @error('description')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
 
                 </div>
-                <div class="col-md-5">
-                    <div class="row mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">Enviar a</label>
-                        <div class="d-flex">
-                            @foreach ($companies as $company)
-                                <div class="form-check mx-1">
-                                    <input class="form-check-input" type="checkbox" name="companies[]"
-                                        value="{{ $company->name_company }}" id="checkcompany{{ $company->id }}">
-                                    <label class="form-check-label" for="checkcompany{{ $company->id }}">
-                                        {{ $company->name_company }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
+
+            </div>
+            <div class="col-md-5">
+                <div class="row mb-3">
+                    <div class="form-group col-md-6 ">
+                        {!! Form::label('companies', 'Enviar a empresa especifica:') !!}
+                        @foreach ($companies as $company)
+                            <div>
+                                <label>
+                                    {!! Form::checkbox('companies[]', $company->id, null, ['class' => 'mr-4']) !!}
+                                    {{ $company->name_company }}
+                                </label>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="row mb-2">
-                        <label for="formFile" class="form-label">Departamento</label>
+
+                    <div class="form-group col-md-6 ">
+                        {!! Form::label('departments', 'Enviar a departamento especifico:') !!}
                         @foreach ($departments as $department)
-                            <div class="form-check mx-3">
-                                <input class="form-check-input" type="checkbox" name="departments[]"
-                                    value="{{ $department->name }}" id="checkdepartment{{ $department->id }}">
-                                <label class="form-check-label" for="checkdepartment{{ $department->id }}">
+                            <div>
+                                <label>
+                                    {!! Form::checkbox('departments[]', $department->id, null, ['class' => 'mr-4']) !!}
                                     {{ $department->name }}
                                 </label>
                             </div>
                         @endforeach
                     </div>
+
                 </div>
             </div>
-            <input type="submit" class="btnCreate" value="ACTUALIZAR COMUNICADO"></button>
-        </form>
-
+        </div>
+        <input type="submit" class="btnCreate" value="ACTUALIZAR COMUNICADO"></button>
+        {!! Form::close() !!}
+        
     </div>
 @stop

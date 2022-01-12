@@ -49,21 +49,36 @@ class CommuniqueController extends Controller
         if (!$request->companies  && !$request->departments) {
             return back()->with('message', 'No es posible registrar el comunicado por que no has seleccionado a los destinatarios');
         }
-        $imagen = $request->file("images");
-        $nombreimagen = $request->title . "." . $imagen->getClientOriginalName();
-        $ruta = public_path("storage/post/");
 
-        $imagen->move($ruta, $nombreimagen);
+        if ($request->hasFile('image')) {
+            $filenameWithExt = $request->file('image')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $fileNameToStore = $filename . '.' . $extension;
+            $path = $request->file('image')->move('storage/post/', $fileNameToStore);
+        } else {
+            $path = null;
+        }
+
+        if ($request->hasFile('file')) {
+            $filenameWithExt2 = $request->file('file')->getClientOriginalName();
+            $filename2 = pathinfo($filenameWithExt2, PATHINFO_FILENAME);
+            $extension2 = $request->file('file')->getClientOriginalExtension();
+            $fileNameToStore2 = $filename2 . '.' . $extension2;
+            $path2 = $request->file('file')->move('storage/post/', $fileNameToStore2);
+        } else {
+            $path2 = null;
+        }
 
         $communique = new Communique();
         $communique->title = $request->title;
-        $communique->images = "storage/post/" . $nombreimagen;
-        $communique->files = $request->description;
+        $communique->image = $path;
+        $communique->file = $path2;
         $communique->description = $request->description;
         $communique->creator_id = auth()->user()->employee->id;
         $communique->save();
 
-        //Quien recibe el comunicado
+        /*  //Quien recibe el comunicado
         $employees_id = [];
         if ($request->departments && !$request->companies) {
             foreach ($request->departments as $value) {
@@ -99,11 +114,13 @@ class CommuniqueController extends Controller
                     }
                 }
             }
-        }
+        } */
 
-        $communique->employeesAttachment()->attach($employees_id);
+        $communique->companies()->attach($request->companies);
+        $communique->departments()->attach($request->departments);
 
-        return redirect()->action([CommuniqueController::class, 'index']);
+
+        return redirect()->action([CommuniqueController::class, 'show']);
     }
 
     /**
@@ -112,9 +129,9 @@ class CommuniqueController extends Controller
      * @param  \App\Models\Communique  $communique
      * @return \Illuminate\Http\Response
      */
-    public function show(Communique $communique)
+    public function show(/* Communique $communique */)
     {
-        $communiques =  auth()->user()->employee->communiques;
+        $communiques =  Communique::all(); /* auth()->user()->employee->communiques; */
         return view('communique.show', compact('communiques'));
     }
 
@@ -142,69 +159,59 @@ class CommuniqueController extends Controller
     {
         request()->validate([
             'title' => 'required',
-            'images' => 'required',
-            'files' => 'required',
             'description' => 'required'
         ]);
+
         if ($request->companies == '' || $request->departments == '') {
             return back()->with('message', 'No es posible registrar el comunicado por que no has seleccionado a los destinatarios');
         }
-        $imagen = $request->file("images");
-        $nombreimagen = $request->title . "." . $imagen->getClientOriginalName();
-        $ruta = public_path("storage/post/");
 
-        $imagen->move($ruta, $nombreimagen);
 
-        $communique = new Communique();
+        if ($request->hasFile('image') == null) {
+
+            if ($communique->image == null) {
+                $path = null;
+            } else {
+                $path = $communique->image;
+            }
+        } else {
+
+            $filenameWithExt = $request->file('image')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $fileNameToStore = $filename . '.' . $extension;
+            $path = $request->file('image')->move('storage/post/', $fileNameToStore);
+        }
+
+
+
+        if ($request->hasFile('file') == null) {
+
+            if ($communique->file == null) {
+                $path2 = null;
+            } else {
+                $path2 = $communique->file;
+            }
+        } else {
+
+            $filenameWithExt2 = $request->file('file')->getClientOriginalName();
+            $filename2 = pathinfo($filenameWithExt2, PATHINFO_FILENAME);
+            $extension2 = $request->file('file')->getClientOriginalExtension();
+            $fileNameToStore2 = $filename2 . '.' . $extension2;
+            $path2 = $request->file('file')->move('storage/post/', $fileNameToStore2);
+        }
+
         $communique->title = $request->title;
-        $communique->images = "storage/post/" . $nombreimagen;
-        $communique->files = $request->description;
+        $communique->image = $path;
+        $communique->file = $path2;
         $communique->description = $request->description;
         $communique->creator_id = auth()->user()->employee->id;
         $communique->save();
 
-        //Quien recibe el comunicado
-        $employees_id = [];
-        if ($request->departments && !$request->companies) {
-            foreach ($request->departments as $value) {
-                $department = Department::find($value);
-                foreach ($department->positions as $position) {
-                    foreach ($position->employees as $employee) {
-                        array_push($employees_id, $employee->id);
-                    }
-                }
-            }
-        } else if (!$request->departments && $request->companies) {
-            foreach ($request->companies as $value) {
-                $company = Company::find($value);
-                foreach ($company->employees as $employee) {
-                    array_push($employees_id, $employee->id);
-                    $employees_id = array_unique($employees_id);
-                }
-            }
-        } else if ($request->departments && $request->companies) {
-            foreach ($request->companies as $value) {
-                $company = Company::find($value);
-                foreach ($request->departments as $value) {
-                    $department = Department::find($value);
-                    foreach ($department->positions as $position) {
-                        foreach ($position->employees as $employee) {
-                            foreach ($employee->companies as $com) {
-                                if ($com->id == $company->id) {
-                                    array_push($employees_id, $employee->id);
-                                    $employees_id = array_unique($employees_id);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        $communique->companies()->attach($request->companies);
+        $communique->departments()->attach($request->departments);
 
-        $communique->employeesAttachment()->detach();
-        $communique->employeesAttachment()->attach($employees_id);
-
-        return redirect()->action([CommuniqueController::class, 'index']);
+        return redirect()->action([CommuniqueController::class, 'show']);
     }
 
     /**
@@ -215,8 +222,7 @@ class CommuniqueController extends Controller
      */
     public function destroy(Communique $communique)
     {
-        $communique->employeesAttachment()->detach();
         $communique->delete();
-        return redirect()->action([CommuniqueController::class, 'index']);
+        return redirect()->action([CommuniqueController::class, 'show']);
     }
 }

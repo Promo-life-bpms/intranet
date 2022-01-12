@@ -3,46 +3,60 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Comunicados</h3>
+            <h3>Gestionar comunicados</h3>
             <a href="{{ route('communiques.create') }}" type="button" class="btn btn-success">Agregar</a>
         </div>
     </div>
     <div class="card-body">
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col"># </th>
-                    <th scope="col">Titullo</th>
-                    <th scope="col">URL Imagen</th>
-                    <th scope="col">Descripcion</th>
-                    <th scope="col">Opciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($communiques as $communique)
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>{{ $communique->id }}</td>
-                        <td>{{ $communique->title }}</td>
-                        <td>{{ $communique->images }}</td>
-                        <td>{{ $communique->description }}</td>
-                        <td>
-                            <a href="{{ route('communiques.edit', ['communique' => $communique->id]) }}" type="button"
-                                class="btn btn-primary">Editar</a>
-
-                            <form class="form-delete" action="{{ route('communiques.destroy', ['communique' => $communique->id]) }}"
-                                method="POST">
-                                @csrf
-                                @method('delete')
-                                <button type="submit" class="btn btn-danger">Borrar</button>
-                            </form>
-
-                        </td>
+                        <th scope="col"># </th>
+                        <th scope="col">Título</th>
+                        <th scope="col">Imagen</th>
+                        <th scope="col">Archivo</th>
+                        <th style="width: 50%" scope="col">Descripcion</th>
+                        <th scope="col">Opciones</th>
                     </tr>
-                @endforeach
-
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach ($communiques as $communique)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $communique->title }}</td>
+                            <td>
+                                <img style="width: 100px; heigth:100px;" src="{{ asset($communique->image )}}" alt="">
+                                
+                            </td>
+    
+                            <td>
+                                @if ($communique->file ==null)
+                                    Sin archivo 
+                                @else
+                                    <a href="{{ asset($communique->file )}}" target="_blank">Ver archivo guardado</a>
+                                @endif
+                            </td>
+                            <td>{{ $communique->description }}</td>
+                            <td>
+                                <a href="{{ route('communiques.edit', ['communique' => $communique->id]) }}" type="button"
+                                    class="btn btn-primary">Editar</a>
+    
+                                <form class="form-delete" action="{{ route('communiques.destroy', ['communique' => $communique->id]) }}"
+                                    method="POST">
+                                    @csrf
+                                    @method('delete')
+                                    <button type="submit" class="btn btn-danger">Borrar</button>
+                                </form>
+    
+                            </td>
+                        </tr>
+                    @endforeach
+    
+                </tbody>
+            </table>
+        </div>
+        
 
     </div>
 @stop

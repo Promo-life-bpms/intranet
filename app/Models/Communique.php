@@ -22,4 +22,14 @@ class Communique extends Model
     {
         return $this->belongsTo(Employee::class, 'creator_id');
     }
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class);
+    }
+
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class);
+    }
 }

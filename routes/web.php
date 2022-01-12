@@ -137,6 +137,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::resource('request', RequestController::class);
 
+    Route::get('communiques/show', [CommuniqueController::class, 'show'])->name('admin.communique.show');
+    Route::put('communiques/{communique}', [CommuniqueController::class, 'update'])->name('admin.communique.update');
+
+
     /*     Route::get('events', [EventsController::class, 'index'])->name('admin.events.index');
     Route::post('eventsAjax', [EventsController::class, 'ajax']); */
 });

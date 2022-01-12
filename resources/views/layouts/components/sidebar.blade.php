@@ -113,6 +113,12 @@
                             </li>
 
                             <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.communique.show') }}">
+                                    <span>Comunicados</span>
+                                </a>
+                            </li> 
+
+                            <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.events.index') }}">
                                     <span>Eventos</span>
                                 </a>
