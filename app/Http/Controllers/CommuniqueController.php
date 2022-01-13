@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Communique;
+use App\Models\CommuniqueCompany;
+use App\Models\CommuniqueDepartment;
 use App\Models\Company;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CommuniqueController extends Controller
 {
@@ -16,9 +20,19 @@ class CommuniqueController extends Controller
      */
     public function index()
     {
-        $communiques =  Communique::orderBy('created_at', 'ASC')->simplePaginate(5);
-        $communiquesPrincipal =  Communique::orderBy('created_at', 'DESC')->limit(3)->get();
-        return view('communique.index', compact('communiques', 'communiquesPrincipal'));
+
+        $id = Auth::user()->id;
+        $employeeID = DB::table('employees')->where('user_id', $id)->value('id');
+        $companyEmployee = DB::table('company_employee')->where('employee_id', $employeeID)->value('company_id');
+        $companyCom = CommuniqueCompany::all()->where('company_id', $companyEmployee)->pluck('communique_id', 'communique_id');
+        $companyCommuniques = Communique::all()->whereIn('id', $companyCom);
+
+        $employeePosition = DB::table('employees')->where('id', $employeeID)->value('position_id');
+        $employeeDepartment = DB::table('positions')->where('id', $employeePosition)->value('department_id');
+        $departmentCom = CommuniqueDepartment::all()->where('department_id', $employeeDepartment)->pluck('communique_id', 'communique_id');
+        $departmentCommuniques = Communique::all()->whereIn('id', $departmentCom);
+
+        return view('communique.index', compact('companyCommuniques', 'departmentCommuniques'));
     }
 
     /**
@@ -45,10 +59,6 @@ class CommuniqueController extends Controller
             'title' => 'required',
             'description' => 'required'
         ]);
-
-        if (!$request->companies  && !$request->departments) {
-            return back()->with('message', 'No es posible registrar el comunicado por que no has seleccionado a los destinatarios');
-        }
 
         if ($request->hasFile('image')) {
             $filenameWithExt = $request->file('image')->getClientOriginalName();
@@ -77,44 +87,6 @@ class CommuniqueController extends Controller
         $communique->description = $request->description;
         $communique->creator_id = auth()->user()->employee->id;
         $communique->save();
-
-        /*  //Quien recibe el comunicado
-        $employees_id = [];
-        if ($request->departments && !$request->companies) {
-            foreach ($request->departments as $value) {
-                $department = Department::find($value);
-                foreach ($department->positions as $position) {
-                    foreach ($position->employees as $employee) {
-                        array_push($employees_id, $employee->id);
-                    }
-                }
-            }
-        } else if (!$request->departments && $request->companies) {
-            foreach ($request->companies as $value) {
-                $company = Company::find($value);
-                foreach ($company->employees as $employee) {
-                    array_push($employees_id, $employee->id);
-                    $employees_id = array_unique($employees_id);
-                }
-            }
-        } else if ($request->departments && $request->companies) {
-            foreach ($request->companies as $value) {
-                $company = Company::find($value);
-                foreach ($request->departments as $value) {
-                    $department = Department::find($value);
-                    foreach ($department->positions as $position) {
-                        foreach ($position->employees as $employee) {
-                            foreach ($employee->companies as $com) {
-                                if ($com->id == $company->id) {
-                                    array_push($employees_id, $employee->id);
-                                    $employees_id = array_unique($employees_id);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } */
 
         $communique->companies()->attach($request->companies);
         $communique->departments()->attach($request->departments);
@@ -161,10 +133,6 @@ class CommuniqueController extends Controller
             'title' => 'required',
             'description' => 'required'
         ]);
-
-        if ($request->companies == '' || $request->departments == '') {
-            return back()->with('message', 'No es posible registrar el comunicado por que no has seleccionado a los destinatarios');
-        }
 
 
         if ($request->hasFile('image') == null) {

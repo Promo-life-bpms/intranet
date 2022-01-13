@@ -231,28 +231,23 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item  has-sub {{ request()->is('communique') ? 'active' : '' }}">
+                <li class="sidebar-item   has-sub  {{ request()->is('communique') ? 'active' : '' }}">
                     <a href="{{ route('communiques.index') }}" class='sidebar-link'>
                         <i class="fa fa-bell" aria-hidden="true"></i>
                         <span>Comunicados</span>
                     </a>
                     <ul class="submenu ">
                         <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('communiques.create') }}">
-                                <span>Crear comunicados</span>
+                            <a class="dropdown-item" href="{{ route('communiques.index') }}">
+                                <span>Comunicados generales</span>
                             </a>
                         </li>
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('communiques.index') }}">
-                                <span>Ver comunicados</span>
+                                <span>Comunicados de área</span>
                             </a>
                         </li>
-                        <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('communiques.index') }}">
-                                <span>Administrar comunicados</span>
-                            </a>
-                        </li>
-                    </ul>
+                    </ul> 
                 </li>
 
                 <li class="sidebar-item {{ request()->is('manual') ? 'active' : '' }}">
