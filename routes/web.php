@@ -9,6 +9,7 @@ use App\Http\Controllers\MonthController;
 use App\Http\Controllers\CommuniqueController;
 use App\Http\Controllers\ManualController;
 use App\Http\Controllers\AccessController;
+use App\Http\Controllers\AreaController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\WorkController;
@@ -137,7 +138,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::resource('request', RequestController::class);
 
+    Route::get('/com/department', [CommuniqueController::class, 'department'])->name('communiques.department');
     Route::get('communiques/show', [CommuniqueController::class, 'show'])->name('admin.communique.show');
+
+
     Route::put('communiques/{communique}', [CommuniqueController::class, 'update'])->name('admin.communique.update');
 
 

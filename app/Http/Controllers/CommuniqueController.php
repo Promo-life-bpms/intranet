@@ -27,12 +27,7 @@ class CommuniqueController extends Controller
         $companyCom = CommuniqueCompany::all()->where('company_id', $companyEmployee)->pluck('communique_id', 'communique_id');
         $companyCommuniques = Communique::all()->whereIn('id', $companyCom);
 
-        $employeePosition = DB::table('employees')->where('id', $employeeID)->value('position_id');
-        $employeeDepartment = DB::table('positions')->where('id', $employeePosition)->value('department_id');
-        $departmentCom = CommuniqueDepartment::all()->where('department_id', $employeeDepartment)->pluck('communique_id', 'communique_id');
-        $departmentCommuniques = Communique::all()->whereIn('id', $departmentCom);
-
-        return view('communique.index', compact('companyCommuniques', 'departmentCommuniques'));
+        return view('communique.index', compact('companyCommuniques'));
     }
 
     /**
@@ -192,5 +187,17 @@ class CommuniqueController extends Controller
     {
         $communique->delete();
         return redirect()->action([CommuniqueController::class, 'show']);
+    }
+
+    public function department()
+    {
+        $id = Auth::user()->id;
+        $employeeID = DB::table('employees')->where('user_id', $id)->value('id');
+        $employeePosition = DB::table('employees')->where('id', $employeeID)->value('position_id');
+        $employeeDepartment = DB::table('positions')->where('id', $employeePosition)->value('department_id');
+        $departmentCom = CommuniqueDepartment::all()->where('department_id', $employeeDepartment)->pluck('communique_id', 'communique_id');
+        $departmentCommuniques = Communique::all()->whereIn('id', $departmentCom);
+
+        return view('communique.area', compact('departmentCommuniques'));
     }
 }

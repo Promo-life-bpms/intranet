@@ -243,7 +243,7 @@
                             </a>
                         </li>
                         <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('communiques.index') }}">
+                            <a class="dropdown-item" href="{{ route('communiques.department') }}">
                                 <span>Comunicados de área</span>
                             </a>
                         </li>
