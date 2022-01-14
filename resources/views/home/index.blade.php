@@ -18,13 +18,13 @@
                                 @else
                                     @foreach ($communiquesImage as $communique)
                                         <div class="carousel-item {{$loop->iteration == 1 ? 'active' : ''}}">
-                                        <img src="{{ asset($communique->image )}}" class="d-block w-100" alt="...">
+                                        <img style="object-fit: contain; max-height: 370px;" src="{{ asset($communique->image )}}" class="d-block w-100 " alt="...">
                                             <div class="carousel-caption d-none d-md-block">
                                             <span style="background: rgba(3, 42, 51, 0.5); font-size:1.5rem;">{{$communique->title}}</span> 
                                             <br>                                          
-                                            <button type="button" class="btn btn-primary buttomItem" value="{{$communique->id}}">Ver mas</button>
+                                            <a type="button" class="btn btn-primary buttomItem" value="{{$communique->id}}">Ver mas</a>
                                             @if ($communique->file !=null)
-                                                <a class="btn btn-primary " href="{{ asset($communique->file )}}" target="_blank">Abrir archivo adjunto</a>
+                                                <a class="btn btn-danger " href="{{ asset($communique->file )}}" target="_blank">Abrir archivo adjunto</a>
                                             @endif
                                             </div>
                                             
@@ -179,8 +179,8 @@
     background-color: #ECECEC;
     }
     
-    .swal2{
-        width: 1000px;
+    .swal-wide{
+    width: 50% !important;
     }
 </style>
 @stop
@@ -345,6 +345,9 @@
                                     showCloseButton: false,
                                     showCancelButton: false,
                                     focusConfirm: false,
+                                    confirmButtonColor: '#006EAD',
+                                    confirmButtonText: "Aceptar",
+                                    customClass: 'swal-wide',
                                 })
                             }
                         });
