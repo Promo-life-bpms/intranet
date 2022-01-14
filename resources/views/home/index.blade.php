@@ -5,47 +5,49 @@
         <div class="col-md-8">
             <div class="card p-3">
                 <div class="row">
-                    <div class="col-md-6">
-                        <h4>CAPACITACIÓN: 5S´s KAIZEN 11 DE NOVIEMBRE 2021</h4>
-                        <p><h6>
-                             Buenos días, estimados colaboradores.
-                            <br>
-                            <br>
-                            Esperando se encuentren muy bien y deseando que su día sea excelente, les comparto la siguiente información:
-                            <br>
-                            <br>
-                            El día jueves 11 de noviembre se realizará una capacitación sobre “Las 5S´s Kaizen” impartida por el Ing. Cesar Arzate, del área de calidad y procesos. Esta capacitación es obligatoria para todos, por lo que les comparto las Políticas que él compartió hace unos días para Promo life y BH Trade Market.
-                            <br>                        
-                        </h6>
-                    </p>
-                       {{--  @if ($communiques)
-                            @foreach ($communiques as $communique)
-                                <img class="img-fluid rounded" src="{{ asset($communique->images) }}" alt="" srcset="">
-                            @endforeach
-                        @endif --}}
-                    </div>
-                    <div class="col-md-6">
-                        <div class="d-flex justify-content-between align-items-center">
-                             <h4>Ultimos comunicados</h4>
-                             
-                            {{--<a href="{{ route('communiques.index') }}" class="btn btn-primary btn-sm">Todos</a> --}}
-                        </div>
-                    
-                        <ul class="list-group">
-                            <img src="{{ asset('/img/kaizen.jpg')}}" alt="">
+                    <div class="col-md-12">
+                        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
 
-                           {{--  @if ($communiques)
-                                @foreach ($communiques as $communique)
-                                    <li class="list-group-item">
-                                        {{ $communique->title }}
-                                    </li>
-                                @endforeach
-                            @endif --}}
-                        </ul>
+                                @if (count($communiquesImage) == 0)
+                                    <div class="carousel-item active">
+                                        <img src="{{ asset('/img/empy.svg') }}" class="d-block w-100" alt="...">
+                                        <div class="carousel-caption d-none d-md-block">    
+                                        </div>
+                                    </div> 
+                                @else
+                                    @foreach ($communiquesImage as $communique)
+                                        <div class="carousel-item {{$loop->iteration == 1 ? 'active' : ''}}">
+                                        <img src="{{ asset($communique->image )}}" class="d-block w-100" alt="...">
+                                            <div class="carousel-caption d-none d-md-block">
+                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.5rem;">{{$communique->title}}</span> 
+                                            <br>                                          
+                                            <button type="button" class="btn btn-primary buttomItem" value="{{$communique->id}}">Ver mas</button>
+                                            @if ($communique->file !=null)
+                                                <a class="btn btn-primary " href="{{ asset($communique->file )}}" target="_blank">Abrir archivo adjunto</a>
+                                            @endif
+                                            </div>
+                                            
+                                        </div>
+                                    @endforeach
+                                @endif
+
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Next</span>
+                            </button>
+                          </div>
                     </div>
                 </div>
             </div>
         </div>
+
+
         <div class="col-md-4">
             <div class="card p-3">
                 <h4>CEO Message</h4>
@@ -177,8 +179,9 @@
     background-color: #ECECEC;
     }
     
-
-   
+    .swal2{
+        width: 1000px;
+    }
 </style>
 @stop
 
@@ -323,6 +326,37 @@
      
       
  </script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.buttomItem').click(function() {
+
+            let id = $(this).attr("value")
+            if (id) {
+                    jQuery.ajax({
+                        url: '/home/getCommunique/' + id,
+                        type: "GET",
+                        dataType: "json",
+                            success: function(data) {
+                                console.log(data[0]);
+                                Swal.fire({
+                                    title: '<strong>'+data[0].title+'</strong>',
+                                    html: '<img src="'+data[0].image + '" class="d-block w-100" <br> <br> <h4>  '+ data[0].description+ '</h4>',
+                                    showCloseButton: false,
+                                    showCancelButton: false,
+                                    focusConfirm: false,
+                                })
+                            }
+                        });
+                    } else {
+                       alert("No encontrada")
+                    }
+
+        });
+
+    });
+</script>
+
 
 @stop
 

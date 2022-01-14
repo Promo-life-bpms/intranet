@@ -30,7 +30,7 @@
                     <div class="row mt-4">
                         <div class="col-12">
                             <div class="mb-2 form-group">
-                                {!! Form::label('image', 'Imagen (opcional)') !!}
+                                {!! Form::label('image', 'Imagen') !!}
                                 {!! Form::file('image',  ['class' => 'form-control']) !!}
                                 @error('image')
                                     <small>

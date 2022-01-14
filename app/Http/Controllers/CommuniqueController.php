@@ -52,7 +52,7 @@ class CommuniqueController extends Controller
     {
         request()->validate([
             'title' => 'required',
-            'description' => 'required'
+            'description' => 'required',
         ]);
 
         if ($request->hasFile('image')) {
@@ -62,7 +62,7 @@ class CommuniqueController extends Controller
             $fileNameToStore = $filename . '.' . $extension;
             $path = $request->file('image')->move('storage/post/', $fileNameToStore);
         } else {
-            $path = null;
+            $path = "/img/communique.svg";
         }
 
         if ($request->hasFile('file')) {

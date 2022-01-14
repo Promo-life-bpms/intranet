@@ -123,6 +123,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('manager/getEmployee/{id}', [ManagerController::class, 'getEmployee']);
     Route::get('user/getPosition/{id}', [UserController::class, 'getPosition']);
     Route::get('user/getManager/{id}', [UserController::class, 'getManager']);
+    Route::get('home/getCommunique/{id}', [HomeController::class, 'getCommunique']);
+
 
     Route::get('/events', [EventsController::class, 'index'])->name('admin.events.index');
     Route::get('/events/create', [EventsController::class, 'create'])->name('admin.events.create');

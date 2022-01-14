@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Communique;
+use App\Models\CommuniqueCompany;
+use App\Models\CommuniqueDepartment;
 use App\Models\Employee;
 use App\Models\Events;
 use App\Models\NoWorkingDays;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -88,10 +91,38 @@ class HomeController extends Controller
 
         $eventos = Events::all();
 
-        $communiquesWithImage = DB::table('communiques')->whereNotNull('image')->get();
+        $id = Auth::user()->id;
+        $employeeID = DB::table('employees')->where('user_id', $id)->value('id');
+
+
+        /* $companyEmployee = DB::table('company_employee')->where('employee_id', $employeeID)->value('company_id');
+        $companyCom = CommuniqueCompany::all()->where('company_id', $companyEmployee)->pluck('communique_id', 'communique_id');
+        $companyCommuniques = Communique::all()->whereIn('id', $companyCom);
+
+        $employeePosition = DB::table('employees')->where('id', $employeeID)->value('position_id');
+        $employeeDepartment = DB::table('positions')->where('id', $employeePosition)->value('department_id');
+        $departmentCom = CommuniqueDepartment::all()->where('department_id', $employeeDepartment)->pluck('communique_id', 'communique_id');
+        $departmentCommuniques = Communique::all()->whereIn('id', $departmentCom); */
+
+        $communiquesImage = DB::table('communiques')->whereNotNull('image')->get();
+        /* 
+
+        if (count($communiquesImage) == 0) {
+            
+            $communiquesImage == null;
+        }
+
+        dd($communiquesImage); */
 
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $communiques = Communique::paginate(3);
-        return view('home.index', compact('communiques', 'employees', 'monthBirthday', 'monthAniversary', 'noworkingdays', 'eventos', 'communiquesWithImage'));
+
+        return view('home.index', compact('employees', 'monthBirthday', 'monthAniversary', 'noworkingdays', 'eventos', 'communiquesImage'));
+    }
+
+
+    public function getCommunique($id)
+    {
+        $comunique = Communique::all()->where('id', $id)->toArray();
+        return array_values($comunique);
     }
 }
