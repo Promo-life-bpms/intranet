@@ -116,6 +116,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::delete('request/{request}/all', [RequestController::class, 'deleteAll'])->name('request.delete.all');
 
 
+    Route::get('request/reports/all', [RequestController::class, 'exportAll'])->name('request.report.all');
+
+
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
     Route::get('request/getData//{lista}', [EmployeeController::class, 'getData']);

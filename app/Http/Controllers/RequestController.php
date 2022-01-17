@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\RequestEvent;
 use App\Events\RHRequestEvent;
 use App\Events\UserEvent;
+use App\Exports\RequestExport;
 use App\Models\Notification;
 use App\Models\NoWorkingDays;
 use App\Models\Request as ModelsRequest;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RequestController extends Controller
 {
@@ -374,11 +376,28 @@ class RequestController extends Controller
     }
 
 
+    public function exportAll()
+    {
+        $vacations = Vacations::all();
+        $requestDays = RequestCalendar::all();
+        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada');
+        return view('request.excelReport', compact('requests', 'requestDays', 'vacations'));
+    }
 
     public function export()
     {
-        $request = ModelsRequest::all()->toArray();
-        $requests = ModelsRequest::select('', '', '')->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->toArray();
+        /* 
+        $requestsID =  ModelsRequest::select('id')->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->get()->toArray();
+
+        $requestEmployee = ModelsRequest::all()->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->pluck('employee_id', 'employee_id');
+        $requestUser =  User::select('name', 'lastname')->whereIn('id', $requestEmployee)->get()->toArray();
+        $requestsType =  ModelsRequest::select('type_request', 'payment')->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->get()->toArray();
+
+
+        $results = Request::whereIn('employee_id', function ($query) {
+            $query->select('id')->from('request')->groupBy('id')->havingRaw('count(*) > 1');
+        })->get()->toArray();
+
 
         $spreadsheet = new Spreadsheet();
 
@@ -398,7 +417,10 @@ class RequestController extends Controller
         $spreadsheet->getActiveSheet()->setCellValue('F1', 'Fechas de ausencia');
         $spreadsheet->getActiveSheet()->setCellValue('G1', 'Vacaciones restantes');
 
-        $spreadsheet->getActiveSheet()->fromArray($request, NULL, 'A2');
+        $spreadsheet->getActiveSheet()->fromArray($requestsID, NULL, 'A2');
+
+        $spreadsheet->getActiveSheet()->fromArray($results, NULL, 'B2');
+        $spreadsheet->getActiveSheet()->fromArray($requestsType, NULL, 'D2');
 
         $writer = new Xlsx($spreadsheet);
         $writer->save('Solicitudes.xlsx');
@@ -408,6 +430,8 @@ class RequestController extends Controller
         header('Cache-Control: max-age=0');
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save('php://output');
+        $writer->save('php://output'); */
+
+        return Excel::download(new RequestExport, 'request.xlsx');
     }
 }

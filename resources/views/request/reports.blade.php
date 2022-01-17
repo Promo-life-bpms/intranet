@@ -6,7 +6,7 @@
             <h3>Generar reportes</h3>
 
             
-            <a href="{{-- {{ route('request.edit', ['request' => $request->id]) }} --}}" type="button"
+            <a href=" {{ route('request.export') }} " type="button"
                 class="btn btn btn-success">Exportar Excel</a>
         </div>
     </div>
