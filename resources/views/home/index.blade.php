@@ -45,11 +45,20 @@
                     </div>
                 </div>
             </div>
+
+            <div class="card p-4 mt-4">
+                <h4>Calendario de Eventos</h4>
+                <br>
+                <div  id='calendar'></div>
+            </div>
+
+
+
         </div>
 
 
         <div class="col-md-4">
-            <div class="card p-3">
+            {{-- <div class="card p-3">
                 <h4>CEO Message</h4>
                 <hr>
                 <p><h6>
@@ -57,95 +66,117 @@
                     laudantium repellendus numquam saepe eaque sed. Inventore commodi pariatur facere quae ducimus
                     laudantium impedit veniam molestias.</h6></p>
                 <span class="text-left">-David Levy</span>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3">
+            </div> --}}
+
+
+            <div class="card p-4">
+                <h4>Cumpleaños del Mes</h4>
+
                 <div class="row">
-                    <h4>Cumpleaños</h4>
-                    <br>
-                    {{-- @foreach ($employees as $employee) --}}
-                        <div class="col-md-3">
-                            <div class="card" style="width: 200px; height:220px;">
-                                <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                    style="width: 100%; height:150px;   object-fit: contain;" class="card-img-top" alt="imagen">
-                                <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                    <p class="card-title text-center" style=" white-space: nowrap; margin-bottom:5px;">
-                                        <p style="text-align: center"><h5>Antonio Tomas</h5> </p>
-                                        {{-- {{ $employee->user->name . ' ' . $employee->user->lastname }}</p> --}}
-                                    {{-- <p class="card-text text-center">{{ $employee->birthday_date }}</p> --}}
-                                </div>
+                    <div class="col">
+                        <div id="carousel2" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+
+                                @if (count($employeesBirthday) == 0)
+                                    <div class="carousel-item active">
+                                        <p>Sin Cumpleaños disponibles</p>
+                                    </div> 
+                                @else
+                                    @foreach ($employeesBirthday as $employee)
+
+                                    <div class="carousel-item {{$loop->iteration == 1 ? 'active' : ''}}">
+                                        <img style="object-fit: contain; max-height: 315px;" src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" class="d-block w-100 " alt="...">
+                                            <div class="carousel-caption d-none d-md-block">
+                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span> 
+                                            <br>
+                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->birthday_date }}</span> 
+
+                                            </div>
+                                            
+                                        </div>
+                                    @endforeach
+                                @endif
                             </div>
-                        </div>
-                    {{-- @endforeach --}}
+
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carousel2" data-bs-slide="prev">
+                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carousel2" data-bs-slide="next">
+                              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Next</span>
+                            </button>
+                          </div>
+                    </div>
                 </div>
+
+                
+        
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3">
-                <h4>Vacaciones</h4>
-                {{-- @foreach ($employees as $employee) --}}
-                        <div class="col-md-3">
-                            <div class="card" style="width: 200px; height:220px;">
-                                <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                    style="width: 100%; height:150px;   object-fit: contain;" class="card-img-top" alt="imagen">
-                                <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                    <p class="card-title text-center" style=" white-space: nowrap; margin-bottom:5px;">
-                                        <p style="text-align: center"><h5>Andres Martinez</h5> </p>
-{{--                                         {{ $employee->user->name . ' ' . $employee->user->lastname }}</p>
- --}}                                    
-                                </div>
-                            </div>
-                        </div>
-                {{--     @endforeach --}}
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3">
-                <h4>Aniversarios</h4>
-                <br>
+
+            {{-- <div class="card p-4">
+                <h4>Aniversarios del Mes</h4>
+
                 <div class="row">
-{{--                     @foreach ($employees as $employee)
- --}}                        <div class="col-md-3">
-                            <div class="card" style="width: 200px; height:220px;">
-                                <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                    style="width: 100%; height:150px;   object-fit: contain;" class="card-img-top" alt="imagen">
-                                <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                    
-                                    <p class="card-title text-center" style=" white-space: nowrap; margin-bottom:5px;">
-                                        <p style="text-align: center"><h5>Diego Lopez</h5> </p>
-                                       {{--  {{ $employee->user->name . ' ' . $employee->user->lastname }}</p>
-                                    <p class="card-text text-center">{{ $employee->birthday_date }}</p> --}}
-                                </div>
+                    <div class="col">
+                        <div id="carousel3" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+
+                                @if (count($employeesAniversary) == 0)
+                                    <div class="carousel-item active">
+                                        <p>Sin aniversarios disponibles</p>
+                                    </div> 
+                                @else
+                                    @foreach ($employeesAniversary as $employee)
+
+                                    <div class="carousel-item {{$loop->iteration == 1 ? 'active' : ''}}">
+                                        <img style="object-fit: contain; max-height: 315px;" src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" class="d-block w-100 " alt="...">
+                                            <div class="carousel-caption d-none d-md-block">
+                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span> 
+                                            <br>
+                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->birthday_date }}</span> 
+
+                                            </div>
+                                            
+                                        </div>
+                                    @endforeach
+                                @endif
                             </div>
-                        </div>
-{{--                     @endforeach
- --}}                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
+
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carousel3" data-bs-slide="prev">
+                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carousel3" data-bs-slide="next">
+                              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Next</span>
+                            </button>
+                          </div>
+                    </div>
+                </div>
+        
+            </div> --}}
+
+      
             <div class="card p-3">
                 <h4>Empleado del Mes</h4>
                 <br>
-            
+                
                 <div class="d-flex flex-wrap w-100 h-30 justify-content-around content-employees">
                 </div>
             </div>
+           
+        
+ 
+            
+
+
         </div>
-        <div class="col-md-8">
-            <div class="card p-3">
-                <h4>Calendario</h4>
-                <br>
-                <div  id='calendar'></div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3">
-                <h4>Nuevos ingresos</h4>
-                <hr>
-            </div>
-        </div>
-        <div class="col-md-4"></div>
+        
+
+        
+        
+       
     </div>
 @stop
 
@@ -179,8 +210,15 @@
     background-color: #ECECEC;
     }
     
+    .fc-content{
+        font-size: 12px;
+    }
     .swal-wide{
     width: 50% !important;
+    }
+
+    .card{
+        border-radius: 8px;
     }
 </style>
 @stop
@@ -339,16 +377,31 @@
                         dataType: "json",
                             success: function(data) {
                                 console.log(data[0]);
-                                Swal.fire({
+
+                                if(data[0].file !=null){
+                                    Swal.fire({
+                                    title: '<strong>'+data[0].title+'</strong>',
+                                    html: '<img src="'+data[0].image + '" class="d-block w-100" <br> <br> <h4>  '+ data[0].description+ '</h4>'+
+                                    '<a class=" btn btn-link "  href="' + data[0].file + ' " target="_blank">Ver archivo adjunto</a>',
+                                    showCloseButton: false,
+                                    showCancelButton: false,
+                                    focusConfirm: false,
+                                    confirmButtonColor: '#006EAD',
+                                    confirmButtonText: "Cerrar",
+                                    customClass: 'swal-wide',
+                                    })
+                                }else{
+                                    Swal.fire({
                                     title: '<strong>'+data[0].title+'</strong>',
                                     html: '<img src="'+data[0].image + '" class="d-block w-100" <br> <br> <h4>  '+ data[0].description+ '</h4>',
                                     showCloseButton: false,
                                     showCancelButton: false,
                                     focusConfirm: false,
                                     confirmButtonColor: '#006EAD',
-                                    confirmButtonText: "Aceptar",
+                                    confirmButtonText: "Cerrar",
                                     customClass: 'swal-wide',
-                                })
+                                    })
+                                }
                             }
                         });
                     } else {
