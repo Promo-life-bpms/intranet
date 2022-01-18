@@ -3,13 +3,9 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Generar reportes</h3>
+            <h3>Reportes por periodo</h3>
 
             <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-danger pl-4"  data-bs-toggle="modal" data-bs-target="#modalBusqueda">
-                Buscar por periodo
-                <i class="fa fa-search" aria-hidden="true"></i>
-            </button>
             <a style="margin-left: 20px;" href=" {{ route('request.export2') }} " type="button"
                 class="btn btn btn-success">Exportar Excel</a>
             </div>

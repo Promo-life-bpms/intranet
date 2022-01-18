@@ -384,54 +384,36 @@ class RequestController extends Controller
         return view('request.excelReport', compact('requests', 'requestDays', 'vacations'));
     }
 
+    static function filterExport($inicio, $fin)
+    {
+        $vacations = Vacations::all();
+        $requestDays = RequestCalendar::all();
+        $requests = ModelsRequest::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->whereRaw('DATE(created_at) >= ?', [$inicio])->whereRaw('DATE(created_at) <= ?', [$fin])->get();
+        return view('request.excelFilterReport', compact('requests', 'requestDays', 'vacations'));
+    }
+
     public function export()
     {
-        /* 
-        $requestsID =  ModelsRequest::select('id')->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->get()->toArray();
-
-        $requestEmployee = ModelsRequest::all()->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->pluck('employee_id', 'employee_id');
-        $requestUser =  User::select('name', 'lastname')->whereIn('id', $requestEmployee)->get()->toArray();
-        $requestsType =  ModelsRequest::select('type_request', 'payment')->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->get()->toArray();
-
-
-        $results = Request::whereIn('employee_id', function ($query) {
-            $query->select('id')->from('request')->groupBy('id')->havingRaw('count(*) > 1');
-        })->get()->toArray();
-
-
-        $spreadsheet = new Spreadsheet();
-
-        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
-
-        $spreadsheet->getActiveSheet()->setCellValue('A1', '#');
-        $spreadsheet->getActiveSheet()->setCellValue('B1', 'Nombre');
-        $spreadsheet->getActiveSheet()->setCellValue('C1', 'Apellidos');
-        $spreadsheet->getActiveSheet()->setCellValue('D1', 'Tipo solicitud');
-        $spreadsheet->getActiveSheet()->setCellValue('E1', 'Forma de pago');
-        $spreadsheet->getActiveSheet()->setCellValue('F1', 'Fechas de ausencia');
-        $spreadsheet->getActiveSheet()->setCellValue('G1', 'Vacaciones restantes');
-
-        $spreadsheet->getActiveSheet()->fromArray($requestsID, NULL, 'A2');
-
-        $spreadsheet->getActiveSheet()->fromArray($results, NULL, 'B2');
-        $spreadsheet->getActiveSheet()->fromArray($requestsType, NULL, 'D2');
-
-        $writer = new Xlsx($spreadsheet);
-        $writer->save('Solicitudes.xlsx');
-
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="solicitud.xlsx"');
-        header('Cache-Control: max-age=0');
-
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save('php://output'); */
-
         return Excel::download(new RequestExport, 'request.xlsx');
+    }
+
+    public function exportfilter()
+    {
+        return Excel::download(new RequestExport, 'request.xlsx');
+    }
+
+    public function filter(Request $request)
+    {
+        $request->validate([
+            'inicio' => 'required',
+            'fin' => 'required',
+        ]);
+
+        $requestDays = RequestCalendar::all();
+        $requests = ModelsRequest::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->whereRaw('DATE(created_at) >= ?', [$request->inicio])->whereRaw('DATE(created_at) <= ?', [$request->fin])->get();
+
+        self::filterExport($request->inicio, $request->fin);
+
+        return view('request.filter', compact('requests', 'requestDays'));
     }
 }
