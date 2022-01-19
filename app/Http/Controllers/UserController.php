@@ -62,7 +62,6 @@ class UserController extends Controller
             'roles' => 'required',
         ]);
 
-
         if ($request->hasFile('image')) {
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
@@ -134,19 +133,35 @@ class UserController extends Controller
             'roles' => 'required',
         ]);
 
+        if ($user->image == null) {
+            if ($request->hasFile('image')) {
 
-        if ($request->hasFile('image')) {
+                File::delete($user->image);
 
-            File::delete($user->image);
-
-            $filenameWithExt = $request->file('image')->getClientOriginalName();
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('image')->getClientOriginalExtension();
-            $fileNameToStore = $filename . '.' . $extension;
-            $path = $request->file('image')->move('storage/post/', $fileNameToStore);
+                $filenameWithExt = $request->file('image')->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension = $request->file('image')->getClientOriginalExtension();
+                $fileNameToStore = $filename . '.' . $extension;
+                $path = $request->file('image')->move('storage/post/', $fileNameToStore);
+            } else {
+                $path = null;
+            }
         } else {
-            $path = null;
+            if ($request->hasFile('image') == null) {
+
+                $path = $user->image;
+            } else {
+                File::delete($user->image);
+
+                $filenameWithExt = $request->file('image')->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension = $request->file('image')->getClientOriginalExtension();
+                $fileNameToStore = $filename . '.' . $extension;
+                $path = $request->file('image')->move('storage/post/', $fileNameToStore);
+            }
         }
+
+
 
         $user->name = $request->name;
         $user->lastname = $request->lastname;

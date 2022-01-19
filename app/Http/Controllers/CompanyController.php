@@ -36,7 +36,7 @@ class CompanyController extends Controller
                 "pid" => $employee->jefe_directo_id,
                 "Nombre" => $employee->user->name,
                 "Puesto" => $position,
-                "Photo" => 'https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png',
+                "Photo" => $employee->user->image,
             ]);
         }
         // $dataEmployees = (object) $dataEmployees;
@@ -57,7 +57,7 @@ class CompanyController extends Controller
                 "pid" => $employee->jefe_directo_id,
                 "Nombre" => $employee->user->name,
                 "Puesto" => $position,
-                "Photo" => 'https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png',
+                "Photo" => $employee->user->image,
             ]);
         }
         return response()->json($dataEmployees);
@@ -69,7 +69,6 @@ class CompanyController extends Controller
         foreach ($department->positions as $position) {
             foreach ($position->getEmployees as $employee) {
                 array_push($employees, $employee);
-
             }
         }
         $dataEmployees = [];
@@ -83,7 +82,7 @@ class CompanyController extends Controller
                 "pid" => $employee->jefe_directo_id,
                 "Nombre" => $employee->user->name,
                 "Puesto" => $position,
-                "Photo" => 'https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png',
+                "Photo" => $employee->user->image,
             ]);
         }
         return response()->json($dataEmployees);
