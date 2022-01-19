@@ -46,6 +46,17 @@
     </div>
 @stop
 
+@section('styles')
+<style>
+.edit-form-avatar img{
+    object-fit: cover;
+    
+}
+
+</style>
+    
+@endsection
+
 @section('scripts')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script src="{{ asset('assets\vendors\orgchartjs\orgchart.js') }}"></script>
@@ -86,11 +97,18 @@
                         img_0: "Photo"
                     },
                     editForm: {
+                        titleBinding: "Nombre", 
+                        photoBinding: "Photo",
+                        generateElementsFromFields: false,
                         buttons: {
                             pdf: null,
                             share: null,
-                            edit: null
-                        }
+                            edit: null,
+                        },
+                        elements: [
+                            { type: 'textbox', label: 'Nombre', binding: 'Nombre'},
+                            { type: 'textbox', label: 'Puesto', binding: 'Puesto',},        
+                        ],
                     }
                 });
 
@@ -133,11 +151,18 @@
                             img_0: "Photo"
                         },
                         editForm: {
-                            buttons: {
-                                pdf: null,
-                                share: null,
-                                edit: null
-                            }
+                        titleBinding: "Nombre", 
+                        photoBinding: "Photo",
+                        generateElementsFromFields: false,
+                        buttons: {
+                            pdf: null,
+                            share: null,
+                            edit: null,
+                        },
+                        elements: [
+                            { type: 'textbox', label: 'Nombre', binding: 'Nombre'},
+                            { type: 'textbox', label: 'Puesto', binding: 'Puesto',},        
+                        ],
                         }
                     });
 
@@ -153,5 +178,7 @@
                 console.log(error);
             }
         }
+
+        
     </script>
 @stop
