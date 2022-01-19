@@ -90,6 +90,11 @@
                 let res = await axios.get("/company/getEmployees");
                 let data = res.data;
                 var chart = new OrgChart(document.getElementById("tree"), {
+                    showXScroll: OrgChart.scroll.visible,
+                    mouseScrool: OrgChart.action.xScroll,
+                    scaleInitial: OrgChart.match.height,
+                    scaleInitial: 0.8,
+                    lazyLoading: true,
                     template: "ula",
                     nodeBinding: {
                         field_0: "Nombre",
@@ -114,9 +119,9 @@
 
                 nodes = data;
 
-                chart.on('init', function(sender) {
-                    sender.editUI.show(1);
-                });
+              /*   chart.on('init', function(sender) {
+                    sender.editUI.show(2);
+                }); */
 
                 chart.load(nodes);
             } catch {
@@ -144,6 +149,11 @@
                 let data = res.data;
                 if (data.length > 0) {
                     var chart = new OrgChart(document.getElementById("tree-especifico"), {
+                        showXScroll: OrgChart.scroll.visible,
+                        mouseScrool: OrgChart.action.xScroll,
+                        scaleInitial: OrgChart.match.height,
+                        scaleInitial: 0.8,
+                        lazyLoading: true,
                         template: "ula",
                         nodeBinding: {
                             field_0: "Nombre",
@@ -168,9 +178,9 @@
 
                     nodes = data;
 
-                    chart.on('init', function(sender) {
+                   /*  chart.on('init', function(sender) {
                         sender.editUI.show(1);
-                    });
+                    }); */
 
                     chart.load(nodes);
                 }
