@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contact;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,7 +20,9 @@ class ProfileController extends Controller
     {
         $id = Auth::user()->id;
         $user = User::all()->where('id', $id);
-        return view('profile.index', compact('user'));
+        $contacts = Contact::all()->where('user_id', $id);
+
+        return view('profile.index', compact('user', 'contacts'));
     }
 
 

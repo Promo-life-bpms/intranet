@@ -11,7 +11,7 @@ use App\Models\User;
 use App\Models\Manager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\File;
 
 class UserController extends Controller
 {
@@ -136,6 +136,9 @@ class UserController extends Controller
 
 
         if ($request->hasFile('image')) {
+
+            File::delete($user->image);
+
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();

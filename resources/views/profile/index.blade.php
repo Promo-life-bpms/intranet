@@ -11,12 +11,15 @@
                 @foreach ($user as $usr)
 
                 @if ($usr->image==null)
-                    <button type="button" class="btnCreate"  data-bs-toggle="modal" data-bs-target="#modalImage">
-                        Subir imagen
-                        <i  style="margin-left:5px; " class="fa fa-camera" aria-hidden="true"></i>
-                    </button>
+                <img class="rounded" style="width: 100%; height:500px; object-fit: cover;"  src="https://img.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg?size=338&ext=jpg">
+                <br>
+                <br>
+                <button type="button" class="btnCreate"  data-bs-toggle="modal" data-bs-target="#modalImage">
+                    Cambiar imagen
+                    <i style="margin-left:5px; " class="fa fa-camera" aria-hidden="true"></i>
+                </button>
                 @else 
-                    <img style="width: 50%;  object-fit: cover;" src="{{ ($usr->image) }}">
+                    <img class="rounded" style="width: 100%; height:500px; object-fit: cover;" src="{{ ($usr->image) }}">
                     <br>
                     <br>
                     <button type="button" class="btnCreate"  data-bs-toggle="modal" data-bs-target="#modalImage">
@@ -32,23 +35,84 @@
                 @foreach ($user as $usr)
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default">Nombre</span>
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{$usr->name}}">
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{$usr->name}}" disabled>
                   </div>
 
                   <div class="input-group mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default">Apellidos</span>
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{$usr->lastname}}">
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{$usr->lastname}}" disabled>
                   </div>
                   
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Departamento</span>
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $usr->employee->position->department->name }}">
-                  </div>
 
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Puesto</span>
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $usr->employee->position->name }}">
-                  </div>
+                @if ( !empty($usr->employee->position->department->name))
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Departamento</span>
+                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $usr->employee->position->department->name }}" disabled>
+                    </div>
+                @else 
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Departamento</span>
+                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="No especificado" disabled>
+                    </div>
+                @endif
+                 
+                @if (!empty($usr->employee->position->name))
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Puesto</span>
+                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $usr->employee->position->name }}" disabled>
+                    </div>
+                @else 
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Puesto</span>
+                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="No especificado" disabled>
+                    </div>
+                @endif
+                    
+                @foreach ($contacts as $contact)
+                    @if (!empty($contact->num_tel))
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Teléfono</span>
+                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $contact->num_tel }}" disabled>
+                        </div>
+                    @else 
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Teléfono</span>
+                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="No especificado" disabled>
+                        </div>
+                    @endif
+
+                    @if (!empty($contact->correo1))
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Correo</span>
+                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $contact->correo1 }}" disabled>
+                        </div>
+                    @endif
+
+                    @if (!empty($contact->correo2))
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Correo</span>
+                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $contact->correo2 }}" disabled>
+                        </div>
+                    @endif
+
+                    @if (!empty($contact->correo3))
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Correo</span>
+                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $contact->correo3 }}" disabled>
+                        </div>   
+                    @endif
+
+                    @if (!empty($contact->correo4))
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Correo</span>
+                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $contact->correo4 }}" disabled>
+                    </div>   
+                    @endif
+
+                @endforeach
+                  
+                
+                  
 
                 @endforeach
                 
@@ -81,7 +145,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    {!! Form::submit('Buscar', ['class' => 'btn btn-primary']) !!}
+                    {!! Form::submit('Aceptar', ['class' => 'btn btn-primary']) !!}
                 </div>
                 {!! Form::close() !!}
             </div>
@@ -92,4 +156,10 @@
 
 
 @section('styles')
+<style>
+    .input-group-text{
+        background-color: #1A346B;
+        color: #ffffff;
+    }
+</style>
 @stop

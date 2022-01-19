@@ -10,6 +10,7 @@ use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class CommuniqueController extends Controller
 {
@@ -139,6 +140,8 @@ class CommuniqueController extends Controller
             }
         } else {
 
+            File::delete($communique->image);
+
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
@@ -156,6 +159,8 @@ class CommuniqueController extends Controller
                 $path2 = $communique->file;
             }
         } else {
+
+            File::delete($communique->file);
 
             $filenameWithExt2 = $request->file('file')->getClientOriginalName();
             $filename2 = pathinfo($filenameWithExt2, PATHINFO_FILENAME);
