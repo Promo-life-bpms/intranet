@@ -28,8 +28,10 @@ class CompanyController extends Controller
         $dataEmployees = [];
         foreach ($employees as $employee) {
             $position = '';
-            if ($employee->positions > 0) {
-                $position = $employee->positions->name;
+            if (!empty($employee->position)) {
+                $position = $employee->position->name;
+            } else {
+                $position = 'Sin puesto asignado';
             }
             array_push($dataEmployees, [
                 "id" => $employee->id,
@@ -49,8 +51,10 @@ class CompanyController extends Controller
         $dataEmployees = [];
         foreach ($employees as $employee) {
             $position = '';
-            if ($employee->positions > 0) {
-                $position = $employee->positions->name;
+            if (!empty($employee->position)) {
+                $position = $employee->position->name;
+            } else {
+                $position = 'Sin puesto asignado';
             }
             array_push($dataEmployees, [
                 "id" => $employee->id,
@@ -74,8 +78,10 @@ class CompanyController extends Controller
         $dataEmployees = [];
         foreach ($employees as $employee) {
             $position = '';
-            if ($employee->positions > 0) {
-                $position = $employee->positions->name;
+            if (!empty($employee->position)) {
+                $position = $employee->position->name;
+            } else {
+                $position = 'Sin puesto asignado';
             }
             array_push($dataEmployees, [
                 "id" => $employee->id,
