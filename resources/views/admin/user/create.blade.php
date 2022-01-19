@@ -5,7 +5,7 @@
         <h3>Crear usuario</h3>
     </div>
     <div class="card-body">
-        {!! Form::open(['route' => 'admin.users.store']) !!}
+        {!! Form::open(['route' => 'admin.users.store','enctype' => 'multipart/form-data']) !!}
         <div class="row">
             <div class="form-group col-md-4">
                 {!! Form::label('name', 'Nombre') !!}
@@ -37,7 +37,14 @@
                     <br>
                 @enderror
             </div>
-            <div class="form-group col-md-6">
+
+            <div class="form-group col-md-4">
+                <div class="mb-2 form-group">
+                    {!! Form::label('image', 'Imagen de usuario') !!}
+                    {!! Form::file('image',  ['class' => 'form-control']) !!}
+                </div>
+            </div>
+            <div class="form-group col-md-4">
                 {!! Form::label('birthday_date', 'Fecha de Cumpleaños') !!}
                 {!! Form::date('birthday_date', null, ['class' => 'form-control']) !!}
                 @error('birthday_date')
@@ -47,7 +54,7 @@
                     <br>
                 @enderror
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 {!! Form::label('date_admission', 'Fecha de Ingreso') !!}
                 {!! Form::date('date_admission', null, ['class' => 'form-control']) !!}
                 @error('date_admission')

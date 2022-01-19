@@ -22,6 +22,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'lastname',
+        'image',
         'email',
         'password',
     ];
@@ -57,7 +58,7 @@ class User extends Authenticatable
             $user->contact()->create();
         });
 
-        static::created(function($user){
+        static::created(function ($user) {
             $user->vacation()->create();
         });
     }
@@ -74,6 +75,6 @@ class User extends Authenticatable
 
     public function vacation()
     {
-        return $this->hasOne(Vacations::class,'users_id');
+        return $this->hasOne(Vacations::class, 'users_id');
     }
 }

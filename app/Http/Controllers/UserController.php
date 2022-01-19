@@ -38,9 +38,9 @@ class UserController extends Controller
         $departments  = Department::pluck('name', 'id')->toArray();
         $positions  = Position::pluck('name', 'id')->toArray();
         $companies = Company::all();
-        $manager = User::all()->pluck('name','id');
-        
-        return view('admin.user.create', compact('roles', 'employees', 'departments', 'positions', 'companies','manager'));
+        $manager = User::all()->pluck('name', 'id');
+
+        return view('admin.user.create', compact('roles', 'employees', 'departments', 'positions', 'companies', 'manager'));
     }
 
     /**
@@ -61,8 +61,21 @@ class UserController extends Controller
             'position' => 'required',
             'roles' => 'required',
         ]);
+
+
+        if ($request->hasFile('image')) {
+            $filenameWithExt = $request->file('image')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $fileNameToStore = $filename . '.' . $extension;
+            $path = $request->file('image')->move('storage/post/', $fileNameToStore);
+        } else {
+            $path = null;
+        }
+
         $user = new User();
         $user->name = $request->name;
+        $user->image = $path;
         $user->lastname = $request->lastname;
         $user->email = $request->email;
         $user->password = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi';
@@ -96,8 +109,8 @@ class UserController extends Controller
         $departments  = Department::pluck('name', 'id')->toArray();
         $positions  = Position::pluck('name', 'id')->toArray();
         $companies = Company::all();
-        $manager = User::all()->pluck('name','id');
-        return view('admin.user.edit', compact('roles', 'employees', 'departments', 'positions', 'companies', 'user','manager'));
+        $manager = User::all()->pluck('name', 'id');
+        return view('admin.user.edit', compact('roles', 'employees', 'departments', 'positions', 'companies', 'user', 'manager'));
     }
 
     /**
@@ -121,8 +134,20 @@ class UserController extends Controller
             'roles' => 'required',
         ]);
 
+
+        if ($request->hasFile('image')) {
+            $filenameWithExt = $request->file('image')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $fileNameToStore = $filename . '.' . $extension;
+            $path = $request->file('image')->move('storage/post/', $fileNameToStore);
+        } else {
+            $path = null;
+        }
+
         $user->name = $request->name;
         $user->lastname = $request->lastname;
+        $user->image = $path;
         $user->email = $request->email;
         $user->save();
 
@@ -167,13 +192,13 @@ class UserController extends Controller
 
     public function getManager($id)
     {
-        $departmentID = DB::table('positions')->where('id',$id)->value('department_id');
- 
-        if( $departmentID ==null){
-            $users = User::all()->pluck('name','id');
-        }else{
-            $managers = Manager::all()->where('department_id',$departmentID)->pluck('users_id','users_id');
-            $users = User::all()->whereIn('id',$managers)->pluck('name','id'); 
+        $departmentID = DB::table('positions')->where('id', $id)->value('department_id');
+
+        if ($departmentID == null) {
+            $users = User::all()->pluck('name', 'id');
+        } else {
+            $managers = Manager::all()->where('department_id', $departmentID)->pluck('users_id', 'users_id');
+            $users = User::all()->whereIn('id', $managers)->pluck('name', 'id');
         }
 
         return json_encode($users);

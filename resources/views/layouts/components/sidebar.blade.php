@@ -9,11 +9,19 @@
             <div class="card m-0 p-1">
                 <div class="d-flex align-items-center">
                     <div class="avatar avatar-xl">
-                        <div class="card-photo">
-                            <p
-                                class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
-                                <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
-                            </p>
+                        <div class="card-photo" style="width: 40px; height:40px;">
+                            @if (auth()->user()->image == null)
+                                <p
+                                    class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
+                                    <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
+                                </p>
+                            @else 
+                       
+                                <img style="width: 100%; height:100%; object-fit: cover;" src="{{ asset(auth()->user()->image) }}">
+                             
+                                  
+                            @endif
+                            
                             {{-- @if (auth()->user()->profile->photo)
                                 <img src="{{ asset('storage\profiles') . '/' . auth()->user()->profile->photo }}"
                                     class="width-icon" alt="">
