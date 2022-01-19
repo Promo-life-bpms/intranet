@@ -16,10 +16,7 @@
                                     <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
                                 </p>
                             @else 
-                       
-                                <img style="width: 100%; height:100%; object-fit: cover;" src="{{ asset(auth()->user()->image) }}">
-                             
-                                  
+                                <img style="width: 100%; height:100%; object-fit: cover;" src="{{ asset(auth()->user()->image) }}">                      
                             @endif
                             
                             {{-- @if (auth()->user()->profile->photo)
@@ -317,9 +314,14 @@
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('communiques.index') }}">
+                                    <span>Configurar cuenta</span>
+                                </a>
+                            </li>
+                            <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
+                                    {{ __('Cerrar sesion') }}
                                 </a>
 
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST"

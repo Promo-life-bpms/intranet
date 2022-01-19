@@ -13,6 +13,7 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
+                        <th style="width: 5%"  scope="col">Foto</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Correo</th>
                         <th scope="col">Area</th>
@@ -29,6 +30,15 @@
                     @foreach ($users as $user)
                         <tr>
                             <td  class="text-center" >{{ $user->id }}</td>
+
+                            @if ($user->image!=null)
+                            <td >
+                                <img style="width: 100%; " src="{{ asset($user->image )}}" alt="">
+
+                            </td>
+                            @else 
+                                <td  class="text-center" > Sin imagen</td>
+                            @endif
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>

@@ -85,7 +85,7 @@
                                     @foreach ($employeesBirthday as $employee)
 
                                     <div class="carousel-item {{$loop->iteration == 1 ? 'active' : ''}}">
-                                        <img style="object-fit: contain; max-height: 315px;" src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" class="d-block w-100 " alt="...">
+                                        <img style="object-fit: cover; max-height: 315px;" src="{{ asset($employee->user->image) }}" class="d-block w-100 " alt="...">
                                             <div class="carousel-caption d-none d-md-block">
                                             <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span> 
                                             <br>
