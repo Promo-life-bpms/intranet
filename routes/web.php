@@ -23,6 +23,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\NoWorkingDaysController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\RequestCalendarController;
 use App\Models\RequestCalendar;
@@ -156,6 +157,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 
     Route::put('communiques/{communique}', [CommuniqueController::class, 'update'])->name('admin.communique.update');
+
+    Route::get('profile/', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('profile/filter', [ProfileController::class, 'change'])->name('profile.change');
 
 
     /*     Route::get('events', [EventsController::class, 'index'])->name('admin.events.index');
