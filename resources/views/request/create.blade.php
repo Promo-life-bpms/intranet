@@ -140,11 +140,12 @@
                         editable: true,
                         events: SITEURL + "/event",
                         displayEventTime: false,
-                        allDay: true,
+                        allDay: false,
                         events,
                         selectable: true,
                         selectHelper: true,
                         eventMaxStack:1,
+                        nextDayThreshold: '00:00:00',
                         monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
                         monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
                         dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
@@ -164,6 +165,7 @@
                                 displayInfo("No puedes seleccionar un día festivo")
                                 throw BreakException
                             }else{
+                                
                                 check=true
                             } 
                             });
@@ -176,7 +178,9 @@
                             endDate = moment(end),
                             date = startDate.clone(),
                             isWeekend = false;
-                        
+                            end =  $.fullCalendar.moment(start);
+                            end.add(1, 'hours');
+                            
                             while (date.isBefore(endDate)) {
                             if (date.isoWeekday() == 6 || date.isoWeekday() == 7) {
                                 isWeekend = true;
@@ -189,7 +193,7 @@
                             }else{
                                 var start = $.fullCalendar.formatDate(start, "Y-MM-DD");
                                 var end = $.fullCalendar.formatDate(end, "Y-MM-DD");
-                                
+                            
                                 if(dateActual<=start){
                                     
                                         $.ajax({
@@ -198,8 +202,8 @@
                                             title: title,
                                             start: start,
                                             end: end,
+                                            allDay: false,
                                             type: 'add',
-                                            
                                         },
                                         type: "POST",
                                         success: function (data) {
@@ -210,8 +214,8 @@
                                                     id: data.id,
                                                     title: title,
                                                     start: start,
-                                                    end: end,
-                                                    allDay: allDay, 
+                                                    end: end, 
+                                                    allDay: false,
                                                 },true);
         
                                             calendar.fullCalendar('unselect');
