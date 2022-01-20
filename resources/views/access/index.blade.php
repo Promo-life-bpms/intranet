@@ -4,8 +4,8 @@
 <div class="card-header">
     <div class="d-flex justify-content-between">
         <h3>Accesos</h3>
-        <a href="{{ route('access.create') }} " type="button" class="btn btn-success">Agregar</a>
-    </div>
+{{--         <a href="{{ route('access.create') }} " type="button" class="btn btn-success">Agregar</a>
+ --}}    </div>
 </div>
   
     <div class="card-body m-2">
@@ -22,7 +22,7 @@
                     </div>
                 
                     <div class="card text-dark bg-light " style="width:240px; height:220px; margin-right:20px;">                     
-                        <img src="https://res.cloudinary.com/dte7upwcr/image/upload/blog/blog2/como-hacer-una-encuesta-en-google-forms/como-hacer-una-encuesta-en-google-forms-img_header.jpg"
+                        <img src="{{ asset('/img/evaluacion.png') }}"
                             style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
                         <div class="card-body" style="padding-top:0; padding-bottom:0">
                             <h5 class="card-title text-center" >Evaluación 360</h5>
@@ -31,7 +31,7 @@
                     </div>
                     
                     <div class="card text-dark bg-light " style="width:240px; height:220px; margin-right:20px;">                      
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Norma_Oficial_Mexicana_logo.png"
+                        <img src="{{ asset('/img/nom.png') }}"
                             style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
                         <div class="card-body" style="padding-top:0; padding-bottom:0">
                             <h5 class="card-title text-center" >NOM 035</h5>
@@ -40,7 +40,7 @@
                     </div>
                     
                     <div class="card text-dark bg-light " style="width:240px; height:220px; margin-right:20px;">                      
-                        <img src="https://image.freepik.com/vector-gratis/ilustracion-plana-soporte-al-cliente_23-2148899114.jpg"
+                        <img src="{{ asset('/img/cotizador.png') }}"
                         style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
                         <div class="card-body" style="padding-top:0; padding-bottom:0">
                             <h5 class="card-title text-center" >Cotizador</h5>
@@ -49,7 +49,7 @@
                     </div>
                     
                     <div class="card text-dark bg-light " style="width:240px; height:220px; margin-right:20px;">                       
-                        <img src="https://image.freepik.com/vector-gratis/diseno-grafico-papel-pintado-geometrico_52683-34399.jpg"
+                        <img src="{{ asset('/img/tickets.png') }}"
                             style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
                         <div class="card-body" style="padding-top:0; padding-bottom:0">
                             <h5 class="card-title text-center" >Sistema de Tickets</h5>
