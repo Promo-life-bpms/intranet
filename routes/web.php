@@ -104,7 +104,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/vacations', [VacationsController::class, 'index'])->name('admin.vacations.index');
     Route::get('/vacations/create', [VacationsController::class, 'create'])->name('admin.vacations.create');
     Route::post('/vacations', [VacationsController::class, 'store'])->name('admin.vacations.store');
-    Route::get('/vacations/{vacation}/edit', [VacationsController::class, 'edit'])->name('admin.vacations.edit');
+    Route::get('/vacations/{user}/edit', [VacationsController::class, 'edit'])->name('admin.vacations.edit');
     Route::put('/vacations/{vacation}', [VacationsController::class, 'update'])->name('admin.vacations.update');
     Route::delete('/vacations/{vacation}', [VacationsController::class, 'destroy'])->name('admin.vacations.destroy');
 

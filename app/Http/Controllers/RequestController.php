@@ -69,7 +69,10 @@ class RequestController extends Controller
     public function ajax(Request $request)
     {
         $id = Auth::id();
-
+        $date = RequestCalendar::where('start', $request->start)->first();
+        if ($date != null) {
+            return response()->json(['exist' => true]);
+        }
         switch ($request->type) {
             case 'add':
                 $event = RequestCalendar::create([
@@ -151,19 +154,20 @@ class RequestController extends Controller
      */
     public function create()
     {
-
         $id = Auth::id();
 
         DB::table('request_calendars')->where('requests_id', null)->where('users_id', $id)->delete();
 
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+
+        $vacations = auth()->user()->vacationsAvailables->sum('days_availables');
+        $dataVacations  = auth()->user()->vacationsAvailables;
+
         if ($vacations == null) {
             $vacations = 0;
         }
 
-        return view('request.create', compact('noworkingdays', 'vacations', 'expiration'));
+        return view('request.create', compact('noworkingdays', 'vacations', 'dataVacations'));
     }
 
 
@@ -183,8 +187,10 @@ class RequestController extends Controller
         $request->validate([
             'type_request' => 'required',
             'payment' => 'required',
-            'reason' => 'required',
+            'reason' => 'required|max:255',
         ]);
+
+
 
         $id = Auth::id();
         $req = new ModelsRequest();
@@ -207,11 +213,25 @@ class RequestController extends Controller
 
         //Valida que el usuario no envie solicitudes sin dias asignados
         $lastRequestUser = DB::table('request_calendars')->where('users_id', $id)->where('requests_id', $lastRequest)->latest('id')->value('users_id');
+        $daysUsed =    DB::table('request_calendars')->where('users_id', $id)->where('requests_id', $lastRequest)->get();
         if ($lastRequestUser == null) {
-
             $employee_id = DB::table('employees')->where('id', $id)->value('id');
             DB::table('requests')->where('employee_id', $employee_id)->where('id', $lastRequest)->delete();
             return back()->with('message', 'No puedes crear solicitudes por que no agregaste dias en el calendario');
+        }
+        $daysUsetTotal = count($daysUsed);
+        // Restar los dias disponibles
+        foreach (auth()->user()->vacationsAvailables as $dataVacation) {
+            $diasRestantes = $dataVacation->days_availables - $daysUsetTotal;
+            if ($diasRestantes >= 0) {
+                $dataVacation->days_availables = $diasRestantes;
+                $dataVacation->save();
+                break;
+            } else {
+                $daysUsetTotal = abs($diasRestantes);
+                $dataVacation->days_availables = 0;
+                $dataVacation->save();
+            }
         }
 
         self::managertNotification($req);

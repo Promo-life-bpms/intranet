@@ -77,4 +77,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Vacations::class, 'users_id');
     }
+
+    public function vacationsAvailables()
+    {
+        return $this->hasMany(Vacations::class, 'users_id');
+    }
 }
