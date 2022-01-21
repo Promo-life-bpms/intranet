@@ -11,14 +11,14 @@
 
                                 @if (count($communiquesImage) == 0)
                                     <div class="carousel-item active">
-                                        <img src="{{ asset('/img/empy.svg') }}" class="d-block w-100" alt="...">
+                                        <img style="object-fit: cover; height: 540px;" src="{{ asset('/img/empy.svg') }}" class="d-block w-100" alt="...">
                                         <div class="carousel-caption d-none d-md-block">    
                                         </div>
                                     </div> 
                                 @else
                                     @foreach ($communiquesImage as $communique)
                                         <div class="carousel-item {{$loop->iteration == 1 ? 'active' : ''}}">
-                                        <img style="object-fit: contain; max-height: 370px;" src="{{ asset($communique->image )}}" class="d-block w-100 " alt="...">
+                                        <img style="object-fit: contain; height: 500px;" src="{{ asset($communique->image )}}" class="d-block w-100 " alt="...">
                                             <div class="carousel-caption d-none d-md-block">
                                             <span style="background: rgba(3, 42, 51, 0.5); font-size:1.5rem;">{{$communique->title}}</span> 
                                             <br>                                          
