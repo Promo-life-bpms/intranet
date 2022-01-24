@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="card-header">
-        <h3 class="text-center">Empleados del Mes</h3>
+        <h3 class="text-center">Empleados del Mes de la Evaluacion 360</h3>
     </div>
     <div class="card-body">
         <div class="d-flex w-100 justify-content-around content-employees">

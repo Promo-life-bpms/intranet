@@ -17,12 +17,12 @@
                                     <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
                                 </p>
                             </a>
-                            @else 
+                            @else
                             <a  href="{{ route('profile.index') }}">
-                                <img style="width: 100%; height:100%; object-fit: cover;" src="{{ asset(auth()->user()->image) }}">                      
+                                <img style="width: 100%; height:100%; object-fit: cover;" src="{{ asset(auth()->user()->image) }}">
                             </a>
                             @endif
-                            
+
                             {{-- @if (auth()->user()->profile->photo)
                                 <img src="{{ asset('storage\profiles') . '/' . auth()->user()->profile->photo }}"
                                     class="width-icon" alt="">
@@ -108,7 +108,7 @@
                                     <span>Reportes de ausencias</span>
                                 </a>
                             </li>
-                            
+
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">
                                     <span>Vacaciones</span>
@@ -125,13 +125,13 @@
                                 <a class="dropdown-item" href="{{ route('admin.communique.show') }}">
                                     <span>Comunicados</span>
                                 </a>
-                            </li> 
+                            </li>
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.events.index') }}">
                                     <span>Eventos</span>
                                 </a>
-                            </li> 
+                            </li>
                         </ul>
                     </li>
                 @endrole('rh')
@@ -193,7 +193,7 @@
                                 @role('employee')
                                 <span class="badge bg-secondary">{{  auth()->user()->unreadNotifications->count() }} </span>
                                 @endrole('employee')
-        
+
                             </a>
                         </li>
                         @if (count(auth()->user()->employee->subordinados) > 0)
@@ -256,7 +256,7 @@
                                 <span>Comunicados de área</span>
                             </a>
                         </li>
-                    </ul> 
+                    </ul>
                 </li>
 
                 <li class="sidebar-item {{ request()->is('manual') ? 'active' : '' }}">

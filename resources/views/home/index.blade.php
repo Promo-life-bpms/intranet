@@ -11,23 +11,23 @@
 
                                 @if (count($communiquesImage) == 0)
                                     <div class="carousel-item active">
-                                        <img style="object-fit: cover; height: 540px;" src="{{ asset('/img/empy.svg') }}" class="d-block w-100" alt="...">
-                                        <div class="carousel-caption d-none d-md-block">    
+                                        <img src="{{ asset('/img/empy.svg') }}" class="d-block w-100" alt="...">
+                                        <div class="carousel-caption d-none d-md-block">
                                         </div>
-                                    </div> 
+                                    </div>
                                 @else
                                     @foreach ($communiquesImage as $communique)
                                         <div class="carousel-item {{$loop->iteration == 1 ? 'active' : ''}}">
-                                        <img style="object-fit: contain; height: 500px;" src="{{ asset($communique->image )}}" class="d-block w-100 " alt="...">
+                                        <img style="object-fit: contain; max-height: 370px;" src="{{ asset($communique->image )}}" class="d-block w-100 " alt="...">
                                             <div class="carousel-caption d-none d-md-block">
-                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.5rem;">{{$communique->title}}</span> 
-                                            <br>                                          
+                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.5rem;">{{$communique->title}}</span>
+                                            <br>
                                             <a type="button" class="btn btn-primary buttomItem" value="{{$communique->id}}">Ver mas</a>
                                             @if ($communique->file !=null)
                                                 <a class="btn btn-danger " href="{{ asset($communique->file )}}" target="_blank">Abrir archivo adjunto</a>
                                             @endif
                                             </div>
-                                            
+
                                         </div>
                                     @endforeach
                                 @endif
@@ -80,7 +80,7 @@
                                 @if (count($employeesBirthday) == 0)
                                     <div class="carousel-item active">
                                         <p>Sin Cumpleaños disponibles</p>
-                                    </div> 
+                                    </div>
                                 @else
                                     @foreach ($employeesBirthday as $employee)
 
@@ -88,17 +88,17 @@
                                         @if ($employee->user->image ==null)
                                         <img style="object-fit: cover; height: 420px;" src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" class="d-block w-100 " alt="...">
 
-                                        @else 
+                                        @else
                                         <img style="object-fit: cover; height: 420px;" src="{{ asset($employee->user->image) }}" class="d-block w-100 " alt="...">
 
                                         @endif
                                             <div class="carousel-caption d-none d-md-block">
-                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span> 
+                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
                                             <br>
-                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->birthday_date }}</span> 
+                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->birthday_date }}</span>
 
                                             </div>
-                                            
+
                                         </div>
                                     @endforeach
                                 @endif
@@ -116,8 +116,8 @@
                     </div>
                 </div>
 
-                
-        
+
+
             </div>
 
             {{-- <div class="card p-4">
@@ -131,19 +131,19 @@
                                 @if (count($employeesAniversary) == 0)
                                     <div class="carousel-item active">
                                         <p>Sin aniversarios disponibles</p>
-                                    </div> 
+                                    </div>
                                 @else
                                     @foreach ($employeesAniversary as $employee)
 
                                     <div class="carousel-item {{$loop->iteration == 1 ? 'active' : ''}}">
                                         <img style="object-fit: contain; max-height: 315px;" src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" class="d-block w-100 " alt="...">
                                             <div class="carousel-caption d-none d-md-block">
-                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span> 
+                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
                                             <br>
-                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->birthday_date }}</span> 
+                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->birthday_date }}</span>
 
                                             </div>
-                                            
+
                                         </div>
                                     @endforeach
                                 @endif
@@ -160,29 +160,29 @@
                           </div>
                     </div>
                 </div>
-        
+
             </div> --}}
 
-      
+
             <div class="card p-3">
-                <h4>Empleado del Mes</h4>
+                <h4>Empleado del Mes de la Evaluacion 360</h4>
                 <br>
-                
+
                 <div class="d-flex flex-wrap w-100 h-30 justify-content-around content-employees">
                 </div>
             </div>
-           
-        
- 
-            
+
+
+
+
 
 
         </div>
-        
 
-        
-        
-       
+
+
+
+
     </div>
 @stop
 
@@ -215,7 +215,7 @@
     td.fc-day.fc-past {
     background-color: #ECECEC;
     }
-    
+
     .fc-content{
         font-size: 12px;
     }
@@ -296,15 +296,15 @@
 
 <script>
     $(document).ready(function () {
-       
+
     var SITEURL = "{{ url('/') }}";
-      
+
     $.ajaxSetup({
         headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-      
+
     let noworkingdays = @json($noworkingdays);
     let eventos =  @json($eventos);
 
@@ -320,7 +320,7 @@
             eventStartEditable:false,
         })
     });
-    
+
     eventos.forEach(element => {
         events.push({
             title: element.title,
@@ -350,7 +350,7 @@
                         dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
                         dayNamesShort: ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],
                         eventClick: function (event) {
-                         
+
                             Swal.fire({
                                 title: event.title,
                                 html:
@@ -362,13 +362,13 @@
                                     popup: 'animate__animated animate__fadeOutUp'
                                 }
                             })
-                            
+
                         },
-                        
+
                     });
     });
-     
-      
+
+
  </script>
 
 <script type="text/javascript">

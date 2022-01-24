@@ -90,7 +90,7 @@ class DatabaseSeeder extends Seeder
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
         ])->attachRole($manager);
-        
+
         User::create([
             'name' => 'Raul',
             'lastname' => 'Torres Marquez',
@@ -146,7 +146,7 @@ class DatabaseSeeder extends Seeder
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
         ])->attachRole($rh);
-        
+
         //Sistemas
         User::create([
             'name' => 'Ricardo Eusebio',
@@ -156,7 +156,7 @@ class DatabaseSeeder extends Seeder
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
         ])->attachRole($systems);
-        
+
         //Administracion
         User::create([
             'name' => 'Monica',
@@ -227,7 +227,7 @@ class DatabaseSeeder extends Seeder
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
         ])->attachRole($manager);
-       
+
         //Tecnologia e Innovacion
         User::create([
             'name' => 'Federico',
@@ -238,8 +238,8 @@ class DatabaseSeeder extends Seeder
             'remember_token' => '',
         ])->attachRole($manager);
 
-           //Cancun
-           User::create([
+        //Cancun
+        User::create([
             'name' => 'Abel',
             'lastname' => 'Ramírez Cortes',
             'email' => 'abel@trademarket.com.mx',

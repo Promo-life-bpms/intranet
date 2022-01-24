@@ -27,7 +27,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('payment', 'Forma de Pago') !!}
-                        {!! Form::select('payment', ['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia', 'Pagar Tiempo/Dia' => 'Pagar Tiempo/Dia', 'A cuenta de vacaciones' => 'A cuenta de vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                        {!! Form::select('payment', ['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia', 'A cuenta de vacaciones' => 'A cuenta de vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
                         @error('payment')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
@@ -240,7 +240,7 @@
                                             success: function(data) {
                                                 if (data.exist) {
                                                     displayError(
-                                                        'No puedes seleccionar el mismo dia'
+                                                        'Ya has seleccionado este dia'
                                                     )
                                                     return;
                                                 }
@@ -257,6 +257,7 @@
                                                 displayMessage(
                                                     "Día seleccionado satisfactoriamente"
                                                 );
+                                                console.log(data);
                                                 calendar.fullCalendar('unselect');
                                             }
                                         });
