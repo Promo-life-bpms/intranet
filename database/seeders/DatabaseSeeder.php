@@ -63,7 +63,7 @@ class DatabaseSeeder extends Seeder
             'remember_token' => '',
         ])->attachRole($admin);
 
-        User::create([
+        /*  User::create([
             'name' => 'Jacobo ',
             'lastname' => 'Levy Hano',
             'email' => 'jacobo@trademarket.com.mx',
@@ -247,7 +247,7 @@ class DatabaseSeeder extends Seeder
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', //password
             'remember_token' => '',
         ])->attachRole($manager);
-
+ */
         /* Empresas */
 
         Company::create([
