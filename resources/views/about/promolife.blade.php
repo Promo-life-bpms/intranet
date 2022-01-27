@@ -1,16 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="card-header">
-        <div class="d-flex justify-content-center">
-            <img style="width:50%" class="aboutLogo" src="{{ asset('/img/promolife.png') }}" alt="bhtrade">
-        </div>
-    </div>
+   
     <div class="card-body">
 
+      <div class="banner">
+          <div class="d-flex justify-content-center">
+            <img class="aboutLogo" src="{{ asset('/img/promolife.png') }}" alt="bhtrade">
+          </div>
+      </div>
+
+      <div style="padding-bottom: 100px;"  class="separador"></div>
+
         <section class="header">
+
             <div class="row mt-4">
                 <div class="col md-6">
+                   <div class="card info">
                     <h3 style="margin-bottom: 30px;">¿Qué es Promo Life? </h3>
                     <p class="mb-4" style=" text-align: justify;
                     text-justify: inter-word; font-size:1.2rem;"><b> PROMOTIONAL GLOBAL SUPPLIER.</b> Más de una década
@@ -20,8 +26,11 @@
                         y facilitadores para la adquisición del producto exacto
                         para cada campaña externa o interna de las empresas
                         AAA.</p>
+                   </div>
+                    
                 </div>
                 <div class="col md-6">
+                  <div class="card info">
                     <h3 style="margin-bottom: 30px;">Historia </h3>
                     <p style=" text-align: justify;
                     text-justify: inter-word; font-size:1.2rem;">En 2011 se constituye <b>Promo Life S de RL de CV</b> ,
@@ -33,15 +42,22 @@
                         equipo de colaboradores más robusto y
                         profesionalizando cada vez más nuestra dinámica
                         de trabajo.</p>
+                  </div>                    
                 </div>
             </div>
         </section>
-     
-        
-        <div style="background: #002D69; "  class="row mt-4 mb-4">
-            <p class="pt-4 pb-2"  style="color:#ffffff;text-align: center; font-size:30px;"><b>CÓDIGO DE VALORES</b> </p> 
+          
+        <div class="d-flex justify-content-center">
+          <div class="valores">
+            <p  style="color:#ffffff;text-align: center; font-size:1.4rem;">CÓDIGO DE VALORES </p>  
+          </div>
         </div>
-        <div style="padding-bottom: 50px;"  class="separador"></div>
+       
+        <div class="row mt-4 mb-4 ">
+        
+        </div>
+
+
           <section class="timeline">
             <div class="container">
 
@@ -51,7 +67,7 @@
                     <div class="date">LEALTAD </div>
                     <div style="padding-bottom: 30px;"  class="separador"></div>
 
-                    <p class="mt-4" style=" text-align: justify; text-justify: inter-word; font-size:1.2rem;"> 
+                    <p class="mt-4" style=" text-align: justify; text-justify: inter-word; font-size:1rem;"> 
                     <b>Es sin duda una de las cualidades
                         más respetables de un ser humano,
                         en especial cuando se trata de una
@@ -70,9 +86,7 @@
                     <div class="timeline-img"></div>
                     <div class="timeline-content js--fadeInRight">                
                         <div class="date">CONFIANZA</div>
-                        <div style="padding-bottom: 30px;"  class="separador"></div>
-
-                        <p class="mt-4" style=" text-align: justify; text-justify: inter-word; font-size:1.2rem;"> 
+                        <p class="mt-4" style=" text-align: justify; text-justify: inter-word; font-size:1rem;"> 
                         <b>Nos referimos a la posibilidad de
                             creer en que otra persona, o un
                             grupo de ellas, actuarán de la
@@ -96,7 +110,7 @@
                         <div class="date">HONESTIDAD</div>
                     <div style="padding-bottom: 30px;"  class="separador"></div>
 
-                    <p class="mt-4" style=" text-align: justify; text-justify: inter-word;font-size:1.2rem;"> 
+                    <p class="mt-4" style=" text-align: justify; text-justify: inter-word;font-size:1rem;"> 
                     <b>Es una virtud humana
                         consistente en el amor a la
                         justicia y la verdad por
@@ -114,9 +128,7 @@
                     <div class="timeline-img"></div>
                     <div class="timeline-content js--fadeInRight">                
                         <div class="date">TRABAJO EN EQUIPO </div>
-                        <div style="padding-bottom: 30px;"  class="separador"></div>
-
-                        <p class="mt-4" style=" text-align: justify; text-justify: inter-word;font-size:1.2rem;"> 
+                        <p class="mt-4" style=" text-align: justify; text-justify: inter-word;font-size:1rem;"> 
                         <b>Incluye aquellas labores que se
                             realizan de manera compartida
                             y organizada, en las que cada
@@ -139,7 +151,7 @@
                     <div class="date">PROACTIVIDAD </div>
                     <div style="padding-bottom: 30px;"  class="separador"></div>
 
-                    <p class="mt-4" style=" text-align: justify; text-justify: inter-word;font-size:1.2rem;"> 
+                    <p class="mt-4" style=" text-align: justify; text-justify: inter-word;font-size:1rem;"> 
                     <b>Es un tipo de comportamiento
                         de tipo anticipatorio, que no
                         requiere de un estímulo externo
@@ -155,16 +167,14 @@
                 </div>
           </section>
 
-          <div style="padding-bottom: 200px;"  class="separador"></div>
+        <div style="padding-bottom: 80px;"  class="separador"></div>
 
-
-        <div style="background: #002D69;" class="row mt-4 mb-4">
-            <p class="pt-4 pb-2"  style="color:#ffffff;   text-align: center; font-size:30px;"><b>ORIENTADO A RESULTADOS</b> </p> 
+        <div class="d-flex justify-content-center">
+          <div class="resultados">
+            <p  style="color:#ffffff;text-align: center; font-size:1.4rem;">ORIENTADO A <br> RESULTADOS </p>  
+          </div>
         </div>
-
-
-
-
+       
     </div>
 @stop
 
@@ -178,6 +188,66 @@
     margin-top:-120px; 
     margin-left: 10%;
 }
+
+.info{
+  padding: 20px;
+}
+
+.valores{
+  width: 0;
+ height: 0;
+ border-left: 200px solid transparent;
+ border-right: 200px solid transparent;
+ border-top: 150px solid #002D69;
+
+}
+
+
+.valores p {
+  width: 400px;
+  margin: -120px 0  0  -200px;
+}
+
+
+.resultados{
+  width: 0;
+ height: 0;
+ border-left: 200px solid transparent;
+ border-right: 200px solid transparent;
+ border-top: 150px solid #002D69;
+
+
+}
+
+
+.resultados p {
+  width: 400px;
+  margin: -120px 0  0  -200px;
+}
+
+.banner {
+  	height: 40vh;
+  	background-image: 
+	  linear-gradient(to right bottom, 
+     rgba(76, 216, 255, 0.8),
+     rgba(30, 108, 217, 0.8)),
+     url('https://media-exp1.licdn.com/dms/image/C4E1BAQHZpvSzm3mrGg/company-background_10000/0/1604596643746?e=2159024400&v=beta&t=7eQro0ejdMhEJ8UTKMZ2fEjTZmbCc6KtEm5kg-LeXIw');
+  	
+	  background-size: cover;
+  	background-position: top;
+  	position: relative;
+    
+  	clip-path: polygon(0 0, 100% 0, 100% 100vh, 0 100%);
+}
+
+.banner img{
+  margin-top: 19%;
+  width: 500px;
+  position: absolute;
+  z-index: 2;
+}
+
+
 
 .timeline {
   position: relative;
