@@ -59,7 +59,7 @@ class CommuniqueController extends Controller
         if ($request->hasFile('image')) {
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('image')->getClientOriginalExtension();
+            $extension = $request->file('image')->clientExtension();
             $fileNameToStore = $filename . '.' . $extension;
             $path = $request->file('image')->move('storage/post/', $fileNameToStore);
         } else {
@@ -69,7 +69,7 @@ class CommuniqueController extends Controller
         if ($request->hasFile('file')) {
             $filenameWithExt2 = $request->file('file')->getClientOriginalName();
             $filename2 = pathinfo($filenameWithExt2, PATHINFO_FILENAME);
-            $extension2 = $request->file('file')->getClientOriginalExtension();
+            $extension2 = $request->file('file')->clientExtension();
             $fileNameToStore2 = $filename2 . '.' . $extension2;
             $path2 = $request->file('file')->move('storage/post/', $fileNameToStore2);
         } else {
@@ -144,7 +144,7 @@ class CommuniqueController extends Controller
 
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('image')->getClientOriginalExtension();
+            $extension = $request->file('image')->clientExtension();
             $fileNameToStore = $filename . '.' . $extension;
             $path = $request->file('image')->move('storage/post/', $fileNameToStore);
         }
@@ -164,7 +164,7 @@ class CommuniqueController extends Controller
 
             $filenameWithExt2 = $request->file('file')->getClientOriginalName();
             $filename2 = pathinfo($filenameWithExt2, PATHINFO_FILENAME);
-            $extension2 = $request->file('file')->getClientOriginalExtension();
+            $extension2 = $request->file('file')->clientExtension();
             $fileNameToStore2 = $filename2 . '.' . $extension2;
             $path2 = $request->file('file')->move('storage/post/', $fileNameToStore2);
         }

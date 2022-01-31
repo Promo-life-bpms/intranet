@@ -65,7 +65,7 @@ class UserController extends Controller
         if ($request->hasFile('image')) {
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('image')->getClientOriginalExtension();
+            $extension = $request->file('image')->clientExtension();
             $fileNameToStore = $filename . '.' . $extension;
             $path = $request->file('image')->move('storage/post/', $fileNameToStore);
         } else {
@@ -140,7 +140,7 @@ class UserController extends Controller
 
                 $filenameWithExt = $request->file('image')->getClientOriginalName();
                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension = $request->file('image')->getClientOriginalExtension();
+                $extension = $request->file('image')->clientExtension();
                 $fileNameToStore = $filename . '.' . $extension;
                 $path = $request->file('image')->move('storage/post/', $fileNameToStore);
             } else {
@@ -155,12 +155,11 @@ class UserController extends Controller
 
                 $filenameWithExt = $request->file('image')->getClientOriginalName();
                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension = $request->file('image')->getClientOriginalExtension();
+                $extension = $request->file('image')->clientExtension();
                 $fileNameToStore = $filename . '.' . $extension;
                 $path = $request->file('image')->move('storage/post/', $fileNameToStore);
             }
         }
-
 
 
         $user->name = $request->name;
@@ -172,7 +171,17 @@ class UserController extends Controller
         $user->employee->birthday_date = $request->birthday_date;
         $user->employee->date_admission = $request->date_admission;
         $user->employee->status = $request->status;
-        $user->employee->jefe_directo_id = $request->jefe_directo_id;
+
+        if ($request->jefe_directo_id == null) {
+            if ($user->employee->position_id != null) {
+                $user->employee->jefe_directo_id = $user->employee->jefe_directo_id;
+            } else {
+                $user->employee->jefe_directo_id = $request->jefe_directo_id;
+            }
+        } else {
+            $user->employee->jefe_directo_id = $request->jefe_directo_id;
+        }
+
         $user->employee->status = 1;
         $user->employee->position_id = $request->position;
         $user->employee->save();
