@@ -184,7 +184,7 @@ return [
              */
             'abort' => [
                 'code' => 403,
-                'message' => 'User does not have any of the necessary access rights.'
+                'message' => 'No tienes los permisos necesarios para acceder a este sitio'
             ],
 
             /**

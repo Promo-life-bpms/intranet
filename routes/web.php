@@ -72,7 +72,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/folder', FolderController::class)->name('folder');
     Route::get('/work', WorkController::class)->name('work');
 
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('contacts', ContactController::class);
         // Route::resource('roles', RoleController::class);
@@ -101,34 +101,30 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::put('/access/{acc}', [AccessController::class, 'update'])->name('access.update');
     Route::delete('/access/{acc}', [AccessController::class, 'destroy'])->name('access.delete');
 
-    Route::get('/vacations', [VacationsController::class, 'index'])->name('admin.vacations.index');
-    Route::get('/vacations/create', [VacationsController::class, 'create'])->name('admin.vacations.create');
-    Route::post('/vacations', [VacationsController::class, 'store'])->name('admin.vacations.store');
-    Route::get('/vacations/{user}/edit', [VacationsController::class, 'edit'])->name('admin.vacations.edit');
-    Route::put('/vacations/{vacation}', [VacationsController::class, 'update'])->name('admin.vacations.update');
-    Route::delete('/vacations/{vacation}', [VacationsController::class, 'destroy'])->name('admin.vacations.destroy');
+    Route::get('/vacations', [VacationsController::class, 'index'])->middleware('role:rh')->name('admin.vacations.index');
+    Route::get('/vacations/create', [VacationsController::class, 'create'])->middleware('role:rh')->name('admin.vacations.create');
+    Route::post('/vacations', [VacationsController::class, 'store'])->middleware('role:rh')->name('admin.vacations.store');
+    Route::get('/vacations/{user}/edit', [VacationsController::class, 'edit'])->middleware('role:rh')->name('admin.vacations.edit');
+    Route::put('/vacations/{vacation}', [VacationsController::class, 'update'])->middleware('role:rh')->name('admin.vacations.update');
+    Route::delete('/vacations/{vacation}', [VacationsController::class, 'destroy'])->middleware('role:rh')->name('admin.vacations.destroy');
+    Route::get('request/reports', [RequestController::class, 'reportRequest'])->middleware('role:rh')->name('request.reportRequest');
 
+
+    Route::get('/request', [RequestController::class, 'index'])->name('request.index');
     Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
     Route::get('request/show-all', [RequestController::class, 'showAll'])->name('request.showAll');
-    Route::get('request/reports', [RequestController::class, 'reportRequest'])->name('request.reportRequest');
     Route::put('request-auth/{request}', [RequestController::class, 'authorizeUpdate'])->name('request.authorize.update');
     Route::get('request/{request}/auth-edit', [RequestController::class, 'authorizeEdit'])->name('request.authorize.edit');
     Route::get('request/{request}/rh-edit', [RequestController::class, 'authorizeRHEdit'])->name('request.rh.edit');
     Route::delete('request/{request}/notification', [RequestController::class, 'deleteNotification'])->name('request.delete.notification');
     Route::delete('request/{request}/all', [RequestController::class, 'deleteAll'])->name('request.delete.all');
-
     /*  Route::post('request/filter-request', [RequestController::class, 'filterRequest'])->name('request.filter.request'); */
-
     Route::post('request/filter', [RequestController::class, 'filter'])->name('request.filter');
-
-
     Route::get('request/reports/all', [RequestController::class, 'exportAll'])->name('request.report.all');
     Route::get('request/reports/filter', [RequestController::class, 'filterExport'])->name('request.report.filter');
-
     Route::get('request/export/', [RequestController::class, 'export'])->name('request.export');
     Route::get('request/export2/', [RequestController::class, 'exportfilter'])->name('request.export2');
-
-
+    Route::resource('request', RequestController::class);
 
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
@@ -140,18 +136,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('home/getCommunique/{id}', [HomeController::class, 'getCommunique']);
 
 
-    Route::get('/events', [EventsController::class, 'index'])->name('admin.events.index');
-    Route::get('/events/create', [EventsController::class, 'create'])->name('admin.events.create');
-    Route::get('/events/showEvents', [EventsController::class, 'showEvents'])->name('admin.events.showEvents');
-    Route::post('/events', [EventsController::class, 'store'])->name('admin.events.store');
-    Route::get('/events/{event}/edit', [EventsController::class, 'edit'])->name('admin.events.edit');
-    Route::put('/events/{event}', [EventsController::class, 'update'])->name('admin.events.update');
-    Route::delete('/events/{event}', [EventsController::class, 'destroy'])->name('admin.events.destroy');
+    Route::get('/events', [EventsController::class, 'index'])->middleware('role:rh')->name('admin.events.index');
+    Route::get('/events/create', [EventsController::class, 'create'])->middleware('role:rh')->name('admin.events.create');
+    Route::get('/events/showEvents', [EventsController::class, 'showEvents'])->middleware('role:rh')->name('admin.events.showEvents');
+    Route::post('/events', [EventsController::class, 'store'])->middleware('role:rh')->name('admin.events.store');
+    Route::get('/events/{event}/edit', [EventsController::class, 'edit'])->middleware('role:rh')->name('admin.events.edit');
+    Route::put('/events/{event}', [EventsController::class, 'update'])->middleware('role:rh')->name('admin.events.update');
+    Route::delete('/events/{event}', [EventsController::class, 'destroy'])->middleware('role:rh')->name('admin.events.destroy');
 
-    Route::get('/request', [RequestController::class, 'index'])->name('request.index');
     Route::post('fullcalenderAjax', [RequestController::class, 'ajax']);
 
-    Route::resource('request', RequestController::class);
 
     Route::get('/com/department', [CommuniqueController::class, 'department'])->name('communiques.department');
     Route::get('communiques/show', [CommuniqueController::class, 'show'])->name('admin.communique.show');
