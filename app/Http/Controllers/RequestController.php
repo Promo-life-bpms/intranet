@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\RequestEvent;
 use App\Events\RHRequestEvent;
 use App\Events\UserEvent;
+use App\Exports\FilterRequestExport;
 use App\Exports\RequestExport;
 use App\Models\Notification;
 use App\Models\NoWorkingDays;
@@ -24,48 +25,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class RequestController extends Controller
 {
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
-    public function index(Request $request)
-    {
-
-        if ($request->ajax()) {
-
-            $data = RequestCalendar::whereDate('start', '>=', $request->start)
-                ->whereDate('end',   '<=', $request->end)
-                ->get(['id', 'title', 'start', 'end']);
-
-            return response()->json($data);
-        }
-
-        $myrequests = auth()->user()->employee->yourRequests;
-
-        $id = Auth::id();
-        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
-        if ($vacations == null) {
-            $vacations = 0;
-        }
-
-        $requestDays = RequestCalendar::all();
-        $notifications = Notification::all();
-
-
-        /*         $userDays= RequestCalendar::all()->where('users_id',$id)->unique();
- */
-        /*    dd($userDays); */
-        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays', 'notifications'));
-    }
-
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
+    
     public function ajax(Request $request)
     {
         $id = Auth::id();
@@ -110,48 +70,38 @@ class RequestController extends Controller
         }
     }
 
-    public function authorizeRequestManager()
+    public function index(Request $request)
     {
-        /*  $requests = auth()->user()->employee->yourAuthRequests; */
 
-        $id = Auth::user()->id;
-        $manager = DB::table('manager')->where('id', $id)->value('users_id');
-        $position = DB::table('employees')->where('user_id', $id)->value('position_id');
-        $rh = DB::table('positions')->where('id', $position)->value('department_id');
+        if ($request->ajax()) {
 
-        if ($rh == 1) {
-            $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada');
-        } else {
-            $requests = ModelsRequest::all()->where('direct_manager_id', $id);
+            $data = RequestCalendar::whereDate('start', '>=', $request->start)
+                ->whereDate('end',   '<=', $request->end)
+                ->get(['id', 'title', 'start', 'end']);
+
+            return response()->json($data);
         }
 
+        $myrequests = auth()->user()->employee->yourRequests;
 
+        $id = Auth::id();
+        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
+        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        if ($vacations == null) {
+            $vacations = 0;
+        }
 
         $requestDays = RequestCalendar::all();
+        $notifications = Notification::all();
 
-        return view('request.authorize', compact('requestDays', 'requests'));
+
+        /*         $userDays= RequestCalendar::all()->where('users_id',$id)->unique();
+ */
+        /*    dd($userDays); */
+        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays', 'notifications'));
     }
 
-    public function showAll()
-    {
-        $requestDays = RequestCalendar::all();
-        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada');
-        return view('request.show', compact('requests', 'requestDays'));
-    }
-
-    public function reportRequest()
-    {
-        $vacations = Vacations::all();
-        $requestDays = RequestCalendar::all();
-        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada');
-        return view('request.reports', compact('requests', 'requestDays', 'vacations'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $id = Auth::id();
@@ -171,12 +121,6 @@ class RequestController extends Controller
     }
 
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
 
@@ -239,33 +183,6 @@ class RequestController extends Controller
         return redirect()->action([RequestController::class, 'index']);
     }
 
-
-    static function managertNotification($req)
-    {
-        event(new RequestEvent($req));
-
-        /*       $id = Auth::id();
-        $manager = DB::table('employees')->where('user_id', $id)->value('jefe_directo_id');
-        User::all()->where('id', $manager)->each(function (User $user) use ($req) {
-            $user->notify(new RequestNotification($req));
-        }); */
-    }
-
-    static function rhNotification($req)
-    {
-        event(new RHRequestEvent($req));
-    }
-
-    static function userNotification($req)
-    {
-        event(new UserEvent($req));
-    }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Request  $communique
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Request $req, ModelsRequest $request)
     {
 
@@ -284,52 +201,6 @@ class RequestController extends Controller
         return view('request.edit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request'));
     }
 
-
-    public function authorizeEdit(Request $req, ModelsRequest $request)
-    {
-
-        $myrequests = auth()->user()->employee->yourRequests;
-
-        $id = Auth::id();
-        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
-        if ($vacations == null) {
-            $vacations = 0;
-        }
-
-        $rhAuth = false;
-        $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
-
-
-        return view('request.authorizeEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request', 'rhAuth'));
-    }
-    public function authorizeRHEdit(Request $req, ModelsRequest $request)
-    {
-
-        $myrequests = auth()->user()->employee->yourRequests;
-
-        $id = Auth::id();
-        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
-        if ($vacations == null) {
-            $vacations = 0;
-        }
-
-
-        $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
-
-        $rhAuth = true;
-        return view('request.authorizeEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request', 'rhAuth'));
-    }
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $req, ModelsRequest $request)
     {
         $req->validate([
@@ -361,6 +232,124 @@ class RequestController extends Controller
         return redirect()->action([RequestController::class, 'index']);
     }
 
+    public function destroy(ModelsRequest $request)
+    {
+        DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
+        DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+        $request->delete();
+        return redirect()->action([RequestController::class, 'index']);
+    }
+
+
+
+
+    public function authorizeRequestManager()
+    {
+        /*  $requests = auth()->user()->employee->yourAuthRequests; */
+
+        $id = Auth::user()->id;
+        $manager = DB::table('manager')->where('id', $id)->value('users_id');
+        $position = DB::table('employees')->where('user_id', $id)->value('position_id');
+        $rh = DB::table('positions')->where('id', $position)->value('department_id');
+
+        if ($rh == 1) {
+            $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada');
+        } else {
+            $requests = ModelsRequest::all()->where('direct_manager_id', $id);
+        }
+
+        $requestDays = RequestCalendar::all();
+
+        return view('request.authorize', compact('requestDays', 'requests'));
+    }
+
+    public function showAll()
+    {
+        $requestDays = RequestCalendar::all();
+        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada');
+        return view('request.show', compact('requests', 'requestDays'));
+    }
+
+    public function reportRequest()
+    {
+        $vacations = Vacations::all();
+        $requestDays = RequestCalendar::all();
+        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada');
+        return view('request.reports', compact('requests', 'requestDays', 'vacations'));
+    }
+
+   
+    //Notificaciones 
+    static function managertNotification($req)
+    {
+        event(new RequestEvent($req));
+
+        /*       $id = Auth::id();
+        $manager = DB::table('employees')->where('user_id', $id)->value('jefe_directo_id');
+        User::all()->where('id', $manager)->each(function (User $user) use ($req) {
+            $user->notify(new RequestNotification($req));
+        }); */
+    }
+
+    static function rhNotification($req)
+    {
+        event(new RHRequestEvent($req));
+    }
+
+    static function userNotification($req)
+    {
+        event(new UserEvent($req));
+    }
+    
+    public function deleteNotification(ModelsRequest $request)
+    {
+        DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+
+        return redirect()->action([RequestController::class, 'index']);
+    }
+
+    //Autorizaciones de solicitudes de RH y Manager
+    public function authorizeEdit(Request $req, ModelsRequest $request)
+    {
+
+        $myrequests = auth()->user()->employee->yourRequests;
+
+        $id = Auth::id();
+        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
+        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        if ($vacations == null) {
+            $vacations = 0;
+        }
+
+        $rhAuth = false;
+        $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
+
+
+        return view('request.authorizeEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request', 'rhAuth'));
+    }
+
+    public function authorizeRHEdit(Request $req, ModelsRequest $request)
+    {
+
+        $myrequests = auth()->user()->employee->yourRequests;
+
+        $id = Auth::id();
+        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
+        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        if ($vacations == null) {
+            $vacations = 0;
+        }
+
+
+        $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
+
+        $rhAuth = true;
+        return view('request.authorizeEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request', 'rhAuth'));
+    }
+
+
     public function authorizeUpdate(Request $req, ModelsRequest $request)
     {
         $req->validate([
@@ -384,19 +373,7 @@ class RequestController extends Controller
         return redirect()->action([RequestController::class, 'authorizeRequestManager']);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(ModelsRequest $request)
-    {
-        DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
-        DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-        $request->delete();
-        return redirect()->action([RequestController::class, 'index']);
-    }
+    
 
 
     public function deleteAll(ModelsRequest $request)
@@ -407,14 +384,7 @@ class RequestController extends Controller
         return redirect()->action([RequestController::class, 'index']);
     }
 
-    public function deleteNotification(ModelsRequest $request)
-    {
-        DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-
-        return redirect()->action([RequestController::class, 'index']);
-    }
-
-
+    //Vista de excel a exportar
     public function exportAll()
     {
         $vacations = Vacations::all();
@@ -423,34 +393,77 @@ class RequestController extends Controller
         return view('request.excelReport', compact('requests', 'requestDays', 'vacations'));
     }
 
-    public function export()
-    {
-        return Excel::download(new RequestExport, 'request.xlsx');
-    }
-
-    public function exportfilter()
-    {
-        return Excel::download(new RequestExport, 'request.xlsx');
-    }
 
     public function filter(Request $request)
     {
         $request->validate([
-            'inicio' => 'required',
-            'fin' => 'required',
+            'start' => 'required',
+            'end' => 'required',
         ]);
-
+/* 
         $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada');
         $findRequests = [];
         foreach ($requests as $data) {
             foreach ($data->requestdays as $day) {
-                if ($day->start == $request->fin || $day->start == $request->inicio) {
+                if ($day->start == $request->end || $day->start == $request->start) {
                     array_push($findRequests, $data);
                 }
             }
         }
         $requests = $findRequests;
         $requestDays = RequestCalendar::all();
+        return view('request.filter', compact('requests', 'requestDays')); */
+
+        $requestDays = RequestCalendar::all();
+        $requests = ModelsRequest::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->whereRaw('DATE(created_at) >= ?', [$request->start])->whereRaw('DATE(created_at) <= ?', [$request->end])->get();
+        
+        $start = $request->start;
+        $end = $request->end;
+
+        return Excel::download(new FilterRequestExport($start,$end), 'solicitudes_por_periodo.xlsx');
+
+      /*   self::exportfilter($start,  $end);
+
         return view('request.filter', compact('requests', 'requestDays'));
+ */
+    }
+
+
+    public function filterDate(Request $request)
+    {
+        $request->validate([
+            'start' => 'required',
+            'end' => 'required',
+        ]);
+
+        $requestDays = RequestCalendar::all()->where('start', '>=', $request->start)->where('end', '<=',$request->end);
+        $daySelected = RequestCalendar::all()->where('start', '>=', $request->start)->where('end', '<=',$request->end)->pluck('requests_id','requests_id');
+
+
+        $requests = ModelsRequest::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->whereIn('id', $daySelected)->get();
+     /*  dd($requests); */
+      
+
+       /*  dd($start); */
+        
+
+/*         return Excel::download(new FilterRequestExport($start,$end), 'solicitudes_por_periodo.xlsx');
+ */
+        /*  self::exportfilter($start,  $end); */
+
+        return view('request.filterDate', compact('requests', 'requestDays'));
+
+    }
+
+    
+    //Exportaciones de excel
+    public function export()
+    {
+        return Excel::download(new RequestExport, 'solicitudes.xlsx');
+    }
+
+    static function exportfilter($start, $end)
+    {
+        return Excel::download(new FilterRequestExport($start,$end), 'solicitudes_por_periodo.xlsx');
     }
 }

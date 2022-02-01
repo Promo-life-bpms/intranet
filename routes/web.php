@@ -120,6 +120,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::delete('request/{request}/all', [RequestController::class, 'deleteAll'])->name('request.delete.all');
     /*  Route::post('request/filter-request', [RequestController::class, 'filterRequest'])->name('request.filter.request'); */
     Route::post('request/filter', [RequestController::class, 'filter'])->name('request.filter');
+    Route::post('request/filter-date', [RequestController::class, 'filterDate'])->name('request.filter');
     Route::get('request/reports/all', [RequestController::class, 'exportAll'])->name('request.report.all');
     Route::get('request/reports/filter', [RequestController::class, 'filterExport'])->name('request.report.filter');
     Route::get('request/export/', [RequestController::class, 'export'])->name('request.export');
