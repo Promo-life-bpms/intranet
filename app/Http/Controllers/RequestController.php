@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\RequestEvent;
 use App\Events\RHRequestEvent;
 use App\Events\UserEvent;
+use App\Exports\DateRequestExport;
 use App\Exports\FilterRequestExport;
 use App\Exports\RequestExport;
 use App\Models\Notification;
@@ -445,10 +446,12 @@ class RequestController extends Controller
       
 
        /*  dd($start); */
-        
+                
+       $start = $request->start;
+       $end = $request->end;
 
-/*         return Excel::download(new FilterRequestExport($start,$end), 'solicitudes_por_periodo.xlsx');
- */
+         return Excel::download(new DateRequestExport($start,$end,$daySelected), 'solicitudes_por_periodo.xlsx');
+ 
         /*  self::exportfilter($start,  $end); */
 
         return view('request.filterDate', compact('requests', 'requestDays'));
