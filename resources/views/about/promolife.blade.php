@@ -272,8 +272,8 @@
 }
 .timeline-item:nth-child(even) .timeline-content .date {
     right: auto;
-    left: 25%;
-    width: 50%;
+    left: 20%;
+    width: 60%;
     text-align: center;
 }
 .timeline-item:nth-child(even) .timeline-content::after {
@@ -361,10 +361,10 @@ blockquote {
     padding: 15px;
     position: absolute;
     top: -20px;
-    right: 25%; 
+    right: 20%; 
     border-radius: 5px;
     font-size: 1.4rem;
-    width: 50%;
+    width: 60%;
     text-align: center;
 }
 

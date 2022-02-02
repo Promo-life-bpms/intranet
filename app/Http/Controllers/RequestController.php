@@ -24,6 +24,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Maatwebsite\Excel\Facades\Excel;
 
+
 class RequestController extends Controller
 {
     
@@ -423,10 +424,10 @@ class RequestController extends Controller
 
         return Excel::download(new FilterRequestExport($start,$end), 'solicitudes_por_periodo.xlsx');
 
-      /*   self::exportfilter($start,  $end);
 
-        return view('request.filter', compact('requests', 'requestDays'));
- */
+
+        return view('request.filter', compact('requests', 'requestDays'))->share('start',$start);
+
     }
 
 
@@ -440,33 +441,50 @@ class RequestController extends Controller
         $requestDays = RequestCalendar::all()->where('start', '>=', $request->start)->where('end', '<=',$request->end);
         $daySelected = RequestCalendar::all()->where('start', '>=', $request->start)->where('end', '<=',$request->end)->pluck('requests_id','requests_id');
 
-
         $requests = ModelsRequest::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->whereIn('id', $daySelected)->get();
-     /*  dd($requests); */
-      
 
-       /*  dd($start); */
-                
-       $start = $request->start;
-       $end = $request->end;
+        $start = $request->start;
+        $end = $request->end;
 
-         return Excel::download(new DateRequestExport($start,$end,$daySelected), 'solicitudes_por_periodo.xlsx');
- 
-        /*  self::exportfilter($start,  $end); */
+        /* Excel::download(new DateRequestExport($start,$end,$daySelected), 'solicitudes_por_periodo.xlsx');  */
 
-        return view('request.filterDate', compact('requests', 'requestDays'));
+        return view('request.filterDate', compact('requests', 'requestDays','start','end'));
 
     }
 
-    
+
+  /*   public function __construct($start, $end, $daySelected)
+    {
+        $this->start = $start;
+        $this->end = $end;
+        $this->daySelected = $daySelected;
+    } */
     //Exportaciones de excel
     public function export()
     {
         return Excel::download(new RequestExport, 'solicitudes.xlsx');
     }
 
-    static function exportfilter($start, $end)
+    public function exportfilter($start, $end)
     {
         return Excel::download(new FilterRequestExport($start,$end), 'solicitudes_por_periodo.xlsx');
     }
+
+    static function exportDataFilter()
+    {
+        
+/*         return Excel::download(new DateRequestExport($start,$end,$daySelected), 'solicitudes_por_periodo.xlsx'); 
+ */  }
+
+    public function getDataFilter($data)
+    {
+
+     
+        /*  return Excel::download(new DateRequestExport('2022-02-01','2022-02-16',$requestDays), 'solicitudes_por_periodo.xlsx');   */
+
+    
+       return ($data);      
+    }
 }
+
+

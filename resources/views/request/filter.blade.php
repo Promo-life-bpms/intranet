@@ -6,8 +6,8 @@
             <h3>Reportes por periodo</h3>
 
             <div class="d-flex justify-content-end">
-            <a style="margin-left: 20px;" href=" {{ route('request.export2') }} " type="button"
-                class="btn btn btn-success">Exportar Excel</a>
+     {{--        <a style="margin-left: 20px;" href=" {{ route('request.export.filter') }} " type="button"
+                class="btn btn btn-success">Exportar Excel</a> --}}
             </div>
         </div>
     </div>

@@ -124,12 +124,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('request/reports/all', [RequestController::class, 'exportAll'])->name('request.report.all');
     Route::get('request/reports/filter', [RequestController::class, 'filterExport'])->name('request.report.filter');
     Route::get('request/export/', [RequestController::class, 'export'])->name('request.export');
-    Route::get('request/export2/', [RequestController::class, 'exportfilter'])->name('request.export2');
+    Route::get('request/export2/', [RequestController::class, 'exportFilter'])->name('request.export.filter');
+    Route::get('request/export2/', [RequestController::class, 'exportDataFilter'])->name('request.export.data');
+    Route::get('request/dataFilter/{data}', [RequestController::class, 'getDataFilter']);
     Route::resource('request', RequestController::class);
 
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
-    Route::get('request/getData//{lista}', [EmployeeController::class, 'getData']);
+    Route::get('request/getData/{lista}', [EmployeeController::class, 'getData']);
     Route::get('manager/getPosition/{id}', [ManagerController::class, 'getPosition']);
     Route::get('manager/getEmployee/{id}', [ManagerController::class, 'getEmployee']);
     Route::get('user/getPosition/{id}', [UserController::class, 'getPosition']);

@@ -3,11 +3,12 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Reportes por Periodo (Dias de solicitud)</h3>
+            
+            <h3>Reportes por Periodo </h3>
 
             <div class="d-flex justify-content-end">
-            <a style="margin-left: 20px;" href=" {{ route('request.export2') }} " type="button"
-                class="btn btn btn-success">Exportar Excel</a>
+                <a style="margin-left: 10px;" type="button"  {{-- href=" {{ route('request.export.data') }}"  --}}
+                class="btn btn btn-success report">Exportar Excel</a> 
             </div>
         </div>
     </div>
@@ -60,7 +61,7 @@
                     <h5 class="modal-title" id="modalBusquedaLabel">Realizar Búsqueda</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                {!! Form::open(['route' => 'request.filter']) !!}
+                {!! Form::open(['route' => 'request.export.data']) !!}
                 <div class="modal-body">
                     <div class="row">
                         <div class="col">
@@ -98,7 +99,6 @@
 @section('scripts')
 
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
         $('.form-delete').submit(function(e) {
             e.preventDefault();
@@ -119,4 +119,48 @@
             })
         });
     </script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.report').click(function() {
+                var SITEURL = "{{ url('/') }}";
+
+                $.ajaxSetup({
+                    headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                            
+                let start = @json($start).toString();
+                let end = @json($end).toString();
+               
+                console.log(start)
+                console.log(end)
+            
+
+                var data = { start: start,end: end}
+                console.log(typeof(data))
+                if (data) {
+                        jQuery.ajax({
+                            url: '/request/dataFilter/' + data,
+                            type: "GET",
+                           
+                                success: function(data) {
+                                    alert('success')
+                                   console.log(data); 
+
+                                    
+                                }
+                            });
+                        } else {
+                        alert("No encontrada")
+                        }
+ 
+            });
+
+        });
+    </script>
+
+
 @stop

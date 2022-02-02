@@ -16,7 +16,7 @@ class DateRequestExport implements FromView
 
     protected $start, $end;
 
-    public function __construct($start, $end,$daySelected)
+    public function __construct($start, $end, $daySelected)
     {
         $this->start = $start;
         $this->end = $end;
@@ -28,7 +28,6 @@ class DateRequestExport implements FromView
         return view('request.excelFilterReport', [
 
             'requestDays' => RequestCalendar::all()->where('start', '>=', $this->start)->where('end', '<=',$this->end),
-    /*         'daySelected' => RequestCalendar::all()->where('start', '>=', $this->start)->where('end', '<=',$this->end)->pluck('requests_id','requests_id'), */
             'requests' => Request ::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->whereIn('id',$this->daySelected)->get(),
         ]);
     }
