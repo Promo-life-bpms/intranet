@@ -97,10 +97,6 @@ class RequestController extends Controller
         $requestDays = RequestCalendar::all();
         $notifications = Notification::all();
 
-
-        /*         $userDays= RequestCalendar::all()->where('users_id',$id)->unique();
- */
-        /*    dd($userDays); */
         return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays', 'notifications'));
     }
 
@@ -329,43 +325,12 @@ class RequestController extends Controller
             $vacations = 0;
         }
 
-
-        /*    if ($req->human_resources_status == "Aprobada") {
-            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-            self::userNotification($request);
-        } elseif ($req->human_resources_status == "Rechazada") {
-            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-            self::userNotification($request);
-        } */
-
-
         $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
 
         $rhAuth = true;
 
         return view('request.authorizeEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request', 'rhAuth'));
 
-
-
-        /* 
-        $request->update($req->all());
-
-        if ($req->human_resources_status == "Aprobada") {
-            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-            self::userNotification($request);
-        } elseif ($req->human_resources_status == "Rechazada") {
-            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-            self::userNotification($request);
-        }
-
-        $id = Auth::user()->id;
-        $position = DB::table('employees')->where('user_id', $id)->value('position_id');
-        $rh = DB::table('positions')->where('id', $position)->value('department_id');
-
-        if ($rh == 1) {
-            return redirect()->action([RequestController::class, 'showAll']);
-        }
-        return redirect()->action([RequestController::class, 'index']); */
     }
 
 
