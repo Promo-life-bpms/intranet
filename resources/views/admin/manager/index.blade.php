@@ -22,7 +22,8 @@
                 <tbody>
                     @foreach ($managers as $manager)
                         <tr>
-                            <td>{{ $manager->id }}</td>
+                          {{--   <td>{{ $manager->id }}</td> --}}
+                          <td>{{ $loop->iteration }}</td>
                             <td>{{ $manager->user->name . ' ' . $manager->user->lastname }}
                             </td>
                             <td>{{ $manager->department->name }}</td>

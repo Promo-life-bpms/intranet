@@ -29,7 +29,8 @@
                 <tbody>
                     @foreach ($users as $user)
                         <tr>
-                            <td  class="text-center" >{{ $user->id }}</td>
+                           {{--  <td  class="text-center" >{{ $user->id }}</td> --}}
+                           <td class="text-center">{{ $loop->iteration }}</td>
 
                             @if ($user->image!=null)
                             <td >
