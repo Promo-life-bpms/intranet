@@ -111,7 +111,7 @@
                     <h5 class="modal-title" id="modalBusquedaLabel">Realizar Búsqueda</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                {!! Form::open(['route' => 'request.filter']) !!}
+                {!! Form::open(['route' => 'request.filter.data']) !!}
                 <div class="modal-body">
                     <div class="row">
                         <div class="col">

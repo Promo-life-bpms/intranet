@@ -112,7 +112,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/request', [RequestController::class, 'index'])->name('request.index');
     Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
-    Route::get('request/show-all', [RequestController::class, 'showAll'])->name('request.showAll');
+    Route::get('request/show-all', [RequestController::class, 'show'])->name('request.showAll');
     Route::put('request-auth/{request}', [RequestController::class, 'authorizeUpdate'])->name('request.authorize.update');
     Route::get('request/{request}/auth-edit', [RequestController::class, 'authorizeEdit'])->name('request.authorize.edit');
     Route::get('request/{request}/rh-edit', [RequestController::class, 'authorizeRHEdit'])->name('request.rh.edit');
@@ -120,13 +120,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::delete('request/{request}/all', [RequestController::class, 'deleteAll'])->name('request.delete.all');
     /*  Route::post('request/filter-request', [RequestController::class, 'filterRequest'])->name('request.filter.request'); */
     Route::post('request/filter', [RequestController::class, 'filter'])->name('request.filter');
-    Route::post('request/filter-date', [RequestController::class, 'filterDate'])->name('request.filter');
+    Route::post('request/filter-date', [RequestController::class, 'filterDate'])->name('request.filter.data');
     Route::get('request/reports/all', [RequestController::class, 'exportAll'])->name('request.report.all');
     Route::get('request/reports/filter', [RequestController::class, 'filterExport'])->name('request.report.filter');
-    Route::get('request/export/', [RequestController::class, 'export'])->name('request.export');
-    Route::get('request/export2/', [RequestController::class, 'exportFilter'])->name('request.export.filter');
-    Route::get('request/export2/', [RequestController::class, 'exportDataFilter'])->name('request.export.data');
-    Route::get('request/dataFilter/{data}', [RequestController::class, 'getDataFilter']);
+    Route::post('request/export/', [RequestController::class, 'export'])->name('request.export');
+    Route::post('request/export/filter', [RequestController::class, 'exportFilter'])->name('request.export.filter');
+    /*     Route::post('request/export/data', [RequestController::class, 'exportDataFilter'])->name('request.export.data'); */
+    Route::post('request/dataFilter', [RequestController::class, 'getDataFilter'])->name('request.export.filterdata');;
     Route::resource('request', RequestController::class);
 
 

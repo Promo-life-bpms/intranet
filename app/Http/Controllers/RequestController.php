@@ -256,7 +256,7 @@ class RequestController extends Controller
         return view('request.authorize', compact('requestDays', 'requests'));
     }
 
-    public function showAll()
+    public function show()
     {
         $requestDays = RequestCalendar::all();
         $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada');
@@ -425,11 +425,7 @@ class RequestController extends Controller
         $start = $request->start;
         $end = $request->end;
 
-        return Excel::download(new FilterRequestExport($start, $end), 'solicitudes_por_periodo.xlsx');
-
-
-
-        return view('request.filter', compact('requests', 'requestDays'))->share('start', $start);
+        return view('request.filter', compact('requests', 'requestDays', 'start', 'end'));
     }
 
 
@@ -459,25 +455,23 @@ class RequestController extends Controller
         return Excel::download(new RequestExport, 'solicitudes.xlsx');
     }
 
-    public function exportfilter($start, $end)
+    public function exportfilter(Request $request)
     {
-        return Excel::download(new FilterRequestExport($start, $end), 'solicitudes_por_periodo.xlsx');
+        return Excel::download(new FilterRequestExport($request->start, $request->end), 'solicitudes_por_periodo.xlsx');
     }
 
-    static function exportDataFilter()
+
+    public function getDataFilter(Request $request)
     {
 
-        /*         return Excel::download(new DateRequestExport($start,$end,$daySelected), 'solicitudes_por_periodo.xlsx'); 
- */
-    }
+        $daySelected = RequestCalendar::all()->where('start', '>=', $request->start)->where('end', '<=', $request->end)->pluck('requests_id', 'requests_id');
 
-    public function getDataFilter($data)
-    {
+        $start = $request->start;
+        $end = $request->end;
 
+        /*   return Excel::download(new RequestExport, 'solicitudes.xlsx'); */
+        return  Excel::download(new DateRequestExport($start, $end, $daySelected), 'solicitudes_por_periodo.xlsx');
 
-        /*  return Excel::download(new DateRequestExport('2022-02-01','2022-02-16',$requestDays), 'solicitudes_por_periodo.xlsx');   */
-
-
-        return ($data);
+        /*        return view('request.filterDate', compact('requests', 'requestDays', 'start', 'end')); */
     }
 }

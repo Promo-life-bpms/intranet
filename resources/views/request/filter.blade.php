@@ -3,16 +3,28 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Reportes por periodo</h3>
+            
+            <h3>Reportes por fecha de envío </h3>
+                {!! Form::open(['route' => 'request.export.filter']) !!}
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col md-4">
+                                {!! Form::label('start', 'Fecha de inicio') !!}
+                                {!! Form::date('start',$start, ['class' => 'form-control']) !!}
+                            </div>
+                            <div class="col">
+                                {!! Form::label('end', 'Fecha de fin') !!}
+                                {!! Form::date('end',$end, ['class' => 'form-control']) !!}
+                            </div>
+                            
+                            <div class="col mt-4">
 
-            <div class="d-flex justify-content-end">
-
-                @foreach ($start as $start)
-                    <li>$start</li>
-                @endforeach
-     {{--        <a style="margin-left: 20px;" href=" {{ route('request.export.filter') }} " type="button"
-                class="btn btn btn-success">Exportar Excel</a> --}}
-            </div>
+                                {!! Form::submit('Exportar', ['class' => 'btn btn-success']) !!}
+                            </div>
+                        </div>
+                    </div>
+               
+                {!! Form::close() !!}
         </div>
     </div>
     <div class="card-body">
@@ -41,7 +53,6 @@
                                 @foreach ($requestDays as $requestDay)
                                     @if ($request->id == $requestDay->requests_id)
                                         {{ $requestDay->start  }} ,
-                                        
                                     @endif
                                 @endforeach
                             </td>
@@ -57,53 +68,16 @@
 
     </div>
 
-
-    <div class="modal fade" id="modalBusqueda" tabindex="-1" aria-labelledby="modalBusquedaLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalBusquedaLabel">Realizar Búsqueda</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                {!! Form::open(['route' => 'request.filter']) !!}
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col">
-                            {!! Form::label('inicio', 'Fecha de inicio') !!}
-                            {!! Form::date('inicio',null, ['class' => 'form-control', 'placeholder' => 'Ingresa la fecha de vencimiento']) !!}
-                            @error('inicio')
-                            <small>
-                                <font color="red"> *Este campo es requerido* </font>
-                            </small>
-                            <br>
-                        @enderror
-                        </div>
-                        <div class="col">
-                            {!! Form::label('fin', 'Fecha de fin') !!}
-                            {!! Form::date('fin',null, ['class' => 'form-control', 'placeholder' => 'Ingresa la fecha de vencimiento']) !!}
-                            @error('fin')
-                            <small>
-                                <font color="red"> *Este campo es requerido* </font>
-                            </small>
-                            <br>
-                        @enderror
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    {!! Form::submit('Buscar', ['class' => 'btn btn-primary']) !!}
-                </div>
-                {!! Form::close() !!}
-            </div>
-        </div>
-    </div>
 @stop
 
 @section('scripts')
 
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        document.getElementById("end").readOnly = true;
+        document.getElementById("start").readOnly = true;
+    </script>
     <script>
         $('.form-delete').submit(function(e) {
             e.preventDefault();
@@ -124,4 +98,5 @@
             })
         });
     </script>
+
 @stop
