@@ -6,7 +6,7 @@
 
       <div class="banner">
           <div class="d-flex justify-content-center">
-            <img style="width: 240px;" class="aboutLogo" src="{{ asset('/img/bhtrade.png') }}" alt="bhtrade">
+            <img class="aboutLogo" style="max-width:240px; margin-top:17%;" src="{{ asset('/img/bhtrade.png') }}" alt="bhtrade">
           </div>
       </div>
 
@@ -15,36 +15,22 @@
         <section class="header">
 
             <div class="row mt-4">
-                <div class="col ">
+                <div class="col">
                    <div class="card info">
                     <h3 style="margin-bottom: 30px;">¿Qué es BH Trade Market? </h3>
                     <p class="mb-4" style=" text-align: justify;
-                    text-justify: inter-word; font-size:1.2rem;"> Más de una década importando, fabricando
+                    text-justify: inter-word; font-size:1.2rem;">Más de una década importando, fabricando
                     y distribuyendo productos promocionales y
                     regalos corporativos para las marcas más
                     prestigiosas. Expertos asesores, socios
                     estratégicos y facilitadores para la
                     adquisición del producto exacto para cada
                     campaña externa o interna de las empresas
-                    AAA..</p>
+                    AAA.
+                    </p>
                    </div>
                     
                 </div>
-               {{--  <div class="col md-6">
-                  <div class="card info">
-                    <h3 style="margin-bottom: 30px;">Historia </h3>
-                    <p style=" text-align: justify;
-                    text-justify: inter-word; font-size:1.2rem;">En 2011 se constituye <b>Promo Life S de RL de CV</b> ,
-                        sumando la experiencia de los socios en la
-                        importación y comercialización de productos
-                        promocionales disponibles en México. Hemos
-                        crecido año con año sin detenernos, teniendo cada
-                        vez más clientes, presencia en el mercado y un
-                        equipo de colaboradores más robusto y
-                        profesionalizando cada vez más nuestra dinámica
-                        de trabajo.</p>
-                  </div>                    
-                </div> --}}
             </div>
         </section>
           
@@ -90,7 +76,7 @@
                         <p class="mt-4" style=" text-align: justify; text-justify: inter-word; font-size:1rem;"> 
                         <b>Nos referimos a la posibilidad de
                             creer en que otra persona, o un
-                            grupo de ellas, actuarán de1 la
+                            grupo de ellas, actuarán de la
                             manera adecuada en nuestra
                             ausencia, es decir, que no nos
                             defraudarán o engañarán, ni
@@ -242,7 +228,7 @@
 }
 
 .banner img{
-  margin-top: 17%;
+  margin-top: 19%;
   width: 500px;
   position: absolute;
   z-index: 2;
