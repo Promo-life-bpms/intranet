@@ -27,7 +27,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class RequestController extends Controller
 {
-    
+
     public function ajax(Request $request)
     {
         $id = Auth::id();
@@ -213,24 +213,15 @@ class RequestController extends Controller
 
         $request->update($req->all());
 
-        // if ($req->human_resources_status == "Aprobada") {
+        if ($req->direct_manager_status == "Aprobada") {
+            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+            self::rhNotification($request);
+        } elseif ($req->direct_manager_status == "Rechazada") {
+            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+            self::userNotification($request);
+        }
 
-        //     DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-        //     self::userNotification($request);
-        // } elseif ($req->human_resources_status == "Rechazada") {
-        //     DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-        //     self::userNotification($request);
-        // }
 
-
-        $id = Auth::user()->id;
-        $position = DB::table('employees')->where('user_id', $id)->value('position_id');
-        $rh = DB::table('positions')->where('id', $position)->value('department_id');
-
-        // if ($rh == 1) {
-        //     return redirect()->action([RequestController::class, 'showAll']);
-        // } else {
-        // }
         return redirect()->action([RequestController::class, 'index']);
     }
 
@@ -280,17 +271,11 @@ class RequestController extends Controller
         return view('request.reports', compact('requests', 'requestDays', 'vacations'));
     }
 
-   
+
     //Notificaciones 
     static function managertNotification($req)
     {
         event(new RequestEvent($req));
-
-        /*       $id = Auth::id();
-        $manager = DB::table('employees')->where('user_id', $id)->value('jefe_directo_id');
-        User::all()->where('id', $manager)->each(function (User $user) use ($req) {
-            $user->notify(new RequestNotification($req));
-        }); */
     }
 
     static function rhNotification($req)
@@ -302,7 +287,7 @@ class RequestController extends Controller
     {
         event(new UserEvent($req));
     }
-    
+
     public function deleteNotification(ModelsRequest $request)
     {
         DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
@@ -328,7 +313,7 @@ class RequestController extends Controller
         $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
 
 
-        return view('request.authorizeEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request', 'rhAuth'));
+        return view('request.edit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request', 'rhAuth'));
     }
 
     public function authorizeRHEdit(Request $req, ModelsRequest $request)
@@ -345,10 +330,42 @@ class RequestController extends Controller
         }
 
 
+        /*    if ($req->human_resources_status == "Aprobada") {
+            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+            self::userNotification($request);
+        } elseif ($req->human_resources_status == "Rechazada") {
+            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+            self::userNotification($request);
+        } */
+
+
         $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
 
         $rhAuth = true;
+
         return view('request.authorizeEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request', 'rhAuth'));
+
+
+
+        /* 
+        $request->update($req->all());
+
+        if ($req->human_resources_status == "Aprobada") {
+            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+            self::userNotification($request);
+        } elseif ($req->human_resources_status == "Rechazada") {
+            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+            self::userNotification($request);
+        }
+
+        $id = Auth::user()->id;
+        $position = DB::table('employees')->where('user_id', $id)->value('position_id');
+        $rh = DB::table('positions')->where('id', $position)->value('department_id');
+
+        if ($rh == 1) {
+            return redirect()->action([RequestController::class, 'showAll']);
+        }
+        return redirect()->action([RequestController::class, 'index']); */
     }
 
 
@@ -361,21 +378,20 @@ class RequestController extends Controller
         ]);
 
         $id = Auth::id();
+
         $request->update($req->all());
 
-        if ($request->direct_manager_status == "Aprobada") {
-
+        if ($req->human_resources_status == "Aprobada") {
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-
-            self::rhNotification($request);
-        } elseif ($req->direct_manager_status == "Rechazada") {
+            self::userNotification($request);
+        } elseif ($req->human_resources_status == "Rechazada") {
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
         }
         return redirect()->action([RequestController::class, 'authorizeRequestManager']);
     }
 
-    
+
 
 
     public function deleteAll(ModelsRequest $request)
@@ -402,32 +418,18 @@ class RequestController extends Controller
             'start' => 'required',
             'end' => 'required',
         ]);
-/* 
-        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada');
-        $findRequests = [];
-        foreach ($requests as $data) {
-            foreach ($data->requestdays as $day) {
-                if ($day->start == $request->end || $day->start == $request->start) {
-                    array_push($findRequests, $data);
-                }
-            }
-        }
-        $requests = $findRequests;
-        $requestDays = RequestCalendar::all();
-        return view('request.filter', compact('requests', 'requestDays')); */
 
         $requestDays = RequestCalendar::all();
         $requests = ModelsRequest::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->whereRaw('DATE(created_at) >= ?', [$request->start])->whereRaw('DATE(created_at) <= ?', [$request->end])->get();
-        
+
         $start = $request->start;
         $end = $request->end;
 
-        return Excel::download(new FilterRequestExport($start,$end), 'solicitudes_por_periodo.xlsx');
+        return Excel::download(new FilterRequestExport($start, $end), 'solicitudes_por_periodo.xlsx');
 
 
 
-        return view('request.filter', compact('requests', 'requestDays'))->share('start',$start);
-
+        return view('request.filter', compact('requests', 'requestDays'))->share('start', $start);
     }
 
 
@@ -438,8 +440,8 @@ class RequestController extends Controller
             'end' => 'required',
         ]);
 
-        $requestDays = RequestCalendar::all()->where('start', '>=', $request->start)->where('end', '<=',$request->end);
-        $daySelected = RequestCalendar::all()->where('start', '>=', $request->start)->where('end', '<=',$request->end)->pluck('requests_id','requests_id');
+        $requestDays = RequestCalendar::all()->where('start', '>=', $request->start)->where('end', '<=', $request->end);
+        $daySelected = RequestCalendar::all()->where('start', '>=', $request->start)->where('end', '<=', $request->end)->pluck('requests_id', 'requests_id');
 
         $requests = ModelsRequest::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->whereIn('id', $daySelected)->get();
 
@@ -448,17 +450,9 @@ class RequestController extends Controller
 
         /* Excel::download(new DateRequestExport($start,$end,$daySelected), 'solicitudes_por_periodo.xlsx');  */
 
-        return view('request.filterDate', compact('requests', 'requestDays','start','end'));
-
+        return view('request.filterDate', compact('requests', 'requestDays', 'start', 'end'));
     }
 
-
-  /*   public function __construct($start, $end, $daySelected)
-    {
-        $this->start = $start;
-        $this->end = $end;
-        $this->daySelected = $daySelected;
-    } */
     //Exportaciones de excel
     public function export()
     {
@@ -467,24 +461,23 @@ class RequestController extends Controller
 
     public function exportfilter($start, $end)
     {
-        return Excel::download(new FilterRequestExport($start,$end), 'solicitudes_por_periodo.xlsx');
+        return Excel::download(new FilterRequestExport($start, $end), 'solicitudes_por_periodo.xlsx');
     }
 
     static function exportDataFilter()
     {
-        
-/*         return Excel::download(new DateRequestExport($start,$end,$daySelected), 'solicitudes_por_periodo.xlsx'); 
- */  }
+
+        /*         return Excel::download(new DateRequestExport($start,$end,$daySelected), 'solicitudes_por_periodo.xlsx'); 
+ */
+    }
 
     public function getDataFilter($data)
     {
 
-     
+
         /*  return Excel::download(new DateRequestExport('2022-02-01','2022-02-16',$requestDays), 'solicitudes_por_periodo.xlsx');   */
 
-    
-       return ($data);      
+
+        return ($data);
     }
 }
-
-

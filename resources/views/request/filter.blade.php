@@ -6,6 +6,10 @@
             <h3>Reportes por periodo</h3>
 
             <div class="d-flex justify-content-end">
+
+                @foreach ($start as $start)
+                    <li>$start</li>
+                @endforeach
      {{--        <a style="margin-left: 20px;" href=" {{ route('request.export.filter') }} " type="button"
                 class="btn btn btn-success">Exportar Excel</a> --}}
             </div>

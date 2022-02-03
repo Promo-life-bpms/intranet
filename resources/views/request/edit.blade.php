@@ -27,7 +27,7 @@
                             </small>
                         @enderror
                     </div>
-                    {{-- <div class="row">
+                    <div class="row">
                         @role('rh')
                             <div class="col-md-6 mt-4">
                                 {!! Form::label('human_resources_status', 'Autorizacion de RH') !!}
@@ -51,7 +51,7 @@
                                 @enderror
                             </div>
                         @endrole
-                    </div> --}}
+                    </div> 
 
 
                     <div class="col-md-6 mt-4">
