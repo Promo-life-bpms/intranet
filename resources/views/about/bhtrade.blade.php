@@ -64,7 +64,6 @@
                         en el otro</b>
                         </p>
                         <div style="padding-bottom: 50px;"  class="separador"></div>
-
                         <img class="item-img" src="{{ asset('/img/lealtad.png') }}" alt="">
                     </div>
                 </div>
