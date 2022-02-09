@@ -8,7 +8,6 @@
         <div class="d-flex w-100 justify-content-around content-employees">
         </div>
     </div>
-
 @stop
 
 @section('scripts')
