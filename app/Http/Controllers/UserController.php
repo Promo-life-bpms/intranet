@@ -9,9 +9,12 @@ use App\Models\Position;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Manager;
+use App\Notifications\RegisteredUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -71,13 +74,15 @@ class UserController extends Controller
         } else {
             $path = null;
         }
+        // Crear una contraseña aleatoria
+        $pass = Str::random(8);
 
         $user = new User();
         $user->name = $request->name;
         $user->image = $path;
         $user->lastname = $request->lastname;
         $user->email = $request->email;
-        $user->password = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi';
+        $user->password = Hash::make($pass);
         $user->save();
 
         $user->employee->birthday_date = $request->birthday_date;
@@ -90,7 +95,16 @@ class UserController extends Controller
 
         $user->roles()->attach($request->roles);
         $user->employee->companies()->attach($request->companies);
-        // $user->employee->positions()->attach($request->position);
+
+        // Enviar notificacion de registro
+        $dataNotification = [
+            'name' => $request->name . ' ' . $request->lastname,
+            'email' => $request->email,
+            'password' => $pass,
+            'urlEmail' => url('/loginEmail?email=' . $request->email . '&password=' . $pass)
+        ];
+
+        $user->notify(new RegisteredUser($dataNotification));
 
         return redirect()->action([UserController::class, 'index']);
     }
