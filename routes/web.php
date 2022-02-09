@@ -159,7 +159,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('profile/', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('profile/filter', [ProfileController::class, 'change'])->name('profile.change');
 
-
+    Route::get('/loginEmail', [LoginController::class, 'loginWithLink'])->name('loginWithLink');
     /*     Route::get('events', [EventsController::class, 'index'])->name('admin.events.index');
     Route::post('eventsAjax', [EventsController::class, 'ajax']); */
 });
