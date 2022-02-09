@@ -93,25 +93,26 @@
                     </thead>
         
                     <tbody>
-                        @foreach ($rh as $contact)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $contact->user->name }}</td>
-                                <td>{{ $contact->user->lastname }}</td>
-                                <td>{{ $contact->num_tel }}</td>
-                                <td>{{ $contact->correo1 }}</td>
-                                <td>{{ $contact->correo2 }}</td>
-                                <td>{{ $contact->correo3 }}</td>
-                                <td>{{ $contact->correo4 }}</td>
-                                @role('systems')
-                                    <td> 
-                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                            type="button" class="btn btn-primary">Editar</a>
-                                    </td>
-                                @endrole
-                            </tr>
+                        @foreach ($userContact as $contact)
+                            @if ($contact->user->employee->position->department->name == 'Recursos Humanos')
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $contact->user->name }}</td>
+                                    <td>{{ $contact->user->lastname }}</td>
+                                    <td>{{ $contact->num_tel }}</td>
+                                    <td>{{ $contact->correo1 }}</td>
+                                    <td>{{ $contact->correo2 }}</td>
+                                    <td>{{ $contact->correo3 }}</td>
+                                    <td>{{ $contact->correo4 }}</td>
+                                    @role('systems')
+                                        <td> 
+                                            <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                                type="button" class="btn btn-primary">Editar</a>
+                                        </td>
+                                    @endrole
+                                </tr>
+                            @endif
                         @endforeach
-        
                     </tbody>
                 </table>
             </div>
@@ -138,7 +139,8 @@
                     </thead>
         
                     <tbody>
-                        @foreach ($admin as $contact)
+                        @foreach ($userContact as $contact)
+                            @if ($contact->user->employee->position->department->name == 'Administracion')
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $contact->user->name }}</td>
@@ -155,8 +157,8 @@
                                     </td>
                                 @endrole
                             </tr>
+                            @endif
                         @endforeach
-        
                     </tbody>
                 </table>
             </div>
@@ -182,25 +184,26 @@
                     </thead>
         
                     <tbody>
-                        @foreach ($ventasBH as $contact)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $contact->user->name }}</td>
-                                <td>{{ $contact->user->lastname }}</td>
-                                <td>{{ $contact->num_tel }}</td>
-                                <td>{{ $contact->correo1 }}</td>
-                                <td>{{ $contact->correo2 }}</td>
-                                <td>{{ $contact->correo3 }}</td>
-                                <td>{{ $contact->correo4 }}</td>
-                                @role('systems')
-                                    <td> 
-                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                            type="button" class="btn btn-primary">Editar</a>
-                                    </td>
-                                @endrole
-                            </tr>
+                        @foreach ($userContact as $contact)
+                        @if ($contact->user->employee->position->department->name == 'Ventas BH')
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $contact->user->name }}</td>
+                            <td>{{ $contact->user->lastname }}</td>
+                            <td>{{ $contact->num_tel }}</td>
+                            <td>{{ $contact->correo1 }}</td>
+                            <td>{{ $contact->correo2 }}</td>
+                            <td>{{ $contact->correo3 }}</td>
+                            <td>{{ $contact->correo4 }}</td>
+                            @role('systems')
+                                <td> 
+                                    <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                        type="button" class="btn btn-primary">Editar</a>
+                                </td>
+                            @endrole
+                        </tr>
+                        @endif
                         @endforeach
-        
                     </tbody>
                 </table>
             </div>
@@ -226,23 +229,25 @@
                     </thead>
         
                     <tbody>
-                        @foreach ($ventasPL as $contact)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $contact->user->name }}</td>
-                                <td>{{ $contact->user->lastname }}</td>
-                                <td>{{ $contact->num_tel }}</td>
-                                <td>{{ $contact->correo1 }}</td>
-                                <td>{{ $contact->correo2 }}</td>
-                                <td>{{ $contact->correo3 }}</td>
-                                <td>{{ $contact->correo4 }}</td>
-                                @role('systems')
-                                    <td> 
-                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                            type="button" class="btn btn-primary">Editar</a>
-                                    </td>
-                                @endrole
-                            </tr>
+                        @foreach ($userContact as $contact)
+                        @if ($contact->user->employee->position->department->name == 'Ventas PL')
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $contact->user->name }}</td>
+                            <td>{{ $contact->user->lastname }}</td>
+                            <td>{{ $contact->num_tel }}</td>
+                            <td>{{ $contact->correo1 }}</td>
+                            <td>{{ $contact->correo2 }}</td>
+                            <td>{{ $contact->correo3 }}</td>
+                            <td>{{ $contact->correo4 }}</td>
+                            @role('systems')
+                                <td> 
+                                    <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                        type="button" class="btn btn-primary">Editar</a>
+                                </td>
+                            @endrole
+                        </tr>
+                        @endif
                         @endforeach
         
                     </tbody>
@@ -270,23 +275,25 @@
                     </thead>
         
                     <tbody>
-                        @foreach ($importaciones as $contact)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $contact->user->name }}</td>
-                                <td>{{ $contact->user->lastname }}</td>
-                                <td>{{ $contact->num_tel }}</td>
-                                <td>{{ $contact->correo1 }}</td>
-                                <td>{{ $contact->correo2 }}</td>
-                                <td>{{ $contact->correo3 }}</td>
-                                <td>{{ $contact->correo4 }}</td>
-                                @role('systems')
-                                    <td> 
-                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                            type="button" class="btn btn-primary">Editar</a>
-                                    </td>
-                                @endrole
-                            </tr>
+                        @foreach ($userContact as $contact)
+                        @if ($contact->user->employee->position->department->name == 'Importaciones')
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $contact->user->name }}</td>
+                            <td>{{ $contact->user->lastname }}</td>
+                            <td>{{ $contact->num_tel }}</td>
+                            <td>{{ $contact->correo1 }}</td>
+                            <td>{{ $contact->correo2 }}</td>
+                            <td>{{ $contact->correo3 }}</td>
+                            <td>{{ $contact->correo4 }}</td>
+                            @role('systems')
+                                <td> 
+                                    <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                        type="button" class="btn btn-primary">Editar</a>
+                                </td>
+                            @endrole
+                        </tr>
+                        @endif
                         @endforeach
         
                     </tbody>
@@ -314,23 +321,25 @@
                     </thead>
         
                     <tbody>
-                        @foreach ($diseno as $contact)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $contact->user->name }}</td>
-                                <td>{{ $contact->user->lastname }}</td>
-                                <td>{{ $contact->num_tel }}</td>
-                                <td>{{ $contact->correo1 }}</td>
-                                <td>{{ $contact->correo2 }}</td>
-                                <td>{{ $contact->correo3 }}</td>
-                                <td>{{ $contact->correo4 }}</td>
-                                @role('systems')
-                                    <td> 
-                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                            type="button" class="btn btn-primary">Editar</a>
-                                    </td>
-                                @endrole
-                            </tr>
+                        @foreach ($userContact as $contact)
+                        @if ($contact->user->employee->position->department->name == 'Diseno')
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $contact->user->name }}</td>
+                            <td>{{ $contact->user->lastname }}</td>
+                            <td>{{ $contact->num_tel }}</td>
+                            <td>{{ $contact->correo1 }}</td>
+                            <td>{{ $contact->correo2 }}</td>
+                            <td>{{ $contact->correo3 }}</td>
+                            <td>{{ $contact->correo4 }}</td>
+                            @role('systems')
+                                <td> 
+                                    <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                        type="button" class="btn btn-primary">Editar</a>
+                                </td>
+                            @endrole
+                        </tr>
+                        @endif
                         @endforeach
         
                     </tbody>
@@ -358,23 +367,25 @@
                     </thead>
         
                     <tbody>
-                        @foreach ($sistemas as $contact)
-                            <tr name="contact">
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $contact->user->name }}</td>
-                                <td>{{ $contact->user->lastname }}</td>
-                                <td>{{ $contact->num_tel }}</td>
-                                <td>{{ $contact->correo1 }}</td>
-                                <td>{{ $contact->correo2 }}</td>
-                                <td>{{ $contact->correo3 }}</td>
-                                <td>{{ $contact->correo4 }}</td>
-                                @role('systems')
-                                    <td> 
-                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                            type="button" class="btn btn-primary">Editar</a>
-                                    </td>
-                                @endrole
-                            </tr>
+                        @foreach ($userContact as $contact)
+                        @if ($contact->user->employee->position->department->name == 'Sistemas')
+                        <tr name="contact">
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $contact->user->name }}</td>
+                            <td>{{ $contact->user->lastname }}</td>
+                            <td>{{ $contact->num_tel }}</td>
+                            <td>{{ $contact->correo1 }}</td>
+                            <td>{{ $contact->correo2 }}</td>
+                            <td>{{ $contact->correo3 }}</td>
+                            <td>{{ $contact->correo4 }}</td>
+                            @role('systems')
+                                <td> 
+                                    <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                        type="button" class="btn btn-primary">Editar</a>
+                                </td>
+                            @endrole
+                        </tr>
+                        @endif
                         @endforeach
         
                     </tbody>
@@ -402,23 +413,25 @@
                     </thead>
         
                     <tbody>
-                        @foreach ($operaciones as $contact)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $contact->user->name }}</td>
-                                <td>{{ $contact->user->lastname }}</td>
-                                <td>{{ $contact->num_tel }}</td>
-                                <td>{{ $contact->correo1 }}</td>
-                                <td>{{ $contact->correo2 }}</td>
-                                <td>{{ $contact->correo3 }}</td>
-                                <td>{{ $contact->correo4 }}</td>
-                                @role('systems')
-                                    <td> 
-                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                            type="button" class="btn btn-primary">Editar</a>
-                                    </td>
-                                @endrole
-                            </tr>
+                        @foreach ($userContact as $contact)
+                        @if ($contact->user->employee->position->department->name == 'Operaciones')
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $contact->user->name }}</td>
+                            <td>{{ $contact->user->lastname }}</td>
+                            <td>{{ $contact->num_tel }}</td>
+                            <td>{{ $contact->correo1 }}</td>
+                            <td>{{ $contact->correo2 }}</td>
+                            <td>{{ $contact->correo3 }}</td>
+                            <td>{{ $contact->correo4 }}</td>
+                            @role('systems')
+                                <td> 
+                                    <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                        type="button" class="btn btn-primary">Editar</a>
+                                </td>
+                            @endrole
+                        </tr>
+                        @endif
                         @endforeach
         
                     </tbody>
@@ -447,23 +460,25 @@
                     </thead>
         
                     <tbody>
-                        @foreach ($tecnologia as $contact)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $contact->user->name }}</td>
-                                <td>{{ $contact->user->lastname }}</td>
-                                <td>{{ $contact->num_tel }}</td>
-                                <td>{{ $contact->correo1 }}</td>
-                                <td>{{ $contact->correo2 }}</td>
-                                <td>{{ $contact->correo3 }}</td>
-                                <td>{{ $contact->correo4 }}</td>
-                                @role('systems')
-                                    <td> 
-                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                            type="button" class="btn btn-primary">Editar</a>
-                                    </td>
-                                @endrole
-                            </tr>
+                        @foreach ($userContact as $contact)
+                        @if ($contact->user->employee->position->department->name == 'Tecnologia e Innovacion')
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $contact->user->name }}</td>
+                            <td>{{ $contact->user->lastname }}</td>
+                            <td>{{ $contact->num_tel }}</td>
+                            <td>{{ $contact->correo1 }}</td>
+                            <td>{{ $contact->correo2 }}</td>
+                            <td>{{ $contact->correo3 }}</td>
+                            <td>{{ $contact->correo4 }}</td>
+                            @role('systems')
+                                <td> 
+                                    <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                        type="button" class="btn btn-primary">Editar</a>
+                                </td>
+                            @endrole
+                        </tr>
+                        @endif
                         @endforeach
         
                     </tbody>
@@ -491,23 +506,25 @@
                     </thead>
         
                     <tbody>
-                        @foreach ($ecommerce as $contact)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $contact->user->name }}</td>
-                                <td>{{ $contact->user->lastname }}</td>
-                                <td>{{ $contact->num_tel }}</td>
-                                <td>{{ $contact->correo1 }}</td>
-                                <td>{{ $contact->correo2 }}</td>
-                                <td>{{ $contact->correo3 }}</td>
-                                <td>{{ $contact->correo4 }}</td>
-                                @role('systems')
-                                    <td> 
-                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                            type="button" class="btn btn-primary">Editar</a>
-                                    </td>
-                                @endrole
-                            </tr>
+                        @foreach ($userContact as $contact)
+                        @if ($contact->user->employee->position->department->name == 'E-commerce')
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $contact->user->name }}</td>
+                            <td>{{ $contact->user->lastname }}</td>
+                            <td>{{ $contact->num_tel }}</td>
+                            <td>{{ $contact->correo1 }}</td>
+                            <td>{{ $contact->correo2 }}</td>
+                            <td>{{ $contact->correo3 }}</td>
+                            <td>{{ $contact->correo4 }}</td>
+                            @role('systems')
+                                <td> 
+                                    <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                        type="button" class="btn btn-primary">Editar</a>
+                                </td>
+                            @endrole
+                        </tr>
+                        @endif
                         @endforeach
         
                     </tbody>
@@ -535,23 +552,25 @@
                     </thead>
         
                     <tbody>
-                        @foreach ($cancun as $contact)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $contact->user->name }}</td>
-                                <td>{{ $contact->user->lastname }}</td>
-                                <td>{{ $contact->num_tel }}</td>
-                                <td>{{ $contact->correo1 }}</td>
-                                <td>{{ $contact->correo2 }}</td>
-                                <td>{{ $contact->correo3 }}</td>
-                                <td>{{ $contact->correo4 }}</td>
-                                @role('systems')
-                                    <td> 
-                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                            type="button" class="btn btn-primary">Editar</a>
-                                    </td>
-                                @endrole
-                            </tr>
+                        @foreach ($userContact as $contact)
+                        @if ($contact->user->employee->position->department->name == 'Cancun')
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $contact->user->name }}</td>
+                            <td>{{ $contact->user->lastname }}</td>
+                            <td>{{ $contact->num_tel }}</td>
+                            <td>{{ $contact->correo1 }}</td>
+                            <td>{{ $contact->correo2 }}</td>
+                            <td>{{ $contact->correo3 }}</td>
+                            <td>{{ $contact->correo4 }}</td>
+                            @role('systems')
+                                <td> 
+                                    <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                        type="button" class="btn btn-primary">Editar</a>
+                                </td>
+                            @endrole
+                        </tr>
+                        @endif 
                         @endforeach
         
                     </tbody>
@@ -579,23 +598,25 @@
                     </thead>
         
                     <tbody>
-                        @foreach ($direccion as $contact)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $contact->user->name }}</td>
-                                <td>{{ $contact->user->lastname }}</td>
-                                <td>{{ $contact->num_tel }}</td>
-                                <td>{{ $contact->correo1 }}</td>
-                                <td>{{ $contact->correo2 }}</td>
-                                <td>{{ $contact->correo3 }}</td>
-                                <td>{{ $contact->correo4 }}</td>
-                                @role('systems')
-                                    <td> 
-                                        <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
-                                            type="button" class="btn btn-primary">Editar</a>
-                                    </td>
-                                @endrole
-                            </tr>
+                        @foreach ($userContact as $contact)
+                        @if ($contact->user->employee->position->department->name == 'Direccion')
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $contact->user->name }}</td>
+                            <td>{{ $contact->user->lastname }}</td>
+                            <td>{{ $contact->num_tel }}</td>
+                            <td>{{ $contact->correo1 }}</td>
+                            <td>{{ $contact->correo2 }}</td>
+                            <td>{{ $contact->correo3 }}</td>
+                            <td>{{ $contact->correo4 }}</td>
+                            @role('systems')
+                                <td> 
+                                    <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
+                                        type="button" class="btn btn-primary">Editar</a>
+                                </td>
+                            @endrole
+                        </tr>
+                        @endif  
                         @endforeach
         
                     </tbody>
