@@ -10,6 +10,7 @@ use App\Http\Controllers\CommuniqueController;
 use App\Http\Controllers\ManualController;
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\WorkController;

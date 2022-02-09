@@ -225,7 +225,7 @@
                             });
                             console.log(daysAvailablesToTake);
                             if (daysAvailablesToTake > 0) {
-                                if (canSelected) {
+                              /*   if (canSelected) { */
                                     if (dateActual <= start) {
                                         $.ajax({
                                             url: SITEURL + "/fullcalenderAjax",
@@ -265,9 +265,9 @@
                                     } else {
                                         displayInfo('No puedes seleccionar fechas atrasadas ')
                                     }
-                                } else {
+                               /*  } else {
                                     displayError('No puedes seleccionar fechas no disponibles')
-                                }
+                                } */
                             } else {
                                 displayError('No tienes dias disponibles')
                             }
