@@ -6,118 +6,135 @@
         
     </div>
     <div class="card-body">
+
         <div class="row">
-            <div class="col mb-6">
-                @foreach ($user as $usr)
+            <div class="banner">
+                <div class="d-flex justify-content-center">
+                    @foreach ($user as $usr)
 
-                @if ($usr->image==null)
-                <img class="rounded" style="width: 100%; height:500px; object-fit: cover;"  src="https://img.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg?size=338&ext=jpg">
-                <br>
-                <br>
-                <button type="button" class="btnCreate"  data-bs-toggle="modal" data-bs-target="#modalImage">
-                    Cambiar imagen
-                    <i style="margin-left:5px; " class="fa fa-camera" aria-hidden="true"></i>
-                </button>
-                @else 
-                    <img class="rounded" style="width: 100%; height:500px; object-fit: cover;" src="{{ ($usr->image) }}">
-                    <br>
-                    <br>
-                    <button type="button" class="btnCreate"  data-bs-toggle="modal" data-bs-target="#modalImage">
-                        Cambiar imagen
-                        <i style="margin-left:5px; " class="fa fa-camera" aria-hidden="true"></i>
-                    </button>
-                @endif
+                    @if ($usr->image==null)
+
+                        <div class="container-image  rounded-circle">
+                            <div class="image" style=" ">
+                                <img class="profile-picture" src="https://img.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg?size=338&ext=jpg"  alt=""> 
+                            </div>
+
+                            <div class="change-image"  style="z-index: 10;" >
+                                
+                                <button type="button" class="btnCreate"  data-bs-toggle="modal" data-bs-target="#modalImage">
+                                    <i style="margin-left:5px; " class="fa fa-camera" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    @else 
+                        <div class="container-image  rounded-circle">
+                            <div class="image" style=" ">
+                                <img class="profile-picture" src="{{ ($usr->image) }}"  alt=""> 
+                            </div>
+
+                            <div class="change-image"  style="z-index: 10;" >
+                                
+                                <button type="button" class="btnCreate"  data-bs-toggle="modal" data-bs-target="#modalImage">
+                                    <i style="margin-left:5px; " class="fa fa-camera" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    @endif
                     
-                @endforeach
+                    @endforeach
+                </div>
             </div>
+        </div>
 
-            <div class="col mb-6">
+        <div class="separador" style="margin-top:100px "></div>
+
+        <div class="row">
+                <h4>Informacion de usuario</h4>
+
                 @foreach ($user as $usr)
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Nombre</span>
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{$usr->name}}" disabled>
-                  </div>
-
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Apellidos</span>
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{$usr->lastname}}" disabled>
-                  </div>
-                  
-
-                @if ( !empty($usr->employee->position->department->name))
+                <div class="col md-4">
+                                     
                     <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">Departamento</span>
+                        <span class="input-group-text" id="inputGroup-sizing-default">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                        </span>
+                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{$usr->name}}" disabled>
+                    </div>
+                  
+                </div>
+                <div class="col md-4">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                        </span>
+                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{$usr->lastname}}" disabled>
+                    </div>
+                </div>
+                
+                <div class="col md-4">
+                    @if ( !empty($usr->employee->position->department->name))
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">
+                            <i class="fa fa-building" aria-hidden="true"></i>
+                        </span>
                         <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $usr->employee->position->department->name }}" disabled>
                     </div>
-                @else 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">Departamento</span>
-                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="No especificado" disabled>
-                    </div>
-                @endif
-                 
-                @if (!empty($usr->employee->position->name))
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">Puesto</span>
-                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $usr->employee->position->name }}" disabled>
-                    </div>
-                @else 
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">Puesto</span>
-                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="No especificado" disabled>
-                    </div>
-                @endif
-                    
-                @foreach ($contacts as $contact)
-                    @if (!empty($contact->num_tel))
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputGroup-sizing-default">Teléfono</span>
-                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $contact->num_tel }}" disabled>
-                        </div>
                     @else 
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputGroup-sizing-default">Teléfono</span>
+                            <span class="input-group-text" id="inputGroup-sizing-default">
+                                <i class="fa fa-building" aria-hidden="true"></i>
+                            </span>
+                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="No especificado" disabled>
+                        </div>
+                    @endif
+                </div>
+              
+             
+        </div>
+
+        <div class="row">
+                <div class="col md-6">
+                    @if (!empty($usr->employee->position->name))
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">
+                            <i class="fa fa-briefcase" aria-hidden="true"></i>
+                        </span>
+                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $usr->employee->position->name }}" disabled>
+                    </div>
+                    @else 
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">
+                                <i class="fa fa-briefcase" aria-hidden="true"></i>
+
+                            </span>
+                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="No especificado" disabled>
+                        </div>
+                    @endif
+                </div>
+                    
+                <div class="col md-6">
+                    @if (!empty($usr->email))
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">
+                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                        </span>
+                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $usr->email }}" disabled>
+                    </div>
+                    @else 
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                            </span>
                             <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="No especificado" disabled>
                         </div>
                     @endif
 
-                    @if (!empty($contact->correo1))
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputGroup-sizing-default">Correo</span>
-                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $contact->correo1 }}" disabled>
-                        </div>
-                    @endif
-
-                    @if (!empty($contact->correo2))
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputGroup-sizing-default">Correo</span>
-                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $contact->correo2 }}" disabled>
-                        </div>
-                    @endif
-
-                    @if (!empty($contact->correo3))
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputGroup-sizing-default">Correo</span>
-                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $contact->correo3 }}" disabled>
-                        </div>   
-                    @endif
-
-                    @if (!empty($contact->correo4))
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">Correo</span>
-                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $contact->correo4 }}" disabled>
-                    </div>   
-                    @endif
-
+                </div>
+                    
                 @endforeach
-                  
-                
-                  
-
-                @endforeach
-                
             </div>
-        </div>
     </div>
 
     <div class="modal fade" id="modalImage" tabindex="-1" aria-labelledby="modalImageLabel" aria-hidden="true">
@@ -161,5 +178,54 @@
         background-color: #1A346B;
         color: #ffffff;
     }
+
+    .banner {
+  	height: 45vh;
+  	background-image: 
+	  linear-gradient(to right bottom, 
+     rgba(76, 216, 255, 0.8),
+     rgba(30, 108, 217, 0.8)),
+     url('http://www.trademarket.com.mx/assets/imgs/quienes.jpg');
+  	
+	background-size: cover;
+  	background-position: top;
+  	position: relative;
+    
+  	clip-path: polygon(0 0, 100% 0, 100% 100vh, 0 100%);
+}
+
+.container-image {
+    width:240px; 
+    height:240px;
+    background: #ffffff; 
+    margin-top: 17.5%;
+    overflow: hidden; 
+   
+} 
+
+.image{
+    width:100%;
+    height:100%; 
+    z-index:2;
+}
+
+.change-image{
+    width: 100%; 
+    height:60px; 
+    margin-top: -20%;
+    overflow: hidden;
+    z-index: 20;
+}
+
+.btnCreate{
+    opacity: 0.5;
+}
+
+.profile-picture{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 </style>
 @stop

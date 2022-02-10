@@ -171,6 +171,18 @@
                     <td>{{ $contact->correo3 }}</td>
                     <td>{{ $contact->correo4 }}</td>
                 </tr>
+            @else
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $contact->user->name }}</td>
+                    <td>{{ $contact->user->lastname }}</td>
+                    <td>{{ $contact->user->employee->position->department->name }}</td>
+                    <td>{{ $contact->num_tel }}</td>
+                    <td>{{ $contact->correo1 }}</td>
+                    <td>{{ $contact->correo2 }}</td>
+                    <td>{{ $contact->correo3 }}</td>
+                    <td>{{ $contact->correo4 }}</td>
+                </tr>
         @endif
     @endforeach
 
