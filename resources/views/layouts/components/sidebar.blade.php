@@ -152,7 +152,7 @@
                                 <span>BH-Trade</span>
                             </a>
                         </li>
-                        <li class="submenu-item ">
+                     {{--    <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('about_promodreams') }}">
                                 <span>Promodreams</span>
                             </a>
@@ -161,7 +161,7 @@
                             <a class="dropdown-item" href="{{ route('about_trademarket') }}">
                                 <span>Trademarket 57 </span>
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </li>
 

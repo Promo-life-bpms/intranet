@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 
-class FilterRequestExport implements FromView
+class FilterRequestExport implements FromView, ShouldAutoSize
 {
  
     use Exportable;

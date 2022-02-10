@@ -75,7 +75,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
-        Route::resource('contacts', ContactController::class);
         // Route::resource('roles', RoleController::class);
         Route::resource('departments', DepartmentsController::class);
         Route::resource('position', PositionController::class);
@@ -83,6 +82,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::resource('organization', OrganizationController::class);
     });
 
+    Route::prefix('admin')->name('admin.')->group(function () {
+
+        Route::resource('contacts', ContactController::class);
+
+     });
+
+    Route::post('contacts/export/', [ContactController::class, 'export'])->name('contacts.export');
 
     Route::resource('communiques', CommuniqueController::class);
 

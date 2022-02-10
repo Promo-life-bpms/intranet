@@ -4,9 +4,11 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Directorio telefonico y correos</h3>
-            {{-- @role('systems')
-                <a href="{{ route('admin.contacts.create') }}" type="button" class="btn btn-success">Agregar</a>
-            @endrole --}}
+            @role('systems')
+                {!! Form::open(['route' => 'contacts.export']) !!}
+                    {!! Form::submit('Exportar', ['class' => 'btn btn-success']) !!}
+                {!! Form::close() !!}
+            @endrole 
         </div>
     </div>
     <div class="card-body">
@@ -35,6 +37,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
+                            <th scope="col">Departamento</th>
                             <th scope="col">Numero</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
@@ -52,6 +55,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $contact->user->name }}</td>
                                 <td>{{ $contact->user->lastname }}</td>
+                                <td>{{ $contact->user->employee->position->department->name }}</td>
                                 <td>{{ $contact->num_tel }}</td>
                                 <td>{{ $contact->correo1 }}</td>
                                 <td>{{ $contact->correo2 }}</td>
@@ -670,7 +674,6 @@
 @section('scripts')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-
     <script>
         $('.form-delete').submit(function(e) {
             e.preventDefault();
@@ -711,5 +714,11 @@
     <script>
     document.getElementById("defaultOpen").click();
     </script>
+
+    <script>
+          let jquery_datatable = $("#tableTickets").DataTable()
+    </script>
+    
+
   
 @stop

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DirectoryExport;
 use App\Models\Contact;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Position;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ContactController extends Controller
 {
@@ -117,4 +119,9 @@ class ContactController extends Controller
         $contacts = Contact::all()->whereIn('user_id', $data);
         return json_encode($contacts);
     } */
+
+
+    public function export(){
+        return Excel::download(new DirectoryExport, 'directorio_telefonico_y_correos.xlsx');
+    }
 }

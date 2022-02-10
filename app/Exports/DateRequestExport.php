@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
-class DateRequestExport implements FromView
+class DateRequestExport implements FromView, ShouldAutoSize
 {
     use Exportable;
 
