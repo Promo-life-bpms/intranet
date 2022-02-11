@@ -54,7 +54,9 @@ class HomeController extends Controller
 
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
 
-        return view('home.index', compact('employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage'));
+        $monthEmployeeController = MonthController::getEmpoyeeMonth();
+
+        return view('home.index', compact('employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController'));
     }
 
 
