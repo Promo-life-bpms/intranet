@@ -11,16 +11,17 @@
                     <div class="avatar avatar-xl">
                         <div class="card-photo" style="width: 40px; height:40px;">
                             @if (auth()->user()->image == null)
-                            <a  style="color: inherit;" href="{{ route('profile.index') }}">
-                                <p
-                                    class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
-                                    <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
-                                </p>
-                            </a>
+                                <a style="color: inherit;" href="{{ route('profile.index') }}">
+                                    <p
+                                        class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
+                                        <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
+                                    </p>
+                                </a>
                             @else
-                            <a  href="{{ route('profile.index') }}">
-                                <img style="width: 100%; height:100%; object-fit: cover;" src="{{ asset(auth()->user()->image) }}">
-                            </a>
+                                <a href="{{ route('profile.index') }}">
+                                    <img style="width: 100%; height:100%; object-fit: cover;"
+                                        src="{{ asset(auth()->user()->image) }}">
+                                </a>
                             @endif
 
                             {{-- @if (auth()->user()->profile->photo)
@@ -94,13 +95,14 @@
                         <a href="#" class='sidebar-link'>
                             <i class="fa fa-users" aria-hidden="true"></i>
                             <span>Gestion </span>
-                            <span class="badge bg-secondary">{{  auth()->user()->unreadNotifications->count() }} </span>
+                            <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }} </span>
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.showAll') }}">
                                     <span>Ver solicitudes</span>
-                                    <span class="badge bg-secondary">{{  auth()->user()->unreadNotifications->count() }} </span>
+                                    <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }}
+                                    </span>
                                 </a>
                             </li>
                             <li class="submenu-item ">
@@ -152,7 +154,7 @@
                                 <span>BH-Trade</span>
                             </a>
                         </li>
-                     {{--    <li class="submenu-item ">
+                        {{-- <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('about_promodreams') }}">
                                 <span>Promodreams</span>
                             </a>
@@ -177,11 +179,11 @@
                         <i class="fa fa-pencil-square" aria-hidden="true"></i>
                         <span>Solicitudes</span>
                         @role('employee')
-                        <span class="badge bg-secondary">{{  auth()->user()->unreadNotifications->count() }} </span>
+                            <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }} </span>
                         @endrole('employee')
 
                         @role('manager')
-                        <span class="badge bg-secondary">{{  auth()->user()->unreadNotifications->count() }} </span>
+                            <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }} </span>
                         @endrole('manager')
                     </a>
 
@@ -191,7 +193,8 @@
                             <a class="dropdown-item" href="{{ route('request.index') }}">
                                 <span>Mis Solicitudes</span>
                                 @role('employee')
-                                <span class="badge bg-secondary">{{  auth()->user()->unreadNotifications->count() }} </span>
+                                    <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }}
+                                    </span>
                                 @endrole('employee')
 
                             </a>
@@ -200,7 +203,9 @@
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.authorizeManager') }}">
                                     <span>Autorizar Solicitudes</span>
-                                    <span class="badge bg-secondary">{{  auth()->user()->unreadNotifications->count() }} </span>
+                                    <span
+                                        class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }}
+                                    </span>
                                 </a>
                             </li>
                         @endif
@@ -256,6 +261,11 @@
                                 <span>Comunicados de área</span>
                             </a>
                         </li>
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('admin.communique.show') }}">
+                                <span>Comunicados</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
@@ -273,7 +283,7 @@
                     </a>
                 </li>
 
-               {{--  <li class="sidebar-item {{ request()->is('folder') ? 'active' : '' }}">
+                {{-- <li class="sidebar-item {{ request()->is('folder') ? 'active' : '' }}">
                     <a href="{{ route('folder') }}" class='sidebar-link'>
                         <i class="fa fa-folder-open" aria-hidden="true"></i>
                         <span>Carpetas</span>
@@ -289,17 +299,17 @@
 
 
                 <!-- <li class="sidebar-item  {{ request()->is('users') ? 'active' : '' }}">
-                                    <a href="#" class='sidebar-link'>
-                                        <i class="bi bi-grid-fill"></i>
-                                        <span>Ver Usuarios</span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item  {{ request()->is('temas') ? 'active' : '' }}">
-                                    <a href="#" class='sidebar-link'>
-                                        <i class="bi bi-grid-fill"></i>
-                                        <span>Ver Equipos</span>
-                                    </a>
-                                </li> -->
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Ver Usuarios</span>
+                    </a>
+                </li>
+                <li class="sidebar-item  {{ request()->is('temas') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Ver Equipos</span>
+                    </a>
+                </li> -->
                 <!-- Authentication Links -->
                 @guest
                     <li class="sidebar-item">

@@ -69,7 +69,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
 
     Route::get('/month', MonthController::class)->name('month');
-    Route::get('/manual', ManualController::class)->name('manual');
+    // Route::get('/manual', ManualController::class)->name('manual');
     Route::get('/folder', FolderController::class)->name('folder');
     Route::get('/work', WorkController::class)->name('work');
 
@@ -82,6 +82,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::resource('organization', OrganizationController::class);
     });
 
+    Route::resource('manuals', ManualController::class);
     Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('contacts', ContactController::class);
