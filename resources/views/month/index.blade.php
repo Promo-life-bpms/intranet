@@ -8,7 +8,7 @@
         <div class="d-flex w-100 justify-content-around content-employees">
             @foreach ($monthEmployeeController as $employeeMonth)
                 <div class="card text-center shadow p-3 mx-5 bg-body rounded">
-                    <img src="{{ asset($employeeMonth->photo) }}" alt="Card image cap">
+                    <img src="{{ asset($employeeMonth->photo) }}" alt="Card image cap" style="height: 200px;overflow: cover;">
                     <h5 class="card-title">{{ $employeeMonth->name }}</h5>
                     <p class="card-text">{{ $employeeMonth->position }}</p>
                     <div class="d-flex justify-content-center align-items-center">

@@ -5,7 +5,7 @@
         <h3>Editar usuario</h3>
     </div>
     <div class="card-body">
-        {!! Form::model($user, ['route' => ['admin.users.update', $user], 'method' => 'put','enctype' => 'multipart/form-data']) !!}
+        {!! Form::model($user, ['route' => ['admin.users.update', $user], 'method' => 'put', 'enctype' => 'multipart/form-data']) !!}
         <div class="row">
             <div class="form-group col-md-4">
                 {!! Form::label('name', 'Nombre') !!}
@@ -41,7 +41,7 @@
             <div class="form-group col-md-4">
                 <div class="mb-2 form-group">
                     {!! Form::label('image', 'Imagen de usuario') !!}
-                    {!! Form::file('image',  ['class' => 'form-control']) !!}
+                    {!! Form::file('image', ['class' => 'form-control']) !!}
                 </div>
             </div>
 
@@ -65,7 +65,7 @@
                     <br>
                 @enderror
             </div>
-            
+
             @php
                 $department_id = null;
                 $position_id = null;
@@ -98,7 +98,7 @@
             <div class="form-group col-md-4">
                 {!! Form::label('jefe_directo_id', 'Jefe Directo') !!}
                 {!! Form::select('jefe_directo_id', $manager, null, ['class' => 'form-control', 'placeholder' => 'Selecciona jefe directo ']) !!}
-                
+
                 @error('jefe_directo_id')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -106,9 +106,9 @@
                     <br>
                 @enderror
             </div>
-            
+
             <div class="row">
-                
+
             </div>
             <div class="form-group col-md-4 ">
                 {!! Form::label('empresas', 'Empresas a las que pertenece') !!}
@@ -172,15 +172,20 @@
                 var id = jQuery(this).val();
                 if (id) {
                     jQuery.ajax({
-                        url: '/user/getPosition/' + id,
+                        url: '/dropdownlist/getPosition/' + id,
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
-                            console.log(data);
                             jQuery('select[name="position"]').empty();
-                            jQuery.each(data, function(key, value) {
+                            jQuery.each(data.positions, function(key, value) {
                                 $('select[name="position"]').append('<option value="' +
                                     key + '">' + value + '</option>');
+                            });
+                            jQuery('select[name="jefe_directo_id"]').empty();
+                            jQuery.each(data.users, function(key, value) {
+                                $('select[name="jefe_directo_id"]').append(
+                                    '<option value="' + key + '">' + value +
+                                    '</option>');
                             });
                         }
                     });
@@ -191,7 +196,7 @@
         });
     </script>
 
-<script type="text/javascript">
+    {{-- <script type="text/javascript">
     jQuery(document).ready(function() {
         jQuery('select[name="position"]').on('change', function() {
             var id = jQuery(this).val();
@@ -214,5 +219,5 @@
             }
         });
     });
-</script>
+</script> --}}
 @stop

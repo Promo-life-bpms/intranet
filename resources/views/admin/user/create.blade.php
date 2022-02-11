@@ -5,7 +5,7 @@
         <h3>Crear usuario</h3>
     </div>
     <div class="card-body">
-        {!! Form::open(['route' => 'admin.users.store','enctype' => 'multipart/form-data']) !!}
+        {!! Form::open(['route' => 'admin.users.store', 'enctype' => 'multipart/form-data']) !!}
         <div class="row">
             <div class="form-group col-md-4">
                 {!! Form::label('name', 'Nombre') !!}
@@ -41,7 +41,7 @@
             <div class="form-group col-md-4">
                 <div class="mb-2 form-group">
                     {!! Form::label('image', 'Imagen de usuario') !!}
-                    {!! Form::file('image',  ['class' => 'form-control']) !!}
+                    {!! Form::file('image', ['class' => 'form-control']) !!}
                 </div>
             </div>
             <div class="form-group col-md-4">
@@ -65,8 +65,8 @@
                 @enderror
             </div>
 
-           
-            
+
+
             <div class="form-group col-md-4">
                 {!! Form::label('department', 'Departamento') !!}
                 {!! Form::select('department', $departments, null, ['class' => 'form-control', 'placeholder' => 'Selecciona Departamento']) !!}
@@ -77,7 +77,7 @@
                     <br>
                 @enderror
             </div>
-            
+
             <div class="form-group col-md-4">
                 {!! Form::label('position', 'Puesto') !!}
                 {!! Form::select('position', $positions, null, ['class' => 'form-control', 'placeholder' => 'Selecciona Puesto']) !!}
@@ -91,7 +91,7 @@
             <div class="form-group col-md-4">
                 {!! Form::label('jefe_directo_id', 'Jefe Directo') !!}
                 {!! Form::select('jefe_directo_id', $manager, null, ['class' => 'form-control', 'placeholder' => 'Selecciona jefe directo ']) !!}
-                
+
                 @error('jefe_directo_id')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -153,15 +153,21 @@
                 var id = jQuery(this).val();
                 if (id) {
                     jQuery.ajax({
-                        url: '/user/getPosition/' + id,
+                        url: '/dropdownlist/getPosition/' + id,
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
-                            console.log(data);
+
                             jQuery('select[name="position"]').empty();
-                            jQuery.each(data, function(key, value) {
+                            jQuery.each(data.positions, function(key, value) {
                                 $('select[name="position"]').append('<option value="' +
                                     key + '">' + value + '</option>');
+                            });
+                            jQuery('select[name="jefe_directo_id"]').empty();
+                            jQuery.each(data.users, function(key, value) {
+                                $('select[name="jefe_directo_id"]').append(
+                                    '<option value="' + key + '">' + value +
+                                    '</option>');
                             });
                         }
                     });
@@ -171,29 +177,29 @@
             });
         });
     </script>
-
-<script type="text/javascript">
-    jQuery(document).ready(function() {
-        jQuery('select[name="position"]').on('change', function() {
-            var id = jQuery(this).val();
-            if (id) {
-                jQuery.ajax({
-                    url: '/user/getManager/' + id,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        jQuery('select[name="jefe_directo_id"]').empty();
-                        jQuery.each(data, function(key, value) {
-                            $('select[name="jefe_directo_id"]').append(
-                                '<option value="' + key + '">' + value +
-                                '</option>');
-                        });
-                    }
-                });
-            } else {
-                $('select[name="employee_id"]').empty();
-            }
+{{--
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery('select[name="position"]').on('change', function() {
+                var id = jQuery(this).val();
+                if (id) {
+                    jQuery.ajax({
+                        url: '/user/getManager/' + id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            jQuery('select[name="jefe_directo_id"]').empty();
+                            jQuery.each(data, function(key, value) {
+                                $('select[name="jefe_directo_id"]').append(
+                                    '<option value="' + key + '">' + value +
+                                    '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('select[name="employee_id"]').empty();
+                }
+            });
         });
-    });
-</script>
+    </script> --}}
 @stop

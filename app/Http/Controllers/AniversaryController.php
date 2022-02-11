@@ -98,7 +98,7 @@ class AniversaryController extends Controller
         } else {
             $monthAniversary = 'Desconocido';
         }
-
-        return view('aniversary.aniversary', compact('employees', 'monthAniversary'));
+        $lastDayofMonth = \Carbon\Carbon::now()->endOfMonth();
+        return view('aniversary.aniversary', compact('employees', 'monthAniversary','lastDayofMonth'));
     }
 }

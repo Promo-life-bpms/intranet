@@ -16,6 +16,11 @@ class Employee extends Model
         'jefe_directo_id',
         'position_id'
     ];
+
+    protected $dates = [
+        'birthday_date',
+        'date_admission',
+    ];
     //Conexion xon el ussario
     public function user()
     {

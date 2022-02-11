@@ -180,7 +180,7 @@
 
                     if (events.length === 0) {
                         check = true
-                        displayAlert("No hay dias festivos asignados")
+                        // displayAlert("No hay dias festivos asignados")
                     }
                     events.forEach(function(e) {
                         if (dates == e.start) {
