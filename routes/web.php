@@ -69,7 +69,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
 
     Route::get('/month', MonthController::class)->name('month');
-    Route::get('/manual', ManualController::class)->name('manual');
+ /*    Route::get('/manual', ManualController::class)->name('manual'); */
     Route::get('/folder', FolderController::class)->name('folder');
     Route::get('/work', WorkController::class)->name('work');
 
@@ -163,4 +163,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/loginEmail', [LoginController::class, 'loginWithLink'])->name('loginWithLink');
     /*     Route::get('events', [EventsController::class, 'index'])->name('admin.events.index');
     Route::post('eventsAjax', [EventsController::class, 'ajax']); */
+
+
+    Route::get('/manual', [ManualController::class, 'index'])->name('manual.index');
+    Route::get('/manual/create', [ManualController::class, 'create'])->name('manual.create');
+    Route::post('/manual', [ManualController::class, 'store'])->name('manual.store');
+    Route::get('/manual/{manual}/edit', [ManualController::class, 'edit'])->name('manual.edit');
+    Route::put('/manual/{manual}', [ManualController::class, 'update'])->name('manual.update');
+    Route::delete('/manual/{manual}', [ManualController::class, 'delete'])->name('manual.delete'); 
 });

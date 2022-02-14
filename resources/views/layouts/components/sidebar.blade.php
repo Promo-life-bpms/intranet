@@ -260,7 +260,7 @@
                 </li>
 
                 <li class="sidebar-item {{ request()->is('manual') ? 'active' : '' }}">
-                    <a href="{{ route('manual') }}" class='sidebar-link'>
+                    <a href="{{ route('manual.index') }}" class='sidebar-link'>
                         <i class="fa fa-book" aria-hidden="true"></i>
                         <span>Manuales</span>
                     </a>
