@@ -28,6 +28,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\RequestCalendarController;
 use App\Models\RequestCalendar;
+use App\Models\Vacations;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -108,7 +109,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/vacations/{user}/edit', [VacationsController::class, 'edit'])->middleware('role:rh')->name('admin.vacations.edit');
     Route::put('/vacations/{vacation}', [VacationsController::class, 'update'])->middleware('role:rh')->name('admin.vacations.update');
     Route::delete('/vacations/{vacation}', [VacationsController::class, 'destroy'])->middleware('role:rh')->name('admin.vacations.destroy');
-    Route::get('request/reports', [RequestController::class, 'reportRequest'])->middleware('role:rh')->name('request.reportRequest');
+    Route::get('vacations/export/', [VacationsController::class, 'export'])->name('admin.vacations.export');
 
 
     Route::get('/request', [RequestController::class, 'index'])->name('request.index');
@@ -128,8 +129,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('request/export/filter', [RequestController::class, 'exportFilter'])->name('request.export.filter');
     /*     Route::post('request/export/data', [RequestController::class, 'exportDataFilter'])->name('request.export.data'); */
     Route::post('request/dataFilter', [RequestController::class, 'getDataFilter'])->name('request.export.filterdata');;
+    Route::get('request/reports', [RequestController::class, 'reportRequest'])->middleware('role:rh')->name('request.reportRequest');
     Route::resource('request', RequestController::class);
-
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
     Route::get('request/getData/{lista}', [EmployeeController::class, 'getData']);

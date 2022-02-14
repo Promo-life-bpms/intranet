@@ -34,7 +34,7 @@
                 {!! Form::file('img', ['class' => 'form-control', 'placeholder' => 'Ingrese el archivo']) !!}
             </div>
         </div>
-        {!! Form::submit('CREAR MANUAL', ['class' => 'btnCreate mt-4']) !!}
+        {!! Form::submit('ACTUALIZAR MANUAL', ['class' => 'btnCreate mt-4']) !!}
 
         {!! Form::close() !!}
 

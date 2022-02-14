@@ -4,29 +4,13 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Directorio de vacaciones</h3>
-            {{-- <a href="{{ route('admin.vacations.create') }}" type="button" class="btn btn-success">Agregar</a> --}}
+            
+            <a style="margin-left: 20px;" href=" {{ route('admin.vacations.export') }} " type="button"
+                class="btn btn btn-success">Exportar Excel</a>
         </div>
     </div>
     <div class="card-body">
 
-
-        <div class="tab">
-            <button class="tablinks" onclick="openDepartment(event, 'General')" id="defaultOpen">General</button>
-            <button class="tablinks" onclick="openDepartment(event, 'RH')">Recursos Humamos</button>
-            <button class="tablinks" onclick="openDepartment(event, 'Administracion')">Administracion</button>
-            <button class="tablinks" onclick="openDepartment(event, 'VentasBH')">Ventas BH</button>
-            <button class="tablinks" onclick="openDepartment(event, 'VentasPL')">Ventas PL</button>
-            <button class="tablinks" onclick="openDepartment(event, 'Importaciones')">Importaciones</button>
-            <button class="tablinks" onclick="openDepartment(event, 'Diseno')">Diseno</button>
-            <button class="tablinks" onclick="openDepartment(event, 'Sistemas')">Sistemas</button>
-            <button class="tablinks" onclick="openDepartment(event, 'Operaciones')">Operaciones</button>
-            <button class="tablinks" onclick="openDepartment(event, 'Tecnologia')">Tecnologia e Innovacion</button>
-            <button class="tablinks" onclick="openDepartment(event, 'Ecommerce')">E-commcerce</button>
-            <button class="tablinks" onclick="openDepartment(event, 'Cancun')">Cancun</button>
-            <button class="tablinks" onclick="openDepartment(event, 'Direccion')">Direccion</button>
-        </div>
-
-        <div id="General" class="tabcontent">
 
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -34,8 +18,10 @@
                         <tr>
                             <th style="width: 5%" scope="col">#</th>
                             <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles / Vencimineto</th>
+                            <th scope="col">Fecha de Ingreso</th>
+                            <th style="width: 15%" scope="col">Dias de periodos cumplidos</th>
+                            <th style="width: 15%" scope="col">Dias Actuales</th>
+                            <th style="width: 15%" scope="col">D.V.</th>
                             <th scope="col">Opciones</th>
                         </tr>
                     </thead>
@@ -44,18 +30,29 @@
                         @foreach ($vacations as $user)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->lastname }}</td>
+                                <td>{{ $user->name.' '.$user->lastname }}</td>
+                                <td>{{ $user->employee->date_admission }}</td>
                                 <td>
-                                    @if (count($user->vacationsAvailables) > 0)
-                                        @foreach ($user->vacationsAvailables as $vacationsAvailables)
-                                            <p><strong>Dias:</strong> {{ $vacationsAvailables->days_availables }}
-                                                <strong>Expiracion:</strong> {{ $vacationsAvailables->expiration }}
-                                            </p>
-                                        @endforeach
+                                    @if ($user->period_days==null)
+                                        0
+                                    @else 
+                                    {{$user->period_days}}
                                     @endif
                                 </td>
-                                {{-- <td>{{ $user->expiration }}</td> --}}
+                                <td>
+                                    @if ($user->current_days==null)
+                                        0
+                                    @else
+                                    {{$user->current_days}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($user->dv==null)
+                                    0
+                                    @else 
+                                    {{ $user->dv}}
+                                    @endif
+                                </td>
                                 <td class="d-flex flex-wrap">
                                     <a style="width:100px;"
                                         href="{{ route('admin.vacations.edit', ['user' => $user->id]) }}"
@@ -69,416 +66,7 @@
                 {{ $vacations->links() }}
             </div>
         </div>
-
-        <div id="RH" class="tabcontent">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%" scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles</th>
-                            <th scope="col">Fecha de Vencimiento</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($rh as $vacation)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $vacation->user->name }}</td>
-                                <td>{{ $vacation->user->lastname }}</td>
-                                <td>{{ $vacation->days_availables }}</td>
-                                <td>{{ $vacation->expiration }}</td>
-                                <td class="d-flex flex-wrap">
-                                    <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $vacation->user->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="Administracion" class="tabcontent">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%" scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles</th>
-                            <th scope="col">Fecha de Vencimiento</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($admin as $vacation)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $vacation->user->name }}</td>
-                                <td>{{ $vacation->user->lastname }}</td>
-                                <td>{{ $vacation->days_availables }}</td>
-                                <td>{{ $vacation->expiration }}</td>
-                                <td class="d-flex flex-wrap">
-                                    <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $vacation->user->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="VentasBH" class="tabcontent">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%" scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles</th>
-                            <th scope="col">Fecha de Vencimiento</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($ventasBH as $vacation)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $vacation->user->name }}</td>
-                                <td>{{ $vacation->user->lastname }}</td>
-                                <td>{{ $vacation->days_availables }}</td>
-                                <td>{{ $vacation->expiration }}</td>
-                                <td class="d-flex flex-wrap">
-                                    <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $vacation->user->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="VentasPL" class="tabcontent">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%" scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles</th>
-                            <th scope="col">Fecha de Vencimiento</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($ventasPL as $vacation)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $vacation->user->name }}</td>
-                                <td>{{ $vacation->user->lastname }}</td>
-                                <td>{{ $vacation->days_availables }}</td>
-                                <td>{{ $vacation->expiration }}</td>
-                                <td class="d-flex flex-wrap">
-                                    <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $vacation->user->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="Importaciones" class="tabcontent">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%" scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles</th>
-                            <th scope="col">Fecha de Vencimiento</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($importaciones as $vacation)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $vacation->user->name }}</td>
-                                <td>{{ $vacation->user->lastname }}</td>
-                                <td>{{ $vacation->days_availables }}</td>
-                                <td>{{ $vacation->expiration }}</td>
-                                <td class="d-flex flex-wrap">
-                                    <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $vacation->user->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="Diseno" class="tabcontent">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%" scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles</th>
-                            <th scope="col">Fecha de Vencimiento</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($diseno as $vacation)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $vacation->user->name }}</td>
-                                <td>{{ $vacation->user->lastname }}</td>
-                                <td>{{ $vacation->days_availables }}</td>
-                                <td>{{ $vacation->expiration }}</td>
-                                <td class="d-flex flex-wrap">
-                                    <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $vacation->user->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="Sistemas" class="tabcontent">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%" scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles</th>
-                            <th scope="col">Fecha de Vencimiento</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($sistemas as $vacation)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $vacation->user->name }}</td>
-                                <td>{{ $vacation->user->lastname }}</td>
-                                <td>{{ $vacation->days_availables }}</td>
-                                <td>{{ $vacation->expiration }}</td>
-                                <td class="d-flex flex-wrap">
-                                    <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $vacation->user->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="Operaciones" class="tabcontent">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%" scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles</th>
-                            <th scope="col">Fecha de Vencimiento</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($operaciones as $vacation)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $vacation->user->name }}</td>
-                                <td>{{ $vacation->user->lastname }}</td>
-                                <td>{{ $vacation->days_availables }}</td>
-                                <td>{{ $vacation->expiration }}</td>
-                                <td class="d-flex flex-wrap">
-                                    <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $vacation->user->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="Tecnologia" class="tabcontent">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%" scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles</th>
-                            <th scope="col">Fecha de Vencimiento</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($tecnologia as $vacation)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $vacation->user->name }}</td>
-                                <td>{{ $vacation->user->lastname }}</td>
-                                <td>{{ $vacation->days_availables }}</td>
-                                <td>{{ $vacation->expiration }}</td>
-                                <td class="d-flex flex-wrap">
-                                    <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $vacation->user->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="Ecommerce" class="tabcontent">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%" scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles</th>
-                            <th scope="col">Fecha de Vencimiento</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($ecommerce as $vacation)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $vacation->user->name }}</td>
-                                <td>{{ $vacation->user->lastname }}</td>
-                                <td>{{ $vacation->days_availables }}</td>
-                                <td>{{ $vacation->expiration }}</td>
-                                <td class="d-flex flex-wrap">
-                                    <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $vacation->user->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="Cancun" class="tabcontent">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%" scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles</th>
-                            <th scope="col">Fecha de Vencimiento</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($cancun as $vacation)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $vacation->user->name }}</td>
-                                <td>{{ $vacation->user->lastname }}</td>
-                                <td>{{ $vacation->days_availables }}</td>
-                                <td>{{ $vacation->expiration }}</td>
-                                <td class="d-flex flex-wrap">
-                                    <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $vacation->user->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="Direccion" class="tabcontent">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%" scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Dias disponibles</th>
-                            <th scope="col">Fecha de Vencimiento</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($direccion as $vacation)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $vacation->user->name }}</td>
-                                <td>{{ $vacation->user->lastname }}</td>
-                                <td>{{ $vacation->days_availables }}</td>
-                                <td>{{ $vacation->expiration }}</td>
-                                <td class="d-flex flex-wrap">
-                                    <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $vacation->user->id]) }}"
-                                        type="button" class="btn btn-primary">Editar</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-
+    </div>
     @stop
 
     @section('styles')
@@ -547,7 +135,7 @@
             });
         </script>
 
-        <script>
+        {{-- <script>
             function openDepartment(evt, Department) {
                 var i, tabcontent, tablinks;
                 tabcontent = document.getElementsByClassName("tabcontent");
@@ -565,6 +153,6 @@
 
         <script>
             document.getElementById("defaultOpen").click();
-        </script>
+        </script> --}}
 
     @stop
