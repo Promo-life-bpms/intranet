@@ -164,19 +164,22 @@ class RequestController extends Controller
             return back()->with('message', 'No puedes crear solicitudes por que no agregaste dias en el calendario');
         }
         $daysUsetTotal = count($daysUsed);
-        // Restar los dias disponibles
-        foreach (auth()->user()->vacationsAvailables as $dataVacation) {
-            $diasRestantes = $dataVacation->dv - $daysUsetTotal;
-            if ($diasRestantes >= 0) {
-                $dataVacation->dv = $diasRestantes;
-                $dataVacation->save();
-                break;
-            } else {
-                $daysUsetTotal = abs($diasRestantes);
-                $dataVacation->dv = 0;
-                $dataVacation->save();
+
+        if($request->payment=="A cuenta de vacaciones"){
+            // Restar los dias disponibles
+            foreach (auth()->user()->vacationsAvailables as $dataVacation) {
+                $diasRestantes = $dataVacation->dv - $daysUsetTotal;
+                if ($diasRestantes >= 0) {
+                    $dataVacation->dv = $diasRestantes;
+                    $dataVacation->save();
+                    break;
+                } else {
+                    $daysUsetTotal = abs($diasRestantes);
+                    $dataVacation->dv = 0;
+                    $dataVacation->save();
+                }
             }
-        }
+        }      
 
         self::managertNotification($req);
 
@@ -210,6 +213,27 @@ class RequestController extends Controller
         ]);
 
         $request->update($req->all());
+
+
+
+        if($req->payment=="A cuenta de vacaciones"){
+            $daysSelected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
+            $total = count($daysSelected);
+          
+            $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
+            $totalVacation = intval($userVacations);
+
+            $final = $total - $totalVacation;
+            dd($final);
+        }
+
+
+
+
+
+
+
+
 
         if ($req->direct_manager_status == "Aprobada") {
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
