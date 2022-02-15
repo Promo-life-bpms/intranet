@@ -88,8 +88,8 @@ class RequestController extends Controller
 
         $id = Auth::id();
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('dv');
+        $expiration  = DB::table('employees')->where('id', $id)->value('date_admission');
         if ($vacations == null) {
             $vacations = 0;
         }
@@ -108,7 +108,7 @@ class RequestController extends Controller
 
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
 
-        $vacations = auth()->user()->vacationsAvailables->sum('days_availables');
+        $vacations = auth()->user()->vacationsAvailables->sum('dv');
         $dataVacations  = auth()->user()->vacationsAvailables;
 
         if ($vacations == null) {
@@ -164,14 +164,14 @@ class RequestController extends Controller
         $daysUsetTotal = count($daysUsed);
         // Restar los dias disponibles
         foreach (auth()->user()->vacationsAvailables as $dataVacation) {
-            $diasRestantes = $dataVacation->days_availables - $daysUsetTotal;
+            $diasRestantes = $dataVacation->dv - $daysUsetTotal;
             if ($diasRestantes >= 0) {
-                $dataVacation->days_availables = $diasRestantes;
+                $dataVacation->dv = $diasRestantes;
                 $dataVacation->save();
                 break;
             } else {
                 $daysUsetTotal = abs($diasRestantes);
-                $dataVacation->days_availables = 0;
+                $dataVacation->dv = 0;
                 $dataVacation->save();
             }
         }
@@ -188,8 +188,8 @@ class RequestController extends Controller
 
         $id = Auth::id();
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('dv');
+        $expiration  = DB::table('employees')->where('id', $id)->value('date_admission');
         if ($vacations == null) {
             $vacations = 0;
         }
@@ -299,8 +299,8 @@ class RequestController extends Controller
 
         $id = Auth::id();
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('dv');
+        $expiration  = DB::table('employees')->where('id', $id)->value('date_admission');
         if ($vacations == null) {
             $vacations = 0;
         }
@@ -319,8 +319,8 @@ class RequestController extends Controller
 
         $id = Auth::id();
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('dv');
+        $expiration  = DB::table('employees')->where('id', $id)->value('date_admission');
         if ($vacations == null) {
             $vacations = 0;
         }
