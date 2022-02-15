@@ -16,6 +16,7 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\WorkController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DepartmentsController;
+use App\Http\Controllers\DirectoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\EmployeeController;
@@ -69,9 +70,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
 
     Route::get('/month', MonthController::class)->name('month');
-    // Route::get('/manual', ManualController::class)->name('manual');
     Route::get('/folder', FolderController::class)->name('folder');
     Route::get('/work', WorkController::class)->name('work');
+
+    Route::resource('/directories', DirectoryController::class);
 
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class);
@@ -86,8 +88,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('contacts', ContactController::class);
-
-     });
+    });
 
     Route::post('contacts/export/', [ContactController::class, 'export'])->name('contacts.export');
 

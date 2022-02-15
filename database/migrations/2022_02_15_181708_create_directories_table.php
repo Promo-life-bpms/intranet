@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateManualsTable extends Migration
+class CreateDirectoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class CreateManualsTable extends Migration
      */
     public function up()
     {
-        Schema::create('manuals', function (Blueprint $table) {
+        Schema::create('directories', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained();
+            $table->string('type', 100)->nullable();
+            $table->string('data', 100)->nullable();
+            $table->string('company', 100)->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +30,6 @@ class CreateManualsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('manuals');
+        Schema::dropIfExists('directories');
     }
 }

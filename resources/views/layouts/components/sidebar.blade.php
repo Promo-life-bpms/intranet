@@ -212,8 +212,8 @@
                     </ul>
                 </li>
 
-                <li class="sidebar-item {{ request()->is('admin.contacts') ? 'active' : '' }}">
-                    <a href="{{ route('admin.contacts.index') }}" class='sidebar-link'>
+                <li class="sidebar-item {{ request()->is('directories') ? 'active' : '' }}">
+                    <a href="{{ route('directories.index') }}" class='sidebar-link'>
                         <i class="fa fa-address-card" aria-hidden="true"></i>
                         <span>Directorio</span>
                     </a>
@@ -270,7 +270,7 @@
                 </li>
 
                 <li class="sidebar-item {{ request()->is('manual') ? 'active' : '' }}">
-                    <a href="{{ route('manual') }}" class='sidebar-link'>
+                    <a href="{{ route('manuals.index') }}" class='sidebar-link'>
                         <i class="fa fa-book" aria-hidden="true"></i>
                         <span>Manuales</span>
                     </a>

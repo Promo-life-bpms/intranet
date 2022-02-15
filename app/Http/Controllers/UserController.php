@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class UserController extends Controller
 {
@@ -70,7 +71,10 @@ class UserController extends Controller
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->clientExtension();
             $fileNameToStore = $filename . '.' . $extension;
-            $path = $request->file('image')->move('storage/post/', $fileNameToStore);
+            $path = $request->file('image')->move('storage/profile/', $fileNameToStore);
+
+            $img = Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(300, 300);
+            $img->save(public_path("storage/profile/300x300{$fileNameToStore}"));
         } else {
             $path = null;
         }

@@ -21,7 +21,6 @@ class CommuniqueController extends Controller
      */
     public function index()
     {
-
         $id = Auth::user()->id;
         $employeeID = DB::table('employees')->where('user_id', $id)->value('id');
         $companyEmployee = DB::table('company_employee')->where('employee_id', $employeeID)->value('company_id');

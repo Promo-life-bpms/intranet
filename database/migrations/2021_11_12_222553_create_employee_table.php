@@ -13,20 +13,6 @@ class CreateEmployeeTable extends Migration
      */
     public function up()
     {
-
-        Schema::create('contact', function (Blueprint $table) {
-            $table->id();
-            $table->string('num_tel', 12)->nullable();
-            $table->string('correo1', 100)->nullable();
-            $table->string('correo2', 100)->nullable();
-            $table->string('correo3', 100)->nullable();
-            $table->string('correo4', 100)->nullable();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->timestamps();
-        });
-
-
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->date('birthday_date')->nullable();
@@ -48,6 +34,6 @@ class CreateEmployeeTable extends Migration
     {
         Schema::dropIfExists('request');
         Schema::dropIfExists('employee');
-        Schema::dropIfExists('contact');
+
     }
 }

@@ -10,10 +10,10 @@
                 <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
                     role="tab" aria-controls="home" aria-selected="true">General</button>
             </li>
-            <li class="nav-item" role="presentation">
+            {{-- <li class="nav-item" role="presentation">
                 <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
                     role="tab" aria-controls="profile" aria-selected="false">Especifico</button>
-            </li>
+            </li> --}}
         </ul>
         <div class="tab-content mx-2" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -47,17 +47,87 @@
 @stop
 
 @section('styles')
-<style>
-.edit-form-avatar img{
-    object-fit: cover;
-    
-}
+    <style>
+        .edit-form-avatar img {
+            object-fit: cover;
 
-</style>
-    
+        }
+
+    </style>
+
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('assets\vendors\orgchartjs\orgchart.js') }}"></script>
+    <script>
+        async function obtenerEmpleados(check) {
+            let res = await axios.get("/company/getEmployees");
+            let data = res.data;
+            crearOrganigrama(data)
+        }
+
+        obtenerEmpleados()
+
+        function crearOrganigrama(employees) {
+            console.log(employees);
+            var chart = new OrgChart(document.getElementById("tree"), {
+                enableSearch: false,
+                enableDragDrop: true,
+                mouseScrool: OrgChart.none,
+                tags: {
+                    "assistant": {
+                        template: "ula"
+                    }
+                },
+                nodeMenu: {
+                    details: {
+                        text: "Details"
+                    },
+                    edit: {
+                        text: "Edit"
+                    },
+                    add: {
+                        text: "Add"
+                    },
+                    remove: {
+                        text: "Remove"
+                    }
+                },
+                nodeBinding: {
+                    field_0: "name",
+                    field_1: "title",
+                    img_0: "img"
+                }
+            });
+
+            chart.load(employees);
+        }
+    </script>
+@endsection
+
+@section('styles')
+    <style>
+        /*CSS*/
+        html,
+        body {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            font-family: Helvetica;
+            overflow: hidden;
+        }
+
+        #tree {
+            width: 100%;
+            height: 100%;
+        }
+
+    </style>
+@endsection
+
+
+@section('script')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script src="{{ asset('assets\vendors\orgchartjs\orgchart.js') }}"></script>
     <script type="text/javascript">
@@ -102,7 +172,7 @@
                         img_0: "Photo"
                     },
                     editForm: {
-                        titleBinding: "Nombre", 
+                        titleBinding: "Nombre",
                         photoBinding: "Photo",
                         generateElementsFromFields: false,
                         buttons: {
@@ -110,18 +180,25 @@
                             share: null,
                             edit: null,
                         },
-                        elements: [
-                            { type: 'textbox', label: 'Nombre', binding: 'Nombre'},
-                            { type: 'textbox', label: 'Puesto', binding: 'Puesto',},        
+                        elements: [{
+                                type: 'textbox',
+                                label: 'Nombre',
+                                binding: 'Nombre'
+                            },
+                            {
+                                type: 'textbox',
+                                label: 'Puesto',
+                                binding: 'Puesto',
+                            },
                         ],
                     }
                 });
 
                 nodes = data;
 
-              /*   chart.on('init', function(sender) {
-                    sender.editUI.show(2);
-                }); */
+                /* chart.on('init', function(sender) {
+                      sender.editUI.show(2);
+                  }); */
 
                 chart.load(nodes);
             } catch {
@@ -161,26 +238,33 @@
                             img_0: "Photo"
                         },
                         editForm: {
-                        titleBinding: "Nombre", 
-                        photoBinding: "Photo",
-                        generateElementsFromFields: false,
-                        buttons: {
-                            pdf: null,
-                            share: null,
-                            edit: null,
-                        },
-                        elements: [
-                            { type: 'textbox', label: 'Nombre', binding: 'Nombre'},
-                            { type: 'textbox', label: 'Puesto', binding: 'Puesto',},        
-                        ],
+                            titleBinding: "Nombre",
+                            photoBinding: "Photo",
+                            generateElementsFromFields: false,
+                            buttons: {
+                                pdf: null,
+                                share: null,
+                                edit: null,
+                            },
+                            elements: [{
+                                    type: 'textbox',
+                                    label: 'Nombre',
+                                    binding: 'Nombre'
+                                },
+                                {
+                                    type: 'textbox',
+                                    label: 'Puesto',
+                                    binding: 'Puesto',
+                                },
+                            ],
                         }
                     });
 
                     nodes = data;
 
-                   /*  chart.on('init', function(sender) {
-                        sender.editUI.show(1);
-                    }); */
+                    /*  chart.on('init', function(sender) {
+                         sender.editUI.show(1);
+                     }); */
 
                     chart.load(nodes);
                 }
@@ -188,7 +272,5 @@
                 console.log(error);
             }
         }
-
-        
     </script>
 @stop
