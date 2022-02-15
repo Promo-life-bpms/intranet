@@ -212,9 +212,9 @@
                                                     <td>{{ $request->type_request }}</td>
                                                     <td>{{ $request->payment }}</td>
                                                     <td>
-                                                        @foreach ($requestDays as $requestDay)
-                                                            @if ($request->id == $requestDay->requests_id)
-                                                                {{ $requestDay->start }} ,
+                                                        @foreach ($rejectedDays as $rejectedDay)
+                                                            @if ($request->id == $rejectedDay->requests_id)
+                                                                {{ $rejectedDay->start }} ,
 
                                                             @endif
                                                         @endforeach
@@ -223,9 +223,9 @@
                                                     <td><b> {{ $request->direct_manager_status }} </b></td>
                                                     <td><b>{{ $request->human_resources_status }}</b> </td>
                                                     <td>
-                                                        <a style="width:100%"
+                                                        {{-- <a style="width:100%"
                                                             href="{{ route('request.authorize.edit', ['request' => $request->id]) }}"
-                                                            type="button" class="btn btn-primary">Detalles</a>
+                                                            type="button" class="btn btn-primary">Detalles</a> --}}
 
                                                     </td>
                                                     {{-- <td>

@@ -29,6 +29,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\RequestCalendarController;
 use App\Models\RequestCalendar;
+use App\Models\Vacations;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -70,6 +71,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
 
     Route::get('/month', MonthController::class)->name('month');
+ /*    Route::get('/manual', ManualController::class)->name('manual'); */
     Route::get('/folder', FolderController::class)->name('folder');
     Route::get('/work', WorkController::class)->name('work');
 
@@ -113,13 +115,19 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/vacations', [VacationsController::class, 'index'])->middleware('role:rh')->name('admin.vacations.index');
     Route::get('/vacations/create', [VacationsController::class, 'create'])->middleware('role:rh')->name('admin.vacations.create');
     Route::post('/vacations', [VacationsController::class, 'store'])->middleware('role:rh')->name('admin.vacations.store');
-    Route::get('/vacations/{user}/edit', [VacationsController::class, 'edit'])->middleware('role:rh')->name('admin.vacations.edit');
+    Route::get('/vacations/{vacation}/edit', [VacationsController::class, 'edit'])->middleware('role:rh')->name('admin.vacations.edit');
     Route::put('/vacations/{vacation}', [VacationsController::class, 'update'])->middleware('role:rh')->name('admin.vacations.update');
     Route::delete('/vacations/{vacation}', [VacationsController::class, 'destroy'])->middleware('role:rh')->name('admin.vacations.destroy');
-    Route::get('request/reports', [RequestController::class, 'reportRequest'])->middleware('role:rh')->name('request.reportRequest');
+    Route::get('vacations/export/', [VacationsController::class, 'export'])->name('admin.vacations.export');
 
 
     Route::get('/request', [RequestController::class, 'index'])->name('request.index');
+    Route::get('/request/create', [RequestController::class, 'create'])->name('request.create');
+    Route::post('/request', [RequestController::class, 'store'])->name('request.store');
+    Route::get('/request/{request}/edit', [RequestController::class, 'edit'])->name('request.edit');
+    Route::put('/request/{request}', [RequestController::class, 'update'])->name('request.update');
+    Route::delete('/request/{request}', [RequestController::class, 'destroy'])->name('request.destroy');
+
     Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
     Route::get('request/show-all', [RequestController::class, 'show'])->name('request.showAll');
     Route::put('request-auth/{request}', [RequestController::class, 'authorizeUpdate'])->name('request.authorize.update');
@@ -136,7 +144,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('request/export/filter', [RequestController::class, 'exportFilter'])->name('request.export.filter');
     /*     Route::post('request/export/data', [RequestController::class, 'exportDataFilter'])->name('request.export.data'); */
     Route::post('request/dataFilter', [RequestController::class, 'getDataFilter'])->name('request.export.filterdata');;
-    Route::resource('request', RequestController::class);
+    Route::get('request/reports', [RequestController::class, 'reportRequest'])->middleware('role:rh')->name('request.reportRequest');
 
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
@@ -171,4 +179,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/loginEmail', [LoginController::class, 'loginWithLink'])->name('loginWithLink');
     /*     Route::get('events', [EventsController::class, 'index'])->name('admin.events.index');
     Route::post('eventsAjax', [EventsController::class, 'ajax']); */
+
+
+    Route::get('/manual', [ManualController::class, 'index'])->name('manual.index');
+    Route::get('/manual/create', [ManualController::class, 'create'])->name('manual.create');
+    Route::post('/manual', [ManualController::class, 'store'])->name('manual.store');
+    Route::get('/manual/{manual}/edit', [ManualController::class, 'edit'])->name('manual.edit');
+    Route::put('/manual/{manual}', [ManualController::class, 'update'])->name('manual.update');
+    Route::delete('/manual/{manual}', [ManualController::class, 'delete'])->name('manual.delete');
 });

@@ -12,6 +12,7 @@ use App\Models\Notification;
 use App\Models\NoWorkingDays;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
+use App\Models\RequestRejected;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Vacations;
@@ -88,16 +89,17 @@ class RequestController extends Controller
 
         $id = Auth::id();
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('dv');
+        $expiration  = DB::table('employees')->where('id', $id)->value('date_admission');
         if ($vacations == null) {
             $vacations = 0;
         }
 
         $requestDays = RequestCalendar::all();
+        $rejectedDays = RequestRejected::all();
         $notifications = Notification::all();
 
-        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays', 'notifications'));
+        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays', 'notifications','rejectedDays'));
     }
 
     public function create()
@@ -108,7 +110,7 @@ class RequestController extends Controller
 
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
 
-        $vacations = auth()->user()->vacationsAvailables->sum('days_availables');
+        $vacations = auth()->user()->vacationsAvailables->sum('dv');
         $dataVacations  = auth()->user()->vacationsAvailables;
 
         if ($vacations == null) {
@@ -162,19 +164,22 @@ class RequestController extends Controller
             return back()->with('message', 'No puedes crear solicitudes por que no agregaste dias en el calendario');
         }
         $daysUsetTotal = count($daysUsed);
-        // Restar los dias disponibles
-        foreach (auth()->user()->vacationsAvailables as $dataVacation) {
-            $diasRestantes = $dataVacation->days_availables - $daysUsetTotal;
-            if ($diasRestantes >= 0) {
-                $dataVacation->days_availables = $diasRestantes;
-                $dataVacation->save();
-                break;
-            } else {
-                $daysUsetTotal = abs($diasRestantes);
-                $dataVacation->days_availables = 0;
-                $dataVacation->save();
+
+        if($request->payment=="A cuenta de vacaciones"){
+            // Restar los dias disponibles
+            foreach (auth()->user()->vacationsAvailables as $dataVacation) {
+                $diasRestantes = $dataVacation->dv - $daysUsetTotal;
+                if ($diasRestantes >= 0) {
+                    $dataVacation->dv = $diasRestantes;
+                    $dataVacation->save();
+                    break;
+                } else {
+                    $daysUsetTotal = abs($diasRestantes);
+                    $dataVacation->dv = 0;
+                    $dataVacation->save();
+                }
             }
-        }
+        }      
 
         self::managertNotification($req);
 
@@ -188,8 +193,8 @@ class RequestController extends Controller
 
         $id = Auth::id();
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('dv');
+        $expiration  = DB::table('employees')->where('id', $id)->value('date_admission');
         if ($vacations == null) {
             $vacations = 0;
         }
@@ -209,10 +214,46 @@ class RequestController extends Controller
 
         $request->update($req->all());
 
+
+
+        if($req->payment=="A cuenta de vacaciones"){
+            $daysSelected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
+            $total = count($daysSelected);
+          
+            $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
+            $totalVacation = intval($userVacations);
+
+            $final = $total - $totalVacation;
+            dd($final);
+        }
+
+
+
+
+
+
+
+
+
         if ($req->direct_manager_status == "Aprobada") {
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::rhNotification($request);
         } elseif ($req->direct_manager_status == "Rechazada") {
+
+            $rejected = DB::table('request_calendars')->where('requests_id',  $request->id)->get();
+
+            foreach($rejected  as $rej){
+
+                $data = new RequestRejected();
+                $data->title = $rej->title;
+                $data->start = $rej->start;
+                $data->end = $rej->end;
+                $data->users_id = $rej->users_id;
+                $data->requests_id = $rej->requests_id;
+                $data->save();
+            }
+
+            DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
         }
@@ -249,7 +290,9 @@ class RequestController extends Controller
 
         $requestDays = RequestCalendar::all();
 
-        return view('request.authorize', compact('requestDays', 'requests'));
+        $rejectedDays = RequestRejected::all();
+
+        return view('request.authorize', compact('requestDays', 'requests','rejectedDays'));
     }
 
     public function show()
@@ -299,8 +342,8 @@ class RequestController extends Controller
 
         $id = Auth::id();
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('dv');
+        $expiration  = DB::table('employees')->where('id', $id)->value('date_admission');
         if ($vacations == null) {
             $vacations = 0;
         }
@@ -319,8 +362,8 @@ class RequestController extends Controller
 
         $id = Auth::id();
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('days_availables');
-        $expiration  = DB::table('vacations_availables')->where('users_id', $id)->value('expiration');
+        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('dv');
+        $expiration  = DB::table('employees')->where('id', $id)->value('date_admission');
         if ($vacations == null) {
             $vacations = 0;
         }
@@ -350,6 +393,21 @@ class RequestController extends Controller
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
         } elseif ($req->human_resources_status == "Rechazada") {
+
+            $rejected = DB::table('request_calendars')->where('requests_id',  $request->id)->get();
+
+            foreach($rejected  as $rej){
+
+                $data = new RequestRejected();
+                $data->title = $rej->title;
+                $data->start = $rej->start;
+                $data->end = $rej->end;
+                $data->users_id = $rej->users_id;
+                $data->requests_id = $rej->requests_id;
+                $data->save();
+            }
+
+            DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
         }
