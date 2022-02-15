@@ -113,6 +113,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 
     Route::get('/request', [RequestController::class, 'index'])->name('request.index');
+    Route::get('/request/create', [RequestController::class, 'create'])->name('request.create');
+    Route::post('/request', [RequestController::class, 'store'])->name('request.store');
+    Route::get('/request/{request}/edit', [RequestController::class, 'edit'])->name('request.edit');
+    Route::put('/request/{request}', [RequestController::class, 'update'])->name('request.update');
+    Route::delete('/request/{request}', [RequestController::class, 'destroy'])->name('request.destroy');
+ 
     Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
     Route::get('request/show-all', [RequestController::class, 'show'])->name('request.showAll');
     Route::put('request-auth/{request}', [RequestController::class, 'authorizeUpdate'])->name('request.authorize.update');
@@ -130,7 +136,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     /*     Route::post('request/export/data', [RequestController::class, 'exportDataFilter'])->name('request.export.data'); */
     Route::post('request/dataFilter', [RequestController::class, 'getDataFilter'])->name('request.export.filterdata');;
     Route::get('request/reports', [RequestController::class, 'reportRequest'])->middleware('role:rh')->name('request.reportRequest');
-    Route::resource('request', RequestController::class);
+    
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
     Route::get('request/getData/{lista}', [EmployeeController::class, 'getData']);
