@@ -19,9 +19,7 @@ class VacationsController extends Controller
      */
     public function index()
     {
-
-        $vacations = User::paginate(15);
-
+        $vacations = Vacations::paginate(15);
         return view('admin.vacations.index', compact('vacations'));
     }
 
@@ -56,7 +54,7 @@ class VacationsController extends Controller
         $vacation->users_id = $request->users_id;
         $vacation->save();
 
-        return redirect()->action([VacationsController::class, 'edit'], ['user'=>$request->users_id]);
+        return redirect()->action([VacationsController::class, 'index']);
     }
 
     /**
@@ -76,11 +74,9 @@ class VacationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(Vacations $vacation)
     {
-        $vacations = $user->vacationsAvailables;
-
-        return view('admin.vacations.edit', compact('vacations','user'));
+        return view('admin.vacations.edit', compact('vacation'));
     }
 
     /**
@@ -93,15 +89,18 @@ class VacationsController extends Controller
     public function update(Request $request, Vacations $vacation)
     {
         request()->validate([
-            'days_availables' => 'required',
-            'expiration' => 'required',
+            'period_days' => 'required',
+            'current_days' => 'required',
+            'dv' => 'required',
         ]);
 
-        $vacation->days_availables = $request->days_availables;
-        $vacation->expiration = $request->expiration;
+        $vacation->period_days = $request->period_days;
+        $vacation->current_days = $request->current_days;
+        $vacation->dv = $request->dv;
+
         $vacation->save();
 
-        return redirect()->action([VacationsController::class, 'edit'], ['user'=>$vacation->users_id]);
+        return redirect()->action([VacationsController::class, 'index']);
     }
 
     /**

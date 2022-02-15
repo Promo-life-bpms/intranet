@@ -27,35 +27,35 @@
                     </thead>
 
                     <tbody>
-                        @foreach ($vacations as $user)
+                        @foreach ($vacations as $vacation)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $user->name.' '.$user->lastname }}</td>
-                                <td>{{ $user->employee->date_admission }}</td>
+                                <td>{{ $vacation->user->name.' '.$vacation->user->lastname }}</td>
+                                <td>{{ $vacation->user->employee->date_admission }}</td>
                                 <td>
-                                    @if ($user->period_days==null)
+                                    @if ($vacation->period_days==null)
                                         0
                                     @else 
-                                    {{$user->period_days}}
+                                    {{$vacation->period_days}}
                                     @endif
                                 </td>
                                 <td>
-                                    @if ($user->current_days==null)
+                                    @if ($vacation->current_days==null)
                                         0
                                     @else
-                                    {{$user->current_days}}
+                                    {{$vacation->current_days}}
                                     @endif
                                 </td>
                                 <td>
-                                    @if ($user->dv==null)
+                                    @if ($vacation->dv==null)
                                     0
                                     @else 
-                                    {{ $user->dv}}
+                                    {{ $vacation->dv}}
                                     @endif
                                 </td>
                                 <td class="d-flex flex-wrap">
                                     <a style="width:100px;"
-                                        href="{{ route('admin.vacations.edit', ['user' => $user->id]) }}"
+                                        href="{{ route('admin.vacations.edit', ['vacation' => $vacation->id]) }}"
                                         type="button" class="btn btn-primary">Editar</a>
                                 </td>
                             </tr>

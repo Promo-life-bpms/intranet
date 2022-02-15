@@ -15,10 +15,9 @@ class CreateVacationsAvailablesTable extends Migration
     {
         Schema::create('vacations_availables', function (Blueprint $table) {
             $table->id();
-            $table->date('expiration')->nullable();
-            $table->decimal('period_days', 5,2)->nullable();
-            $table->decimal('current_days',5,2)->nullable();
-            $table->decimal ('dv', 5,2)->nullable();            
+            $table->decimal('period_days', 5,2)->nullable()->default(0);
+            $table->decimal('current_days',5,2)->nullable()->default(0);
+            $table->decimal ('dv', 5,2)->nullable()->default(0);            
             $table->foreignId('users_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
