@@ -100,6 +100,11 @@ class UserController extends Controller
         $user->roles()->attach($request->roles);
         $user->employee->companies()->attach($request->companies);
 
+        $user->directory()->create([
+            'type' => 'Email',
+            'data' => $user->email,
+            'company' => $request->companies[0],
+        ]);
         // Enviar notificacion de registro
         $dataNotification = [
             'name' => $request->name . ' ' . $request->lastname,
