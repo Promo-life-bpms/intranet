@@ -13,10 +13,13 @@ class CreateRequestDaysTable extends Migration
      */
     public function up()
     {
-        Schema::create('request_days', function (Blueprint $table) {
+        Schema::create('request_rejected', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->date('start');
+            $table->date('end');
             $table->foreignId('users_id')->constrained()->onDelete('cascade');
-            $table->string('days');
+            $table->integer('requests_id')->nullable();
             $table->timestamps();
         });
     }

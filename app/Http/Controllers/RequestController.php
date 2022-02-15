@@ -12,6 +12,7 @@ use App\Models\Notification;
 use App\Models\NoWorkingDays;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
+use App\Models\RequestRejected;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Vacations;
@@ -95,9 +96,10 @@ class RequestController extends Controller
         }
 
         $requestDays = RequestCalendar::all();
+        $rejectedDays = RequestRejected::all();
         $notifications = Notification::all();
 
-        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays', 'notifications'));
+        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays', 'notifications','rejectedDays'));
     }
 
     public function create()
@@ -213,6 +215,21 @@ class RequestController extends Controller
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::rhNotification($request);
         } elseif ($req->direct_manager_status == "Rechazada") {
+
+            $rejected = DB::table('request_calendars')->where('requests_id',  $request->id)->get();
+
+            foreach($rejected  as $rej){
+
+                $data = new RequestRejected();
+                $data->title = $rej->title;
+                $data->start = $rej->start;
+                $data->end = $rej->end;
+                $data->users_id = $rej->users_id;
+                $data->requests_id = $rej->requests_id;
+                $data->save();
+            }
+
+            DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
         }
@@ -249,7 +266,9 @@ class RequestController extends Controller
 
         $requestDays = RequestCalendar::all();
 
-        return view('request.authorize', compact('requestDays', 'requests'));
+        $rejectedDays = RequestRejected::all();
+
+        return view('request.authorize', compact('requestDays', 'requests','rejectedDays'));
     }
 
     public function show()
@@ -350,6 +369,21 @@ class RequestController extends Controller
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
         } elseif ($req->human_resources_status == "Rechazada") {
+
+            $rejected = DB::table('request_calendars')->where('requests_id',  $request->id)->get();
+
+            foreach($rejected  as $rej){
+
+                $data = new RequestRejected();
+                $data->title = $rej->title;
+                $data->start = $rej->start;
+                $data->end = $rej->end;
+                $data->users_id = $rej->users_id;
+                $data->requests_id = $rej->requests_id;
+                $data->save();
+            }
+
+            DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
         }

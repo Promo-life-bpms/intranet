@@ -318,9 +318,9 @@
                                             <td>{{ $request->type_request }}</td>
                                             <td>{{ $request->payment }}</td>        
                                                 <td>
-                                                    @foreach ($requestDays as $requestDay)
-                                                        @if ($request->id == $requestDay->requests_id)
-                                                            {{ $requestDay->start  }} ,
+                                                    @foreach ($rejectedDays as $rejectedDay)
+                                                        @if ($request->id == $rejectedDay->requests_id)
+                                                            {{ $rejectedDay->start  }} ,
                                                             
                                                         @endif
                                                     @endforeach
