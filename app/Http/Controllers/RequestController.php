@@ -511,4 +511,13 @@ class RequestController extends Controller
 
         /*        return view('request.filterDate', compact('requests', 'requestDays', 'start', 'end')); */
     }
+
+    public function getPayment($id)
+    {
+        if($id == "Solicitar vacaciones"){
+            return response()->json(['A cuenta de vacaciones' => 'A cuenta de vacaciones']);
+        }else{
+            return response()->json(['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia']);
+        }
+    }
 }
