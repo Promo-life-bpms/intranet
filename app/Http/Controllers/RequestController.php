@@ -385,7 +385,7 @@ class RequestController extends Controller
             $approved = DB::table('request_calendars')->where('requests_id', $request->id)->get();
             $total = count($approved);
             $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('period_days');
-            $totalVacation = intval($userVacations);
+            $totalVacation = floatval($userVacations);
 
             $final = $totalVacation - $total ;
 
