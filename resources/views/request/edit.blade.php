@@ -67,7 +67,7 @@
                     <div class="col-md-6 mt-4">
                         {!! Form::label('days', 'Seleccionar dias ') !!}
                         <div class="days" id='calendar'></div>
-                        <p>Dias de vacaciones diponibles: {{ $vacations }} </p>
+                        {{-- <p>Dias de vacaciones diponibles: {{ $vacations }} </p> --}}
                         <div>
                         </div>
 

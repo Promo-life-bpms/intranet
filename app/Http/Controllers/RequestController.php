@@ -134,8 +134,6 @@ class RequestController extends Controller
             'reason' => 'required|max:255',
         ]);
 
-
-
         $id = Auth::id();
         $req = new ModelsRequest();
         $req->employee_id = auth()->user()->employee->id;
@@ -214,34 +212,23 @@ class RequestController extends Controller
 
         $request->update($req->all());
 
-
-
-        if($req->payment=="A cuenta de vacaciones"){
-            $daysSelected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
-            $total = count($daysSelected);
-          
-            $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
-            $totalVacation = intval($userVacations);
-
-            $final = $total - $totalVacation;
-            dd($final);
-        }
-
-
-
-
-
-
-
-
-
         if ($req->direct_manager_status == "Aprobada") {
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::rhNotification($request);
         } elseif ($req->direct_manager_status == "Rechazada") {
 
-            $rejected = DB::table('request_calendars')->where('requests_id',  $request->id)->get();
+            $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
+            $total = count($rejected);
+            $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
+            $totalVacation = intval($userVacations);
 
+            $final = $totalVacation + $total;
+
+            DB::table('vacations_availables')
+            ->where('users_id',$request->employee_id)
+            ->update(['dv' => $final]);
+
+            //Pasa las fechas de las solicitudes rechazadas a otra tabla
             foreach($rejected  as $rej){
 
                 $data = new RequestRejected();
@@ -252,6 +239,7 @@ class RequestController extends Controller
                 $data->requests_id = $rej->requests_id;
                 $data->save();
             }
+
 
             DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
@@ -392,10 +380,36 @@ class RequestController extends Controller
         if ($req->human_resources_status == "Aprobada") {
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
+
+            //Actualiza dias de periodo cumplidos
+            $approved = DB::table('request_calendars')->where('requests_id', $request->id)->get();
+            $total = count($approved);
+            $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('period_days');
+            $totalVacation = floatval($userVacations);
+
+            $final = $totalVacation - $total ;
+
+            DB::table('vacations_availables')
+            ->where('users_id',$request->employee_id)
+            ->update(['period_days' => $final]);
+
+
+
         } elseif ($req->human_resources_status == "Rechazada") {
 
-            $rejected = DB::table('request_calendars')->where('requests_id',  $request->id)->get();
+            //Actualiza DV
+            $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
+            $total = count($rejected);
+            $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
+            $totalVacation = intval($userVacations);
 
+            $final = $totalVacation + $total;
+
+            DB::table('vacations_availables')
+            ->where('users_id',$request->employee_id)
+            ->update(['dv' => $final]);
+        
+            //Pasa las fechas de las solicitudes rechazadas a otra tabla
             foreach($rejected  as $rej){
 
                 $data = new RequestRejected();
