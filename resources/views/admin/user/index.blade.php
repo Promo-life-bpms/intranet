@@ -9,7 +9,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped" id="table-directory">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -88,11 +88,17 @@
             </table>
         </div>
 
-        {{ $users->links() }}
+      {{--   {{ $users->links() }} --}}
     </div>
 @stop
+
+@section('styles')
+
+
 @section('scripts')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
 
     <script>
         $('.form-delete').submit(function(e) {
@@ -114,4 +120,14 @@
             })
         });
     </script>
-@stop
+
+    <script>
+        $(document).ready(function() {
+            $('#table-directory').DataTable();
+        });
+    </script>
+
+
+
+   
+@endsection
