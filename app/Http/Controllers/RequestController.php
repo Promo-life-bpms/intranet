@@ -167,15 +167,15 @@ class RequestController extends Controller
             // Restar los dias disponibles
             foreach (auth()->user()->vacationsAvailables as $dataVacation) {
                 $diasRestantes = $dataVacation->dv - $daysUsetTotal;
-                if ($diasRestantes >= 0) {
+                /* if ($diasRestantes >= 0) { */
                     $dataVacation->dv = $diasRestantes;
                     $dataVacation->save();
                     break;
-                } else {
+              /*   } else {
                     $daysUsetTotal = abs($diasRestantes);
                     $dataVacation->dv = 0;
                     $dataVacation->save();
-                }
+                } */
             }
         }      
 

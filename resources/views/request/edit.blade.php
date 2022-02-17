@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         {!! Form::label('type_request', 'Tipo de Solicitud') !!}
-                        {!! Form::select('type_request', ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                        {!! Form::select('type_request', ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion', 'readonly']) !!}
                         @error('type_request')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
@@ -56,7 +56,7 @@
 
                     <div class="col-md-6 mt-4">
                         {!! Form::label('reason', 'Motivo') !!}
-                        {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo']) !!}
+                        {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo','readonly']) !!}
                         @error('reason')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>

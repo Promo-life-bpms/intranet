@@ -253,7 +253,7 @@
                                 }
                             });
                             console.log(daysAvailablesToTake);
-                            if (daysAvailablesToTake > 0) {
+                           /*  if (daysAvailablesToTake > 0) { */
                               /*   if (canSelected) { */
                                     if (dateActual <= start) {
                                         $.ajax({
@@ -297,9 +297,9 @@
                                /*  } else {
                                     displayError('No puedes seleccionar fechas no disponibles')
                                 } */
-                            } else {
+                            /* } else {
                                 displayError('No tienes dias disponibles')
-                            }
+                            } */
                         }
 
                     }

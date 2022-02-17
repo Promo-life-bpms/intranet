@@ -210,7 +210,7 @@
                                         <th scope="col">Solicitante</th>
                                         <th scope="col">Tipo</th>
                                         <th scope="col">Pago</th>
-                                        <th scope="col">Fechas de ausencia</th>
+                                        <th style="width: 15%" scope="col">Fechas de ausencia</th>
                                         <th scope="col">Motivo</th>
                                         <th scope="col">Jefe status </th>
                                         <th scope="col">RH status</th>
