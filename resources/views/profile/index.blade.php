@@ -1,15 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="card-header">
-        <h3>Mi cuenta</h3>
-        
-    </div>
+    
     <div class="card-body">
 
         <div class="row">
             <div class="banner">
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-flex">
                     @foreach ($user as $usr)
 
                     @if ($usr->image==null)
@@ -44,97 +41,22 @@
                     @endif
                     
                     @endforeach
+
+                    <div class="container-text  text">
+                        <h3><td>{{ $usr->name . ' ' . $usr->lastname }}</td></h3>
+                        <h5>{{$usr->employee->position->name}} </h5>
+                    </div>
+
                 </div>
             </div>
         </div>
 
         <div class="separador" style="margin-top:100px "></div>
 
-        <div class="row">
-                <h4>Informacion de usuario</h4>
+        
 
-                @foreach ($user as $usr)
-                <div class="col md-4">
-                                     
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">
-                            <i class="fa fa-user" aria-hidden="true"></i>
-                        </span>
-                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{$usr->name}}" disabled>
-                    </div>
-                  
-                </div>
-                <div class="col md-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">
-                            <i class="fa fa-user" aria-hidden="true"></i>
-                        </span>
-                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{$usr->lastname}}" disabled>
-                    </div>
-                </div>
-                
-                <div class="col md-4">
-                    @if ( !empty($usr->employee->position->department->name))
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">
-                            <i class="fa fa-building" aria-hidden="true"></i>
-                        </span>
-                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $usr->employee->position->department->name }}" disabled>
-                    </div>
-                    @else 
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputGroup-sizing-default">
-                                <i class="fa fa-building" aria-hidden="true"></i>
-                            </span>
-                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="No especificado" disabled>
-                        </div>
-                    @endif
-                </div>
-              
-             
-        </div>
-
-        <div class="row">
-                <div class="col md-6">
-                    @if (!empty($usr->employee->position->name))
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">
-                            <i class="fa fa-briefcase" aria-hidden="true"></i>
-                        </span>
-                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $usr->employee->position->name }}" disabled>
-                    </div>
-                    @else 
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputGroup-sizing-default">
-                                <i class="fa fa-briefcase" aria-hidden="true"></i>
-
-                            </span>
-                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="No especificado" disabled>
-                        </div>
-                    @endif
-                </div>
-                    
-                <div class="col md-6">
-                    @if (!empty($usr->email))
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="inputGroup-sizing-default">
-                            <i class="fa fa-envelope" aria-hidden="true"></i>
-                        </span>
-                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ $usr->email }}" disabled>
-                    </div>
-                    @else 
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputGroup-sizing-default">
-                                <i class="fa fa-envelope" aria-hidden="true"></i>
-                            </span>
-                            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="No especificado" disabled>
-                        </div>
-                    @endif
-
-                </div>
-                    
-                @endforeach
-            </div>
+   
+            
     </div>
 
     <div class="modal fade" id="modalImage" tabindex="-1" aria-labelledby="modalImageLabel" aria-hidden="true">
@@ -184,21 +106,22 @@
   	background-image: 
 	  linear-gradient(to right bottom, 
      rgba(76, 216, 255, 0.8),
-     rgba(30, 108, 217, 0.8)),
+     rgba(28, 98, 197, 0.8)),
      url('http://www.trademarket.com.mx/assets/imgs/quienes.jpg');
   	
 	background-size: cover;
   	background-position: top;
   	position: relative;
+    z-index: 1;
     
-  	clip-path: polygon(0 0, 100% 0, 100% 100vh, 0 100%);
+  	clip-path: polygon(10 0, 100% 0, 100% 100vh, 0 100%);
 }
 
 .container-image {
-    width:240px; 
-    height:240px;
+    width:200px; 
+    height:200px;
     background: #ffffff; 
-    margin-top: 17.5%;
+    margin-top: 19%;
     overflow: hidden; 
    
 } 
@@ -212,13 +135,13 @@
 .change-image{
     width: 100%; 
     height:60px; 
-    margin-top: -20%;
+    margin-top: -22%;
     overflow: hidden;
     z-index: 20;
 }
 
 .btnCreate{
-    opacity: 0.5;
+    opacity: 0.7;
 }
 
 .profile-picture{
@@ -226,6 +149,18 @@
     height: 100%;
     object-fit: cover;
 }
+
+
+.container-text{
+    margin-top: 22%;
+    margin-left: 50px;
+}
+
+.container-text >*{
+   color: #ffffff;
+}
+
+
 
 </style>
 @stop
