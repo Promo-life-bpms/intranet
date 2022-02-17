@@ -11,7 +11,7 @@
                             <span id="card_title">
                                 {{ __('Directorio') }}
                             </span>
-                            @role('sistemas')
+                            @role('systems')
                                 <div class="float-right">
                                     <a href="{{ route('directories.create') }}" class="btn btn-primary btn-sm float-right"
                                         data-placement="left">
@@ -40,7 +40,7 @@
 
                                         <th>Datos</th>
 
-                                        @role('sistemas')
+                                        @role('systems')
                                             <th>Acciones</th>
                                         @endrole
                                     </tr>
@@ -62,7 +62,7 @@
                                             {{-- <td>{{ $user-> }}</td>
                                             <td>{{ $user->company }}</td> --}}
 
-                                            @role('sistemas')
+                                            @role('systems')
                                                 <td>
                                                     <form action="{{ route('directories.destroy', $user->id) }}"
                                                         method="POST">

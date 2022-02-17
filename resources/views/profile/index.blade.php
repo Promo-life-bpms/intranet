@@ -19,7 +19,7 @@
                             <div class="change-image"  style="z-index: 10;" >
                                 
                                 <button type="button" class="btnCreate"  data-bs-toggle="modal" data-bs-target="#modalImage">
-                                    <i style="margin-left:5px; " class="fa fa-camera" aria-hidden="true"></i>
+                                    <i style="margin-left:5px; " class="fa fa-camera fa-2x" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                             <div class="change-image"  style="z-index: 10;" >
                                 
                                 <button type="button" class="btnCreate"  data-bs-toggle="modal" data-bs-target="#modalImage">
-                                    <i style="margin-left:5px; " class="fa fa-camera" aria-hidden="true"></i>
+                                    <i style="margin-left:5px;" class="fa fa-camera" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
@@ -53,6 +53,60 @@
 
         <div class="separador" style="margin-top:100px "></div>
 
+        <div class="row">
+
+            <div class="col-md-4 " >
+                <div class="card bg-light border-light mb-3 p-4"  >
+                    @foreach ($user as $usr)
+                        <div class="input-group">
+                            <span>
+                                <i class="fa fa-building " aria-hidden="true"></i>
+                            </span>
+
+                            @if ( !empty($usr->employee->position->department->name))
+                                <p style="padding-left: 10px;"> {{ $usr->employee->position->department->name }}</p>
+                            @else 
+                                <p>Sin departamento especificado</p>
+                            @endif
+                        </div>
+
+                        <div class="input-group">
+                            <span>
+                                <i class="fa fa-briefcase" aria-hidden="true"></i>
+                            </span>
+
+                            @if ( !empty($usr->employee->position->name ))
+                                <p style="padding-left: 10px;">{{ $usr->employee->position->name }} </p>
+                            @else 
+                                <p>Sin puesto especificado</p>
+                            @endif
+                        </div>
+
+                        <div class="input-group">
+                            <span>
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                            </span>
+
+                            @if ( !empty($usr->email))
+                                <p style="padding-left: 10px;">{{ $usr->email }} </p>
+                            @else 
+                                <p>Sin correo especificado</p>
+                            @endif
+                        </div>
+
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card bg-light  border-light mb-3 p-4">
+                    <p>Sin publicaciones realizadas</p>
+
+                </div>
+
+            </div>
+
+        </div>
         
 
    
