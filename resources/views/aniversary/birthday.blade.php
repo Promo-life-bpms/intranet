@@ -7,13 +7,13 @@
     <div class="card-body">
         <div class="row">
             @foreach ($employees as $employee)
-                <div class="card aniversary-card" style="width: 240px; height:300px;">
+                <div class="card aniversary-card" style="width: 240px; height:300px; padding:0;">
                     @if ($employee->user->image != null)
                         <img src="{{ asset($employee->user->image) }}"
-                            style="width: 100%; height:180px; object-fit: cover;" class="card-img-top" alt="imagen">
+                            style="width: 100%; height:220px; object-fit: cover;" class="card-img-top" alt="imagen">
                     @else
                         <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                            style="width: 100%; height:180px; object-fit: cover;" class="card-img-top" alt="imagen">
+                            style="width: 100%; height:220px; object-fit: cover;" class="card-img-top" alt="imagen">
                     @endif
                     <div class="card-body" style="padding-top:0; padding-bottom:0">
                         <p class="card-title text-center" style=" white-space: wrap; margin-top:10px;  margin-bottom:5px;">
