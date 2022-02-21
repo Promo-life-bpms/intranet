@@ -74,6 +74,12 @@
                 enableSearch: false,
                 enableDragDrop: true,
                 mouseScrool: OrgChart.none,
+                toolbar: {
+                    fullScreen: true,
+                    zoom: true,
+                    fit: true,
+                    expandAll: true
+                },
                 tags: {
                     "assistant": {
                         template: "ula"
