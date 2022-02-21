@@ -54,10 +54,10 @@ class User extends Authenticatable
             $user->employee()->create();
         });
 
-        static::created(function ($user) {
+       /*  static::created(function ($user) {
             $user->contact()->create();
         });
-
+ */
         static::created(function ($user) {
             $user->vacation()->create();
         });

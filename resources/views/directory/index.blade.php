@@ -12,12 +12,9 @@
                                 {{ __('Directorio') }}
                             </span>
                             @role('systems')
-                                <div class="float-right">
-                                    <a href="{{ route('directories.create') }}" class="btn btn-primary btn-sm float-right"
-                                        data-placement="left">
-                                        {{ __('Create New') }}
-                                    </a>
-                                </div>
+
+                              <a href="{{ route('directories.create') }}" type="button" class="btn btn-success">Crear nuevo</a> 
+                             
                             @endrole
                         </div>
                     </div>
@@ -64,19 +61,20 @@
 
                                             @role('systems')
                                                 <td>
-                                                    <form action="{{ route('directories.destroy', $user->id) }}"
+                                                    {{-- <form action="{{ route('directories.destroy', $user->id) }}"
                                                         method="POST">
                                                         <a class="btn btn-sm btn-primary "
                                                             href="{{ route('directories.show', $user->id) }}"><i
                                                                 class="fa fa-fw fa-eye"></i> Show</a>
-                                                        <a class="btn btn-sm btn-success"
-                                                            href="{{ route('directories.edit', $user->id) }}"><i
-                                                                class="fa fa-fw fa-edit"></i> Edit</a>
-                                                        @csrf
+                                                       
+                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger btn-sm"><i
-                                                                class="fa fa-fw fa-trash"></i> Delete</button>
-                                                    </form>
+                                                                class="fa fa-fw fa-trash"></i> Delete</button> 
+                                                    </form> --}}
+                                                    <a class="btn btn-primary"
+                                                    href="{{ route('directories.show', $user->id) }}">
+                                                    Editar</a>
                                                 </td>
                                             @endrole
                                         </tr>

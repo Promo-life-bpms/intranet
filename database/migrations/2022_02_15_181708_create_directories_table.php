@@ -15,7 +15,7 @@ class CreateDirectoriesTable extends Migration
     {
         Schema::create('directories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('type', 100)->nullable();
             $table->string('data', 100)->nullable();
             $table->string('company', 100)->nullable();
