@@ -7,6 +7,10 @@
             @role('rh')
             <a href="{{ route('manual.create') }}" type="button" class="btn btn-success">Agregar</a>
             @endrole
+
+            @role('manager')
+            <a href="{{ route('manual.create') }}" type="button" class="btn btn-success">Agregar</a>
+            @endrole
         </div>
 
     </div>
@@ -19,12 +23,12 @@
                     @foreach ($manual as $man)
                     @if ($man->img==null)
 
-                        <div class="card text-dark bg-light mb-3 m-2" style="width: 200px; height:auto;" >
+                        <div class="card text-dark bg-light mb-3 m-2" style="width: 240px; height:auto;" >
 
                             <img src="{{ asset('img/pdf.png')}}"
                             style="width: 100%; margin-top:10px; height:120px; object-fit: contain;" class="card-img-top" alt="imagen">
                             <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                <p class="card-title text-center" style=" white-space: wrap; margin-top:10px;  margin-bottom:5px;">
+                                <p class="card-title text-center" style=" margin-top:10px;  margin-bottom:5px;">
                                     {{ $man->name }}</p>
                                 <a href="{{ $man->file}}" style="width: 100%" target="_blank" class="btn btn-primary mb-2">ABRIR</a>
                             </div>
@@ -53,10 +57,10 @@
 
                     @else
 
-                        <div class="card text-dark bg-light mb-3 m-2" style="width: 200px; height:auto; padding-button:20px;" >
+                        <div class="card text-dark bg-light mb-3 m-2" style="width: 240px; height:auto; padding-button:20px;" >
 
                             <img src="{{ asset($man->img )}}"
-                            style="width: 100%; margin-top:10px; height:120px; object-fit: cover;" class="card-img-top" alt="imagen">
+                            style="width: 100%; margin-top:10px; height:120px; object-fit: contain;" class="card-img-top" alt="imagen">
                             <div class="card-body" style="padding-top:0; padding-bottom:0">
                                 <p class="card-title text-center" style=" white-space: wrap; margin-top:10px;  margin-bottom:5px;">
                                     {{ $man->name }}</p>
@@ -93,4 +97,19 @@
             </div>
         </div>
     </div>
+@stop
+
+@section('styles')
+
+    <style>
+        p{
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+    </style>
+
+
+
 @stop

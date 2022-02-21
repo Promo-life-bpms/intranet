@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         {!! Form::label('type_request', 'Tipo de Solicitud') !!}
-                        {!! Form::select('type_request', ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                        {!! Form::select('type_request', ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion', 'readonly']) !!}
                         @error('type_request')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
@@ -20,7 +20,7 @@
                     </div>
                     <div class="col-md-6">
                         {!! Form::label('payment', 'Forma de Pago') !!}
-                        {!! Form::select('payment', ['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia', 'A cuenta de vacaciones' => 'A cuenta de vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                        {!! Form::select('payment', ['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia', 'A cuenta de vacaciones' => 'A cuenta de vacaciones'], null, ['class' => 'form-control','placeholder' => 'Opciones','readonly']) !!}
                         @error('payment')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
@@ -56,7 +56,7 @@
 
                     <div class="col-md-6 mt-4">
                         {!! Form::label('reason', 'Motivo') !!}
-                        {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo']) !!}
+                        {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo','readonly']) !!}
                         @error('reason')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
@@ -119,6 +119,33 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery('select[name="type_request"]').on('change', function() {
+                var id = jQuery(this).val();
+                if (id) {
+                    jQuery.ajax({
+                        url: '/request/getPayment/' + id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            console.log(data)
+                            jQuery('select[name="payment"]').empty();
+                            jQuery.each(data, function(key, value) {
+                                $('select[name="payment"]').append('<option value="' +
+                                    key + '">' + value + '</option>');
+                            });
+                            
+                        }
+                    });
+                } else {
+                    $('select[name="payment"]').empty();
+                }
+            });
+        });
+    </script>
             <script>
                 $(document).ready(function() {
 

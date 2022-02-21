@@ -4,7 +4,7 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Editar Vacaciones</h3>
-            <button class="btn btn-success" onclick="sumar()">Calcular DV</button>
+            {{-- <button class="btn btn-success" onclick="sumar()">Calcular DV</button> --}}
         </div>
     </div>
     <div class="card-body">
@@ -42,14 +42,14 @@
             <div class="col-md-4">
                 <p >Dias Actuales</p>
                 <input type="number" id="current_days" name="current_days" class="form-control" step="0.01"
-                placeholder="Ingresa los dias de periodo cumplidos"
+                placeholder="Ingresa los dias actuales"
                 value="{{ $vacation->current_days }}">
             </div> 
 
             <div class="col-md-4">
                 <p >D.V.</p>
                 <input type="number" name="dv" id="dv" class="form-control" step="0.01"
-                placeholder="Ingresa los dias de periodo cumplidos"
+                placeholder="Ingresa dv" onclick="sumar()"
                 value="{{ $vacation->dv }}">
 
             </div> 
@@ -78,18 +78,28 @@
 
 
 @section('scripts')
-<script>
-function sumar(){
-    
-    var period_days = document.getElementById('period_days').value;
-    var current_days = document.getElementById('current_days').value;
-    var suma = parseFloat(period_days).toFixed(2) - parseFloat(current_days).toFixed(2);
-    var dv = document.getElementById('dv');
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
-    dv.value = parseInt(suma.toFixed(2)) 
-  
-    
-}
+<script>
+
+    $( "#period_days" ).change(function () {
+            var period_days = document.getElementById('period_days').value;
+            var current_days = document.getElementById('current_days').value;
+            var suma = parseFloat(period_days).toFixed(2) - parseFloat(current_days).toFixed(2);
+            var dv = document.getElementById('dv');
+
+            dv.value = parseInt(suma.toFixed(2)) 
+        }).change();
+
+    $( "#current_days" ).change(function () {
+            var period_days = document.getElementById('period_days').value;
+            var current_days = document.getElementById('current_days').value;
+            var suma = parseFloat(period_days).toFixed(2) - parseFloat(current_days).toFixed(2);
+            var dv = document.getElementById('dv');
+
+            dv.value = parseInt(suma.toFixed(2)) 
+        }).change();
+
 </script>
 
 @stop

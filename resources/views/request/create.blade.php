@@ -27,12 +27,13 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('payment', 'Forma de Pago') !!}
-                        {!! Form::select('payment', ['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia', 'A cuenta de vacaciones' => 'A cuenta de vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                        {!! Form::select('payment', ['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia', 'A cuenta de vacaciones' => 'A cuenta de vacaciones'], null, ['class' => 'form-control','placeholder' => 'Opciones','readonly']) !!}
                         @error('payment')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
                             </small>
-                        @enderror
+                        @enderror 
+                        
                     </div>
                 </div>
 
@@ -102,6 +103,7 @@
             background-color: #ECECEC;
         }
 
+
     </style>
 @stop
 
@@ -111,6 +113,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery('select[name="type_request"]').on('change', function() {
+                var id = jQuery(this).val();
+                if (id) {
+                    jQuery.ajax({
+                        url: '/request/getPayment/' + id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            console.log(data)
+                            jQuery('select[name="payment"]').empty();
+                            jQuery.each(data, function(key, value) {
+                                $('select[name="payment"]').append('<option value="' +
+                                    key + '">' + value + '</option>');
+                            });
+                            
+                        }
+                    });
+                } else {
+                    $('select[name="payment"]').empty();
+                }
+            });
+        });
+    </script>
+
     <script>
         $(document).ready(function() {
 
@@ -224,7 +253,7 @@
                                 }
                             });
                             console.log(daysAvailablesToTake);
-                            if (daysAvailablesToTake > 0) {
+                           /*  if (daysAvailablesToTake > 0) { */
                               /*   if (canSelected) { */
                                     if (dateActual <= start) {
                                         $.ajax({
@@ -268,9 +297,9 @@
                                /*  } else {
                                     displayError('No puedes seleccionar fechas no disponibles')
                                 } */
-                            } else {
+                            /* } else {
                                 displayError('No tienes dias disponibles')
-                            }
+                            } */
                         }
 
                     }

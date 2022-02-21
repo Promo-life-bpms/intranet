@@ -167,15 +167,15 @@ class RequestController extends Controller
             // Restar los dias disponibles
             foreach (auth()->user()->vacationsAvailables as $dataVacation) {
                 $diasRestantes = $dataVacation->dv - $daysUsetTotal;
-                if ($diasRestantes >= 0) {
+                /* if ($diasRestantes >= 0) { */
                     $dataVacation->dv = $diasRestantes;
                     $dataVacation->save();
                     break;
-                } else {
+              /*   } else {
                     $daysUsetTotal = abs($diasRestantes);
                     $dataVacation->dv = 0;
                     $dataVacation->save();
-                }
+                } */
             }
         }      
 
@@ -510,5 +510,14 @@ class RequestController extends Controller
         return  Excel::download(new DateRequestExport($start, $end, $daySelected), 'solicitudes_por_periodo.xlsx');
 
         /*        return view('request.filterDate', compact('requests', 'requestDays', 'start', 'end')); */
+    }
+
+    public function getPayment($id)
+    {
+        if($id == "Solicitar vacaciones"){
+            return response()->json(['A cuenta de vacaciones' => 'A cuenta de vacaciones']);
+        }else{
+            return response()->json(['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia']);
+        }
     }
 }

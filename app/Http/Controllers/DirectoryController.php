@@ -63,9 +63,10 @@ class DirectoryController extends Controller
      */
     public function show($id)
     {
-        $directory = Directory::find($id);
-
-        return view('directory.show', compact('directory'));
+        $directory = Directory::where('user_id',$id)->get();   
+        $user = User::where('id',$id)->get();
+        $companies = Company::all()->pluck('name_company','id');
+        return view('directory.show', compact('directory','user','companies'));
     }
 
     /**
