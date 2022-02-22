@@ -25,16 +25,41 @@
                         <div class="col-md-2">
                             {!! Form::label('type', 'Tipo') !!}
                             {!! Form::select('type', ['Email' => 'Email', 'Telefono' => 'Telefono'],null, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
+                            
+                            @error('type')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
+                            @enderror
+                        
                         </div>
         
                         <div class="col-md-4">
                             {!! Form::label('data', 'Telefono/Correo') !!}
                             {!! Form::text('data', $directory->data, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
+                            
+                            @error('data')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
+                            @enderror
+                        
                         </div>
         
                         <div class="col-md-2">
                             {!! Form::label('company', 'Empresa') !!}
                             {!! Form::select('company', $companies, $directory->company, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
+                            
+                            @error('company')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
+                            @enderror
+                        
+
                         </div>
 
                         <div class="col md-2">
@@ -80,17 +105,41 @@
                             <div class="col-md-6">
                                 {!! Form::label('type', 'Tipo') !!}
                                 {!! Form::select('type', ['Email' => 'Email', 'Telefono' => 'Telefono'],null, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
+
+                                @error('type')
+                                    <small>
+                                        <font color="red"> *Este campo es requerido* </font>
+                                    </small>
+                                    <br>
+                                @enderror
+                                
                             </div>
             
                             <div class="col-md-6">
                                 {!! Form::label('company', 'Empresa') !!}
                                 {!! Form::select('company', $companies, null, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
+
+                                @error('company')
+                                    <small>
+                                        <font color="red"> *Este campo es requerido* </font>
+                                    </small>
+                                    <br>
+                                @enderror
+
                             </div>
                             
                            
                             <div class="col-md-12 mt-4">
                                 {!! Form::label('data', 'Telefono/Correo') !!}
                                 {!! Form::text('data', null, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
+                                
+                                @error('data')
+                                    <small>
+                                        <font color="red"> *Este campo es requerido* </font>
+                                    </small>
+                                    <br>
+                                @enderror
+                                
                             </div>
                         </div>
                     </div>

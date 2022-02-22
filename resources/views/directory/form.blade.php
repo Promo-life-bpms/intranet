@@ -10,7 +10,12 @@
                         {{ $item->name }}</option>
                 @endforeach
             </select>
-
+            @error('user_id')
+                <small>
+                    <font color="red"> *Este campo es requerido* </font>
+                </small>
+                <br>
+            @enderror
             {!! $errors->first('user_id', '<div class="invalid-feedback">:message</div>') !!}
         </div>
         <div class="form-group">
@@ -19,14 +24,26 @@
                 <option value="">Seleccione...</option>
                 <option {{ 'Email' == $directory->type ? 'selected' : '' }} value="Email">Email</option>
                 <option {{ 'Telefono' == $directory->type ? 'selected' : '' }} value="Telefono">Telefono</option>
-
             </select>
+            @error('type')
+                <small>
+                    <font color="red"> *Este campo es requerido* </font>
+                </small>
+                <br>
+            @enderror
 
             {!! $errors->first('type', '<div class="invalid-feedback">:message</div>') !!}
         </div>
         <div class="form-group">
             {{ Form::label('correo/telefono') }}
             {{ Form::text('data', $directory->data, ['class' => 'form-control' . ($errors->has('data') ? ' is-invalid' : ''),'placeholder' => 'Correo o Telefono']) }}
+            @error('data')
+                <small>
+                    <font color="red"> *Este campo es requerido* </font>
+                </small>
+                <br>
+            @enderror
+    
             {!! $errors->first('data', '<div class="invalid-feedback">:message</div>') !!}
         </div>
         <div class="form-group">
@@ -38,6 +55,12 @@
                         {{ $item->name_company }}</option>
                 @endforeach
             </select>
+            @error('company')
+                <small>
+                    <font color="red"> *Este campo es requerido* </font>
+                </small>
+                <br>
+            @enderror
             {!! $errors->first('company', '<div class="invalid-feedback">:message</div>') !!}
         </div>
 

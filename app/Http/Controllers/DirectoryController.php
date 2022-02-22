@@ -49,6 +49,13 @@ class DirectoryController extends Controller
     {
         request()->validate(Directory::$rules);
 
+        request()->validate([
+            'user_id' => 'required',
+            'type' => 'required',
+            'data' => 'required',
+            'company' => 'required',
+        ]);
+        
         $directory = Directory::create($request->all());
 
         return redirect()->route('directories.index')
@@ -93,6 +100,13 @@ class DirectoryController extends Controller
     public function update(Request $request, Directory $directory)
     {
         request()->validate(Directory::$rules);
+
+        request()->validate([
+            'user_id' => 'required',
+            'type' => 'required',
+            'data' => 'required',
+            'company' => 'required',
+        ]);
 
         $directory->update($request->all());
 
