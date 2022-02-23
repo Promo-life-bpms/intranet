@@ -99,6 +99,11 @@
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.users.index') }}">
+                                    <span>Empleados</span>
+                                </a>
+                            </li>
+                            <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.showAll') }}">
                                     <span>Ver solicitudes</span>
                                     <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }}

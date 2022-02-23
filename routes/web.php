@@ -78,7 +78,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::resource('/directories', DirectoryController::class);
 
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
-        Route::resource('users', UserController::class);
+       
         // Route::resource('roles', RoleController::class);
         Route::resource('departments', DepartmentsController::class);
         Route::resource('position', PositionController::class);
@@ -88,7 +88,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::resource('manuals', ManualController::class);
     Route::prefix('admin')->name('admin.')->group(function () {
-
+        Route::resource('users', UserController::class);
         Route::resource('contacts', ContactController::class);
     });
 
