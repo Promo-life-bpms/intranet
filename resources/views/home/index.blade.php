@@ -88,7 +88,6 @@
                                     </div>
                                 @else
                                     @foreach ($employeesBirthday as $employee)
-
                                         <div class="carousel-item {{ $loop->iteration == 1 ? 'active' : '' }}">
                                             @if ($employee->user->image == null)
                                                 <img style="object-fit: cover; height: 420px;"
