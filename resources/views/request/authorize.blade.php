@@ -186,7 +186,7 @@
                                                             type="button" class="btn btn-primary">Detalles</a>
                                                     </td> --}}
                                                 </tr>
-                                            @else
+                                            
 
                                             @endif
 
