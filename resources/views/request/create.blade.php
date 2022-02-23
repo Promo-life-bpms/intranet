@@ -14,15 +14,25 @@
             {!! Form::open(['route' => 'request.store']) !!}
             <div class="row">
                 <div class="col-md-6">
-                    <div class="form-group">
-                        {!! Form::label('type_request', 'Tipo de Solicitud') !!}
-                        {!! Form::select('type_request', ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
-                        @error('type_request')
-                            <small>
-                                <font color="red"> *Este campo es requerido* </font>
-                            </small>
-                        @enderror
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            {!! Form::label('type_request', 'Tipo de Solicitud') !!}
+                            {!! Form::select('type_request', ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                            @error('type_request')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                            @enderror
+                            @error('start')
+                                <small>
+                                    <font color="red"> *La hora de salida es requerida* </font>
+                                </small>
+                            @enderror
+                        </div>
+
                     </div>
+                    
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
@@ -32,22 +42,47 @@
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
                             </small>
-                        @enderror 
-                        
+                        @enderror
+                           
                     </div>
                 </div>
 
+            </div>
+
+            <div class="row">
                 <div class="col-md-6">
-                    <div class="mb-2 form-group">
-                        {!! Form::label('reason', 'Motivo') !!}
-                        {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo']) !!}
-                        @error('reason')
-                            <small>
-                                <font color="red"> {{ $message }} </font>
-                            </small>
-                        @enderror
+
+                    <div class="d-flex flex-row form-group" id="request_time">
+                        <div class="col-md-6">
+                            {!! Form::label('start', 'Hora de salida') !!}
+                            {!! Form::time('start', null, ['class'=>'form-control']) !!}
+                            @error('start')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                            @enderror
+                        </div>
+    
+                        <div class="col-md-6">
+                            {!! Form::label('end', 'Hora de ingreso (opcional) ') !!}
+                            {!! Form::time('end', null, ['class'=>'form-control']) !!}
+                        </div>
+                    </div>
+                    
+    
+                    <div class="col-md-12">
+                        <div class="mb-2 form-group">
+                            {!! Form::label('reason', 'Motivo') !!}
+                            {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo']) !!}
+                            @error('reason')
+                                <small>
+                                    <font color="red"> {{ $message }} </font>
+                                </small>
+                            @enderror
+                        </div>
                     </div>
                 </div>
+
                 <div class="col-md-6">
                     <div class="mb-2 form-group">
                         {!! Form::label('days', 'Seleccionar dias ') !!}
@@ -60,12 +95,13 @@
                                     {{ $item->expiration }} </b> </p>
                         @endforeach
                     </div>
-                    <div>
-                    </div>
+                  
                 </div>
-                {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name' => 'submit']) !!}
-
             </div>
+           
+            {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name' => 'submit']) !!}
+
+            
             {!! Form::close() !!}
         </div>
     </div>
@@ -116,6 +152,12 @@
 
     <script type="text/javascript">
         jQuery(document).ready(function() {
+
+            var request_time = document.getElementById('request_time');
+
+            $('#request_time').css("visibility", "hidden");
+
+        
             jQuery('select[name="type_request"]').on('change', function() {
                 var id = jQuery(this).val();
                 if (id) {
@@ -124,11 +166,17 @@
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
-                            console.log(data)
+
+                            if(data.name=="A cuenta de vacaciones"){
+                                $('#request_time').css("visibility", "hidden");
+                            }else{
+                                $('#request_time').css("visibility", "visible");
+                            }
+                            console.log(data.name)
                             jQuery('select[name="payment"]').empty();
                             jQuery.each(data, function(key, value) {
                                 $('select[name="payment"]').append('<option value="' +
-                                    key + '">' + value + '</option>');
+                                    value + '">' + value + '</option>');
                             });
                             
                         }

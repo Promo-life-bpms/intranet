@@ -7,6 +7,7 @@
             <th scope="col">Tipo</th>
             <th scope="col">Pago</th>
             <th scope="col">Fechas ausencia</th>
+            <th scope="col">Tiempo</th>
             <th scope="col">Motivo</th>
             <th scope="col">Vacaciones disponibles</th>
         </tr>
@@ -22,10 +23,22 @@
                 <td>
                     @foreach ($requestDays as $requestDay)
                         @if ($request->id == $requestDay->requests_id)
-                            {{ $requestDay->start  }} ,
-                            
+                            {{ $requestDay->start }} ,
+
                         @endif
                     @endforeach
+                </td>
+
+                <td>
+                    @if ($request->payment != "A cuenta de vacaciones")
+                        @if ($request->end ==null) 
+                        {{'Salida: '. $request->start . ' ' }}
+                        @else
+                            {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
+                        @endif
+                    @else
+                        Tiempo completo
+                    @endif
                 </td>
                 <td>{{ $request->reason }}</td>
                 <td>{{ $request->vacations->days_availables  }} </td>

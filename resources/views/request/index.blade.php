@@ -81,6 +81,7 @@
                                         <th scope="col">Tipo</th>
                                         <th scope="col">Pago</th>
                                         <th scope="col">Fechas de ausencia</th>
+                                        <th scope="col">Tiempo</th>
                                         <th scope="col">Motivo</th>
                                         <th scope="col">Jefe status </th>
                                         <th scope="col">RH status</th>
@@ -96,14 +97,26 @@
                                             <td>{{ $request->id }}</td>
                                             <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }} </td>
                                             <td>{{ $request->type_request }}</td>
-                                            <td>{{ $request->payment }}</td>        
-                                                <td>
-                                                    @foreach ($requestDays as $requestDay)
-                                                        @if ($request->id == $requestDay->requests_id)
-                                                            {{ $requestDay->start  }} ,
-                                                            
-                                                        @endif
-                                                    @endforeach
+                                            <td>{{ $request->payment }}</td>
+                                            <td>
+                                                @foreach ($requestDays as $requestDay)
+                                                    @if ($request->id == $requestDay->requests_id)
+                                                        {{ $requestDay->start }} ,
+
+                                                    @endif
+                                                @endforeach
+                                            </td>
+
+                                            <td>
+                                                @if ($request->payment != "A cuenta de vacaciones")
+                                                    @if ($request->end ==null) 
+                                                    {{'Salida: '. $request->start . ' ' }}
+                                                    @else
+                                                        {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
+                                                    @endif
+                                                @else
+                                                    Tiempo completo
+                                                @endif
                                                 </td>
                                             <td>{{ $request->reason }}</td>
                                             <td><b> {{ $request->direct_manager_status }} </b></td>
@@ -150,6 +163,7 @@
                                         <th scope="col">Tipo</th>
                                         <th scope="col">Pago</th>
                                         <th scope="col">Fechas de ausencia</th>
+                                        <th scope="col">Tiempo</th>
                                         <th scope="col">Motivo</th>
                                         <th scope="col">Jefe status </th>
                                         <th scope="col">RH status</th>
@@ -164,14 +178,26 @@
                                             <td>{{ $request->id }}</td>
                                             <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }} </td>
                                             <td>{{ $request->type_request }}</td>
-                                            <td>{{ $request->payment }}</td>        
-                                                <td>
-                                                    @foreach ($requestDays as $requestDay)
-                                                        @if ($request->id == $requestDay->requests_id)
-                                                            {{ $requestDay->start  }} ,
-                                                            
-                                                        @endif
-                                                    @endforeach
+                                            <td>{{ $request->payment }}</td>
+                                            <td>
+                                                @foreach ($requestDays as $requestDay)
+                                                    @if ($request->id == $requestDay->requests_id)
+                                                        {{ $requestDay->start }} ,
+
+                                                    @endif
+                                                @endforeach
+                                            </td>
+
+                                            <td>
+                                                @if ($request->payment != "A cuenta de vacaciones")
+                                                    @if ($request->end ==null) 
+                                                    {{'Salida: '. $request->start . ' ' }}
+                                                    @else
+                                                        {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
+                                                    @endif
+                                                @else
+                                                    Tiempo completo
+                                                @endif
                                                 </td>
                                             <td>{{ $request->reason }}</td>
                                             <td><b>{{ $request->direct_manager_status }}</b> </td>
@@ -211,6 +237,7 @@
                                         <th scope="col">Tipo</th>
                                         <th scope="col">Pago</th>
                                         <th style="width: 15%" scope="col">Fechas de ausencia</th>
+                                        <th scope="col">Tiempo</th>
                                         <th scope="col">Motivo</th>
                                         <th scope="col">Jefe status </th>
                                         <th scope="col">RH status</th>
@@ -231,14 +258,26 @@
                                             <td>{{ $request->id }}</td>
                                             <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }} </td>
                                             <td>{{ $request->type_request }}</td>
-                                            <td>{{ $request->payment }}</td>        
-                                                <td>
-                                                    @foreach ($requestDays as $requestDay)
-                                                        @if ($request->id == $requestDay->requests_id)
-                                                            {{ $requestDay->start  }} ,
-                                                            
-                                                        @endif
-                                                    @endforeach
+                                            <td>{{ $request->payment }}</td>
+                                            <td>
+                                                @foreach ($requestDays as $requestDay)
+                                                     @if ($request->id == $requestDay->requests_id)
+                                                        {{ $requestDay->start }} ,
+
+                                                    @endif
+                                                @endforeach
+                                            </td>
+
+                                            <td>
+                                                @if ($request->payment != "A cuenta de vacaciones")
+                                                    @if ($request->end ==null) 
+                                                    {{'Salida: '. $request->start . ' ' }}
+                                                    @else
+                                                        {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
+                                                    @endif
+                                                @else
+                                                    Tiempo completo
+                                                @endif
                                                 </td>
                                             <td>{{ $request->reason }}</td>
                                             <td><b>{{ $request->direct_manager_status }}</b> </td>
@@ -297,6 +336,7 @@
                                         <th scope="col">Tipo</th>
                                         <th scope="col">Pago</th>
                                         <th scope="col">Fechas de ausencia</th>
+                                        <th scope="col">Tiempo</th>
                                         <th scope="col">Motivo</th>
                                         <th scope="col">Jefe status </th>
                                         <th scope="col">RH status</th>
@@ -316,14 +356,26 @@
                                             <td>{{ $request->id }}</td>
                                             <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }} </td>
                                             <td>{{ $request->type_request }}</td>
-                                            <td>{{ $request->payment }}</td>        
-                                                <td>
-                                                    @foreach ($rejectedDays as $rejectedDay)
-                                                        @if ($request->id == $rejectedDay->requests_id)
-                                                            {{ $rejectedDay->start  }} ,
-                                                            
-                                                        @endif
-                                                    @endforeach
+                                            <td>{{ $request->payment }}</td>
+                                            <td>
+                                                @foreach ($requestDays as $requestDay)
+                                                    @if ($request->id == $requestDay->requests_id)
+                                                        {{ $requestDay->start }} ,
+
+                                                    @endif
+                                                @endforeach
+                                            </td>
+
+                                            <td>
+                                                @if ($request->payment != "A cuenta de vacaciones")
+                                                    @if ($request->end ==null) 
+                                                    {{'Salida: '. $request->start . ' ' }}
+                                                    @else
+                                                        {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
+                                                    @endif
+                                                @else
+                                                    Tiempo completo
+                                                @endif
                                                 </td>
                                             <td>{{ $request->reason }}</td>
                                             <td><b> {{ $request->direct_manager_status }} </b></td>
@@ -343,11 +395,6 @@
                                                         </button>
                                                         </form>
                                                         @endif 
-                                                   {{--  <a style="width: 100%"  type="button"
-                                                        class="btn btn-transparent">
-                                                        <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                                        Leida</a>
-                                                    @endif  --}}
                                                 @endforeach
                                             
                                             </td>

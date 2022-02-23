@@ -56,6 +56,7 @@
                                             <th scope="col">Tipo</th>
                                             <th scope="col">Pago</th>
                                             <th scope="col">Fechas de ausencia</th>
+                                            <th scope="col">Tiempo</th>
                                             <th scope="col">Motivo</th>
                                             <th scope="col">Jefe status </th>
                                             <th scope="col">RH status</th>
@@ -81,6 +82,18 @@
                                                             @endif
                                                         @endforeach
                                                     </td>
+
+                                                    <td>
+                                                        @if ($request->payment != "A cuenta de vacaciones")
+                                                            @if ($request->end ==null) 
+                                                            {{'Salida: '. $request->start . ' ' }}
+                                                            @else
+                                                                {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
+                                                            @endif
+                                                        @else
+                                                            Tiempo completo
+                                                        @endif
+                                                        </td>
                                                     <td>{{ $request->reason }}</td>
                                                     <td><b> {{ $request->direct_manager_status }} </b></td>
                                                     <td><b>{{ $request->human_resources_status }}</b> </td>
@@ -121,21 +134,22 @@
                                             <th scope="col">Tipo</th>
                                             <th scope="col">Pago</th>
                                             <th scope="col">Fechas de ausencia</th>
+                                            <th scope="col">Tiempo</th>
                                             <th scope="col">Motivo</th>
                                             <th scope="col">Jefe status </th>
                                             <th scope="col">RH status</th>
-                                            @if (auth()->user()->unreadNotifications->count() > 0)
+          {{--                                   @if (auth()->user()->unreadNotifications->count() > 0)
                                                 <th style="width: 200px" scope="col">
                                                     Opciones
                                                 </th>
                                             @endif
-
+ --}}
                                         </tr>
                                     </thead>
                                     <tbody>
 
                                         @foreach ($requests as $request)
-                                            @if ($request->human_resources_status == 'Aprobada' && $request->direct_manager_status == 'Aprobada')
+                                            @if (/* $request->human_resources_status == 'Aprobada' && */ $request->direct_manager_status == 'Aprobada')
                                                 <tr>
 
                                                     <td>{{ $request->id }}</td>
@@ -147,18 +161,30 @@
                                                         @foreach ($requestDays as $requestDay)
                                                             @if ($request->id == $requestDay->requests_id)
                                                                 {{ $requestDay->start }} ,
-
+                        
                                                             @endif
                                                         @endforeach
                                                     </td>
+                        
+                                                    <td>
+                                                        @if ($request->payment != "A cuenta de vacaciones")
+                                                            @if ($request->end ==null) 
+                                                            {{'Salida: '. $request->start . ' ' }}
+                                                            @else
+                                                                {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
+                                                            @endif
+                                                        @else
+                                                            Tiempo completo
+                                                        @endif
+                                                        </td>
                                                     <td>{{ $request->reason }}</td>
                                                     <td><b>{{ $request->direct_manager_status }}</b> </td>
                                                     <td><b>{{ $request->human_resources_status }}</b> </td>
-                                                    <td>
+                                                {{--     <td>
                                                         <a style="width:100%"
                                                             href="{{ route('request.authorize.edit', ['request' => $request->id]) }}"
                                                             type="button" class="btn btn-primary">Detalles</a>
-                                                    </td>
+                                                    </td> --}}
                                                 </tr>
                                             @else
 
@@ -190,14 +216,15 @@
                                             <th scope="col">Tipo</th>
                                             <th scope="col">Pago</th>
                                             <th scope="col">Fechas de ausencia</th>
+                                            <th scope="col">Tiempo</th>
                                             <th scope="col">Motivo</th>
                                             <th scope="col">Jefe status </th>
                                             <th scope="col">RH status</th>
-                                            @if (auth()->user()->unreadNotifications->count() > 0)
+                                           {{--  @if (auth()->user()->unreadNotifications->count() > 0)
                                                 <th style="width: 200px" scope="col">
                                                     Opciones
                                                 </th>
-                                            @endif
+                                            @endif --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -212,20 +239,32 @@
                                                     <td>{{ $request->type_request }}</td>
                                                     <td>{{ $request->payment }}</td>
                                                     <td>
-                                                        @foreach ($rejectedDays as $rejectedDay)
-                                                            @if ($request->id == $rejectedDay->requests_id)
-                                                                {{ $rejectedDay->start }} ,
-
+                                                        @foreach ($requestDays as $requestDay)
+                                                            @if ($request->id == $requestDay->requests_id)
+                                                                {{ $requestDay->start }} ,
+                        
                                                             @endif
                                                         @endforeach
                                                     </td>
+                        
+                                                    <td>
+                                                        @if ($request->payment != "A cuenta de vacaciones")
+                                                            @if ($request->end ==null) 
+                                                            {{'Salida: '. $request->start . ' ' }}
+                                                            @else
+                                                                {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
+                                                            @endif
+                                                        @else
+                                                            Tiempo completo
+                                                        @endif
+                                                        </td>
                                                     <td>{{ $request->reason }}</td>
                                                     <td><b> {{ $request->direct_manager_status }} </b></td>
                                                     <td><b>{{ $request->human_resources_status }}</b> </td>
-                                                    <td>
+                                                    {{-- <td> --}}
                                                         {{-- <a style="width:100%"
                                                             href="{{ route('request.authorize.edit', ['request' => $request->id]) }}"
-                                                            type="button" class="btn btn-primary">Detalles</a> --}}
+                                                            type="button" class="btn btn-primary">Detalles</a> 
 
                                                     </td>
                                                     {{-- <td>
@@ -237,7 +276,7 @@
                                                     <button style="width: 100%" type="submit" class="btn btn-danger">Borrar</button>
                                                 </form>
                                             </td> --}}
-                                                </tr>
+                                               {{--  </tr> --}}
 
                                             @endif
                                         @endforeach

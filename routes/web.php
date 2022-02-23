@@ -94,7 +94,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::post('contacts/export/', [ContactController::class, 'export'])->name('contacts.export');
 
-    Route::resource('communiques', CommuniqueController::class);
+    Route::resource('communiques', CommuniqueController::class)->except(["show"]);
 
     /*     Route::resource('days-no-working', NoWorkingDaysController::class);
  */

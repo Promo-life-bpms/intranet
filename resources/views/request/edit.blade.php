@@ -6,8 +6,10 @@
             <h3>Detalles de la solicitud</h3>
         </div>
         <div class="card-body">
+
             {!! Form::model($request, ['route' => ['request.update', $request], 'method' => 'put']) !!}
             <div class="form-group">
+
                 <div class="row">
                     <div class="col-md-6">
                         {!! Form::label('type_request', 'Tipo de Solicitud') !!}
@@ -27,9 +29,38 @@
                             </small>
                         @enderror
                     </div>
-                    <div class="row">
-                        @role('rh')
-                            <div class="col-md-6 mt-4">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 pl-0 mt-4">
+                        @if ($request->payment != "A cuenta de vacaciones")
+                        
+                            <div class="col-md-12 pl-0">
+                                <div class="d-flex flex-row col-md-6">
+                                    <div class="col-md-12 pl-0">
+                                        {!! Form::label('start', 'Hora de salida') !!}
+                                        {!! Form::time('start', null, ['class'=>'form-control','readonly']) !!}
+                                        @error('start')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-12 p-0">
+                                        @if ($request->end!=null)
+
+                                            {!! Form::label('end', 'Hora de ingreso (opcional) ') !!}
+                                            {!! Form::time('end', null, ['class'=>'form-control','readonly']) !!}
+                                           
+                                        @endif
+                                    </div>
+                                </div>
+                            
+                            </div>
+
+                            @role('rh')
+                            <div class="col-md-12 mt-4">
                                 {!! Form::label('human_resources_status', 'Autorizacion de RH') !!}
                                 {!! Form::select('human_resources_status', ['Pendiente' => 'Pendiente', 'Aprobada' => 'Aprobada', 'Rechazada' => 'Rechazada'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
                                 @error('type_request')
@@ -41,7 +72,7 @@
                         @endrole
 
                         @role('manager')
-                            <div class="col-md-6 mt-4">
+                            <div class="col-md-12 mt-4">
                                 {!! Form::label('direct_manager_status', 'Autorizacion de Jefe directo') !!}
                                 {!! Form::select('direct_manager_status', ['Pendiente' => 'Pendiente', 'Aprobada' => 'Aprobada', 'Rechazada' => 'Rechazada'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
                                 @error('type_request')
@@ -51,33 +82,36 @@
                                 @enderror
                             </div>
                         @endrole
-                    </div> 
+    
+                        @endif
 
+                        <div class="col-md-12 mt-4">
+                            {!! Form::label('reason', 'Motivo') !!}
+                            {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo','readonly']) !!}
+                            @error('reason')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                            @enderror
+                        </div>
 
-                    <div class="col-md-6 mt-4">
-                        {!! Form::label('reason', 'Motivo') !!}
-                        {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo','readonly']) !!}
-                        @error('reason')
-                            <small>
-                                <font color="red"> *Este campo es requerido* </font>
-                            </small>
-                        @enderror
                     </div>
 
                     <div class="col-md-6 mt-4">
                         {!! Form::label('days', 'Seleccionar dias ') !!}
-                        <div class="days" id='calendar'></div>
-                        {{-- <p>Dias de vacaciones diponibles: {{ $vacations }} </p> --}}
-                        <div>
-                        </div>
+                        <div class="days" id='calendar'></div>  
 
                     </div>
-                    {!! Form::submit('ACTUALIZAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name' => 'submit']) !!}
-
-                    {!! Form::close() !!}
                 </div>
+
+                    
+                {!! Form::submit('ACTUALIZAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name' => 'submit']) !!}
+
+                {!! Form::close() !!}
+               
             </div>
-        @stop
+        </div>
+    @stop
 
         @section('styles')
 

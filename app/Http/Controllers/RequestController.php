@@ -134,12 +134,19 @@ class RequestController extends Controller
             'reason' => 'required|max:255',
         ]);
 
+        if($request->payment !="A cuenta de vacaciones"){
+            $request->validate([
+                'start' => 'required',
+            ]);
+        }
         $id = Auth::id();
         $req = new ModelsRequest();
         $req->employee_id = auth()->user()->employee->id;
         $req->type_request = $request->type_request;
         $req->payment = $request->payment;
         $req->reason = $request->reason;
+        $req->start = $request->start;
+        $req->end = $request->end;
 
         $req->direct_manager_id = auth()->user()->employee->jefe_directo_id;
         $req->direct_manager_status = "Pendiente";
@@ -515,9 +522,9 @@ class RequestController extends Controller
     public function getPayment($id)
     {
         if($id == "Solicitar vacaciones"){
-            return response()->json(['A cuenta de vacaciones' => 'A cuenta de vacaciones']);
+            return response()->json(['name' => 'A cuenta de vacaciones']);
         }else{
-            return response()->json(['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia']);
+            return response()->json(['name' => 'Descontar Tiempo/Dia']);
         }
     }
 }

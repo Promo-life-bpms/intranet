@@ -19,7 +19,7 @@ class VacationsController extends Controller
      */
     public function index()
     {
-        $vacations = Vacations::paginate(15);
+        $vacations = Vacations::all();
         return view('admin.vacations.index', compact('vacations'));
     }
 
