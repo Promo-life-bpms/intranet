@@ -58,7 +58,7 @@
                             
                             </div>
 
-                            @role('rh')
+                        @role('rh')
                             <div class="col-md-12 mt-4">
                                 {!! Form::label('human_resources_status', 'Autorizacion de RH') !!}
                                 {!! Form::select('human_resources_status', ['Pendiente' => 'Pendiente', 'Aprobada' => 'Aprobada', 'Rechazada' => 'Rechazada'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}

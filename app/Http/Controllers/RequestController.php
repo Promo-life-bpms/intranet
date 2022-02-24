@@ -8,6 +8,7 @@ use App\Events\UserEvent;
 use App\Exports\DateRequestExport;
 use App\Exports\FilterRequestExport;
 use App\Exports\RequestExport;
+use App\Mail\RequestMail;
 use App\Models\Notification;
 use App\Models\NoWorkingDays;
 use App\Models\Request as ModelsRequest;
@@ -18,9 +19,11 @@ use App\Models\User;
 use App\Models\Vacations;
 use App\Notifications\RequestNotification;
 use App\Notifications\UserNotification;
+use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Maatwebsite\Excel\Facades\Excel;
@@ -385,6 +388,13 @@ class RequestController extends Controller
         $request->update($req->all());
 
         if ($req->human_resources_status == "Aprobada") {
+            
+            //envio de correos
+            $mail = DB::table('users')->where('id', $request->employee_id)->value('email');  
+            $mailInfo = $req;
+
+            Mail::to($mail)->send(new RequestMail($mailInfo));
+
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
 
@@ -527,4 +537,19 @@ class RequestController extends Controller
             return response()->json(['name' => 'Descontar Tiempo/Dia']);
         }
     }
+
+    /* public function mailSend($user) {
+        $email = 'mail@hotmail.com';
+   
+        $mailInfo = [
+            'title' => 'Welcome New User',
+            'url' => 'https://www.remotestack.io'
+        ];
+  
+        Mail::to($email)->send(new RequestMail($mailInfo));
+   
+        return response()->json([
+            'message' => 'Mail has sent.'
+        ]);
+    } */
 }
