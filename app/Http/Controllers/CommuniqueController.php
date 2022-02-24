@@ -102,17 +102,18 @@ class CommuniqueController extends Controller
         $communiques =  Communique::all(); /* auth()->user()->employee->communiques; */
 
        foreach( $communiques as  $communique){
-            $date = $communique->created_at->format('Y-m-d');
+            $day = $communique->created_at->format('Y-m-d');
        
-            $duration = Carbon::parse($date)->addDays(5);
+            $expiration = Carbon::parse($day)->addDays(5);
+            $expirationFormat = $expiration->format('Y-m-d');
 
             $today = Carbon::now();
+            $todayFormat = $today->format('Y-m-d');
 
-         /* dd($duration->format('Y-m-d')); */
-           /*  dd($today->format('Y-m-d')); */
+            if( $todayFormat >=$expirationFormat   ){
+                $communique->delete();
+            }
        }
-
-       
         
         return view('communique.show', compact('communiques'));
     }
