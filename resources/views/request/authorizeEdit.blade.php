@@ -57,7 +57,8 @@
                                 </div>
                             
                             </div>
-
+                        @endif
+                        
                         @role('rh')
                             <div class="col-md-12 mt-4">
                                 {!! Form::label('human_resources_status', 'Autorizacion de RH') !!}
@@ -82,7 +83,7 @@
                             </div>
                         @endrole
     
-                        @endif
+                     
 
                         <div class="col-md-12 mt-4">
                             {!! Form::label('reason', 'Motivo') !!}

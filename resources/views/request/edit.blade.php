@@ -58,18 +58,20 @@
                                 </div>
                             
                             </div>
-
-                            @role('rh')
-                            <div class="col-md-12 mt-4">
-                                {!! Form::label('human_resources_status', 'Autorizacion de RH') !!}
-                                {!! Form::select('human_resources_status', ['Pendiente' => 'Pendiente', 'Aprobada' => 'Aprobada', 'Rechazada' => 'Rechazada'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
-                                @error('type_request')
-                                    <small>
-                                        <font color="red"> *Este campo es requerido* </font>
-                                    </small>
-                                @enderror
-                            </div>
+                        @endif
+                        
+                        @role('rh')
+                        <div class="col-md-12 mt-4">
+                            {!! Form::label('human_resources_status', 'Autorizacion de RH') !!}
+                            {!! Form::select('human_resources_status', ['Pendiente' => 'Pendiente', 'Aprobada' => 'Aprobada', 'Rechazada' => 'Rechazada'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                            @error('type_request')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                            @enderror
+                        </div>
                         @endrole
+                        
 
                         @role('manager')
                             <div class="col-md-12 mt-4">
@@ -83,7 +85,7 @@
                             </div>
                         @endrole
     
-                        @endif
+                        
 
                         <div class="col-md-12 mt-4">
                             {!! Form::label('reason', 'Motivo') !!}
