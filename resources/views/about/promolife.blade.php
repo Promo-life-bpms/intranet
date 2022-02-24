@@ -363,7 +363,7 @@ blockquote {
     top: -20px;
     right: 20%; 
     border-radius: 5px;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     width: 60%;
     text-align: center;
 }
