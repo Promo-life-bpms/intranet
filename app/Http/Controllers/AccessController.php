@@ -16,9 +16,11 @@ class AccessController extends Controller
      */
     public function index()
     {
+        $url = env("URL_COURSES", "http://localhost:8002");
+        $routeCourses = $url . "/loginEmail?email=" . auth()->user()->email . "&password=password";
         $id = Auth::user()->id;
         $access = Access::all()->where('users_id', $id);
-        return view('access.index', compact('access'));
+        return view('access.index', compact('access', 'routeCourses'));
     }
 
     /**
@@ -76,7 +78,7 @@ class AccessController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Access  
+     * @param  \App\Models\Access
      * @return \Illuminate\Http\Response
      */
     public function show(Access $acc)
@@ -87,7 +89,7 @@ class AccessController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Access  
+     * @param  \App\Models\Access
      * @return \Illuminate\Http\Response
      */
     public function edit(Access $acc)
@@ -99,7 +101,7 @@ class AccessController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Access  
+     * @param  \App\Models\Access
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Access $acc)
@@ -139,7 +141,7 @@ class AccessController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Access  
+     * @param  \App\Models\Access
      * @return \Illuminate\Http\Response
      */
     public function destroy(Access $acc)
