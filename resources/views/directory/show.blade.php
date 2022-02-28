@@ -104,7 +104,7 @@
                             
                             <div class="col-md-6">
                                 {!! Form::label('type', 'Tipo') !!}
-                                {!! Form::select('type', ['Email' => 'Email', 'Telefono' => 'Telefono'],null, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
+                                {!! Form::select('type', ['Email' => 'Email', 'Telefono' => 'Telefono'],null, ['class' => 'form-control', 'placeholder' => 'Seleccione el tipo']) !!}
 
                                 @error('type')
                                     <small>
@@ -117,7 +117,7 @@
             
                             <div class="col-md-6">
                                 {!! Form::label('company', 'Empresa') !!}
-                                {!! Form::select('company', $companies, null, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
+                                {!! Form::select('company', $companies, null, ['class' => 'form-control', 'placeholder' => 'Seleccione la empresa']) !!}
 
                                 @error('company')
                                     <small>
@@ -131,7 +131,7 @@
                            
                             <div class="col-md-12 mt-4">
                                 {!! Form::label('data', 'Telefono/Correo') !!}
-                                {!! Form::text('data', null, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
+                                {!! Form::text('data', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el correo o telefono']) !!}
                                 
                                 @error('data')
                                     <small>

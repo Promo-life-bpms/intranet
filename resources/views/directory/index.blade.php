@@ -31,9 +31,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Colaborador</th>
-                                        {{-- <th>Type</th>
-                                        <th>Data</th>
-                                        <th>Company</th> --}}
+                                        <th>Departamento</th>
 
                                         <th>Datos</th>
 
@@ -48,6 +46,7 @@
                                             <td>{{ $loop->iteration }}</td>
 
                                             <td>{{ $user->name . ' ' . $user->lastname }}</td>
+                                            <td>{{ $user->employee->position->department->name }}</td>
                                             <td>
                                                 @foreach ($user->directory as $directory)
                                                     <p class="m-0 my-1"><strong>{{ $directory->type }}
