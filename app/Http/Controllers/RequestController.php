@@ -8,6 +8,7 @@ use App\Events\UserEvent;
 use App\Exports\DateRequestExport;
 use App\Exports\FilterRequestExport;
 use App\Exports\RequestExport;
+use App\Mail\RequestMail;
 use App\Models\Notification;
 use App\Models\NoWorkingDays;
 use App\Models\Request as ModelsRequest;
@@ -18,13 +19,16 @@ use App\Models\User;
 use App\Models\Vacations;
 use App\Notifications\RequestNotification;
 use App\Notifications\UserNotification;
+use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Maatwebsite\Excel\Facades\Excel;
-
+use Nette\Utils\ArrayList;
+use PhpParser\Node\Expr\List_;
 
 class RequestController extends Controller
 {
@@ -373,7 +377,9 @@ class RequestController extends Controller
 
 
     public function authorizeUpdate(Request $req, ModelsRequest $request)
-    {
+    {   
+        //$req = datos que recibe de la vista
+        //$request = datos previos 
         $req->validate([
             'type_request' => 'required',
             'payment' => 'required',
@@ -385,6 +391,34 @@ class RequestController extends Controller
         $request->update($req->all());
 
         if ($req->human_resources_status == "Aprobada") {
+            
+            //envio de correos
+            $mail = DB::table('users')->where('id', $request->employee_id)->value('email');  
+
+            $mailInfo = $req;
+            $username = DB::table('users')->where('id', $request->employee_id)->value('name');
+            $lastname = DB::table('users')->where('id', $request->employee_id)->value('lastname');;
+            $fullname= $username . ' ' . $lastname;
+
+            $days = DB::table('request_calendars')->where('requests_id', $request->id)->get('start');
+            $daysSelected = '';
+
+            foreach($days as $day){
+               $daysSelected  =$daysSelected . ', '.$day->start;
+            }
+         
+            $mailInfo = [ 
+                'name'=> $username,
+                'type_request' => $request->type_request,
+                'reason'=>$request->reason,
+                'payment' => $request->payment,
+                'start'=>  $request->start,
+                'end'=>  $request->end,
+                'days'=> $daysSelected
+            ];
+ 
+            Mail::to($mail)->send(new RequestMail($mailInfo));
+
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
 
@@ -522,9 +556,26 @@ class RequestController extends Controller
     public function getPayment($id)
     {
         if($id == "Solicitar vacaciones"){
-            return response()->json(['name' => 'A cuenta de vacaciones']);
+            return response()->json(['name' => 'A cuenta de vacaciones','display'=>'false']);
+        }else if($id =="Salir durante la jornada") {
+            return response()->json(['name' => 'Descontar Tiempo/Dia','display'=>'true']);
         }else{
-            return response()->json(['name' => 'Descontar Tiempo/Dia']);
+            return response()->json(['name' => 'Descontar Tiempo/Dia','display'=>'false']);
         }
     }
+
+    /* public function mailSend($user) {
+        $email = 'mail@hotmail.com';
+   
+        $mailInfo = [
+            'title' => 'Welcome New User',
+            'url' => 'https://www.remotestack.io'
+        ];
+  
+        Mail::to($email)->send(new RequestMail($mailInfo));
+   
+        return response()->json([
+            'message' => 'Mail has sent.'
+        ]);
+    } */
 }
