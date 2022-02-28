@@ -27,7 +27,8 @@ use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Maatwebsite\Excel\Facades\Excel;
-
+use Nette\Utils\ArrayList;
+use PhpParser\Node\Expr\List_;
 
 class RequestController extends Controller
 {
@@ -376,7 +377,9 @@ class RequestController extends Controller
 
 
     public function authorizeUpdate(Request $req, ModelsRequest $request)
-    {
+    {   
+        //$req = datos que recibe de la vista
+        //$request = datos previos 
         $req->validate([
             'type_request' => 'required',
             'payment' => 'required',
@@ -391,8 +394,29 @@ class RequestController extends Controller
             
             //envio de correos
             $mail = DB::table('users')->where('id', $request->employee_id)->value('email');  
-            $mailInfo = $req;
 
+            $mailInfo = $req;
+            $username = DB::table('users')->where('id', $request->employee_id)->value('name');
+            $lastname = DB::table('users')->where('id', $request->employee_id)->value('lastname');;
+            $fullname= $username . ' ' . $lastname;
+
+            $days = DB::table('request_calendars')->where('requests_id', $request->id)->get('start');
+            $daysSelected = '';
+
+            foreach($days as $day){
+               $daysSelected  =$daysSelected . ', '.$day->start;
+            }
+         
+            $mailInfo = [ 
+                'name'=> $username,
+                'type_request' => $request->type_request,
+                'reason'=>$request->reason,
+                'payment' => $request->payment,
+                'start'=>  $request->start,
+                'end'=>  $request->end,
+                'days'=> $daysSelected
+            ];
+ 
             Mail::to($mail)->send(new RequestMail($mailInfo));
 
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
