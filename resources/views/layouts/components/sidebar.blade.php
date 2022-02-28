@@ -266,11 +266,20 @@
                                 <span>Comunicados de área</span>
                             </a>
                         </li>
+                        @role('manager')
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('admin.communique.show') }}">
-                                <span>Comunicados</span>
+                                <span>Administrar Comunicados</span>
                             </a>
                         </li>
+                        @endrole('manager')
+                        @role('rh')
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('admin.communique.show') }}">
+                                <span>Administrar Comunicados</span>
+                            </a>
+                        </li>
+                        @endrole('rh')
                     </ul>
                 </li>
 
