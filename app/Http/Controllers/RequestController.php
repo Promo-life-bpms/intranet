@@ -8,6 +8,7 @@ use App\Events\UserEvent;
 use App\Exports\DateRequestExport;
 use App\Exports\FilterRequestExport;
 use App\Exports\RequestExport;
+use App\Mail\rejectedRequestMail;
 use App\Mail\RequestMail;
 use App\Models\Notification;
 use App\Models\NoWorkingDays;
@@ -138,7 +139,7 @@ class RequestController extends Controller
             'reason' => 'required|max:255',
         ]);
 
-        if($request->payment !="A cuenta de vacaciones"){
+        if($request->type_request !="Faltar a sus labores" && $request->type_request !="Solicitar vacaciones"){
             $request->validate([
                 'start' => 'required',
             ]);
@@ -158,8 +159,8 @@ class RequestController extends Controller
         $req->save();
 
         $lastRequest = $req->id;
+
         //Obtiene el id de la solicitud despues de crearla para asignar a la vista del calendario
-        // $lastRequest = DB::table('requests')->latest('id')->value('id');
         DB::table('request_calendars')->where('users_id', $id)->where('requests_id', null)->update(['requests_id' => $lastRequest]);
 
         //Pruebas para validar si el calendario esta vacio
@@ -223,42 +224,8 @@ class RequestController extends Controller
 
         $request->update($req->all());
 
-        if ($req->direct_manager_status == "Aprobada") {
-            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-            self::rhNotification($request);
-        } elseif ($req->direct_manager_status == "Rechazada") {
-
-            $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
-            $total = count($rejected);
-            $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
-            $totalVacation = intval($userVacations);
-
-            $final = $totalVacation + $total;
-
-            DB::table('vacations_availables')
-            ->where('users_id',$request->employee_id)
-            ->update(['dv' => $final]);
-
-            //Pasa las fechas de las solicitudes rechazadas a otra tabla
-            foreach($rejected  as $rej){
-
-                $data = new RequestRejected();
-                $data->title = $rej->title;
-                $data->start = $rej->start;
-                $data->end = $rej->end;
-                $data->users_id = $rej->users_id;
-                $data->requests_id = $rej->requests_id;
-                $data->save();
-            }
-
-
-            DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
-            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-            self::userNotification($request);
-        }
-
-
         return redirect()->action([RequestController::class, 'index']);
+
     }
 
     public function destroy(ModelsRequest $request)
@@ -337,6 +304,7 @@ class RequestController extends Controller
     public function authorizeEdit(Request $req, ModelsRequest $request)
     {
 
+        
         $myrequests = auth()->user()->employee->yourRequests;
 
         $id = Auth::id();
@@ -347,11 +315,10 @@ class RequestController extends Controller
             $vacations = 0;
         }
 
-        $rhAuth = false;
         $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
 
+        return view('request.authorizeEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request'));
 
-        return view('request.edit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request', 'rhAuth'));
     }
 
     public function authorizeRHEdit(Request $req, ModelsRequest $request)
@@ -371,12 +338,83 @@ class RequestController extends Controller
 
         $rhAuth = true;
 
-        return view('request.authorizeEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request', 'rhAuth'));
+        return view('request.rhEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request', 'rhAuth'));
+
+    }
+
+    public function authorizeManagerUpdate(Request $req, ModelsRequest $request)
+    {
+        $req->validate([
+            'type_request' => 'required',
+            'payment' => 'required',
+            'reason' => 'required'
+        ]);
+
+        $request->update($req->all());
+
+        if ($req->direct_manager_status == "Aprobada") {
+            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+            self::rhNotification($request);
+        } elseif ($req->direct_manager_status == "Rechazada") {
+
+            //envio de correos rechazados
+            $mail = DB::table('users')->where('id', $request->employee_id)->value('email');  
+            $mailInfo = $req;
+            $username = DB::table('users')->where('id', $request->employee_id)->value('name');                 
+            $days = DB::table('request_calendars')->where('requests_id', $request->id)->get('start');
+            $daysSelected = '';
+                 
+            foreach($days as $day){
+            $daysSelected  =$daysSelected . ', '.$day->start;
+            }
+                          
+            $mailInfo = [ 
+                'name'=> $username,
+                'type_request' => $request->type_request,
+                'reason'=>$request->reason,
+                'payment' => $request->payment,
+                'start'=>  $request->start,
+                'end'=>  $request->end,
+                'days'=> $daysSelected
+            ];
+                  
+            Mail::to($mail)->send(new rejectedRequestMail($mailInfo));
+
+            $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
+            $total = count($rejected);
+            $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
+            $totalVacation = intval($userVacations);
+
+            $final = $totalVacation + $total;
+
+            DB::table('vacations_availables')
+            ->where('users_id',$request->employee_id)
+            ->update(['dv' => $final]);
+
+            //Pasa las fechas de las solicitudes rechazadas a otra tabla
+            foreach($rejected  as $rej){
+
+                $data = new RequestRejected();
+                $data->title = $rej->title;
+                $data->start = $rej->start;
+                $data->end = $rej->end;
+                $data->users_id = $rej->users_id;
+                $data->requests_id = $rej->requests_id;
+                $data->save();
+            }
+
+
+            DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
+            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+            self::userNotification($request);
+        }
+
+        return redirect()->action([RequestController::class, 'authorizeRequestManager']);
 
     }
 
 
-    public function authorizeUpdate(Request $req, ModelsRequest $request)
+    public function authorizeRHUpdate(Request $req, ModelsRequest $request)
     {   
         //$req = datos que recibe de la vista
         //$request = datos previos 
@@ -394,12 +432,8 @@ class RequestController extends Controller
             
             //envio de correos
             $mail = DB::table('users')->where('id', $request->employee_id)->value('email');  
-
             $mailInfo = $req;
             $username = DB::table('users')->where('id', $request->employee_id)->value('name');
-            $lastname = DB::table('users')->where('id', $request->employee_id)->value('lastname');;
-            $fullname= $username . ' ' . $lastname;
-
             $days = DB::table('request_calendars')->where('requests_id', $request->id)->get('start');
             $daysSelected = '';
 
@@ -438,6 +472,29 @@ class RequestController extends Controller
 
         } elseif ($req->human_resources_status == "Rechazada") {
 
+            //envio de correos rechazados
+            $mail = DB::table('users')->where('id', $request->employee_id)->value('email');  
+            $mailInfo = $req;
+            $username = DB::table('users')->where('id', $request->employee_id)->value('name');     
+            $days = DB::table('request_calendars')->where('requests_id', $request->id)->get('start');
+            $daysSelected = '';
+     
+            foreach($days as $day){
+            $daysSelected  =$daysSelected . ', '.$day->start;
+            }
+              
+            $mailInfo = [ 
+                'name'=> $username,
+                'type_request' => $request->type_request,
+                'reason'=>$request->reason,
+                'payment' => $request->payment,
+                'start'=>  $request->start,
+                'end'=>  $request->end,
+                'days'=> $daysSelected
+            ];
+      
+            Mail::to($mail)->send(new rejectedRequestMail($mailInfo));
+
             //Actualiza DV
             $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
             $total = count($rejected);
@@ -466,7 +523,7 @@ class RequestController extends Controller
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
         }
-        return redirect()->action([RequestController::class, 'authorizeRequestManager']);
+        return redirect()->action([RequestController::class, 'show']);
     }
 
 

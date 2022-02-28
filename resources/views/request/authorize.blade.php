@@ -261,7 +261,7 @@
                                                     <td>{{ $request->reason }}</td>
                                                     <td><b> {{ $request->direct_manager_status }} </b></td>
                                                     <td><b>{{ $request->human_resources_status }}</b> </td>
-                                                    {{-- <td> --}}
+                                                    <td> 
                                                         {{-- <a style="width:100%"
                                                             href="{{ route('request.authorize.edit', ['request' => $request->id]) }}"
                                                             type="button" class="btn btn-primary">Detalles</a> 

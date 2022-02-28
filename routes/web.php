@@ -130,7 +130,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
     Route::get('request/show-all', [RequestController::class, 'show'])->name('request.showAll');
-    Route::put('request-auth/{request}', [RequestController::class, 'authorizeUpdate'])->name('request.authorize.update');
+    Route::put('request-auth/{request}', [RequestController::class, 'authorizeRHUpdate'])->name('request.authorize.update');
+    Route::put('request-auth-manager/{request}', [RequestController::class, 'authorizeManagerUpdate'])->name('request.manager.update');
     Route::get('request/{request}/auth-edit', [RequestController::class, 'authorizeEdit'])->name('request.authorize.edit');
     Route::get('request/{request}/rh-edit', [RequestController::class, 'authorizeRHEdit'])->name('request.rh.edit');
     Route::delete('request/{request}/notification', [RequestController::class, 'deleteNotification'])->name('request.delete.notification');

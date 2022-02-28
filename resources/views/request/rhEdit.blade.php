@@ -6,7 +6,7 @@
             <h3>Detalles de la solicitud</h3>
         </div>
         <div class="card-body">
-            {!! Form::model($request, ['route' => ['request.manager.update', $request], 'method' => 'put']) !!}
+            {!! Form::model($request, ['route' => ['request.authorize.update', $request], 'method' => 'put']) !!}
             <div class="form-group">
 
                 <div class="row">

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class RequestMail extends Mailable
+class rejectedRequestMail extends Mailable
 {
     use Queueable, SerializesModels;
     public $mailInfo;
@@ -29,9 +29,8 @@ class RequestMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('mail.requestMail')
-        ->subject('¡Solicitud aprobada!')
+        return $this->markdown('mail.rejectedRequestMail')
+        ->subject('¡Solicitud rechazada!')
         ->with('mailInfo', $this->mailInfo);
-        /* return $this->view('mail.requestMail'); */
     }
 }

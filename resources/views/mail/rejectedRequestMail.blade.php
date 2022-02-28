@@ -2,7 +2,11 @@
 
 # ¡Hola {{ $mailInfo['name'] }}!
 
-## Tu solicitud ha sido aprobada
+## Tu solicitud no ha cumplido con los requisitos para ver aprobada.
+
+Te recomendamos verificar los datos y enviarla nuevamente.
+
+<br>
 
 Detalles: 
 <table>
