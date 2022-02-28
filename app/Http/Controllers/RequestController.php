@@ -532,9 +532,11 @@ class RequestController extends Controller
     public function getPayment($id)
     {
         if($id == "Solicitar vacaciones"){
-            return response()->json(['name' => 'A cuenta de vacaciones']);
+            return response()->json(['name' => 'A cuenta de vacaciones','display'=>'false']);
+        }else if($id =="Salir durante la jornada") {
+            return response()->json(['name' => 'Descontar Tiempo/Dia','display'=>'true']);
         }else{
-            return response()->json(['name' => 'Descontar Tiempo/Dia']);
+            return response()->json(['name' => 'Descontar Tiempo/Dia','display'=>'false']);
         }
     }
 

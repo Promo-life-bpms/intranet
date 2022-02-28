@@ -167,7 +167,7 @@
                         dataType: "json",
                         success: function(data) {
 
-                            if(data.name=="A cuenta de vacaciones"){
+                            if(data.display =="false"){
                                 $('#request_time').css("visibility", "hidden");
                             }else{
                                 $('#request_time').css("visibility", "visible");
