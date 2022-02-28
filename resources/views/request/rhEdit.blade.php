@@ -32,7 +32,7 @@
 
                 <div class="row">
                     <div class="col-md-6 pl-0 mt-4">
-                        @if ($request->payment != "A cuenta de vacaciones")
+                        @if ($request->start != null)
                         
                             <div class="col-md-12 pl-0">
                                 <div class="d-flex flex-row col-md-6">

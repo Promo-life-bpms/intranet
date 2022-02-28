@@ -241,7 +241,6 @@ class RequestController extends Controller
 
     public function authorizeRequestManager()
     {
-        /*  $requests = auth()->user()->employee->yourAuthRequests; */
 
         $id = Auth::user()->id;
         $manager = DB::table('manager')->where('id', $id)->value('users_id');
@@ -303,7 +302,6 @@ class RequestController extends Controller
     //Autorizaciones de solicitudes de RH y Manager
     public function authorizeEdit(Request $req, ModelsRequest $request)
     {
-
         
         $myrequests = auth()->user()->employee->yourRequests;
 
@@ -621,18 +619,4 @@ class RequestController extends Controller
         }
     }
 
-    /* public function mailSend($user) {
-        $email = 'mail@hotmail.com';
-   
-        $mailInfo = [
-            'title' => 'Welcome New User',
-            'url' => 'https://www.remotestack.io'
-        ];
-  
-        Mail::to($email)->send(new RequestMail($mailInfo));
-   
-        return response()->json([
-            'message' => 'Mail has sent.'
-        ]);
-    } */
 }

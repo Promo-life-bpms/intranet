@@ -55,7 +55,7 @@
                                             <th scope="col">Solicitante</th>
                                             <th scope="col">Tipo</th>
                                             <th scope="col">Pago</th>
-                                            <th scope="col">Fechas de ausencia</th>
+                                            <th style="width: 20%" scope="col">Fechas de ausencia</th>
                                             <th scope="col">Tiempo</th>
                                             <th scope="col">Motivo</th>
                                             <th scope="col">Jefe status </th>
@@ -84,14 +84,14 @@
                                                     </td>
 
                                                     <td>
-                                                        @if ($request->payment != "A cuenta de vacaciones")
+                                                        @if ($request->start == null)
+                                                        Tiempo completo
+                                                        @else
                                                             @if ($request->end ==null) 
                                                             {{'Salida: '. $request->start . ' ' }}
                                                             @else
                                                                 {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
                                                             @endif
-                                                        @else
-                                                            Tiempo completo
                                                         @endif
                                                         </td>
                                                     <td>{{ $request->reason }}</td>
@@ -141,7 +141,7 @@
                                             <th scope="col">Solicitante</th>
                                             <th scope="col">Tipo</th>
                                             <th scope="col">Pago</th>
-                                            <th scope="col">Fechas de ausencia</th>
+                                            <th style="width: 20%" scope="col">Fechas de ausencia</th>
                                             <th scope="col">Motivo</th>
                                             <th scope="col">Jefe status </th>
                                             <th scope="col">RH status</th>
@@ -210,7 +210,7 @@
                                             <th scope="col">Solicitante</th>
                                             <th scope="col">Tipo</th>
                                             <th scope="col">Pago</th>
-                                            <th scope="col">Fechas de ausencia</th>
+                                            <th style="width: 20%" scope="col">Fechas de ausencia</th>
                                             <th scope="col">Motivo</th>
                                             <th scope="col">Jefe status </th>
                                             <th scope="col">RH status</th>

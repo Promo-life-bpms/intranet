@@ -52,15 +52,15 @@
                             </td>
 
                             <td>
-                                @if ($request->payment != "A cuenta de vacaciones")
-                                    @if ($request->end ==null) 
-                                    {{'Salida: '. $request->start . ' ' }}
-                                    @else
-                                        {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
-                                    @endif
-                                @else
-                                    Tiempo completo
-                                @endif
+                              @if ($request->start == null)
+                              Tiempo completo
+                              @else
+                                  @if ($request->end ==null) 
+                                  {{'Salida: '. $request->start . ' ' }}
+                                  @else
+                                      {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
+                                  @endif
+                              @endif
                                 </td>
                             <td>{{ $request->reason }}</td>
                             <td>{{ $request->vacations->days_availables  }} </td>
