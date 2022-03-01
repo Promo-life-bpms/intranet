@@ -33,7 +33,7 @@ use PhpParser\Node\Expr\List_;
 
 class RequestController extends Controller
 {
-
+    //Peticiones de los dias del calendario
     public function ajax(Request $request)
     {
         $id = Auth::id();
@@ -73,7 +73,7 @@ class RequestController extends Controller
                 break;
 
             default:
-                # code...
+
                 break;
         }
     }
@@ -114,7 +114,6 @@ class RequestController extends Controller
         DB::table('request_calendars')->where('requests_id', null)->where('users_id', $id)->delete();
 
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-
         $vacations = auth()->user()->vacationsAvailables->sum('dv');
         $dataVacations  = auth()->user()->vacationsAvailables;
 
@@ -177,15 +176,8 @@ class RequestController extends Controller
             // Restar los dias disponibles
             foreach (auth()->user()->vacationsAvailables as $dataVacation) {
                 $diasRestantes = $dataVacation->dv - $daysUsetTotal;
-                /* if ($diasRestantes >= 0) { */
-                    $dataVacation->dv = $diasRestantes;
-                    $dataVacation->save();
-                    break;
-              /*   } else {
-                    $daysUsetTotal = abs($diasRestantes);
-                    $dataVacation->dv = 0;
-                    $dataVacation->save();
-                } */
+                $dataVacation->dv = $diasRestantes;
+                $dataVacation->save();
             }
         }      
 
@@ -234,9 +226,6 @@ class RequestController extends Controller
         return redirect()->action([RequestController::class, 'index']);
     }
 
-
-
-
     public function authorizeRequestManager()
     {
 
@@ -272,7 +261,6 @@ class RequestController extends Controller
         $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada');
         return view('request.reports', compact('requests', 'requestDays', 'vacations'));
     }
-
 
     //Notificaciones 
     static function managertNotification($req)
@@ -475,7 +463,6 @@ class RequestController extends Controller
         return view('request.excelReport', compact('requests', 'requestDays', 'vacations'));
     }
 
-
     public function filter(Request $request)
     {
         $request->validate([
@@ -492,7 +479,6 @@ class RequestController extends Controller
         return view('request.filter', compact('requests', 'requestDays', 'start', 'end'));
     }
 
-
     public function filterDate(Request $request)
     {
         $request->validate([
@@ -507,8 +493,6 @@ class RequestController extends Controller
 
         $start = $request->start;
         $end = $request->end;
-
-        /* Excel::download(new DateRequestExport($start,$end,$daySelected), 'solicitudes_por_periodo.xlsx');  */
 
         return view('request.filterDate', compact('requests', 'requestDays', 'start', 'end'));
     }
@@ -533,10 +517,8 @@ class RequestController extends Controller
         $start = $request->start;
         $end = $request->end;
 
-        /*   return Excel::download(new RequestExport, 'solicitudes.xlsx'); */
         return  Excel::download(new DateRequestExport($start, $end, $daySelected), 'solicitudes_por_periodo.xlsx');
 
-        /*        return view('request.filterDate', compact('requests', 'requestDays', 'start', 'end')); */
     }
 
     public function getPayment($id)
