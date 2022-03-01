@@ -41,7 +41,7 @@
                     @endif
                 </td>
                 <td>{{ $request->reason }}</td>
-                <td>{{ $request->vacations->days_availables  }} </td>
+                <td>{{ $request->employee->user->vacation->dv }} </td>
             </tr>
         @endforeach
 
