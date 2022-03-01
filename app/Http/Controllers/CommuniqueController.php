@@ -100,21 +100,7 @@ class CommuniqueController extends Controller
     public function show(/* Communique $communique */)
     {
         $communiques =  Communique::all(); /* auth()->user()->employee->communiques; */
-
-       foreach( $communiques as  $communique){
-            $day = $communique->created_at->format('Y-m-d');
-       
-            $expiration = Carbon::parse($day)->addDays(5);
-            $expirationFormat = $expiration->format('Y-m-d');
-
-            $today = Carbon::now();
-            $todayFormat = $today->format('Y-m-d');
-
-            if( $todayFormat >=$expirationFormat   ){
-                $communique->delete();
-            }
-       }
-        
+        self::validateCommunicated();
         return view('communique.show', compact('communiques'));
     }
 
@@ -219,5 +205,23 @@ class CommuniqueController extends Controller
         $departmentCommuniques = Communique::all()->whereIn('id', $departmentCom);
 
         return view('communique.area', compact('departmentCommuniques'));
+    }
+
+    public function validateCommunicated(){
+        $communiques =  Communique::all();
+
+       foreach( $communiques as  $communique){
+            $day = $communique->created_at->format('Y-m-d');
+       
+            $expiration = Carbon::parse($day)->addDays(5);
+            $expirationFormat = $expiration->format('Y-m-d');
+
+            $today = Carbon::now();
+            $todayFormat = $today->format('Y-m-d');
+
+            if( $todayFormat >=$expirationFormat   ){
+                $communique->delete();
+            }
+       }
     }
 }

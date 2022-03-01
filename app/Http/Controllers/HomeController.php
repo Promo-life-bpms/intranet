@@ -8,6 +8,7 @@ use App\Models\CommuniqueDepartment;
 use App\Models\Employee;
 use App\Models\Events;
 use App\Models\NoWorkingDays;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -64,5 +65,23 @@ class HomeController extends Controller
     {
         $comunique = Communique::all()->where('id', $id)->toArray();
         return array_values($comunique);
+    }
+
+    public function validateCommunicated(){
+        $communiques =  Communique::all();
+
+       foreach( $communiques as  $communique){
+            $day = $communique->created_at->format('Y-m-d');
+       
+            $expiration = Carbon::parse($day)->addDays(5);
+            $expirationFormat = $expiration->format('Y-m-d');
+
+            $today = Carbon::now();
+            $todayFormat = $today->format('Y-m-d');
+
+            if( $todayFormat >=$expirationFormat   ){
+                $communique->delete();
+            }
+       }
     }
 }
