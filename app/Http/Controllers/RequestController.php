@@ -163,8 +163,6 @@ class RequestController extends Controller
         //Obtiene el id de la solicitud despues de crearla para asignar a la vista del calendario
         DB::table('request_calendars')->where('users_id', $id)->where('requests_id', null)->update(['requests_id' => $lastRequest]);
 
-        //Pruebas para validar si el calendario esta vacio
-
         //Valida que el usuario no envie solicitudes sin dias asignados
         $lastRequestUser = DB::table('request_calendars')->where('users_id', $id)->where('requests_id', $lastRequest)->latest('id')->value('users_id');
         $daysUsed =    DB::table('request_calendars')->where('users_id', $id)->where('requests_id', $lastRequest)->get();
@@ -355,28 +353,7 @@ class RequestController extends Controller
             self::rhNotification($request);
         } elseif ($req->direct_manager_status == "Rechazada") {
 
-            //envio de correos rechazados
-            $mail = DB::table('users')->where('id', $request->employee_id)->value('email');  
-            $mailInfo = $req;
-            $username = DB::table('users')->where('id', $request->employee_id)->value('name');                 
-            $days = DB::table('request_calendars')->where('requests_id', $request->id)->get('start');
-            $daysSelected = '';
-                 
-            foreach($days as $day){
-            $daysSelected  =$daysSelected . ', '.$day->start;
-            }
-                          
-            $mailInfo = [ 
-                'name'=> $username,
-                'type_request' => $request->type_request,
-                'reason'=>$request->reason,
-                'payment' => $request->payment,
-                'start'=>  $request->start,
-                'end'=>  $request->end,
-                'days'=> $daysSelected
-            ];
-                  
-            Mail::to($mail)->send(new rejectedRequestMail($mailInfo));
+            self::sendRejectedMail($request,$req);
 
             $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
             $total = count($rejected);
@@ -428,29 +405,8 @@ class RequestController extends Controller
 
         if ($req->human_resources_status == "Aprobada") {
             
-            //envio de correos
-            $mail = DB::table('users')->where('id', $request->employee_id)->value('email');  
-            $mailInfo = $req;
-            $username = DB::table('users')->where('id', $request->employee_id)->value('name');
-            $days = DB::table('request_calendars')->where('requests_id', $request->id)->get('start');
-            $daysSelected = '';
-
-            foreach($days as $day){
-               $daysSelected  =$daysSelected . ', '.$day->start;
-            }
-         
-            $mailInfo = [ 
-                'name'=> $username,
-                'type_request' => $request->type_request,
-                'reason'=>$request->reason,
-                'payment' => $request->payment,
-                'start'=>  $request->start,
-                'end'=>  $request->end,
-                'days'=> $daysSelected
-            ];
- 
-            Mail::to($mail)->send(new RequestMail($mailInfo));
-
+            self::sendApprovedMail($request,$req);
+            
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::userNotification($request);
 
@@ -466,32 +422,9 @@ class RequestController extends Controller
             ->where('users_id',$request->employee_id)
             ->update(['period_days' => $final]);
 
-
-
         } elseif ($req->human_resources_status == "Rechazada") {
 
-            //envio de correos rechazados
-            $mail = DB::table('users')->where('id', $request->employee_id)->value('email');  
-            $mailInfo = $req;
-            $username = DB::table('users')->where('id', $request->employee_id)->value('name');     
-            $days = DB::table('request_calendars')->where('requests_id', $request->id)->get('start');
-            $daysSelected = '';
-     
-            foreach($days as $day){
-            $daysSelected  =$daysSelected . ', '.$day->start;
-            }
-              
-            $mailInfo = [ 
-                'name'=> $username,
-                'type_request' => $request->type_request,
-                'reason'=>$request->reason,
-                'payment' => $request->payment,
-                'start'=>  $request->start,
-                'end'=>  $request->end,
-                'days'=> $daysSelected
-            ];
-      
-            Mail::to($mail)->send(new rejectedRequestMail($mailInfo));
+            self::sendRejectedMail($request,$req);
 
             //Actualiza DV
             $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
@@ -523,8 +456,6 @@ class RequestController extends Controller
         }
         return redirect()->action([RequestController::class, 'show']);
     }
-
-
 
 
     public function deleteAll(ModelsRequest $request)
@@ -618,5 +549,57 @@ class RequestController extends Controller
             return response()->json(['name' => 'Descontar Tiempo/Dia','display'=>'false']);
         }
     }
+
+    public function sendApprovedMail($request,$req){
+        //envio de correos
+        $mail = DB::table('users')->where('id', $request->employee_id)->value('email');  
+        $mailInfo = $req;
+        $username = DB::table('users')->where('id', $request->employee_id)->value('name');
+        $days = DB::table('request_calendars')->where('requests_id', $request->id)->get('start');
+        $daysSelected = '';
+
+        foreach($days as $day){
+           $daysSelected  =$daysSelected . ', '.$day->start;
+        }
+     
+        $mailInfo = [ 
+            'name'=> $username,
+            'type_request' => $request->type_request,
+            'reason'=>$request->reason,
+            'payment' => $request->payment,
+            'start'=>  $request->start,
+            'end'=>  $request->end,
+            'days'=> $daysSelected
+        ];
+
+        Mail::to($mail)->send(new RequestMail($mailInfo));
+
+    }
+
+    public function sendRejectedMail($request,$req){
+        //envio de correos rechazados
+        $mail = DB::table('users')->where('id', $request->employee_id)->value('email');  
+        $mailInfo = $req;
+        $username = DB::table('users')->where('id', $request->employee_id)->value('name');     
+        $days = DB::table('request_calendars')->where('requests_id', $request->id)->get('start');
+        $daysSelected = '';
+ 
+        foreach($days as $day){
+        $daysSelected  =$daysSelected . ', '.$day->start;
+        }
+          
+        $mailInfo = [ 
+            'name'=> $username,
+            'type_request' => $request->type_request,
+            'reason'=>$request->reason,
+            'payment' => $request->payment,
+            'start'=>  $request->start,
+            'end'=>  $request->end,
+            'days'=> $daysSelected
+        ];
+  
+        Mail::to($mail)->send(new rejectedRequestMail($mailInfo));
+    }
+
 
 }

@@ -30,7 +30,7 @@ class RequestMail extends Mailable
     public function build()
     {
         return $this->markdown('mail.requestMail')
-        ->subject('¡Solicitud aprobada!')
+        ->subject('Solicitud aprobada')
         ->with('mailInfo', $this->mailInfo);
         /* return $this->view('mail.requestMail'); */
     }

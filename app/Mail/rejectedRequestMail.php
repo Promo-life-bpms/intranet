@@ -30,7 +30,7 @@ class rejectedRequestMail extends Mailable
     public function build()
     {
         return $this->markdown('mail.rejectedRequestMail')
-        ->subject('¡Solicitud rechazada!')
+        ->subject('Solicitud rechazada')
         ->with('mailInfo', $this->mailInfo);
     }
 }
