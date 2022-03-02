@@ -17,7 +17,7 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-
+        self::validateCommunicated();
         $monthBirthday = '';
         $carbon = new \Carbon\Carbon();
         $date = $carbon->now();
