@@ -20,6 +20,7 @@ use App\Models\User;
 use App\Models\Vacations;
 use App\Notifications\RequestNotification;
 use App\Notifications\UserNotification;
+use Exception;
 use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -340,36 +341,43 @@ class RequestController extends Controller
             DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
             self::rhNotification($request);
         } elseif ($req->direct_manager_status == "Rechazada") {
+            
+            try {
+                self::sendRejectedMail($request,$req);
 
-            self::sendRejectedMail($request,$req);
+                throw new Exception();
+            } catch (Exception $e) {
+              
+            } finally {
+                $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
+                $total = count($rejected);
+                $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
+                $totalVacation = intval($userVacations);
 
-            $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
-            $total = count($rejected);
-            $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
-            $totalVacation = intval($userVacations);
+                $final = $totalVacation + $total;
 
-            $final = $totalVacation + $total;
+                DB::table('vacations_availables')
+                ->where('users_id',$request->employee_id)
+                ->update(['dv' => $final]);
 
-            DB::table('vacations_availables')
-            ->where('users_id',$request->employee_id)
-            ->update(['dv' => $final]);
+                //Pasa las fechas de las solicitudes rechazadas a otra tabla
+                foreach($rejected  as $rej){
 
-            //Pasa las fechas de las solicitudes rechazadas a otra tabla
-            foreach($rejected  as $rej){
+                    $data = new RequestRejected();
+                    $data->title = $rej->title;
+                    $data->start = $rej->start;
+                    $data->end = $rej->end;
+                    $data->users_id = $rej->users_id;
+                    $data->requests_id = $rej->requests_id;
+                    $data->save();
+                }
 
-                $data = new RequestRejected();
-                $data->title = $rej->title;
-                $data->start = $rej->start;
-                $data->end = $rej->end;
-                $data->users_id = $rej->users_id;
-                $data->requests_id = $rej->requests_id;
-                $data->save();
+
+                DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
+                DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+                self::userNotification($request);
             }
-
-
-            DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
-            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-            self::userNotification($request);
+            
         }
 
         return redirect()->action([RequestController::class, 'authorizeRequestManager']);
@@ -392,55 +400,67 @@ class RequestController extends Controller
         $request->update($req->all());
 
         if ($req->human_resources_status == "Aprobada") {
-            
-            self::sendApprovedMail($request,$req);
-            
-            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-            self::userNotification($request);
+
+            try {
+                self::sendApprovedMail($request,$req);
+                throw new Exception();
+            } catch (Exception $e) {
+
+            } finally {
+                DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+                self::userNotification($request);
 
             //Actualiza dias de periodo cumplidos
-            $approved = DB::table('request_calendars')->where('requests_id', $request->id)->get();
-            $total = count($approved);
-            $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('period_days');
-            $totalVacation = floatval($userVacations);
+                $approved = DB::table('request_calendars')->where('requests_id', $request->id)->get();
+                $total = count($approved);
+                $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('period_days');
+                $totalVacation = floatval($userVacations);
 
-            $final = $totalVacation - $total ;
+                $final = $totalVacation - $total ;
 
-            DB::table('vacations_availables')
-            ->where('users_id',$request->employee_id)
-            ->update(['period_days' => $final]);
+                DB::table('vacations_availables')
+                ->where('users_id',$request->employee_id)
+                ->update(['period_days' => $final]);
+            }
+            
 
         } elseif ($req->human_resources_status == "Rechazada") {
 
-            self::sendRejectedMail($request,$req);
+            try {
+                self::sendRejectedMail($request,$req);
+                throw new Exception();
+            } catch (Exception $e) {
+               
+            } finally {
+               //Actualiza DV
+                $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
+                $total = count($rejected);
+                $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
+                $totalVacation = intval($userVacations);
 
-            //Actualiza DV
-            $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
-            $total = count($rejected);
-            $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
-            $totalVacation = intval($userVacations);
+                $final = $totalVacation + $total;
 
-            $final = $totalVacation + $total;
+                DB::table('vacations_availables')
+                ->where('users_id',$request->employee_id)
+                ->update(['dv' => $final]);
+            
+                //Pasa las fechas de las solicitudes rechazadas a otra tabla
+                foreach($rejected  as $rej){
 
-            DB::table('vacations_availables')
-            ->where('users_id',$request->employee_id)
-            ->update(['dv' => $final]);
-        
-            //Pasa las fechas de las solicitudes rechazadas a otra tabla
-            foreach($rejected  as $rej){
+                    $data = new RequestRejected();
+                    $data->title = $rej->title;
+                    $data->start = $rej->start;
+                    $data->end = $rej->end;
+                    $data->users_id = $rej->users_id;
+                    $data->requests_id = $rej->requests_id;
+                    $data->save();
+                }
 
-                $data = new RequestRejected();
-                $data->title = $rej->title;
-                $data->start = $rej->start;
-                $data->end = $rej->end;
-                $data->users_id = $rej->users_id;
-                $data->requests_id = $rej->requests_id;
-                $data->save();
+                DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
+                DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
+                self::userNotification($request); 
             }
 
-            DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
-            DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
-            self::userNotification($request);
         }
         return redirect()->action([RequestController::class, 'show']);
     }
