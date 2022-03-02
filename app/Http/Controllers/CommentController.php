@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
-use App\Events\CommentEvent;
 use Illuminate\Http\Request;
-use PhpOffice\PhpSpreadsheet\Writer\Ods\Content;
 
 class CommentController extends Controller
 {
@@ -29,6 +27,6 @@ class CommentController extends Controller
         ]);
 
         //event(new CommentEvent($comment));
-        return redirect()->action([PublicationsController::class, 'index']);
+        return redirect()->action(HomeController::class);
     }
 }

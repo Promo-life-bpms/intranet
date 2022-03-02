@@ -2,8 +2,8 @@
 
 @section('dashboard')
     <div class="row">
-        
-                    <div class="card my-1 py-4">
+        <div class="col-md-8">
+            <div class="card my-1 py-4">
                 <div class="col-md-12">
                     <div class="container-style-main">
                         <div class="container-usuario-publicar d-flex">
@@ -49,8 +49,6 @@
                     </div>
                 </div>
             </div>
-        
-        <div class="col-md-8">
             <div class="card p-3">
                 <div class="row">
                     <div class="col-md-12">
@@ -98,30 +96,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="card p-4 mt-4">
-                <h4>Calendario de Eventos</h4>
-                <br>
-                <div id='calendar'></div>
-            </div>
-
-
-
-        </div>
-
-
-        <div class="col-md-4">
-            {{-- <div class="card p-3">
-                <h4>CEO Message</h4>
-                <hr>
-                <p><h6>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque eligendi magnam sit inventore qui
-                    laudantium repellendus numquam saepe eaque sed. Inventore commodi pariatur facere quae ducimus
-                    laudantium impedit veniam molestias.</h6></p>
-                <span class="text-left">-David Levy</span>
-            </div> --}}
-
-<div class="row">
+            <div class="row">
                 <div class=" py-4">
                     <div class="col-md-12">
                         <div class="panel-heading">
@@ -236,6 +211,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+
+        <div class="col-md-4">
             <div class="card p-4">
                 <h4>Cumpleaños del Mes</h4>
 
@@ -255,7 +234,6 @@
                                                 <img style="object-fit: cover; height: 420px;"
                                                     src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
                                                     class="d-block w-100 " alt="...">
-
                                             @else
                                                 <img style="object-fit: cover; height: 420px;"
                                                     src="{{ asset($employee->user->image) }}" class="d-block w-100 "
@@ -266,7 +244,7 @@
                                                     style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
                                                 <br>
                                                 <span
-                                                    style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->birthday_date->format('d/m')}}</span>
+                                                    style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->birthday_date->format('d/m') }}</span>
                                             </div>
 
                                         </div>
@@ -292,49 +270,11 @@
 
             </div>
 
-            {{-- <div class="card p-4">
-                <h4>Aniversarios del Mes</h4>
-
-                <div class="row">
-                    <div class="col">
-                        <div id="carousel3" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-
-                                @if (count($employeesAniversary) == 0)
-                                    <div class="carousel-item active">
-                                        <p>Sin aniversarios disponibles</p>
-                                    </div>
-                                @else
-                                    @foreach ($employeesAniversary as $employee)
-
-                                    <div class="carousel-item {{$loop->iteration == 1 ? 'active' : ''}}">
-                                        <img style="object-fit: contain; max-height: 315px;" src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" class="d-block w-100 " alt="...">
-                                            <div class="carousel-caption d-none d-md-block">
-                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
-                                            <br>
-                                            <span style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->birthday_date }}</span>
-
-                                            </div>
-
-                                        </div>
-                                    @endforeach
-                                @endif
-                            </div>
-
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carousel3" data-bs-slide="prev">
-                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                              <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carousel3" data-bs-slide="next">
-                              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                              <span class="visually-hidden">Next</span>
-                            </button>
-                          </div>
-                    </div>
-                </div>
-
-            </div> --}}
-
+            <div class="card p-4 mt-4">
+                <h4>Calendario de Eventos</h4>
+                <br>
+                <div id='calendar'></div>
+            </div>
 
             <div class="card p-3">
                 <h4>Empleado del Mes de la Evaluacion 360</h4>
