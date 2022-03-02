@@ -114,17 +114,16 @@
                                                 <div class="avatar avatar-xl">
                                                     <div class="card-photo" style="width: 40px; height:40px;">
                                                         @if (auth()->user()->image == null)
-                                                            <a style="color: inherit;"
-                                                                href="{{ route('profile.index') }}">
+                                                            <a style="color: inherit;">
                                                                 <p
                                                                     class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
-                                                                    <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
+                                                                    <span>{{ substr($publication->user->name, 0, 1) . substr($publication->user->lastname, 0, 1) }}</span>
                                                                 </p>
                                                             </a>
                                                         @else
                                                             <a href="{{ route('profile.index') }}">
                                                                 <img style="width: 100%; height:100%; object-fit: cover;"
-                                                                    src="{{ asset(auth()->user()->image) }}">
+                                                                    src="{{ asset($publication->user->image) }}">
                                                             </a>
                                                         @endif
                                                     </div>
@@ -132,7 +131,7 @@
                                             </div>
                                             <div class="nombre">
                                                 <p class="m-0 " style="font-weight: bold">
-                                                    {{ auth()->user()->name . ' ' . auth()->user()->lastname }}
+                                                    {{ $publication->user->name . ' ' . $publication->user->lastname }}
                                                 </p>
                                                 <p class="m-0">
                                                     {{ $publication->created_at->diffForHumans() }} </p>
