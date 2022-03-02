@@ -8,6 +8,8 @@ use App\Models\CommuniqueDepartment;
 use App\Models\Employee;
 use App\Models\Events;
 use App\Models\NoWorkingDays;
+use App\Models\Comment;
+use App\Models\Publications;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,8 +58,10 @@ class HomeController extends Controller
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
 
         $monthEmployeeController = MonthController::getEmpoyeeMonth();
+        
+        $publications = Publications::orderBy('created_at', 'desc')->paginate(10);
 
-        return view('home.index', compact('employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController'));
+        return view('home.index', compact('employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController', 'publications'));
     }
 
 

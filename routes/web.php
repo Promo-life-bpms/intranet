@@ -28,6 +28,9 @@ use App\Http\Controllers\NoWorkingDaysController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\RequestCalendarController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\PublicationsController;
 use App\Models\RequestCalendar;
 use App\Models\Vacations;
 use Illuminate\Support\Facades\Auth;
@@ -188,4 +191,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/manual/{manual}/edit', [ManualController::class, 'edit'])->name('manual.edit');
     Route::put('/manual/{manual}', [ManualController::class, 'update'])->name('manual.update');
     Route::delete('/manual/{manual}', [ManualController::class, 'delete'])->name('manual.delete');
+    
+    Route::prefix('social')->group(function () {
+        // Publicaciones
+        Route::patch('/publication/store', [PublicationsController::class, 'store'])->name('publications.store');
+
+        //Ruta de likes
+        Route::post('/publication/{publications}', [LikeController::class, 'update'])->name('like.update');
+
+
+        //Ruta de comentarios
+        Route::post('/comment/store', [CommentController::class, 'store'])->name('comment');
+    });
 });

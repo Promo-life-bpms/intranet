@@ -87,4 +87,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Directory::class, 'user_id');
     }
+    
+    public function meGusta(){
+        return $this->belongsToMany(Publications::class, 'likes', 'user_id', 'publication_id');
+    }
 }
