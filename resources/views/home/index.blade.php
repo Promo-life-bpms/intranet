@@ -103,6 +103,8 @@
                                                 <span
                                                     style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
                                                 <br>
+                                                <span
+                                                    style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->birthday_date->format('d/m')}}</span>
                                             </div>
 
                                         </div>
