@@ -23,7 +23,7 @@
                     @foreach ($manual as $man)
                     @if ($man->img==null)
 
-                        <div class="card text-dark bg-light mb-3 m-2" style="width: 240px; height:auto;" >
+                        <div class="card text-dark bg-light mb-3 m-2" style="width: 240px; height:auto; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;"  >
 
                             <img src="{{ asset('img/pdf.png')}}"
                             style="width: 100%; margin-top:10px; height:120px; object-fit: contain;" class="card-img-top" alt="imagen">

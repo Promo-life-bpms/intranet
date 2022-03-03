@@ -3,10 +3,10 @@
 @section('dashboard')
     <div class="row">
         <div class="col-md-8">
-            <div class="card my-1 py-4">
+            <div class="card my-1 py-4 mb-4" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;">
                 <div class="col-md-12">
                     <div class="container-style-main">
-                        <div class="container-usuario-publicar d-flex">
+                        <div class="container-usuario-publicar d-flex" >
                             <div class="avatar avatar-xl">
                                 <div class="card-photo" style="width: 40px; height:40px;">
                                     @if (auth()->user()->image == null)
@@ -34,13 +34,14 @@
                                     </div>
                                 @endif
                                 <textarea id="exampleFormControlTextarea1" class="form-control" name="content_publication"
-                                    placeholder="Que estas pensando?"></textarea>
-                                <div class="d-flex justify-content-between align-items-center">
+                                    placeholder="¿Que estas pensando?"></textarea>
+                                <div class="d-flex justify-content-between align-items-center" class="public_items">
                                     <div class="d-flex upload-photo">
-                                        <input type="file" name="photo_public" accept="image/*">
+                                        <input type="file" name="photo_public" class="photo_public" accept="image/*">
+                                        
                                     </div>
                                     <div>
-                                        <button class="boton" style="">Publicar</button>
+                                        <button class="boton">Publicar</button>
                                     </div>
                                 </div>
                             </form>
@@ -52,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card p-3">
+            <div class="card p-3" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;">
                 <div class="row">
                     <div class="col-md-12">
                         <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
@@ -100,18 +101,18 @@
                 </div>
             </div>
             <div class="row">
-                <div class=" py-4">
-                    <div class="col-md-12">
+                <div class="">
+                    <div class="col-md-12 p-0">
                         <div class="panel-heading">
                             <h2>Publicaciones</h2>
                         </div>
                         @if (count($publications) <= 0)
                             <div>No hay Publicaciones</div>
                         @else
-                            <div class="mx-3 my-3">
+                            <div class="m-0 p-0" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;" style="border-radius:20px;">
 
                                 @foreach ($publications as $publication)
-                                    <div class="card rounded shadow p-3">
+                                    <div class="card rounded p-3">
                                         <div class="d-flex head">
                                             <div class="imagen px-1">
                                                 <div class="avatar avatar-xl">
@@ -150,7 +151,7 @@
                                         <hr>
                                         <div class="d-flex justify-content-between">
                                             <div id="boton">
-                                                <like-button publication-id="{{ $publication->id }}"
+                                                <like-button style="margin-top: -24px;" publication-id="{{ $publication->id }}"
                                                     like="{{ auth()->user()->meGusta->contains($publication->id) }}"
                                                     likes="{{ $publication->like->count() }}">
 
@@ -172,7 +173,7 @@
                                                     <input name="id_publication" id="id_publication" type="hidden"
                                                         value="{{ $publication->id }}">
                                                     <div class="form-group row ">
-                                                        <div class="col-md-12 align-content-center">
+                                                        <div class="col-md-12 align-content-center m-0 p-0">
                                                             <textarea id="content" name="content"
                                                                 class="form-control @error('content') is-invalid @enderror"
                                                                 placeholder="Escribe tu comentario..."></textarea>
@@ -217,8 +218,8 @@
 
 
         <div class="col-md-4">
-            <div class="card p-4">
-                <h4>Cumpleaños del Mes</h4>
+            <div class="card p-4" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;">
+                <h4 class="d-flex justify-content-center">Cumpleaños del Mes</h4>
 
                 <div class="row">
                     <div class="col">
@@ -268,17 +269,68 @@
                     </div>
                 </div>
 
+            </div>
 
+            <div class="card p-4" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;" style="border-radius:20px;">
+                <h4 class="d-flex justify-content-center text-center">¡Gracias por un año mas con nosotros!</h4>
+
+                <div class="row">
+                    <div class="col">
+                        <div id="carousel3" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+
+                                @if (count($employeesAniversary) == 0)
+                                    <div class="carousel-item active">
+                                        <p>Sin Aniversarios disponibles</p>
+                                    </div>
+                                @else
+                                    @foreach ($employeesAniversary as $employee)
+                                        <div class="carousel-item {{ $loop->iteration == 1 ? 'active' : '' }}">
+                                            @if ($employee->user->image == null)
+                                                <img style="object-fit: cover; height: 420px;"
+                                                    src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
+                                                    class="d-block w-100 " alt="...">
+                                            @else
+                                                <img style="object-fit: cover; height: 420px;"
+                                                    src="{{ asset($employee->user->image) }}" class="d-block w-100 "
+                                                    alt="...">
+                                            @endif
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <span
+                                                    style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
+                                                <br>
+                                                <span
+                                                    style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->date_admission->format('d/m') }}</span>
+                                            </div>
+
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carousel3"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carousel3"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
-            <div class="card p-4 mt-4">
-                <h4>Calendario de Eventos</h4>
+            <div class="card p-4 mt-4" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;" style="border-radius:20px;">
+                <h4 class="d-flex justify-content-center text-center">Calendario de Eventos</h4>
                 <br>
                 <div id='calendar'></div>
             </div>
 
-            <div class="card p-3">
+            <div class="card p-3" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;" >
                 <h4>Empleado del Mes de la Evaluacion 360</h4>
                 <br>
 
@@ -303,18 +355,7 @@
                     @endforeach
                 </div>
             </div>
-
-
-
-
-
-
         </div>
-
-
-
-
-
     </div>
 @stop
 
@@ -362,6 +403,23 @@
             border-radius: 8px;
         }
 
+        @media (max-width: 530px) {
+            
+            .photo_public{
+                width: 50%;
+            }   
+
+        }
+
+        @media (max-width: 420px) {
+             
+            .boton{
+               padding:0;
+            }   
+
+        }
+        
+        
     </style>
 @stop
 
