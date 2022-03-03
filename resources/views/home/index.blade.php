@@ -37,7 +37,7 @@
                                     placeholder="Que estas pensando?"></textarea>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex upload-photo">
-                                        <input type="file" name="photo_public">
+                                        <input type="file" name="photo_public" accept="image/*">
                                     </div>
                                     <div>
                                         <button class="boton" style="">Publicar</button>
