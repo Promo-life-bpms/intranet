@@ -20,7 +20,6 @@ class PublicationsController extends Controller
      */
     public function index()
     {
-
     }
 
     /**
@@ -43,27 +42,30 @@ class PublicationsController extends Controller
     public function store(Request $request)
     {
         // Obtener los datos de la publicacion
-        request()->validate([
-            'content_publication' => ['required', 'string'],
-        ]);
-        $imageName = "";
-        if ($request->file('photo_public')) {
-            $file = $request->file('photo_public');
-            $imageName = 'photos/' . $file->getClientOriginalName();
+        if (($request->file('photo_public') || $request->content_publication)) {
+            $imageName = "";
+            $content = "";
+            if ($request->file('photo_public')) {
+                $file = $request->file('photo_public');
+                $imageName = 'photos/' . $file->getClientOriginalName();
 
-            Storage::disk('local')->put('public/' . $imageName, File::get($file));
+                Storage::disk('local')->put('public/' . $imageName, File::get($file));
+            }
+
+            if ($request->content_publication) {
+                $content = $request->content_publication;
+            }
+
+            //Crear publicacion
+            $publication = Publications::create([
+                'user_id' => auth()->user()->id,
+                'content_publication' => $content,
+                'photo_public' => $imageName
+            ]);
+            return redirect()->action([HomeController::class]);
+        } else {
+            return back()->with('errorData', 'No hay contenido para tu post!');
         }
-
-        //Crear publicacion
-        $publication = Publications::create([
-            'user_id' => auth()->user()->id,
-            'content_publication' => $request->content_publication,
-            'photo_public' => $imageName
-
-
-        ]);
-
-        return redirect()->action([HomeController::class]);
     }
 
 

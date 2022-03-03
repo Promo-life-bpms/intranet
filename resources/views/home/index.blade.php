@@ -28,21 +28,24 @@
                                 method="post" enctype="multipart/form-data">
                                 {!! csrf_field() !!}
                                 @method('PATCH')
+                                @if (session('errorData'))
+                                    <div class="text-danger" id="messageError">
+                                        {{ session('errorData') }}
+                                    </div>
+                                @endif
                                 <textarea id="exampleFormControlTextarea1" class="form-control" name="content_publication"
                                     placeholder="Que estas pensando?"></textarea>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex upload-photo">
                                         <input type="file" name="photo_public">
-
                                     </div>
-
                                     <div>
                                         <button class="boton" style="">Publicar</button>
                                     </div>
-
                                 </div>
                             </form>
                         </div>
+
                         <div class="container-usuarios-publicaciones">
 
                         </div>
@@ -501,7 +504,9 @@
                 }
 
             });
-
+            setTimeout(() => {
+                document.querySelector('#messageError').style.display = "none"
+            }, 5000);
         });
     </script>
 
