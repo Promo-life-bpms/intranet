@@ -54,41 +54,42 @@
         <div class="separador" style="margin-top:100px "></div>
 
         <div class="row">
-
-            <div class="col-md-4 " >
-                <div class="card bg-light border-light mb-3 p-4"  >
+            <div class="col-md-4" >
+                <div class="card border-light p-4" style="background-color: #F4F4F4"  >
                     @foreach ($user as $usr)
-                        <div class="input-group">
+                        
+                        <div class="d-flex align-items-start">
                             <span>
                                 <i class="fa fa-building " aria-hidden="true"></i>
                             </span>
-
+    
                             @if ( !empty($usr->employee->position->department->name))
-                                <p style="padding-left: 10px;"> {{ $usr->employee->position->department->name }}</p>
+                                <p style="padding-left: 10px; max-width:90%;"> {{ $usr->employee->position->department->name }}</p>
                             @else 
                                 <p>Sin departamento especificado</p>
                             @endif
                         </div>
 
-                        <div class="input-group">
+                        <div class="d-flex align-items-start">
                             <span>
                                 <i class="fa fa-briefcase" aria-hidden="true"></i>
                             </span>
-
+    
                             @if ( !empty($usr->employee->position->name ))
-                                <p style="padding-left: 10px;">{{ $usr->employee->position->name }} </p>
+                                <p style="padding-left: 10px; max-width:90%;">{{ $usr->employee->position->name }} </p>
                             @else 
                                 <p>Sin puesto especificado</p>
                             @endif
                         </div>
 
-                        <div class="input-group">
+                        <div class="d-flex align-items-start">
+                            
                             <span>
                                 <i class="fa fa-envelope" aria-hidden="true"></i>
                             </span>
-
+                            
                             @if ( !empty($usr->email))
-                                <p style="padding-left: 10px;">{{ $usr->email }} </p>
+                                <p style="padding-left: 10px; ">{{ $usr->email }} </p>
                             @else 
                                 <p>Sin correo especificado</p>
                             @endif
@@ -98,7 +99,7 @@
                 </div>
             </div>
 
-            <div class="col-md-8 bg-light border-light p-3">
+            <div class="col-md-8 border-light p-3" style="background-color: #F4F4F4">
              
                     <div class="col-md-12 p-0">
                          
