@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
+use App\Models\Publications;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,8 +20,9 @@ class ProfileController extends Controller
     {
         $id = Auth::user()->id;
         $user = User::all()->where('id', $id);
-
-        return view('profile.index', compact('user'));
+        $publications = Publications::where('user_id',$id)->orderBy('created_at', 'desc')->get();
+        
+        return view('profile.index', compact('user','publications'));
     }
 
 
@@ -82,9 +84,16 @@ class ProfileController extends Controller
      */
     public function show(User $prof)
     {
+        $id = Auth::user()->id;
         $user = User::all()->where('id', $prof->id);
-
-        return view('profile.view', compact('user'));
+        $publications = Publications::where('user_id',$prof->id)->orderBy('created_at', 'desc')->get();
+        
+        if($id == $prof->id ){
+            return redirect()->action([ProfileController::class, 'index']);
+        }
+        
+        return view('profile.view', compact('user','publications'));
+        
     }
 
     /**
