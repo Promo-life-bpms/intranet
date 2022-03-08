@@ -37,7 +37,7 @@
                                 <img style="width: 100%; " src="{{ asset($user->image )}}" alt="">
 
                             </td>
-                            @else 
+                            @else
                                 <td  class="text-center" > Sin imagen</td>
                             @endif
                             <td>{{ $user->name }}</td>
@@ -74,13 +74,18 @@
                             <td class="d-flex flex-wrap">
                                 <a style="width: 80px" href="{{ route('admin.users.edit', ['user' => $user->id]) }}" type="button"
                                     class="btn btn-primary">Editar</a>
-    
+
                                 <form class="form-delete"
                                     action="{{ route('admin.users.destroy', ['user' => $user->id]) }}" method="POST">
                                     @csrf
                                     @method('delete')
                                     <button style="width: 80px" type="submit" class="btn btn-danger">Borrar</button>
                                 </form>
+
+                                @role('admin')
+                                    <a href="{{ route('admin.user.sendAccessUnit', ['user' => $user->id]) }}" type="button"
+                                        class="btn btn-primary">Resetear acceso</a>
+                                @endrole
                             </td>
                         </tr>
                     @endforeach
@@ -207,15 +212,15 @@
     table.dataTable.display tbody tr.even > .sorting_1, table.dataTable.order-column.stripe tbody tr.even > .sorting_1 {
       background-color: #fafafa;
     }
-    
+
     table.dataTable.display tbody tr.even > .sorting_2, table.dataTable.order-column.stripe tbody tr.even > .sorting_2 {
       background-color: #fcfcfc;
     }
-    
+
     table.dataTable.display tbody tr.even > .sorting_3, table.dataTable.order-column.stripe tbody tr.even > .sorting_3 {
       background-color: #fefefe;
     }
-    
+
     table.dataTable.display tbody tr.even.selected > .sorting_1, table.dataTable.order-column.stripe tbody tr.even.selected > .sorting_1 {
       background-color: #acbad5;
     }
@@ -261,12 +266,12 @@
     table.dataTable.compact tbody td {
       padding: 4px;
     }
-     
+
     table.dataTable th,
     table.dataTable td {
       box-sizing: content-box;
     }
-     
+
     .dataTables_wrapper {
       position: relative;
       clear: both;
@@ -320,7 +325,7 @@
       color: #FFFFFF !important;
       background-color: #006EAD;
       border-radius: 5px;
-     
+
     }
     .dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
       cursor: default;
@@ -333,7 +338,7 @@
       color: rgb(0, 0, 0) !important;
       border: 1px solid #ffffff;
       background-color: white;
-     
+
     }
     .dataTables_wrapper .dataTables_paginate .paginate_button:active {
       outline: none;
@@ -395,7 +400,7 @@
       clear: both;
       height: 0;
     }
-     
+
 </style>
 @endsection
 
@@ -646,9 +651,9 @@
                 }
             }
         });
-        
-    }); 
-    
+
+    });
+
 </script>
-   
+
 @endsection

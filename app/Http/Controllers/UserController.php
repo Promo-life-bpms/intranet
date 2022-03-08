@@ -253,4 +253,34 @@ class UserController extends Controller
 
         return json_encode($users);
     }
+    public function sendAccess()
+    {
+        $users = User::all();
+        foreach ($users as $user) {
+            $pass = Str::random(8);
+            $user->password = Hash::make($pass);
+            $user->save();
+            $dataNotification = [
+                'name' => $user->name . ' ' . $user->lastname,
+                'email' => $user->email,
+                'password' => $pass,
+                'urlEmail' => url('/loginEmail?email=' . $user->email . '&password=' . $pass)
+            ];
+            $user->notify(new RegisteredUser($dataNotification));
+        }
+    }
+    public function sendAccessPerUser(User $user)
+    {
+        $pass = Str::random(8);
+        $user->password = Hash::make($pass);
+        $user->save();
+        $dataNotification = [
+            'name' => $user->name . ' ' . $user->lastname,
+            'email' => $user->email,
+            'password' => $pass,
+            'urlEmail' => url('/loginEmail?email=' . $user->email . '&password=' . $pass)
+        ];
+        $user->notify(new RegisteredUser($dataNotification));
+        return redirect()->back();
+    }
 }

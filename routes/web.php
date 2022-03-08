@@ -52,6 +52,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::get('/loginEmail', [LoginController::class, 'loginWithLink'])->name('loginWithLink');
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
@@ -81,7 +83,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::resource('/directories', DirectoryController::class);
 
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
-       
+
         // Route::resource('roles', RoleController::class);
         Route::resource('departments', DepartmentsController::class);
         Route::resource('position', PositionController::class);
@@ -92,6 +94,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::resource('manuals', ManualController::class);
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', UserController::class);
+        Route::get('sendAccess/', [ UserController::class, 'sendAccess'])->name('user.sendAccess');
+        Route::get('sendAccess/{user}', [ UserController::class, 'sendAccessPerUser'])->name('user.sendAccessUnit');
         Route::resource('contacts', ContactController::class);
     });
 
@@ -180,18 +184,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('profile/', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('profile/filter', [ProfileController::class, 'change'])->name('profile.change');
 
-    Route::get('/loginEmail', [LoginController::class, 'loginWithLink'])->name('loginWithLink');
-    /*     Route::get('events', [EventsController::class, 'index'])->name('admin.events.index');
-    Route::post('eventsAjax', [EventsController::class, 'ajax']); */
-
-
     Route::get('/manual', [ManualController::class, 'index'])->name('manual.index');
     Route::get('/manual/create', [ManualController::class, 'create'])->name('manual.create');
     Route::post('/manual', [ManualController::class, 'store'])->name('manual.store');
     Route::get('/manual/{manual}/edit', [ManualController::class, 'edit'])->name('manual.edit');
     Route::put('/manual/{manual}', [ManualController::class, 'update'])->name('manual.update');
     Route::delete('/manual/{manual}', [ManualController::class, 'delete'])->name('manual.delete');
-    
+
     Route::prefix('social')->group(function () {
         // Publicaciones
         Route::patch('/publication/store', [PublicationsController::class, 'store'])->name('publications.store');
