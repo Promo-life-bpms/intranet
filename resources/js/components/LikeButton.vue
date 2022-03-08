@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="like-container">
     <span class="like-btn" @click="likePublication" :class="{ 'like-active': this.like }">
     </span>
-    <p>{{ cantidadLikes }} Les gusto esta publicación</p>
+     <span class="badge bg-danger">{{ cantidadLikes }} </span>
   </div>
 </template>
 
@@ -37,3 +37,15 @@ export default {
   },
 };
 </script>
+
+<style>
+.badge{
+  position:absolute;
+  margin-left:-34px;
+  margin-top: 40px;
+}
+
+.like-container{
+  margin-left:-20px;
+}
+</style>

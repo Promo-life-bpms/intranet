@@ -144,8 +144,8 @@
                                         <p class="mt-4 ">
                                             {{ $publication->content_publication }} </p>
                                         @if ($publication->photo_public)
-                                            <img src="{{ asset($publication->photo_public) }}" alt=""
-                                                width="auto">
+                                            <img src="{{ asset('storage') . '/' . $publication->photo_public }}" alt=""
+                                            width="auto">
                                         @endif
                                         <hr>
                                         <div class="d-flex justify-content-between">
