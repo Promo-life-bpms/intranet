@@ -80,9 +80,11 @@ class ProfileController extends Controller
      * @param  \App\Models\Profile  $profile
      * @return \Illuminate\Http\Response
      */
-    public function show(Profile $profile)
+    public function show(User $prof)
     {
-        //
+        $user = User::all()->where('id', $prof->id);
+
+        return view('profile.view', compact('user'));
     }
 
     /**

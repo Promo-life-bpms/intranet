@@ -141,31 +141,65 @@
                                                     {{ $publication->created_at->diffForHumans() }} </p>
                                             </div>
                                         </div>
-                                        <hr>
-                                        <p class="m-0">
+                                        <p class="mt-4 ">
                                             {{ $publication->content_publication }} </p>
                                         @if ($publication->photo_public)
-                                            <img src="{{ asset('storage') . '/' . $publication->photo_public }}" alt=""
+                                            <img src="{{ asset($publication->photo_public) }}" alt=""
                                                 width="auto">
                                         @endif
                                         <hr>
                                         <div class="d-flex justify-content-between">
                                             <div id="boton">
-                                                <like-button style="margin-top: -24px;" publication-id="{{ $publication->id }}"
+                                                <like-button style="margin-top: -24px; overflow:hidden;" publication-id="{{ $publication->id }}"
                                                     like="{{ auth()->user()->meGusta->contains($publication->id) }}"
                                                     likes="{{ $publication->like->count() }}">
 
                                                 </like-button>
                                             </div>
-                                            <div id="formulario">
-                                                <a class="btn btn-primary" data-bs-toggle="collapse"
-                                                    href="#collapse{{ $publication->id }}" role="button"
-                                                    aria-expanded="false" aria-controls="collapse{{ $publication->id }}">
-                                                    Comentar
-                                                </a>
-                                            </div>
+    
                                         </div>
-                                        <div class="collapse" id="collapse{{ $publication->id }}">
+                                       
+                                        <a  style="font-size:18px; color:#000000;" data-bs-toggle="collapse"
+                                            href="#collapse{{ $publication->id }}" role="button"
+                                            aria-controls="collapse{{ $publication->id }}">
+                                            Ver comentarios
+                                        </a>
+                                        
+                                        <div class="collapse mt-4" id="collapse{{ $publication->id }}">
+                                            @foreach ($publication->comments as $comment)
+                                                <div class="nombre d-flex flex-row">
+                                                    <div class="com_image">
+                                                        <div class="card-photo rounded-circle " style="width: 40px; height:40px;">
+                                                            @if ( $comment->user->image == null)
+                                                            
+                                                                <a style="color: inherit;"  href="{{ route('profile.view', ['prof' => $comment->user_id]) }}"> 
+                                                                    <p
+                                                                        class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
+                                                                        <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
+                                                                    </p>
+                                                                </a> 
+                                                            @else
+                                                                <a style="color: inherit;"  href="{{ route('profile.view', ['prof' => $comment->user_id]) }}"> 
+                                                                    <img style="width: 100%; height:100%; object-fit: cover;"
+                                                                        src="{{ $comment->user->image }}">
+                                                                </a> 
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="com_content">
+                                                        <h6 class="ml-4">
+                                                            {{ $comment->user->name . ' ' . $comment->user->lastname }}
+                                                        </h6>
+                                                        <p class="ml-4 public-text">
+                                                            {{ $comment->content }}
+                                                        </p>
+                                                    </div> 
+                                                    <hr>
+                                                </div>
+                                            @endforeach
+                                        </div>
+
+                                        <div class="com" >
                                             <div class="card card-body">
                                                 <form method="POST" action="{{ route('comment') }}"
                                                     class="comment">
@@ -185,7 +219,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <div class="col-md-6 offset-md-5">
+                                                        <div class="d-flex justify-content-end">
                                                             <button type="submit" class="boton">
                                                                 Comentar
                                                             </button>
@@ -195,17 +229,7 @@
 
                                             </div>
                                         </div>
-                                        <h5 style="font-weight:bold">Comentarios</h5>
-                                        <hr>
-                                        @foreach ($publication->comments as $comment)
-                                            <div class="nombre">
-                                                <h6 class="m-0 " style="font-weight:bold">
-                                                    {{ $comment->user->name . ' ' . $comment->user->lastname }}
-                                                </h6>
-                                                {{ $comment->content }}
-                                                <hr>
-                                            </div>
-                                        @endforeach
+
                                     </div>
                                 @endforeach
                             </div>
@@ -403,6 +427,9 @@
             border-radius: 8px;
         }
 
+        .public-text{
+            text-align: justify;
+        }
         @media (max-width: 530px) {
             
             .photo_public{
