@@ -183,6 +183,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('profile/', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('profile/filter', [ProfileController::class, 'change'])->name('profile.change');
+    Route::get('profile/{prof}/view', [ProfileController::class, 'show'])->name('profile.view');
+    Route::put('profile/{user}', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::get('/manual', [ManualController::class, 'index'])->name('manual.index');
     Route::get('/manual/create', [ManualController::class, 'create'])->name('manual.create');

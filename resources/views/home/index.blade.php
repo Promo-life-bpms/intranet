@@ -2,58 +2,58 @@
 
 @section('dashboard')
     <div class="row">
+        <!-- Seccion principal -->
         <div class="col-md-8">
-            <div class="card my-1 py-4 mb-4" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;">
-                <div class="col-md-12">
-                    <div class="container-style-main">
-                        <div class="container-usuario-publicar d-flex" >
-                            <div class="avatar avatar-xl">
-                                <div class="card-photo" style="width: 40px; height:40px;">
-                                    @if (auth()->user()->image == null)
-                                        <a style="color: inherit;" href="{{ route('profile.index') }}">
-                                            <p
-                                                class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
-                                                <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
-                                            </p>
-                                        </a>
-                                    @else
-                                        <a href="{{ route('profile.index') }}">
-                                            <img style="width: 100%; height:100%; object-fit: cover;"
-                                                src="{{ asset(auth()->user()->image) }}">
-                                        </a>
-                                    @endif
+            <!-- Crear publicacion -->
+            <div class="card col-md-12 my-1 py-4 mb-4 box">
+                <div class="container-style-main">
+                    <div class="container-usuario-publicar d-flex" >
+                        <div class="avatar avatar-xl">
+                            <div class="card-photo" style="width: 40px; height:40px;">
+                                @if (auth()->user()->image == null)
+                                    <a style="color: inherit;" href="{{ route('profile.index') }}">
+                                        <p
+                                            class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
+                                            <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
+                                        </p>
+                                    </a>
+                                @else
+                                    <a href="{{ route('profile.index') }}">
+                                        <img style="width: 100%; height:100%; object-fit: cover;"
+                                            src="{{ asset(auth()->user()->image) }}">
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                        <form action="{{ route('publications.store') }}" class="form-publicar n1-2 flex-grow-1"
+                            method="post" enctype="multipart/form-data">
+                            {!! csrf_field() !!}
+                            @method('PATCH')
+                            @if (session('errorData'))
+                                <div class="text-danger" id="messageError">
+                                    {{ session('errorData') }}
+                                </div>
+                            @endif
+                            <textarea id="exampleFormControlTextarea1" class="form-control" name="content_publication"
+                                placeholder="¿Que estas pensando?"></textarea>
+                            <div class="d-flex justify-content-between" class="public_items">
+                                <div class="d-flex upload-photo">
+                                    <input type="file" name="photo_public" class="photo_public" accept="image/*">
+                                        
+                                </div>
+                                <div class=" mt-3">
+                                    <button class="boton">Publicar</button>
                                 </div>
                             </div>
-                            <form action="{{ route('publications.store') }}" class="form-publicar n1-2 flex-grow-1"
-                                method="post" enctype="multipart/form-data">
-                                {!! csrf_field() !!}
-                                @method('PATCH')
-                                @if (session('errorData'))
-                                    <div class="text-danger" id="messageError">
-                                        {{ session('errorData') }}
-                                    </div>
-                                @endif
-                                <textarea id="exampleFormControlTextarea1" class="form-control" name="content_publication"
-                                    placeholder="¿Que estas pensando?"></textarea>
-                                <div class="d-flex justify-content-between align-items-center" class="public_items">
-                                    <div class="d-flex upload-photo">
-                                        <input type="file" name="photo_public" class="photo_public" accept="image/*">
-                                        
-                                    </div>
-                                    <div>
-                                        <button class="boton">Publicar</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div class="container-usuarios-publicaciones">
-
-                        </div>
+                        </form>
                     </div>
+                    
+                    <div class="container-usuarios-publicaciones"></div>
                 </div>
             </div>
-            <div class="card p-3" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;">
+
+            <!-- Comunicados -->
+            <div class="card p-3 box" >
                 <div class="row">
                     <div class="col-md-12">
                         <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
@@ -100,127 +100,149 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="">
-                    <div class="col-md-12 p-0">
-                        <div class="panel-heading">
-                            <h2>Publicaciones</h2>
-                        </div>
-                        @if (count($publications) <= 0)
-                            <div>No hay Publicaciones</div>
-                        @else
-                            <div class="m-0 p-0" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;" style="border-radius:20px;">
 
-                                @foreach ($publications as $publication)
-                                    <div class="card rounded p-3">
-                                        <div class="d-flex head">
-                                            <div class="imagen px-1">
-                                                <div class="avatar avatar-xl">
-                                                    <div class="card-photo" style="width: 40px; height:40px;">
-                                                        @if (auth()->user()->image == null)
-                                                            <a style="color: inherit;">
+            <!-- Publicaciones -->
+            <div class="row pl-3 pr-3">   
+                <div class="col-md-12 p-0">
+                     
+                    @if (count($publications) <= 0)
+                        <p>No hay Publicaciones</p>
+                    @else
+                        @foreach ($publications as $publication)
+                            <div class="m-0 p-0"  style="border-radius:20px;">
+                                <div class="card p-3 box">
+                                    <div class="d-flex head">
+                                        <div class="imagen px-1">
+                                            <div class="avatar avatar-xl">
+                                                <div class="card-photo" style="width: 40px; height:40px;">
+                                                    @if (auth()->user()->image == null)
+                                                        <a style="color: inherit;"  href="{{ route('profile.view', ['prof' => $publication->user_id]) }}">
+                                                            <p
+                                                                class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
+                                                                <span>{{ substr($publication->user->name, 0, 1) . substr($publication->user->lastname, 0, 1) }}</span>
+                                                            </p>
+                                                        </a>
+                                                    @else
+                                                        <a style="color: inherit;"  href="{{ route('profile.view', ['prof' => $publication->user_id]) }}">
+                                                            <img style="width: 100%; height:100%; object-fit: cover;"
+                                                                src="{{ asset($publication->user->image) }}">
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="nombre">
+                                            <p class="m-0 " style="font-weight: bold">
+                                                {{ $publication->user->name . ' ' . $publication->user->lastname }}
+                                            </p>
+                                            <p class="m-0">
+                                                {{ $publication->created_at->diffForHumans() }} </p>
+                                        </div>
+                                    </div>
+                                    <p class="mt-4 ">
+                                        {{ $publication->content_publication }} </p>
+                                    @if ($publication->photo_public)
+                                        <img src="{{ asset('storage') . '/' . $publication->photo_public }}" alt=""
+                                        width="auto">
+                                    @endif
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <div id="boton">
+                                            <like-button style="margin-top: -24px; overflow:hidden;" publication-id="{{ $publication->id }}"
+                                                like="{{ auth()->user()->meGusta->contains($publication->id) }}"
+                                                likes="{{ $publication->like->count() }}">
+                                            </like-button>
+                                        </div>
+    
+                                    </div>
+                                       
+                                    <a  style="font-size:18px; color:#000000;" data-bs-toggle="collapse"
+                                        href="#collapse{{ $publication->id }}" role="button"
+                                        aria-controls="collapse{{ $publication->id }}">
+                                        Ver comentarios
+                                    </a>
+                                        
+                                    <div class="collapse mt-4" id="collapse{{ $publication->id }}">
+                                        @foreach ($publication->comments as $comment)
+                                            <div class="nombre d-flex flex-row">
+                                                <div class="com_image">
+                                                    <div class="card-photo rounded-circle " style="width: 40px; height:40px;">
+                                                        @if ( $comment->user->image == null)
+                                                            
+                                                            <a style="color: inherit;"  href="{{ route('profile.view', ['prof' => $comment->user_id]) }}"> 
                                                                 <p
                                                                     class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
-                                                                    <span>{{ substr($publication->user->name, 0, 1) . substr($publication->user->lastname, 0, 1) }}</span>
+                                                                    <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
                                                                 </p>
-                                                            </a>
+                                                            </a> 
                                                         @else
-                                                            <a href="{{ route('profile.index') }}">
+                                                            <a style="color: inherit;"  href="{{ route('profile.view', ['prof' => $comment->user_id]) }}"> 
                                                                 <img style="width: 100%; height:100%; object-fit: cover;"
-                                                                    src="{{ asset($publication->user->image) }}">
-                                                            </a>
+                                                                    src="{{ $comment->user->image }}">
+                                                            </a> 
                                                         @endif
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="nombre">
-                                                <p class="m-0 " style="font-weight: bold">
-                                                    {{ $publication->user->name . ' ' . $publication->user->lastname }}
-                                                </p>
-                                                <p class="m-0">
-                                                    {{ $publication->created_at->diffForHumans() }} </p>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <p class="m-0">
-                                            {{ $publication->content_publication }} </p>
-                                        @if ($publication->photo_public)
-                                            <img src="{{ asset('storage') . '/' . $publication->photo_public }}" alt=""
-                                                width="auto">
-                                        @endif
-                                        <hr>
-                                        <div class="d-flex justify-content-between">
-                                            <div id="boton">
-                                                <like-button style="margin-top: -24px;" publication-id="{{ $publication->id }}"
-                                                    like="{{ auth()->user()->meGusta->contains($publication->id) }}"
-                                                    likes="{{ $publication->like->count() }}">
-
-                                                </like-button>
-                                            </div>
-                                            <div id="formulario">
-                                                <a class="btn btn-primary" data-bs-toggle="collapse"
-                                                    href="#collapse{{ $publication->id }}" role="button"
-                                                    aria-expanded="false" aria-controls="collapse{{ $publication->id }}">
-                                                    Comentar
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="collapse" id="collapse{{ $publication->id }}">
-                                            <div class="card card-body">
-                                                <form method="POST" action="{{ route('comment') }}"
-                                                    class="comment">
-                                                    @csrf
-                                                    <input name="id_publication" id="id_publication" type="hidden"
-                                                        value="{{ $publication->id }}">
-                                                    <div class="form-group row ">
-                                                        <div class="col-md-12 align-content-center m-0 p-0">
-                                                            <textarea id="content" name="content"
-                                                                class="form-control @error('content') is-invalid @enderror"
-                                                                placeholder="Escribe tu comentario..."></textarea>
-                                                            @error('content')
-                                                                <span class="invalid-feedback" role="alert">
-                                                                    <strong>{{ $message }}</strong>
-                                                                </span>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row mb-0">
-                                                        <div class="col-md-6 offset-md-5">
-                                                            <button type="submit" class="boton">
-                                                                Comentar
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-
-                                            </div>
-                                        </div>
-                                        <h5 style="font-weight:bold">Comentarios</h5>
-                                        <hr>
-                                        @foreach ($publication->comments as $comment)
-                                            <div class="nombre">
-                                                <h6 class="m-0 " style="font-weight:bold">
-                                                    {{ $comment->user->name . ' ' . $comment->user->lastname }}
-                                                </h6>
-                                                {{ $comment->content }}
+                                                <div class="com_content">
+                                                    <h6 class="ml-4">
+                                                        {{ $comment->user->name . ' ' . $comment->user->lastname }}
+                                                    </h6>
+                                                    <p class="ml-4 public-text">
+                                                        {{ $comment->content }}
+                                                    </p>
+                                                </div> 
                                                 <hr>
                                             </div>
                                         @endforeach
                                     </div>
-                                @endforeach
-                            </div>
 
-                        @endif
-                    </div>
+                                    <div class="com" >
+                                        <div class="card card-body" style="padding-bottom: 0;">
+                                            <form method="POST" action="{{ route('comment') }}"
+                                                class="comment">
+                                                @csrf
+                                                <input name="id_publication" id="id_publication" type="hidden"
+                                                    value="{{ $publication->id }}">
+                                                <div class="form-group row ">
+                                                    <div class="col-md-12 align-content-center m-0 p-0">
+                                                        <textarea id="content" name="content"
+                                                            class="form-control @error('content') is-invalid @enderror"
+                                                            placeholder="Escribe tu comentario..."></textarea>
+                                                        @error('content')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row mb-0">
+                                                    <div class="d-flex justify-content-end pr-0">
+                                                        <button type="submit" class="boton">
+                                                            Comentar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
+
         </div>
+        <!-- Termino de la seccion principal  -->
 
-
+        <!-- Sidebar  -->
         <div class="col-md-4">
+
+            <!-- Cumpleanos del mes  -->
             <div class="card p-4" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;">
                 <h4 class="d-flex justify-content-center">Cumpleaños del Mes</h4>
-
                 <div class="row">
                     <div class="col">
                         <div id="carousel2" class="carousel slide" data-bs-ride="carousel">
@@ -243,11 +265,9 @@
                                                     alt="...">
                                             @endif
                                             <div class="carousel-caption d-none d-md-block">
-                                                <span
-                                                    style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
+                                                <span class="aniversary-text">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
                                                 <br>
-                                                <span
-                                                    style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->birthday_date->format('d/m') }}</span>
+                                                <span class="aniversary-text">{{ $employee->birthday_date->format('d/m') }}</span>
                                             </div>
 
                                         </div>
@@ -268,9 +288,9 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
+            <!-- Aniversarios  -->
             <div class="card p-4" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;" style="border-radius:20px;">
                 <h4 class="d-flex justify-content-center text-center">¡Gracias por un año mas con nosotros!</h4>
 
@@ -296,11 +316,9 @@
                                                     alt="...">
                                             @endif
                                             <div class="carousel-caption d-none d-md-block">
-                                                <span
-                                                    style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
+                                                <span class="aniversary-text">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
                                                 <br>
-                                                <span
-                                                    style="background: rgba(3, 42, 51, 0.5); font-size:1.2rem;">{{ $employee->date_admission->format('d/m') }}</span>
+                                                <span class="aniversary-text">{{ $employee->date_admission->format('d/m') }}</span>
                                             </div>
 
                                         </div>
@@ -321,15 +339,16 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
+             <!-- Calendario de eventos  -->
             <div class="card p-4 mt-4" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;" style="border-radius:20px;">
                 <h4 class="d-flex justify-content-center text-center">Calendario de Eventos</h4>
                 <br>
                 <div id='calendar'></div>
             </div>
 
+             <!--  Empleado del mes  -->
             <div class="card p-3" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;" >
                 <h4>Empleado del Mes de la Evaluacion 360</h4>
                 <br>
@@ -355,7 +374,9 @@
                     @endforeach
                 </div>
             </div>
+
         </div>
+
     </div>
 @stop
 
@@ -401,6 +422,21 @@
 
         .card {
             border-radius: 8px;
+        }
+
+        .public-text{
+            text-align: justify;
+        }
+
+        .box{
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+            border-radius: 10px;
+            
+        }
+
+        .aniversary-text{
+            background: rgba(3, 42, 51, 0.5); 
+            font-size:1.2rem;
         }
 
         @media (max-width: 530px) {

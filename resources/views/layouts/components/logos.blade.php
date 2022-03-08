@@ -1,15 +1,16 @@
-<div class="contenedor-logo  rounded">
-    <ul class="logos p-3" style="background: #ffffff; border-radius: 10px; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+<div class="contenedor-logo  rounded p-3" style="margin-top: -40px;">
+    <ul class="logos p-3" style="background: #ffffff; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    border-radius: 10px;
     ">
-        <li class="pl-4 m-0"><a href="#"><img style="width: 80px" src="{{ asset('/img/bhtrade.png') }}"
+        <li class="pl-4 m-0"><a href="#"><img style="width: 70px" src="{{ asset('/img/bhtrade.png') }}"
                     alt="bhtrade"></a> </li>
-        <li class="p-0 m-0"><a href="#"><img style="width: 160px;" src="{{ asset('/img/promolife.png') }}"
+        <li class="p-0 m-0"><a href="#"><img style="width: 150px;" src="{{ asset('/img/promolife.png') }}"
                     alt="promolife"></a>
         </li>
-        <li class="p-0 m-0"><a href="#"><img style="width: 80px;" src="{{ asset('/img/promodreams.png') }}"
+        <li class="p-0 m-0"><a href="#"><img style="width: 70px;" src="{{ asset('/img/promodreams.png') }}"
                     alt="promodreams"></a>
         </li>
-        <li class="pr-4 m-0"><a href="#"><img style="width: 80px;" src="{{ asset('/img/trademarket.png') }}"
+        <li class="pr-4 m-0"><a href="#"><img style="width: 70px;" src="{{ asset('/img/trademarket.png') }}"
                     alt="trademarket"></a>
         </li>
     </ul>
