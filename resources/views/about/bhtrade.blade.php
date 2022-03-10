@@ -4,35 +4,34 @@
    
     <div class="card-body">
 
-      <div class="banner">
-          <div class="d-flex justify-content-center">
-            <img class="aboutLogo" style="max-width:240px; margin-top:17%;" src="{{ asset('/img/bhtrade.png') }}" alt="bhtrade">
-          </div>
+      <div class="banner" >
+        <img class="logoCompany" src="{{ asset('/img/bhtrade.png') }}" alt="bhtrade">
       </div>
+
 
       <div style="padding-bottom: 100px;"  class="separador"></div>
 
-        <section class="header">
+      <section class="header">
 
-            <div class="row mt-4">
-                <div class="col">
-                   <div class="card info">
-                    <h3 style="margin-bottom: 30px;">¿Qué es BH Trade Market? </h3>
-                    <p class="mb-4" style=" text-align: justify;
-                    text-justify: inter-word; font-size:1.2rem;">Más de una década importando, fabricando
-                    y distribuyendo productos promocionales y
-                    regalos corporativos para las marcas más
-                    prestigiosas. Expertos asesores, socios
-                    estratégicos y facilitadores para la
-                    adquisición del producto exacto para cada
-                    campaña externa o interna de las empresas
-                    AAA.
-                    </p>
-                   </div>
-                    
-                </div>
+        <div class="row mt-4">
+            <div class="col">
+               <div class="card info">
+                <h3 style="margin-bottom: 30px;">¿Qué es BH Trade Market? </h3>
+                <p class="mb-4" style=" text-align: justify;
+                text-justify: inter-word; font-size:1.2rem;">Más de una década importando, fabricando
+                y distribuyendo productos promocionales y
+                regalos corporativos para las marcas más
+                prestigiosas. Expertos asesores, socios
+                estratégicos y facilitadores para la
+                adquisición del producto exacto para cada
+                campaña externa o interna de las empresas
+                AAA.
+                </p>
+               </div>
+                
             </div>
-        </section>
+        </div>
+      </section>
           
         <div class="d-flex justify-content-center">
           <div class="valores">
@@ -64,6 +63,7 @@
                         en el otro</b>
                         </p>
                         <div style="padding-bottom: 50px;"  class="separador"></div>
+
                         <img class="item-img" src="{{ asset('/img/lealtad.png') }}" alt="">
                     </div>
                 </div>
@@ -168,6 +168,25 @@
 @section('styles')
 <style>
 
+.banner{
+  width: 100%; 
+  height:250px; 
+  background-image:linear-gradient( rgba(76, 216, 255, 0.8), rgba(30, 108, 217, 0.8)),
+   url('http://www.trademarket.com.mx/assets/imgs/quienes.jpg');
+  background-repeat: no-repeat;
+	background-size: cover;
+  display:flex; 
+  justify-content:center;
+  background-position: center center;
+  border-radius: 10px;
+}
+
+.logoCompany{
+  width: 200px; 
+  height:180px; 
+  margin-top:200px;
+}
+
 .item-img{
     width: 350px;
     position: absolute;
@@ -205,34 +224,10 @@
 
 }
 
-
 .resultados p {
   width: 400px;
   margin: -120px 0  0  -200px;
 }
-
-.banner {
-  	height: 40vh;
-  	background-image: 
-	  linear-gradient(to right bottom, 
-     rgba(76, 216, 255, 0.8),
-     rgba(30, 108, 217, 0.8)),
-     url('http://www.trademarket.com.mx/assets/imgs/quienes.jpg');
-  	
-	  background-size: cover;
-  	background-position: top;
-  	position: relative;
-    
-  	clip-path: polygon(0 0, 100% 0, 100% 100vh, 0 100%);
-}
-
-.banner img{
-  margin-top: 19%;
-  width: 500px;
-  position: absolute;
-  z-index: 2;
-}
-
 
 
 .timeline {
@@ -355,12 +350,18 @@ blockquote {
 }
 
 @media screen and (max-width: 768px) {
-    .item-img{
-    width: 300px;
-    position: absolute;
-    margin-top:-140px; 
-    margin-left: 12%;
-    }
+
+  #sidebar ~ #main{
+                padding: 0;
+  }
+
+  .item-img{
+    display: none;
+  }
+
+  .timeline-item {
+    margin-top: 80px;
+  }
 
   .timeline::before {
     left: 50px;
@@ -369,9 +370,10 @@ blockquote {
     left: 50px;
   }
   .timeline .timeline-content {
-    max-width: 100%;
+    max-width: 80%;
     width: auto;
     margin-left: 70px;
+  
   }
   .timeline .timeline-item:nth-child(even) .timeline-content {
     float: none;
@@ -387,14 +389,12 @@ blockquote {
     border-width: 10px 15px 10px 0;
     border-color: transparent #f5f5f5 transparent transparent;
   }
+  
+  .date{
+    font-size: 12px;
+  }
+
 }
 
 </style>
 @stop
-
-@section('scripts')
-
-    <script>
-     
-    </script>  
-@endsection

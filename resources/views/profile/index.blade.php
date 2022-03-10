@@ -4,54 +4,49 @@
     
     <div class="card-body">
 
-        <div class="row">
-            <div class="banner">
-                <div class="d-flex justify-content-flex">
-                    @foreach ($user as $usr)
+        <div class="banner" >
+            <div class="d-flex justify-content-start user-info" style="width: 100%;">
 
-                    @if ($usr->image==null)
+                @foreach ($user as $usr)
 
-                        <div class="container-image  rounded-circle">
-                            <div class="image" style=" ">
+                    <div class="container-image  rounded-circle">
+                        @if ($usr->image==null)
+                            <div class="image">
                                 <img class="profile-picture" src="https://img.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg?size=338&ext=jpg"  alt=""> 
                             </div>
-
-                            <div class="change-image"  style="z-index: 10;" >
-                                
-                                <button type="button" class="btnCreate"  data-bs-toggle="modal" data-bs-target="#modalImage">
-                                    <i style="margin-left:5px; " class="fa fa-camera fa-2x" aria-hidden="true"></i>
-                                </button>
+                        @else 
+                            <div class="image">
+                                <img class="profile-picture" src="{{  asset('') . $usr->image }}"  alt=""> 
                             </div>
+                        @endif
+                        <div class="change-image"  style="z-index: 10;" >
+                            <button type="button" class="btnCreate"  data-bs-toggle="modal" data-bs-target="#modalImage">
+                                <i class="fa fa-camera " aria-hidden="true"></i>
+                            </button>
                         </div>
-
-                    @else 
-                        <div class="container-image  rounded-circle">
-                            <div class="image" style=" ">
-                                <img class="profile-picture" src="{{ ($usr->image) }}"  alt=""> 
-                            </div>
-
-                            <div class="change-image"  style="z-index: 10;" >
-                                
-                                <button type="button" class="btnCreate"  data-bs-toggle="modal" data-bs-target="#modalImage">
-                                    <i style="margin-left:5px;" class="fa fa-camera" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                    @endif
-                    
-                    @endforeach
-
-                    <div class="container-text  text">
-                        <h3><td>{{ $usr->name . ' ' . $usr->lastname }}</td></h3>
-                        <h5>{{$usr->employee->position->name}} </h5>
                     </div>
 
+                @endforeach
+
+                <div class="container-text  text">
+                    <h3><td>{{ $usr->name . ' ' . $usr->lastname }}</td></h3>
+                    <h5>{{$usr->employee->position->name}} </h5>
                 </div>
+
             </div>
         </div>
 
-        <div class="separador" style="margin-top:100px "></div>
+
+        
+
+        <div class="hidden-text" style="display: none">
+            <div class="separador" style="margin-top:120px "></div>
+            <h3><td>{{ $usr->name . ' ' . $usr->lastname }}</td></h3>
+            <h5>{{$usr->employee->position->name}} </h5>
+            <br>
+        </div>
+        <div class="separador" style="margin-top:120px "></div>
+
 
         <div class="row">
             <div class="col-md-4" >
@@ -283,29 +278,27 @@
         color: #ffffff;
     }
 
-    .banner {
-        height: 45vh;
-        background-image: 
-        linear-gradient(to right bottom, 
-        rgba(76, 216, 255, 0.8),
-        rgba(28, 98, 197, 0.8)),
-        url('http://www.trademarket.com.mx/assets/imgs/quienes.jpg');
-        
+
+    .banner{
+    width: 100%; 
+    height:250px; 
+    background-image:linear-gradient( rgba(76, 216, 255, 0.8), rgba(30, 108, 217, 0.8)),
+    url('http://www.trademarket.com.mx/assets/imgs/quienes.jpg');
+    background-repeat: no-repeat;
         background-size: cover;
-        background-position: top;
-        position: relative;
-        z-index: 1;
-        
-        clip-path: polygon(10 0, 100% 0, 100% 100vh, 0 100%);
+    display:flex; 
+    justify-content:center;
+    background-position: center center;
+    border-radius: 10px;
     }
 
     .container-image {
         width:200px; 
         height:200px;
         background: #ffffff; 
-        margin-top: 19%;
+        margin: 120px 40px 0 40px;
         overflow: hidden; 
-    
+        
     } 
 
     .image{
@@ -334,8 +327,8 @@
 
 
     .container-text{
-        margin-top: 22%;
-        margin-left: 50px;
+        margin-top: 160px;
+        
     }
 
     .container-text >*{
@@ -348,6 +341,37 @@
           
     }
 
+    @media screen and (max-width: 768px) {
+
+        #sidebar ~ #main{
+            padding: 0;
+        }  
+
+        .user-info{
+            margin-bottom: 200px;
+            align-items: center;
+            flex-direction: column;
+        }
+        .container-image {
+           
+            margin-top:120px; 
+            position: absolute;
+        }
+
+        .container-text{
+           margin: 340px 0 0 0 ;
+        } 
+
+        .container-text >*{
+           color: #032A3D;
+           text-align: center;
+           margin: 5px 0 0 0 ;
+        } 
+        .col-md-4{
+            margin-top:80px;
+        }
+
+    }
 
 </style>
 @stop
