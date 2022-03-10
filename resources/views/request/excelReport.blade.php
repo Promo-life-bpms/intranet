@@ -1,8 +1,6 @@
 <table>
     <thead>
         <tr>
-            <th scope="col">#</th>
-            <th scope="col">Fecha de creación</th>
             <th scope="col">Solicitante</th>
             <th scope="col">Tipo</th>
             <th scope="col">Pago</th>
@@ -15,8 +13,6 @@
     <tbody>
         @foreach ($requests as $request)
             <tr>
-                <td>{{ $request->id }}</td>
-                <td>{{ $request->created_at }}</td>
                 <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }}</td>
                 <td>{{ $request->type_request }}</td>
                 <td>{{ $request->payment }}</td>
