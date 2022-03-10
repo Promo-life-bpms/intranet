@@ -445,6 +445,12 @@
             font-size:1.2rem;
         }
 
+        @media screen and (max-width: 768px) {
+            #sidebar ~ #main{
+                        padding: 0;
+            }
+        }
+        
         @media (max-width: 530px) {
             
             .photo_public{
