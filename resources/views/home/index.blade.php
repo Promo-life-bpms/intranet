@@ -159,7 +159,13 @@
                                     <a  style="font-size:18px; color:#000000;" data-bs-toggle="collapse"
                                         href="#collapse{{ $publication->id }}" role="button"
                                         aria-controls="collapse{{ $publication->id }}">
-                                        Ver comentarios
+                                        @php
+                                        $contador = 0;
+                                            foreach ($publication->comments as $comment){  
+                                                $contador = $contador + 1;
+                                            }
+                                        @endphp
+                                        Ver comentarios  (<?=$contador ?>)
                                     </a>
                                         
                                     <div class="collapse mt-4" id="collapse{{ $publication->id }}">
