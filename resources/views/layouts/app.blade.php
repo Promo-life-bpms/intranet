@@ -51,6 +51,7 @@
                     </div>
                 </div>
                 @include('layouts.components.footer')
+                <chat-component></chat-component>
             </div>
         </div>
     </div>

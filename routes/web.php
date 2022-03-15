@@ -30,6 +30,7 @@ use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\RequestCalendarController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PublicationsController;
 use App\Models\RequestCalendar;
 use App\Models\Vacations;
@@ -76,7 +77,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
 
     Route::get('/month', MonthController::class)->name('month');
- /*    Route::get('/manual', ManualController::class)->name('manual'); */
+    /*    Route::get('/manual', ManualController::class)->name('manual'); */
     Route::get('/folder', FolderController::class)->name('folder');
     Route::get('/work', WorkController::class)->name('work');
 
@@ -94,8 +95,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::resource('manuals', ManualController::class);
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', UserController::class);
-        Route::get('sendAccess/', [ UserController::class, 'sendAccess'])->name('user.sendAccess');
-        Route::get('sendAccess/{user}', [ UserController::class, 'sendAccessPerUser'])->name('user.sendAccessUnit');
+        Route::get('sendAccess/', [UserController::class, 'sendAccess'])->name('user.sendAccess');
+        Route::get('sendAccess/{user}', [UserController::class, 'sendAccessPerUser'])->name('user.sendAccessUnit');
         Route::resource('contacts', ContactController::class);
     });
 
@@ -203,5 +204,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         //Ruta de comentarios
         Route::post('/comment/store', [CommentController::class, 'store'])->name('comment');
+    });
+    //Rutas de Chat
+    Route::prefix('chat')->group(function () {
+
+        //Usuarios
+        Route::get('/obtenerUsuarios', [MessageController::class, 'obtenerUsuarios'])->name('usuariosChat');
     });
 });
