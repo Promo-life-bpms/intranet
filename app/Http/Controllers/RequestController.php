@@ -354,11 +354,14 @@ class RequestController extends Controller
                 $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
                 $totalVacation = intval($userVacations);
 
-                $final = $totalVacation + $total;
+                if($request->type_request=="Solicitar vacaciones"){
+                    $final = $totalVacation + $total;
 
-                DB::table('vacations_availables')
-                ->where('users_id',$request->employee_id)
-                ->update(['dv' => $final]);
+                    DB::table('vacations_availables')
+                    ->where('users_id',$request->employee_id)
+                    ->update(['dv' => $final]);
+                }
+
 
                 //Pasa las fechas de las solicitudes rechazadas a otra tabla
                 foreach($rejected  as $rej){
@@ -416,11 +419,15 @@ class RequestController extends Controller
                 $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('period_days');
                 $totalVacation = floatval($userVacations);
 
-                $final = $totalVacation - $total ;
+                if($request->type_request=="Solicitar vacaciones"){
 
-                DB::table('vacations_availables')
-                ->where('users_id',$request->employee_id)
-                ->update(['period_days' => $final]);
+                    $final = $totalVacation - $total ;
+                    DB::table('vacations_availables')
+                    ->where('users_id',$request->employee_id)
+                    ->update(['period_days' => $final]);
+                } 
+
+              
             }
             
 
@@ -438,11 +445,15 @@ class RequestController extends Controller
                 $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
                 $totalVacation = intval($userVacations);
 
-                $final = $totalVacation + $total;
 
-                DB::table('vacations_availables')
-                ->where('users_id',$request->employee_id)
-                ->update(['dv' => $final]);
+                if($request->type_request=="Solicitar vacaciones"){
+                    $final = $totalVacation + $total;
+
+                    DB::table('vacations_availables')
+                    ->where('users_id',$request->employee_id)
+                    ->update(['dv' => $final]);
+                } 
+              
             
                 //Pasa las fechas de las solicitudes rechazadas a otra tabla
                 foreach($rejected  as $rej){
