@@ -52,6 +52,8 @@
                 </div>
                 @include('layouts.components.footer')
                 <chat-component></chat-component>
+{{--                 <chat-messages :messages="messages"></chat-messages>
+                <chat-form v-on:messagesent="addMessage" :user="{{ Auth::user() }}"></chat-form> --}}
             </div>
         </div>
     </div>

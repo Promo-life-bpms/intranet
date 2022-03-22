@@ -7,6 +7,7 @@ use App\Models\User;
 use Facade\FlareClient\Http\Response;
 use Illuminate\Auth\RequestGuard;
 use Illuminate\Http\Request;
+use App\Events\MessageSent;
 
 class MessageController extends Controller
 {
@@ -36,7 +37,9 @@ class MessageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+
+     //enviar mensajes
+    public function sendMessage(Request $request)
     {
         //Obtener los datos del formulario de mensajes
         request()->validate([
@@ -55,10 +58,21 @@ class MessageController extends Controller
             "receiver_id" => $receiver_id,
             "message" => $request->message
         ]);
+
+        broadcast(new MessageSent($transmitter_id, $message))->toOthers();
+        return ['status' => 'Message Sent!'];
     }
+
+    //obtener usuarios
     public function obtenerUsuarios()
     {
         $users =  User::all();
         return response()->json($users);
+    }
+
+    //obtener mensajes
+    public function fetchMessages()
+    {
+        return Message::with('transmitter_id')->get();
     }
 }

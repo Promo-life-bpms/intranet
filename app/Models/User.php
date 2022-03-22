@@ -54,7 +54,7 @@ class User extends Authenticatable
             $user->employee()->create();
         });
 
-       /*  static::created(function ($user) {
+        /*  static::created(function ($user) {
             $user->contact()->create();
         });
  */
@@ -87,8 +87,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Directory::class, 'user_id');
     }
-    
-    public function meGusta(){
+
+    public function meGusta()
+    {
         return $this->belongsToMany(Publications::class, 'likes', 'user_id', 'publication_id');
+    }
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'messages', 'transmitter_id', 'receiver_id');
     }
 }
