@@ -7,6 +7,7 @@
       <i class="fas fa-chevron-left"></i> <span class="pb-3">Chat</span>
       <i class="fas fa-times"></i>
     </div>
+    <button @click="cerrarChat">X</button>
     <div v-if="chatCollapse" style="height: 400px; overflow-y: auto">
       <div class="d-flex flex-row p-3">
         <img
@@ -74,7 +75,7 @@ export default {
   components: {
     ChatForm,
   },
-  props: ["messages"],
+  props: ["messages", "userId"],
 
   data() {
     return {
@@ -85,6 +86,9 @@ export default {
     collapseChat: function () {
       console.log(2);
       this.chatCollapse = !this.chatCollapse;
+    },
+    cerrarChat() {
+      this.$emit("cerrarChat", this.userId);
     },
   },
 };

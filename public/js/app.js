@@ -5314,7 +5314,9 @@ __webpack_require__.r(__webpack_exports__);
     return {
       listUsersCollapse: false,
       showMessages: false,
-      usuarios: []
+      usuarios: [],
+      listaChats: new Set(),
+      listaChatsAbiertos: []
     };
   },
   methods: {
@@ -5335,6 +5337,21 @@ __webpack_require__.r(__webpack_exports__);
     },
     showConversation: function showConversation(user) {
       this.showMessages = true;
+    },
+    abrirchat: function abrirchat(id) {
+      console.log(this.listaChats.size);
+
+      if (this.listaChats.size < 3) {
+        this.listaChats.add(id);
+        this.listaChatsAbiertos = Array.from(this.listaChats);
+        console.log(this.listaChats);
+        this.listaChats.size;
+      }
+    },
+    cerrarChat: function cerrarChat(userId) {
+      console.log("Click event on the button of the children with: " + userId);
+      this.listaChats["delete"](userId);
+      this.listaChatsAbiertos = Array.from(this.listaChats);
     }
   }
 });
@@ -5474,12 +5491,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
     ChatForm: _ChatForm_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
-  props: ["messages"],
+  props: ["messages", "userId"],
   data: function data() {
     return {
       chatCollapse: false
@@ -5489,6 +5507,9 @@ __webpack_require__.r(__webpack_exports__);
     collapseChat: function collapseChat() {
       console.log(2);
       this.chatCollapse = !this.chatCollapse;
+    },
+    cerrarChat: function cerrarChat() {
+      this.$emit("cerrarChat", this.userId);
     }
   }
 });
@@ -42676,7 +42697,7 @@ var render = function () {
       "div",
       {
         staticClass:
-          "d-flex justify-content-end position-fixed fixed-bottom align-items-end",
+          "d-flex position-fixed fixed-bottom align-items-end flex-row-reverse",
       },
       [
         _c("div", { staticClass: "card my-0" }, [
@@ -42719,7 +42740,7 @@ var render = function () {
                       staticClass: "d-flex flex-row p-3",
                       on: {
                         click: function ($event) {
-                          return _vm.showConversation(user.id)
+                          return _vm.abrirchat(user.id)
                         },
                       },
                     },
@@ -42740,8 +42761,21 @@ var render = function () {
             : _vm._e(),
         ]),
         _vm._v(" "),
-        _vm.showMessages ? _c("div", [_c("ChatMessages")], 1) : _vm._e(),
-      ]
+        _vm._l(_vm.listaChatsAbiertos, function (lista) {
+          return _c(
+            "div",
+            { key: lista },
+            [
+              _c("ChatMessages", {
+                attrs: { userId: lista },
+                on: { cerrarChat: _vm.cerrarChat },
+              }),
+            ],
+            1
+          )
+        }),
+      ],
+      2
     ),
   ])
 }
@@ -42861,6 +42895,8 @@ var render = function () {
         _c("i", { staticClass: "fas fa-times" }),
       ]
     ),
+    _vm._v(" "),
+    _c("button", { on: { click: _vm.cerrarChat } }, [_vm._v("X")]),
     _vm._v(" "),
     _vm.chatCollapse
       ? _c(

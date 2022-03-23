@@ -8,6 +8,7 @@ use Facade\FlareClient\Http\Response;
 use Illuminate\Auth\RequestGuard;
 use Illuminate\Http\Request;
 use App\Events\MessageSent;
+use Illuminate\Support\Facades\Auth;
 
 class MessageController extends Controller
 {

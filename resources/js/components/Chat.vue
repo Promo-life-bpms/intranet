@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="d-flex justify-content-end position-fixed fixed-bottom align-items-end">
+    <div class="d-flex position-fixed fixed-bottom align-items-end flex-row-reverse">
       <div class="card my-0">
         <div
           class="d-flex flex-row justify-content-between adiv p-3 text-white"
@@ -15,7 +15,7 @@
             class="d-flex flex-row p-3"
             v-for="user in usuarios"
             :key="user.id"
-            @click="showConversation(user.id)"
+            @click="abrirchat(user.id)"
           >
             <img
               :src="'/' + user.image"
@@ -26,8 +26,8 @@
           </div>
         </div>
       </div>
-      <div v-if="showMessages">
-        <ChatMessages />
+      <div v-for="lista in listaChatsAbiertos" :key="lista">
+        <ChatMessages :userId="lista" v-on:cerrarChat="cerrarChat" />
       </div>
     </div>
   </div>
@@ -35,6 +35,7 @@
 
 <script>
 import ChatMessages from "./ChatMessages.vue";
+
 export default {
   components: {
     ChatMessages,
@@ -49,6 +50,8 @@ export default {
       listUsersCollapse: false,
       showMessages: false,
       usuarios: [],
+      listaChats: new Set(),
+      listaChatsAbiertos: [],
     };
   },
   methods: {
@@ -70,6 +73,20 @@ export default {
     },
     showConversation: function (user) {
       this.showMessages = true;
+    },
+    abrirchat: function (id) {
+      console.log(this.listaChats.size);
+      if (this.listaChats.size < 3) {
+        this.listaChats.add(id);
+        this.listaChatsAbiertos = Array.from(this.listaChats);
+        console.log(this.listaChats);
+        this.listaChats.size;
+      }
+    },
+    cerrarChat: function (userId) {
+      console.log("Click event on the button of the children with: " + userId);
+      this.listaChats.delete(userId);
+      this.listaChatsAbiertos = Array.from(this.listaChats);
     },
   },
 };
