@@ -39,18 +39,21 @@ class MessageController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     //enviar mensajes
+    //enviar mensajes
     public function sendMessage(Request $request)
     {
         //Obtener los datos del formulario de mensajes
-        request()->validate([
+/*         request()->validate([
             'message' => ['required', 'string'],
             'receiver_id' => ['required']
 
-        ]);
+        ]); */
 
         $transmitter_id = auth()->user()->id;
         $receiver_id = request()->receiver_id;
+        $message = request()->message;
+
+        //return response()->json($message, $receiver_id, $transmitter_id);
 
 
         //Crear el mensaje y guardarlo en la base de datos
@@ -60,7 +63,7 @@ class MessageController extends Controller
             "message" => $request->message
         ]);
 
-        broadcast(new MessageSent($transmitter_id, $message))->toOthers();
+       /*  broadcast(new MessageSent($transmitter_id, $message))->toOthers(); */
         return ['status' => 'Message Sent!'];
     }
 
@@ -74,6 +77,8 @@ class MessageController extends Controller
     //obtener mensajes
     public function fetchMessages()
     {
-        return Message::with('transmitter_id')->get();
+
+        Message::with('transmitter_id')->get();
+        return response()->json(5);
     }
 }

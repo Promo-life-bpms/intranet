@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  props: ["user"],
+  props: ["userId"],
 
   data() {
     return {
@@ -29,7 +29,18 @@ export default {
   },
 
   methods: {
-    sendMessage() {
+    sendMessage: function () {
+      axios
+        .post("/chat/sendMessage", {
+          message: this.newMessage,
+          receiver_id: this.userId,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
       this.$emit("messagesent", {
         user: this.user,
         message: this.newMessage,

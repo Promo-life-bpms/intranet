@@ -1,15 +1,12 @@
 <template>
   <div class="card my-0">
-    <div
-      class="d-flex flex-row justify-content-between adiv p-3 text-white"
-      @click="collapseChat()"
-    >
-      <i class="fas fa-chevron-left"></i> <span class="pb-3">Chat</span>
-      <i class="fas fa-times"></i>
+    <div class="d-flex flex-row justify-content-between adiv p-3 text-white">
+      <i class="bi bi-caret-down-square" @click="collapseChat()"></i>
+      <span class="pb-3">Chat</span>
+      <i class="fas fa-times" @click="cerrarChat"></i>
     </div>
-    <button @click="cerrarChat">X</button>
     <div v-if="chatCollapse" style="height: 400px; overflow-y: auto">
-      <div class="d-flex flex-row p-3">
+      <div class="d-flex flex-row p-3" v-for="(mensaje, i) in messages" :key="i">
         <img
           src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png"
           width="30"
@@ -65,8 +62,8 @@
       <p>
         {{ message.message }}
       </p> -->
-      <ChatForm />
     </div>
+    <ChatForm :userId="userId" />
   </div>
 </template>
 <script>
@@ -75,11 +72,17 @@ export default {
   components: {
     ChatForm,
   },
-  props: ["messages", "userId"],
+  props: ["userId"],
+  mounted: function () {
+    setTimeout(() => {
+      this.obtenerMensajes();
+    }, 200);
+  },
 
   data() {
     return {
       chatCollapse: false,
+      messages: [],
     };
   },
   methods: {
@@ -89,6 +92,18 @@ export default {
     },
     cerrarChat() {
       this.$emit("cerrarChat", this.userId);
+    },
+    obtenerMensajes: function () {
+      let m = axios
+        .get("/chat/fetchMessages")
+        .then((response) => {
+          console.log("si llego bien", response);
+          this.messages = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      console.log(m);
     },
   },
 };
