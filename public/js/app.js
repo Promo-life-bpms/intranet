@@ -5465,38 +5465,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -5527,7 +5495,7 @@ __webpack_require__.r(__webpack_exports__);
     obtenerMensajes: function obtenerMensajes() {
       var _this2 = this;
 
-      var m = axios.get("/chat/fetchMessages").then(function (response) {
+      var m = axios.get("/chat/fetchMessages/" + this.userId).then(function (response) {
         console.log("si llego bien", response);
         _this2.messages = response.data;
       })["catch"](function (error) {
@@ -42932,36 +42900,31 @@ var render = function () {
         ? _c(
             "div",
             { staticStyle: { height: "400px", "overflow-y": "auto" } },
-            [
-              _vm._l(_vm.messages, function (mensaje, i) {
-                return _c(
-                  "div",
-                  { key: i, staticClass: "d-flex flex-row p-3" },
-                  [
-                    _c("img", {
-                      attrs: {
-                        src: "https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png",
-                        width: "30",
-                        height: "30",
-                      },
-                    }),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "chat ml-2 p-3" }, [
-                      _vm._v(
-                        "\n        Hello and thankyou for visiting birdlymind. Please click the video above\n      "
-                      ),
+            _vm._l(_vm.messages, function (mensaje, i) {
+              return _c(
+                "div",
+                {
+                  key: i.id,
+                  staticClass: "d-flex flex-row p-3 justify-content-end",
+                },
+                [
+                  _c("div", { staticClass: "bg-white mr-2 p-3" }, [
+                    _c("span", { staticClass: "text-muted" }, [
+                      _vm._v(_vm._s(mensaje.message)),
                     ]),
-                  ]
-                )
-              }),
-              _vm._v(" "),
-              _vm._m(0),
-              _vm._v(" "),
-              _vm._m(1),
-              _vm._v(" "),
-              _vm._m(2),
-            ],
-            2
+                  ]),
+                  _vm._v(" "),
+                  _c("img", {
+                    attrs: {
+                      src: "https://img.icons8.com/color/48/000000/circled-user-male-skin-type-7.png",
+                      width: "30",
+                      height: "30",
+                    },
+                  }),
+                ]
+              )
+            }),
+            0
           )
         : _vm._e(),
       _vm._v(" "),
@@ -42970,70 +42933,7 @@ var render = function () {
     1
   )
 }
-var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "d-flex flex-row p-3" }, [
-      _c("div", { staticClass: "bg-white mr-2 p-3" }, [
-        _c("span", { staticClass: "text-muted" }, [
-          _vm._v("Hello and thankyou for visiting birdlynind."),
-        ]),
-      ]),
-      _vm._v(" "),
-      _c("img", {
-        attrs: {
-          src: "https://img.icons8.com/color/48/000000/circled-user-male-skin-type-7.png",
-          width: "30",
-          height: "30",
-        },
-      }),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "d-flex flex-row p-3" }, [
-      _c("img", {
-        attrs: {
-          src: "https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png",
-          width: "30",
-          height: "30",
-        },
-      }),
-      _vm._v(" "),
-      _c("div", { staticClass: "chat ml-2 p-3" }, [
-        _vm._v(
-          "\n        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquid, laborum vitae\n        temporibus esse quia cupiditate blanditiis, cumque veritatis non neque eius,\n        ducimus porro dignissimos! Perferendis cupiditate perspiciatis quasi vel iste.\n      "
-        ),
-      ]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "d-flex flex-row p-3" }, [
-      _c("div", { staticClass: "bg-white mr-2 p-3" }, [
-        _c("span", { staticClass: "text-muted" }, [
-          _vm._v(
-            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquid, laborum\n          vitae temporibus esse quia cupiditate blanditiis, cumque veritatis non neque\n          eius, ducimus porro dignissimos! Perferendis cupiditate perspiciatis quasi vel\n          iste."
-          ),
-        ]),
-      ]),
-      _vm._v(" "),
-      _c("img", {
-        attrs: {
-          src: "https://img.icons8.com/color/48/000000/circled-user-male-skin-type-7.png",
-          width: "30",
-          height: "30",
-        },
-      }),
-    ])
-  },
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

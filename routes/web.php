@@ -212,7 +212,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/obtenerUsuarios', [MessageController::class, 'obtenerUsuarios'])->name('usuariosChat');
 
         //Chat
-        Route::get('/fetchMessages', [MessageController::class, 'fetchMessages'])->name('fetch.message');
+        Route::get('/fetchMessages/{userId}', [MessageController::class, 'fetchMessages'])->name('fetch.message');
         Route::post('/sendMessage', [MessageController::class, 'sendMessage'])->name('send.message');
     });
 });

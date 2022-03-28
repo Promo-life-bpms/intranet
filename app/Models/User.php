@@ -94,6 +94,6 @@ class User extends Authenticatable
     }
     public function messages()
     {
-        return $this->hasMany(Message::class, 'messages', 'transmitter_id', 'receiver_id');
+        return $this->hasMany(Message::class, 'transmitter_id');
     }
 }

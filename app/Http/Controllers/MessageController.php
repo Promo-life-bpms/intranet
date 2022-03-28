@@ -43,7 +43,7 @@ class MessageController extends Controller
     public function sendMessage(Request $request)
     {
         //Obtener los datos del formulario de mensajes
-/*         request()->validate([
+        /*         request()->validate([
             'message' => ['required', 'string'],
             'receiver_id' => ['required']
 
@@ -63,7 +63,7 @@ class MessageController extends Controller
             "message" => $request->message
         ]);
 
-       /*  broadcast(new MessageSent($transmitter_id, $message))->toOthers(); */
+        /*  broadcast(new MessageSent($transmitter_id, $message))->toOthers(); */
         return ['status' => 'Message Sent!'];
     }
 
@@ -75,10 +75,11 @@ class MessageController extends Controller
     }
 
     //obtener mensajes
-    public function fetchMessages()
+    public function fetchMessages($userId)
     {
 
-        Message::with('transmitter_id')->get();
-        return response()->json(5);
+        $mensajes = auth()->user()->messages()->where('receiver_id', $userId)->get();
+
+        return response()->json($mensajes);
     }
 }

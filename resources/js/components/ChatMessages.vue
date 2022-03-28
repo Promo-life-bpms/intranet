@@ -6,7 +6,7 @@
       <i class="fas fa-times" @click="cerrarChat"></i>
     </div>
     <div v-if="chatCollapse" style="height: 400px; overflow-y: auto">
-      <div class="d-flex flex-row p-3" v-for="(mensaje, i) in messages" :key="i">
+      <!-- <div class="d-flex flex-row p-3">
         <img
           src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png"
           width="30"
@@ -15,10 +15,14 @@
         <div class="chat ml-2 p-3">
           Hello and thankyou for visiting birdlymind. Please click the video above
         </div>
-      </div>
-      <div class="d-flex flex-row p-3">
+      </div> -->
+      <div
+        class="d-flex flex-row p-3 justify-content-end"
+        v-for="(mensaje, i) in messages"
+        :key="i.id"
+      >
         <div class="bg-white mr-2 p-3">
-          <span class="text-muted">Hello and thankyou for visiting birdlynind.</span>
+          <span class="text-muted">{{ mensaje.message }}</span>
         </div>
         <img
           src="https://img.icons8.com/color/48/000000/circled-user-male-skin-type-7.png"
@@ -26,42 +30,6 @@
           height="30"
         />
       </div>
-      <div class="d-flex flex-row p-3">
-        <img
-          src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png"
-          width="30"
-          height="30"
-        />
-        <div class="chat ml-2 p-3">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquid, laborum vitae
-          temporibus esse quia cupiditate blanditiis, cumque veritatis non neque eius,
-          ducimus porro dignissimos! Perferendis cupiditate perspiciatis quasi vel iste.
-        </div>
-      </div>
-      <div class="d-flex flex-row p-3">
-        <div class="bg-white mr-2 p-3">
-          <span class="text-muted"
-            >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquid, laborum
-            vitae temporibus esse quia cupiditate blanditiis, cumque veritatis non neque
-            eius, ducimus porro dignissimos! Perferendis cupiditate perspiciatis quasi vel
-            iste.</span
-          >
-        </div>
-        <img
-          src="https://img.icons8.com/color/48/000000/circled-user-male-skin-type-7.png"
-          width="30"
-          height="30"
-        />
-      </div>
-
-      <!-- <div class="d-flex flex-row p-3" v-for="message in messages" :key="message.id">
-        <strong>
-          {{ message.user.name }}
-        </strong>
-      </div>
-      <p>
-        {{ message.message }}
-      </p> -->
     </div>
     <ChatForm :userId="userId" />
   </div>
@@ -95,7 +63,7 @@ export default {
     },
     obtenerMensajes: function () {
       let m = axios
-        .get("/chat/fetchMessages")
+        .get("/chat/fetchMessages/" + this.userId)
         .then((response) => {
           console.log("si llego bien", response);
           this.messages = response.data;
