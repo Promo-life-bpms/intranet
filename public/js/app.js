@@ -5497,7 +5497,7 @@ __webpack_require__.r(__webpack_exports__);
 
       var m = axios.get("/chat/fetchMessages/" + this.userId).then(function (response) {
         console.log("si llego bien", response);
-        _this2.messages = response.data;
+        _this2.messages = response.data.mensajesEnviados;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -42901,28 +42901,43 @@ var render = function () {
             "div",
             { staticStyle: { height: "400px", "overflow-y": "auto" } },
             _vm._l(_vm.messages, function (mensaje, i) {
-              return _c(
-                "div",
-                {
-                  key: i.id,
-                  staticClass: "d-flex flex-row p-3 justify-content-end",
-                },
-                [
-                  _c("div", { staticClass: "bg-white mr-2 p-3" }, [
-                    _c("span", { staticClass: "text-muted" }, [
-                      _vm._v(_vm._s(mensaje.message)),
-                    ]),
-                  ]),
-                  _vm._v(" "),
-                  _c("img", {
-                    attrs: {
-                      src: "https://img.icons8.com/color/48/000000/circled-user-male-skin-type-7.png",
-                      width: "30",
-                      height: "30",
-                    },
-                  }),
-                ]
-              )
+              return _c("div", { key: i.id }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "d-flex flex-row p-3",
+                    class:
+                      _vm.userId == mensaje.transmitter_id
+                        ? "justify-content-start"
+                        : "justify-content-end",
+                  },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "chat ml-2 p-3",
+                        class:
+                          _vm.userId == mensaje.transmitter_id
+                            ? "chat ml-2 p-3"
+                            : "bg-white mr-2 p-3",
+                      },
+                      [
+                        _c("span", { staticClass: "text-muted" }, [
+                          _vm._v(_vm._s(mensaje.message)),
+                        ]),
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("img", {
+                      attrs: {
+                        src: "https://img.icons8.com/color/48/000000/circled-user-male-skin-type-7.png",
+                        width: "30",
+                        height: "30",
+                      },
+                    }),
+                  ]
+                ),
+              ])
             }),
             0
           )

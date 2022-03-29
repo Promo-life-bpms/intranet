@@ -9,6 +9,7 @@ use Illuminate\Auth\RequestGuard;
 use Illuminate\Http\Request;
 use App\Events\MessageSent;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
 {
@@ -78,8 +79,20 @@ class MessageController extends Controller
     public function fetchMessages($userId)
     {
 
-        $mensajes = auth()->user()->messages()->where('receiver_id', $userId)->get();
+        $mensajes = DB::table('messages')
+            ->where('transmitter_id', auth()->user()->id)
+            ->where('receiver_id', $userId);
 
-        return response()->json($mensajes);
+        /*  SELECT * FROM messages WHERE transmitter_id = 1 AND receiver_id = 2 UNION SELECT * FROM messages WHERE transmitter_id = 2 AND receiver_id = 1 ORDER BY created_at; */
+
+        $mensajesEnviados = DB::table('messages')
+            ->where('receiver_id', auth()->user()->id)
+            ->where('transmitter_id', $userId)->union($mensajes)->orderBy('created_at', 'asc')->get();
+
+        //$chat = $mensajes->union($mensajesEnviados)->orderBy('created_at', 'desc')->get();
+
+
+
+        return response()->json(['mensajesEnviados' => $mensajesEnviados], 200);
     }
 }
