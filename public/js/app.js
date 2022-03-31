@@ -5303,20 +5303,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -5486,16 +5472,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -5507,7 +5483,6 @@ __webpack_require__.r(__webpack_exports__);
 
     window.Echo.channel("chat").listen("MessageSent", function (e) {
       console.log("Evento recibido");
-      console.log(e);
 
       if (_this.authId == e.receptor) {
         _this.messages.push({
@@ -5539,6 +5514,13 @@ __webpack_require__.r(__webpack_exports__);
     collapseChat: function collapseChat() {
       console.log(2);
       this.chatCollapse = !this.chatCollapse;
+
+      if (this.chatCollapse == true) {
+        setTimeout(function () {
+          var objDiv = document.getElementById("formChat");
+          objDiv.scrollTop = objDiv.scrollHeight;
+        }, 200);
+      }
     },
     cerrarChat: function cerrarChat() {
       this.$emit("cerrarChat", this.userId);
@@ -10809,7 +10791,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-6fb73fa7] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-6fb73fa7] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-6fb73fa7] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-6fb73fa7] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-6fb73fa7] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.myvideo img[data-v-6fb73fa7] {\n  border-radius: 20px;\n}\n.dot[data-v-6fb73fa7] {\n  font-weight: bold;\n}\n.form-control[data-v-6fb73fa7] {\n  border-radius: 12px;\n  border: 1px solid #f0f0f0;\n  font-size: 8px;\n}\n.form-control[data-v-6fb73fa7]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-6fb73fa7]::-moz-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]:-ms-input-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]::placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-6fb73fa7] {\r\n  background: #eeeeee;\r\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-6fb73fa7] {\r\n  width: 300px;\r\n  border: none;\r\n  border-radius: 15px;\n}\n.adiv[data-v-6fb73fa7] {\r\n  background: #72c3d6;\r\n  border-radius: 15px;\r\n  border-bottom-right-radius: 0;\r\n  border-bottom-left-radius: 0;\r\n  font-size: 12px;\r\n  height: 46px;\n}\n.chat[data-v-6fb73fa7] {\r\n  border: none;\r\n  background: #e2fbff;\r\n  font-size: 10px;\r\n  border-radius: 20px;\n}\n.bg-white[data-v-6fb73fa7] {\r\n  border: 1px solid #e7e7e9;\r\n  font-size: 10px;\r\n  border-radius: 20px;\n}\n.myvideo img[data-v-6fb73fa7] {\r\n  border-radius: 20px;\n}\n.dot[data-v-6fb73fa7] {\r\n  font-weight: bold;\n}\n.form-control[data-v-6fb73fa7] {\r\n  border-radius: 12px;\r\n  border: 1px solid #f0f0f0;\r\n  font-size: 8px;\n}\n.form-control[data-v-6fb73fa7]:focus {\r\n  box-shadow: none;\n}\n.form-control[data-v-6fb73fa7]::-moz-placeholder {\r\n  font-size: 8px;\r\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]:-ms-input-placeholder {\r\n  font-size: 8px;\r\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]::placeholder {\r\n  font-size: 8px;\r\n  color: #c4c4c4;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -48887,7 +48869,7 @@ var render = function () {
       "div",
       {
         staticClass:
-          "\n      d-flex\n      position-fixed\n      fixed-bottom\n      align-items-end\n      flex-row-reverse\n    ",
+          "d-flex position-fixed fixed-bottom align-items-end flex-row-reverse",
       },
       [
         _c("div", { staticClass: "card my-0" }, [
@@ -48909,7 +48891,14 @@ var render = function () {
                 _vm._v("Usuarios conectados"),
               ]),
               _vm._v(" "),
-              _c("i", { staticClass: "fas fa-times" }),
+              _c("i", {
+                staticClass: "fas fa-times",
+                on: {
+                  click: function ($event) {
+                    return _vm.cerrarChat()
+                  },
+                },
+              }),
             ]
           ),
           _vm._v(" "),
@@ -48918,7 +48907,7 @@ var render = function () {
                 "div",
                 {
                   staticStyle: {
-                    "max-height": "400px",
+                    "max-height": "300px",
                     "overflow-y": "scroll",
                   },
                 },
@@ -48937,7 +48926,7 @@ var render = function () {
                     [
                       _c("img", {
                         staticClass:
-                          "\n              rounded-circle\n              border border-primary\n              m-0\n              d-flex\n              justify-content-center\n              align-items-center\n              width-icon\n            ",
+                          "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon",
                         staticStyle: { width: "30px", height: "30px" },
                         attrs: { src: "/" + user.image },
                       }),
@@ -48954,7 +48943,7 @@ var render = function () {
         _vm._l(_vm.listaChatsAbiertos, function (lista) {
           return _c(
             "div",
-            { key: lista },
+            { key: lista.id },
             [
               _c("ChatMessages", {
                 attrs: {
@@ -49069,41 +49058,46 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "card my-0" },
-    [
-      _c(
-        "div",
-        {
-          staticClass:
-            "d-flex flex-row justify-content-between adiv p-3 text-white",
-        },
-        [
-          _c("i", {
-            staticClass: "bi bi-caret-down-square",
-            on: {
-              click: function ($event) {
-                return _vm.collapseChat()
-              },
+  return _c("div", { staticClass: "card my-0 mx-3" }, [
+    _c(
+      "div",
+      {
+        staticClass:
+          "d-flex flex-row justify-content-between adiv p-3 text-white",
+      },
+      [
+        _c("i", {
+          staticClass: "bi bi-caret-down-square",
+          on: {
+            click: function ($event) {
+              return _vm.collapseChat()
             },
-          }),
-          _vm._v(" "),
-          _c("span", { staticClass: "pb-3" }, [
-            _vm._v(_vm._s(_vm.userData.name + " " + _vm.userData.lastname)),
-          ]),
-          _vm._v(" "),
-          _c("i", {
-            staticClass: "fas fa-times",
-            on: { click: _vm.cerrarChat },
-          }),
-        ]
-      ),
-      _vm._v(" "),
-      _vm.chatCollapse
-        ? _c(
-            "div",
-            { staticStyle: { height: "400px", "overflow-y": "auto" } },
+          },
+        }),
+        _vm._v(" "),
+        _c("span", { staticClass: "pb-3" }, [
+          _vm._v(_vm._s(_vm.userData.name + " " + _vm.userData.lastname)),
+        ]),
+        _vm._v(" "),
+        _c("i", {
+          staticClass: "fas fa-times",
+          on: {
+            click: function ($event) {
+              return _vm.cerrarChat()
+            },
+          },
+        }),
+      ]
+    ),
+    _vm._v(" "),
+    _vm.chatCollapse
+      ? _c(
+          "div",
+          {
+            staticStyle: { height: "300px", "overflow-y": "auto" },
+            attrs: { id: "formChat" },
+          },
+          [
             _vm._l(_vm.messages, function (mensaje, i) {
               return _c("div", { key: i.id }, [
                 _c(
@@ -49119,7 +49113,7 @@ var render = function () {
                     _vm.userId == mensaje.transmitter_id
                       ? _c("img", {
                           staticClass:
-                            "\n            rounded-circle\n            border border-primary\n            m-0\n            d-flex\n            justify-content-center\n            align-items-center\n            width-icon\n          ",
+                            "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon",
                           staticStyle: { width: "25px", height: "25px" },
                           attrs: { src: "/" + _vm.userData.image },
                         })
@@ -49144,14 +49138,16 @@ var render = function () {
                 ),
               ])
             }),
-            0
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _c("ChatForm", { attrs: { userId: _vm.userId } }),
-    ],
-    1
-  )
+            _vm._v(" "),
+            _c("ChatForm", {
+              attrs: { authId: _vm.authId },
+              on: { cerrarChat: _vm.cerrarChat },
+            }),
+          ],
+          2
+        )
+      : _vm._e(),
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -61407,7 +61403,7 @@ Vue.compile = compileToFunctions;
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"Promise based HTTP client for the browser and node.js","main":"index.js","scripts":{"test":"grunt test","start":"node ./sandbox/server.js","build":"NODE_ENV=production grunt build","preversion":"npm test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json","postversion":"git push && git push --tags","examples":"node ./examples/server.js","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","fix":"eslint --fix lib/**/*.js"},"repository":{"type":"git","url":"https://github.com/axios/axios.git"},"keywords":["xhr","http","ajax","promise","node"],"author":"Matt Zabriskie","license":"MIT","bugs":{"url":"https://github.com/axios/axios/issues"},"homepage":"https://axios-http.com","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"jsdelivr":"dist/axios.min.js","unpkg":"dist/axios.min.js","typings":"./index.d.ts","dependencies":{"follow-redirects":"^1.14.0"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}]}');
+module.exports = JSON.parse('{"_args":[["axios@0.21.4","C:\\\\xampp\\\\htdocs\\\\intranet"]],"_development":true,"_from":"axios@0.21.4","_id":"axios@0.21.4","_inBundle":false,"_integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"axios@0.21.4","name":"axios","escapedName":"axios","rawSpec":"0.21.4","saveSpec":null,"fetchSpec":"0.21.4"},"_requiredBy":["#DEV:/"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_spec":"0.21.4","_where":"C:\\\\xampp\\\\htdocs\\\\intranet","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
 
 /***/ })
 

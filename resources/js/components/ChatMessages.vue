@@ -1,11 +1,11 @@
 <template>
-  <div class="card my-0">
+  <div class="card my-0 mx-3">
     <div class="d-flex flex-row justify-content-between adiv p-3 text-white">
       <i class="bi bi-caret-down-square" @click="collapseChat()"></i>
       <span class="pb-3">{{ userData.name + " " + userData.lastname }}</span>
-      <i class="fas fa-times" @click="cerrarChat"></i>
+      <i class="fas fa-times" @click="cerrarChat()"></i>
     </div>
-    <div v-if="chatCollapse" style="height: 400px; overflow-y: auto">
+    <div v-if="chatCollapse" style="height: 300px; overflow-y: auto" id="formChat">
       <div v-for="(mensaje, i) in messages" :key="i.id">
         <div
           class="d-flex flex-row p-3"
@@ -19,30 +19,20 @@
             v-if="userId == mensaje.transmitter_id"
             :src="`/${userData.image}`"
             style="width: 25px; height: 25px"
-            class="
-              rounded-circle
-              border border-primary
-              m-0
-              d-flex
-              justify-content-center
-              align-items-center
-              width-icon
-            "
+            class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon"
           />
           <div
             class="chat ml-2 p-3"
             :class="
-              userId == mensaje.transmitter_id
-                ? 'chat ml-2 p-3'
-                : 'bg-white mr-2 p-3'
+              userId == mensaje.transmitter_id ? 'chat ml-2 p-3' : 'bg-white mr-2 p-3'
             "
           >
             <span class="text-muted">{{ mensaje.message }}</span>
           </div>
         </div>
       </div>
+      <ChatForm :authId="authId" v-on:cerrarChat="cerrarChat" />
     </div>
-    <ChatForm :userId="userId" />
   </div>
 </template>
 <script>
@@ -55,7 +45,7 @@ export default {
   mounted: function () {
     window.Echo.channel("chat").listen("MessageSent", (e) => {
       console.log("Evento recibido");
-      console.log(e);
+
       if (this.authId == e.receptor) {
         this.messages.push({
           message: e.message,
@@ -86,6 +76,12 @@ export default {
     collapseChat: function () {
       console.log(2);
       this.chatCollapse = !this.chatCollapse;
+      if (this.chatCollapse == true) {
+        setTimeout(() => {
+          const objDiv = document.getElementById("formChat");
+          objDiv.scrollTop = objDiv.scrollHeight;
+        }, 200);
+      }
     },
     cerrarChat() {
       this.$emit("cerrarChat", this.userId);

@@ -1,14 +1,6 @@
 <template>
   <div>
-    <div
-      class="
-        d-flex
-        position-fixed
-        fixed-bottom
-        align-items-end
-        flex-row-reverse
-      "
-    >
+    <div class="d-flex position-fixed fixed-bottom align-items-end flex-row-reverse">
       <div class="card my-0">
         <div
           class="d-flex flex-row justify-content-between adiv p-3 text-white"
@@ -16,12 +8,9 @@
         >
           <i class="fas fa-chevron-left"></i>
           <span class="pb-3">Usuarios conectados</span>
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" @click="cerrarChat()"></i>
         </div>
-        <div
-          v-if="listUsersCollapse"
-          style="max-height: 400px; overflow-y: scroll"
-        >
+        <div v-if="listUsersCollapse" style="max-height: 300px; overflow-y: scroll">
           <div
             class="d-flex flex-row p-3"
             v-for="user in usuarios"
@@ -30,23 +19,20 @@
           >
             <img
               :src="'/' + user.image"
-              class="
-                rounded-circle
-                border border-primary
-                m-0
-                d-flex
-                justify-content-center
-                align-items-center
-                width-icon
-              "
+              class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon"
               style="width: 30px; height: 30px"
             />
             <p>{{ user.name }}</p>
           </div>
         </div>
       </div>
-      <div v-for="lista in listaChatsAbiertos" :key="lista">
-        <ChatMessages :userId="lista.id" :userData="lista" :authId="authid"  v-on:cerrarChat="cerrarChat" />
+      <div v-for="lista in listaChatsAbiertos" :key="lista.id">
+        <ChatMessages
+          :userId="lista.id"
+          :userData="lista"
+          :authId="authid"
+          v-on:cerrarChat="cerrarChat"
+        />
       </div>
     </div>
   </div>
