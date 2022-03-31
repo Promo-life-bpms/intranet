@@ -2,7 +2,7 @@
   <div class="card my-0">
     <div class="d-flex flex-row justify-content-between adiv p-3 text-white">
       <i class="bi bi-caret-down-square" @click="collapseChat()"></i>
-      <span class="pb-3">Chat</span>
+      <span class="pb-3">{{ userData.name + " " + userData.lastname }}</span>
       <i class="fas fa-times" @click="cerrarChat"></i>
     </div>
     <div v-if="chatCollapse" style="height: 400px; overflow-y: auto">
@@ -15,19 +15,30 @@
               : 'justify-content-end'
           "
         >
+          <img
+            v-if="userId == mensaje.transmitter_id"
+            :src="`/${userData.image}`"
+            style="width: 25px; height: 25px"
+            class="
+              rounded-circle
+              border border-primary
+              m-0
+              d-flex
+              justify-content-center
+              align-items-center
+              width-icon
+            "
+          />
           <div
             class="chat ml-2 p-3"
             :class="
-              userId == mensaje.transmitter_id ? 'chat ml-2 p-3' : 'bg-white mr-2 p-3'
+              userId == mensaje.transmitter_id
+                ? 'chat ml-2 p-3'
+                : 'bg-white mr-2 p-3'
             "
           >
             <span class="text-muted">{{ mensaje.message }}</span>
           </div>
-          <img
-            src="https://img.icons8.com/color/48/000000/circled-user-male-skin-type-7.png"
-            width="30"
-            height="30"
-          />
         </div>
       </div>
     </div>
@@ -40,8 +51,26 @@ export default {
   components: {
     ChatForm,
   },
-  props: ["userId"],
+  props: ["userId", "userData", "authId"],
   mounted: function () {
+    window.Echo.channel("chat").listen("MessageSent", (e) => {
+      console.log("Evento recibido");
+      console.log(e);
+      if (this.authId == e.receptor) {
+        this.messages.push({
+          message: e.message,
+          receiver_id: e.receptor,
+          transmitter_id: e.emisor,
+        });
+      }
+      if (this.authId == e.emisor) {
+        this.messages.push({
+          message: e.message,
+          receiver_id: e.receptor,
+          transmitter_id: e.emisor,
+        });
+      }
+    });
     setTimeout(() => {
       this.obtenerMensajes();
     }, 200);

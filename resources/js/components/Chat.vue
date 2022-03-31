@@ -1,6 +1,14 @@
 <template>
   <div>
-    <div class="d-flex position-fixed fixed-bottom align-items-end flex-row-reverse">
+    <div
+      class="
+        d-flex
+        position-fixed
+        fixed-bottom
+        align-items-end
+        flex-row-reverse
+      "
+    >
       <div class="card my-0">
         <div
           class="d-flex flex-row justify-content-between adiv p-3 text-white"
@@ -10,16 +18,27 @@
           <span class="pb-3">Usuarios conectados</span>
           <i class="fas fa-times"></i>
         </div>
-        <div v-if="listUsersCollapse" style="max-height: 400px; overflow-y: scroll">
+        <div
+          v-if="listUsersCollapse"
+          style="max-height: 400px; overflow-y: scroll"
+        >
           <div
             class="d-flex flex-row p-3"
             v-for="user in usuarios"
             :key="user.id"
-            @click="abrirchat(user.id)"
+            @click="abrirchat(user)"
           >
             <img
               :src="'/' + user.image"
-              class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon"
+              class="
+                rounded-circle
+                border border-primary
+                m-0
+                d-flex
+                justify-content-center
+                align-items-center
+                width-icon
+              "
               style="width: 30px; height: 30px"
             />
             <p>{{ user.name }}</p>
@@ -27,7 +46,7 @@
         </div>
       </div>
       <div v-for="lista in listaChatsAbiertos" :key="lista">
-        <ChatMessages :userId="lista" v-on:cerrarChat="cerrarChat" />
+        <ChatMessages :userId="lista.id" :userData="lista" :authId="authid"  v-on:cerrarChat="cerrarChat" />
       </div>
     </div>
   </div>
@@ -40,6 +59,7 @@ export default {
   components: {
     ChatMessages,
   },
+  props: ["authid"],
   mounted: function () {
     setTimeout(() => {
       this.obtenerUsuarios();
