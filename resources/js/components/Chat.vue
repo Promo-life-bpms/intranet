@@ -2,13 +2,9 @@
   <div>
     <div class="d-flex position-fixed fixed-bottom align-items-end flex-row-reverse">
       <div class="card my-0">
-        <div
-          class="d-flex flex-row justify-content-between adiv p-3 text-white"
-          @click="collapseListUsers()"
-        >
-          <i class="fas fa-chevron-left"></i>
+        <div class="d-flex flex-row justify-content-between adiv p-3 text-white">
+          <i class="fas fa-chevron-left" @click="collapseListUsers()"></i>
           <span class="pb-3">Usuarios conectados</span>
-          <i class="fas fa-times" @click="cerrarChat()"></i>
         </div>
         <div v-if="listUsersCollapse" style="max-height: 300px; overflow-y: scroll">
           <div
@@ -89,9 +85,10 @@ export default {
         this.listaChats.size;
       }
     },
-    cerrarChat: function (userId) {
-      console.log("Click event on the button of the children with: " + userId);
-      this.listaChats.delete(userId);
+    cerrarChat: function (id) {
+      console.log(id);
+      console.log("Click event on the button of the children with: " + id);
+      this.listaChats.delete(id);
       this.listaChatsAbiertos = Array.from(this.listaChats);
     },
   },

@@ -54,7 +54,9 @@ class MessageController extends Controller
         $receiver_id = request()->receiver_id;
         $message = request()->message;
 
-        //return response()->json($message, $receiver_id, $transmitter_id);
+
+
+        //return response()->json([$message, $receiver_id, $transmitter_id]);
 
 
         //Crear el mensaje y guardarlo en la base de datos

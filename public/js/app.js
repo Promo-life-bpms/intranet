@@ -5299,10 +5299,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -5354,9 +5350,10 @@ __webpack_require__.r(__webpack_exports__);
         this.listaChats.size;
       }
     },
-    cerrarChat: function cerrarChat(userId) {
-      console.log("Click event on the button of the children with: " + userId);
-      this.listaChats["delete"](userId);
+    cerrarChat: function cerrarChat(id) {
+      console.log(id);
+      console.log("Click event on the button of the children with: " + id);
+      this.listaChats["delete"](id);
       this.listaChatsAbiertos = Array.from(this.listaChats);
     }
   }
@@ -5472,6 +5469,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -5490,6 +5490,10 @@ __webpack_require__.r(__webpack_exports__);
           receiver_id: e.receptor,
           transmitter_id: e.emisor
         });
+
+        var objDiv = document.getElementById("formChat");
+        objDiv.scrollTop = objDiv.scrollHeight;
+        console.log(objDiv);
       }
 
       if (_this.authId == e.emisor) {
@@ -5498,6 +5502,11 @@ __webpack_require__.r(__webpack_exports__);
           receiver_id: e.receptor,
           transmitter_id: e.emisor
         });
+
+        var _objDiv = document.getElementById("formChat");
+
+        _objDiv.scrollTop = _objDiv.scrollHeight;
+        console.log(_objDiv);
       }
     });
     setTimeout(function () {
@@ -5523,7 +5532,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     cerrarChat: function cerrarChat() {
-      this.$emit("cerrarChat", this.userId);
+      this.$emit("cerrarChat", this.userData);
     },
     obtenerMensajes: function obtenerMensajes() {
       var _this2 = this;
@@ -48878,27 +48887,20 @@ var render = function () {
             {
               staticClass:
                 "d-flex flex-row justify-content-between adiv p-3 text-white",
-              on: {
-                click: function ($event) {
-                  return _vm.collapseListUsers()
-                },
-              },
             },
             [
-              _c("i", { staticClass: "fas fa-chevron-left" }),
+              _c("i", {
+                staticClass: "fas fa-chevron-left",
+                on: {
+                  click: function ($event) {
+                    return _vm.collapseListUsers()
+                  },
+                },
+              }),
               _vm._v(" "),
               _c("span", { staticClass: "pb-3" }, [
                 _vm._v("Usuarios conectados"),
               ]),
-              _vm._v(" "),
-              _c("i", {
-                staticClass: "fas fa-times",
-                on: {
-                  click: function ($event) {
-                    return _vm.cerrarChat()
-                  },
-                },
-              }),
             ]
           ),
           _vm._v(" "),
@@ -49093,58 +49095,66 @@ var render = function () {
     _vm.chatCollapse
       ? _c(
           "div",
-          {
-            staticStyle: { height: "300px", "overflow-y": "auto" },
-            attrs: { id: "formChat" },
-          },
           [
-            _vm._l(_vm.messages, function (mensaje, i) {
-              return _c("div", { key: i.id }, [
-                _c(
-                  "div",
-                  {
-                    staticClass: "d-flex flex-row p-3",
-                    class:
+            _c(
+              "div",
+              {
+                staticStyle: { height: "300px", "overflow-y": "auto" },
+                attrs: { id: "formChat" },
+              },
+              _vm._l(_vm.messages, function (mensaje, i) {
+                return _c("div", { key: i.id }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "d-flex flex-row p-3",
+                      class:
+                        _vm.userId == mensaje.transmitter_id
+                          ? "justify-content-start"
+                          : "justify-content-end",
+                    },
+                    [
                       _vm.userId == mensaje.transmitter_id
-                        ? "justify-content-start"
-                        : "justify-content-end",
-                  },
-                  [
-                    _vm.userId == mensaje.transmitter_id
-                      ? _c("img", {
-                          staticClass:
-                            "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon",
-                          staticStyle: { width: "25px", height: "25px" },
-                          attrs: { src: "/" + _vm.userData.image },
-                        })
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass: "chat ml-2 p-3",
-                        class:
-                          _vm.userId == mensaje.transmitter_id
-                            ? "chat ml-2 p-3"
-                            : "bg-white mr-2 p-3",
-                      },
-                      [
-                        _c("span", { staticClass: "text-muted" }, [
-                          _vm._v(_vm._s(mensaje.message)),
-                        ]),
-                      ]
-                    ),
-                  ]
-                ),
-              ])
-            }),
+                        ? _c("img", {
+                            staticClass:
+                              "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon",
+                            staticStyle: { width: "25px", height: "25px" },
+                            attrs: { src: "/" + _vm.userData.image },
+                          })
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "chat ml-2 p-3",
+                          class:
+                            _vm.userId == mensaje.transmitter_id
+                              ? "chat ml-2 p-3"
+                              : "bg-white mr-2 p-3",
+                        },
+                        [
+                          _c("span", { staticClass: "text-muted" }, [
+                            _vm._v(_vm._s(mensaje.message)),
+                          ]),
+                        ]
+                      ),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("span", { staticClass: "text-muted" }, [
+                    _vm._v(_vm._s(mensaje.created_at.substr(11, 18))),
+                  ]),
+                ])
+              }),
+              0
+            ),
             _vm._v(" "),
             _c("ChatForm", {
-              attrs: { authId: _vm.authId },
+              attrs: { authId: _vm.authId, userId: _vm.userId },
               on: { cerrarChat: _vm.cerrarChat },
             }),
           ],
-          2
+          1
         )
       : _vm._e(),
   ])

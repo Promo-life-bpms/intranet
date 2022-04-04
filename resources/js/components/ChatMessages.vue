@@ -5,33 +5,36 @@
       <span class="pb-3">{{ userData.name + " " + userData.lastname }}</span>
       <i class="fas fa-times" @click="cerrarChat()"></i>
     </div>
-    <div v-if="chatCollapse" style="height: 300px; overflow-y: auto" id="formChat">
-      <div v-for="(mensaje, i) in messages" :key="i.id">
-        <div
-          class="d-flex flex-row p-3"
-          :class="
-            userId == mensaje.transmitter_id
-              ? 'justify-content-start'
-              : 'justify-content-end'
-          "
-        >
-          <img
-            v-if="userId == mensaje.transmitter_id"
-            :src="`/${userData.image}`"
-            style="width: 25px; height: 25px"
-            class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon"
-          />
+    <div v-if="chatCollapse">
+      <div style="height: 300px; overflow-y: auto" id="formChat">
+        <div v-for="(mensaje, i) in messages" :key="i.id">
           <div
-            class="chat ml-2 p-3"
+            class="d-flex flex-row p-3"
             :class="
-              userId == mensaje.transmitter_id ? 'chat ml-2 p-3' : 'bg-white mr-2 p-3'
+              userId == mensaje.transmitter_id
+                ? 'justify-content-start'
+                : 'justify-content-end'
             "
           >
-            <span class="text-muted">{{ mensaje.message }}</span>
+            <img
+              v-if="userId == mensaje.transmitter_id"
+              :src="`/${userData.image}`"
+              style="width: 25px; height: 25px"
+              class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon"
+            />
+            <div
+              class="chat ml-2 p-3"
+              :class="
+                userId == mensaje.transmitter_id ? 'chat ml-2 p-3' : 'bg-white mr-2 p-3'
+              "
+            >
+              <span class="text-muted">{{ mensaje.message }}</span>
+            </div>
           </div>
+          <span class="text-muted">{{ mensaje.created_at.substr(11, 18) }}</span>
         </div>
       </div>
-      <ChatForm :authId="authId" v-on:cerrarChat="cerrarChat" />
+      <ChatForm :authId="authId" :userId="userId" v-on:cerrarChat="cerrarChat" />
     </div>
   </div>
 </template>
@@ -52,6 +55,9 @@ export default {
           receiver_id: e.receptor,
           transmitter_id: e.emisor,
         });
+        const objDiv = document.getElementById("formChat");
+        objDiv.scrollTop = objDiv.scrollHeight;
+        console.log(objDiv);
       }
       if (this.authId == e.emisor) {
         this.messages.push({
@@ -59,6 +65,9 @@ export default {
           receiver_id: e.receptor,
           transmitter_id: e.emisor,
         });
+        const objDiv = document.getElementById("formChat");
+        objDiv.scrollTop = objDiv.scrollHeight;
+        console.log(objDiv);
       }
     });
     setTimeout(() => {
@@ -84,7 +93,7 @@ export default {
       }
     },
     cerrarChat() {
-      this.$emit("cerrarChat", this.userId);
+      this.$emit("cerrarChat", this.userData);
     },
     obtenerMensajes: function () {
       let m = axios
