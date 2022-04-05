@@ -9,7 +9,7 @@
       <div style="height: 300px; overflow-y: auto" id="formChat">
         <div v-for="(mensaje, i) in messages" :key="i.id">
           <div
-            class="d-flex flex-row p-3"
+            class="d-flex flex-row p-2"
             :class="
               userId == mensaje.transmitter_id
                 ? 'justify-content-start'
@@ -23,15 +23,24 @@
               class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon"
             />
             <div
-              class="chat ml-2 p-3"
+              class="chat ml-2 p-1"
               :class="
-                userId == mensaje.transmitter_id ? 'chat ml-2 p-3' : 'bg-white mr-2 p-3'
+                userId == mensaje.transmitter_id ? 'chat ml-2 p-2' : 'bg-white mr-2 p-2'
               "
             >
               <span class="text-muted">{{ mensaje.message }}</span>
+              <div
+                class="d-flex text"
+                :class="
+                  userId == mensaje.transmitter_id
+                    ? 'justify-content-start'
+                    : 'justify-content-end'
+                "
+              >
+                <span>{{ mensaje.created_at.substring(11, 16) }}</span>
+              </div>
             </div>
           </div>
-          <span class="text-muted">{{ mensaje.created_at.substr(11, 18) }}</span>
         </div>
       </div>
       <ChatForm :authId="authId" :userId="userId" v-on:cerrarChat="cerrarChat" />
@@ -54,6 +63,7 @@ export default {
           message: e.message,
           receiver_id: e.receptor,
           transmitter_id: e.emisor,
+          created_at: e.created_at,
         });
         const objDiv = document.getElementById("formChat");
         objDiv.scrollTop = objDiv.scrollHeight;
@@ -64,6 +74,7 @@ export default {
           message: e.message,
           receiver_id: e.receptor,
           transmitter_id: e.emisor,
+          created_at: e.created_at,
         });
         const objDiv = document.getElementById("formChat");
         objDiv.scrollTop = objDiv.scrollHeight;

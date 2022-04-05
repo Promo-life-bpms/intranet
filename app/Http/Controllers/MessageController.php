@@ -67,7 +67,7 @@ class MessageController extends Controller
         ]);
 
         /*  broadcast(new MessageSent($transmitter_id, $message))->toOthers(); */
-        event(new MessageSent($message->message, $receiver_id, $transmitter_id));
+        event(new MessageSent($message->message, $receiver_id, $transmitter_id, $message->created_at));
         return ['status' => 'Message Sent!'];
     }
 

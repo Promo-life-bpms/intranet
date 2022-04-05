@@ -5472,6 +5472,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -5488,7 +5497,8 @@ __webpack_require__.r(__webpack_exports__);
         _this.messages.push({
           message: e.message,
           receiver_id: e.receptor,
-          transmitter_id: e.emisor
+          transmitter_id: e.emisor,
+          created_at: e.created_at
         });
 
         var objDiv = document.getElementById("formChat");
@@ -5500,7 +5510,8 @@ __webpack_require__.r(__webpack_exports__);
         _this.messages.push({
           message: e.message,
           receiver_id: e.receptor,
-          transmitter_id: e.emisor
+          transmitter_id: e.emisor,
+          created_at: e.created_at
         });
 
         var _objDiv = document.getElementById("formChat");
@@ -49107,7 +49118,7 @@ var render = function () {
                   _c(
                     "div",
                     {
-                      staticClass: "d-flex flex-row p-3",
+                      staticClass: "d-flex flex-row p-2",
                       class:
                         _vm.userId == mensaje.transmitter_id
                           ? "justify-content-start"
@@ -49126,24 +49137,38 @@ var render = function () {
                       _c(
                         "div",
                         {
-                          staticClass: "chat ml-2 p-3",
+                          staticClass: "chat ml-2 p-1",
                           class:
                             _vm.userId == mensaje.transmitter_id
-                              ? "chat ml-2 p-3"
-                              : "bg-white mr-2 p-3",
+                              ? "chat ml-2 p-2"
+                              : "bg-white mr-2 p-2",
                         },
                         [
                           _c("span", { staticClass: "text-muted" }, [
                             _vm._v(_vm._s(mensaje.message)),
                           ]),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass: "d-flex text",
+                              class:
+                                _vm.userId == mensaje.transmitter_id
+                                  ? "justify-content-start"
+                                  : "justify-content-end",
+                            },
+                            [
+                              _c("span", [
+                                _vm._v(
+                                  _vm._s(mensaje.created_at.substring(11, 16))
+                                ),
+                              ]),
+                            ]
+                          ),
                         ]
                       ),
                     ]
                   ),
-                  _vm._v(" "),
-                  _c("span", { staticClass: "text-muted" }, [
-                    _vm._v(_vm._s(mensaje.created_at.substr(11, 18))),
-                  ]),
                 ])
               }),
               0
