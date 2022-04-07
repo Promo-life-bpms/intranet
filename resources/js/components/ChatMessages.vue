@@ -47,6 +47,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import ChatForm from "./ChatForm.vue";
 export default {
@@ -88,7 +89,7 @@ export default {
 
   data() {
     return {
-      chatCollapse: false,
+      chatCollapse: true,
       messages: [],
     };
   },
@@ -112,6 +113,11 @@ export default {
         .then((response) => {
           console.log("si llego bien", response);
           this.messages = response.data.mensajesEnviados;
+
+          setTimeout(() => {
+            const objDiv = document.getElementById("formChat");
+            objDiv.scrollTop = objDiv.scrollHeight;
+          });
         })
         .catch(function (error) {
           console.log(error);

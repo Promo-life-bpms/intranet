@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="d-flex position-fixed fixed-bottom align-items-end flex-row-reverse">
+  <div class="contenedor position-fixed">
+    <div class="d-flex flex-row-reverse align-items-end">
       <div class="card my-0">
         <div class="d-flex flex-row justify-content-between adiv p-3 text-white">
           <i class="fas fa-chevron-left" @click="collapseListUsers()"></i>
@@ -131,10 +131,6 @@ body {
   border-radius: 20px;
 }
 
-.myvideo img {
-  border-radius: 20px;
-}
-
 .dot {
   font-weight: bold;
 }
@@ -152,5 +148,10 @@ body {
 .form-control::placeholder {
   font-size: 8px;
   color: #c4c4c4;
+}
+.contenedor {
+  z-index: 100;
+  right: 1px;
+  bottom: 1px;
 }
 </style>
