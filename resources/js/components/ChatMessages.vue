@@ -58,7 +58,7 @@ export default {
   mounted: function () {
     window.Echo.channel("chat").listen("MessageSent", (e) => {
       console.log("Evento recibido");
-
+      console.log(e);
       if (this.authId == e.receptor) {
         this.messages.push({
           message: e.message,
@@ -70,7 +70,7 @@ export default {
         objDiv.scrollTop = objDiv.scrollHeight;
         console.log(objDiv);
       }
-      if (this.authId == e.emisor) {
+      if (this.authId == e.emisor && e.receptor == this.userId) {
         this.messages.push({
           message: e.message,
           receiver_id: e.receptor,
