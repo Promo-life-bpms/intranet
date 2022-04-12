@@ -20,8 +20,16 @@
             />
             <p>{{ user.name }}</p>
           </div>
+          <input
+            type="text"
+            v-model="buscar"
+            class="form-control"
+            placeholder="Buscar usuario"
+            @keyup="buscarUsuarios"
+          />
         </div>
       </div>
+
       <div v-for="lista in listaChatsAbiertos" :key="lista.id">
         <ChatMessages
           :userId="lista.id"
@@ -54,8 +62,10 @@ export default {
       usuarios: [],
       listaChats: new Set(),
       listaChatsAbiertos: [],
+      buscar: "",
     };
   },
+
   methods: {
     collapseListUsers: function () {
       console.log(1);
@@ -90,6 +100,11 @@ export default {
       console.log("Click event on the button of the children with: " + id);
       this.listaChats.delete(id);
       this.listaChatsAbiertos = Array.from(this.listaChats);
+    },
+    buscarUsuarios: function () {
+      this.usuarios = this.usuarios.filter((user) => {
+        return user.name.toLowerCase().includes(this.buscar.toLowerCase());
+      });
     },
   },
 };
