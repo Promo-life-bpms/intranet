@@ -8,6 +8,7 @@ use Facade\FlareClient\Http\Response;
 use Illuminate\Auth\RequestGuard;
 use Illuminate\Http\Request;
 use App\Events\MessageSent;
+use App\Notifications\MessageNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -53,6 +54,7 @@ class MessageController extends Controller
         $transmitter_id = auth()->user()->id;
         $receiver_id = request()->receiver_id;
         $message = request()->message;
+        $userReceiver= User::find($receiver_id);
 
 
 
@@ -68,6 +70,7 @@ class MessageController extends Controller
 
         /*  broadcast(new MessageSent($transmitter_id, $message))->toOthers(); */
         event(new MessageSent($message->message, $receiver_id, $transmitter_id, $message->created_at));
+        $userReceiver->notify(new MessageNotification($transmitter_id, $message->message));
         return ['status' => 'Message Sent!'];
     }
 

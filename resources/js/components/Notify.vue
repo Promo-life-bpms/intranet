@@ -7,13 +7,25 @@
 </template>
 
 <script>
+import toastr from "toastr";
 export default {
+  props: ["userId", "userData", "authId"],
+  mounted() {
+    window.Echo.channel("chat").listen("MessageSent", (e) => {
+      console.log("Notificacion recibida");
+      console.log(e);
+      if (this.authId == e.receptor) {
+        toastr.info(`${e.emisor}: ${e.message}`, "Mensaje");
+        audio.play();
+      }
+    });
+  },
   data: function () {
     return {
       message: "",
     };
   },
-  methods: {
+  /* methods: {
     notify() {
       if (!("Notification" in window)) {
         alert("This browser does not support desktop notification");
@@ -29,7 +41,7 @@ export default {
         });
       }
     },
-  },
+  }, */
 };
 </script>
 
@@ -38,4 +50,3 @@ export default {
   display: none;
 }
 </style>
-

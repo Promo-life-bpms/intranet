@@ -19,11 +19,10 @@ class MessageNotification extends Notification
     public $message;
     public $emisor;
     public $receptor;
-    public function __construct($emisor, $receptor, $message)
+    public function __construct($emisor, $message)
     {
 
         $this->emisor  = $emisor;
-        $this->receptor = $receptor;
         $this->message  = $message;
     }
 
@@ -49,7 +48,6 @@ class MessageNotification extends Notification
         return [
 
             'emisor' => $this->emisor,
-            'receptor' => $this->receptor,
             'message' => $this->message,
 
         ];
