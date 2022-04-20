@@ -53,8 +53,7 @@
                 </div>
                 @include('layouts.components.footer')
                 <chat-component :authId="{{ auth()->user()->id }}"></chat-component>
-                {{-- <chat-messages :messages="messages"></chat-messages>
-                <chat-form v-on:messagesent="addMessage" :user="{{ Auth::user() }}"></chat-form> --}}
+                <notify :auth-id={{ auth()->user()->id }}></notify>
             </div>
         </div>
     </div>

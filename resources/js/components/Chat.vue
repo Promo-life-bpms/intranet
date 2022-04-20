@@ -20,14 +20,14 @@
             />
             <p>{{ user.name }}</p>
           </div>
-          <input
-            type="text"
-            v-model="buscar"
-            class="form-control"
-            placeholder="Buscar usuario"
-            @keyup="buscarUsuarios"
-          />
         </div>
+        <input
+          type="text"
+          v-model="buscar"
+          class="form-control"
+          placeholder="Buscar usuario"
+          @keyup="buscarUsuarios"
+        />
       </div>
 
       <div v-for="lista in listaChatsAbiertos" :key="lista.id">

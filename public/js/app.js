@@ -5408,6 +5408,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["userId"],
   data: function data() {
@@ -5700,7 +5712,7 @@ __webpack_require__.r(__webpack_exports__);
       console.log(e);
 
       if (_this.authId == e.receptor) {
-        toastr__WEBPACK_IMPORTED_MODULE_0___default().info("".concat(e.emisor, ": ").concat(e.message), "Mensaje");
+        toastr__WEBPACK_IMPORTED_MODULE_0___default().success("".concat(e.transmitter_name, ": ").concat(e.message), "Mensaje");
         audio.play();
       }
     });
@@ -5710,24 +5722,6 @@ __webpack_require__.r(__webpack_exports__);
       message: ""
     };
   }
-  /* methods: {
-    notify() {
-      if (!("Notification" in window)) {
-        alert("This browser does not support desktop notification");
-      } else if (Notification.permission === "granted") {
-        // If it's okay let's create a notification
-        var notification = new Notification("Hi there!");
-      } else if (Notification.permission !== "denied") {
-        Notification.requestPermission(function (permission) {
-          // If the user accepts, let's create a notification
-          if (permission === "granted") {
-            var notification = new Notification("Hi there!");
-          }
-        });
-      }
-    },
-  }, */
-
 });
 
 /***/ }),
@@ -10898,7 +10892,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-6fb73fa7] {\r\n  background: #eeeeee;\r\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-6fb73fa7] {\r\n  width: 300px;\r\n  border: none;\r\n  border-radius: 15px;\n}\n.adiv[data-v-6fb73fa7] {\r\n  background: #72c3d6;\r\n  border-radius: 15px;\r\n  border-bottom-right-radius: 0;\r\n  border-bottom-left-radius: 0;\r\n  font-size: 12px;\r\n  height: 46px;\n}\n.chat[data-v-6fb73fa7] {\r\n  border: none;\r\n  background: #e2fbff;\r\n  font-size: 10px;\r\n  border-radius: 20px;\n}\n.bg-white[data-v-6fb73fa7] {\r\n  border: 1px solid #e7e7e9;\r\n  font-size: 10px;\r\n  border-radius: 20px;\n}\n.myvideo img[data-v-6fb73fa7] {\r\n  border-radius: 20px;\n}\n.dot[data-v-6fb73fa7] {\r\n  font-weight: bold;\n}\n.form-control[data-v-6fb73fa7] {\r\n  border-radius: 12px;\r\n  border: 1px solid #f0f0f0;\r\n  font-size: 8px;\n}\n.form-control[data-v-6fb73fa7]:focus {\r\n  box-shadow: none;\n}\n.form-control[data-v-6fb73fa7]::-moz-placeholder {\r\n  font-size: 8px;\r\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]:-ms-input-placeholder {\r\n  font-size: 8px;\r\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]::placeholder {\r\n  font-size: 8px;\r\n  color: #c4c4c4;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-6fb73fa7] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-6fb73fa7] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-6fb73fa7] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-6fb73fa7] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-6fb73fa7] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.myvideo img[data-v-6fb73fa7] {\n  border-radius: 20px;\n}\n.dot[data-v-6fb73fa7] {\n  font-weight: bold;\n}\n.form-control[data-v-6fb73fa7] {\n  border-radius: 12px;\n  border: 1px solid #f0f0f0;\n  font-size: 8px;\n}\n.form-control[data-v-6fb73fa7]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-6fb73fa7]::-moz-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]:-ms-input-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]::placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -49630,58 +49624,56 @@ var render = function () {
                     "overflow-y": "scroll",
                   },
                 },
-                [
-                  _vm._l(_vm.usuarios, function (user) {
-                    return _c(
-                      "div",
-                      {
-                        key: user.id,
-                        staticClass: "d-flex flex-row p-3",
-                        on: {
-                          click: function ($event) {
-                            return _vm.abrirchat(user)
-                          },
+                _vm._l(_vm.usuarios, function (user) {
+                  return _c(
+                    "div",
+                    {
+                      key: user.id,
+                      staticClass: "d-flex flex-row p-3",
+                      on: {
+                        click: function ($event) {
+                          return _vm.abrirchat(user)
                         },
                       },
-                      [
-                        _c("img", {
-                          staticClass:
-                            "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon",
-                          staticStyle: { width: "30px", height: "30px" },
-                          attrs: { src: "/" + user.image },
-                        }),
-                        _vm._v(" "),
-                        _c("p", [_vm._v(_vm._s(user.name))]),
-                      ]
-                    )
-                  }),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.buscar,
-                        expression: "buscar",
-                      },
-                    ],
-                    staticClass: "form-control",
-                    attrs: { type: "text", placeholder: "Buscar usuario" },
-                    domProps: { value: _vm.buscar },
-                    on: {
-                      keyup: _vm.buscarUsuarios,
-                      input: function ($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.buscar = $event.target.value
-                      },
                     },
-                  }),
-                ],
-                2
+                    [
+                      _c("img", {
+                        staticClass:
+                          "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon",
+                        staticStyle: { width: "30px", height: "30px" },
+                        attrs: { src: "/" + user.image },
+                      }),
+                      _vm._v(" "),
+                      _c("p", [_vm._v(_vm._s(user.name))]),
+                    ]
+                  )
+                }),
+                0
               )
             : _vm._e(),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.buscar,
+                expression: "buscar",
+              },
+            ],
+            staticClass: "form-control",
+            attrs: { type: "text", placeholder: "Buscar usuario" },
+            domProps: { value: _vm.buscar },
+            on: {
+              keyup: _vm.buscarUsuarios,
+              input: function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.buscar = $event.target.value
+              },
+            },
+          }),
         ]),
         _vm._v(" "),
         _vm._l(_vm.listaChatsAbiertos, function (lista) {
@@ -49774,7 +49766,28 @@ var render = function () {
           attrs: { id: "btn-chat" },
           on: { click: _vm.sendMessage },
         },
-        [_vm._v("\n      Enviar\n    ")]
+        [
+          _c(
+            "svg",
+            {
+              staticClass: "bi bi-send",
+              attrs: {
+                xmlns: "http://www.w3.org/2000/svg",
+                width: "16",
+                height: "16",
+                fill: "currentColor",
+                viewBox: "0 0 16 16",
+              },
+            },
+            [
+              _c("path", {
+                attrs: {
+                  d: "M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z",
+                },
+              }),
+            ]
+          ),
+        ]
       ),
     ]),
   ])

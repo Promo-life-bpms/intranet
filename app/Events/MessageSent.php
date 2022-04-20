@@ -19,13 +19,15 @@ class MessageSent implements ShouldBroadcast
     public $message;
     public $receptor;
     public $emisor;
+    public $transmitter_name;
     public $created_at;
-    public function __construct($message, $receptor, $emisor, $created_at)
+    public function __construct($message, $receptor, $emisor, $transmitter_name, $created_at)
     {
         $this->message  = $message;
         $this->receptor  = $receptor;
         $this->emisor  = $emisor;
-        $this->created_at= $created_at;
+        $this->transmitter_name = $transmitter_name;
+        $this->created_at = $created_at;
     }
 
     /**
