@@ -15,12 +15,13 @@ class Request extends Model
         'type_request',
         'payment',
         'days',
-        /* 'admission', */ 
+        /* 'admission', */
         'reason',
         'direct_manager_id',
         'direct_manager_status',
         'human_resources_status',
-        'employee_id'
+        'employee_id',
+        'visible'
     ];
 
 
@@ -44,5 +45,5 @@ class Request extends Model
         return $this->belongsTo(Vacations::class, 'employee_id');
     }
 
-    
+
 }

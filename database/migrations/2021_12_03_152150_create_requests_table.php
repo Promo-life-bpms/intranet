@@ -18,12 +18,13 @@ class CreateRequestsTable extends Migration
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->string('type_request');
             $table->string('payment');
-            $table->date('start')->nullable(); 
-            $table->date('end')->nullable();  
+            $table->date('start')->nullable();
+            $table->date('end')->nullable();
             $table->string('reason');
             $table->foreignId('direct_manager_id')->references('id')->on('employees');
             $table->string('direct_manager_status');
             $table->string('human_resources_status');
+            $table->boolean('visible')->default(true);
             $table->timestamps();
         });
     }

@@ -12,14 +12,14 @@ class Vacations extends Model
     public $table = "vacations_availables";
 
     protected $fillable = [
-        'id',
         'days_availables',
-        'expiration'
+        'dv',
+        'period',
+        'cutoff_date'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'users_id');
     }
-
 }

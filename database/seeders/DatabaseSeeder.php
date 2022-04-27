@@ -7,6 +7,7 @@ use App\Models\Department;
 use App\Models\Position;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\VacationPerYear;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,7 +19,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $admin = Role::create([
+        VacationPerYear::create(['year' => 1, 'days' => 6]);
+        VacationPerYear::create(['year' => 2, 'days' => 8]);
+        VacationPerYear::create(['year' => 3, 'days' => 10]);
+        VacationPerYear::create(['year' => 4, 'days' => 12]);
+        VacationPerYear::create(['year' => 5, 'days' => 14]);
+        VacationPerYear::create(['year' => 6, 'days' => 14]);
+        VacationPerYear::create(['year' => 7, 'days' => 14]);
+        VacationPerYear::create(['year' => 8, 'days' => 14]);
+        VacationPerYear::create(['year' => 9, 'days' => 14]);
+        VacationPerYear::create(['year' => 10, 'days' => 16]);
+        VacationPerYear::create(['year' => 11, 'days' => 16]);
+        VacationPerYear::create(['year' => 12, 'days' => 16]);
+        VacationPerYear::create(['year' => 13, 'days' => 16]);
+        VacationPerYear::create(['year' => 14, 'days' => 16]);
+        VacationPerYear::create(['year' => 15, 'days' => 18]);
+        VacationPerYear::create(['year' => 16, 'days' => 18]);
+        VacationPerYear::create(['year' => 17, 'days' => 18]);
+        VacationPerYear::create(['year' => 18, 'days' => 18]);
+        VacationPerYear::create(['year' => 19, 'days' => 18]);
+        /*         $admin = Role::create([
             'name' => 'admin',
             'display_name' => 'Administrador', // optional
             'description' => '', // optional
@@ -248,7 +268,7 @@ class DatabaseSeeder extends Seeder
             'remember_token' => '',
         ])->attachRole($manager);
  */
-        /* Empresas */
+        /* Empresas
 
         Company::create([
             'name_company' => 'Promolife',
@@ -270,7 +290,7 @@ class DatabaseSeeder extends Seeder
             'description_company' => 'San Andrés Atoto No. 155 Piso 1 Local B, 53550 Naucalpan de Juárez, México'
         ]);
 
-        /* Departamentos */
+        /* Departamentos
         Department::Create([
             'id' => 1,
             'name' => 'Recursos Humanos'
@@ -331,7 +351,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Direccion'
         ]);
 
-        /* Puestos */
+        /* Puestos
 
         Position::create([
             'name' => 'Director BH Recursos Humanos',
@@ -744,6 +764,6 @@ class DatabaseSeeder extends Seeder
         Position::create([
             'name' => 'Director General PL',
             'department_id' => 12
-        ]);
+        ]); */
     }
 }

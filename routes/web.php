@@ -127,6 +127,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::put('/vacations/{vacation}', [VacationsController::class, 'update'])->middleware('role:rh')->name('admin.vacations.update');
     Route::delete('/vacations/{vacation}', [VacationsController::class, 'destroy'])->middleware('role:rh')->name('admin.vacations.destroy');
     Route::get('vacations/export/', [VacationsController::class, 'export'])->name('admin.vacations.export');
+    Route::get('vacations/updateAll/', [VacationsController::class, 'updateVacations'])->name('admin.vacations.updateVacationsAll');
 
 
     Route::get('/request', [RequestController::class, 'index'])->name('request.index');
