@@ -13,12 +13,16 @@ class CreateVacationsAvailablesTable extends Migration
      */
     public function up()
     {
+        // 1 - Actual
+        // 2 - Anterior
+        // 3 -Expirado
         Schema::create('vacations_availables', function (Blueprint $table) {
             $table->id();
-            $table->enum('period', ['current', 'last', 'expired']);
+            $table->enum('period', [1, 2, 3]);
             $table->decimal('days_availables', 5, 2)->nullable()->default(0);
-            $table->decimal('dv', 5, 2)->nullable()->default(0);
+            $table->integer('dv')->nullable()->default(0);
             $table->date('cutoff_date')->nullable();
+            $table->integer('days_enjoyed')->nullable();
             $table->foreignId('users_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+
+    @livewireStyles
 </head>
 
 <body>
@@ -57,6 +59,7 @@
             </div>
         </div>
     </div>
+
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/vendors/momentjs/moment.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
@@ -68,6 +71,8 @@
 
     @yield('scripts')
     <script src="https://use.fontawesome.com/84b288f169.js"></script>
+
+    @livewireScripts
 </body>
 
 </html>

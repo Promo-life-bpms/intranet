@@ -15,7 +15,8 @@ class Vacations extends Model
         'days_availables',
         'dv',
         'period',
-        'cutoff_date'
+        'cutoff_date',
+        'days_enjoyed'
     ];
 
     public function user()

@@ -16,12 +16,12 @@
             <table class="table table-striped" id="table-directory">
                 <thead>
                     <tr>
-                        <th style="" scope="col">#</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Fecha de Ingreso</th>
-                        <th style="" scope="col">Periodo Actual</th>
-                        <th style="" scope="col">Periodo Anterior</th>
-                        <th scope="col">Opciones</th>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Fecha de Ingreso</th>
+                        <th>Periodo Actual</th>
+                        <th>Periodo Anterior</th>
+                        <th>Opciones</th>
                     </tr>
                 </thead>
 
@@ -30,17 +30,10 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $user->name }} <br>{{ $user->lastname }}</td>
-                            <td>{{ Str::limit($user->employee->date_admission,10) }}</td>
+                            <td>{{ Str::limit($user->employee->date_admission, 10) }}</td>
                             @foreach ($user->vacationsAvailables as $vacation)
                                 <td>
-                                    <strong>Periodo:</strong> {{ $vacation->period }}
-                                    <br>
-                                    <strong>Expiracion:</strong> {{ $vacation->cutoff_date }}
-                                    <br>
-                                    <strong>Dias:</strong> {{ $vacation->days_availables }}
-                                    <br>
-                                    <strong>Dias disponibles:</strong> {{ $vacation->dv }}
-                                    <br>
+                                    @livewire('vacations.update-days-enjoyed', ['data'=>$vacation ])
                                 </td>
                             @endforeach
                             @if (count($user->vacationsAvailables) == 1)

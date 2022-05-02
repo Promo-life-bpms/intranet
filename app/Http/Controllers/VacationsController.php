@@ -140,10 +140,11 @@ class VacationsController extends Controller
                 $daysPerYearCurrent = VacationPerYear::find(1);
                 $diasDispobibles = round(($daysItsYear * $daysPerYearCurrent->days) / 365, 2);
                 $user->vacationsAvailables()->updateOrCreate([
-                    'period' => 'current',
+                    'period' => 1,
                     'cutoff_date' => $date->addYears(2)
                 ], [
                     'days_availables' => $diasDispobibles,
+                    'days_enjoyed' => 0,
                     'dv' => floor($diasDispobibles),
                 ]);
             } else if ($yearsWork > 0) {
@@ -154,10 +155,11 @@ class VacationsController extends Controller
                 $daysItsYear = $lastPeriod->diffInDays(Carbon::now());
                 $diasDispobibles = round(($daysItsYear * $daysPerYearCurrent->days) / 365, 2);
                 $user->vacationsAvailables()->updateOrCreate([
-                    'period' => 'current',
+                    'period' => 1,
                     'cutoff_date' => $lastPeriod->addYears(2)
                 ], [
                     'days_availables' => $diasDispobibles,
+                    'days_enjoyed' => 0,
                     'dv' => floor($diasDispobibles),
                 ]);
                 if ($yearsWork > 1) {
@@ -166,10 +168,11 @@ class VacationsController extends Controller
                     $lastPeriodYear = (string)((int)$date->format('Y') + $yearsWork-1);
                     $lastPeriod = Carbon::parse($lastPeriodYear . '-' . (string) $date->format('m-d'));
                     $user->vacationsAvailables()->updateOrCreate([
-                        'period' => 'last',
+                        'period' => 2,
                         'cutoff_date' => $lastPeriod->addYears(2)
                     ], [
                         'days_availables' => $diasDispobibles,
+                        'days_enjoyed' => 0,
                         'dv' => floor($diasDispobibles),
                     ]);
                 }
