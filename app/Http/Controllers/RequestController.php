@@ -10,6 +10,7 @@ use App\Exports\FilterRequestExport;
 use App\Exports\RequestExport;
 use App\Mail\rejectedRequestMail;
 use App\Mail\RequestMail;
+use App\Models\Employee;
 use App\Models\Notification;
 use App\Models\NoWorkingDays;
 use App\Models\Request as ModelsRequest;
@@ -50,7 +51,6 @@ class RequestController extends Controller
                     'end' => $request->end,
                     'users_id' => $id,
                     'requests_id' => $request->id,
-
                 ]);
 
                 return response()->json($event);
@@ -105,7 +105,7 @@ class RequestController extends Controller
         $rejectedDays = RequestRejected::all();
         $notifications = Notification::all();
 
-        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays', 'notifications','rejectedDays'));
+        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays', 'notifications', 'rejectedDays'));
     }
 
     public function create()
@@ -115,8 +115,8 @@ class RequestController extends Controller
         DB::table('request_calendars')->where('requests_id', null)->where('users_id', $id)->delete();
 
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = auth()->user()->vacationsAvailables->where('period','<>',3)->sum('dv');
-        $dataVacations  = auth()->user()->vacationsAvailables()->where('period','<>',3)->orderBy('period', 'DESC')->get();
+        $vacations = auth()->user()->vacationsAvailables->where('period', '<>', 3)->sum('dv');
+        $dataVacations  = auth()->user()->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'DESC')->get();
 
         if ($vacations == null) {
             $vacations = 0;
@@ -139,7 +139,7 @@ class RequestController extends Controller
             'reason' => 'required|max:255',
         ]);
 
-        if($request->type_request !="Faltar a sus labores" && $request->type_request !="Solicitar vacaciones"){
+        if ($request->type_request != "Faltar a sus labores" && $request->type_request != "Solicitar vacaciones") {
             $request->validate([
                 'start' => 'required',
             ]);
@@ -170,16 +170,6 @@ class RequestController extends Controller
             $employee_id = DB::table('employees')->where('id', $id)->value('id');
             DB::table('requests')->where('employee_id', $employee_id)->where('id', $lastRequest)->delete();
             return back()->with('message', 'No puedes crear solicitudes por que no agregaste dias en el calendario');
-        }
-        $daysUsetTotal = count($daysUsed);
-
-        if($request->payment=="A cuenta de vacaciones"){
-            // Restar los dias disponibles
-            foreach (auth()->user()->vacationsAvailables as $dataVacation) {
-                $diasRestantes = $dataVacation->dv - $daysUsetTotal;
-                $dataVacation->dv = $diasRestantes;
-                $dataVacation->save();
-            }
         }
 
         self::managertNotification($req);
@@ -216,7 +206,6 @@ class RequestController extends Controller
         $request->update($req->all());
 
         return redirect()->action([RequestController::class, 'index']);
-
     }
 
     public function destroy(ModelsRequest $request)
@@ -245,7 +234,7 @@ class RequestController extends Controller
 
         $rejectedDays = RequestRejected::all();
 
-        return view('request.authorize', compact('requestDays', 'requests','rejectedDays'));
+        return view('request.authorize', compact('requestDays', 'requests', 'rejectedDays'));
     }
 
     public function show()
@@ -303,7 +292,6 @@ class RequestController extends Controller
         $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
 
         return view('request.authorizeEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request'));
-
     }
 
     public function authorizeRHEdit(Request $req, ModelsRequest $request)
@@ -324,7 +312,6 @@ class RequestController extends Controller
         $rhAuth = true;
 
         return view('request.rhEdit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request', 'rhAuth'));
-
     }
 
     public function authorizeManagerUpdate(Request $req, ModelsRequest $request)
@@ -343,28 +330,15 @@ class RequestController extends Controller
         } elseif ($req->direct_manager_status == "Rechazada") {
 
             try {
-                self::sendRejectedMail($request,$req);
+                self::sendRejectedMail($request, $req);
 
                 throw new Exception();
             } catch (Exception $e) {
-
             } finally {
                 $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
-                $total = count($rejected);
-                $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
-                $totalVacation = intval($userVacations);
-
-                if($request->type_request=="Solicitar vacaciones"){
-                    $final = $totalVacation + $total;
-
-                    DB::table('vacations_availables')
-                    ->where('users_id',$request->employee_id)
-                    ->update(['dv' => $final]);
-                }
-
 
                 //Pasa las fechas de las solicitudes rechazadas a otra tabla
-                foreach($rejected  as $rej){
+                foreach ($rejected  as $rej) {
 
                     $data = new RequestRejected();
                     $data->title = $rej->title;
@@ -380,11 +354,9 @@ class RequestController extends Controller
                 DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
                 self::userNotification($request);
             }
-
         }
 
         return redirect()->action([RequestController::class, 'authorizeRequestManager']);
-
     }
 
 
@@ -405,58 +377,47 @@ class RequestController extends Controller
         if ($req->human_resources_status == "Aprobada") {
 
             try {
-                self::sendApprovedMail($request,$req);
+                self::sendApprovedMail($request, $req);
                 throw new Exception();
             } catch (Exception $e) {
-
             } finally {
                 DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
                 self::userNotification($request);
 
-            //Actualiza dias de periodo cumplidos
+                //Actualiza dias de periodo cumplidos
                 $approved = DB::table('request_calendars')->where('requests_id', $request->id)->get();
                 $total = count($approved);
-                $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('period_days');
-                $totalVacation = floatval($userVacations);
 
-                if($request->type_request=="Solicitar vacaciones"){
-
-                    $final = $totalVacation - $total ;
-                    DB::table('vacations_availables')
-                    ->where('users_id',$request->employee_id)
-                    ->update(['period_days' => $final]);
+                if ($request->type_request == "Solicitar vacaciones") {
+                    $user = Employee::find($request->employee_id)->user;
+                    foreach ($user->vacationsAvailables()->orderBy('period', 'DESC')->get() as $dataVacation) {
+                        // dd($total);
+                        if ($dataVacation->dv < $total) {
+                            $dataVacation->days_enjoyed = $dataVacation->dv;
+                            $total = $total - $dataVacation->dv;
+                            $dataVacation->dv = 0;
+                            $dataVacation->save();
+                        }else{
+                            $dataVacation->days_enjoyed =$dataVacation->days_enjoyed + $total;
+                            $dataVacation->dv = $dataVacation->dv - $total;
+                            $dataVacation->save();
+                            break;
+                        }
+                    }
                 }
-
-
             }
-
-
         } elseif ($req->human_resources_status == "Rechazada") {
 
-            try {
-                self::sendRejectedMail($request,$req);
+             try {
+                self::sendRejectedMail($request, $req);
                 throw new Exception();
             } catch (Exception $e) {
-
             } finally {
-               //Actualiza DV
+                //Actualiza DV
                 $rejected = DB::table('request_calendars')->where('requests_id', $request->id)->get();
-                $total = count($rejected);
-                $userVacations = DB::table('vacations_availables')->where('users_id',$request->employee_id)->value('dv');
-                $totalVacation = intval($userVacations);
-
-
-                if($request->type_request=="Solicitar vacaciones"){
-                    $final = $totalVacation + $total;
-
-                    DB::table('vacations_availables')
-                    ->where('users_id',$request->employee_id)
-                    ->update(['dv' => $final]);
-                }
-
 
                 //Pasa las fechas de las solicitudes rechazadas a otra tabla
-                foreach($rejected  as $rej){
+                foreach ($rejected  as $rej) {
 
                     $data = new RequestRejected();
                     $data->title = $rej->title;
@@ -471,7 +432,6 @@ class RequestController extends Controller
                 DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
                 self::userNotification($request);
             }
-
         }
         return redirect()->action([RequestController::class, 'show']);
     }
@@ -549,21 +509,21 @@ class RequestController extends Controller
         $end = $request->end;
 
         return  Excel::download(new DateRequestExport($start, $end, $daySelected), 'solicitudes_por_periodo.xlsx');
-
     }
 
     public function getPayment($id)
     {
-        if($id == "Solicitar vacaciones"){
-            return response()->json(['name' => 'A cuenta de vacaciones','display'=>'false']);
-        }else if($id =="Salir durante la jornada") {
-            return response()->json(['name' => 'Descontar Tiempo/Dia','display'=>'true']);
-        }else{
-            return response()->json(['name' => 'Descontar Tiempo/Dia','display'=>'false']);
+        if ($id == "Solicitar vacaciones") {
+            return response()->json(['name' => 'A cuenta de vacaciones', 'display' => 'false']);
+        } else if ($id == "Salir durante la jornada") {
+            return response()->json(['name' => 'Descontar Tiempo/Dia', 'display' => 'true']);
+        } else {
+            return response()->json(['name' => 'Descontar Tiempo/Dia', 'display' => 'false']);
         }
     }
 
-    public function sendApprovedMail($request,$req){
+    public function sendApprovedMail($request, $req)
+    {
         //envio de correos
         $mail = DB::table('users')->where('id', $request->employee_id)->value('email');
         $mailInfo = $req;
@@ -571,25 +531,25 @@ class RequestController extends Controller
         $days = DB::table('request_calendars')->where('requests_id', $request->id)->get('start');
         $daysSelected = '';
 
-        foreach($days as $day){
-           $daysSelected  =$daysSelected . ', '.$day->start;
+        foreach ($days as $day) {
+            $daysSelected  = $daysSelected . ', ' . $day->start;
         }
 
         $mailInfo = [
-            'name'=> $username,
+            'name' => $username,
             'type_request' => $request->type_request,
-            'reason'=>$request->reason,
+            'reason' => $request->reason,
             'payment' => $request->payment,
-            'start'=>  $request->start,
-            'end'=>  $request->end,
-            'days'=> $daysSelected
+            'start' =>  $request->start,
+            'end' =>  $request->end,
+            'days' => $daysSelected
         ];
 
         Mail::to($mail)->send(new RequestMail($mailInfo));
-
     }
 
-    public function sendRejectedMail($request,$req){
+    public function sendRejectedMail($request, $req)
+    {
         //envio de correos rechazados
         $mail = DB::table('users')->where('id', $request->employee_id)->value('email');
         $mailInfo = $req;
@@ -597,22 +557,20 @@ class RequestController extends Controller
         $days = DB::table('request_calendars')->where('requests_id', $request->id)->get('start');
         $daysSelected = '';
 
-        foreach($days as $day){
-        $daysSelected  =$daysSelected . ', '.$day->start;
+        foreach ($days as $day) {
+            $daysSelected  = $daysSelected . ', ' . $day->start;
         }
 
         $mailInfo = [
-            'name'=> $username,
+            'name' => $username,
             'type_request' => $request->type_request,
-            'reason'=>$request->reason,
+            'reason' => $request->reason,
             'payment' => $request->payment,
-            'start'=>  $request->start,
-            'end'=>  $request->end,
-            'days'=> $daysSelected
+            'start' =>  $request->start,
+            'end' =>  $request->end,
+            'days' => $daysSelected
         ];
 
         Mail::to($mail)->send(new rejectedRequestMail($mailInfo));
     }
-
-
 }
