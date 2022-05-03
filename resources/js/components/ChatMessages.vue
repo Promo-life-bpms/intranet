@@ -22,10 +22,11 @@
               style="width: 25px; height: 25px"
               class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon"
             />
+
             <div
               class="chat ml-2 p-1"
               :class="
-                userId == mensaje.transmitter_id ? 'chat ml-2 p-2' : 'bg-white mr-2 p-2'
+                userId == mensaje.transmitter_id ? 'bg-white ml-2 p-2' : 'chat mr-2 p-2'
               "
             >
               <span class="text-muted">{{ mensaje.message }}</span>

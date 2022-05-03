@@ -13,11 +13,16 @@
             :key="user.id"
             @click="abrirchat(user)"
           >
-            <img
-              :src="'/' + user.image"
-              class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon"
-              style="width: 30px; height: 30px"
-            />
+            <div class="img_cont">
+              <img
+                :src="'/' + user.image"
+                class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons"
+                style="width: 30px; height: 30px"
+              />
+              <span class="online_icon"></span>
+              <!-- <span class="online_icon offline"></span> -->
+            </div>
+
             <p>{{ user.name }}</p>
           </div>
         </div>
@@ -168,5 +173,23 @@ body {
   z-index: 100;
   right: 1px;
   bottom: 1px;
+}
+.online_icon {
+  position: absolute;
+  height: 15px;
+  width: 15px;
+  background-color: #4cd137;
+  border-radius: 50%;
+  bottom: 0.2em;
+  right: 0.4em;
+  border: 1.5px solid white;
+}
+.img_cont {
+  position: relative;
+  height: 35px;
+  width: 40px;
+}
+.offline {
+  background-color: #c23616 !important;
 }
 </style>

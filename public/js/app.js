@@ -5307,6 +5307,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -5420,6 +5425,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["userId"],
   data: function data() {
@@ -5460,6 +5471,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _ChatForm_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ChatForm.vue */ "./resources/js/components/ChatForm.vue");
+//
 //
 //
 //
@@ -10867,7 +10879,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-0d66c37a] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-0d66c37a] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-0d66c37a] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-0d66c37a] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-0d66c37a] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.dot[data-v-0d66c37a] {\n  font-weight: bold;\n}\n.form-control[data-v-0d66c37a] {\n  border-radius: 12px;\n  border: 1px solid #f0f0f0;\n  font-size: 8px;\n}\n.form-control[data-v-0d66c37a]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-0d66c37a]::-moz-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-0d66c37a]:-ms-input-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-0d66c37a]::placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.contenedor[data-v-0d66c37a] {\n  z-index: 100;\n  right: 1px;\n  bottom: 1px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-0d66c37a] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-0d66c37a] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-0d66c37a] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-0d66c37a] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-0d66c37a] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.dot[data-v-0d66c37a] {\n  font-weight: bold;\n}\n.form-control[data-v-0d66c37a] {\n  border-radius: 12px;\n  border: 1px solid #f0f0f0;\n  font-size: 8px;\n}\n.form-control[data-v-0d66c37a]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-0d66c37a]::-moz-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-0d66c37a]:-ms-input-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-0d66c37a]::placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.contenedor[data-v-0d66c37a] {\n  z-index: 100;\n  right: 1px;\n  bottom: 1px;\n}\n.online_icon[data-v-0d66c37a] {\n  position: absolute;\n  height: 15px;\n  width: 15px;\n  background-color: #4cd137;\n  border-radius: 50%;\n  bottom: 0.2em;\n  right: 0.4em;\n  border: 1.5px solid white;\n}\n.img_cont[data-v-0d66c37a] {\n  position: relative;\n  height: 35px;\n  width: 40px;\n}\n.offline[data-v-0d66c37a] {\n  background-color: #c23616 !important;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -10892,7 +10904,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-6fb73fa7] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-6fb73fa7] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-6fb73fa7] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-6fb73fa7] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-6fb73fa7] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.myvideo img[data-v-6fb73fa7] {\n  border-radius: 20px;\n}\n.dot[data-v-6fb73fa7] {\n  font-weight: bold;\n}\n.form-control[data-v-6fb73fa7] {\n  border-radius: 12px;\n  border: 1px solid #f0f0f0;\n  font-size: 8px;\n}\n.form-control[data-v-6fb73fa7]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-6fb73fa7]::-moz-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]:-ms-input-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]::placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-6fb73fa7] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-6fb73fa7] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-6fb73fa7] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-6fb73fa7] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-6fb73fa7] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.myvideo img[data-v-6fb73fa7] {\n  border-radius: 20px;\n}\n.dot[data-v-6fb73fa7] {\n  font-weight: bold;\n}\n.form-control[data-v-6fb73fa7] {\n  border-radius: 12px;\n  border: 1px solid #f0f0f0;\n  font-size: 8px;\n}\n.form-control[data-v-6fb73fa7]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-6fb73fa7]::-moz-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]:-ms-input-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]::placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.type_msg[data-v-6fb73fa7] {\n  background-color: rgb(255, 255, 255) !important;\n  border-block: 10 !important;\n  color: rgb(0, 0, 0) !important;\n  height: 40px !important;\n  overflow-y: auto;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -49637,12 +49649,16 @@ var render = function () {
                       },
                     },
                     [
-                      _c("img", {
-                        staticClass:
-                          "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon",
-                        staticStyle: { width: "30px", height: "30px" },
-                        attrs: { src: "/" + user.image },
-                      }),
+                      _c("div", { staticClass: "img_cont" }, [
+                        _c("img", {
+                          staticClass:
+                            "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons",
+                          staticStyle: { width: "30px", height: "30px" },
+                          attrs: { src: "/" + user.image },
+                        }),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "online_icon" }),
+                      ]),
                       _vm._v(" "),
                       _c("p", [_vm._v(_vm._s(user.name))]),
                     ]
@@ -49722,7 +49738,7 @@ var render = function () {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "input-group" }, [
-    _c("input", {
+    _c("textarea", {
       directives: [
         {
           name: "model",
@@ -49731,13 +49747,8 @@ var render = function () {
           expression: "newMessage",
         },
       ],
-      staticClass: "form-control input-sm",
-      attrs: {
-        id: "btn-input",
-        type: "text",
-        name: "message",
-        placeholder: "Escribe tu mnensaje",
-      },
+      staticClass: "form-control type_msg",
+      attrs: { name: "message", placeholder: "Type your message..." },
       domProps: { value: _vm.newMessage },
       on: {
         keyup: function ($event) {
@@ -49762,7 +49773,7 @@ var render = function () {
       _c(
         "button",
         {
-          staticClass: "btn btn-primary btn-sm",
+          staticClass: "btn btn-primary",
           attrs: { id: "btn-chat" },
           on: { click: _vm.sendMessage },
         },
@@ -49884,8 +49895,8 @@ var render = function () {
                           staticClass: "chat ml-2 p-1",
                           class:
                             _vm.userId == mensaje.transmitter_id
-                              ? "chat ml-2 p-2"
-                              : "bg-white mr-2 p-2",
+                              ? "bg-white ml-2 p-2"
+                              : "chat mr-2 p-2",
                         },
                         [
                           _c("span", { staticClass: "text-muted" }, [

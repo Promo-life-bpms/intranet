@@ -11,6 +11,7 @@ use App\Events\MessageSent;
 use App\Notifications\MessageNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Notifications\DatabaseNotification;
 
 class MessageController extends Controller
 {
@@ -101,5 +102,10 @@ class MessageController extends Controller
 
 
         return response()->json(['mensajesEnviados' => $mensajesEnviados], 200);
+    }
+    public function markAsRead(DatabaseNotification $notification)
+    {
+        $notification->markAsRead();
+        return back();
     }
 }
