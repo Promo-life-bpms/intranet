@@ -24,7 +24,29 @@
 
 <body>
     <div id="app">
+
         @include('layouts.components.sidebar')
+        <div class="col-12 order-md-1 order-last d-flex justify-content-end align-items-center">
+            @yield('title')
+            <div class="d-flex align-items-center">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <svg class="bi bell" fill="currentColor">
+                        <use
+                            xlink:href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#bell-fill') }}" />
+                    </svg>
+                    <span class="badge-number position-absolute translate-middle badge rounded-pill bg-danger"
+                        style="font-size: 0.7rem">
+                        {{ count(auth()->user()->unreadNotifications) }}
+                    </span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" style="max-height: 500px; overflow-y: scroll;"
+                    aria-labelledby="navbarDropdownMenuLink">
+                    @include('layouts.components.notifies')
+                </ul>
+
+            </div>
+        </div>
         <div id="main">
             @if (request()->is('home'))
                 @include('layouts.components.logos')
