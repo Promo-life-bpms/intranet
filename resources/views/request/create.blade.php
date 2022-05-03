@@ -32,18 +32,18 @@
                         </div>
 
                     </div>
-                    
+
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('payment', 'Forma de Pago') !!}
-                        {!! Form::select('payment', ['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia', 'A cuenta de vacaciones' => 'A cuenta de vacaciones'], null, ['class' => 'form-control','placeholder' => 'Opciones','readonly']) !!}
+                        {!! Form::select('payment', ['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia', 'A cuenta de vacaciones' => 'A cuenta de vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Opciones', 'readonly']) !!}
                         @error('payment')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
                             </small>
                         @enderror
-                           
+
                     </div>
                 </div>
 
@@ -55,21 +55,21 @@
                     <div class="d-flex flex-row form-group" id="request_time">
                         <div class="col-md-6">
                             {!! Form::label('start', 'Hora de salida') !!}
-                            {!! Form::time('start', null, ['class'=>'form-control']) !!}
+                            {!! Form::time('start', null, ['class' => 'form-control']) !!}
                             @error('start')
                                 <small>
                                     <font color="red"> *Este campo es requerido* </font>
                                 </small>
                             @enderror
                         </div>
-    
+
                         <div class="col-md-6">
                             {!! Form::label('end', 'Hora de ingreso (opcional) ') !!}
-                            {!! Form::time('end', null, ['class'=>'form-control']) !!}
+                            {!! Form::time('end', null, ['class' => 'form-control']) !!}
                         </div>
                     </div>
-                    
-    
+
+
                     <div class="col-md-12">
                         <div class="mb-2 form-group">
                             {!! Form::label('reason', 'Motivo') !!}
@@ -91,17 +91,17 @@
                                 {{ $vacations }} </b> </p>
                         <p class="m-0 mt-2 text-danger">Importante!</p>
                         @foreach ($dataVacations as $item)
-                            <p class="m-0"><b>{{ $item->days_availables }} </b> dias disponibles hasta el <b>
-                                    {{ $item->expiration }} </b> </p>
+                            <p class="m-0"><b>{{ $item->dv }} </b> dias disponibles hasta el <b>
+                                    {{ $item->cutoff_date }} </b> </p>
                         @endforeach
                     </div>
-                  
+
                 </div>
             </div>
-           
+
             {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name' => 'submit']) !!}
 
-            
+
             {!! Form::close() !!}
         </div>
     </div>
@@ -139,7 +139,6 @@
             background-color: #ECECEC;
         }
 
-
     </style>
 @stop
 
@@ -157,7 +156,7 @@
 
             $('#request_time').css("visibility", "hidden");
 
-        
+
             jQuery('select[name="type_request"]').on('change', function() {
                 var id = jQuery(this).val();
                 if (id) {
@@ -167,9 +166,9 @@
                         dataType: "json",
                         success: function(data) {
 
-                            if(data.display =="false"){
+                            if (data.display == "false") {
                                 $('#request_time').css("visibility", "hidden");
-                            }else{
+                            } else {
                                 $('#request_time').css("visibility", "visible");
                             }
                             console.log(data.name)
@@ -178,7 +177,7 @@
                                 $('select[name="payment"]').append('<option value="' +
                                     value + '">' + value + '</option>');
                             });
-                            
+
                         }
                     });
                 } else {
@@ -223,14 +222,20 @@
             var daysSelecteds = new Set();
             let daysAvailablesToTake = {{ $vacations }}
             let dataVacations = @json($dataVacations);
+            const vacationsExpirationsFinally = dataVacations.map(data => {
+                return {
+                    cutoff_date: data.cutoff_date,
+                    dv: data.dv
+                }
+            })
             let vacationsExpirations = dataVacations.map(data => {
                 return {
-                    expiration: data.expiration,
-                    days_availables: data.days_availables
+                    cutoff_date: data.cutoff_date,
+                    dv: data.dv
                 }
             })
 
-            console.log(vacationsExpirations);
+            console.log('VaEx', vacationsExpirations);
 
             var calendar = $('#calendar').fullCalendar({
                 editable: true,
@@ -292,17 +297,35 @@
                         } else {
                             var start = $.fullCalendar.formatDate(start, "Y-MM-DD");
                             var end = $.fullCalendar.formatDate(end, "Y-MM-DD");
-                            let canSelected = false
 
-                            vacationsExpirations.forEach(data => {
-                                if (start <= data.expiration) {
-                                    canSelected = true
-                                    console.log(canSelected);
-                                }
-                            });
                             console.log(daysAvailablesToTake);
-                           /*  if (daysAvailablesToTake > 0) { */
-                              /*   if (canSelected) { */
+
+                            if (daysAvailablesToTake > 0) {
+                                let canSelected = false;
+                                let dataVacationsSelected = null;
+                                if (start <= vacationsExpirations[0].cutoff_date && start <=
+                                    vacationsExpirations[1].cutoff_date) {
+                                    if (vacationsExpirations[0].dv > 0) {
+                                        canSelected = true
+                                        dataVacationsSelected = 0
+                                    } else if (vacationsExpirations[1].dv > 0) {
+                                        canSelected = true
+                                        dataVacationsSelected = 1
+                                    } else {
+                                        canSelected = false
+                                    }
+                                } else if (start > vacationsExpirations[0].cutoff_date && start <=
+                                    vacationsExpirations[1].cutoff_date) {
+                                    if (vacationsExpirations[1].dv > 0) {
+                                        canSelected = true
+                                        dataVacationsSelected = 1
+                                    } else {
+                                        alert('no ha dias en este 2 periodo')
+                                    }
+                                } else if (start > vacationsExpirations[0].cutoff_date) {
+                                    alert('no seleccionable')
+                                }
+                                if (canSelected) {
                                     if (dateActual <= start) {
                                         $.ajax({
                                             url: SITEURL + "/fullcalenderAjax",
@@ -329,12 +352,16 @@
                                                     allDay: false,
                                                 }, true);
                                                 daysAvailablesToTake--
+                                                vacationsExpirations[dataVacationsSelected]
+                                                    .dv--;
+                                                canSelected = false
+                                                console.log(vacationsExpirations)
                                                 diasDisponiblesEl.innerHTML =
                                                     daysAvailablesToTake
                                                 displayMessage(
                                                     "Día seleccionado satisfactoriamente"
                                                 );
-                                                console.log(data);
+                                                // console.log(data);
                                                 calendar.fullCalendar('unselect');
                                             }
                                         });
@@ -342,9 +369,13 @@
                                     } else {
                                         displayInfo('No puedes seleccionar fechas atrasadas ')
                                     }
-                               /*  } else {
-                                    displayError('No puedes seleccionar fechas no disponibles')
-                                } */
+                                }
+                            } else {
+                                displayError('No tienes dias disponibles')
+                            }
+                            /*  } else {
+                                 displayError('No puedes seleccionar fechas no disponibles')
+                             } */
                             /* } else {
                                 displayError('No tienes dias disponibles')
                             } */
@@ -383,6 +414,27 @@
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            let start = event.start._i
+                            let dataVacationsSelected = null;
+                            console.log(start);
+                            console.log('final', vacationsExpirationsFinally[0].dv);
+                            if (start <= vacationsExpirations[0].cutoff_date) {
+                                if (vacationsExpirations[0].dv < vacationsExpirationsFinally[0]
+                                    .dv) {
+                                    dataVacationsSelected = 0
+                                } else if (vacationsExpirations[1].dv <
+                                    vacationsExpirationsFinally[1]
+                                    .dv) {
+                                    dataVacationsSelected = 1
+                                }
+                            } else if (start > vacationsExpirations[0].cutoff_date && start <=
+                                vacationsExpirations[1].cutoff_date) {
+                                if (vacationsExpirations[1].dv < vacationsExpirationsFinally[1]
+                                    .dv) {
+                                    dataVacationsSelected = 1
+                                }
+                            }
+                            console.log(dataVacationsSelected);
                             $.ajax({
                                 type: "POST",
                                 url: SITEURL + '/fullcalenderAjax',
@@ -393,6 +445,9 @@
                                 success: function(response) {
                                     calendar.fullCalendar('removeEvents', event.id);
                                     daysAvailablesToTake++
+                                    vacationsExpirations[dataVacationsSelected]
+                                        .dv++;
+                                    console.log(vacationsExpirations)
                                     diasDisponiblesEl.innerHTML =
                                         daysAvailablesToTake
                                     displayMessage(

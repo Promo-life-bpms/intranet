@@ -1,6 +1,6 @@
 <div>
-    <strong>Periodo:</strong> {{ $data->period }}
-    <br>
+    {{-- <strong>Periodo:</strong> {{ $data->period }}
+    <br> --}}
     <strong>Expiracion:</strong> {{ $data->cutoff_date }}
     <br>
     <strong>Dias calculados:</strong> {{ $data->days_availables }}
@@ -11,7 +11,8 @@
     <br>
     <div class="d-flex">
         <input type="number" wire:model="daysEnjoyed" class="form-control" placeholder="Colocar dias disfrutados">
-        <button class="btn btn-warning" wire:click="updateDays({{ $data->id }})">Actualizar</button>
+        <button class="btn btn-warning d-flex" wire:click="updateDays({{ $data->id }})">Actualizar
+        </button>
     </div>
     <div wire:poll.2000ms>
         @if (session()->has('error'))
