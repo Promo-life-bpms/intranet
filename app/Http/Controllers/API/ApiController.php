@@ -14,6 +14,7 @@ use Directory;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 
 class ApiController extends Controller
@@ -32,23 +33,51 @@ class ApiController extends Controller
             'device_name' => 'required',
         ]);
 
+
         $user = User::where('email', $request->email)->first();
 
-        if ($request->password != $user->password) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
-        return $user->createToken($request->device_name)->plainTextToken;
+        DB::table('personal_access_tokens')->where('tokenable_id', $user->id)->delete();
+
+       $user->createToken($request->device_name)->plainTextToken;
+
+       $token =  DB::table('personal_access_tokens')->where('tokenable_id', $user->id)->value('token');
+       return $token;
+
     }
 
-    private function getUserAndToken(User $user, $device_name){
-        return [
-            'User' => $user,
-            'Access-Token' => $user->createToken($device_name)->plainTextToken,
+    public function getUser($hashedToken){
+        
+        $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
+        $user_id = $token->tokenable_id;
+        $user = User::where('id',$user_id)->get();
+        $image = "";
+
+        if($user->image==null){
+            $image="img/default_user.png";
+        }else{
+            $image=$user->image;
+        }
+
+        $data = [
+            'id' => $usr->id,
+            'name'=> $usr->name,
+            'lastname' =>$usr->lastname,
+            'email'=> $usr->email,
+            'photo' => $image,
+            'department'=> $usr->employee->position->department->name,
+            'position' => $usr->employee->position->name,
         ];
+
+        return $data;
+
     }
+
  
      public function manuals(){
          $manuals = Manual::all();

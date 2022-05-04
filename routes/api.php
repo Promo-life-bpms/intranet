@@ -30,6 +30,8 @@ Route::get('/directory', [APIController::class, 'directory'])->name('api.directo
 Route::get('/organization/{id}', [APIController::class, 'organization'])->name('api.organization');
 
 Route::post('/login', [APIController::class, 'requestToken'])->name('api.login');
+Route::get('/getUser/{hashedToken}', [APIController::class, 'getUser'])->name('api.getUser');
+
 /* 
 Route::get('/api/logout', [APIController::class, 'logout'])->name('api.logout');
 Route::get('/api/user', [APIController::class, 'getUser'])->name('api.user');
