@@ -56,24 +56,27 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
         $user = User::where('id',$user_id)->get();
-        $image = "";
-
-        if($user->image==null){
-            $image="img/default_user.png";
-        }else{
-            $image=$user->image;
+        $data = [];
+ 
+        foreach($user as $usr){
+ 
+            $image='';
+            if($usr->image==null){
+                $image="img/default_user.png";
+            }else{
+                $image=$usr->image;
+            }
+             
+            array_push($data, (object)[
+                'id' => $usr->id,
+                'fullname'=> $usr->name . " ".$usr->lastname,
+                'email'=> $usr->email,
+                'photo' => $image,
+                'department'=> $usr->employee->position->department->name,
+                'position' => $usr->employee->position->name,
+            ]);
         }
-
-        $data = [
-            'id' => $usr->id,
-            'name'=> $usr->name,
-            'lastname' =>$usr->lastname,
-            'email'=> $usr->email,
-            'photo' => $image,
-            'department'=> $usr->employee->position->department->name,
-            'position' => $usr->employee->position->name,
-        ];
-
+ 
         return $data;
 
     }
