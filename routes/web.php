@@ -127,7 +127,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::put('/vacations/{vacation}', [VacationsController::class, 'update'])->middleware('role:rh')->name('admin.vacations.update');
     Route::delete('/vacations/{vacation}', [VacationsController::class, 'destroy'])->middleware('role:rh')->name('admin.vacations.destroy');
     Route::get('vacations/export/', [VacationsController::class, 'export'])->name('admin.vacations.export');
-    Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
 
 
     Route::get('/request', [RequestController::class, 'index'])->name('request.index');
@@ -218,3 +217,5 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/markNotification/{notification}', 'MessageController@markAsRead')->name('message.markAsRead');
     });
 });
+
+Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
