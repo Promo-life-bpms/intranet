@@ -16,7 +16,7 @@ class AccessController extends Controller
      */
     public function index()
     {
-        $url = env("URL_COURSES", "http://localhost:8002");
+        $url = env("URL_COURSES", "https://dev-cursos.promolife.lat");
         $routeCourses = $url . "/loginEmail?email=" . auth()->user()->email . "&password=password";
         $id = Auth::user()->id;
         $access = Access::all()->where('users_id', $id);

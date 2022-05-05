@@ -73,7 +73,7 @@ class MessageController extends Controller
         /*  broadcast(new MessageSent($transmitter_id, $message))->toOthers(); */
         event(new MessageSent($message->message, $receiver_id, $transmitter_id, $transmitter_name, $message->created_at));
         $userReceiver->notify(new MessageNotification($transmitter_id, $transmitter_name, $message->message));
-        return ['status' => 'Message Sent!'];
+        return ['status' => 'Message Sent!', 'message'=> $message];
     }
 
     //obtener usuarios
