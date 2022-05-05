@@ -1,6 +1,6 @@
 <div>
-    {{-- <strong>Periodo:</strong> {{ $data->period }}
-    <br> --}}
+    <strong>Periodo:</strong> {{ $data->period }}
+    <br>
     <strong>Expiracion:</strong> {{ $data->cutoff_date }}
     <br>
     <strong>Dias calculados:</strong> {{ $data->days_availables }}

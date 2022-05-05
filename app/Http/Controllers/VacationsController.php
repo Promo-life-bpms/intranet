@@ -177,7 +177,8 @@ class VacationsController extends Controller
                         'dv' => floor($diasDispobibles),
                     ]);
                 }
-                if ($yearsWork > 1) {
+                if ($yearsWork >= 1) {
+                    $yearsWork =  $yearsWork == 1 ? 2 : $yearsWork;
                     $daysPerYearCurrent = VacationPerYear::where('year', (int)$yearsWork - 1)->first();
                     $diasDispobibles = $daysPerYearCurrent->days;
                     $lastPeriodYear = (string)((int)$date->format('Y') + $yearsWork - 1);

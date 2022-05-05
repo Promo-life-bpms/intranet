@@ -303,27 +303,40 @@
                             if (daysAvailablesToTake > 0) {
                                 let canSelected = false;
                                 let dataVacationsSelected = null;
-                                if (start <= vacationsExpirations[0].cutoff_date && start <=
-                                    vacationsExpirations[1].cutoff_date) {
-                                    if (vacationsExpirations[0].dv > 0) {
-                                        canSelected = true
-                                        dataVacationsSelected = 0
-                                    } else if (vacationsExpirations[1].dv > 0) {
-                                        canSelected = true
-                                        dataVacationsSelected = 1
-                                    } else {
-                                        canSelected = false
+                                if (vacationsExpirations.length == 2) {
+                                    if (start <= vacationsExpirations[0].cutoff_date && start <=
+                                        vacationsExpirations[1].cutoff_date) {
+                                        if (vacationsExpirations[0].dv > 0) {
+                                            canSelected = true
+                                            dataVacationsSelected = 0
+                                        } else if (vacationsExpirations[1].dv > 0) {
+                                            canSelected = true
+                                            dataVacationsSelected = 1
+                                        } else {
+                                            canSelected = false
+                                        }
+                                    } else if (start > vacationsExpirations[0].cutoff_date && start <=
+                                        vacationsExpirations[1].cutoff_date) {
+                                        if (vacationsExpirations[1].dv > 0) {
+                                            canSelected = true
+                                            dataVacationsSelected = 1
+                                        } else {
+                                            displayAlert('No puedes seleccionar este dia')
+                                        }
+                                    } else if (start > vacationsExpirations[0].cutoff_date) {
+                                        displayAlert('No puedes seleccionar este dia')
                                     }
-                                } else if (start > vacationsExpirations[0].cutoff_date && start <=
-                                    vacationsExpirations[1].cutoff_date) {
-                                    if (vacationsExpirations[1].dv > 0) {
-                                        canSelected = true
-                                        dataVacationsSelected = 1
-                                    } else {
-                                        alert('no ha dias en este 2 periodo')
+                                } else {
+                                    if (start <= vacationsExpirations[0].cutoff_date) {
+                                        if (vacationsExpirations[0].dv > 0) {
+                                            canSelected = true
+                                            dataVacationsSelected = 0
+                                        } else {
+                                            canSelected = false
+                                        }
+                                    } else if (start > vacationsExpirations[0].cutoff_date) {
+                                        displayAlert('No puedes seleccionar este dia')
                                     }
-                                } else if (start > vacationsExpirations[0].cutoff_date) {
-                                    alert('no seleccionable')
                                 }
                                 if (canSelected) {
                                     if (dateActual <= start) {
@@ -418,21 +431,28 @@
                             let dataVacationsSelected = null;
                             console.log(start);
                             console.log('final', vacationsExpirationsFinally[0].dv);
-                            if (start <= vacationsExpirations[0].cutoff_date) {
-                                if (vacationsExpirations[0].dv < vacationsExpirationsFinally[0]
-                                    .dv) {
-                                    dataVacationsSelected = 0
-                                } else if (vacationsExpirations[1].dv <
-                                    vacationsExpirationsFinally[1]
-                                    .dv) {
-                                    dataVacationsSelected = 1
+                            if (vacationsExpirationsFinally.length == 2) {
+                                if (start <= vacationsExpirations[0].cutoff_date) {
+                                    if (vacationsExpirations[0].dv <
+                                        vacationsExpirationsFinally[0]
+                                        .dv) {
+                                        dataVacationsSelected = 0
+                                    } else if (vacationsExpirations[1].dv <
+                                        vacationsExpirationsFinally[1]
+                                        .dv) {
+                                        dataVacationsSelected = 1
+                                    }
+                                } else if (start > vacationsExpirations[0].cutoff_date &&
+                                    start <=
+                                    vacationsExpirations[1].cutoff_date) {
+                                    if (vacationsExpirations[1].dv <
+                                        vacationsExpirationsFinally[1]
+                                        .dv) {
+                                        dataVacationsSelected = 1
+                                    }
                                 }
-                            } else if (start > vacationsExpirations[0].cutoff_date && start <=
-                                vacationsExpirations[1].cutoff_date) {
-                                if (vacationsExpirations[1].dv < vacationsExpirationsFinally[1]
-                                    .dv) {
-                                    dataVacationsSelected = 1
-                                }
+                            } else {
+                                dataVacationsSelected = 0
                             }
                             console.log(dataVacationsSelected);
                             $.ajax({
