@@ -10,12 +10,13 @@ use App\Models\Communique;
 use App\Models\Directory as ModelsDirectory;
 use App\Models\Employee;
 use App\Models\Manual;
+use App\Models\Request as ModelsRequest;
 use Directory;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Validation\ValidationException;
 
 class ApiController extends Controller
 {
@@ -277,6 +278,51 @@ class ApiController extends Controller
          }
  
          return $data;
+    }
+
+
+    public function getRequest($hashedToken){
+        
+        $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
+        $user_id = $token->tokenable_id;
+        $request = ModelsRequest::all()->where('getRequest',$user_id);
+        $data = [];
+        $start = "";
+        $end = "";
+        foreach($request as $req){
+
+            if($req->start == null){
+                $start = "Sin especificar";
+            }else{
+                $start = $req->start;
+            }
+
+            if($req->end == null){
+                $end = "Sin especificar";
+            }else{
+                $end = $req->end;
+            }
+
+
+            array_push($data, (object)[
+                'id' => $req->id,
+                'employee_id'=> $req->employee_id,
+                'type_request'=> $req->type_request,
+                'payment' => $req->payment,
+                'payment' => $req->payment,
+                'start'=> $start,
+                'end'=> $end,
+                'direct_manager_id'=> $req->direct_manager_id,
+                'direct_manager_status' => $req->direct_manager_status,
+                'human_resources_status' => $req->human_resources_status,
+                'visible' => $req->visible,
+
+            ]);
+        }
+        
+ 
+        return $data;
+
     }
      
 
