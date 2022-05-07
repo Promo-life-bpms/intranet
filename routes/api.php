@@ -20,3 +20,24 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/getAllUsers', [ApiController::class, 'getAllUsers']);
+
+Route::get('/manuals', [APIController::class, 'manuals'])->name('api.manual');
+Route::get('/month-employees', [APIController::class, 'monthEmployees'])->name('api.month.employees');
+Route::get('/month-anniversaries', [APIController::class, 'aniversary'])->name('api.anniversaries');
+Route::get('/month-birthdays', [APIController::class, 'birthday'])->name('api.birthdays');
+Route::get('/communicate', [APIController::class, 'communicate'])->name('api.communicate');
+Route::get('/directory', [APIController::class, 'directory'])->name('api.directory');
+Route::get('/organization/{id}', [APIController::class, 'organization'])->name('api.organization');
+
+Route::post('/login', [APIController::class, 'requestToken'])->name('api.login');
+Route::get('/getUser/{hashedToken}', [APIController::class, 'getUser'])->name('api.getUser');
+Route::get('/getRequest/{hashedToken}', [APIController::class, 'getRequest'])->name('api.getUser');
+
+/* 
+Route::get('/api/logout', [APIController::class, 'logout'])->name('api.logout');
+Route::get('/api/user', [APIController::class, 'getUser'])->name('api.user');
+/* 
+Route::post('/update', 'UserController@update');
+Route::get('/logout', 'UserController@logout'); */
+
+//Solictudes - Pendiente
