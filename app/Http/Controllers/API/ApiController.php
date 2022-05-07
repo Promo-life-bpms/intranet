@@ -285,7 +285,7 @@ class ApiController extends Controller
         
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
-        $request = ModelsRequest::all()->where('getRequest',$user_id);
+        $request = ModelsRequest::all()->where('employee_id',$user_id);
         $data = [];
         $start = "";
         $end = "";

@@ -5,6 +5,11 @@
         <h3>Crear usuario</h3>
     </div>
     <div class="card-body">
+        @if (session('message'))
+            <div class="alert alert-danger">
+                {{ session('message') }}
+            </div>
+        @endif
         {!! Form::open(['route' => 'admin.users.store', 'enctype' => 'multipart/form-data']) !!}
         <div class="row">
             <div class="form-group col-md-4">

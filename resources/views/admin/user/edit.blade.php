@@ -5,6 +5,11 @@
         <h3>Editar usuario</h3>
     </div>
     <div class="card-body">
+        @if (session('message'))
+            <div class="alert alert-danger">
+                {{ session('message') }}
+            </div>
+        @endif
         {!! Form::model($user, ['route' => ['admin.users.update', $user], 'method' => 'put', 'enctype' => 'multipart/form-data']) !!}
         <div class="row">
             <div class="form-group col-md-4">

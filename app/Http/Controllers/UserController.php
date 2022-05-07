@@ -66,6 +66,13 @@ class UserController extends Controller
             'roles' => 'required',
         ]);
 
+        $validate_user = User::where('email', '=', $request->email)->exists();
+
+        if ($validate_user == true) {
+            return back()->with('message', 'El correo de este usuario ya existe en la base de datos' );
+        }
+
+
         if ($request->hasFile('image')) {
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
@@ -155,6 +162,13 @@ class UserController extends Controller
             'position' => 'required',
             'roles' => 'required',
         ]);
+
+        $validate_user = User::where('email', '=', $request->email)->where('id','<>', $user->id)->exists();
+
+        if ($validate_user == true) {
+            return back()->with('message', 'El correo de este usuario ya existe en la base de datos' );
+        }
+
 
         if ($user->image == null) {
             if ($request->hasFile('image')) {
