@@ -11,6 +11,7 @@ use App\Models\Directory as ModelsDirectory;
 use App\Models\Employee;
 use App\Models\Manual;
 use App\Models\Request as ModelsRequest;
+use App\Models\RequestCalendar;
 use Directory;
 use Exception;
 use Illuminate\Support\Arr;
@@ -291,6 +292,8 @@ class ApiController extends Controller
         $end = "";
         foreach($request as $req){
 
+            $days = [];
+
             if($req->start == null){
                 $start = "Sin especificar";
             }else{
@@ -303,6 +306,19 @@ class ApiController extends Controller
                 $end = $req->end;
             }
 
+            if($req->direct_manager_status =="Rechazada" || $req->human_resources_status =="Rechazada" ){
+                $date =  DB::table('request_rejected')->where('users_id', $req->employee_id)->where('requests_id', $req->id)->get();
+
+            }else{
+                $date = DB::table('request_calendars')->where('users_id', $req->employee_id)->where('requests_id', $req->id)->get();
+            }
+
+            foreach($date as  $calendar){
+                array_push($days, (object)[
+                    'start' => $calendar->start,
+                    'end'=> $calendar->end,
+                ]);
+            }
 
             array_push($data, (object)[
                 'id' => $req->id,
@@ -316,7 +332,7 @@ class ApiController extends Controller
                 'direct_manager_status' => $req->direct_manager_status,
                 'human_resources_status' => $req->human_resources_status,
                 'visible' => $req->visible,
-
+                'days' => $days,
             ]);
         }
         
