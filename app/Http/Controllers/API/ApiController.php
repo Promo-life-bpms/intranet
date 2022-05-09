@@ -292,7 +292,7 @@ class ApiController extends Controller
         $end = "";
         foreach($request as $req){
 
-            $days = [];
+            $days = "";
 
             if($req->start == null){
                 $start = "Sin especificar";
@@ -314,11 +314,10 @@ class ApiController extends Controller
             }
 
             foreach($date as  $calendar){
-                array_push($days, (object)[
-                    'start' => $calendar->start,
-                    'end'=> $calendar->end,
-                ]);
+                $days = $days . "," . $calendar->start;
             }
+
+            $days = substr($days, 1);
 
             array_push($data, (object)[
                 'id' => $req->id,
