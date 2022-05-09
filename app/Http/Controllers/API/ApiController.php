@@ -322,15 +322,15 @@ class ApiController extends Controller
 
             array_push($data, (object)[
                 'id' => $req->id,
-                'employee_id'=> $req->employee_id,
-                'type_request'=> $req->type_request,
+                'employeeID'=> $req->employee_id,
+                'typeRequest'=> $req->type_request,
                 'payment' => $req->payment,
                 'payment' => $req->payment,
                 'start'=> $start,
                 'end'=> $end,
-                'direct_manager_id'=> $req->direct_manager_id,
-                'direct_manager_status' => $req->direct_manager_status,
-                'human_resources_status' => $req->human_resources_status,
+                'directManagerId'=> $req->direct_manager_id,
+                'directManagerStatus' => $req->direct_manager_status,
+                'humanResourcesStatus' => $req->human_resources_status,
                 'visible' => $req->visible,
                 'days' => $days,
             ]);
