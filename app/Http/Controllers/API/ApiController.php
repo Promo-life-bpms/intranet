@@ -327,6 +327,7 @@ class ApiController extends Controller
                 'payment' => $req->payment,
                 'start'=> $start,
                 'end'=> $end,
+                'reason' => $req->reason,
                 'directManagerId'=> $req->direct_manager_id,
                 'directManagerStatus' => $req->direct_manager_status,
                 'humanResourcesStatus' => $req->human_resources_status,
