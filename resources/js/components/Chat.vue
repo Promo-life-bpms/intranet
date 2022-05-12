@@ -19,8 +19,7 @@
                 class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons"
                 style="width: 30px; height: 30px"
               />
-              <span class="online_icon"></span>
-              <!-- <span class="online_icon offline"></span> -->
+              <span class="online_icon" v-if="user.userOnline"></span>
             </div>
 
             <p>{{ user.name }}</p>
@@ -57,7 +56,9 @@ export default {
   props: ["authid"],
   mounted: function () {
     setTimeout(() => {
-      this.obtenerUsuarios();
+      setInterval(() => {
+        this.obtenerUsuarios();
+      }, 10000);
     }, 200);
   },
   data() {

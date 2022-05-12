@@ -10,8 +10,9 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Manager;
 use App\Notifications\RegisteredUser;
+use Cache;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -69,7 +70,7 @@ class UserController extends Controller
         $validate_user = User::where('email', '=', $request->email)->exists();
 
         if ($validate_user == true) {
-            return back()->with('message', 'El correo de este usuario ya existe en la base de datos' );
+            return back()->with('message', 'El correo de este usuario ya existe en la base de datos');
         }
 
 
@@ -163,10 +164,10 @@ class UserController extends Controller
             'roles' => 'required',
         ]);
 
-        $validate_user = User::where('email', '=', $request->email)->where('id','<>', $user->id)->exists();
+        $validate_user = User::where('email', '=', $request->email)->where('id', '<>', $user->id)->exists();
 
         if ($validate_user == true) {
-            return back()->with('message', 'El correo de este usuario ya existe en la base de datos' );
+            return back()->with('message', 'El correo de este usuario ya existe en la base de datos');
         }
 
 

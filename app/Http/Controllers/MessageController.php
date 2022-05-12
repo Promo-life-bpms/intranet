@@ -12,6 +12,7 @@ use App\Notifications\MessageNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Notifications\DatabaseNotification;
+use Cache;
 
 class MessageController extends Controller
 {
@@ -73,16 +74,34 @@ class MessageController extends Controller
         /*  broadcast(new MessageSent($transmitter_id, $message))->toOthers(); */
         event(new MessageSent($message->message, $receiver_id, $transmitter_id, $transmitter_name, $message->created_at));
         $userReceiver->notify(new MessageNotification($transmitter_id, $transmitter_name, $message->message));
-        return ['status' => 'Message Sent!', 'message'=> $message];
+        return ['status' => 'Message Sent!', 'message' => $message];
     }
 
     //obtener usuarios
     public function obtenerUsuarios()
     {
         $users =  User::all();
-        return response()->json($users);
-    }
+        $newUsers = [];
 
+        foreach ($users as $user) {
+            $userOnline = false;
+
+            if (Cache::has('user-is-online-' . $user->id)) {
+                $userOnline = true;
+            }
+            $data = [
+                'name' => $user->name,
+                'lastname' => $user->lastname,
+                'image' => $user->image,
+                'email' => $user->email,
+                'password' => $user->password,
+                'userOnline' => $userOnline,
+            ];
+            array_push($newUsers, $data);
+        }
+        //dd($newUsers);
+        return response()->json((object) $newUsers);
+    }
     //obtener mensajes
     public function fetchMessages($userId)
     {

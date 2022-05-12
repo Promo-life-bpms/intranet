@@ -33,6 +33,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PublicationsController;
 use App\Models\RequestCalendar;
+use App\Models\User;
 use App\Models\Vacations;
 use Illuminate\Support\Facades\Auth;
 
@@ -219,3 +220,4 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
+

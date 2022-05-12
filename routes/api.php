@@ -31,12 +31,12 @@ Route::get('/organization/{id}', [APIController::class, 'organization'])->name('
 
 Route::post('/login', [APIController::class, 'requestToken'])->name('api.login');
 Route::get('/getUser/{hashedToken}', [APIController::class, 'getUser'])->name('api.getUser');
-Route::get('/getRequest/{hashedToken}', [APIController::class, 'getRequest'])->name('api.getUser');
+Route::get('/getRequest/{hashedToken}', [APIController::class, 'getRequest'])->name('api.as');
 
-/* 
+/*
 Route::get('/api/logout', [APIController::class, 'logout'])->name('api.logout');
 Route::get('/api/user', [APIController::class, 'getUser'])->name('api.user');
-/* 
+/*
 Route::post('/update', 'UserController@update');
 Route::get('/logout', 'UserController@logout'); */
 

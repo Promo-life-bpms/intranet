@@ -26,8 +26,8 @@
     <div id="app">
 
         @include('layouts.components.sidebar')
-        <div class="col-12 order-md-1 order-last d-flex justify-content-end align-items-center">
-            @yield('title')
+        @yield('title')
+        {{-- <div class="col-12 order-md-1 order-last d-flex justify-content-end align-items-center">
             <div class="d-flex align-items-center">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -46,7 +46,8 @@
                 </ul>
 
             </div>
-        </div>
+        </div> --}}
+        <notification-bell></notification-bell>
         <div id="main">
             @if (request()->is('home'))
                 @include('layouts.components.logos')
@@ -76,6 +77,7 @@
                     </div>
                 </div>
                 @include('layouts.components.footer')
+
                 <chat-component :authId="{{ auth()->user()->id }}"></chat-component>
                 <notify :auth-id={{ auth()->user()->id }}></notify>
             </div>
