@@ -287,9 +287,16 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
         $request = ModelsRequest::all()->where('employee_id',$user_id);
+        $vacations = DB::table('vacations_availables')->where('users_id',$user_id)->where('period', '<>', 3)->sum('dv');
+
         $data = [];
         $start = "";
         $end = "";
+
+        if ($vacations == null) {
+            $vacations = 0;
+        }
+
         foreach($request as $req){
 
             $days = "";
@@ -333,6 +340,7 @@ class ApiController extends Controller
                 'humanResourcesStatus' => $req->human_resources_status,
                 'visible' => $req->visible,
                 'days' => $days,
+                'daysAvailables'=> intval($vacations),
             ]);
         }
         
