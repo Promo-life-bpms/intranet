@@ -58,7 +58,12 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
         $user = User::where('id',$user_id)->get();
+        $vacations = DB::table('vacations_availables')->where('users_id',$user_id)->where('period', '<>', 3)->sum('dv');
         $data = [];
+
+        if ($vacations == null) {
+            $vacations = 0;
+        }
  
         foreach($user as $usr){
  
@@ -76,6 +81,7 @@ class ApiController extends Controller
                 'photo' => $image,
                 'department'=> $usr->employee->position->department->name,
                 'position' => $usr->employee->position->name,
+                'daysAvailables'=> intval($vacations),
             ]);
         }
  
