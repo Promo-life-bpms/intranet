@@ -32,6 +32,7 @@ Route::get('/organization/{id}', [APIController::class, 'organization'])->name('
 Route::post('/login', [APIController::class, 'requestToken'])->name('api.login');
 Route::get('/getUser/{hashedToken}', [APIController::class, 'getUser'])->name('api.getUser');
 Route::get('/getRequest/{hashedToken}', [APIController::class, 'getRequest'])->name('api.getRequest');
+Route::post('/postRequest', [APIController::class, 'postRequest'])->name('api.postRequest');
 
 /* 
 Route::get('/api/logout', [APIController::class, 'logout'])->name('api.logout');

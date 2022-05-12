@@ -354,6 +354,20 @@ class ApiController extends Controller
         return $data;
 
     }
+
+
+    public function postRequest(Request $request)
+    {
+      
+        if ($request == null || $request == []) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+        }
+
+       return true;
+
+    }
      
 
 }
