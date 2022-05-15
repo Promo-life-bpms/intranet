@@ -416,4 +416,19 @@ class ApiController extends Controller
 
         return $data;
     }
+
+    public function postPublications(Request $request){
+        
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;
+        $data = new Publications();
+        $data->id = $request->id;
+        $data->user_id = $user_id;
+        $data->content_publication = $request->contentPublication;
+        $data->photo_public = "sin foto";
+        $data->save();
+
+        return $token;
+
+    }
 }
