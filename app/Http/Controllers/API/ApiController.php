@@ -16,6 +16,7 @@ use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
 use Carbon\Carbon;
+use DateTime;
 use Dflydev\DotAccessData\Data;
 use Directory;
 use Exception;
@@ -23,7 +24,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListData;
 use Maatwebsite\Excel\Concerns\ToArray;
+use Nette\Utils\ArrayList;
 
 class ApiController extends Controller
 {
@@ -365,48 +368,52 @@ class ApiController extends Controller
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
-        $user = User::all()->where('id',$user_id);
+        $employee = Employee::all()->where('user_id',$user_id);
 
-    
-            
+        if($token !=null || $token !=""){
+            $date= date("G:i:s", strtotime($request->start));
+            $manager = "";
+            foreach($employee as $emp){
+                $manager = $emp->jefe_directo_id;
+                if($manager==null){
+                    $manager = $emp->user_id;
+                }
+            }
         
             $req = new ModelsRequest();
             $req->employee_id = $user_id;
             $req->type_request = $request->typeRequest;
             $req->payment = $request->payment;
             $req->reason = $request->reason;
-            $req->start = null;
+            $req->start = $date;
             $req->end = null;
-            $req->direct_manager_id = 1;
+            $req->direct_manager_id = $manager;
             $req->direct_manager_status = "Pendiente";
             $req->human_resources_status = "Pendiente";
             $req->visible = 1;
             $req->save();
-    
-            /* $days = $request->days->ToArray();
 
-            foreach($days as $day){
-                RequestCalendar::create([
-                    'title' => "Dia seleccionado",
-                    'start' => $day,
-                    'end' => $day,
-                    'users_id' => $user_id,
-                    'requests_id' => $req->id,
-                ]);
+            $days = collect( $request->days);
+            $tag_array = explode(',', $days );
+
+            foreach($tag_array as $day){
                 
-
-            } */
-            
-   
-
-      
-
-       
+                $request_calendar = new RequestCalendar();
+                $request_calendar->title = $day;
+                $request_calendar->start = "2022-05-16";
+                $request_calendar->end = "2022-05-16";
+                $request_calendar->users_id = $user_id;
+                $request_calendar->requests_id =$req->id;
+                $request_calendar->save();
+            }
+    
+        }
         return true;
     }
 
     static function managertNotification($req)
     {
+        
         event(new RequestEvent($req));
     }
 
@@ -418,7 +425,6 @@ class ApiController extends Controller
         $data = [];
 
         $likes = DB::table('likes')->get();
-        $user = User::all();
 
         foreach ($publications as $pub) {
 
@@ -426,6 +432,7 @@ class ApiController extends Controller
             $fullname = "";
             $totalLikes = 0;
             $photo = "";
+            $user= User::all()->where('id', $pub->user_id);
             foreach ($likes as $like) {
                 if ($like->publication_id == $pub->id) {
                     $totalLikes = $totalLikes + 1;
@@ -433,10 +440,8 @@ class ApiController extends Controller
                 
             }
 
-            foreach ($user as $usr) {
-                if ($usr->id == $pub->user_id) {
-                    $fullname = $usr->name . " " . $usr->lastname;
-                }
+            foreach($user as $usr){
+                $fullname = $usr->name . " " . $usr->lastname;
 
                 $image = '';
                 if ($usr->image == null) {
@@ -444,8 +449,8 @@ class ApiController extends Controller
                 } else {
                     $image = $usr->image;
                 }
-    
             }
+        
             if ($pub->photo_public == "") {
                 $photo = "no photo";
             } else {
@@ -453,7 +458,6 @@ class ApiController extends Controller
             }
 
             array_push($data, (object)[
-
                 'id' => $pub->id,
                 'userId' => $pub->user_id,
                 'photo' => $image,
