@@ -394,17 +394,24 @@ class ApiController extends Controller
             $req->save();
 
             $days = collect( $request->days);
-            $tag_array = explode(',', $days );
+            $daySelected= str_replace (array('["', '"]'), '' , $days);
+            $tag_array = explode(',', $daySelected );
 
             foreach($tag_array as $day){
-                
+                $daySelected2= str_replace (array('[', ']'), '' , $day);
+
+                $dayInt = intval($daySelected2);
+
+                $date = DateTime::createFromFormat('dmY', $dayInt);
+
                 $request_calendar = new RequestCalendar();
-                $request_calendar->title = $day;
-                $request_calendar->start = "2022-05-16";
-                $request_calendar->end = "2022-05-16";
+                $request_calendar->title = "Día seleccionado";
+                $request_calendar->start =  $date->format('Y-m-d');
+                $request_calendar->end = $date->format('Y-m-d');
                 $request_calendar->users_id = $user_id;
                 $request_calendar->requests_id =$req->id;
                 $request_calendar->save();
+            
             }
     
         }
@@ -420,6 +427,7 @@ class ApiController extends Controller
 
     public function getPublications()
     {
+        
         $publications = Publications::orderBy("created_at", "desc")->get();
 
         $data = [];
