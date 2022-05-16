@@ -17,16 +17,11 @@ use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
 use Carbon\Carbon;
 use DateTime;
-use Dflydev\DotAccessData\Data;
-use Directory;
 use Exception;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use League\CommonMark\Extension\CommonMark\Node\Block\ListData;
-use Maatwebsite\Excel\Concerns\ToArray;
-use Nette\Utils\ArrayList;
+
 
 class ApiController extends Controller
 {
@@ -413,14 +408,16 @@ class ApiController extends Controller
                 $request_calendar->save();
             
             }
+
+            self::managertNotification($req);
+            
     
         }
-        return true;
+        return  true;
     }
 
     static function managertNotification($req)
     {
-        
         event(new RequestEvent($req));
     }
 
