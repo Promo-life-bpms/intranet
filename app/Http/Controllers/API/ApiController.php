@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\RequestEvent;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,12 +16,14 @@ use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
 use Carbon\Carbon;
+use Dflydev\DotAccessData\Data;
 use Directory;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Concerns\ToArray;
 
 class ApiController extends Controller
 {
@@ -360,19 +363,57 @@ class ApiController extends Controller
 
     public function postRequest(Request $request)
     {
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;
+        $user = User::all()->where('id',$user_id);
 
-        if ($request == null || $request == []) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
+    
+            
+        
+            $req = new ModelsRequest();
+            $req->employee_id = $user_id;
+            $req->type_request = $request->typeRequest;
+            $req->payment = $request->payment;
+            $req->reason = $request->reason;
+            $req->start = null;
+            $req->end = null;
+            $req->direct_manager_id = 1;
+            $req->direct_manager_status = "Pendiente";
+            $req->human_resources_status = "Pendiente";
+            $req->visible = 1;
+            $req->save();
+    
+            /* $days = $request->days->ToArray();
 
+            foreach($days as $day){
+                RequestCalendar::create([
+                    'title' => "Dia seleccionado",
+                    'start' => $day,
+                    'end' => $day,
+                    'users_id' => $user_id,
+                    'requests_id' => $req->id,
+                ]);
+                
+
+            } */
+            
+   
+
+      
+
+       
         return true;
     }
 
+    static function managertNotification($req)
+    {
+        event(new RequestEvent($req));
+    }
+
+
     public function getPublications()
     {
-        $publications = Publications::all();
+        $publications = Publications::orderBy("created_at", "desc")->get();
 
         $data = [];
 
@@ -389,12 +430,21 @@ class ApiController extends Controller
                 if ($like->publication_id == $pub->id) {
                     $totalLikes = $totalLikes + 1;
                 }
+                
             }
 
             foreach ($user as $usr) {
                 if ($usr->id == $pub->user_id) {
                     $fullname = $usr->name . " " . $usr->lastname;
                 }
+
+                $image = '';
+                if ($usr->image == null) {
+                    $image = "img/default_user.png";
+                } else {
+                    $image = $usr->image;
+                }
+    
             }
             if ($pub->photo_public == "") {
                 $photo = "no photo";
@@ -406,10 +456,11 @@ class ApiController extends Controller
 
                 'id' => $pub->id,
                 'userId' => $pub->user_id,
+                'photo' => $image,
                 'userName' => $fullname,
                 'created' => $created,
                 'contentPublication' => $pub->content_publication,
-                'photoPublic' => $photo,
+                'photoPublication' => $photo,
                 'likes' => $totalLikes,
             ]);
         }
@@ -421,14 +472,19 @@ class ApiController extends Controller
         
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
-        $data = new Publications();
-        $data->id = $request->id;
-        $data->user_id = $user_id;
-        $data->content_publication = $request->contentPublication;
-        $data->photo_public = "sin foto";
-        $data->save();
 
-        return $token;
+        if($user_id!=null || $user_id !=[]){
+            
+            $data = new Publications();
+            $data->id = $request->id;
+            $data->user_id = $user_id;
+            $data->content_publication = $request->contentPublication;
+            $data->photo_public = "sin foto";
+            $data->save();
+    
+            return $token;
+
+        }
 
     }
 }
