@@ -1,18 +1,57 @@
 <template>
-  <ul class="notification-drop">
-    <li class="item">
-      <i class="fa fa-bell-o notification-bell" aria-hidden="true"></i>
-      <span class="btn__badge pulse-button">4</span>
-      <ul>
-        <li>First Item</li>
-        <li>Second Item</li>
-        <li>Third Item</li>
-      </ul>
-    </li>
-  </ul>
+  <div class="notification-drop">
+    <ul>
+      <li class="item">
+        <i class="fa fa-bell-o notification-bell" aria-hidden="true"></i>
+        <span class="btn__badge pulse-button">{{ countNotifications }}</span>
+        <ul class="list-group" style="max-height: 300px; overflow-y: scroll">
+          <li
+            v-for="(notification, index) in notifications"
+            :key="index"
+            class="list-group-item"
+          >
+            {{ notification.data.transmitter_name }}
+            <br />
+            Mensaje nuevo: {{ notification.data.message }}
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
+export default {
+  props: ["userId", "userData", "authId"],
+  mounted() {
+    window.Echo.channel("chat").listen("MessageSent", (e) => {
+      console.log("Notificacion guardada");
+      console.log(e);
+    });
+    this.obtenerMensajes();
+  },
+  data() {
+    return {
+      notifications: [],
+      countNotifications: [],
+    };
+  },
+  methods: {
+    obtenerMensajes: function () {
+      let u = axios
+        .get("chat/Notificaciones")
+        .then((response) => {
+          console.log(response);
+          this.notifications = response.data.notificationUnread;
+          this.countNotifications = response.data.countNotifications;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      console.log(u);
+    },
+  },
+};
 $(document).ready(function () {
   $(".notification-drop .item").on("click", function () {
     $(this).find("ul").toggle();

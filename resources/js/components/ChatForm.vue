@@ -1,14 +1,5 @@
 <template>
   <div class="input-group">
-    <!-- <input
-      id="btn-input"
-      type="text"
-      name="message"
-      class="form-control input-sm"
-      placeholder="Escribe tu mnensaje"
-      v-model="newMessage"
-      @keyup.enter="sendMessage"
-    /> -->
     <textarea
       name="message"
       class="form-control type_msg"

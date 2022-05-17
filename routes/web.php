@@ -36,6 +36,7 @@ use App\Models\RequestCalendar;
 use App\Models\User;
 use App\Models\Vacations;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Mime\MessageConverter;
 
 /*
 |--------------------------------------------------------------------------
@@ -216,6 +217,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/fetchMessages/{userId}', [MessageController::class, 'fetchMessages'])->name('fetch.message');
         Route::post('/sendMessage', [MessageController::class, 'sendMessage'])->name('send.message');
         Route::get('/markNotification/{notification}', 'MessageController@markAsRead')->name('message.markAsRead');
+        Route::get('/Notificaciones', [MessageController::class, 'Notificaciones'])->name('message.notification');
     });
 });
 

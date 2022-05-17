@@ -5321,10 +5321,11 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     setTimeout(function () {
-      setInterval(function () {
-        _this.obtenerUsuarios();
-      }, 10000);
+      _this.obtenerUsuarios();
     }, 200);
+    setInterval(function () {
+      _this.obtenerUsuarios();
+    }, 18000);
   },
   data: function data() {
     return {
@@ -5394,15 +5395,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -5697,8 +5689,13 @@ __webpack_require__.r(__webpack_exports__);
 /*!***********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/NotificationBell.vue?vue&type=script&lang=js& ***!
   \***********************************************************************************************************************************************************************************************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 //
 //
 //
@@ -5713,6 +5710,44 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ["userId", "userData", "authId"],
+  mounted: function mounted() {
+    window.Echo.channel("chat").listen("MessageSent", function (e) {
+      console.log("Notificacion guardada");
+      console.log(e);
+    });
+    this.obtenerMensajes();
+  },
+  data: function data() {
+    return {
+      notifications: [],
+      countNotifications: []
+    };
+  },
+  methods: {
+    obtenerMensajes: function obtenerMensajes() {
+      var _this = this;
+
+      var u = axios.get("chat/Notificaciones").then(function (response) {
+        console.log(response);
+        _this.notifications = response.data.notificationUnread;
+        _this.countNotifications = response.data.countNotifications;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+      console.log(u);
+    }
+  }
+});
 $(document).ready(function () {
   $(".notification-drop .item").on("click", function () {
     $(this).find("ul").toggle();
@@ -10936,7 +10971,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-6fb73fa7] {\r\n  background: #eeeeee;\r\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-6fb73fa7] {\r\n  width: 300px;\r\n  border: none;\r\n  border-radius: 15px;\n}\n.adiv[data-v-6fb73fa7] {\r\n  background: #72c3d6;\r\n  border-radius: 15px;\r\n  border-bottom-right-radius: 0;\r\n  border-bottom-left-radius: 0;\r\n  font-size: 12px;\r\n  height: 46px;\n}\n.chat[data-v-6fb73fa7] {\r\n  border: none;\r\n  background: #e2fbff;\r\n  font-size: 10px;\r\n  border-radius: 20px;\n}\n.bg-white[data-v-6fb73fa7] {\r\n  border: 1px solid #e7e7e9;\r\n  font-size: 10px;\r\n  border-radius: 20px;\n}\n.myvideo img[data-v-6fb73fa7] {\r\n  border-radius: 20px;\n}\n.dot[data-v-6fb73fa7] {\r\n  font-weight: bold;\n}\n.form-control[data-v-6fb73fa7] {\r\n  border-radius: 12px;\r\n  border: 1px solid #f0f0f0;\r\n  font-size: 8px;\n}\n.form-control[data-v-6fb73fa7]:focus {\r\n  box-shadow: none;\n}\n.form-control[data-v-6fb73fa7]::-moz-placeholder {\r\n  font-size: 8px;\r\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]:-ms-input-placeholder {\r\n  font-size: 8px;\r\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]::placeholder {\r\n  font-size: 8px;\r\n  color: #c4c4c4;\n}\n.type_msg[data-v-6fb73fa7] {\r\n  background-color: rgb(255, 255, 255) !important;\r\n  border-block: 10 !important;\r\n  color: rgb(0, 0, 0) !important;\r\n  height: 40px !important;\r\n  overflow-y: auto;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-6fb73fa7] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-6fb73fa7] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-6fb73fa7] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-6fb73fa7] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-6fb73fa7] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.myvideo img[data-v-6fb73fa7] {\n  border-radius: 20px;\n}\n.dot[data-v-6fb73fa7] {\n  font-weight: bold;\n}\n.form-control[data-v-6fb73fa7] {\n  border-radius: 12px;\n  border: 1px solid #f0f0f0;\n  font-size: 8px;\n}\n.form-control[data-v-6fb73fa7]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-6fb73fa7]::-moz-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]:-ms-input-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-6fb73fa7]::placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.type_msg[data-v-6fb73fa7] {\n  background-color: rgb(255, 255, 255) !important;\n  border-block: 10 !important;\n  color: rgb(0, 0, 0) !important;\n  height: 40px !important;\n  overflow-y: auto;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -10961,7 +10996,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-e422daa2] {\r\n  background: #eeeeee;\r\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-e422daa2] {\r\n  width: 300px;\r\n  border: none;\r\n  border-radius: 15px;\n}\n.adiv[data-v-e422daa2] {\r\n  background: #72c3d6;\r\n  border-radius: 15px;\r\n  border-bottom-right-radius: 0;\r\n  border-bottom-left-radius: 0;\r\n  font-size: 12px;\r\n  height: 46px;\n}\n.chat[data-v-e422daa2] {\r\n  border: none;\r\n  background: #e2fbff;\r\n  font-size: 10px;\r\n  border-radius: 20px;\n}\n.bg-white[data-v-e422daa2] {\r\n  border: 1px solid #e7e7e9;\r\n  font-size: 10px;\r\n  border-radius: 20px;\n}\n.myvideo img[data-v-e422daa2] {\r\n  border-radius: 20px;\n}\n.dot[data-v-e422daa2] {\r\n  font-weight: bold;\n}\n.form-control[data-v-e422daa2] {\r\n  border-radius: 12px;\r\n  border: 1px solid #f0f0f0;\r\n  font-size: 8px;\n}\n.form-control[data-v-e422daa2]:focus {\r\n  box-shadow: none;\n}\n.form-control[data-v-e422daa2]::-moz-placeholder {\r\n  font-size: 8px;\r\n  color: #c4c4c4;\n}\n.form-control[data-v-e422daa2]:-ms-input-placeholder {\r\n  font-size: 8px;\r\n  color: #c4c4c4;\n}\n.form-control[data-v-e422daa2]::placeholder {\r\n  font-size: 8px;\r\n  color: #c4c4c4;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-e422daa2] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-e422daa2] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-e422daa2] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-e422daa2] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-e422daa2] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.myvideo img[data-v-e422daa2] {\n  border-radius: 20px;\n}\n.dot[data-v-e422daa2] {\n  font-weight: bold;\n}\n.form-control[data-v-e422daa2] {\n  border-radius: 12px;\n  border: 1px solid #f0f0f0;\n  font-size: 8px;\n}\n.form-control[data-v-e422daa2]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-e422daa2]::-moz-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-e422daa2]:-ms-input-placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n.form-control[data-v-e422daa2]::placeholder {\n  font-size: 8px;\n  color: #c4c4c4;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -10985,7 +11020,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.notification-icon{\r\n  position:absolute;\r\n  margin-left:-34px;\r\n  margin-top: 40px;\r\n  border-radius:50px;\n}\n.like-container{\r\n  margin-left:-25px;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.notification-icon {\n  position: absolute;\n  margin-left: -34px;\n  margin-top: 40px;\n  border-radius: 50px;\n}\n.like-container {\n  margin-left: -25px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -49378,9 +49413,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _NotificationBell_vue_vue_type_template_id_25a13ff9___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NotificationBell.vue?vue&type=template&id=25a13ff9& */ "./resources/js/components/NotificationBell.vue?vue&type=template&id=25a13ff9&");
 /* harmony import */ var _NotificationBell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NotificationBell.vue?vue&type=script&lang=js& */ "./resources/js/components/NotificationBell.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _NotificationBell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _NotificationBell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[__WEBPACK_IMPORT_KEY__]
-/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony import */ var _NotificationBell_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NotificationBell.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/NotificationBell.vue?vue&type=style&index=0&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
@@ -49542,11 +49574,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NotificationBell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./NotificationBell.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/NotificationBell.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NotificationBell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NotificationBell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NotificationBell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NotificationBell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
-/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NotificationBell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0___default())); 
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NotificationBell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
@@ -50227,33 +50255,46 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("ul", { staticClass: "notification-drop" }, [
+  return _c("div", { staticClass: "notification-drop" }, [
+    _c("ul", [
       _c("li", { staticClass: "item" }, [
         _c("i", {
           staticClass: "fa fa-bell-o notification-bell",
           attrs: { "aria-hidden": "true" },
         }),
         _vm._v(" "),
-        _c("span", { staticClass: "btn__badge pulse-button" }, [_vm._v("4")]),
-        _vm._v(" "),
-        _c("ul", [
-          _c("li", [_vm._v("First Item")]),
-          _vm._v(" "),
-          _c("li", [_vm._v("Second Item")]),
-          _vm._v(" "),
-          _c("li", [_vm._v("Third Item")]),
+        _c("span", { staticClass: "btn__badge pulse-button" }, [
+          _vm._v(_vm._s(_vm.countNotifications)),
         ]),
+        _vm._v(" "),
+        _c(
+          "ul",
+          {
+            staticClass: "list-group",
+            staticStyle: { "max-height": "300px", "overflow-y": "scroll" },
+          },
+          _vm._l(_vm.notifications, function (notification, index) {
+            return _c("li", { key: index, staticClass: "list-group-item" }, [
+              _vm._v(
+                "\n          " +
+                  _vm._s(notification.data.transmitter_name) +
+                  "\n          "
+              ),
+              _c("br"),
+              _vm._v(
+                "\n          Mensaje nuevo: " +
+                  _vm._s(notification.data.message) +
+                  "\n        "
+              ),
+            ])
+          }),
+          0
+        ),
       ]),
-    ])
-  },
-]
+    ]),
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 

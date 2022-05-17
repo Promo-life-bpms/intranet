@@ -56,10 +56,11 @@ export default {
   props: ["authid"],
   mounted: function () {
     setTimeout(() => {
-      setInterval(() => {
-        this.obtenerUsuarios();
-      }, 10000);
+      this.obtenerUsuarios();
     }, 200);
+    setInterval(() => {
+      this.obtenerUsuarios();
+    }, 18000);
   },
   data() {
     return {
