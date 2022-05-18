@@ -12,6 +12,7 @@ use App\Models\Directory as ModelsDirectory;
 use App\Models\Employee;
 use App\Models\Like;
 use App\Models\Manual;
+use App\Models\Notification;
 use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
@@ -369,10 +370,7 @@ class ApiController extends Controller
             $date= date("G:i:s", strtotime($request->start));
             $manager = "";
             foreach($employee as $emp){
-                $manager = $emp->jefe_directo_id;
-                if($manager==null){
-                    $manager = $emp->user_id;
-                }
+                $manager = $emp->jefe_directo_id; 
             }
         
             $req = new ModelsRequest();
@@ -408,12 +406,26 @@ class ApiController extends Controller
                 $request_calendar->save();
             
             }
+            $data_send = [
+                "id"=>$req->id,
+                "employee_id"=>$user_id,
+                "direct_manager_status"=>"Pendiente",
+                "human_resources_status"=>"Pendiente" 
+            ];
 
-            self::managertNotification($req);
-            
+            $notification = new Notification();
+            $notification->id = $req->id;
+            $notification->type = "App\Notifications\RequestNotification";
+            $notification->notifiable_type = "App\Models\User";
+            $notification->notifiable_id = $manager;
+            $notification->data = json_encode($data_send);
+            $notification->save();
     
         }
+        
         return  true;
+        
+       
     }
 
     static function managertNotification($req)
