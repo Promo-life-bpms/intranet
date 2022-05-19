@@ -434,13 +434,13 @@ class ApiController extends Controller
     }
 
 
-    public function getPublications()
+    public function getPublications($hashedToken)
     {
-        
+        $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
+        $user_id = $token->tokenable_id;
+
         $publications = Publications::orderBy("created_at", "desc")->get();
-
         $data = [];
-
         $likes = DB::table('likes')->get();
 
         foreach ($publications as $pub) {
@@ -449,10 +449,15 @@ class ApiController extends Controller
             $fullname = "";
             $totalLikes = 0;
             $photo = "";
+            $isLike =false;
             $user= User::all()->where('id', $pub->user_id);
             foreach ($likes as $like) {
                 if ($like->publication_id == $pub->id) {
                     $totalLikes = $totalLikes + 1;
+                    if($like->user_id == $user_id){
+                        
+                        $isLike = true;
+                    }
                 }
                 
             }
@@ -467,6 +472,7 @@ class ApiController extends Controller
                     $image = $usr->image;
                 }
             }
+
         
             if ($pub->photo_public == "") {
                 $photo = "no photo";
@@ -483,6 +489,7 @@ class ApiController extends Controller
                 'contentPublication' => $pub->content_publication,
                 'photoPublication' => $photo,
                 'likes' => $totalLikes,
+                'isLike'=>$isLike,
             ]);
         }
 
@@ -507,5 +514,23 @@ class ApiController extends Controller
 
         }
 
+    }
+
+    public function postLike(Request $request){
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;
+
+        $like = new Like();
+        $like->user_id = $user_id;
+        $like->publication_id = $request->publicationID;
+        $like->save();
+
+    }
+
+    public function postUnlike(Request $request){
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;    
+
+        DB::table('likes')->where('user_id',  $user_id)->where('publication_id',$request->publicationID)->delete();
     }
 }

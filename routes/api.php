@@ -34,8 +34,10 @@ Route::get('/getUser/{hashedToken}', [APIController::class, 'getUser'])->name('a
 Route::get('/getRequest/{hashedToken}', [APIController::class, 'getRequest'])->name('api.getRequest');
 Route::post('/postRequest', [APIController::class, 'postRequest'])->name('api.postRequest');
 
-Route::get('/getPublications', [APIController::class, 'getPublications'])->name('api.getPublications');
+Route::get('/getPublications/{hashedToken}', [APIController::class, 'getPublications'])->name('api.getPublications');
 Route::post('/postPublications', [APIController::class, 'postPublications'])->name('api.postPublications');
+Route::post('/postLike', [APIController::class, 'postLike'])->name('api.postLike');
+Route::post('/postUnlike', [APIController::class, 'postUnlike'])->name('api.postUnlike');
 
 /* 
 Route::get('/api/logout', [APIController::class, 'logout'])->name('api.logout');
