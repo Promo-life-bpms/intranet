@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Events\RequestEvent;
 use App\Http\Controllers\Controller;
+use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
+use function PHPUnit\Framework\isEmpty;
 
 class ApiController extends Controller
 {
@@ -442,6 +444,7 @@ class ApiController extends Controller
         $publications = Publications::orderBy("created_at", "desc")->get();
         $data = [];
         $likes = DB::table('likes')->get();
+        $comments = Comment::all();
 
         foreach ($publications as $pub) {
 
@@ -451,6 +454,8 @@ class ApiController extends Controller
             $photo = "";
             $isLike =false;
             $user= User::all()->where('id', $pub->user_id);
+            $publi_comments= [];
+
             foreach ($likes as $like) {
                 if ($like->publication_id == $pub->id) {
                     $totalLikes = $totalLikes + 1;
@@ -473,13 +478,50 @@ class ApiController extends Controller
                 }
             }
 
-        
+            foreach($comments as $com){
+
+                if($com->publication_id == $pub->id){
+                   
+                    $comment_user = User::all()->where('id',$com->user_id);
+                    foreach($comment_user as $com_user){
+                       
+                        $com_fullname = $com_user->name . " " . $com_user->lastname;
+                        
+                        $com_image = '';
+                        if ($com_user->image == null) {
+                            $com_image = "img/default_user.png";
+                        } else {
+                            $com_image = $com_user->image;
+                            
+                        }
+
+                        array_push($publi_comments, (object)[
+
+                            'id' => $com->publication_id,
+                            'userName' => $com_fullname,
+                            'photo' => $com_image,
+                            'content' => $com->content,
+                        ]);
+                    }
+                  
+                    
+                }
+            }
             if ($pub->photo_public == "") {
                 $photo = "no photo";
             } else {
                 $photo = $pub->photo_public;
             }
 
+            if($publi_comments == []){
+                array_push($publi_comments, (object)[
+
+                    'id' => $pub->id,
+                    'userName' => "sin datos",
+                    'photo' => "sin datos",
+                    'content' => "sin datos",
+                ]);
+            }
             array_push($data, (object)[
                 'id' => $pub->id,
                 'userId' => $pub->user_id,
@@ -490,10 +532,11 @@ class ApiController extends Controller
                 'photoPublication' => $photo,
                 'likes' => $totalLikes,
                 'isLike'=>$isLike,
+                'comments'=>$publi_comments,
             ]);
         }
 
-        return $data;
+        return  $data;
     }
 
     public function postPublications(Request $request){
@@ -533,4 +576,5 @@ class ApiController extends Controller
 
         DB::table('likes')->where('user_id',  $user_id)->where('publication_id',$request->publicationID)->delete();
     }
+
 }

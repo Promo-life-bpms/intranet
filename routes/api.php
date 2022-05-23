@@ -39,6 +39,7 @@ Route::post('/postPublications', [APIController::class, 'postPublications'])->na
 Route::post('/postLike', [APIController::class, 'postLike'])->name('api.postLike');
 Route::post('/postUnlike', [APIController::class, 'postUnlike'])->name('api.postUnlike');
 
+
 /* 
 Route::get('/api/logout', [APIController::class, 'logout'])->name('api.logout');
 Route::get('/api/user', [APIController::class, 'getUser'])->name('api.user');
