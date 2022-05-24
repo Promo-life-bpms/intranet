@@ -38,6 +38,7 @@ Route::get('/getPublications/{hashedToken}', [APIController::class, 'getPublicat
 Route::post('/postPublications', [APIController::class, 'postPublications'])->name('api.postPublications');
 Route::post('/postLike', [APIController::class, 'postLike'])->name('api.postLike');
 Route::post('/postUnlike', [APIController::class, 'postUnlike'])->name('api.postUnlike');
+Route::post('/postComment', [APIController::class, 'postComment'])->name('api.postComment');
 
 
 /* 

@@ -23,6 +23,7 @@ use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use JetBrains\PhpStorm\Internal\ReturnTypeContract;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -575,6 +576,23 @@ class ApiController extends Controller
         $user_id = $token->tokenable_id;    
 
         DB::table('likes')->where('user_id',  $user_id)->where('publication_id',$request->publicationID)->delete();
+    }
+
+    public function postComment(Request $request){
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;    
+        
+        if($user_id!=null || $user_id !=[]){
+
+            $comment = new Comment();
+            $comment->user_id =$user_id;
+            $comment->publication_id = $request->publicationID;
+            $comment->content =$request->content;
+            $comment->save();
+    
+            return true;
+        }
+
     }
 
 }
