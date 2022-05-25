@@ -595,4 +595,128 @@ class ApiController extends Controller
 
     }
 
+    public function getProfile($id){
+        $user = User::all()->where('id',$id);
+        $publications = Publications::all()->where('user_id',$id);
+        $likes = DB::table('likes')->get();
+        $comments = Comment::all();
+        $data = [];
+        $user_publication = [];
+
+        foreach ($user as $usr) {
+
+            $image = '';
+            if ($usr->image == null) {
+                $image = "img/default_user.png";
+            } else {
+                $image = $usr->image;
+            }
+
+            foreach ($publications as $pub) {
+
+                $created = $pub->created_at->diffForHumans(null, false, false, 1);;
+                $fullname = "";
+                $totalLikes = 0;
+                $photo = "";
+                $isLike =false;
+                $user= User::all()->where('id', $pub->user_id);
+                $publi_comments= [];
+    
+                foreach ($likes as $like) {
+                    if ($like->publication_id == $pub->id) {
+                        $totalLikes = $totalLikes + 1;
+                        if($like->user_id == $id){
+                            
+                            $isLike = true;
+                        }
+                    }
+                    
+                }
+    
+                foreach($user as $usr){
+                    $fullname = $usr->name . " " . $usr->lastname;
+    
+                    $image = '';
+                    if ($usr->image == null) {
+                        $image = "img/default_user.png";
+                    } else {
+                        $image = $usr->image;
+                    }
+                }
+    
+                foreach($comments as $com){
+    
+                    if($com->publication_id == $pub->id){
+                       
+                        $comment_user = User::all()->where('id',$com->user_id);
+                        foreach($comment_user as $com_user){
+                           
+                            $com_fullname = $com_user->name . " " . $com_user->lastname;
+                            
+                            $com_image = '';
+                            if ($com_user->image == null) {
+                                $com_image = "img/default_user.png";
+                            } else {
+                                $com_image = $com_user->image;
+                                
+                            }
+    
+                            array_push($publi_comments, (object)[
+    
+                                'id' => $com->publication_id,
+                                'userName' => $com_fullname,
+                                'photo' => $com_image,
+                                'content' => $com->content,
+                            ]);
+                        }
+                      
+                        
+                    }
+                }
+                if ($pub->photo_public == "") {
+                    $photo = "no photo";
+                } else {
+                    $photo = $pub->photo_public;
+                }
+    
+                if($publi_comments == []){
+                    array_push($publi_comments, (object)[
+    
+                        'id' => $pub->id,
+                        'userName' => "sin datos",
+                        'photo' => "sin datos",
+                        'content' => "sin datos",
+                    ]);
+                }
+                array_push($user_publication, (object)[
+                    'id' => $pub->id,
+                    'userId' => $pub->user_id,
+                    'photo' => $image,
+                    'userName' => $fullname,
+                    'created' => $created,
+                    'contentPublication' => $pub->content_publication,
+                    'photoPublication' => $photo,
+                    'likes' => $totalLikes,
+                    'isLike'=>$isLike,
+                    'comments'=>$publi_comments,
+                    
+                ]);
+            }
+    
+
+            array_push($data, (object)[
+                'id' => $usr->id,
+                'fullname' => $usr->name . " " . $usr->lastname,
+                'email' => $usr->email,
+                'photo' => $image,
+                'department' => $usr->employee->position->department->name,
+                'position' => $usr->employee->position->name,
+                'publications' =>$user_publication,
+            ]);
+        }
+
+        return $data;
+
+    }
+
 }

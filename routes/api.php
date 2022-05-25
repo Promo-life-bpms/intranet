@@ -39,6 +39,7 @@ Route::post('/postPublications', [APIController::class, 'postPublications'])->na
 Route::post('/postLike', [APIController::class, 'postLike'])->name('api.postLike');
 Route::post('/postUnlike', [APIController::class, 'postUnlike'])->name('api.postUnlike');
 Route::post('/postComment', [APIController::class, 'postComment'])->name('api.postComment');
+Route::get('/getProfile/{id}', [APIController::class, 'getProfile'])->name('api.getProfile');
 
 
 /* 
