@@ -104,7 +104,7 @@ class MessageController extends Controller
             array_push($newUsers, $data);
         }
         //dd($newUsers);
-        return response()->json((object) $newUsers);
+        return response()->json( $newUsers);
     }
     //obtener mensajes
     public function fetchMessages($userId)

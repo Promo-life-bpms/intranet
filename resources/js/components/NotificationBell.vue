@@ -6,10 +6,17 @@
         <span class="btn__badge pulse-button">{{ countNotifications }}</span>
         <ul class="list-group" style="max-height: 300px; overflow-y: scroll">
           <li
+            class="d-flex flex-row p-3"
             v-for="(notification, index) in notifications"
             :key="index"
-            class="list-group-item"
           >
+            <div class="img_cont">
+              <img
+                :src="'/' + notification.data.image"
+                class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons"
+                style="width: 25px; height: 25px"
+              />
+            </div>
             {{ notification.data.transmitter_name }}
             <br />
             Mensaje nuevo: {{ notification.data.message }}
@@ -22,7 +29,6 @@
 
 <script>
 export default {
-  props: ["userId", "userData", "authId"],
   mounted() {
     window.Echo.channel("chat").listen("MessageSent", (e) => {
       console.log("Notificacion guardada");
