@@ -4,7 +4,7 @@
       <div class="card my-0">
         <div class="d-flex flex-row justify-content-between adiv p-3 text-white">
           <i
-            class="bi bi-person-lines-fill"
+            class="bi bi-people-fill zoom ease"
             style="font-size: 20px"
             @click="collapseListUsers()"
           ></i>
@@ -12,7 +12,7 @@
         </div>
         <div v-if="listUsersCollapse" style="max-height: 300px; overflow-y: scroll">
           <div
-            class="d-flex flex-row p-3"
+            class="d-flex flex-row p-3 usuario"
             v-for="user in filteredUsers"
             :key="user.id"
             @click="abrirchat(user)"
@@ -29,12 +29,28 @@
             <p>{{ user.name }}</p>
           </div>
         </div>
-        <input
-          type="text"
-          v-model="buscar"
-          class="form-control"
-          placeholder="Buscar usuario"
-        />
+        <div class="input-group">
+          <span class="input-group-text">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-search"
+              viewBox="0 0 18 18"
+            >
+              <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+              />
+            </svg>
+          </span>
+          <input
+            type="text"
+            v-model="buscar"
+            class="form-control"
+            placeholder="Buscar usuario"
+          />
+        </div>
       </div>
 
       <div v-for="lista in listaChatsAbiertos" :key="lista.id">
@@ -149,12 +165,6 @@ body {
   height: 46px;
 }
 
-.bg-white {
-  border: 1px solid #e7e7e9;
-  font-size: 10px;
-  border-radius: 20px;
-}
-
 .form-control {
   border-radius: 10px;
   border: 2px solid #9e9e9e;
@@ -188,5 +198,15 @@ body {
   position: relative;
   height: 35px;
   width: 40px;
+}
+.zoom:hover {
+  transform: scale(1.3);
+  transition: ease-in-out 0.5s;
+}
+.ease {
+  transition: 1s ease-out;
+}
+.usuario:hover {
+  background: #cacaca;
 }
 </style>

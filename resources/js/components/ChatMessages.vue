@@ -2,12 +2,12 @@
   <div class="card my-0 mx-3">
     <div class="d-flex flex-row justify-content-between adiv p-3 text-white">
       <i
-        class="bi bi-caret-down-square"
-        style="font-size: 18px"
+        class="bi bi-chevron-down zoom ease"
+        style="font-size: 20px"
         @click="collapseChat()"
       ></i>
       <span class="pb-3">{{ userData.name + " " + userData.lastname }}</span>
-      <i class="fas fa-times" style="font-size: 18px" @click="cerrarChat()"></i>
+      <i class="fas fa-times zoom ease" style="font-size: 20px" @click="cerrarChat()"></i>
     </div>
     <div v-if="chatCollapse">
       <div style="height: 300px; overflow-y: auto" id="formChat">
@@ -169,5 +169,12 @@ body {
 }
 .let {
   font-size: 11px;
+}
+.zoom:hover {
+  transform: scale(1.3);
+  transition: 0.5s;
+}
+.ease {
+  transition: 1s ease-out;
 }
 </style>

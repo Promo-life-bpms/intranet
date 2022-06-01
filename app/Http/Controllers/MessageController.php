@@ -58,6 +58,7 @@ class MessageController extends Controller
         $receiver_id = request()->receiver_id;
         $message = request()->message;
         $userReceiver = User::find($receiver_id);
+        $image=auth()->user()->image;
 
 
 
@@ -75,7 +76,7 @@ class MessageController extends Controller
 
         /*  broadcast(new MessageSent($transmitter_id, $message))->toOthers(); */
         event(new MessageSent($message->message, $receiver_id, $transmitter_id, $transmitter_name, $message->created_at));
-        $userReceiver->notify(new MessageNotification($transmitter_id,  $message->message, $transmitter_name));
+        $userReceiver->notify(new MessageNotification($transmitter_id,  $message->message, $transmitter_name, $image));
         return ['status' => 'Message Sent!', 'message' => $message];
     }
 
@@ -104,7 +105,7 @@ class MessageController extends Controller
             array_push($newUsers, $data);
         }
         //dd($newUsers);
-        return response()->json( $newUsers);
+        return response()->json($newUsers);
     }
     //obtener mensajes
     public function fetchMessages($userId)

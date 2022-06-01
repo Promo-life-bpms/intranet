@@ -5314,6 +5314,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -5404,6 +5420,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -10965,7 +10993,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-0d66c37a] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-0d66c37a] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-0d66c37a] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.bg-white[data-v-0d66c37a] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.form-control[data-v-0d66c37a] {\n  border-radius: 10px;\n  border: 2px solid #9e9e9e;\n  font-size: 11px;\n}\n.form-control[data-v-0d66c37a]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-0d66c37a]::-moz-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-0d66c37a]:-ms-input-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-0d66c37a]::placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.contenedor[data-v-0d66c37a] {\n  z-index: 100;\n  right: 1px;\n  bottom: 1px;\n}\n.online_icon[data-v-0d66c37a] {\n  position: absolute;\n  height: 15px;\n  width: 15px;\n  background-color: #4cd137;\n  border-radius: 50%;\n  bottom: 0.2em;\n  right: 0.4em;\n  border: 1.5px solid white;\n}\n.img_cont[data-v-0d66c37a] {\n  position: relative;\n  height: 35px;\n  width: 40px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-0d66c37a] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-0d66c37a] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-0d66c37a] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.form-control[data-v-0d66c37a] {\n  border-radius: 10px;\n  border: 2px solid #9e9e9e;\n  font-size: 11px;\n}\n.form-control[data-v-0d66c37a]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-0d66c37a]::-moz-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-0d66c37a]:-ms-input-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-0d66c37a]::placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.contenedor[data-v-0d66c37a] {\n  z-index: 100;\n  right: 1px;\n  bottom: 1px;\n}\n.online_icon[data-v-0d66c37a] {\n  position: absolute;\n  height: 15px;\n  width: 15px;\n  background-color: #4cd137;\n  border-radius: 50%;\n  bottom: 0.2em;\n  right: 0.4em;\n  border: 1.5px solid white;\n}\n.img_cont[data-v-0d66c37a] {\n  position: relative;\n  height: 35px;\n  width: 40px;\n}\n.zoom[data-v-0d66c37a]:hover {\n  transform: scale(1.3);\n  transition: ease-in-out 0.5s;\n}\n.ease[data-v-0d66c37a] {\n  transition: 1s ease-out;\n}\n.usuario[data-v-0d66c37a]:hover {\n  background: #cacaca;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -11015,7 +11043,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-e422daa2] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-e422daa2] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-e422daa2] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-e422daa2] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-e422daa2] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.let[data-v-e422daa2] {\n  font-size: 11px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-e422daa2] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-e422daa2] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-e422daa2] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-e422daa2] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-e422daa2] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.let[data-v-e422daa2] {\n  font-size: 11px;\n}\n.zoom[data-v-e422daa2]:hover {\n  transform: scale(1.3);\n  transition: 0.5s;\n}\n.ease[data-v-e422daa2] {\n  transition: 1s ease-out;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -49840,7 +49868,7 @@ var render = function () {
             },
             [
               _c("i", {
-                staticClass: "bi bi-person-lines-fill",
+                staticClass: "bi bi-people-fill zoom ease",
                 staticStyle: { "font-size": "20px" },
                 on: {
                   click: function ($event) {
@@ -49869,7 +49897,7 @@ var render = function () {
                     "div",
                     {
                       key: user.id,
-                      staticClass: "d-flex flex-row p-3",
+                      staticClass: "d-flex flex-row p-3 usuario",
                       on: {
                         click: function ($event) {
                           return _vm.abrirchat(user)
@@ -49898,27 +49926,52 @@ var render = function () {
               )
             : _vm._e(),
           _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.buscar,
-                expression: "buscar",
+          _c("div", { staticClass: "input-group" }, [
+            _c("span", { staticClass: "input-group-text" }, [
+              _c(
+                "svg",
+                {
+                  staticClass: "bi bi-search",
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    width: "16",
+                    height: "16",
+                    fill: "currentColor",
+                    viewBox: "0 0 18 18",
+                  },
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      d: "M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z",
+                    },
+                  }),
+                ]
+              ),
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.buscar,
+                  expression: "buscar",
+                },
+              ],
+              staticClass: "form-control",
+              attrs: { type: "text", placeholder: "Buscar usuario" },
+              domProps: { value: _vm.buscar },
+              on: {
+                input: function ($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.buscar = $event.target.value
+                },
               },
-            ],
-            staticClass: "form-control",
-            attrs: { type: "text", placeholder: "Buscar usuario" },
-            domProps: { value: _vm.buscar },
-            on: {
-              input: function ($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.buscar = $event.target.value
-              },
-            },
-          }),
+            }),
+          ]),
         ]),
         _vm._v(" "),
         _vm._l(_vm.listaChatsAbiertos, function (lista) {
@@ -50010,7 +50063,7 @@ var render = function () {
           _c(
             "svg",
             {
-              staticClass: "bi bi-send",
+              staticClass: "bi bi-send-fill",
               attrs: {
                 xmlns: "http://www.w3.org/2000/svg",
                 width: "16",
@@ -50022,7 +50075,7 @@ var render = function () {
             [
               _c("path", {
                 attrs: {
-                  d: "M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z",
+                  d: "M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z",
                 },
               }),
             ]
@@ -50064,8 +50117,8 @@ var render = function () {
       },
       [
         _c("i", {
-          staticClass: "bi bi-caret-down-square",
-          staticStyle: { "font-size": "18px" },
+          staticClass: "bi bi-chevron-down zoom ease",
+          staticStyle: { "font-size": "20px" },
           on: {
             click: function ($event) {
               return _vm.collapseChat()
@@ -50078,8 +50131,8 @@ var render = function () {
         ]),
         _vm._v(" "),
         _c("i", {
-          staticClass: "fas fa-times",
-          staticStyle: { "font-size": "18px" },
+          staticClass: "fas fa-times zoom ease",
+          staticStyle: { "font-size": "20px" },
           on: {
             click: function ($event) {
               return _vm.cerrarChat()
