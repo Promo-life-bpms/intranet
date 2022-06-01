@@ -3,13 +3,17 @@
     <div class="d-flex flex-row-reverse align-items-end">
       <div class="card my-0">
         <div class="d-flex flex-row justify-content-between adiv p-3 text-white">
-          <i class="fas fa-chevron-left" @click="collapseListUsers()"></i>
+          <i
+            class="bi bi-person-lines-fill"
+            style="font-size: 20px"
+            @click="collapseListUsers()"
+          ></i>
           <span class="pb-3">Usuarios conectados</span>
         </div>
         <div v-if="listUsersCollapse" style="max-height: 300px; overflow-y: scroll">
           <div
             class="d-flex flex-row p-3"
-            v-for="user in usuarios"
+            v-for="user in filteredUsers"
             :key="user.id"
             @click="abrirchat(user)"
           >
@@ -19,8 +23,7 @@
                 class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons"
                 style="width: 30px; height: 30px"
               />
-              <span class="online_icon"></span>
-              <!-- <span class="online_icon offline"></span> -->
+              <span class="online_icon" v-if="user.userOnline"></span>
             </div>
 
             <p>{{ user.name }}</p>
@@ -31,7 +34,6 @@
           v-model="buscar"
           class="form-control"
           placeholder="Buscar usuario"
-          @keyup="buscarUsuarios"
         />
       </div>
 
@@ -59,6 +61,9 @@ export default {
     setTimeout(() => {
       this.obtenerUsuarios();
     }, 200);
+    setInterval(() => {
+      this.obtenerUsuarios();
+    }, 18000);
   },
   data() {
     return {
@@ -69,6 +74,17 @@ export default {
       listaChatsAbiertos: [],
       buscar: "",
     };
+  },
+  computed: {
+    filteredUsers() {
+      if (this.buscar) {
+        return this.usuarios.filter((user) => {
+          return user.name.toLowerCase().includes(this.buscar.toLowerCase());
+        });
+      } else {
+        return this.usuarios;
+      }
+    },
   },
 
   methods: {
@@ -106,11 +122,6 @@ export default {
       this.listaChats.delete(id);
       this.listaChatsAbiertos = Array.from(this.listaChats);
     },
-    buscarUsuarios: function () {
-      this.usuarios = this.usuarios.filter((user) => {
-        return user.name.toLowerCase().includes(this.buscar.toLowerCase());
-      });
-    },
   },
 };
 </script>
@@ -138,27 +149,16 @@ body {
   height: 46px;
 }
 
-.chat {
-  border: none;
-  background: #e2fbff;
-  font-size: 10px;
-  border-radius: 20px;
-}
-
 .bg-white {
   border: 1px solid #e7e7e9;
   font-size: 10px;
   border-radius: 20px;
 }
 
-.dot {
-  font-weight: bold;
-}
-
 .form-control {
-  border-radius: 12px;
-  border: 1px solid #f0f0f0;
-  font-size: 8px;
+  border-radius: 10px;
+  border: 2px solid #9e9e9e;
+  font-size: 11px;
 }
 
 .form-control:focus {
@@ -166,8 +166,8 @@ body {
 }
 
 .form-control::placeholder {
-  font-size: 8px;
-  color: #c4c4c4;
+  font-size: 11px;
+  color: #6c6c6c;
 }
 .contenedor {
   z-index: 100;
@@ -188,8 +188,5 @@ body {
   position: relative;
   height: 35px;
   width: 40px;
-}
-.offline {
-  background-color: #c23616 !important;
 }
 </style>

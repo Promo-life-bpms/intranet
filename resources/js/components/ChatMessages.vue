@@ -1,9 +1,13 @@
 <template>
   <div class="card my-0 mx-3">
     <div class="d-flex flex-row justify-content-between adiv p-3 text-white">
-      <i class="bi bi-caret-down-square" @click="collapseChat()"></i>
+      <i
+        class="bi bi-caret-down-square"
+        style="font-size: 18px"
+        @click="collapseChat()"
+      ></i>
       <span class="pb-3">{{ userData.name + " " + userData.lastname }}</span>
-      <i class="fas fa-times" @click="cerrarChat()"></i>
+      <i class="fas fa-times" style="font-size: 18px" @click="cerrarChat()"></i>
     </div>
     <div v-if="chatCollapse">
       <div style="height: 300px; overflow-y: auto" id="formChat">
@@ -29,7 +33,7 @@
                 userId == mensaje.transmitter_id ? 'bg-white ml-2 p-2' : 'chat mr-2 p-2'
               "
             >
-              <span class="text-muted">{{ mensaje.message }}</span>
+              <span class="let">{{ mensaje.message }}</span>
               <div
                 class="d-flex text"
                 :class="
@@ -163,27 +167,7 @@ body {
   font-size: 10px;
   border-radius: 20px;
 }
-
-.myvideo img {
-  border-radius: 20px;
-}
-
-.dot {
-  font-weight: bold;
-}
-
-.form-control {
-  border-radius: 12px;
-  border: 1px solid #f0f0f0;
-  font-size: 8px;
-}
-
-.form-control:focus {
-  box-shadow: none;
-}
-
-.form-control::placeholder {
-  font-size: 8px;
-  color: #c4c4c4;
+.let {
+  font-size: 11px;
 }
 </style>

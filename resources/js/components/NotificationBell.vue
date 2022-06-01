@@ -1,0 +1,175 @@
+<template>
+  <div class="notification-drop">
+    <ul>
+      <li class="item">
+        <i class="fa fa-bell-o notification-bell" aria-hidden="true"></i>
+        <span class="btn__badge pulse-button">{{ countNotifications }}</span>
+        <ul class="list-group" style="max-height: 300px; overflow-y: scroll">
+          <li
+            class="d-flex flex-row p-3"
+            v-for="(notification, index) in notifications"
+            :key="index"
+          >
+            <div class="img_cont">
+              <img
+                :src="'/' + notification.data.image"
+                class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons"
+                style="width: 25px; height: 25px"
+              />
+            </div>
+            {{ notification.data.transmitter_name }}
+            <br />
+            Mensaje nuevo: {{ notification.data.message }}
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+export default {
+  mounted() {
+    window.Echo.channel("chat").listen("MessageSent", (e) => {
+      console.log("Notificacion guardada");
+      console.log(e);
+    });
+    this.obtenerMensajes();
+  },
+  data() {
+    return {
+      notifications: [],
+      countNotifications: [],
+    };
+  },
+  methods: {
+    obtenerMensajes: function () {
+      let u = axios
+        .get("chat/Notificaciones")
+        .then((response) => {
+          console.log(response);
+          this.notifications = response.data.notificationUnread;
+          this.countNotifications = response.data.countNotifications;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      console.log(u);
+    },
+  },
+};
+$(document).ready(function () {
+  $(".notification-drop .item").on("click", function () {
+    $(this).find("ul").toggle();
+  });
+});
+</script>
+
+<style>
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.notification-drop {
+  font-family: "Ubuntu", sans-serif;
+  color: #444;
+}
+.notification-drop .item {
+  padding: 10px;
+  font-size: 18px;
+  position: relative;
+  border-bottom: 1px solid #ddd;
+}
+.notification-drop .item:hover {
+  cursor: pointer;
+}
+.notification-drop .item i {
+  margin-left: 10px;
+}
+.notification-drop .item ul {
+  display: none;
+  position: absolute;
+  top: 100%;
+  background: #fff;
+  left: -200px;
+  right: 0;
+  z-index: 1;
+  border-top: 1px solid #ddd;
+}
+.notification-drop .item ul li {
+  font-size: 16px;
+  padding: 15px 0 15px 25px;
+}
+.notification-drop .item ul li:hover {
+  background: #ddd;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+@media screen and (min-width: 500px) {
+  .notification-drop {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .notification-drop .item {
+    border: none;
+  }
+}
+
+.notification-bell {
+  font-size: 20px;
+}
+
+.btn__badge {
+  background: #ff5d5d;
+  color: white;
+  font-size: 12px;
+  position: absolute;
+  top: 0;
+  right: 0px;
+  padding: 3px 10px;
+  border-radius: 50%;
+}
+
+.pulse-button {
+  box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.5);
+  -webkit-animation: pulse 3.5s infinite;
+}
+
+.pulse-button:hover {
+  -webkit-animation: none;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -moz-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+  50% {
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);
+  }
+  100% {
+    -moz-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+  }
+}
+
+.notification-text {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.notification-text span {
+  float: right;
+}
+</style>

@@ -20,7 +20,8 @@
         "maatwebsite/excel": "^3.1",
         "phpoffice/phpspreadsheet": "^1.21",
         "pusher/pusher-php-server": "^7.0",
-        "santigarcor/laratrust": "^6.3"
+        "santigarcor/laratrust": "^6.3",
+        "shetabit/visitor": "^3.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

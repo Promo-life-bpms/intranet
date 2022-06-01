@@ -1,18 +1,9 @@
 <template>
   <div class="input-group">
-    <!-- <input
-      id="btn-input"
-      type="text"
-      name="message"
-      class="form-control input-sm"
-      placeholder="Escribe tu mnensaje"
-      v-model="newMessage"
-      @keyup.enter="sendMessage"
-    /> -->
     <textarea
       name="message"
       class="form-control type_msg"
-      placeholder="Type your message..."
+      placeholder="Escribe tu mensaje..."
       v-model="newMessage"
       @keyup.enter="sendMessage"
     ></textarea>
@@ -105,18 +96,10 @@ body {
   border-radius: 20px;
 }
 
-.myvideo img {
-  border-radius: 20px;
-}
-
-.dot {
-  font-weight: bold;
-}
-
 .form-control {
-  border-radius: 12px;
-  border: 1px solid #f0f0f0;
-  font-size: 8px;
+  border-radius: 10px;
+  border: 2px solid #9e9e9e;
+  font-size: 11px;
 }
 
 .form-control:focus {
@@ -124,8 +107,8 @@ body {
 }
 
 .form-control::placeholder {
-  font-size: 8px;
-  color: #c4c4c4;
+  font-size: 11px;
+  color: #6c6c6c;
 }
 .type_msg {
   background-color: rgb(255, 255, 255) !important;

@@ -41,11 +41,12 @@ Route::post('/postUnlike', [APIController::class, 'postUnlike'])->name('api.post
 Route::post('/postComment', [APIController::class, 'postComment'])->name('api.postComment');
 Route::get('/getProfile/{id}', [APIController::class, 'getProfile'])->name('api.getProfile');
 
+Route::get('/getRequest/{hashedToken}', [APIController::class, 'getRequest'])->name('api.as');
 
-/* 
+/*
 Route::get('/api/logout', [APIController::class, 'logout'])->name('api.logout');
 Route::get('/api/user', [APIController::class, 'getUser'])->name('api.user');
-/* 
+/*
 Route::post('/update', 'UserController@update');
 Route::get('/logout', 'UserController@logout'); */
 

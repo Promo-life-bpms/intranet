@@ -12,6 +12,7 @@ use App\Notifications\MessageNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Notifications\DatabaseNotification;
+use Cache;
 
 class MessageController extends Controller
 {
@@ -60,10 +61,12 @@ class MessageController extends Controller
 
 
 
-        //return response()->json([$message, $receiver_id, $transmitter_id]);
 
 
         //Crear el mensaje y guardarlo en la base de datos
+        //return response()->json([$message, $receiver_id, $transmitter_id]);
+
+
         $message = Message::create([
             "transmitter_id" => $transmitter_id,
             "receiver_id" => $receiver_id,
@@ -72,17 +75,37 @@ class MessageController extends Controller
 
         /*  broadcast(new MessageSent($transmitter_id, $message))->toOthers(); */
         event(new MessageSent($message->message, $receiver_id, $transmitter_id, $transmitter_name, $message->created_at));
-        $userReceiver->notify(new MessageNotification($transmitter_id, $transmitter_name, $message->message));
-        return ['status' => 'Message Sent!', 'message'=> $message];
+        $userReceiver->notify(new MessageNotification($transmitter_id,  $message->message, $transmitter_name));
+        return ['status' => 'Message Sent!', 'message' => $message];
     }
 
     //obtener usuarios
     public function obtenerUsuarios()
     {
         $users =  User::all();
-        return response()->json($users);
-    }
+        $newUsers = [];
 
+        foreach ($users as $user) {
+            $userOnline = false;
+
+
+            if (Cache::has('user-is-online-' . $user->id)) {
+                $userOnline = true;
+            }
+            $data = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'lastname' => $user->lastname,
+                'image' => $user->image,
+                'email' => $user->email,
+                'password' => $user->password,
+                'userOnline' => $userOnline,
+            ];
+            array_push($newUsers, $data);
+        }
+        //dd($newUsers);
+        return response()->json( $newUsers);
+    }
     //obtener mensajes
     public function fetchMessages($userId)
     {
@@ -99,13 +122,20 @@ class MessageController extends Controller
 
         //$chat = $mensajes->union($mensajesEnviados)->orderBy('created_at', 'desc')->get();
 
-
-
         return response()->json(['mensajesEnviados' => $mensajesEnviados], 200);
     }
     public function markAsRead(DatabaseNotification $notification)
     {
         $notification->markAsRead();
         return back();
+    }
+    public function Notificaciones()
+    {
+
+        $notificationUnread = auth()->user()->unreadNotifications;
+        $countNotifications = count($notificationUnread);
+
+
+        return response()->json(['countNotifications' => $countNotifications, 'notificationUnread' => $notificationUnread]);
     }
 }

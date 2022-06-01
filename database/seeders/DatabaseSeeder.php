@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         VacationPerYear::create(['year' => 17, 'days' => 18]);
         VacationPerYear::create(['year' => 18, 'days' => 18]);
         VacationPerYear::create(['year' => 19, 'days' => 18]);
-        /*         $admin = Role::create([
+                $admin = Role::create([
             'name' => 'admin',
             'display_name' => 'Administrador', // optional
             'description' => '', // optional
