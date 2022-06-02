@@ -9,14 +9,15 @@
             class="d-flex flex-row p-3"
             v-for="(notification, index) in notifications"
             :key="index"
+            style="font-weight: bold"
           >
-            <div class="img_cont">
+            <!-- <div class="img_cont">
               <img
                 :src="'/' + notification.data.image"
                 class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons"
                 style="width: 25px; height: 25px"
               />
-            </div>
+            </div> -->
             {{ notification.data.transmitter_name }}
             <br />
             Mensaje nuevo: {{ notification.data.message }}

@@ -5330,6 +5330,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -5737,6 +5741,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
 //
 //
 //
@@ -10993,7 +10998,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-0d66c37a] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-0d66c37a] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-0d66c37a] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.form-control[data-v-0d66c37a] {\n  border-radius: 10px;\n  border: 2px solid #9e9e9e;\n  font-size: 11px;\n}\n.form-control[data-v-0d66c37a]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-0d66c37a]::-moz-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-0d66c37a]:-ms-input-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-0d66c37a]::placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.contenedor[data-v-0d66c37a] {\n  z-index: 100;\n  right: 1px;\n  bottom: 1px;\n}\n.online_icon[data-v-0d66c37a] {\n  position: absolute;\n  height: 15px;\n  width: 15px;\n  background-color: #4cd137;\n  border-radius: 50%;\n  bottom: 0.2em;\n  right: 0.4em;\n  border: 1.5px solid white;\n}\n.img_cont[data-v-0d66c37a] {\n  position: relative;\n  height: 35px;\n  width: 40px;\n}\n.zoom[data-v-0d66c37a]:hover {\n  transform: scale(1.3);\n  transition: ease-in-out 0.5s;\n}\n.ease[data-v-0d66c37a] {\n  transition: 1s ease-out;\n}\n.usuario[data-v-0d66c37a]:hover {\n  background: #cacaca;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-0d66c37a] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-0d66c37a] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-0d66c37a] {\n  background: #61a5b5;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.form-control[data-v-0d66c37a] {\n  border: 1px solid #9e9e9e;\n  font-size: 11px;\n}\n.form-control[data-v-0d66c37a]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-0d66c37a]::-moz-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-0d66c37a]:-ms-input-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-0d66c37a]::placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.contenedor[data-v-0d66c37a] {\n  z-index: 100;\n  right: 1px;\n  bottom: 1px;\n}\n.online_icon[data-v-0d66c37a] {\n  position: absolute;\n  height: 15px;\n  width: 15px;\n  background-color: #4cd137;\n  border-radius: 50%;\n  bottom: 0.2em;\n  right: 0.4em;\n  border: 1.5px solid white;\n}\n.img_cont[data-v-0d66c37a] {\n  position: relative;\n  height: 35px;\n  width: 40px;\n}\n.zoom[data-v-0d66c37a]:hover {\n  transform: scale(1.3);\n  transition: ease-in-out 0.5s;\n}\n.ease[data-v-0d66c37a] {\n  transition: 1s ease-out;\n}\n.usuario[data-v-0d66c37a]:hover {\n  background: #cacaca;\n}\n.style-1[data-v-0d66c37a]::-webkit-scrollbar-track {\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  border-radius: 10px;\n  background-color: #f5f5f5;\n}\n.style-1[data-v-0d66c37a]::-webkit-scrollbar {\n  width: 12px;\n  background-color: #f5f5f5;\n}\n.style-1[data-v-0d66c37a]::-webkit-scrollbar-thumb {\n  border-radius: 10px;\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  background-color: #555;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -11018,7 +11023,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-6fb73fa7] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-6fb73fa7] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-6fb73fa7] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-6fb73fa7] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-6fb73fa7] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.form-control[data-v-6fb73fa7] {\n  border-radius: 10px;\n  border: 2px solid #9e9e9e;\n  font-size: 11px;\n}\n.form-control[data-v-6fb73fa7]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-6fb73fa7]::-moz-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-6fb73fa7]:-ms-input-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-6fb73fa7]::placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.type_msg[data-v-6fb73fa7] {\n  background-color: rgb(255, 255, 255) !important;\n  border-block: 10 !important;\n  color: rgb(0, 0, 0) !important;\n  height: 40px !important;\n  overflow-y: auto;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-6fb73fa7] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-6fb73fa7] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-6fb73fa7] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-6fb73fa7] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-6fb73fa7] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.form-control[data-v-6fb73fa7] {\n  border-radius: 10px;\n  border: 1px solid #9e9e9e;\n  font-size: 11px;\n}\n.form-control[data-v-6fb73fa7]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-6fb73fa7]::-moz-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-6fb73fa7]:-ms-input-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-6fb73fa7]::placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.type_msg[data-v-6fb73fa7] {\n  background-color: rgb(255, 255, 255) !important;\n  border-block: 10 !important;\n  color: rgb(0, 0, 0) !important;\n  height: 40px !important;\n  overflow-y: auto;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -11043,7 +11048,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-e422daa2] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-e422daa2] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-e422daa2] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-e422daa2] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-e422daa2] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.let[data-v-e422daa2] {\n  font-size: 11px;\n}\n.zoom[data-v-e422daa2]:hover {\n  transform: scale(1.3);\n  transition: 0.5s;\n}\n.ease[data-v-e422daa2] {\n  transition: 1s ease-out;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-e422daa2] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-e422daa2] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-e422daa2] {\n  background: #61a5b5;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-e422daa2] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-e422daa2] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.let[data-v-e422daa2] {\n  font-size: 11px;\n}\n.zoom[data-v-e422daa2]:hover {\n  transform: scale(1.3);\n  transition: 0.5s;\n}\n.ease[data-v-e422daa2] {\n  transition: 1s ease-out;\n}\n.style-1[data-v-e422daa2]::-webkit-scrollbar-track {\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  border-radius: 10px;\n  background-color: #f5f5f5;\n}\n.style-1[data-v-e422daa2]::-webkit-scrollbar {\n  width: 12px;\n  background-color: #f5f5f5;\n}\n.style-1[data-v-e422daa2]::-webkit-scrollbar-thumb {\n  border-radius: 10px;\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  background-color: #555;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -49859,120 +49864,128 @@ var render = function () {
       "div",
       { staticClass: "d-flex flex-row-reverse align-items-end" },
       [
-        _c("div", { staticClass: "card my-0" }, [
-          _c(
-            "div",
-            {
-              staticClass:
-                "d-flex flex-row justify-content-between adiv p-3 text-white",
-            },
-            [
-              _c("i", {
-                staticClass: "bi bi-people-fill zoom ease",
-                staticStyle: { "font-size": "20px" },
+        _c(
+          "div",
+          {
+            staticClass: "card my-0",
+            staticStyle: { "box-shadow": "0px 18px 10px 0px black" },
+          },
+          [
+            _c(
+              "div",
+              {
+                staticClass:
+                  "d-flex flex-row justify-content-between adiv p-3 text-white",
+              },
+              [
+                _c("i", {
+                  staticClass: "bi bi-people-fill zoom ease",
+                  staticStyle: { "font-size": "20px" },
+                  on: {
+                    click: function ($event) {
+                      return _vm.collapseListUsers()
+                    },
+                  },
+                }),
+                _vm._v(" "),
+                _c("span", { staticClass: "pb-3" }, [
+                  _vm._v("Usuarios conectados"),
+                ]),
+              ]
+            ),
+            _vm._v(" "),
+            _vm.listUsersCollapse
+              ? _c(
+                  "div",
+                  {
+                    staticClass: "style-1",
+                    staticStyle: {
+                      "max-height": "300px",
+                      "overflow-y": "scroll",
+                    },
+                  },
+                  _vm._l(_vm.filteredUsers, function (user) {
+                    return _c(
+                      "div",
+                      {
+                        key: user.id,
+                        staticClass: "d-flex flex-row p-3 usuario",
+                        on: {
+                          click: function ($event) {
+                            return _vm.abrirchat(user)
+                          },
+                        },
+                      },
+                      [
+                        _c("div", { staticClass: "img_cont" }, [
+                          _c("img", {
+                            staticClass:
+                              "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons",
+                            staticStyle: { width: "30px", height: "30px" },
+                            attrs: { src: "/" + user.image },
+                          }),
+                          _vm._v(" "),
+                          user.userOnline
+                            ? _c("span", { staticClass: "online_icon" })
+                            : _vm._e(),
+                        ]),
+                        _vm._v(" "),
+                        _c("p", [_vm._v(_vm._s(user.name))]),
+                      ]
+                    )
+                  }),
+                  0
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group" }, [
+              _c("span", { staticClass: "input-group-text" }, [
+                _c(
+                  "svg",
+                  {
+                    staticClass: "bi bi-search",
+                    attrs: {
+                      xmlns: "http://www.w3.org/2000/svg",
+                      width: "16",
+                      height: "16",
+                      fill: "currentColor",
+                      viewBox: "0 0 18 18",
+                    },
+                  },
+                  [
+                    _c("path", {
+                      attrs: {
+                        d: "M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z",
+                      },
+                    }),
+                  ]
+                ),
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.buscar,
+                    expression: "buscar",
+                  },
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text", placeholder: "Buscar usuario" },
+                domProps: { value: _vm.buscar },
                 on: {
-                  click: function ($event) {
-                    return _vm.collapseListUsers()
+                  input: function ($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.buscar = $event.target.value
                   },
                 },
               }),
-              _vm._v(" "),
-              _c("span", { staticClass: "pb-3" }, [
-                _vm._v("Usuarios conectados"),
-              ]),
-            ]
-          ),
-          _vm._v(" "),
-          _vm.listUsersCollapse
-            ? _c(
-                "div",
-                {
-                  staticStyle: {
-                    "max-height": "300px",
-                    "overflow-y": "scroll",
-                  },
-                },
-                _vm._l(_vm.filteredUsers, function (user) {
-                  return _c(
-                    "div",
-                    {
-                      key: user.id,
-                      staticClass: "d-flex flex-row p-3 usuario",
-                      on: {
-                        click: function ($event) {
-                          return _vm.abrirchat(user)
-                        },
-                      },
-                    },
-                    [
-                      _c("div", { staticClass: "img_cont" }, [
-                        _c("img", {
-                          staticClass:
-                            "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons",
-                          staticStyle: { width: "30px", height: "30px" },
-                          attrs: { src: "/" + user.image },
-                        }),
-                        _vm._v(" "),
-                        user.userOnline
-                          ? _c("span", { staticClass: "online_icon" })
-                          : _vm._e(),
-                      ]),
-                      _vm._v(" "),
-                      _c("p", [_vm._v(_vm._s(user.name))]),
-                    ]
-                  )
-                }),
-                0
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c("div", { staticClass: "input-group" }, [
-            _c("span", { staticClass: "input-group-text" }, [
-              _c(
-                "svg",
-                {
-                  staticClass: "bi bi-search",
-                  attrs: {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    width: "16",
-                    height: "16",
-                    fill: "currentColor",
-                    viewBox: "0 0 18 18",
-                  },
-                },
-                [
-                  _c("path", {
-                    attrs: {
-                      d: "M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z",
-                    },
-                  }),
-                ]
-              ),
             ]),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.buscar,
-                  expression: "buscar",
-                },
-              ],
-              staticClass: "form-control",
-              attrs: { type: "text", placeholder: "Buscar usuario" },
-              domProps: { value: _vm.buscar },
-              on: {
-                input: function ($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.buscar = $event.target.value
-                },
-              },
-            }),
-          ]),
-        ]),
+          ]
+        ),
         _vm._v(" "),
         _vm._l(_vm.listaChatsAbiertos, function (lista) {
           return _c(
@@ -50108,120 +50121,128 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "card my-0 mx-3" }, [
-    _c(
-      "div",
-      {
-        staticClass:
-          "d-flex flex-row justify-content-between adiv p-3 text-white",
-      },
-      [
-        _c("i", {
-          staticClass: "bi bi-chevron-down zoom ease",
-          staticStyle: { "font-size": "20px" },
-          on: {
-            click: function ($event) {
-              return _vm.collapseChat()
-            },
-          },
-        }),
-        _vm._v(" "),
-        _c("span", { staticClass: "pb-3" }, [
-          _vm._v(_vm._s(_vm.userData.name + " " + _vm.userData.lastname)),
-        ]),
-        _vm._v(" "),
-        _c("i", {
-          staticClass: "fas fa-times zoom ease",
-          staticStyle: { "font-size": "20px" },
-          on: {
-            click: function ($event) {
-              return _vm.cerrarChat()
-            },
-          },
-        }),
-      ]
-    ),
-    _vm._v(" "),
-    _vm.chatCollapse
-      ? _c(
-          "div",
-          [
-            _c(
-              "div",
-              {
-                staticStyle: { height: "300px", "overflow-y": "auto" },
-                attrs: { id: "formChat" },
+  return _c(
+    "div",
+    {
+      staticClass: "card my-0 mx-3",
+      staticStyle: { "box-shadow": "0px 18px 10px 0px black" },
+    },
+    [
+      _c(
+        "div",
+        {
+          staticClass:
+            "d-flex flex-row justify-content-between adiv p-3 text-white",
+        },
+        [
+          _c("i", {
+            staticClass: "bi bi-chevron-down zoom ease",
+            staticStyle: { "font-size": "20px" },
+            on: {
+              click: function ($event) {
+                return _vm.collapseChat()
               },
-              _vm._l(_vm.messages, function (mensaje, i) {
-                return _c("div", { key: i.id }, [
-                  _c(
-                    "div",
-                    {
-                      staticClass: "d-flex flex-row p-2",
-                      class:
+            },
+          }),
+          _vm._v(" "),
+          _c("span", { staticClass: "pb-3" }, [
+            _vm._v(_vm._s(_vm.userData.name + " " + _vm.userData.lastname)),
+          ]),
+          _vm._v(" "),
+          _c("i", {
+            staticClass: "fas fa-times zoom ease",
+            staticStyle: { "font-size": "20px" },
+            on: {
+              click: function ($event) {
+                return _vm.cerrarChat()
+              },
+            },
+          }),
+        ]
+      ),
+      _vm._v(" "),
+      _vm.chatCollapse
+        ? _c(
+            "div",
+            [
+              _c(
+                "div",
+                {
+                  staticClass: "style-1",
+                  staticStyle: { height: "300px", "overflow-y": "auto" },
+                  attrs: { id: "formChat" },
+                },
+                _vm._l(_vm.messages, function (mensaje, i) {
+                  return _c("div", { key: i.id }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "d-flex flex-row p-2",
+                        class:
+                          _vm.userId == mensaje.transmitter_id
+                            ? "justify-content-start"
+                            : "justify-content-end",
+                      },
+                      [
                         _vm.userId == mensaje.transmitter_id
-                          ? "justify-content-start"
-                          : "justify-content-end",
-                    },
-                    [
-                      _vm.userId == mensaje.transmitter_id
-                        ? _c("img", {
-                            staticClass:
-                              "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon",
-                            staticStyle: { width: "25px", height: "25px" },
-                            attrs: { src: "/" + _vm.userData.image },
-                          })
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "chat ml-2 p-1",
-                          class:
-                            _vm.userId == mensaje.transmitter_id
-                              ? "bg-white ml-2 p-2"
-                              : "chat mr-2 p-2",
-                        },
-                        [
-                          _c("span", { staticClass: "let" }, [
-                            _vm._v(_vm._s(mensaje.message)),
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            {
-                              staticClass: "d-flex text",
-                              class:
-                                _vm.userId == mensaje.transmitter_id
-                                  ? "justify-content-start"
-                                  : "justify-content-end",
-                            },
-                            [
-                              _c("span", [
-                                _vm._v(
-                                  _vm._s(mensaje.created_at.substring(11, 16))
-                                ),
-                              ]),
-                            ]
-                          ),
-                        ]
-                      ),
-                    ]
-                  ),
-                ])
+                          ? _c("img", {
+                              staticClass:
+                                "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon",
+                              staticStyle: { width: "25px", height: "25px" },
+                              attrs: { src: "/" + _vm.userData.image },
+                            })
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "chat ml-2 p-1",
+                            class:
+                              _vm.userId == mensaje.transmitter_id
+                                ? "bg-white ml-2 p-2"
+                                : "chat mr-2 p-2",
+                          },
+                          [
+                            _c("span", { staticClass: "let" }, [
+                              _vm._v(_vm._s(mensaje.message)),
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "d-flex text",
+                                class:
+                                  _vm.userId == mensaje.transmitter_id
+                                    ? "justify-content-start"
+                                    : "justify-content-end",
+                              },
+                              [
+                                _c("span", [
+                                  _vm._v(
+                                    _vm._s(mensaje.created_at.substring(11, 16))
+                                  ),
+                                ]),
+                              ]
+                            ),
+                          ]
+                        ),
+                      ]
+                    ),
+                  ])
+                }),
+                0
+              ),
+              _vm._v(" "),
+              _c("ChatForm", {
+                attrs: { authId: _vm.authId, userId: _vm.userId },
+                on: { cerrarChat: _vm.cerrarChat },
               }),
-              0
-            ),
-            _vm._v(" "),
-            _c("ChatForm", {
-              attrs: { authId: _vm.authId, userId: _vm.userId },
-              on: { cerrarChat: _vm.cerrarChat },
-            }),
-          ],
-          1
-        )
-      : _vm._e(),
-  ])
+            ],
+            1
+          )
+        : _vm._e(),
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -50350,16 +50371,12 @@ var render = function () {
           _vm._l(_vm.notifications, function (notification, index) {
             return _c(
               "li",
-              { key: index, staticClass: "d-flex flex-row p-3" },
+              {
+                key: index,
+                staticClass: "d-flex flex-row p-3",
+                staticStyle: { "font-weight": "bold" },
+              },
               [
-                _c("div", { staticClass: "img_cont" }, [
-                  _c("img", {
-                    staticClass:
-                      "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons",
-                    staticStyle: { width: "25px", height: "25px" },
-                    attrs: { src: "/" + notification.data.image },
-                  }),
-                ]),
                 _vm._v(
                   "\n          " +
                     _vm._s(notification.data.transmitter_name) +

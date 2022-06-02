@@ -110,7 +110,7 @@ body {
 
 .form-control {
   border-radius: 10px;
-  border: 2px solid #9e9e9e;
+  border: 1px solid #9e9e9e;
   font-size: 11px;
 }
 

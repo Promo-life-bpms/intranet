@@ -1,7 +1,7 @@
 <template>
   <div class="contenedor position-fixed">
     <div class="d-flex flex-row-reverse align-items-end">
-      <div class="card my-0">
+      <div class="card my-0" style="box-shadow: 0px 18px 10px 0px black">
         <div class="d-flex flex-row justify-content-between adiv p-3 text-white">
           <i
             class="bi bi-people-fill zoom ease"
@@ -10,7 +10,11 @@
           ></i>
           <span class="pb-3">Usuarios conectados</span>
         </div>
-        <div v-if="listUsersCollapse" style="max-height: 300px; overflow-y: scroll">
+        <div
+          v-if="listUsersCollapse"
+          style="max-height: 300px; overflow-y: scroll"
+          class="style-1"
+        >
           <div
             class="d-flex flex-row p-3 usuario"
             v-for="user in filteredUsers"
@@ -157,7 +161,7 @@ body {
 }
 
 .adiv {
-  background: #72c3d6;
+  background: #61a5b5;
   border-radius: 15px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
@@ -166,8 +170,7 @@ body {
 }
 
 .form-control {
-  border-radius: 10px;
-  border: 2px solid #9e9e9e;
+  border: 1px solid #9e9e9e;
   font-size: 11px;
 }
 
@@ -208,5 +211,21 @@ body {
 }
 .usuario:hover {
   background: #cacaca;
+}
+.style-1::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+
+.style-1::-webkit-scrollbar {
+  width: 12px;
+  background-color: #f5f5f5;
+}
+
+.style-1::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #555;
 }
 </style>
