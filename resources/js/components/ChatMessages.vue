@@ -62,8 +62,8 @@ export default {
   props: ["userId", "userData", "authId"],
   mounted: function () {
     window.Echo.channel("chat").listen("MessageSent", (e) => {
-      console.log("Evento recibido");
-      console.log(e);
+      /* console.log("Evento recibido");
+      console.log(e); */
       if (this.authId == e.receptor) {
         this.messages.push({
           message: e.message,
@@ -71,9 +71,11 @@ export default {
           transmitter_id: e.emisor,
           created_at: e.created_at,
         });
-        const objDiv = document.getElementById("formChat");
-        objDiv.scrollTop = objDiv.scrollHeight;
-        console.log(objDiv);
+        setTimeout(() => {
+          const objDiv = document.getElementById("formChat");
+          objDiv.scrollTop = objDiv.scrollHeight;
+          /* console.log(objDiv); */
+        }, 50);
       }
       if (this.authId == e.emisor && e.receptor == this.userId) {
         this.messages.push({
@@ -82,9 +84,12 @@ export default {
           transmitter_id: e.emisor,
           created_at: e.created_at,
         });
-        const objDiv = document.getElementById("formChat");
-        objDiv.scrollTop = objDiv.scrollHeight;
-        console.log(objDiv);
+
+        setTimeout(() => {
+          const objDiv = document.getElementById("formChat");
+          objDiv.scrollTop = objDiv.scrollHeight;
+          /*  console.log(objDiv); */
+        }, 50);
       }
     });
     setTimeout(() => {
@@ -100,7 +105,7 @@ export default {
   },
   methods: {
     collapseChat: function () {
-      console.log(2);
+      /* console.log(2); */
       this.chatCollapse = !this.chatCollapse;
       if (this.chatCollapse == true) {
         setTimeout(() => {
@@ -116,7 +121,7 @@ export default {
       let m = axios
         .get("/chat/fetchMessages/" + this.userId)
         .then((response) => {
-          console.log("si llego bien", response);
+          /*  console.log("si llego bien", response); */
           this.messages = response.data.mensajesEnviados;
 
           setTimeout(() => {
@@ -125,9 +130,9 @@ export default {
           });
         })
         .catch(function (error) {
-          console.log(error);
+          /* console.log(error); */
         });
-      console.log(m);
+      /*  console.log(m); */
     },
   },
 };

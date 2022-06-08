@@ -5375,36 +5375,37 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     collapseListUsers: function collapseListUsers() {
-      console.log(1);
+      /* console.log(1); */
       this.listUsersCollapse = !this.listUsersCollapse;
     },
     obtenerUsuarios: function obtenerUsuarios() {
       var _this3 = this;
 
       var u = axios.get("/chat/obtenerUsuarios").then(function (response) {
-        console.log(response);
+        /* console.log(response); */
         _this3.usuarios = response.data;
       })["catch"](function (error) {
-        console.log(error);
+        /* console.log(error); */
       });
-      console.log(u);
+      /* console.log(u); */
     },
     showConversation: function showConversation(user) {
       this.showMessages = true;
     },
     abrirchat: function abrirchat(id) {
-      console.log(this.listaChats.size);
-
+      /*  console.log(this.listaChats.size); */
       if (this.listaChats.size < 3) {
         this.listaChats.add(id);
         this.listaChatsAbiertos = Array.from(this.listaChats);
-        console.log(this.listaChats);
+        /* console.log(this.listaChats); */
+
         this.listaChats.size;
       }
     },
     cerrarChat: function cerrarChat(id) {
-      console.log(id);
-      console.log("Click event on the button of the children with: " + id);
+      /* console.log(id); */
+
+      /*  console.log("Click event on the button of the children with: " + id); */
       this.listaChats["delete"](id);
       this.listaChatsAbiertos = Array.from(this.listaChats);
     }
@@ -5453,18 +5454,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["userId"],
   data: function data() {
@@ -5478,9 +5467,9 @@ __webpack_require__.r(__webpack_exports__);
         message: this.newMessage,
         receiver_id: this.userId
       }).then(function (response) {
-        console.log(response);
+        /* console.log(response); */
       })["catch"](function (e) {
-        console.log(e);
+        /*  console.log(e); */
       });
       this.$emit("messagesent", {
         user: this.user,
@@ -5570,9 +5559,8 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     window.Echo.channel("chat").listen("MessageSent", function (e) {
-      console.log("Evento recibido");
-      console.log(e);
-
+      /* console.log("Evento recibido");
+      console.log(e); */
       if (_this.authId == e.receptor) {
         _this.messages.push({
           message: e.message,
@@ -5581,9 +5569,11 @@ __webpack_require__.r(__webpack_exports__);
           created_at: e.created_at
         });
 
-        var objDiv = document.getElementById("formChat");
-        objDiv.scrollTop = objDiv.scrollHeight;
-        console.log(objDiv);
+        setTimeout(function () {
+          var objDiv = document.getElementById("formChat");
+          objDiv.scrollTop = objDiv.scrollHeight;
+          /* console.log(objDiv); */
+        }, 50);
       }
 
       if (_this.authId == e.emisor && e.receptor == _this.userId) {
@@ -5594,10 +5584,11 @@ __webpack_require__.r(__webpack_exports__);
           created_at: e.created_at
         });
 
-        var _objDiv = document.getElementById("formChat");
-
-        _objDiv.scrollTop = _objDiv.scrollHeight;
-        console.log(_objDiv);
+        setTimeout(function () {
+          var objDiv = document.getElementById("formChat");
+          objDiv.scrollTop = objDiv.scrollHeight;
+          /*  console.log(objDiv); */
+        }, 50);
       }
     });
     setTimeout(function () {
@@ -5612,7 +5603,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     collapseChat: function collapseChat() {
-      console.log(2);
+      /* console.log(2); */
       this.chatCollapse = !this.chatCollapse;
 
       if (this.chatCollapse == true) {
@@ -5629,16 +5620,16 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       var m = axios.get("/chat/fetchMessages/" + this.userId).then(function (response) {
-        console.log("si llego bien", response);
+        /*  console.log("si llego bien", response); */
         _this2.messages = response.data.mensajesEnviados;
         setTimeout(function () {
           var objDiv = document.getElementById("formChat");
           objDiv.scrollTop = objDiv.scrollHeight;
         });
       })["catch"](function (error) {
-        console.log(error);
+        /* console.log(error); */
       });
-      console.log(m);
+      /*  console.log(m); */
     }
   }
 });
@@ -5717,7 +5708,7 @@ __webpack_require__.r(__webpack_exports__);
           _this.$data.totalLikes--;
         }
       })["catch"](function (error) {
-        console.log(error.data);
+        /* console.log(error.data); */
       });
     }
   },
@@ -5771,11 +5762,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
     window.Echo.channel("chat").listen("MessageSent", function (e) {
-      console.log("Notificacion guardada");
-      console.log(e);
+      /* console.log("Notificacion guardada");
+      console.log(e); */
     });
     this.obtenerMensajes();
   },
@@ -5790,13 +5789,13 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       var u = axios.get("chat/Notificaciones").then(function (response) {
-        console.log(response);
+        /* console.log(response); */
         _this.notifications = response.data.notificationUnread;
         _this.countNotifications = response.data.countNotifications;
       })["catch"](function (error) {
-        console.log(error);
+        /*  console.log(error); */
       });
-      console.log(u);
+      /* console.log(u); */
     }
   }
 });
@@ -5836,9 +5835,8 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     window.Echo.channel("chat").listen("MessageSent", function (e) {
-      console.log("Notificacion recibida");
-      console.log(e);
-
+      /* console.log("Notificacion recibida");
+      console.log(e); */
       if (_this.authId == e.receptor) {
         toastr__WEBPACK_IMPORTED_MODULE_0___default().success("".concat(e.transmitter_name, ": ").concat(e.message), "Mensaje");
         audio.play();
@@ -11096,7 +11094,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nul {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.notification-drop {\n  font-family: \"Ubuntu\", sans-serif;\n  color: #444;\n}\n.notification-drop .item {\n  padding: 10px;\n  font-size: 18px;\n  position: relative;\n  border-bottom: 1px solid #ddd;\n}\n.notification-drop .item:hover {\n  cursor: pointer;\n}\n.notification-drop .item i {\n  margin-left: 10px;\n}\n.notification-drop .item ul {\n  display: none;\n  position: absolute;\n  top: 100%;\n  background: #fff;\n  left: -200px;\n  right: 0;\n  z-index: 1;\n  border-top: 1px solid #ddd;\n}\n.notification-drop .item ul li {\n  font-size: 16px;\n  padding: 15px 0 15px 25px;\n}\n.notification-drop .item ul li:hover {\n  background: #ddd;\n  color: rgba(0, 0, 0, 0.8);\n}\n@media screen and (min-width: 500px) {\n.notification-drop {\n    display: flex;\n    justify-content: flex-end;\n}\n.notification-drop .item {\n    border: none;\n}\n}\n.notification-bell {\n  font-size: 20px;\n}\n.btn__badge {\n  background: #ff5d5d;\n  color: white;\n  font-size: 12px;\n  position: absolute;\n  top: 0;\n  right: 0px;\n  padding: 3px 10px;\n  border-radius: 50%;\n}\n.pulse-button {\n  box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.5);\n  -webkit-animation: pulse 3.5s infinite;\n}\n.pulse-button:hover {\n  -webkit-animation: none;\n}\n@-webkit-keyframes pulse {\n0% {\n    transform: scale(0.9);\n}\n50% {\n    transform: scale(1);\n    box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);\n}\n100% {\n    transform: scale(0.9);\n    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);\n}\n}\n.notification-text {\n  font-size: 14px;\n  font-weight: bold;\n}\n.notification-text span {\n  float: right;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nul {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.notification-drop {\n  font-family: \"Ubuntu\", sans-serif;\n  color: #444;\n}\n.notification-drop .item {\n  padding: 12px;\n  font-size: 18px;\n  position: relative;\n  border-bottom: 1px solid #ddd;\n}\n.notification-drop .item:hover {\n  cursor: pointer;\n}\n.notification-drop .item i {\n  margin-left: 10px;\n}\n.notification-drop .item ul {\n  display: none;\n  position: absolute;\n  top: 100%;\n  background: #fff;\n  left: -200px;\n  right: 0;\n  z-index: 1;\n  border-top: 1px solid #ddd;\n}\n.notification-drop .item ul li {\n  font-size: 12px;\n  padding: 15px 0 15px 10px;\n}\n.notification-drop .item ul li:hover {\n  background: #ddd;\n  color: rgba(0, 0, 0, 0.8);\n}\n@media screen and (min-width: 500px) {\n.notification-drop {\n    display: flex;\n    justify-content: flex-end;\n}\n.notification-drop .item {\n    border: none;\n}\n}\n.notification-bell {\n  font-size: 20px;\n}\n.btn__badge {\n  background: #ff5d5d;\n  color: white;\n  font-size: 12px;\n  position: absolute;\n  top: 0;\n  right: 0px;\n  padding: 3px 10px;\n  border-radius: 50%;\n}\n.pulse-button {\n  box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.5);\n  -webkit-animation: pulse 3.5s infinite;\n}\n.pulse-button:hover {\n  -webkit-animation: none;\n}\n@-webkit-keyframes pulse {\n0% {\n    transform: scale(0.9);\n}\n50% {\n    transform: scale(1);\n    box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);\n}\n100% {\n    transform: scale(0.9);\n    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);\n}\n}\n.notification-text {\n  font-size: 14px;\n  font-weight: bolder;\n}\n.notification-text span {\n  float: right;\n}\n.style-1::-webkit-scrollbar-track {\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  border-radius: 10px;\n  background-color: #f5f5f5;\n}\n.style-1::-webkit-scrollbar {\n  width: 12px;\n  background-color: #f5f5f5;\n}\n.style-1::-webkit-scrollbar-thumb {\n  border-radius: 10px;\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  background-color: #555;\n}\n.hoverlist {\n  box-shadow: #61a5b5 0px 0px 0px 1px;\n}\n.hover-cont {\n  box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px,\n    rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px,\n    rgba(0, 0, 0, 0.09) 0px 32px 16px;\n}\n.dropdown-header {\n  padding: 5px 20px 8px;\n\n  color: #61a5b5;\n  font-size: 15px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  text-transform: uppercase;\n  font-family: \"ABeeZee\", sans-serif;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -50365,33 +50363,43 @@ var render = function () {
         _c(
           "ul",
           {
-            staticClass: "list-group",
+            staticClass: "list-group style-1 hover-cont",
             staticStyle: { "max-height": "300px", "overflow-y": "scroll" },
           },
-          _vm._l(_vm.notifications, function (notification, index) {
-            return _c(
-              "li",
-              {
-                key: index,
-                staticClass: "d-flex flex-row p-3",
-                staticStyle: { "font-weight": "bold" },
-              },
-              [
-                _vm._v(
-                  "\n          " +
-                    _vm._s(notification.data.transmitter_name) +
-                    "\n          "
-                ),
-                _c("br"),
-                _vm._v(
-                  "\n          Mensaje nuevo: " +
-                    _vm._s(notification.data.message) +
-                    "\n        "
-                ),
-              ]
-            )
-          }),
-          0
+          [
+            _c("li", { staticClass: "dropdown-header" }, [
+              _vm._v("Notificaciones"),
+            ]),
+            _vm._v(" "),
+            _vm._l(_vm.notifications, function (notification, index) {
+              return _c(
+                "li",
+                { key: index, staticClass: "d-flex flex-row p-3 hoverlist" },
+                [
+                  _c("div", [
+                    _c("span", { staticStyle: { "font-weight": "750" } }, [
+                      _vm._v(
+                        "\n              " +
+                          _vm._s(notification.data.transmitter_name)
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c("span", { staticStyle: { "font-weight": "800" } }, [
+                      _vm._v(" Mensaje nuevo: "),
+                    ]),
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(notification.data.message) +
+                        "\n          "
+                    ),
+                  ]),
+                ]
+              )
+            }),
+          ],
+          2
         ),
       ]),
     ]),
@@ -50430,7 +50438,7 @@ var staticRenderFns = [
     return _c("div", [
       _c("audio", { attrs: { id: "audio", controls: "" } }, [
         _c("source", {
-          attrs: { type: "audio/wav", src: "/assets/audio/notification.mp3" },
+          attrs: { type: "audio/wav", src: "/assets/audio/notification2.mp3" },
         }),
       ]),
     ])

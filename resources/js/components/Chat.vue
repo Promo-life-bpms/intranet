@@ -109,36 +109,36 @@ export default {
 
   methods: {
     collapseListUsers: function () {
-      console.log(1);
+      /* console.log(1); */
       this.listUsersCollapse = !this.listUsersCollapse;
     },
     obtenerUsuarios: function () {
       let u = axios
         .get("/chat/obtenerUsuarios")
         .then((response) => {
-          console.log(response);
+          /* console.log(response); */
           this.usuarios = response.data;
         })
         .catch(function (error) {
-          console.log(error);
+          /* console.log(error); */
         });
-      console.log(u);
+      /* console.log(u); */
     },
     showConversation: function (user) {
       this.showMessages = true;
     },
     abrirchat: function (id) {
-      console.log(this.listaChats.size);
+      /*  console.log(this.listaChats.size); */
       if (this.listaChats.size < 3) {
         this.listaChats.add(id);
         this.listaChatsAbiertos = Array.from(this.listaChats);
-        console.log(this.listaChats);
+        /* console.log(this.listaChats); */
         this.listaChats.size;
       }
     },
     cerrarChat: function (id) {
-      console.log(id);
-      console.log("Click event on the button of the children with: " + id);
+      /* console.log(id); */
+      /*  console.log("Click event on the button of the children with: " + id); */
       this.listaChats.delete(id);
       this.listaChatsAbiertos = Array.from(this.listaChats);
     },
