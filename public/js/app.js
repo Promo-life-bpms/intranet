@@ -5770,6 +5770,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
     window.Echo.channel("chat").listen("MessageSent", function (e) {
@@ -5788,7 +5806,7 @@ __webpack_require__.r(__webpack_exports__);
     obtenerMensajes: function obtenerMensajes() {
       var _this = this;
 
-      var u = axios.get("chat/Notificaciones").then(function (response) {
+      var u = axios.get("/chat/Notificaciones").then(function (response) {
         /* console.log(response); */
         _this.notifications = response.data.notificationUnread;
         _this.countNotifications = response.data.countNotifications;
@@ -11094,7 +11112,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nul {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.notification-drop {\n  font-family: \"Ubuntu\", sans-serif;\n  color: #444;\n}\n.notification-drop .item {\n  padding: 12px;\n  font-size: 18px;\n  position: relative;\n  border-bottom: 1px solid #ddd;\n}\n.notification-drop .item:hover {\n  cursor: pointer;\n}\n.notification-drop .item i {\n  margin-left: 10px;\n}\n.notification-drop .item ul {\n  display: none;\n  position: absolute;\n  top: 100%;\n  background: #fff;\n  left: -200px;\n  right: 0;\n  z-index: 1;\n  border-top: 1px solid #ddd;\n}\n.notification-drop .item ul li {\n  font-size: 12px;\n  padding: 15px 0 15px 10px;\n}\n.notification-drop .item ul li:hover {\n  background: #ddd;\n  color: rgba(0, 0, 0, 0.8);\n}\n@media screen and (min-width: 500px) {\n.notification-drop {\n    display: flex;\n    justify-content: flex-end;\n}\n.notification-drop .item {\n    border: none;\n}\n}\n.notification-bell {\n  font-size: 20px;\n}\n.btn__badge {\n  background: #ff5d5d;\n  color: white;\n  font-size: 12px;\n  position: absolute;\n  top: 0;\n  right: 0px;\n  padding: 3px 10px;\n  border-radius: 50%;\n}\n.pulse-button {\n  box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.5);\n  -webkit-animation: pulse 3.5s infinite;\n}\n.pulse-button:hover {\n  -webkit-animation: none;\n}\n@-webkit-keyframes pulse {\n0% {\n    transform: scale(0.9);\n}\n50% {\n    transform: scale(1);\n    box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);\n}\n100% {\n    transform: scale(0.9);\n    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);\n}\n}\n.notification-text {\n  font-size: 14px;\n  font-weight: bolder;\n}\n.notification-text span {\n  float: right;\n}\n.style-1::-webkit-scrollbar-track {\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  border-radius: 10px;\n  background-color: #f5f5f5;\n}\n.style-1::-webkit-scrollbar {\n  width: 12px;\n  background-color: #f5f5f5;\n}\n.style-1::-webkit-scrollbar-thumb {\n  border-radius: 10px;\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  background-color: #555;\n}\n.hoverlist {\n  box-shadow: #61a5b5 0px 0px 0px 1px;\n}\n.hover-cont {\n  box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px,\n    rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px,\n    rgba(0, 0, 0, 0.09) 0px 32px 16px;\n}\n.dropdown-header {\n  padding: 5px 20px 8px;\n\n  color: #61a5b5;\n  font-size: 15px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  text-transform: uppercase;\n  font-family: \"ABeeZee\", sans-serif;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nul {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.notification-drop {\n  font-family: \"Ubuntu\", sans-serif;\n  color: #444;\n}\n.notification-drop .item {\n  padding: 12px;\n  font-size: 18px;\n  position: relative;\n  border-bottom: 1px solid #ddd;\n}\n.notification-drop .item:hover {\n  cursor: pointer;\n}\n.notification-drop .item i {\n  margin-left: 10px;\n}\n.notification-drop .item ul {\n  display: none;\n  position: absolute;\n  top: 100%;\n  background: #fff;\n  left: -200px;\n  right: 0;\n  z-index: 1;\n  border-top: 1px solid #ddd;\n}\n.notification-drop .item ul li {\n  font-size: 12px;\n  padding: 15px 0 15px 10px;\n}\n.notification-drop .item ul li:hover {\n  background: #ddd;\n  color: rgba(0, 0, 0, 0.8);\n}\n@media screen and (min-width: 500px) {\n.notification-drop {\n    display: flex;\n    justify-content: flex-end;\n}\n.notification-drop .item {\n    border: none;\n}\n}\n.notification-bell {\n  font-size: 20px;\n}\n.btn__badge {\n  background: #ff5d5d;\n  color: white;\n  font-size: 12px;\n  position: absolute;\n  top: 0;\n  right: 0px;\n  padding: 3px 10px;\n  border-radius: 50%;\n}\n.pulse-button {\n  box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.5);\n  -webkit-animation: pulse 3.5s infinite;\n}\n.pulse-button:hover {\n  -webkit-animation: none;\n}\n@-webkit-keyframes pulse {\n0% {\n    transform: scale(0.9);\n}\n50% {\n    transform: scale(1);\n    box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);\n}\n100% {\n    transform: scale(0.9);\n    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);\n}\n}\n.notification-text {\n  font-size: 14px;\n  font-weight: bolder;\n}\n.notification-text span {\n  float: right;\n}\n.style-1::-webkit-scrollbar-track {\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  border-radius: 10px;\n  background-color: #f5f5f5;\n}\n.style-1::-webkit-scrollbar {\n  width: 12px;\n  background-color: #f5f5f5;\n}\n.style-1::-webkit-scrollbar-thumb {\n  border-radius: 10px;\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  background-color: #555;\n}\n.hoverlist {\n  box-shadow: #61a5b5 0px 0px 0px 1px;\n}\n.hover-cont {\n  box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px,\n    rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px,\n    rgba(0, 0, 0, 0.09) 0px 32px 16px;\n}\n.dropdown-header {\n  padding: 5px 20px 8px;\n\n  color: #61a5b5;\n  font-size: 15px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  text-transform: uppercase;\n  font-family: \"ABeeZee\", sans-serif;\n}\n/* .close-notification {\n  display: flex;\n  float: right;\n  padding: 10px;\n} */\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -50374,7 +50392,11 @@ var render = function () {
             _vm._l(_vm.notifications, function (notification, index) {
               return _c(
                 "li",
-                { key: index, staticClass: "d-flex flex-row p-3 hoverlist" },
+                {
+                  key: index,
+                  staticClass:
+                    "d-flex flex-row p-3 hoverlist justify-content-between align-items-center",
+                },
                 [
                   _c("div", [
                     _c("span", { staticStyle: { "font-weight": "750" } }, [
@@ -50393,6 +50415,46 @@ var render = function () {
                       "\n            " +
                         _vm._s(notification.data.message) +
                         "\n          "
+                    ),
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "close-notification" }, [
+                    _c(
+                      "a",
+                      {
+                        staticStyle: {},
+                        attrs: {
+                          href: "/chat/eliminarNotificacion/" + notification.id,
+                        },
+                      },
+                      [
+                        _c(
+                          "svg",
+                          {
+                            staticClass: "bi bi-x-circle",
+                            attrs: {
+                              xmlns: "http://www.w3.org/2000/svg",
+                              width: "16",
+                              height: "16",
+                              fill: "currentColor",
+                              viewBox: "0 0 16 16",
+                            },
+                          },
+                          [
+                            _c("path", {
+                              attrs: {
+                                d: "M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z",
+                              },
+                            }),
+                            _vm._v(" "),
+                            _c("path", {
+                              attrs: {
+                                d: "M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z",
+                              },
+                            }),
+                          ]
+                        ),
+                      ]
                     ),
                   ]),
                 ]

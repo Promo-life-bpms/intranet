@@ -32,6 +32,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PublicationsController;
+use App\Models\Message;
 use App\Models\RequestCalendar;
 use App\Models\User;
 use App\Models\Vacations;
@@ -218,8 +219,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/sendMessage', [MessageController::class, 'sendMessage'])->name('send.message');
         Route::get('/markNotification/{notification}', 'MessageController@markAsRead')->name('message.markAsRead');
         Route::get('/Notificaciones', [MessageController::class, 'Notificaciones'])->name('message.notification');
+        Route::get('eliminarNotificacion/{notification}', [MessageController::class, 'markAsRead'])->name('eliminar.notificacion');
     });
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
-

@@ -58,7 +58,7 @@ class MessageController extends Controller
         $receiver_id = request()->receiver_id;
         $message = request()->message;
         $userReceiver = User::find($receiver_id);
-        $image=auth()->user()->image;
+        $image = auth()->user()->image;
 
 
 
@@ -127,8 +127,12 @@ class MessageController extends Controller
     }
     public function markAsRead(DatabaseNotification $notification)
     {
-        $notification->markAsRead();
-        return back();
+        try {
+            $notification->markAsRead();
+            return back();
+        } catch (\Throwable $th) {
+            return response()->json(['error' => 'Error al eliminar la notificacion']);
+        }
     }
     public function Notificaciones()
     {
