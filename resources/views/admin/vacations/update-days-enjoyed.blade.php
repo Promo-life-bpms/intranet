@@ -1,5 +1,5 @@
 <div>
-    <strong>Periodo:</strong> {{ $data->period }}
+    <strong>Periodo:</strong> {{ $data->period == 1 ? 'Actual': 'Vencido' }}
     <br>
     <strong>Expiracion:</strong> {{ $data->cutoff_date }}
     <br>
