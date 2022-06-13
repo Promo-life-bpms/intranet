@@ -1,16 +1,16 @@
 <template>
-  <div class="card my-0 mx-3">
+  <div class="card my-0 mx-3" style="box-shadow: 0px 18px 10px 0px black">
     <div class="d-flex flex-row justify-content-between adiv p-3 text-white">
       <i
-        class="bi bi-caret-down-square"
-        style="font-size: 18px"
+        class="bi bi-chevron-down zoom ease"
+        style="font-size: 20px"
         @click="collapseChat()"
       ></i>
       <span class="pb-3">{{ userData.name + " " + userData.lastname }}</span>
-      <i class="fas fa-times" style="font-size: 18px" @click="cerrarChat()"></i>
+      <i class="fas fa-times zoom ease" style="font-size: 20px" @click="cerrarChat()"></i>
     </div>
     <div v-if="chatCollapse">
-      <div style="height: 300px; overflow-y: auto" id="formChat">
+      <div style="height: 300px; overflow-y: auto" id="formChat" class="style-1">
         <div v-for="(mensaje, i) in messages" :key="i.id">
           <div
             class="d-flex flex-row p-2"
@@ -62,8 +62,8 @@ export default {
   props: ["userId", "userData", "authId"],
   mounted: function () {
     window.Echo.channel("chat").listen("MessageSent", (e) => {
-      console.log("Evento recibido");
-      console.log(e);
+      /* console.log("Evento recibido");
+      console.log(e); */
       if (this.authId == e.receptor) {
         this.messages.push({
           message: e.message,
@@ -71,9 +71,11 @@ export default {
           transmitter_id: e.emisor,
           created_at: e.created_at,
         });
-        const objDiv = document.getElementById("formChat");
-        objDiv.scrollTop = objDiv.scrollHeight;
-        console.log(objDiv);
+        setTimeout(() => {
+          const objDiv = document.getElementById("formChat");
+          objDiv.scrollTop = objDiv.scrollHeight;
+          /* console.log(objDiv); */
+        }, 50);
       }
       if (this.authId == e.emisor && e.receptor == this.userId) {
         this.messages.push({
@@ -82,9 +84,12 @@ export default {
           transmitter_id: e.emisor,
           created_at: e.created_at,
         });
-        const objDiv = document.getElementById("formChat");
-        objDiv.scrollTop = objDiv.scrollHeight;
-        console.log(objDiv);
+
+        setTimeout(() => {
+          const objDiv = document.getElementById("formChat");
+          objDiv.scrollTop = objDiv.scrollHeight;
+          /*  console.log(objDiv); */
+        }, 50);
       }
     });
     setTimeout(() => {
@@ -100,7 +105,7 @@ export default {
   },
   methods: {
     collapseChat: function () {
-      console.log(2);
+      /* console.log(2); */
       this.chatCollapse = !this.chatCollapse;
       if (this.chatCollapse == true) {
         setTimeout(() => {
@@ -116,7 +121,7 @@ export default {
       let m = axios
         .get("/chat/fetchMessages/" + this.userId)
         .then((response) => {
-          console.log("si llego bien", response);
+          /*  console.log("si llego bien", response); */
           this.messages = response.data.mensajesEnviados;
 
           setTimeout(() => {
@@ -125,9 +130,9 @@ export default {
           });
         })
         .catch(function (error) {
-          console.log(error);
+          /* console.log(error); */
         });
-      console.log(m);
+      /*  console.log(m); */
     },
   },
 };
@@ -147,7 +152,7 @@ body {
 }
 
 .adiv {
-  background: #72c3d6;
+  background: #61a5b5;
   border-radius: 15px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
@@ -169,5 +174,28 @@ body {
 }
 .let {
   font-size: 11px;
+}
+.zoom:hover {
+  transform: scale(1.3);
+  transition: 0.5s;
+}
+.ease {
+  transition: 1s ease-out;
+}
+.style-1::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+
+.style-1::-webkit-scrollbar {
+  width: 12px;
+  background-color: #f5f5f5;
+}
+
+.style-1::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #555;
 }
 </style>

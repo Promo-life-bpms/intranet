@@ -5314,6 +5314,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -5355,36 +5375,37 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     collapseListUsers: function collapseListUsers() {
-      console.log(1);
+      /* console.log(1); */
       this.listUsersCollapse = !this.listUsersCollapse;
     },
     obtenerUsuarios: function obtenerUsuarios() {
       var _this3 = this;
 
       var u = axios.get("/chat/obtenerUsuarios").then(function (response) {
-        console.log(response);
+        /* console.log(response); */
         _this3.usuarios = response.data;
       })["catch"](function (error) {
-        console.log(error);
+        /* console.log(error); */
       });
-      console.log(u);
+      /* console.log(u); */
     },
     showConversation: function showConversation(user) {
       this.showMessages = true;
     },
     abrirchat: function abrirchat(id) {
-      console.log(this.listaChats.size);
-
+      /*  console.log(this.listaChats.size); */
       if (this.listaChats.size < 3) {
         this.listaChats.add(id);
         this.listaChatsAbiertos = Array.from(this.listaChats);
-        console.log(this.listaChats);
+        /* console.log(this.listaChats); */
+
         this.listaChats.size;
       }
     },
     cerrarChat: function cerrarChat(id) {
-      console.log(id);
-      console.log("Click event on the button of the children with: " + id);
+      /* console.log(id); */
+
+      /*  console.log("Click event on the button of the children with: " + id); */
       this.listaChats["delete"](id);
       this.listaChatsAbiertos = Array.from(this.listaChats);
     }
@@ -5446,9 +5467,9 @@ __webpack_require__.r(__webpack_exports__);
         message: this.newMessage,
         receiver_id: this.userId
       }).then(function (response) {
-        console.log(response);
+        /* console.log(response); */
       })["catch"](function (e) {
-        console.log(e);
+        /*  console.log(e); */
       });
       this.$emit("messagesent", {
         user: this.user,
@@ -5538,9 +5559,8 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     window.Echo.channel("chat").listen("MessageSent", function (e) {
-      console.log("Evento recibido");
-      console.log(e);
-
+      /* console.log("Evento recibido");
+      console.log(e); */
       if (_this.authId == e.receptor) {
         _this.messages.push({
           message: e.message,
@@ -5549,9 +5569,11 @@ __webpack_require__.r(__webpack_exports__);
           created_at: e.created_at
         });
 
-        var objDiv = document.getElementById("formChat");
-        objDiv.scrollTop = objDiv.scrollHeight;
-        console.log(objDiv);
+        setTimeout(function () {
+          var objDiv = document.getElementById("formChat");
+          objDiv.scrollTop = objDiv.scrollHeight;
+          /* console.log(objDiv); */
+        }, 50);
       }
 
       if (_this.authId == e.emisor && e.receptor == _this.userId) {
@@ -5562,10 +5584,11 @@ __webpack_require__.r(__webpack_exports__);
           created_at: e.created_at
         });
 
-        var _objDiv = document.getElementById("formChat");
-
-        _objDiv.scrollTop = _objDiv.scrollHeight;
-        console.log(_objDiv);
+        setTimeout(function () {
+          var objDiv = document.getElementById("formChat");
+          objDiv.scrollTop = objDiv.scrollHeight;
+          /*  console.log(objDiv); */
+        }, 50);
       }
     });
     setTimeout(function () {
@@ -5580,7 +5603,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     collapseChat: function collapseChat() {
-      console.log(2);
+      /* console.log(2); */
       this.chatCollapse = !this.chatCollapse;
 
       if (this.chatCollapse == true) {
@@ -5597,16 +5620,16 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       var m = axios.get("/chat/fetchMessages/" + this.userId).then(function (response) {
-        console.log("si llego bien", response);
+        /*  console.log("si llego bien", response); */
         _this2.messages = response.data.mensajesEnviados;
         setTimeout(function () {
           var objDiv = document.getElementById("formChat");
           objDiv.scrollTop = objDiv.scrollHeight;
         });
       })["catch"](function (error) {
-        console.log(error);
+        /* console.log(error); */
       });
-      console.log(m);
+      /*  console.log(m); */
     }
   }
 });
@@ -5685,7 +5708,7 @@ __webpack_require__.r(__webpack_exports__);
           _this.$data.totalLikes--;
         }
       })["catch"](function (error) {
-        console.log(error.data);
+        /* console.log(error.data); */
       });
     }
   },
@@ -5738,11 +5761,38 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
     window.Echo.channel("chat").listen("MessageSent", function (e) {
-      console.log("Notificacion guardada");
-      console.log(e);
+      /* console.log("Notificacion guardada");
+      console.log(e); */
     });
     this.obtenerMensajes();
   },
@@ -5756,14 +5806,14 @@ __webpack_require__.r(__webpack_exports__);
     obtenerMensajes: function obtenerMensajes() {
       var _this = this;
 
-      var u = axios.get("chat/Notificaciones").then(function (response) {
-        console.log(response);
+      var u = axios.get("/chat/Notificaciones").then(function (response) {
+        /* console.log(response); */
         _this.notifications = response.data.notificationUnread;
         _this.countNotifications = response.data.countNotifications;
       })["catch"](function (error) {
-        console.log(error);
+        /*  console.log(error); */
       });
-      console.log(u);
+      /* console.log(u); */
     }
   }
 });
@@ -5803,9 +5853,8 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     window.Echo.channel("chat").listen("MessageSent", function (e) {
-      console.log("Notificacion recibida");
-      console.log(e);
-
+      /* console.log("Notificacion recibida");
+      console.log(e); */
       if (_this.authId == e.receptor) {
         toastr__WEBPACK_IMPORTED_MODULE_0___default().success("".concat(e.transmitter_name, ": ").concat(e.message), "Mensaje");
         audio.play();
@@ -10965,7 +11014,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-0d66c37a] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-0d66c37a] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-0d66c37a] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.bg-white[data-v-0d66c37a] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.form-control[data-v-0d66c37a] {\n  border-radius: 10px;\n  border: 2px solid #9e9e9e;\n  font-size: 11px;\n}\n.form-control[data-v-0d66c37a]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-0d66c37a]::-moz-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-0d66c37a]:-ms-input-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-0d66c37a]::placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.contenedor[data-v-0d66c37a] {\n  z-index: 100;\n  right: 1px;\n  bottom: 1px;\n}\n.online_icon[data-v-0d66c37a] {\n  position: absolute;\n  height: 15px;\n  width: 15px;\n  background-color: #4cd137;\n  border-radius: 50%;\n  bottom: 0.2em;\n  right: 0.4em;\n  border: 1.5px solid white;\n}\n.img_cont[data-v-0d66c37a] {\n  position: relative;\n  height: 35px;\n  width: 40px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-0d66c37a] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-0d66c37a] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-0d66c37a] {\n  background: #61a5b5;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.form-control[data-v-0d66c37a] {\n  border: 1px solid #9e9e9e;\n  font-size: 11px;\n}\n.form-control[data-v-0d66c37a]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-0d66c37a]::-moz-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-0d66c37a]:-ms-input-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-0d66c37a]::placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.contenedor[data-v-0d66c37a] {\n  z-index: 100;\n  right: 1px;\n  bottom: 1px;\n}\n.online_icon[data-v-0d66c37a] {\n  position: absolute;\n  height: 15px;\n  width: 15px;\n  background-color: #4cd137;\n  border-radius: 50%;\n  bottom: 0.2em;\n  right: 0.4em;\n  border: 1.5px solid white;\n}\n.img_cont[data-v-0d66c37a] {\n  position: relative;\n  height: 35px;\n  width: 40px;\n}\n.zoom[data-v-0d66c37a]:hover {\n  transform: scale(1.3);\n  transition: ease-in-out 0.5s;\n}\n.ease[data-v-0d66c37a] {\n  transition: 1s ease-out;\n}\n.usuario[data-v-0d66c37a]:hover {\n  background: #cacaca;\n}\n.style-1[data-v-0d66c37a]::-webkit-scrollbar-track {\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  border-radius: 10px;\n  background-color: #f5f5f5;\n}\n.style-1[data-v-0d66c37a]::-webkit-scrollbar {\n  width: 12px;\n  background-color: #f5f5f5;\n}\n.style-1[data-v-0d66c37a]::-webkit-scrollbar-thumb {\n  border-radius: 10px;\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  background-color: #555;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -10990,7 +11039,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-6fb73fa7] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-6fb73fa7] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-6fb73fa7] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-6fb73fa7] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-6fb73fa7] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.form-control[data-v-6fb73fa7] {\n  border-radius: 10px;\n  border: 2px solid #9e9e9e;\n  font-size: 11px;\n}\n.form-control[data-v-6fb73fa7]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-6fb73fa7]::-moz-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-6fb73fa7]:-ms-input-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-6fb73fa7]::placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.type_msg[data-v-6fb73fa7] {\n  background-color: rgb(255, 255, 255) !important;\n  border-block: 10 !important;\n  color: rgb(0, 0, 0) !important;\n  height: 40px !important;\n  overflow-y: auto;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-6fb73fa7] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-6fb73fa7] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-6fb73fa7] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-6fb73fa7] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-6fb73fa7] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.form-control[data-v-6fb73fa7] {\n  border-radius: 10px;\n  border: 1px solid #9e9e9e;\n  font-size: 11px;\n}\n.form-control[data-v-6fb73fa7]:focus {\n  box-shadow: none;\n}\n.form-control[data-v-6fb73fa7]::-moz-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-6fb73fa7]:-ms-input-placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.form-control[data-v-6fb73fa7]::placeholder {\n  font-size: 11px;\n  color: #6c6c6c;\n}\n.type_msg[data-v-6fb73fa7] {\n  background-color: rgb(255, 255, 255) !important;\n  border-block: 10 !important;\n  color: rgb(0, 0, 0) !important;\n  height: 40px !important;\n  overflow-y: auto;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -11015,7 +11064,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-e422daa2] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-e422daa2] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-e422daa2] {\n  background: #72c3d6;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-e422daa2] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-e422daa2] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.let[data-v-e422daa2] {\n  font-size: 11px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-e422daa2] {\n  background: #eeeeee;\n  font-family: \"Roboto\", sans-serif;\n}\n.card[data-v-e422daa2] {\n  width: 300px;\n  border: none;\n  border-radius: 15px;\n}\n.adiv[data-v-e422daa2] {\n  background: #61a5b5;\n  border-radius: 15px;\n  border-bottom-right-radius: 0;\n  border-bottom-left-radius: 0;\n  font-size: 12px;\n  height: 46px;\n}\n.chat[data-v-e422daa2] {\n  border: none;\n  background: #e2fbff;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.bg-white[data-v-e422daa2] {\n  border: 1px solid #e7e7e9;\n  font-size: 10px;\n  border-radius: 20px;\n}\n.let[data-v-e422daa2] {\n  font-size: 11px;\n}\n.zoom[data-v-e422daa2]:hover {\n  transform: scale(1.3);\n  transition: 0.5s;\n}\n.ease[data-v-e422daa2] {\n  transition: 1s ease-out;\n}\n.style-1[data-v-e422daa2]::-webkit-scrollbar-track {\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  border-radius: 10px;\n  background-color: #f5f5f5;\n}\n.style-1[data-v-e422daa2]::-webkit-scrollbar {\n  width: 12px;\n  background-color: #f5f5f5;\n}\n.style-1[data-v-e422daa2]::-webkit-scrollbar-thumb {\n  border-radius: 10px;\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  background-color: #555;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -11063,7 +11112,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nul {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.notification-drop {\n  font-family: \"Ubuntu\", sans-serif;\n  color: #444;\n}\n.notification-drop .item {\n  padding: 10px;\n  font-size: 18px;\n  position: relative;\n  border-bottom: 1px solid #ddd;\n}\n.notification-drop .item:hover {\n  cursor: pointer;\n}\n.notification-drop .item i {\n  margin-left: 10px;\n}\n.notification-drop .item ul {\n  display: none;\n  position: absolute;\n  top: 100%;\n  background: #fff;\n  left: -200px;\n  right: 0;\n  z-index: 1;\n  border-top: 1px solid #ddd;\n}\n.notification-drop .item ul li {\n  font-size: 16px;\n  padding: 15px 0 15px 25px;\n}\n.notification-drop .item ul li:hover {\n  background: #ddd;\n  color: rgba(0, 0, 0, 0.8);\n}\n@media screen and (min-width: 500px) {\n.notification-drop {\n    display: flex;\n    justify-content: flex-end;\n}\n.notification-drop .item {\n    border: none;\n}\n}\n.notification-bell {\n  font-size: 20px;\n}\n.btn__badge {\n  background: #ff5d5d;\n  color: white;\n  font-size: 12px;\n  position: absolute;\n  top: 0;\n  right: 0px;\n  padding: 3px 10px;\n  border-radius: 50%;\n}\n.pulse-button {\n  box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.5);\n  -webkit-animation: pulse 3.5s infinite;\n}\n.pulse-button:hover {\n  -webkit-animation: none;\n}\n@-webkit-keyframes pulse {\n0% {\n    transform: scale(0.9);\n}\n50% {\n    transform: scale(1);\n    box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);\n}\n100% {\n    transform: scale(0.9);\n    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);\n}\n}\n.notification-text {\n  font-size: 14px;\n  font-weight: bold;\n}\n.notification-text span {\n  float: right;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nul {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n.notification-drop {\n  font-family: \"Ubuntu\", sans-serif;\n  color: #444;\n}\n.notification-drop .item {\n  padding: 12px;\n  font-size: 18px;\n  position: relative;\n  border-bottom: 1px solid #ddd;\n}\n.notification-drop .item:hover {\n  cursor: pointer;\n}\n.notification-drop .item i {\n  margin-left: 10px;\n}\n.notification-drop .item ul {\n  display: none;\n  position: absolute;\n  top: 100%;\n  background: #fff;\n  left: -200px;\n  right: 0;\n  z-index: 1;\n  border-top: 1px solid #ddd;\n}\n.notification-drop .item ul li {\n  font-size: 12px;\n  padding: 15px 0 15px 10px;\n}\n.notification-drop .item ul li:hover {\n  background: #ddd;\n  color: rgba(0, 0, 0, 0.8);\n}\n@media screen and (min-width: 500px) {\n.notification-drop {\n    display: flex;\n    justify-content: flex-end;\n}\n.notification-drop .item {\n    border: none;\n}\n}\n.notification-bell {\n  font-size: 20px;\n}\n.btn__badge {\n  background: #ff5d5d;\n  color: white;\n  font-size: 12px;\n  position: absolute;\n  top: 0;\n  right: 0px;\n  padding: 3px 10px;\n  border-radius: 50%;\n}\n.pulse-button {\n  box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.5);\n  -webkit-animation: pulse 3.5s infinite;\n}\n.pulse-button:hover {\n  -webkit-animation: none;\n}\n@-webkit-keyframes pulse {\n0% {\n    transform: scale(0.9);\n}\n50% {\n    transform: scale(1);\n    box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);\n}\n100% {\n    transform: scale(0.9);\n    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);\n}\n}\n.notification-text {\n  font-size: 14px;\n  font-weight: bolder;\n}\n.notification-text span {\n  float: right;\n}\n.style-1::-webkit-scrollbar-track {\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  border-radius: 10px;\n  background-color: #f5f5f5;\n}\n.style-1::-webkit-scrollbar {\n  width: 12px;\n  background-color: #f5f5f5;\n}\n.style-1::-webkit-scrollbar-thumb {\n  border-radius: 10px;\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  background-color: #555;\n}\n.hoverlist {\n  box-shadow: #61a5b5 0px 0px 0px 1px;\n}\n.hover-cont {\n  box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px,\n    rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px,\n    rgba(0, 0, 0, 0.09) 0px 32px 16px;\n}\n.dropdown-header {\n  padding: 5px 20px 8px;\n\n  color: #61a5b5;\n  font-size: 15px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  text-transform: uppercase;\n  font-family: \"ABeeZee\", sans-serif;\n}\n/* .close-notification {\n  display: flex;\n  float: right;\n  padding: 10px;\n} */\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -49831,95 +49880,128 @@ var render = function () {
       "div",
       { staticClass: "d-flex flex-row-reverse align-items-end" },
       [
-        _c("div", { staticClass: "card my-0" }, [
-          _c(
-            "div",
-            {
-              staticClass:
-                "d-flex flex-row justify-content-between adiv p-3 text-white",
-            },
-            [
-              _c("i", {
-                staticClass: "bi bi-person-lines-fill",
-                staticStyle: { "font-size": "20px" },
+        _c(
+          "div",
+          {
+            staticClass: "card my-0",
+            staticStyle: { "box-shadow": "0px 18px 10px 0px black" },
+          },
+          [
+            _c(
+              "div",
+              {
+                staticClass:
+                  "d-flex flex-row justify-content-between adiv p-3 text-white",
+              },
+              [
+                _c("i", {
+                  staticClass: "bi bi-people-fill zoom ease",
+                  staticStyle: { "font-size": "20px" },
+                  on: {
+                    click: function ($event) {
+                      return _vm.collapseListUsers()
+                    },
+                  },
+                }),
+                _vm._v(" "),
+                _c("span", { staticClass: "pb-3" }, [
+                  _vm._v("Usuarios conectados"),
+                ]),
+              ]
+            ),
+            _vm._v(" "),
+            _vm.listUsersCollapse
+              ? _c(
+                  "div",
+                  {
+                    staticClass: "style-1",
+                    staticStyle: {
+                      "max-height": "300px",
+                      "overflow-y": "scroll",
+                    },
+                  },
+                  _vm._l(_vm.filteredUsers, function (user) {
+                    return _c(
+                      "div",
+                      {
+                        key: user.id,
+                        staticClass: "d-flex flex-row p-3 usuario",
+                        on: {
+                          click: function ($event) {
+                            return _vm.abrirchat(user)
+                          },
+                        },
+                      },
+                      [
+                        _c("div", { staticClass: "img_cont" }, [
+                          _c("img", {
+                            staticClass:
+                              "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons",
+                            staticStyle: { width: "30px", height: "30px" },
+                            attrs: { src: "/" + user.image },
+                          }),
+                          _vm._v(" "),
+                          user.userOnline
+                            ? _c("span", { staticClass: "online_icon" })
+                            : _vm._e(),
+                        ]),
+                        _vm._v(" "),
+                        _c("p", [_vm._v(_vm._s(user.name))]),
+                      ]
+                    )
+                  }),
+                  0
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group" }, [
+              _c("span", { staticClass: "input-group-text" }, [
+                _c(
+                  "svg",
+                  {
+                    staticClass: "bi bi-search",
+                    attrs: {
+                      xmlns: "http://www.w3.org/2000/svg",
+                      width: "16",
+                      height: "16",
+                      fill: "currentColor",
+                      viewBox: "0 0 18 18",
+                    },
+                  },
+                  [
+                    _c("path", {
+                      attrs: {
+                        d: "M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z",
+                      },
+                    }),
+                  ]
+                ),
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.buscar,
+                    expression: "buscar",
+                  },
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text", placeholder: "Buscar usuario" },
+                domProps: { value: _vm.buscar },
                 on: {
-                  click: function ($event) {
-                    return _vm.collapseListUsers()
+                  input: function ($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.buscar = $event.target.value
                   },
                 },
               }),
-              _vm._v(" "),
-              _c("span", { staticClass: "pb-3" }, [
-                _vm._v("Usuarios conectados"),
-              ]),
-            ]
-          ),
-          _vm._v(" "),
-          _vm.listUsersCollapse
-            ? _c(
-                "div",
-                {
-                  staticStyle: {
-                    "max-height": "300px",
-                    "overflow-y": "scroll",
-                  },
-                },
-                _vm._l(_vm.filteredUsers, function (user) {
-                  return _c(
-                    "div",
-                    {
-                      key: user.id,
-                      staticClass: "d-flex flex-row p-3",
-                      on: {
-                        click: function ($event) {
-                          return _vm.abrirchat(user)
-                        },
-                      },
-                    },
-                    [
-                      _c("div", { staticClass: "img_cont" }, [
-                        _c("img", {
-                          staticClass:
-                            "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons",
-                          staticStyle: { width: "30px", height: "30px" },
-                          attrs: { src: "/" + user.image },
-                        }),
-                        _vm._v(" "),
-                        user.userOnline
-                          ? _c("span", { staticClass: "online_icon" })
-                          : _vm._e(),
-                      ]),
-                      _vm._v(" "),
-                      _c("p", [_vm._v(_vm._s(user.name))]),
-                    ]
-                  )
-                }),
-                0
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.buscar,
-                expression: "buscar",
-              },
-            ],
-            staticClass: "form-control",
-            attrs: { type: "text", placeholder: "Buscar usuario" },
-            domProps: { value: _vm.buscar },
-            on: {
-              input: function ($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.buscar = $event.target.value
-              },
-            },
-          }),
-        ]),
+            ]),
+          ]
+        ),
         _vm._v(" "),
         _vm._l(_vm.listaChatsAbiertos, function (lista) {
           return _c(
@@ -50010,7 +50092,7 @@ var render = function () {
           _c(
             "svg",
             {
-              staticClass: "bi bi-send",
+              staticClass: "bi bi-send-fill",
               attrs: {
                 xmlns: "http://www.w3.org/2000/svg",
                 width: "16",
@@ -50022,7 +50104,7 @@ var render = function () {
             [
               _c("path", {
                 attrs: {
-                  d: "M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z",
+                  d: "M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z",
                 },
               }),
             ]
@@ -50055,120 +50137,128 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "card my-0 mx-3" }, [
-    _c(
-      "div",
-      {
-        staticClass:
-          "d-flex flex-row justify-content-between adiv p-3 text-white",
-      },
-      [
-        _c("i", {
-          staticClass: "bi bi-caret-down-square",
-          staticStyle: { "font-size": "18px" },
-          on: {
-            click: function ($event) {
-              return _vm.collapseChat()
-            },
-          },
-        }),
-        _vm._v(" "),
-        _c("span", { staticClass: "pb-3" }, [
-          _vm._v(_vm._s(_vm.userData.name + " " + _vm.userData.lastname)),
-        ]),
-        _vm._v(" "),
-        _c("i", {
-          staticClass: "fas fa-times",
-          staticStyle: { "font-size": "18px" },
-          on: {
-            click: function ($event) {
-              return _vm.cerrarChat()
-            },
-          },
-        }),
-      ]
-    ),
-    _vm._v(" "),
-    _vm.chatCollapse
-      ? _c(
-          "div",
-          [
-            _c(
-              "div",
-              {
-                staticStyle: { height: "300px", "overflow-y": "auto" },
-                attrs: { id: "formChat" },
+  return _c(
+    "div",
+    {
+      staticClass: "card my-0 mx-3",
+      staticStyle: { "box-shadow": "0px 18px 10px 0px black" },
+    },
+    [
+      _c(
+        "div",
+        {
+          staticClass:
+            "d-flex flex-row justify-content-between adiv p-3 text-white",
+        },
+        [
+          _c("i", {
+            staticClass: "bi bi-chevron-down zoom ease",
+            staticStyle: { "font-size": "20px" },
+            on: {
+              click: function ($event) {
+                return _vm.collapseChat()
               },
-              _vm._l(_vm.messages, function (mensaje, i) {
-                return _c("div", { key: i.id }, [
-                  _c(
-                    "div",
-                    {
-                      staticClass: "d-flex flex-row p-2",
-                      class:
+            },
+          }),
+          _vm._v(" "),
+          _c("span", { staticClass: "pb-3" }, [
+            _vm._v(_vm._s(_vm.userData.name + " " + _vm.userData.lastname)),
+          ]),
+          _vm._v(" "),
+          _c("i", {
+            staticClass: "fas fa-times zoom ease",
+            staticStyle: { "font-size": "20px" },
+            on: {
+              click: function ($event) {
+                return _vm.cerrarChat()
+              },
+            },
+          }),
+        ]
+      ),
+      _vm._v(" "),
+      _vm.chatCollapse
+        ? _c(
+            "div",
+            [
+              _c(
+                "div",
+                {
+                  staticClass: "style-1",
+                  staticStyle: { height: "300px", "overflow-y": "auto" },
+                  attrs: { id: "formChat" },
+                },
+                _vm._l(_vm.messages, function (mensaje, i) {
+                  return _c("div", { key: i.id }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "d-flex flex-row p-2",
+                        class:
+                          _vm.userId == mensaje.transmitter_id
+                            ? "justify-content-start"
+                            : "justify-content-end",
+                      },
+                      [
                         _vm.userId == mensaje.transmitter_id
-                          ? "justify-content-start"
-                          : "justify-content-end",
-                    },
-                    [
-                      _vm.userId == mensaje.transmitter_id
-                        ? _c("img", {
-                            staticClass:
-                              "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon",
-                            staticStyle: { width: "25px", height: "25px" },
-                            attrs: { src: "/" + _vm.userData.image },
-                          })
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "chat ml-2 p-1",
-                          class:
-                            _vm.userId == mensaje.transmitter_id
-                              ? "bg-white ml-2 p-2"
-                              : "chat mr-2 p-2",
-                        },
-                        [
-                          _c("span", { staticClass: "let" }, [
-                            _vm._v(_vm._s(mensaje.message)),
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            {
-                              staticClass: "d-flex text",
-                              class:
-                                _vm.userId == mensaje.transmitter_id
-                                  ? "justify-content-start"
-                                  : "justify-content-end",
-                            },
-                            [
-                              _c("span", [
-                                _vm._v(
-                                  _vm._s(mensaje.created_at.substring(11, 16))
-                                ),
-                              ]),
-                            ]
-                          ),
-                        ]
-                      ),
-                    ]
-                  ),
-                ])
+                          ? _c("img", {
+                              staticClass:
+                                "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon",
+                              staticStyle: { width: "25px", height: "25px" },
+                              attrs: { src: "/" + _vm.userData.image },
+                            })
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "chat ml-2 p-1",
+                            class:
+                              _vm.userId == mensaje.transmitter_id
+                                ? "bg-white ml-2 p-2"
+                                : "chat mr-2 p-2",
+                          },
+                          [
+                            _c("span", { staticClass: "let" }, [
+                              _vm._v(_vm._s(mensaje.message)),
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "d-flex text",
+                                class:
+                                  _vm.userId == mensaje.transmitter_id
+                                    ? "justify-content-start"
+                                    : "justify-content-end",
+                              },
+                              [
+                                _c("span", [
+                                  _vm._v(
+                                    _vm._s(mensaje.created_at.substring(11, 16))
+                                  ),
+                                ]),
+                              ]
+                            ),
+                          ]
+                        ),
+                      ]
+                    ),
+                  ])
+                }),
+                0
+              ),
+              _vm._v(" "),
+              _c("ChatForm", {
+                attrs: { authId: _vm.authId, userId: _vm.userId },
+                on: { cerrarChat: _vm.cerrarChat },
               }),
-              0
-            ),
-            _vm._v(" "),
-            _c("ChatForm", {
-              attrs: { authId: _vm.authId, userId: _vm.userId },
-              on: { cerrarChat: _vm.cerrarChat },
-            }),
-          ],
-          1
-        )
-      : _vm._e(),
-  ])
+            ],
+            1
+          )
+        : _vm._e(),
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -50291,37 +50381,87 @@ var render = function () {
         _c(
           "ul",
           {
-            staticClass: "list-group",
+            staticClass: "list-group style-1 hover-cont",
             staticStyle: { "max-height": "300px", "overflow-y": "scroll" },
           },
-          _vm._l(_vm.notifications, function (notification, index) {
-            return _c(
-              "li",
-              { key: index, staticClass: "d-flex flex-row p-3" },
-              [
-                _c("div", { staticClass: "img_cont" }, [
-                  _c("img", {
-                    staticClass:
-                      "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons",
-                    staticStyle: { width: "25px", height: "25px" },
-                    attrs: { src: "/" + notification.data.image },
-                  }),
-                ]),
-                _vm._v(
-                  "\n          " +
-                    _vm._s(notification.data.transmitter_name) +
-                    "\n          "
-                ),
-                _c("br"),
-                _vm._v(
-                  "\n          Mensaje nuevo: " +
-                    _vm._s(notification.data.message) +
-                    "\n        "
-                ),
-              ]
-            )
-          }),
-          0
+          [
+            _c("li", { staticClass: "dropdown-header" }, [
+              _vm._v("Notificaciones"),
+            ]),
+            _vm._v(" "),
+            _vm._l(_vm.notifications, function (notification, index) {
+              return _c(
+                "li",
+                {
+                  key: index,
+                  staticClass:
+                    "d-flex flex-row p-3 hoverlist justify-content-between align-items-center",
+                },
+                [
+                  _c("div", [
+                    _c("span", { staticStyle: { "font-weight": "750" } }, [
+                      _vm._v(
+                        "\n              " +
+                          _vm._s(notification.data.transmitter_name)
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c("span", { staticStyle: { "font-weight": "800" } }, [
+                      _vm._v(" Mensaje nuevo: "),
+                    ]),
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(notification.data.message) +
+                        "\n          "
+                    ),
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "close-notification" }, [
+                    _c(
+                      "a",
+                      {
+                        staticStyle: {},
+                        attrs: {
+                          href: "/chat/eliminarNotificacion/" + notification.id,
+                        },
+                      },
+                      [
+                        _c(
+                          "svg",
+                          {
+                            staticClass: "bi bi-x-circle",
+                            attrs: {
+                              xmlns: "http://www.w3.org/2000/svg",
+                              width: "16",
+                              height: "16",
+                              fill: "currentColor",
+                              viewBox: "0 0 16 16",
+                            },
+                          },
+                          [
+                            _c("path", {
+                              attrs: {
+                                d: "M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z",
+                              },
+                            }),
+                            _vm._v(" "),
+                            _c("path", {
+                              attrs: {
+                                d: "M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z",
+                              },
+                            }),
+                          ]
+                        ),
+                      ]
+                    ),
+                  ]),
+                ]
+              )
+            }),
+          ],
+          2
         ),
       ]),
     ]),
@@ -50360,7 +50500,7 @@ var staticRenderFns = [
     return _c("div", [
       _c("audio", { attrs: { id: "audio", controls: "" } }, [
         _c("source", {
-          attrs: { type: "audio/wav", src: "/assets/audio/notification.mp3" },
+          attrs: { type: "audio/wav", src: "/assets/audio/notification2.mp3" },
         }),
       ]),
     ])

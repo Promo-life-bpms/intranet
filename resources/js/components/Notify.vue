@@ -1,7 +1,7 @@
 <template>
   <div>
     <audio id="audio" controls>
-      <source type="audio/wav" src="/assets/audio/notification.mp3" />
+      <source type="audio/wav" src="/assets/audio/notification2.mp3" />
     </audio>
   </div>
 </template>
@@ -12,8 +12,8 @@ export default {
   props: ["userId", "userData", "authId"],
   mounted() {
     window.Echo.channel("chat").listen("MessageSent", (e) => {
-      console.log("Notificacion recibida");
-      console.log(e);
+      /* console.log("Notificacion recibida");
+      console.log(e); */
       if (this.authId == e.receptor) {
         toastr.success(`${e.transmitter_name}: ${e.message}`, "Mensaje");
         audio.play();
