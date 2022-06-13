@@ -174,13 +174,18 @@ class ApiController extends Controller
                     } else {
                         $image = $employee->user->image;
                     }
+                    $month = new \Carbon\Carbon();
+                    $totalAdmission = $month->format('Y');
+
+                    $totalYears= $employee->date_admission->format('Y');
+
 
                     array_push($employees, (object)[
                         'id' => $employee->user->id,
                         'name' => $employee->user->name,
                         'lastname' => $employee->user->lastname,
                         'photo' => $image,
-                        'date' => $employee->date_admission->format('d-m-Y'),
+                        'date' => $totalAdmission-$totalYears ,
                     ]);
                 }
             }
