@@ -17,8 +17,10 @@
                         @php
                             $contador = 0;
                             foreach (auth()->user()->unreadNotifications as $notification) {
-                                if ($notification->data['direct_manager_status'] == 'Pendiente') {
+                                if($notification->type=="App\Notifications\RequestNotification"){
+                                    if ($notification->data['direct_manager_status'] == 'Pendiente') {
                                     $contador = $contador + 1;
+                                    }
                                 }
                             }
                         @endphp

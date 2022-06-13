@@ -22,8 +22,10 @@
                     @php
                     $contador1 = 0;
                         foreach ($myrequests as $notification){
-                            if ($notification->direct_manager_status =="Aprobada" && $notification->human_resources_status =="Pendiente"){
+                            if($notification->type=="App\Notifications\RequestNotification"){
+                                if ($notification->direct_manager_status =="Aprobada" && $notification->human_resources_status =="Pendiente"){
                                 $contador1 = $contador1 + 1;
+                                }
                             }
                         }
                     @endphp
@@ -37,8 +39,10 @@
                     @php
                     $contador2 = 0;
                         foreach (auth()->user()->unreadNotifications as $notification){
-                            if ($notification->data['direct_manager_status'] =="Aprobada" && $notification->data['human_resources_status'] =="Aprobada"){
+                            if($notification->type=="App\Notifications\RequestNotification"){
+                                if ($notification->data['direct_manager_status'] =="Aprobada" && $notification->data['human_resources_status'] =="Aprobada"){
                                 $contador2 = $contador2 + 1;
+                                }
                             }
                         }
                     @endphp
@@ -52,10 +56,12 @@
                       @php
                             $contador3 = 0;
                             foreach (auth()->user()->unreadNotifications as $notification){
-                                if ($notification->data['direct_manager_status'] =="Rechazada" ||$notification->data['human_resources_status'] =="Rechazada"  ){
+                                if($notification->type=="App\Notifications\RequestNotification"){
+                                    if ($notification->data['direct_manager_status'] =="Rechazada" ||$notification->data['human_resources_status'] =="Rechazada"  ){
                                     $contador3 = $contador3 + 1;
+                                    }
                                 }
-                             }
+                            }
                       @endphp
                     Rechazadas
                     <span class="badge bg-primary"><?=$contador3 ?> </span>

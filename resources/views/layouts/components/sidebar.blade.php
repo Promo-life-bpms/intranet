@@ -95,7 +95,7 @@
                         <a href="#" class='sidebar-link'>
                             <i class="fa fa-users" aria-hidden="true"></i>
                             <span>Gestion </span>
-                            <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }} </span>
+                            <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type',"App\Notifications\RequestNotification")->count() }} </span>
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
@@ -106,7 +106,7 @@
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.showAll') }}">
                                     <span>Ver solicitudes</span>
-                                    <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }}
+                                    <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type',"App\Notifications\RequestNotification")->count() }}
                                     </span>
                                 </a>
                             </li>
@@ -184,11 +184,11 @@
                         <i class="fa fa-pencil-square" aria-hidden="true"></i>
                         <span>Solicitudes</span>
                         @role('employee')
-                            <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }} </span>
+                            <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type',"App\Notifications\RequestNotification")->count() }} </span>
                         @endrole('employee')
 
                         @role('manager')
-                            <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }} </span>
+                            <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type',"App\Notifications\RequestNotification")->count() }} </span>
                         @endrole('manager')
                     </a>
 
@@ -198,7 +198,7 @@
                             <a class="dropdown-item" href="{{ route('request.index') }}">
                                 <span>Mis Solicitudes</span>
                                 @role('employee')
-                                    <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }}
+                                    <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type',"App\Notifications\RequestNotification")->count() }}
                                     </span>
                                 @endrole('employee')
 
