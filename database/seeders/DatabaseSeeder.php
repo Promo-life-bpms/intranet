@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         VacationPerYear::create(['year' => 17, 'days' => 18]);
         VacationPerYear::create(['year' => 18, 'days' => 18]);
         VacationPerYear::create(['year' => 19, 'days' => 18]);
-                $admin = Role::create([
+        $admin = Role::create([
             'name' => 'admin',
             'display_name' => 'Administrador', // optional
             'description' => '', // optional
@@ -268,7 +268,7 @@ class DatabaseSeeder extends Seeder
             'remember_token' => '',
         ])->attachRole($manager);
  */
-        /* Empresas
+        // Empresas
 
         Company::create([
             'name_company' => 'Promolife',
@@ -290,7 +290,7 @@ class DatabaseSeeder extends Seeder
             'description_company' => 'San Andrés Atoto No. 155 Piso 1 Local B, 53550 Naucalpan de Juárez, México'
         ]);
 
-        /* Departamentos
+        //    Departamentos
         Department::Create([
             'id' => 1,
             'name' => 'Recursos Humanos'
@@ -351,7 +351,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Direccion'
         ]);
 
-        /* Puestos
+        // Puestos
 
         Position::create([
             'name' => 'Director BH Recursos Humanos',
@@ -764,6 +764,6 @@ class DatabaseSeeder extends Seeder
         Position::create([
             'name' => 'Director General PL',
             'department_id' => 12
-        ]); */
+        ]);
     }
 }
