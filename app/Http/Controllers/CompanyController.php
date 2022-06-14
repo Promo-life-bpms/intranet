@@ -40,7 +40,7 @@ class CompanyController extends Controller
             if ($position == 'Asistente de Dirección') {
                 array_push($tags, 'assistant');
             }
-            +$img = 'https://www.laufer.group/wp-content/uploads/2022/01/user-member-avatar-face-profile-icon-vector-22965342-300x300-1.jpg';
+            $img = 'https://www.laufer.group/wp-content/uploads/2022/01/user-member-avatar-face-profile-icon-vector-22965342-300x300-1.jpg';
 
             if ($employee->user->image) {
                 $imgReplace = str_replace('\\', '/', $employee->user->image);
