@@ -8,6 +8,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\ImageManagerStatic as Image;
+
 
 class ProfileController extends Controller
 {
@@ -29,15 +32,22 @@ class ProfileController extends Controller
     public function change(Request $request)
     {
         $request->validate([
-            'image' => 'required',
+            'image' => 'required|image|mimes:jpg,jpeg,png,gif',
         ]);
 
         if ($request->hasFile('image')) {
+            
+            File::delete(Auth::user()->image);
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
             $fileNameToStore = $filename . '.' . $extension;
-            $path = $request->file('image')->move('storage/post/', $fileNameToStore);
+            $path = 'storage/profile/200x300'. $fileNameToStore;
+            
+            $request->file('image')->move('storage/profile/', $fileNameToStore);
+            Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(200, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
+            File::delete(public_path("storage/profile/{$fileNameToStore}"));
+
         } else {
             return redirect()->action([ProfileController::class, 'index']);
         }
