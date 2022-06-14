@@ -291,8 +291,8 @@
                                             <td>
                                                 
                                                 @foreach (auth()->user()->unreadNotifications as $notification)
-                                                    
-                                                     @if ($notification->data['id'] == $request->id)
+                                                    @if ($notification->type=="App\Notifications\RequestNotification")
+                                                        @if ($notification->data['id'] == $request->id)
                                                         <form class="form-notification"
                                                         action="{{ route('request.delete.notification', ['request' => $request->id]) }}" method="POST">
                                                         @csrf
@@ -303,6 +303,8 @@
                                                         </button>
                                                         </form>
                                                         @endif 
+                                                    @endif
+                                                    
                                                    {{--  <a style="width: 100%"  type="button"
                                                         class="btn btn-transparent">
                                                         <i class="fa fa-check-circle" aria-hidden="true"></i>
@@ -389,8 +391,8 @@
                                             <td>
                                                 
                                                 @foreach (auth()->user()->unreadNotifications as $notification)
-                                                    
-                                                     @if ($notification->data['id'] == $request->id)
+                                                    @if ($notification->type=="App\Notifications\RequestNotification")
+                                                        @if ($notification->data['id'] == $request->id)
                                                         <form class="form-notification"
                                                         action="{{ route('request.delete.notification', ['request' => $request->id]) }}" method="POST">
                                                         @csrf
@@ -401,6 +403,7 @@
                                                         </button>
                                                         </form>
                                                         @endif 
+                                                    @endif 
                                                 @endforeach
                                             
                                             </td>
