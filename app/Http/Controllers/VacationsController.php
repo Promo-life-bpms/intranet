@@ -179,9 +179,9 @@ class VacationsController extends Controller
                 }
                 if ($yearsWork >= 1) {
                     $yearsWork =  $yearsWork == 1 ? 2 : $yearsWork;
-                    $daysPerYearCurrent = VacationPerYear::where('year', (int)$yearsWork - 1)->first();
+                    $daysPerYearCurrent = VacationPerYear::where('year', (int)$yearsWork)->first();
                     $diasDispobibles = $daysPerYearCurrent->days;
-                    $lastPeriodYear = (string)((int)$date->format('Y') + $yearsWork - 1);
+                    $lastPeriodYear = (string)((int)$date->format('Y') + $yearsWork);
                     $lastPeriod = Carbon::parse($lastPeriodYear . '-' . (string) $date->format('m-d'));
                     $dataVacations =  $user->vacationsAvailables()->where('period', 2)->first();
                     if ($dataVacations) {
