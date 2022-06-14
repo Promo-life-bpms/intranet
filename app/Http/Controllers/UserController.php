@@ -75,14 +75,19 @@ class UserController extends Controller
 
 
         if ($request->hasFile('image')) {
+            $request->validate([
+                'image' => 'required|image|mimes:jpg,jpeg,png,gif',
+            ]);
+
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->clientExtension();
             $fileNameToStore = $filename . '.' . $extension;
-            $path = $request->file('image')->move('storage/profile/', $fileNameToStore);
-
-            $img = Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(300, 300);
-            $img->save(public_path("storage/profile/300x300{$fileNameToStore}"));
+            $path = 'storage/profile/200x300'. $fileNameToStore;
+            
+            $request->file('image')->move('storage/profile/', $fileNameToStore);
+            Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(200, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
+            File::delete(public_path("storage/profile/{$fileNameToStore}"));
         } else {
             $path = null;
         }
@@ -173,6 +178,9 @@ class UserController extends Controller
 
         if ($user->image == null) {
             if ($request->hasFile('image')) {
+                $request->validate([
+                    'image' => 'required|image|mimes:jpg,jpeg,png,gif',
+                ]);
 
                 File::delete($user->image);
 
@@ -180,7 +188,11 @@ class UserController extends Controller
                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension = $request->file('image')->clientExtension();
                 $fileNameToStore = $filename . '.' . $extension;
-                $path = $request->file('image')->move('storage/post/', $fileNameToStore);
+                $path = 'storage/profile/200x300'. $fileNameToStore;
+            
+                $request->file('image')->move('storage/profile/', $fileNameToStore);
+                Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(200, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
+                File::delete(public_path("storage/profile/{$fileNameToStore}"));
             } else {
                 $path = null;
             }
@@ -195,7 +207,11 @@ class UserController extends Controller
                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension = $request->file('image')->clientExtension();
                 $fileNameToStore = $filename . '.' . $extension;
-                $path = $request->file('image')->move('storage/post/', $fileNameToStore);
+                $path = 'storage/profile/200x300'. $fileNameToStore;
+            
+                $request->file('image')->move('storage/profile/', $fileNameToStore);
+                Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(200, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
+                File::delete(public_path("storage/profile/{$fileNameToStore}"));
             }
         }
 
