@@ -13,15 +13,15 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th style="width: 5%"  scope="col">Foto</th>
+                        {{-- <th style="width: 5%"  scope="col">Foto</th> --}}
                         <th scope="col">Nombre</th>
                         <th scope="col">Correo</th>
                         <th scope="col">Area</th>
                         <th scope="col">Puesto</th>
-                        <th scope="col">Empresas</th>
+                        {{-- <th scope="col">Empresas</th> --}}
                         <th scope="col">Ingreso</th>
                         <th scope="col">Jefe Directo</th>
-                        <th scope="col">Status</th>
+                        {{-- <th scope="col">Status</th> --}}
                         <th scope="col">Rol</th>
                         <th scope="col">Opciones</th>
                     </tr>
@@ -32,14 +32,14 @@
                            {{--  <td  class="text-center" >{{ $user->id }}</td> --}}
                            <td class="text-center">{{ $loop->iteration }}</td>
 
-                            @if ($user->image!=null)
+                            {{-- @if ($user->image!=null)
                             <td >
                                 <img style="width: 100%; " src="{{ asset($user->image )}}" alt="">
 
                             </td>
                             @else
                                 <td  class="text-center" > Sin imagen</td>
-                            @endif
+                            @endif --}}
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>
@@ -52,20 +52,20 @@
                                     {{ $user->employee->position->name }}
                                 @endif
                             </td>
-                            <td>
+                            {{-- <td>
                                 @foreach ($user->employee->companies as $company)
                                     {{ $company->name_company }}
                                 @endforeach
-                            </td>
-                            <td>{{ $user->employee->date_admission }}</td>
+                            </td> --}}
+                            <td>{{ explode(' ', $user->employee->date_admission)[0] }}</td>
                             <td>
                                 @if ($user->employee->jefeDirecto)
                                     {{ $user->employee->jefeDirecto->user->name }}
                                 @endif
                             </td>
-                            <td>
+                            {{-- <td>
                                 {{ $user->employee->status == 1 ? 'Activo' : 'Inactivo' }}
-                            </td>
+                            </td> --}}
                             <td>
                                 @if ($user->roles)
                                     {{ $user->roles[0]->display_name }}

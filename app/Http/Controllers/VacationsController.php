@@ -17,7 +17,7 @@ class VacationsController extends Controller
     public $time;
     public function __construct()
     {
-        $this->time = Carbon::now()->addMonths(0);
+        $this->time = Carbon::now();
     }
     /**
      * Display a listing of the resource.
@@ -148,6 +148,7 @@ class VacationsController extends Controller
                 if ($dataVacations) {
                     $dataVacations->days_availables =  $diasDispobibles;
                     $dataVacations->dv =  floor($diasDispobibles) - $dataVacations->days_enjoyed;
+                    $dataVacations->cutoff_date = $date->addYears(2);
                     $dataVacations->save();
                 } else {
                     $user->vacationsAvailables()->firstOrCreate([
@@ -158,8 +159,8 @@ class VacationsController extends Controller
                     ]);
                 }
             } else if ($yearsWork > 0) {
-                // Revisar los dias que le tocan por año y sumar los que no han expirado
-                $daysPerYearCurrent = VacationPerYear::where('year', $yearsWork)->first();
+                // Revisar los dias que le tocan por año y sumar los que no han expirado, obtener el periodo actual
+                $daysPerYearCurrent = VacationPerYear::where('year', $yearsWork + 1)->first();
                 $lastPeriodYear = (string)((int)$date->format('Y') + $yearsWork);
                 $lastPeriod = Carbon::parse($lastPeriodYear . '-' . (string) $date->format('m-d'));
                 $daysItsYear = $lastPeriod->diffInDays($this->time);
@@ -168,6 +169,7 @@ class VacationsController extends Controller
                 if ($dataVacations) {
                     $dataVacations->days_availables =  $diasDispobibles;
                     $dataVacations->dv =  floor($diasDispobibles) - $dataVacations->days_enjoyed;
+                    $dataVacations->cutoff_date =  $lastPeriod->addYears(2);
                     $dataVacations->save();
                 } else {
                     $user->vacationsAvailables()->firstOrCreate([
@@ -178,14 +180,14 @@ class VacationsController extends Controller
                     ]);
                 }
                 if ($yearsWork >= 1) {
-                    $yearsWork =  $yearsWork == 1 ? 2 : $yearsWork;
-                    $daysPerYearCurrent = VacationPerYear::where('year', (int)$yearsWork - 1)->first();
+                    $daysPerYearCurrent = VacationPerYear::where('year', (int)$yearsWork)->first();
                     $diasDispobibles = $daysPerYearCurrent->days;
                     $lastPeriodYear = (string)((int)$date->format('Y') + $yearsWork - 1);
                     $lastPeriod = Carbon::parse($lastPeriodYear . '-' . (string) $date->format('m-d'));
                     $dataVacations =  $user->vacationsAvailables()->where('period', 2)->first();
                     if ($dataVacations) {
                         $dataVacations->days_availables =  $diasDispobibles;
+                        $dataVacations->cutoff_date =  $lastPeriod->addYears(2);
                         $dataVacations->dv =  floor($diasDispobibles) - $dataVacations->days_enjoyed;
                         $dataVacations->save();
                     } else {
