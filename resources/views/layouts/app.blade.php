@@ -47,39 +47,38 @@
 
             </div>
         </div> --}}
-        <notification-bell></notification-bell>
         <div id="main">
-            @if (request()->is('home'))
+            <div style="margin-right: 20px">
                 @include('layouts.components.logos')
-            @endif
-            <div class="px-3">
-                {{-- Menu Hamburguesa --}}
-                <header class="mb-3 d-xl-none">
-                    <a href="#" class="burger-btn d-block">
-                        <i class="bi bi-justify fs-3"></i>
-                    </a>
-                </header>
-                <div class="page-heading ">
-                    <div id="appVue">
-                        <div class="page-title">
-                            <div class="row">
-                                <div class="col-12">
-                                    @yield('title')
+                <div class="px-3">
+                    {{-- Menu Hamburguesa --}}
+                    <header class="mb-3 d-xl-none">
+                        <a href="#" class="burger-btn d-block">
+                            <i class="bi bi-justify fs-3"></i>
+                        </a>
+                    </header>
+                    <div class="page-heading ">
+                        <div id="appVue">
+                            <div class="page-title">
+                                <div class="row">
+                                    <div class="col-12">
+                                        @yield('title')
+                                    </div>
                                 </div>
                             </div>
+                            <section class="section">
+                                @yield('dashboard')
+                                <div class="card">
+                                    @yield('content')
+                                </div>
+                            </section>
                         </div>
-                        <section class="section">
-                            @yield('dashboard')
-                            <div class="card">
-                                @yield('content')
-                            </div>
-                        </section>
                     </div>
-                </div>
-                @include('layouts.components.footer')
+                    @include('layouts.components.footer')
 
-                <chat-component :authId="{{ auth()->user()->id }}"></chat-component>
-                <notify :auth-id={{ auth()->user()->id }}></notify>
+                    <chat-component :authId="{{ auth()->user()->id }}"></chat-component>
+                    <notify :auth-id={{ auth()->user()->id }}></notify>
+                </div>
             </div>
         </div>
     </div>

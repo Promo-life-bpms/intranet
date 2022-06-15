@@ -10,8 +10,11 @@
         <li class="p-0 m-0"><a href="#"><img style="width: 70px;" src="{{ asset('/img/promodreams.png') }}"
                     alt="promodreams"></a>
         </li>
-        <li class="pr-4 m-0"><a href="#"><img style="width: 70px;" src="{{ asset('/img/trademarket.png') }}"
+        <li class="p-0 m-0"><a href="#"><img style="width: 70px;" src="{{ asset('/img/trademarket.png') }}"
                     alt="trademarket"></a>
+        </li>
+        <li class="pr-4 m-0">
+            <notification-bell></notification-bell>
         </li>
     </ul>
 </div>
