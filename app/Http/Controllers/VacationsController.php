@@ -162,19 +162,19 @@ class VacationsController extends Controller
                 // Revisar los dias que le tocan por año y sumar los que no han expirado, obtener el periodo actual
                 $daysPerYearCurrent = VacationPerYear::where('year', $yearsWork + 1)->first();
                 $lastPeriodYear = (string)((int)$date->format('Y') + $yearsWork);
-                $lastPeriod = Carbon::parse($lastPeriodYear . '-' . (string) $date->format('m-d'));
-                $daysItsYear = $lastPeriod->diffInDays($this->time);
+                $lastPeriodCurrent = Carbon::parse($lastPeriodYear . '-' . (string) $date->format('m-d'));
+                $daysItsYear = $lastPeriodCurrent->diffInDays($this->time);
                 $diasDispobibles = round(($daysItsYear * $daysPerYearCurrent->days) / 365, 2);
                 $dataVacations =  $user->vacationsAvailables()->where('period', 1)->first();
                 if ($dataVacations) {
                     $dataVacations->days_availables =  $diasDispobibles;
                     $dataVacations->dv =  floor($diasDispobibles) - $dataVacations->days_enjoyed;
-                    $dataVacations->cutoff_date =  $lastPeriod->addYears(2);
+                    $dataVacations->cutoff_date =  $lastPeriodCurrent->addYears(2);
                     $dataVacations->save();
                 } else {
                     $user->vacationsAvailables()->firstOrCreate([
                         'period' => 1,
-                        'cutoff_date' => $lastPeriod->addYears(2),
+                        'cutoff_date' => $lastPeriodCurrent->addYears(2),
                         'days_availables' => $diasDispobibles,
                         'dv' => floor($diasDispobibles),
                     ]);

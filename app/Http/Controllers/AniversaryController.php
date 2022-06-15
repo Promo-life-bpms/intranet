@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use Carbon\Carbon;
 
 class AniversaryController extends Controller
 {
@@ -66,10 +67,15 @@ class AniversaryController extends Controller
                 $birthday = explode('-', $employee->date_admission);
                 $monthAniversaryth = $birthday[1];
                 if ($monthAniversaryth == $date) {
-                    array_push($employees, $employee);
+                    $dateAdmission = Carbon::parse($employee->date_admission);
+                    $yearsWork = $dateAdmission->diffInYears($carbon->now()->addMonth());
+                    if ($yearsWork > 0) {
+                        array_push($employees, $employee);
+                    }
                 }
             }
         }
+
 
         if ($date == 1) {
             $monthAniversary = 'Enero';
@@ -99,6 +105,6 @@ class AniversaryController extends Controller
             $monthAniversary = 'Desconocido';
         }
         $lastDayofMonth = \Carbon\Carbon::now()->endOfMonth();
-        return view('aniversary.aniversary', compact('employees', 'monthAniversary','lastDayofMonth'));
+        return view('aniversary.aniversary', compact('employees', 'monthAniversary', 'lastDayofMonth'));
     }
 }
