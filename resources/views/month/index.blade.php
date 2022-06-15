@@ -5,10 +5,14 @@
         <h3 class="text-center">Empleados del Mes de la Evaluacion 360</h3>
     </div>
     <div class="card-body">
-        <div class="d-flex w-100 justify-content-around content-employees">
+        <div class="d-flex w-100 justify-content-center content-employees">
             @foreach ($monthEmployeeController as $employeeMonth)
                 <div class="card text-center shadow p-3 mx-5 bg-body rounded">
-                    <img src="{{ asset($employeeMonth->photo) }}" alt="Card image cap" style="height: 200px;overflow: cover;">
+                    @if ($employeeMonth->photo==null)
+                    <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" alt="Card image cap" style="height: 200px;object-fit: cover; overflow:hidden;">
+                    @else
+                        <img src="{{ asset($employeeMonth->photo) }}" alt="Card image cap" style="max-height: 200px; object-fit: cover;">
+                    @endif
                     <h5 class="card-title">{{ $employeeMonth->name }}</h5>
                     <p class="card-text">{{ $employeeMonth->position }}</p>
                     <div class="d-flex justify-content-center align-items-center">

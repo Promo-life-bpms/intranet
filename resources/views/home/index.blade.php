@@ -387,8 +387,13 @@
                 <div class="d-flex flex-wrap w-100 h-30 justify-content-around content-employees">
 
                     @foreach ($monthEmployeeController as $employeeMonth)
-                        <div class="card text-center shadow p-3 mx-5 bg-body rounded">
-                            <img src="{{ asset($employeeMonth->photo) }}" alt="Card image cap">
+                        <div class="card text-center shadow p-3 mx-5 bg-body rounded" style="margin-left:0!important;margin-right:0!important">
+                            @if ($employeeMonth->photo==null)
+                                <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" alt="Card image cap" style="object-fit: cover">
+
+                            @else
+                                <img src="{{ asset($employeeMonth->photo) }}" alt="Card image cap" style="object-fit: cover">
+                            @endif
                             <h5 class="card-title">{{ $employeeMonth->name }}</h5>
                             <p class="card-text">{{ $employeeMonth->position }}</p>
                             <div class="d-flex justify-content-center align-items-center">
