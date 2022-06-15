@@ -80,7 +80,7 @@
                                 @else
                                     @foreach ($communiquesImage as $communique)
                                         <div class="carousel-item {{ $loop->iteration == 1 ? 'active' : '' }}">
-                                            <img style="object-fit: contain; max-height: 370px;"
+                                            <img style="object-fit: contain; max-height: 480px;"
                                                 src="{{ asset($communique->image) }}" class="d-block w-100 " alt="...">
                                             <div class="carousel-caption d-none d-md-block">
                                                 <span
