@@ -17,10 +17,12 @@ class AccessController extends Controller
     public function index()
     {
         $url = env("URL_COURSES", "https://dev-cursos.promolife.lat");
+        $url = env("URL_TASK_MANAGER", "http://localhost:8001");
         $routeCourses = $url . "/loginEmail?email=" . auth()->user()->email . "&password=password";
+        $routeTaskManager = $url . "/loginEmail?email=" . auth()->user()->email . "&password=password";
         $id = Auth::user()->id;
         $access = Access::all()->where('users_id', $id);
-        return view('access.index', compact('access', 'routeCourses'));
+        return view('access.index', compact('access', 'routeCourses','routeTaskManager'));
     }
 
     /**

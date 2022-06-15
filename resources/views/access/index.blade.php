@@ -20,6 +20,14 @@
                             <a href="{{ $routeCourses }}" style="width: 100%" target="_blank" class="btn btn-primary with">ABRIR</a>
                          </div>
                     </div>
+                    <div class="card text-dark bg-light " style="width:240px; height:220px; margin-right:20px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+                        <img src="{{ asset('/img/task-clipboard.png') }}"
+                            style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
+                        <div class="card-body" style="padding-top:0; padding-bottom:0">
+                            <h5 class="card-title text-center">Task Manager</h5>
+                            <a href="{{ $routeTaskManager }}" style="width: 100%" target="_blank" class="btn btn-primary with">ABRIR</a>
+                         </div>
+                    </div>
 
                     <div class="card text-dark bg-light " style="width:240px; height:220px; margin-right:20px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
                         <img src="https://h2m8x3y5.rocketcdn.me/wp-content/uploads/2020/03/ODOO-LOGO.png"
@@ -71,7 +79,7 @@
                             style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
                         <div class="card-body" style="padding-top:0; padding-bottom:0">
                             <h5 class="card-title text-center" >Power BI</h5>
-                            <a href="https://app.powerbi.com/singleSignOn?ru=https:%2f%2fapp.powerbi.com%2f%3fnoSignUpCheck%3d1" 
+                            <a href="https://app.powerbi.com/singleSignOn?ru=https:%2f%2fapp.powerbi.com%2f%3fnoSignUpCheck%3d1"
                             style="width: 100%" target="_blank" class="btn btn-primary with">ABRIR</a>
                         </div>
                     </div>
