@@ -16,10 +16,11 @@
                         {{-- <th style="width: 5%"  scope="col">Foto</th> --}}
                         <th scope="col">Nombre</th>
                         <th scope="col">Correo</th>
-                        <th scope="col">Area</th>
-                        <th scope="col">Puesto</th>
+                        {{-- <th scope="col">Area</th>
+                        <th scope="col">Puesto</th> --}}
                         {{-- <th scope="col">Empresas</th> --}}
                         <th scope="col">Ingreso</th>
+                        <th scope="col">Cumpleaños</th>
                         <th scope="col">Jefe Directo</th>
                         {{-- <th scope="col">Status</th> --}}
                         <th scope="col">Rol</th>
@@ -40,9 +41,9 @@
                             @else
                                 <td  class="text-center" > Sin imagen</td>
                             @endif --}}
-                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->name.' '.$user->lastname }}</td>
                             <td>{{ $user->email }}</td>
-                            <td>
+{{--                             <td>
                                 @if ($user->employee->position)
                                     {{ $user->employee->position->department->name }}
                                 @endif
@@ -51,13 +52,14 @@
                                 @if ($user->employee->position)
                                     {{ $user->employee->position->name }}
                                 @endif
-                            </td>
+                            </td> --}}
                             {{-- <td>
                                 @foreach ($user->employee->companies as $company)
                                     {{ $company->name_company }}
                                 @endforeach
                             </td> --}}
                             <td>{{ explode(' ', $user->employee->date_admission)[0] }}</td>
+                            <td>{{ explode(' ', $user->employee->birthday_date)[0] }}</td>
                             <td>
                                 @if ($user->employee->jefeDirecto)
                                     {{ $user->employee->jefeDirecto->user->name }}
