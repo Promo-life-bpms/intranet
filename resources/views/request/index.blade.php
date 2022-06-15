@@ -22,11 +22,11 @@
                     @php
                     $contador1 = 0;
                         foreach ($myrequests as $notification){
-                            if($notification->type=="App\Notifications\RequestNotification"){
-                                if ($notification->direct_manager_status =="Aprobada" && $notification->human_resources_status =="Pendiente"){
+                          
+                            if ($notification->direct_manager_status =="Aprobada" && $notification->human_resources_status =="Pendiente"){
                                 $contador1 = $contador1 + 1;
-                                }
                             }
+                            
                         }
                     @endphp
                     En proceso
