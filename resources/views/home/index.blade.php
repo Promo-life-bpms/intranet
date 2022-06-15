@@ -379,7 +379,7 @@
             </div>
 
             <!--  Empleado del mes  -->
-            <div class="card p-3"
+            <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;">
                 <h4>Empleado del Mes de la Evaluacion 360</h4>
                 <br>
@@ -387,10 +387,10 @@
                 <div class="d-flex flex-wrap w-100 h-30 justify-content-around content-employees">
 
                     @foreach ($monthEmployeeController as $employeeMonth)
+                    <div class="row" style="width: 100%">
                         <div class="card text-center shadow p-3 mx-5 bg-body rounded" style="margin-left:0!important;margin-right:0!important">
                             @if ($employeeMonth->photo==null)
-                                <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" alt="Card image cap" style="object-fit: cover">
-
+                                <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" alt="Card image cap"  >
                             @else
                                 <img src="{{ asset($employeeMonth->photo) }}" alt="Card image cap" style="object-fit: cover">
                             @endif
@@ -407,6 +407,8 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                        
                     @endforeach
                 </div>
             </div>
