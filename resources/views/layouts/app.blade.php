@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
 
-    @livewireStyles
+    @livewireStyles()
 </head>
 
 <body>
@@ -95,7 +95,7 @@
     @yield('scripts')
     <script src="https://use.fontawesome.com/84b288f169.js"></script>
 
-    @livewireScripts
+    @livewireScripts()
 </body>
 
 </html>

@@ -16,9 +16,9 @@ class AccessController extends Controller
      */
     public function index()
     {
-        $url = env("URL_COURSES", "https://dev-cursos.promolife.lat");
-        $url = env("URL_TASK_MANAGER", "http://localhost:8001");
-        $routeCourses = $url . "/loginEmail?email=" . auth()->user()->email . "&password=password";
+        $url1 = env("URL_COURSES", "https://dev-cursos.promolife.lat");
+        $url = env("URL_TASK_MANAGER", "https://taskmanagerplbh.promolife.lat");
+        $routeCourses = $url1 . "/loginEmail?email=" . auth()->user()->email . "&password=password";
         $routeTaskManager = $url . "/loginEmail?email=" . auth()->user()->email . "&password=password";
         $id = Auth::user()->id;
         $access = Access::all()->where('users_id', $id);
