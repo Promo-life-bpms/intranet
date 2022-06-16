@@ -17,6 +17,7 @@ use App\Models\Notification;
 use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
+use App\Models\Vacations;
 use Carbon\Carbon;
 use DateTime;
 use Exception;
@@ -81,6 +82,23 @@ class ApiController extends Controller
             } else {
                 $image = $usr->image;
             }
+            $expiration= [];
+
+            $vacation_duration= Vacations::all()->where('users_id',$usr->id);
+        
+            foreach($vacation_duration as $vacation){
+                if($vacation == null || $vacation == []){
+                    array_push($expiration, (object)[
+                        'daysAvailables' => "Sin dias disponibles",
+                        'cutoffDate' => "Sin fecha de corte disponible",
+                    ]);
+                }else{
+                    array_push($expiration, (object)[
+                        'daysAvailables' => strval(floor($vacation->days_availables)) ,
+                        'cutoffDate' => $vacation->cutoff_date,
+                    ]);
+                }
+            }
 
             array_push($data, (object)[
                 'id' => $usr->id,
@@ -90,6 +108,7 @@ class ApiController extends Controller
                 'department' => $usr->employee->position->department->name,
                 'position' => $usr->employee->position->name,
                 'daysAvailables' => intval($vacations),
+                'expiration'=>$expiration,
             ]);
         }
 
