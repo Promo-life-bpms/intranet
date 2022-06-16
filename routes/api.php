@@ -27,3 +27,6 @@ Route::get('/getProfile/{id}', [APIController::class, 'getProfile'])->name('api.
 
 Route::get('/getRequest/{hashedToken}', [APIController::class, 'getRequest'])->name('api.as');
 
+Route::post('/postDeleteRequest', [APIController::class, 'postDeleteRequest'])->name('api.postDeleteRequest');
+Route::post('/postDeletePublication', [APIController::class, 'postDeletePublication'])->name('api.postDeletePublication');
+

@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use JetBrains\PhpStorm\Internal\ReturnTypeContract;
+use Illuminate\Support\Facades\File;
+
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -768,6 +770,34 @@ class ApiController extends Controller
 
         return $data;
 
+    }
+
+    public function postDeleteRequest(Request $request){
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;    
+
+        if($user_id!=null){                    
+            DB::table('request_calendars')->where('requests_id',  $request->requestID)->delete();
+            DB::table('requests')->where('id',  $request->requestID)->delete();
+        }
+    }
+
+    public function postDeletePublication(Request $request){
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;    
+
+        if($user_id!=null){
+
+            $publication = Publications::all()->where('id',$request->publciationID);
+            
+            if($publication->photo_public!=null || $publication->photo_public|=""){
+                File::delete($publication->photo_public);
+            }
+
+            DB::table('likes')->where('publication_id',  $request->publciationID)->delete();
+            DB::table('comments')->where('publication_id',  $request->publciationID)->delete();
+            DB::table('publications')->where('id',  $request->publciationID)->delete();
+        }
     }
 
 }
