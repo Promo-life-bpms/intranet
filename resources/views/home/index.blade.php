@@ -360,7 +360,7 @@
                                                     class="aniversary-text">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
                                                 <br>
                                                 <span
-                                                    class="aniversary-text">{{ $employee->date_admission->format('d/m') }}</span>
+                                                    class="aniversary-text">{{$date - $employee->date_admission->format('Y') . " "."años" }}</span>
                                             </div>
 
                                         </div>

@@ -51,6 +51,9 @@ class HomeController extends Controller
         }
 
 
+        $toDay = $carbon->now();
+        $date = $toDay->format('Y');
+
         $eventos = Events::all();
 
         $communiquesImage = DB::table('communiques')->whereNotNull('image')->get();
@@ -61,7 +64,7 @@ class HomeController extends Controller
         
         $publications = Publications::orderBy('created_at', 'desc')->paginate(10);
 
-        return view('home.index', compact('employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController', 'publications'));
+        return view('home.index', compact('employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController', 'publications','date'));
     }
 
 
