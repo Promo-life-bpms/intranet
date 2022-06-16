@@ -101,12 +101,12 @@
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
                                 data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
+                                <span class="sr-only">Anterior</span>
                             </button>
                             <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
                                 data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
+                                <span class="sr-only">Siguiente</span>
                             </button>
                         </div>
                     </div>
@@ -260,6 +260,20 @@
 
         <!-- Sidebar  -->
         <div class="col-md-4">
+
+             <!-- App movil  -->
+            <div class="card p-4"
+            style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;"
+            style="border-radius:20px;">
+                <h4 class="d-flex justify-content-center text-center">¡Descarga nuestra aplicación móvil!</h4>
+                <br>
+                <img class="mobileLogo" src="{{ asset('/img/movil.png') }}" alt="app-movil">
+                <br>
+                <a href="#" type="button" class="btn btn-info">Android</a>
+                <br>
+                <a href="#" type="button" class="btn btn-light">IOS</a>
+
+            </div>
 
             <!-- Cumpleanos del mes  -->
             <div class="card p-4"
@@ -543,6 +557,16 @@
         .file--upload>label:active {
             background-color: hsl(204, 86%, 91%);
 
+        }
+
+        .carousel.carousel-fade .carousel-item {
+            opacity: 0;
+            animation: fadeIn 3s;
+        }
+
+        .carousel.carousel-fade .carousel-item.active {
+            opacity: 1;
+            animation: fadeIn 3s;
         }
     </style>
 @stop
