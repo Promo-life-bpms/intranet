@@ -68,7 +68,7 @@
             <div class="card p-3 box">
                 <div class="row">
                     <div class="col-md-12">
-                        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                        <div id="carouselExampleCaptions" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="15000">
                             <div class="carousel-inner">
 
                                 @if (count($communiquesImage) == 0)
@@ -267,7 +267,7 @@
                 <h4 class="d-flex justify-content-center">Cumpleaños del Mes</h4>
                 <div class="row">
                     <div class="col">
-                        <div id="carousel2" class="carousel slide" data-bs-ride="carousel">
+                        <div id="carousel2" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="15000">
                             <div class="carousel-inner">
 
                                 @if (count($employeesBirthday) == 0)
@@ -322,7 +322,7 @@
 
                 <div class="row">
                     <div class="col">
-                        <div id="carousel3" class="carousel slide" data-bs-ride="carousel">
+                        <div id="carousel3" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="15000">
                             <div class="carousel-inner">
 
                                 @if (count($employeesAniversary) == 0)
@@ -705,6 +705,5 @@
             }
         }
     </script>
-
 
 @stop
