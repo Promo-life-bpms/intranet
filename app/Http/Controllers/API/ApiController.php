@@ -95,7 +95,7 @@ class ApiController extends Controller
                 }else{
                     array_push($expiration, (object)[
                         'daysAvailables' => strval(floor($vacation->days_availables)) ,
-                        'cutoffDate' => $vacation->cutoff_date,
+                        'cutoffDate' => date('d-m-Y', strtotime( $vacation->cutoff_date)),
                     ]);
                 }
             }
