@@ -30,3 +30,4 @@ Route::get('/getRequest/{hashedToken}', [APIController::class, 'getRequest'])->n
 Route::post('/postDeleteRequest', [APIController::class, 'postDeleteRequest'])->name('api.postDeleteRequest');
 Route::post('/postDeletePublication', [APIController::class, 'postDeletePublication'])->name('api.postDeletePublication');
 
+Route::get('/getUserMessages/{hashedToken}', [APIController::class, 'getUserMessages'])->name('api.getUserMessages');
