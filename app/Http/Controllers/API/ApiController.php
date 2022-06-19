@@ -804,24 +804,25 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         /* $user_id = $token->tokenable_id; */
 
-        $user_id = 31;
+        $user_id = 32;
 
         //Obtiene todos los empleados que tienen conversarion con el usuario
         $messages = DB::table('messages')->where('transmitter_id',$user_id)->orWhere('receiver_id',$user_id)->get();
         $data =[];
         $allUsers = User::all();
         
-
+        $conversationData = [];
+        array_push($conversationData, (object)[
+            'id' => $user_id,
+            'transmitter_id' => "no data",
+            'receiver_id' => "no data",
+            'message' => "no data",
+            'created_at' => "no data",
+            'updated_at' => "no data",
+        ]);
+        
         if($messages->count()==0){
-            $conversationData = [];
-            array_push($conversationData, (object)[
-                'id' => $user_id,
-                'transmitter_id' => "no data",
-                'receiver_id' => "no data",
-                'message' => "no data",
-                'created_at' => "no data",
-                'updated_at' => "no data",
-            ]);
+            
             array_push($data, (object)[
                 'id' => $user_id,
                 'fullname' => "no data",
@@ -851,20 +852,32 @@ class ApiController extends Controller
                             $conversation = DB::table('messages')
                             ->where('transmitter_id',$user_id)
                             ->where('receiver_id', $user->id);
-                
+                            
+                            
                             $conversationToSend = DB::table('messages')
                                 ->where('receiver_id', $user_id)
                                 ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
-    
-                                array_push($data, (object)[
-                                'id' => $user->id,
-                                'fullname' => $user->name . " " . $user->lastname,
-                                'email' => $user->email,
-                                'photo' => $image,
-                                'department' => $user->employee->position->department->name,
-                                'position' => $user->employee->position->name,
-                                'conversation'=>$conversationToSend,
-                            ]);
+                                if($conversationToSend->count() == 0){
+                                    array_push($data, (object)[
+                                        'id' => $user->id,
+                                        'fullname' => $user->name . " " . $user->lastname,
+                                        'email' => $user->email,
+                                        'photo' => $image,
+                                        'department' => $user->employee->position->department->name,
+                                        'position' => $user->employee->position->name,
+                                        'conversation'=>$conversationData,
+                                    ]);
+                                }else{
+                                    array_push($data, (object)[
+                                        'id' => $user->id,
+                                        'fullname' => $user->name . " " . $user->lastname,
+                                        'email' => $user->email,
+                                        'photo' => $image,
+                                        'department' => $user->employee->position->department->name,
+                                        'position' => $user->employee->position->name,
+                                        'conversation'=>$conversationToSend,
+                                    ]);
+                                }
                         }
                     }
                         
@@ -889,16 +902,28 @@ class ApiController extends Controller
                             $conversationToSend = DB::table('messages')
                                 ->where('receiver_id', $user_id)
                                 ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
-    
-                            array_push($data, (object)[
-                                'id' => $user->id,
-                                'fullname' => $user->name . " " . $user->lastname,
-                                'email' => $user->email,
-                                'photo' => $image,
-                                'department' => $user->employee->position->department->name,
-                                'position' => $user->employee->position->name,
-                                'conversation'=>$conversationToSend,
-                            ]);
+                                
+                                if($conversationToSend->count() == 0){
+                                    array_push($data, (object)[
+                                        'id' => $user->id,
+                                        'fullname' => $user->name . " " . $user->lastname,
+                                        'email' => $user->email,
+                                        'photo' => $image,
+                                        'department' => $user->employee->position->department->name,
+                                        'position' => $user->employee->position->name,
+                                        'conversation'=>$conversationData,
+                                    ]);
+                                }else{
+                                    array_push($data, (object)[
+                                        'id' => $user->id,
+                                        'fullname' => $user->name . " " . $user->lastname,
+                                        'email' => $user->email,
+                                        'photo' => $image,
+                                        'department' => $user->employee->position->department->name,
+                                        'position' => $user->employee->position->name,
+                                        'conversation'=>$conversationToSend,
+                                    ]);
+                                }
                         }
     
     
@@ -925,19 +950,30 @@ class ApiController extends Controller
                             $conversationToSend = DB::table('messages')
                                 ->where('receiver_id', $user_id)
                                 ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
-    
-                            array_push($data, (object)[
-                                'id' => $user->id,
-                                'fullname' => $user->name . " " . $user->lastname,
-                                'email' => $user->email,
-                                'photo' => $image,
-                                'department' => $user->employee->position->department->name,
-                                'position' => $user->employee->position->name,
-                                'conversation'=>$conversationToSend,
-                            ]);
+
+                            if($conversationToSend->count() == 0){
+                                array_push($data, (object)[
+                                    'id' => $user->id,
+                                    'fullname' => $user->name . " " . $user->lastname,
+                                    'email' => $user->email,
+                                    'photo' => $image,
+                                    'department' => $user->employee->position->department->name,
+                                    'position' => $user->employee->position->name,
+                                    'conversation'=>$conversationData,
+                                ]);
+                            }else{
+                                array_push($data, (object)[
+                                    'id' => $user->id,
+                                    'fullname' => $user->name . " " . $user->lastname,
+                                    'email' => $user->email,
+                                    'photo' => $image,
+                                    'department' => $user->employee->position->department->name,
+                                    'position' => $user->employee->position->name,
+                                    'conversation'=>$conversationToSend,
+                                ]);
+                            }
                         }
-    
-    
+                          
                     }
                     
                 }
