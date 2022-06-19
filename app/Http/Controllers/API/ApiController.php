@@ -804,128 +804,160 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         /* $user_id = $token->tokenable_id; */
 
-        $user_id = 32;
+        $user_id = 31;
 
         //Obtiene todos los empleados que tienen conversarion con el usuario
         $messages = DB::table('messages')->where('transmitter_id',$user_id)->orWhere('receiver_id',$user_id)->get();
         $data =[];
         $allUsers = User::all();
-       
-        foreach($messages as $message){
-            //Si soy el transmisor, el usuario con el que tengo la conversarion es el receptor
-            if($message->transmitter_id == $user_id){
-
-                foreach($allUsers as $user){
-
-                    if($user->id == $message->receiver_id){
-                       
-                        $image = '';
-                        if ($user->image == null) {
-                            $image = "img/default_user.png";
-                        } else {
-                            $image = $user->image;
-                        }
-                        $conversation = DB::table('messages')
-                        ->where('transmitter_id',$user_id)
-                        ->where('receiver_id', $user->id);
-            
-                        $conversationToSend = DB::table('messages')
-                            ->where('receiver_id', $user_id)
-                            ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
-
-                            array_push($data, (object)[
-                            'id' => $user->id,
-                            'fullname' => $user->name . " " . $user->lastname,
-                            'email' => $user->email,
-                            'photo' => $image,
-                            'department' => $user->employee->position->department->name,
-                            'position' => $user->employee->position->name,
-                            'conversation'=>$conversationToSend,
-                        ]);
-                    }
-                }
-                    
-            //Si soy el receptor, el usuario con el que tengo la conversarion es el emisor  
-            }else if($message->receiver_id== $user_id){
-
-                foreach($allUsers as $user){
-                   
-                    if($user->id == $message->receiver_id){
-                        
-                        $image = '';
-                        if ($user->image == null) {
-                            $image = "img/default_user.png";
-                        } else {
-                            $image = $user->image;
-                        }
-
-                        $conversation = DB::table('messages')
-                        ->where('transmitter_id',$user_id)
-                        ->where('receiver_id', $user->id);
-            
-                        $conversationToSend = DB::table('messages')
-                            ->where('receiver_id', $user_id)
-                            ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
-
-                        array_push($data, (object)[
-                            'id' => $user->id,
-                            'fullname' => $user->name . " " . $user->lastname,
-                            'email' => $user->email,
-                            'photo' => $image,
-                            'department' => $user->employee->position->department->name,
-                            'position' => $user->employee->position->name,
-                            'conversation'=>$conversationToSend,
-                        ]);
-                    }
-
-
-                }
-
-            }else{
-
-                foreach($allUsers as $user){
-
-                    if($user->id == $message->receiver_id){
-                        
-                        $image = '';
-                        if ($user->image == null) {
-                            $image = "img/default_user.png";
-                        } else {
-                            $image = $user->image;
-                        }
-
-                        $conversation = DB::table('messages')
-                        ->where('transmitter_id',$user_id)
-                        ->where('receiver_id', $user->id);
-            
-                
-                        $conversationToSend = DB::table('messages')
-                            ->where('receiver_id', $user_id)
-                            ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
-
-                        array_push($data, (object)[
-                            'id' => $user->id,
-                            'fullname' => $user->name . " " . $user->lastname,
-                            'email' => $user->email,
-                            'photo' => $image,
-                            'department' => $user->employee->position->department->name,
-                            'position' => $user->employee->position->name,
-                            'conversation'=>$conversationToSend,
-                        ]);
-                    }
-
-
-                }
-                
-            }
-                
-                    
-        } 
-    
-
-        return $data;
-
         
-    }
 
+        if($messages->count()==0){
+            $conversationData = [];
+            array_push($conversationData, (object)[
+                'id' => $user_id,
+                'transmitter_id' => "no data",
+                'receiver_id' => "no data",
+                'message' => "no data",
+                'created_at' => "no data",
+                'updated_at' => "no data",
+            ]);
+            array_push($data, (object)[
+                'id' => $user_id,
+                'fullname' => "no data",
+                'email' => "no data",
+                'photo' => "no data",
+                'department' => "no data",
+                'position' => "no data",
+                'conversation'=>$conversationData,
+            ]); 
+
+            return $data;
+        }else{
+            foreach($messages as $message){
+                //Si soy el transmisor, el usuario con el que tengo la conversarion es el receptor
+                if($message->transmitter_id == $user_id){
+    
+                    foreach($allUsers as $user){
+    
+                        if($user->id == $message->receiver_id){
+                           
+                            $image = '';
+                            if ($user->image == null) {
+                                $image = "img/default_user.png";
+                            } else {
+                                $image = $user->image;
+                            }
+                            $conversation = DB::table('messages')
+                            ->where('transmitter_id',$user_id)
+                            ->where('receiver_id', $user->id);
+                
+                            $conversationToSend = DB::table('messages')
+                                ->where('receiver_id', $user_id)
+                                ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
+    
+                                array_push($data, (object)[
+                                'id' => $user->id,
+                                'fullname' => $user->name . " " . $user->lastname,
+                                'email' => $user->email,
+                                'photo' => $image,
+                                'department' => $user->employee->position->department->name,
+                                'position' => $user->employee->position->name,
+                                'conversation'=>$conversationToSend,
+                            ]);
+                        }
+                    }
+                        
+                //Si soy el receptor, el usuario con el que tengo la conversarion es el emisor  
+                }else if($message->receiver_id== $user_id){
+    
+                    foreach($allUsers as $user){
+                       
+                        if($user->id == $message->receiver_id){
+                            
+                            $image = '';
+                            if ($user->image == null) {
+                                $image = "img/default_user.png";
+                            } else {
+                                $image = $user->image;
+                            }
+    
+                            $conversation = DB::table('messages')
+                            ->where('transmitter_id',$user_id)
+                            ->where('receiver_id', $user->id);
+                
+                            $conversationToSend = DB::table('messages')
+                                ->where('receiver_id', $user_id)
+                                ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
+    
+                            array_push($data, (object)[
+                                'id' => $user->id,
+                                'fullname' => $user->name . " " . $user->lastname,
+                                'email' => $user->email,
+                                'photo' => $image,
+                                'department' => $user->employee->position->department->name,
+                                'position' => $user->employee->position->name,
+                                'conversation'=>$conversationToSend,
+                            ]);
+                        }
+    
+    
+                    }
+    
+                }else{
+    
+                    foreach($allUsers as $user){
+    
+                        if($user->id == $message->receiver_id){
+                            
+                            $image = '';
+                            if ($user->image == null) {
+                                $image = "img/default_user.png";
+                            } else {
+                                $image = $user->image;
+                            }
+    
+                            $conversation = DB::table('messages')
+                            ->where('transmitter_id',$user_id)
+                            ->where('receiver_id', $user->id);
+                
+                    
+                            $conversationToSend = DB::table('messages')
+                                ->where('receiver_id', $user_id)
+                                ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
+    
+                            array_push($data, (object)[
+                                'id' => $user->id,
+                                'fullname' => $user->name . " " . $user->lastname,
+                                'email' => $user->email,
+                                'photo' => $image,
+                                'department' => $user->employee->position->department->name,
+                                'position' => $user->employee->position->name,
+                                'conversation'=>$conversationToSend,
+                            ]);
+                        }
+    
+    
+                    }
+                    
+                }
+                    
+                        
+            } 
+    
+       
+            $filterdata = array_unique($data,SORT_REGULAR);
+            $dataToSend =[];
+            foreach($filterdata as $data){
+                array_push($dataToSend, $data);
+            }
+    
+            return $dataToSend;
+    
+            
+        }
+    
+    }
+       
+        
 }
