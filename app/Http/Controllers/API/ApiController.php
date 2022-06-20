@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use JetBrains\PhpStorm\Internal\ReturnTypeContract;
 use Illuminate\Support\Facades\File;
+use Cache;
 
 
 use function PHPUnit\Framework\isEmpty;
@@ -263,6 +264,13 @@ class ApiController extends Controller
         $directory_data = [];
 
         foreach ($user as $usr) {
+
+            $userOnline = false;
+
+            if (Cache::has('user-is-online-' . $usr->id)) {
+                $userOnline = true;
+            }
+
             foreach ($directory as $dir) {
                 if ($usr->id == $dir->user_id) {
                     array_push($directory_data, (object)[
@@ -287,6 +295,7 @@ class ApiController extends Controller
                 'photo' => $image,
                 'department' => $usr->employee->position->department->name,
                 'position' => $usr->employee->position->name,
+                'onlineStatus' => $userOnline,
                 'data' =>  $directory_data,
             ]);
             $directory_data = [];
