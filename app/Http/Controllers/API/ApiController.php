@@ -821,8 +821,8 @@ class ApiController extends Controller
         $conversationData = [];
         array_push($conversationData, (object)[
             'id' => $user_id,
-            'transmitter_id' => "no data",
-            'receiver_id' => "no data",
+            'transmitterID' => "no data",
+            'receiverID' => "no data",
             'message' => "no data",
             'created_at' => "no data",
             'updated_at' => "no data",
@@ -875,6 +875,21 @@ class ApiController extends Controller
                                         'conversation'=>$conversationData,
                                     ]);
                                 }else{
+
+                                    $new_conversation = [];
+
+                                    foreach($conversationToSend as $conversation){
+                                        array_push($new_conversation, (object)[
+                                            'id' => $user_id,
+                                            'transmitterID' => $conversation->transmitter_id,
+                                            'receiverID' => $conversation->receiver_id,
+                                            'message' => $conversation->message,
+                                            'created_at' => $conversation->created_at,
+                                            'updated_at' => $conversation->created_at,
+                                        ]);
+                                    }
+
+                                    
                                     array_push($data, (object)[
                                         'id' => $user->id,
                                         'fullname' => $user->name . " " . $user->lastname,
@@ -882,7 +897,7 @@ class ApiController extends Controller
                                         'photo' => $image,
                                         'department' => $user->employee->position->department->name,
                                         'position' => $user->employee->position->name,
-                                        'conversation'=>$conversationToSend,
+                                        'conversation'=>$new_conversation,
                                     ]);
                                 }
                         }
