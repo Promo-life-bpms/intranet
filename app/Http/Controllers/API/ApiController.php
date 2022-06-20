@@ -802,9 +802,7 @@ class ApiController extends Controller
 
     public function getUserMessages($hashedToken){
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
-        /* $user_id = $token->tokenable_id; */
-
-        $user_id = 32;
+        $user_id = $token->tokenable_id; 
 
         //Obtiene todos los empleados que tienen conversarion con el usuario
         $messages = DB::table('messages')->where('transmitter_id',$user_id)->orWhere('receiver_id',$user_id)->get();
