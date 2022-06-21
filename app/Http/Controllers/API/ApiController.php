@@ -821,11 +821,11 @@ class ApiController extends Controller
         $conversationData = [];
         array_push($conversationData, (object)[
             'id' => $user_id,
-            'transmitterID' => "no data",
-            'receiverID' => "no data",
+            'transmitterID' => $user_id,
+            'receiverID' => $user_id,
             'message' => "no data",
-            'created_at' => "no data",
-            'updated_at' => "no data",
+            'created' => "no data",
+            'updated' => "no data",
         ]);
         
         if($messages->count()==0){
@@ -884,8 +884,8 @@ class ApiController extends Controller
                                             'transmitterID' => $conversation->transmitter_id,
                                             'receiverID' => $conversation->receiver_id,
                                             'message' => $conversation->message,
-                                            'created_at' => $conversation->created_at,
-                                            'updated_at' => $conversation->created_at,
+                                            'created' => date('H:i', strtotime($conversation->created_at)),
+                                            'updated' => date('H:i', strtotime($conversation->created_at)),
                                         ]);
                                     }
 
@@ -936,6 +936,21 @@ class ApiController extends Controller
                                         'conversation'=>$conversationData,
                                     ]);
                                 }else{
+
+                                    $new_conversation = [];
+
+                                    foreach($conversationToSend as $conversation){
+                                        array_push($new_conversation, (object)[
+                                            'id' => $user_id,
+                                            'transmitterID' => $conversation->transmitter_id,
+                                            'receiverID' => $conversation->receiver_id,
+                                            'message' => $conversation->message,
+                                            'created' => date('H:i', strtotime($conversation->created_at)),
+                                            'updated' => date('H:i', strtotime($conversation->created_at)),
+                                        ]);
+                                    }
+
+                                    
                                     array_push($data, (object)[
                                         'id' => $user->id,
                                         'fullname' => $user->name . " " . $user->lastname,
@@ -943,12 +958,10 @@ class ApiController extends Controller
                                         'photo' => $image,
                                         'department' => $user->employee->position->department->name,
                                         'position' => $user->employee->position->name,
-                                        'conversation'=>$conversationToSend,
+                                        'conversation'=>$new_conversation,
                                     ]);
                                 }
                         }
-    
-    
                     }
     
                 }else{
@@ -984,26 +997,38 @@ class ApiController extends Controller
                                     'conversation'=>$conversationData,
                                 ]);
                             }else{
-                                array_push($data, (object)[
-                                    'id' => $user->id,
-                                    'fullname' => $user->name . " " . $user->lastname,
-                                    'email' => $user->email,
-                                    'photo' => $image,
-                                    'department' => $user->employee->position->department->name,
-                                    'position' => $user->employee->position->name,
-                                    'conversation'=>$conversationToSend,
-                                ]);
+                                $new_conversation = [];
+
+                                    foreach($conversationToSend as $conversation){
+                                        array_push($new_conversation, (object)[
+                                            'id' => $user_id,
+                                            'transmitterID' => $conversation->transmitter_id,
+                                            'receiverID' => $conversation->receiver_id,
+                                            'message' => $conversation->message,
+                                            'created' => date('H:i', strtotime($conversation->created_at)),
+                                            'updated' => date('H:i', strtotime($conversation->created_at)),
+                                        ]);
+                                    }
+
+                                    
+                                    array_push($data, (object)[
+                                        'id' => $user->id,
+                                        'fullname' => $user->name . " " . $user->lastname,
+                                        'email' => $user->email,
+                                        'photo' => $image,
+                                        'department' => $user->employee->position->department->name,
+                                        'position' => $user->employee->position->name,
+                                        'conversation'=>$new_conversation,
+                                    ]);
                             }
                         }
                           
                     }
                     
                 }
-                    
-                        
+                               
             } 
     
-       
             $filterdata = array_unique($data,SORT_REGULAR);
             $dataToSend =[];
             foreach($filterdata as $data){
@@ -1011,7 +1036,6 @@ class ApiController extends Controller
             }
     
             return $dataToSend;
-    
             
         }
     
