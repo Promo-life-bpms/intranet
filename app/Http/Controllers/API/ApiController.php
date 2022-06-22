@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\MessageSent;
 use App\Events\RequestEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
@@ -13,11 +14,13 @@ use App\Models\Directory as ModelsDirectory;
 use App\Models\Employee;
 use App\Models\Like;
 use App\Models\Manual;
+use App\Models\Message;
 use App\Models\Notification;
 use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
 use App\Models\Vacations;
+use App\Notifications\MessageNotification;
 use Carbon\Carbon;
 use DateTime;
 use Exception;
@@ -1088,6 +1091,39 @@ class ApiController extends Controller
         }
      
     }
-       
+
+
+    public function postConversation(Request $request){
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;    
+        $user_name = DB::table('users')->where('id',$user_id)->value('name');
+        $user_lastname = DB::table('users')->where('id',$user_id)->value('lastname');
+        $user_image = DB::table('users')->where('id',$user_id)->value('image');
+ 
+        //Crear mensaje en la BD
+        $message = new Message();
+        $message->transmitter_id =  $user_id;
+        $message->receiver_id = intval($request->receiverID);
+        $message->message =  $request->message;
+        $message->save();
+
+        $data_send = [
+            'emisor' => $user_id,
+            'message' => $request->message,
+            'transmitter_name' => $user_name. " ".$user_lastname ,
+            'image' => $user_image, 
+        ];
         
+      
+        $notification = new Notification();
+        $notification->id =uniqid();       
+        $notification->type = "App\Notifications\MessageNotification";
+        $notification->notifiable_type = "App\Models\User";
+        $notification->notifiable_id = intval($request->receiverID) ;
+        $notification->data =json_encode($data_send);
+        $notification->save();
+
+        return true;
+    }
+    
 }
