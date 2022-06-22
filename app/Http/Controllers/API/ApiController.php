@@ -1123,6 +1123,9 @@ class ApiController extends Controller
         $notification->data =json_encode($data_send);
         $notification->save();
 
+        broadcast(new MessageSent( $request->message, intval($request->receiverID), $user_id ,$user_name. " ".$user_lastname,"2022-06-20 13:04:28" ))->toOthers();
+
+
         return true;
     }
     
