@@ -864,6 +864,7 @@ class ApiController extends Controller
                             $conversationToSend = DB::table('messages')
                                 ->where('receiver_id', $user_id)
                                 ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
+                             
                                 if($conversationToSend->count() == 0){
                                     array_push($data, (object)[
                                         'id' => $user->id,
@@ -1039,6 +1040,53 @@ class ApiController extends Controller
             
         }
     
+    }
+
+    public function postUserMessages(Request $request){
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;    
+
+        $conversationUserID = $request->conversationUserID;
+
+
+        $mensajes = DB::table('messages')
+            ->where('transmitter_id',$user_id)
+            ->where('receiver_id', $conversationUserID);
+
+
+        $mensajesEnviados = DB::table('messages')
+            ->where('receiver_id', $user_id)
+            ->where('transmitter_id', $conversationUserID)->union($mensajes)->orderBy('created_at', 'asc')->get();
+
+        $data =[];
+
+        if($mensajesEnviados->count()==0){
+            
+            array_push($data, (object)[
+                'id' => $user_id,
+                'transmitterID' => $user_id,
+                'receiverID' => $user_id,
+                'message' => "no data",
+                'created' => "no data",
+                'updated' => "no data",
+            ]);
+
+            return $data;
+        }else{
+            foreach($mensajesEnviados as $mensaje){
+                array_push($data, (object)[
+                    'id' => $user_id,
+                    'transmitterID' => $mensaje->transmitter_id,
+                    'receiverID' => $mensaje->receiver_id,
+                    'message' => $mensaje->message,
+                    'created' => date('H:i', strtotime($mensaje->created_at)),
+                    'updated' => date('H:i', strtotime($mensaje->created_at)),
+                ]);
+            }
+        
+            return $data;
+        }
+     
     }
        
         
