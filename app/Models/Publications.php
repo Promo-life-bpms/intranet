@@ -33,4 +33,8 @@ class Publications extends Model
     {
         return $this->belongsToMany(User::class, 'likes', 'publication_id', 'user_id' );
     }
+    //Imagenes de la publicacion
+    public function files(){
+        return $this->hasMany(Media::class, 'publication_id');
+    }
 }

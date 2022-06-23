@@ -26,7 +26,7 @@
                             </div>
                         </div>
                         <form action="{{ route('publications.store') }}" class="form-publicar n1-2 flex-grow-1"
-                            method="post" enctype="multipart/form-data">
+                            id="formCreate" method="post">
                             {!! csrf_field() !!}
                             @method('PATCH')
                             @if (session('errorData'))
@@ -38,7 +38,7 @@
                                 placeholder="¿Que estas pensando?"></textarea>
                             <div class="d-flex justify-content-between" class="public_items">
                                 {{-- Subir foto/preview --}}
-                                <div class="d-flex upload-photo mt-3">
+                                {{-- <div class="d-flex upload-photo mt-3">
                                     <div class='file file--upload'>
                                         <label for='input-file'>
                                             Subir imagen
@@ -47,16 +47,43 @@
                                             class="photo_public" accept="image/*">
                                     </div>
 
-                                    {{-- <input type="file" onchange="readURL(this);" name="photo_public" class="photo_public"
-                                        accept="image/*"> --}}
+                                    <input type="file" onchange="readURL(this);" name="photo_public" class="photo_public"
+                                        accept="image/*">
 
+                                </div> --}}
+                                {{-- Subir fotos con dropzone --}}
+                                {{-- <div class="form-group" id="itemsElement">
+                                    <label for="imagen">
+                                        Carga tus imagenes:
+                                    </label>
+                                    <div id="dropzoneItems" class="dropzone form-control text-center" style="height: auto;">
+                                    </div>
+                                    <input type="hidden" name="items" id="items">
+                                    @error('items')
+                                        <div class="text-danger">
+                                            {{ $message }}</div>
+                                    @enderror
+                                    <p id="error"></p>
+                                </div> --}}
+                                <div class="form-group" id="itemsElement">
+                                    <label for="imagen">
+                                        Archivos necesarios para la solicitud:
+                                    </label>
+                                    <div id="dropzoneItems" class="dropzone form-control text-center" style="height: auto;">
+                                    </div>
+                                    <input type="hidden" name="items" id="items" value="{{ old('items') }}">
+                                    @error('items')
+                                        <div class="text-danger">
+                                            {{ $message }}</div>
+                                    @enderror
+                                    <p id="error"></p>
                                 </div>
 
                                 <div class=" mt-3">
-                                    <button class="boton">Publicar</button>
+                                    <input type="submit" class="boton" value="Publicar"></button>
                                 </div>
                             </div>
-                            <img id="blah" class="img-preview" />
+                            {{-- <img id="blah" class="img-preview" /> --}}
                         </form>
                     </div>
 
@@ -81,7 +108,8 @@
                                     @foreach ($communiquesImage as $communique)
                                         <div class="carousel-item {{ $loop->iteration == 1 ? 'active' : '' }}">
                                             <img style="object-fit: contain; max-height: 480px;"
-                                                src="{{ asset($communique->image) }}" class="d-block w-100 " alt="...">
+                                                src="{{ asset($communique->image) }}" class="d-block w-100 "
+                                                alt="...">
                                             <div class="carousel-caption d-none d-md-block">
                                                 <span
                                                     style="background: rgba(3, 42, 51, 0.5); font-size:1.5rem;">{{ $communique->title }}</span>
@@ -156,8 +184,8 @@
                                     <p class="mt-4 ">
                                         {{ $publication->content_publication }} </p>
                                     @if ($publication->photo_public)
-                                        <img src="{{ asset('storage') . '/' . $publication->photo_public }}" alt=""
-                                            width="auto">
+                                        <img src="{{ asset('storage') . '/' . $publication->photo_public }}"
+                                            alt="" width="auto">
                                     @endif
                                     <hr>
                                     <div class="d-flex justify-content-between">
@@ -387,28 +415,30 @@
                 <div class="d-flex flex-wrap w-100 h-30 justify-content-around content-employees">
 
                     @foreach ($monthEmployeeController as $employeeMonth)
-                    <div class="row" style="width: 100%">
-                        <div class="card text-center shadow p-3 mx-5 bg-body rounded" style="margin-left:0!important;margin-right:0!important">
-                            @if ($employeeMonth->photo==null)
-                                <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg" alt="Card image cap"  >
-                            @else
-                                <img src="{{ asset($employeeMonth->photo) }}" alt="Card image cap" style="object-fit: cover">
-                            @endif
-                            <h5 class="card-title">{{ $employeeMonth->name }}</h5>
-                            <p class="card-text">{{ $employeeMonth->position }}</p>
-                            <div class="d-flex justify-content-center align-items-center">
-                                <p class="card-text m-0 mx-1">{{ $employeeMonth->star }}</p>
-                                <div style="width: 30px;" class="mx-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                        fill="currentColor">
-                                        <path
-                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
+                        <div class="row" style="width: 100%">
+                            <div class="card text-center shadow p-3 mx-5 bg-body rounded"
+                                style="margin-left:0!important;margin-right:0!important">
+                                @if ($employeeMonth->photo == null)
+                                    <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
+                                        alt="Card image cap">
+                                @else
+                                    <img src="{{ asset($employeeMonth->photo) }}" alt="Card image cap"
+                                        style="object-fit: cover">
+                                @endif
+                                <h5 class="card-title">{{ $employeeMonth->name }}</h5>
+                                <p class="card-text">{{ $employeeMonth->position }}</p>
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <p class="card-text m-0 mx-1">{{ $employeeMonth->star }}</p>
+                                    <div style="width: 30px;" class="mx-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                            fill="currentColor">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                        
                     @endforeach
                 </div>
             </div>
@@ -423,6 +453,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css"
+        integrity="sha512-jU/7UFiaW5UBGODEopEqnbIAHOI8fO6T99m7Tsmqs2gkdujByJfkCbbfPSN4Wlqlb9TGnsuC0YgUgWkRBK7B9A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         body {
@@ -499,51 +532,51 @@
 
         }
 
-        .img-preview {
-            max-width: 200px;
-        }
+        /*         .img-preview {
+                                                                                    max-width: 200px;
+                                                                                }
 
-        input[type=file] {
-            display: none
-        }
+                                                                                input[type=file] {
+                                                                                    display: none
+                                                                                }
 
-        .file>label {
-            font-size: 10;
-            font-weight: 200;
-            cursor: pointer;
+                                                                                .file>label {
+                                                                                    font-size: 10;
+                                                                                    font-weight: 200;
+                                                                                    cursor: pointer;
 
-            user-select: none;
-            border-style: solid;
-            border-radius: 4px;
-            border-width: 1px;
-            padding: 6px;
+                                                                                    user-select: none;
+                                                                                    border-style: solid;
+                                                                                    border-radius: 4px;
+                                                                                    border-width: 1px;
+                                                                                    padding: 6px;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+                                                                                    display: flex;
+                                                                                    justify-content: center;
+                                                                                    align-items: center;
+                                                                                }
 
-        .file {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+                                                                                .file {
+                                                                                    position: relative;
+                                                                                    display: flex;
+                                                                                    justify-content: center;
+                                                                                    align-items: center;
+                                                                                }
 
-        .file--upload>label {
-            color: hsl(204, 86%, 53%);
-            border-color: hsl(204, 86%, 53%);
-        }
+                                                                                .file--upload>label {
+                                                                                    color: hsl(204, 86%, 53%);
+                                                                                    border-color: hsl(204, 86%, 53%);
+                                                                                }
 
-        .file--upload>label:hover {
-            border-color: hsl(204, 86%, 53%);
-            background-color: hsl(204, 86%, 96%);
-        }
+                                                                                .file--upload>label:hover {
+                                                                                    border-color: hsl(204, 86%, 53%);
+                                                                                    background-color: hsl(204, 86%, 96%);
+                                                                                }
 
-        .file--upload>label:active {
-            background-color: hsl(204, 86%, 91%);
+                                                                                .file--upload>label:active {
+                                                                                    background-color: hsl(204, 86%, 91%);
 
-        }
+                                                                                } */
     </style>
 @stop
 
@@ -554,6 +587,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"
+        integrity="sha512-oQq8uth41D+gIH/NJvSJvVB85MFk1eWpMK6glnkg6I7EdMqC1XVkW7RxLheXwmFdG03qScCM7gKS/Cx3FYt7Tg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
         $(document).ready(function() {
@@ -705,6 +741,57 @@
             }
         }
     </script>
-
-
+    <script>
+        if (document.querySelector('#dropzoneItems')) {
+            let items = new Set()
+            Dropzone.autoDiscover = false;
+            document.addEventListener('DOMContentLoaded', () => {
+                // Dropzone
+                const dropzoneItem = new Dropzone('#dropzoneItems', {
+                    url: "/social/publication/items",
+                    dictDefaultMessage: 'Adjunta las imagenes que quiera compartir',
+                    //acceptedFiles: '.pdf,.png,.jpg,.jpeg,.gif,.bmp',
+                    addRemoveLinks: true,
+                    dictRemoveFile: 'Borrar Archivo',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                    },
+                    success: function(file, response) {
+                        console.log(file);
+                        console.log(response);
+                        document.querySelector('#error').textContent = ''
+                        items.add(response.correcto)
+                        console.log(items);
+                        document.querySelector("#items").value = [...items];
+                        // Add al objeto de archivo, el nombre de la imagen en el servidor
+                        file.nombreServidor = response.correcto
+                        // file.previewElement.parentNode.removeChild(file.previewElement)
+                    },
+                    error: function(file, response) {
+                        // console.log(response);
+                        // console.log(file);
+                        document.querySelector('#error').textContent = 'Formato no valido'
+                    },
+                    removedfile: function(file, response) {
+                        file.previewElement.parentNode.removeChild(file.previewElement)
+                        // console.log(file);
+                        console.log('El archivo borrado fue');
+                        params = {
+                            imagen: file.nombreServidor
+                        }
+                        // console.log(params);
+                        axios.post('/social/publication/deleteItem', params)
+                            .then(response => {
+                                console.log(response.data);
+                                if (items.has(response.data.imagen)) {
+                                    items.delete(response.data.imagen)
+                                    document.querySelector("#items").value = [...items];
+                                }
+                                console.log(items);
+                            })
+                    }
+                });
+            })
+        }
+    </script>
 @stop

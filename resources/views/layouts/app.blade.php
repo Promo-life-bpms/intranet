@@ -76,8 +76,6 @@
                     </div>
                     @include('layouts.components.footer')
 
-                    <chat-component :authId="{{ auth()->user()->id }}"></chat-component>
-                    <notify :auth-id={{ auth()->user()->id }}></notify>
                 </div>
             </div>
         </div>
