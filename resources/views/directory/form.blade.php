@@ -24,6 +24,8 @@
                 <option value="">Seleccione...</option>
                 <option {{ 'Email' == $directory->type ? 'selected' : '' }} value="Email">Email</option>
                 <option {{ 'Telefono' == $directory->type ? 'selected' : '' }} value="Telefono">Telefono</option>
+                <option {{ 'Extension' == $directory->type ? 'selected' : '' }} value="Extension">Extension</option>
+                <option {{ 'Celular' == $directory->type ? 'selected' : '' }} value="Celular">Celular</option>
             </select>
             @error('type')
                 <small>
@@ -36,14 +38,14 @@
         </div>
         <div class="form-group">
             {{ Form::label('correo/telefono') }}
-            {{ Form::text('data', $directory->data, ['class' => 'form-control' . ($errors->has('data') ? ' is-invalid' : ''),'placeholder' => 'Correo o Telefono']) }}
+            {{ Form::text('data', $directory->data, ['class' => 'form-control' . ($errors->has('data') ? ' is-invalid' : ''), 'placeholder' => 'Correo o Telefono']) }}
             @error('data')
                 <small>
                     <font color="red"> *Este campo es requerido* </font>
                 </small>
                 <br>
             @enderror
-    
+
             {!! $errors->first('data', '<div class="invalid-feedback">:message</div>') !!}
         </div>
         <div class="form-group">

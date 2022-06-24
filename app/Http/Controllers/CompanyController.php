@@ -44,7 +44,7 @@ class CompanyController extends Controller
 
             if ($employee->user->image) {
                 $imgReplace = str_replace('\\', '/', $employee->user->image);
-                $img = asset('storage/profile/300x300' . explode("/", $imgReplace)[count(explode('/', $imgReplace)) - 1]);
+                $img = asset('storage/profile/300x300' . substr(explode("/", $imgReplace)[count(explode('/', $imgReplace)) - 1], 7));
             }
 
             $emp = [

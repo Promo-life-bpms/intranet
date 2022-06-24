@@ -84,9 +84,10 @@ class UserController extends Controller
             $extension = $request->file('image')->clientExtension();
             $fileNameToStore = $filename . '.' . $extension;
             $path = 'storage/profile/200x300'. $fileNameToStore;
-            
+
             $request->file('image')->move('storage/profile/', $fileNameToStore);
             Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(200, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
+            Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(300, 300)->save(public_path("storage/profile/300x300{$fileNameToStore}"));
             File::delete(public_path("storage/profile/{$fileNameToStore}"));
         } else {
             $path = null;
@@ -189,9 +190,10 @@ class UserController extends Controller
                 $extension = $request->file('image')->clientExtension();
                 $fileNameToStore = $filename . '.' . $extension;
                 $path = 'storage/profile/200x300'. $fileNameToStore;
-            
+
                 $request->file('image')->move('storage/profile/', $fileNameToStore);
                 Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(200, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
+                Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(300, 300)->save(public_path("storage/profile/300x300{$fileNameToStore}"));
                 File::delete(public_path("storage/profile/{$fileNameToStore}"));
             } else {
                 $path = null;
@@ -208,9 +210,10 @@ class UserController extends Controller
                 $extension = $request->file('image')->clientExtension();
                 $fileNameToStore = $filename . '.' . $extension;
                 $path = 'storage/profile/200x300'. $fileNameToStore;
-            
+
                 $request->file('image')->move('storage/profile/', $fileNameToStore);
                 Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(200, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
+                Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(300, 300)->save(public_path("storage/profile/300x300{$fileNameToStore}"));
                 File::delete(public_path("storage/profile/{$fileNameToStore}"));
             }
         }

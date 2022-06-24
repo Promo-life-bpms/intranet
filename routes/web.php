@@ -14,7 +14,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\WorkController;
-use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\DirectoryController;
 use App\Http\Controllers\UserController;
@@ -31,6 +30,7 @@ use App\Http\Controllers\RequestCalendarController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
 use App\Models\Message;
 use App\Models\RequestCalendar;
@@ -74,7 +74,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('company/getEmployees', [CompanyController::class, 'getAllEmployees']);
     Route::get('company/getEmployeesByOrganization/{organization}', [CompanyController::class, 'getEmployeesByOrganization']);
     Route::get('company/getEmployeesByDepartment/{department}', [CompanyController::class, 'getEmployeesByDepartment']);
-    Route::get('contact/getContacts/{contact}', [ContactController::class, 'getContacts']);
 
     Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
@@ -100,10 +99,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::resource('users', UserController::class);
         Route::get('sendAccess/', [UserController::class, 'sendAccess'])->name('user.sendAccess');
         Route::get('sendAccess/{user}', [UserController::class, 'sendAccessPerUser'])->name('user.sendAccessUnit');
-        Route::resource('contacts', ContactController::class);
     });
 
-    Route::post('contacts/export/', [ContactController::class, 'export'])->name('contacts.export');
 
     Route::resource('communiques', CommuniqueController::class)->except(["show"]);
 
@@ -221,6 +218,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/Notificaciones', [MessageController::class, 'Notificaciones'])->name('message.notification');
         Route::get('eliminarNotificacion/{notification}', [MessageController::class, 'markAsRead'])->name('eliminar.notificacion');
     });
+
+    Route::resource('providers', ProviderController::class);
+    Route::get('/providers/import/create', [ProviderController::class, 'create_import'])->name('providers.createImport');
+    Route::post('/providers/import/store', [ProviderController::class, 'store_import'])->name('providers.storeImport');
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');

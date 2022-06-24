@@ -13,48 +13,41 @@
             @endif
             {!! Form::open(['route' => 'request.store']) !!}
             <div class="row">
-                <div class="col-md-6">
-
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            {!! Form::label('type_request', 'Tipo de Solicitud') !!}
-                            {!! Form::select('type_request', ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
-                            @error('type_request')
-                                <small>
-                                    <font color="red"> *Este campo es requerido* </font>
-                                </small>
-                            @enderror
-                            @error('start')
-                                <small>
-                                    <font color="red"> *La hora de salida es requerida* </font>
-                                </small>
-                            @enderror
-                        </div>
-
+                <div class=" col-md-6">
+                    <div class="form-group">
+                        @php
+                            $opc = [];
+                            if ($vacations >= 0) {
+                                $opc = ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones'];
+                            } else {
+                                $opc = ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores'];
+                            }
+                        @endphp
+                        {!! Form::label('type_request', 'Tipo de Solicitud (Obligatorio)') !!}
+                        {!! Form::select('type_request', $opc, null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                        @error('type_request')
+                            <small>
+                                <font color="red"> *Este campo es requerido* </font>
+                            </small>
+                        @enderror
+                        @error('start')
+                            <small>
+                                <font color="red"> *La hora de salida es requerida* </font>
+                            </small>
+                        @enderror
                     </div>
-
-                </div>
-                <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::label('payment', 'Forma de Pago') !!}
-                        {!! Form::select('payment', ['Descontar Tiempo/Dia' => 'Descontar Tiempo/Dia', 'A cuenta de vacaciones' => 'A cuenta de vacaciones'], null, ['class' => 'form-control', 'placeholder' => 'Opciones', 'readonly']) !!}
+                        {!! Form::text('payment', '', ['class' => 'form-control formaPago', 'placeholder' => 'Forma de Pago', 'readonly']) !!}
                         @error('payment')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
                             </small>
                         @enderror
-
                     </div>
-                </div>
-
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-
-                    <div class="d-flex flex-row form-group" id="request_time">
-                        <div class="col-md-6">
-                            {!! Form::label('start', 'Hora de salida') !!}
+                    <div class="d-none flex-row form-group" id="request_time">
+                        <div class="w-50 mr-1">
+                            {!! Form::label('start', 'Salida') !!}
                             {!! Form::time('start', null, ['class' => 'form-control']) !!}
                             @error('start')
                                 <small>
@@ -63,45 +56,40 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-6">
-                            {!! Form::label('end', 'Hora de ingreso (opcional) ') !!}
+                        <div class="w-50 ml-1">
+                            {!! Form::label('end', 'Ingreso (opcional) ') !!}
                             {!! Form::time('end', null, ['class' => 'form-control']) !!}
                         </div>
                     </div>
-
-
-                    <div class="col-md-12">
-                        <div class="mb-2 form-group">
-                            {!! Form::label('reason', 'Motivo') !!}
-                            {!! Form::textarea('reason', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el motivo']) !!}
-                            @error('reason')
-                                <small>
-                                    <font color="red"> {{ $message }} </font>
-                                </small>
-                            @enderror
-                        </div>
+                    <div class="mb-2 form-group">
+                        {!! Form::label('reason', 'Motivo (Obligatorio)') !!}
+                        <textarea name="reason" cols="30" rows="4" class="form-control" placeholder="Ingrese el motivo"></textarea>
+                        @error('reason')
+                            <small>
+                                <font color="red"> {{ $message }} </font>
+                            </small>
+                        @enderror
                     </div>
                 </div>
-
                 <div class="col-md-6">
                     <div class="mb-2 form-group">
                         {!! Form::label('days', 'Seleccionar dias ') !!}
                         <div class="days" id='calendar'></div>
-                        <p class="mt-2">Dias de vacaciones diponibles: <b id="diasDisponiblesEl">
-                                {{ $vacations }} </b> </p>
-                        <p class="m-0 mt-2 text-danger">Importante!</p>
-                        @foreach ($dataVacations as $item)
-                            <p class="m-0"><b>{{ $item->dv }} </b> dias disponibles hasta el <b>
-                                    {{ $item->cutoff_date }} </b> </p>
-                        @endforeach
+                        @if ($vacations >= 0)
+                            <p class="mt-2">Dias de vacaciones diponibles: <b id="diasDisponiblesEl">
+                                    {{ $vacations }} </b> </p>
+                            <p class="m-0 mt-2 text-danger">Importante!</p>
+                            @foreach ($dataVacations as $item)
+                                <p class="m-0"><b>{{ $item->dv }} </b> dias disponibles hasta el <b>
+                                        {{ $item->cutoff_date }} </b> </p>
+                            @endforeach
+                        @else
+                            <p>No puedes seleccionar vacaciones. Consulta con RRHH para resolver esta situacion</p>
+                        @endif
                     </div>
-
                 </div>
             </div>
-
             {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name' => 'submit']) !!}
-
-
             {!! Form::close() !!}
         </div>
     </div>
@@ -138,7 +126,6 @@
         td.fc-day.fc-past {
             background-color: #ECECEC;
         }
-
     </style>
 @stop
 
@@ -154,8 +141,6 @@
 
             var request_time = document.getElementById('request_time');
 
-            $('#request_time').css("visibility", "hidden");
-
 
             jQuery('select[name="type_request"]').on('change', function() {
                 var id = jQuery(this).val();
@@ -167,27 +152,22 @@
                         success: function(data) {
 
                             if (data.display == "false") {
-                                $('#request_time').css("visibility", "hidden");
+                                $('#request_time').addClass("d-none");
+                                $('#request_time').removeClass("d-flex");
                             } else {
-                                $('#request_time').css("visibility", "visible");
+                                $('#request_time').addClass("d-flex");
+                                $('#request_time').removeClass("d-none");
                             }
-                            console.log(data.name)
-                            jQuery('select[name="payment"]').empty();
-                            jQuery.each(data, function(key, value) {
-                                $('select[name="payment"]').append('<option value="' +
-                                    value + '">' + value + '</option>');
-                            });
-
+                            console.log(data)
+                            $('.formaPago').val('');
+                            $('.formaPago').val(data.name)
                         }
                     });
                 } else {
-                    $('select[name="payment"]').empty();
+                    $('.formaPago').val('');
                 }
             });
         });
-    </script>
-
-    <script>
         $(document).ready(function() {
 
             var SITEURL = "{{ url('/') }}";

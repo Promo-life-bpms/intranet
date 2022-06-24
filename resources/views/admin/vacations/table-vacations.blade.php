@@ -45,22 +45,26 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user->name }} <br>{{ $user->lastname }}</td>
                         <td>{{ Str::limit($user->employee->date_admission, 10) }}</td>
+                        @php
+                            $diasDisponibles = 0;
+                        @endphp
                         @foreach ($user->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'ASC')->get()
     as $vacation)
                             <td>
                                 @php
                                     $randomKey = time();
+                                    $diasDisponibles = $diasDisponibles + $vacation->dv;
                                 @endphp
                                 <div>
                                     <strong>Periodo:</strong> {{ $vacation->period == 1 ? 'Actual' : 'Vencido' }}
                                     <br>
                                     <strong>Expiracion:</strong> {{ $vacation->cutoff_date }}
                                     <br>
-                                    <strong>Dias calculados:</strong> {{ $vacation->days_availables }}
+                                    <strong>Calculados:</strong> {{ $vacation->days_availables }}
                                     <br>
-                                    <strong>Dias disponibles:</strong> {{ $vacation->dv }}
+                                    <strong>Disponibles:</strong> {{ $vacation->dv }}
                                     <br>
-                                    <strong>Dias disfrutados:</strong> {{ $vacation->days_enjoyed }}
+                                    <strong>Disfrutados:</strong> {{ $vacation->days_enjoyed }}
                                     <!-- Button trigger modal -->
                                     <div class="d-flex">
                                         <input type="number"
@@ -80,9 +84,7 @@
                             </td>
                         @endif
                         <td class="">
-                            {{-- <a style="width:100px;"
-                                href="{{ route('admin.vacations.edit', ['vacation' => $vacation->id]) }}"
-                                type="button" class ="btn btn-primary">Editar</a> --}}
+                            <p>{{ $diasDisponibles }} dias disponibles</p>
                         </td>
                     </tr>
                 @endforeach

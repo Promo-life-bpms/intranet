@@ -95,7 +95,9 @@
                         <a href="#" class='sidebar-link'>
                             <i class="fa fa-users" aria-hidden="true"></i>
                             <span>Gestion </span>
-                            <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type',"App\Notifications\RequestNotification")->count() }} </span>
+                            <span
+                                class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}
+                            </span>
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
@@ -106,7 +108,8 @@
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.showAll') }}">
                                     <span>Ver solicitudes</span>
-                                    <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type',"App\Notifications\RequestNotification")->count() }}
+                                    <span
+                                        class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}
                                     </span>
                                 </a>
                             </li>
@@ -184,11 +187,15 @@
                         <i class="fa fa-pencil-square" aria-hidden="true"></i>
                         <span>Solicitudes</span>
                         @role('employee')
-                            <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type',"App\Notifications\RequestNotification")->count() }} </span>
+                            <span
+                                class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}
+                            </span>
                         @endrole('employee')
 
                         @role('manager')
-                            <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type',"App\Notifications\RequestNotification")->count() }} </span>
+                            <span
+                                class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}
+                            </span>
                         @endrole('manager')
                     </a>
 
@@ -198,7 +205,8 @@
                             <a class="dropdown-item" href="{{ route('request.index') }}">
                                 <span>Mis Solicitudes</span>
                                 @role('employee')
-                                    <span class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type',"App\Notifications\RequestNotification")->count() }}
+                                    <span
+                                        class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}
                                     </span>
                                 @endrole('employee')
 
@@ -220,11 +228,16 @@
                 <li class="sidebar-item {{ request()->is('directories') ? 'active' : '' }}">
                     <a href="{{ route('directories.index') }}" class='sidebar-link'>
                         <i class="fa fa-address-card" aria-hidden="true"></i>
-                        <span>Directorio</span>
+                        <span>Directorio Interno</span>
                     </a>
                 </li>
-
-           <li class="sidebar-item  has-sub {{ request()->is('aniversary') ? 'active' : '' }}">
+                <li class="sidebar-item {{ request()->is('providers.index') ? 'active' : '' }}">
+                    <a href="{{ route('providers.index') }}" class='sidebar-link'>
+                        <i class="fa fa-globe" aria-hidden="true"></i>
+                        <span>Directorio de Proveedores</span>
+                    </a>
+                </li>
+                <li class="sidebar-item  has-sub {{ request()->is('aniversary') ? 'active' : '' }}">
                     <a href="{{ route('aniversary') }}" class='sidebar-link'>
                         <i class="fa fa-birthday-cake" aria-hidden="true"></i>
                         <span>Aniversarios</span>
@@ -267,18 +280,18 @@
                             </a>
                         </li>
                         @role('manager')
-                        <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('admin.communique.show') }}">
-                                <span>Administrar Comunicados</span>
-                            </a>
-                        </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.communique.show') }}">
+                                    <span>Administrar Comunicados</span>
+                                </a>
+                            </li>
                         @endrole('manager')
                         @role('rh')
-                        <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('admin.communique.show') }}">
-                                <span>Administrar Comunicados</span>
-                            </a>
-                        </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.communique.show') }}">
+                                    <span>Administrar Comunicados</span>
+                                </a>
+                            </li>
                         @endrole('rh')
                     </ul>
                 </li>
@@ -296,6 +309,7 @@
                         <span>Accesos</span>
                     </a>
                 </li>
+
 
                 {{-- <li class="sidebar-item {{ request()->is('folder') ? 'active' : '' }}">
                     <a href="{{ route('folder') }}" class='sidebar-link'>
