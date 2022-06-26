@@ -37,34 +37,6 @@
                             <textarea id="exampleFormControlTextarea1" class="form-control" name="content_publication"
                                 placeholder="¿Que estas pensando?"></textarea>
                             <div class="d-flex justify-content-between" class="public_items">
-                                {{-- Subir foto/preview --}}
-                                {{-- <div class="d-flex upload-photo mt-3">
-                                    <div class='file file--upload'>
-                                        <label for='input-file'>
-                                            Subir imagen
-                                        </label>
-                                        <input id='input-file' type='file' onchange="readURL(this);" name="photo_public"
-                                            class="photo_public" accept="image/*">
-                                    </div>
-
-                                    <input type="file" onchange="readURL(this);" name="photo_public" class="photo_public"
-                                        accept="image/*">
-
-                                </div> --}}
-                                {{-- Subir fotos con dropzone --}}
-                                {{-- <div class="form-group" id="itemsElement">
-                                    <label for="imagen">
-                                        Carga tus imagenes:
-                                    </label>
-                                    <div id="dropzoneItems" class="dropzone form-control text-center" style="height: auto;">
-                                    </div>
-                                    <input type="hidden" name="items" id="items">
-                                    @error('items')
-                                        <div class="text-danger">
-                                            {{ $message }}</div>
-                                    @enderror
-                                    <p id="error"></p>
-                                </div> --}}
                                 <div class="form-group" id="itemsElement">
                                     <label for="imagen">
                                         Archivos necesarios para la solicitud:
@@ -83,11 +55,11 @@
                                     <input type="submit" class="boton" value="Publicar"></button>
                                 </div>
                             </div>
-                            {{-- <img id="blah" class="img-preview" /> --}}
+
                         </form>
                     </div>
 
-                    <div class="container-usuarios-publicaciones"></div>
+                    {{-- <div class="container-usuarios-publicaciones"></div> --}}
                 </div>
             </div>
 
@@ -183,12 +155,19 @@
                                     </div>
                                     <p class="mt-4 ">
                                         {{ $publication->content_publication }} </p>
-                                    @if ($publication->photo_public)
-                                        <img src="{{ asset('storage') . '/' . $publication->photo_public }}"
-                                            alt="" width="auto">
-                                    @endif
+
+                                    <div class="d-flex flex-wrap" style="overflow:hidden;">
+                                        @foreach ($publication->files as $item)
+                                            <div class="p-1"><a
+                                                    href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                                    data-lightbox="photos"><img width="250"
+                                                        src="{{ asset('/storage/posts/') . '/' . $item->resource }}"></a>
+
+                                            </div>
+                                        @endforeach
+                                    </div>
                                     <hr>
-                                    <div class="d-flex justify-content-between">
+                                    <div class="d-flex justify-content">
                                         <div id="boton">
                                             <like-button style="margin-top: -24px; overflow:hidden;"
                                                 publication-id="{{ $publication->id }}"
@@ -456,6 +435,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css"
         integrity="sha512-jU/7UFiaW5UBGODEopEqnbIAHOI8fO6T99m7Tsmqs2gkdujByJfkCbbfPSN4Wlqlb9TGnsuC0YgUgWkRBK7B9A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/css/lightbox.min.css">
+
 
     <style>
         body {
@@ -531,52 +512,6 @@
             }
 
         }
-
-        /*         .img-preview {
-                                                                                    max-width: 200px;
-                                                                                }
-
-                                                                                input[type=file] {
-                                                                                    display: none
-                                                                                }
-
-                                                                                .file>label {
-                                                                                    font-size: 10;
-                                                                                    font-weight: 200;
-                                                                                    cursor: pointer;
-
-                                                                                    user-select: none;
-                                                                                    border-style: solid;
-                                                                                    border-radius: 4px;
-                                                                                    border-width: 1px;
-                                                                                    padding: 6px;
-
-                                                                                    display: flex;
-                                                                                    justify-content: center;
-                                                                                    align-items: center;
-                                                                                }
-
-                                                                                .file {
-                                                                                    position: relative;
-                                                                                    display: flex;
-                                                                                    justify-content: center;
-                                                                                    align-items: center;
-                                                                                }
-
-                                                                                .file--upload>label {
-                                                                                    color: hsl(204, 86%, 53%);
-                                                                                    border-color: hsl(204, 86%, 53%);
-                                                                                }
-
-                                                                                .file--upload>label:hover {
-                                                                                    border-color: hsl(204, 86%, 53%);
-                                                                                    background-color: hsl(204, 86%, 96%);
-                                                                                }
-
-                                                                                .file--upload>label:active {
-                                                                                    background-color: hsl(204, 86%, 91%);
-
-                                                                                } */
     </style>
 @stop
 
@@ -590,6 +525,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"
         integrity="sha512-oQq8uth41D+gIH/NJvSJvVB85MFk1eWpMK6glnkg6I7EdMqC1XVkW7RxLheXwmFdG03qScCM7gKS/Cx3FYt7Tg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/js/lightbox.min.js"></script>
+
 
     <script>
         $(document).ready(function() {

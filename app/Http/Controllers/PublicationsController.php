@@ -76,7 +76,7 @@ class PublicationsController extends Controller
     {
         $imagen = $request->file('file');
         $nombreImagen = time() . ' ' . str_replace(',', ' ', $imagen->getClientOriginalName());
-        $imagen->move(public_path('storage/posts'), $nombreImagen);
+        $imagen->move(public_path('storage/posts/'), $nombreImagen);
         return response()->json(['correcto' => $nombreImagen]);
     }
     public function deleteItem(Request $request)

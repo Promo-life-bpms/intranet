@@ -60,8 +60,8 @@ export default {
     window.Echo.channel("chat").listen("MessageSent", (e) => {
       /* console.log("Notificacion guardada");
       console.log(e); */
-      this.obtenerMensajes();
     });
+      this.obtenerMensajes();
   },
   data() {
     return {
