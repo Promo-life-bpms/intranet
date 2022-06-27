@@ -841,7 +841,7 @@ class ApiController extends Controller
 
             foreach($allUsers as $user){
               /*   dd(strval($user->id) ); */
-                if($messages->contains('id',$user->id)){
+                if($messages->contains('transmitter_id',$user->id) || $messages->contains('receiver_id',$user->id)){
                     
                     $lastMessage= DB::table('messages')->where('transmitter_id',$user->id)->orWhere('receiver_id',$user->id)->latest('created_at')->first();
 
