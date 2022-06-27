@@ -68,7 +68,7 @@
             <div class="card p-3 box">
                 <div class="row">
                     <div class="col-md-12">
-                        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                        <div id="carouselExampleCaptions" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="15000">
                             <div class="carousel-inner">
 
                                 @if (count($communiquesImage) == 0)
@@ -101,12 +101,12 @@
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
                                 data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
+                                <span class="sr-only">Anterior</span>
                             </button>
                             <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
                                 data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
+                                <span class="sr-only">Siguiente</span>
                             </button>
                         </div>
                     </div>
@@ -261,13 +261,27 @@
         <!-- Sidebar  -->
         <div class="col-md-4">
 
+             <!-- App movil  -->
+            <div class="card p-4"
+            style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;"
+            style="border-radius:20px;">
+                <h4 class="d-flex justify-content-center text-center">¡Descarga nuestra aplicación móvil!</h4>
+                <br>
+                <img class="mobileLogo" src="{{ asset('/img/movil.png') }}" alt="app-movil">
+                <br>
+                <a href="#" type="button" class="btn btn-info">Android</a>
+                <br>
+                <a href="#" type="button" class="btn btn-light">IOS</a>
+
+            </div>
+
             <!-- Cumpleanos del mes  -->
             <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;">
                 <h4 class="d-flex justify-content-center">Cumpleaños del Mes</h4>
                 <div class="row">
                     <div class="col">
-                        <div id="carousel2" class="carousel slide" data-bs-ride="carousel">
+                        <div id="carousel2" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="15000">
                             <div class="carousel-inner">
 
                                 @if (count($employeesBirthday) == 0)
@@ -322,7 +336,7 @@
 
                 <div class="row">
                     <div class="col">
-                        <div id="carousel3" class="carousel slide" data-bs-ride="carousel">
+                        <div id="carousel3" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="15000">
                             <div class="carousel-inner">
 
                                 @if (count($employeesAniversary) == 0)
@@ -346,7 +360,7 @@
                                                     class="aniversary-text">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
                                                 <br>
                                                 <span
-                                                    class="aniversary-text">{{ $employee->date_admission->format('d/m') }}</span>
+                                                    class="aniversary-text">{{$date - $employee->date_admission->format('Y') . " "."años" }}</span>
                                             </div>
 
                                         </div>
@@ -544,6 +558,16 @@
             background-color: hsl(204, 86%, 91%);
 
         }
+
+        .carousel.carousel-fade .carousel-item {
+            opacity: 0;
+            animation: fadeIn 3s;
+        }
+
+        .carousel.carousel-fade .carousel-item.active {
+            opacity: 1;
+            animation: fadeIn 3s;
+        }
     </style>
 @stop
 
@@ -705,6 +729,5 @@
             }
         }
     </script>
-
 
 @stop

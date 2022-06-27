@@ -27,3 +27,10 @@ Route::get('/getProfile/{id}', [APIController::class, 'getProfile'])->name('api.
 
 Route::get('/getRequest/{hashedToken}', [APIController::class, 'getRequest'])->name('api.as');
 
+Route::post('/postDeleteRequest', [APIController::class, 'postDeleteRequest'])->name('api.postDeleteRequest');
+Route::post('/postDeletePublication', [APIController::class, 'postDeletePublication'])->name('api.postDeletePublication');
+
+Route::get('/getUserMessages/{hashedToken}', [APIController::class, 'getUserMessages'])->name('api.getUserMessages');
+Route::post('/postUserMessages', [APIController::class, 'postUserMessages'])->name('api.postUserMessages');
+Route::post('/postConversation', [APIController::class, 'postConversation'])->name('api.postConversation');
+

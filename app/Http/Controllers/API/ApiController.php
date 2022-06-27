@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\MessageSent;
 use App\Events\RequestEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
@@ -13,10 +14,13 @@ use App\Models\Directory as ModelsDirectory;
 use App\Models\Employee;
 use App\Models\Like;
 use App\Models\Manual;
+use App\Models\Message;
 use App\Models\Notification;
 use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
+use App\Models\Vacations;
+use App\Notifications\MessageNotification;
 use Carbon\Carbon;
 use DateTime;
 use Exception;
@@ -24,6 +28,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use JetBrains\PhpStorm\Internal\ReturnTypeContract;
+use Illuminate\Support\Facades\File;
+use Cache;
+
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -81,6 +88,23 @@ class ApiController extends Controller
             } else {
                 $image = $usr->image;
             }
+            $expiration= [];
+
+            $vacation_duration= Vacations::all()->where('users_id',$usr->id);
+        
+            foreach($vacation_duration as $vacation){
+                if($vacation == null || $vacation == []){
+                    array_push($expiration, (object)[
+                        'daysAvailables' => "Sin dias disponibles",
+                        'cutoffDate' => "Sin fecha de corte disponible",
+                    ]);
+                }else{
+                    array_push($expiration, (object)[
+                        'daysAvailables' => strval(floor($vacation->days_availables)) ,
+                        'cutoffDate' => date('d-m-Y', strtotime( $vacation->cutoff_date)),
+                    ]);
+                }
+            }
 
             array_push($data, (object)[
                 'id' => $usr->id,
@@ -90,6 +114,7 @@ class ApiController extends Controller
                 'department' => $usr->employee->position->department->name,
                 'position' => $usr->employee->position->name,
                 'daysAvailables' => intval($vacations),
+                'expiration'=>$expiration,
             ]);
         }
 
@@ -242,6 +267,13 @@ class ApiController extends Controller
         $directory_data = [];
 
         foreach ($user as $usr) {
+
+            $userOnline = false;
+
+            if (Cache::has('user-is-online-' . $usr->id)) {
+                $userOnline = true;
+            }
+
             foreach ($directory as $dir) {
                 if ($usr->id == $dir->user_id) {
                     array_push($directory_data, (object)[
@@ -266,6 +298,7 @@ class ApiController extends Controller
                 'photo' => $image,
                 'department' => $usr->employee->position->department->name,
                 'position' => $usr->employee->position->name,
+                'onlineStatus' => $userOnline,
                 'data' =>  $directory_data,
             ]);
             $directory_data = [];
@@ -751,4 +784,353 @@ class ApiController extends Controller
 
     }
 
+    public function postDeleteRequest(Request $request){
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;    
+
+        if($user_id!=null){                    
+            DB::table('request_calendars')->where('requests_id',  $request->requestID)->delete();
+            DB::table('requests')->where('id',  $request->requestID)->delete();
+        }
+    }
+
+    public function postDeletePublication(Request $request){
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;    
+
+        if($user_id!=null){
+
+            $publication = Publications::all()->where('id',$request->publciationID);
+            
+            if($publication->photo_public!=null || $publication->photo_public|=""){
+                File::delete($publication->photo_public);
+            }
+
+            DB::table('likes')->where('publication_id',  $request->publciationID)->delete();
+            DB::table('comments')->where('publication_id',  $request->publciationID)->delete();
+            DB::table('publications')->where('id',  $request->publciationID)->delete();
+        }
+    }
+
+    public function getUserMessages($hashedToken){
+        $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
+        $user_id = $token->tokenable_id; 
+
+        //Obtiene todos los empleados que tienen conversarion con el usuario
+        $messages = DB::table('messages')->where('transmitter_id',$user_id)->orWhere('receiver_id',$user_id)->get();
+        $data =[];
+        $allUsers = User::all();
+        
+        $conversationData = [];
+        array_push($conversationData, (object)[
+            'id' => $user_id,
+            'transmitterID' => $user_id,
+            'receiverID' => $user_id,
+            'message' => "no data",
+            'created' => "no data",
+            'updated' => "no data",
+        ]);
+        
+        if($messages->count()==0){
+            
+            array_push($data, (object)[
+                'id' => $user_id,
+                'fullname' => "no data",
+                'email' => "no data",
+                'photo' => "no data",
+                'department' => "no data",
+                'position' => "no data",
+                'conversation'=>$conversationData,
+            ]); 
+
+            return $data;
+        }else{
+            foreach($messages as $message){
+                //Si soy el transmisor, el usuario con el que tengo la conversarion es el receptor
+                if($message->transmitter_id == $user_id){
+    
+                    foreach($allUsers as $user){
+    
+                        if($user->id == $message->receiver_id){
+                           
+                            $image = '';
+                            if ($user->image == null) {
+                                $image = "img/default_user.png";
+                            } else {
+                                $image = $user->image;
+                            }
+                            $conversation = DB::table('messages')
+                            ->where('transmitter_id',$user_id)
+                            ->where('receiver_id', $user->id);
+                            
+                            
+                            $conversationToSend = DB::table('messages')
+                                ->where('receiver_id', $user_id)
+                                ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
+                             
+                                if($conversationToSend->count() == 0){
+                                    array_push($data, (object)[
+                                        'id' => $user->id,
+                                        'fullname' => $user->name . " " . $user->lastname,
+                                        'email' => $user->email,
+                                        'photo' => $image,
+                                        'department' => $user->employee->position->department->name,
+                                        'position' => $user->employee->position->name,
+                                        'conversation'=>$conversationData,
+                                    ]);
+                                }else{
+
+                                    $new_conversation = [];
+
+                                    foreach($conversationToSend as $conversation){
+                                        array_push($new_conversation, (object)[
+                                            'id' => $user_id,
+                                            'transmitterID' => $conversation->transmitter_id,
+                                            'receiverID' => $conversation->receiver_id,
+                                            'message' => $conversation->message,
+                                            'created' => date('H:i', strtotime($conversation->created_at)),
+                                            'updated' => date('H:i', strtotime($conversation->created_at)),
+                                        ]);
+                                    }
+
+                                    
+                                    array_push($data, (object)[
+                                        'id' => $user->id,
+                                        'fullname' => $user->name . " " . $user->lastname,
+                                        'email' => $user->email,
+                                        'photo' => $image,
+                                        'department' => $user->employee->position->department->name,
+                                        'position' => $user->employee->position->name,
+                                        'conversation'=>$new_conversation,
+                                    ]);
+                                }
+                        }
+                    }
+                        
+                //Si soy el receptor, el usuario con el que tengo la conversarion es el emisor  
+                }else if($message->receiver_id== $user_id){
+    
+                    foreach($allUsers as $user){
+                       
+                        if($user->id == $message->receiver_id){
+                            
+                            $image = '';
+                            if ($user->image == null) {
+                                $image = "img/default_user.png";
+                            } else {
+                                $image = $user->image;
+                            }
+    
+                            $conversation = DB::table('messages')
+                            ->where('transmitter_id',$user_id)
+                            ->where('receiver_id', $user->id);
+                
+                            $conversationToSend = DB::table('messages')
+                                ->where('receiver_id', $user_id)
+                                ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
+                                
+                                if($conversationToSend->count() == 0){
+                                    array_push($data, (object)[
+                                        'id' => $user->id,
+                                        'fullname' => $user->name . " " . $user->lastname,
+                                        'email' => $user->email,
+                                        'photo' => $image,
+                                        'department' => $user->employee->position->department->name,
+                                        'position' => $user->employee->position->name,
+                                        'conversation'=>$conversationData,
+                                    ]);
+                                }else{
+
+                                    $new_conversation = [];
+
+                                    foreach($conversationToSend as $conversation){
+                                        array_push($new_conversation, (object)[
+                                            'id' => $user_id,
+                                            'transmitterID' => $conversation->transmitter_id,
+                                            'receiverID' => $conversation->receiver_id,
+                                            'message' => $conversation->message,
+                                            'created' => date('H:i', strtotime($conversation->created_at)),
+                                            'updated' => date('H:i', strtotime($conversation->created_at)),
+                                        ]);
+                                    }
+
+                                    
+                                    array_push($data, (object)[
+                                        'id' => $user->id,
+                                        'fullname' => $user->name . " " . $user->lastname,
+                                        'email' => $user->email,
+                                        'photo' => $image,
+                                        'department' => $user->employee->position->department->name,
+                                        'position' => $user->employee->position->name,
+                                        'conversation'=>$new_conversation,
+                                    ]);
+                                }
+                        }
+                    }
+    
+                }else{
+    
+                    foreach($allUsers as $user){
+    
+                        if($user->id == $message->receiver_id){
+                            
+                            $image = '';
+                            if ($user->image == null) {
+                                $image = "img/default_user.png";
+                            } else {
+                                $image = $user->image;
+                            }
+    
+                            $conversation = DB::table('messages')
+                            ->where('transmitter_id',$user_id)
+                            ->where('receiver_id', $user->id);
+                
+                    
+                            $conversationToSend = DB::table('messages')
+                                ->where('receiver_id', $user_id)
+                                ->where('transmitter_id', $user->id)->union($conversation)->orderBy('created_at', 'asc')->get();
+
+                            if($conversationToSend->count() == 0){
+                                array_push($data, (object)[
+                                    'id' => $user->id,
+                                    'fullname' => $user->name . " " . $user->lastname,
+                                    'email' => $user->email,
+                                    'photo' => $image,
+                                    'department' => $user->employee->position->department->name,
+                                    'position' => $user->employee->position->name,
+                                    'conversation'=>$conversationData,
+                                ]);
+                            }else{
+                                $new_conversation = [];
+
+                                    foreach($conversationToSend as $conversation){
+                                        array_push($new_conversation, (object)[
+                                            'id' => $user_id,
+                                            'transmitterID' => $conversation->transmitter_id,
+                                            'receiverID' => $conversation->receiver_id,
+                                            'message' => $conversation->message,
+                                            'created' => date('H:i', strtotime($conversation->created_at)),
+                                            'updated' => date('H:i', strtotime($conversation->created_at)),
+                                        ]);
+                                    }
+
+                                    
+                                    array_push($data, (object)[
+                                        'id' => $user->id,
+                                        'fullname' => $user->name . " " . $user->lastname,
+                                        'email' => $user->email,
+                                        'photo' => $image,
+                                        'department' => $user->employee->position->department->name,
+                                        'position' => $user->employee->position->name,
+                                        'conversation'=>$new_conversation,
+                                    ]);
+                            }
+                        }
+                          
+                    }
+                    
+                }
+                               
+            } 
+    
+            $filterdata = array_unique($data,SORT_REGULAR);
+            $dataToSend =[];
+            foreach($filterdata as $data){
+                array_push($dataToSend, $data);
+            }
+    
+            return $dataToSend;
+            
+        }
+    
+    }
+
+    public function postUserMessages(Request $request){
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;    
+
+        $conversationUserID = $request->conversationUserID;
+
+
+        $mensajes = DB::table('messages')
+            ->where('transmitter_id',$user_id)
+            ->where('receiver_id', $conversationUserID);
+
+
+        $mensajesEnviados = DB::table('messages')
+            ->where('receiver_id', $user_id)
+            ->where('transmitter_id', $conversationUserID)->union($mensajes)->orderBy('created_at', 'asc')->get();
+
+        $data =[];
+
+        if($mensajesEnviados->count()==0){
+            
+            array_push($data, (object)[
+                'id' => $user_id,
+                'transmitterID' => $user_id,
+                'receiverID' => $user_id,
+                'message' => "no data",
+                'created' => "no data",
+                'updated' => "no data",
+            ]);
+
+            return $data;
+        }else{
+            foreach($mensajesEnviados as $mensaje){
+                array_push($data, (object)[
+                    'id' => $user_id,
+                    'transmitterID' => $mensaje->transmitter_id,
+                    'receiverID' => $mensaje->receiver_id,
+                    'message' => $mensaje->message,
+                    'created' => date('H:i', strtotime($mensaje->created_at)),
+                    'updated' => date('H:i', strtotime($mensaje->created_at)),
+                ]);
+            }
+        
+            return $data;
+        }
+     
+    }
+
+
+    public function postConversation(Request $request){
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;    
+        $user_name = DB::table('users')->where('id',$user_id)->value('name');
+        $user_lastname = DB::table('users')->where('id',$user_id)->value('lastname');
+        $user_image = DB::table('users')->where('id',$user_id)->value('image');
+ 
+        //Crear mensaje en la BD
+        $message = new Message();
+        $message->transmitter_id =  $user_id;
+        $message->receiver_id = intval($request->receiverID);
+        $message->message =  $request->message;
+        $message->save();
+
+        $data_send = [
+            'emisor' => $user_id,
+            'message' => $request->message,
+            'transmitter_name' => $user_name. " ".$user_lastname ,
+            'image' => $user_image, 
+        ];
+        
+      
+        $notification = new Notification();
+        $notification->id =uniqid();       
+        $notification->type = "App\Notifications\MessageNotification";
+        $notification->notifiable_type = "App\Models\User";
+        $notification->notifiable_id = intval($request->receiverID) ;
+        $notification->data =json_encode($data_send);
+        $notification->save();
+
+        $carbon = new \Carbon\Carbon();
+        $date = $carbon->now();
+        $date = $date->format('Y-m-d H:i:s');
+
+        broadcast(new MessageSent( $request->message, intval($request->receiverID), $user_id ,$user_name. " ".$user_lastname, $date ))->toOthers();
+
+
+        return true;
+    }
+    
 }

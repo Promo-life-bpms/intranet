@@ -225,7 +225,7 @@ class RequestController extends Controller
         $rh = DB::table('positions')->where('id', $position)->value('department_id');
 
         if ($rh == 1) {
-            $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada');
+            $requests = ModelsRequest::all()->where('direct_manager_id', $id);
         } else {
             $requests = ModelsRequest::all()->where('direct_manager_id', $id);
         }
