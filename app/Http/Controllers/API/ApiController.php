@@ -819,10 +819,26 @@ class ApiController extends Controller
         //Obtiene todos los empleados que tienen conversarion con el usuario
         $messages = DB::table('messages')->where('transmitter_id',$user_id)->orWhere('receiver_id',$user_id)->orderBy('created_at', 'desc')->get();
         
+        $uniqueTransmitter = $messages->unique('transmitter_id');
+        $uniqueReceiver = $messages->unique('receiver_id');
         
+        $uniqueTransmitterList = []; 
+        $uniqueReceiverList = [];
+
+        //Se trae el id del objeto a una lista 
+        foreach($uniqueTransmitter as $uniqueTrans){
+            array_push($uniqueTransmitterList, $uniqueTrans->transmitter_id);
+        } 
+        //Se trae el id del objeto a una lista 
+        foreach($uniqueReceiver as $unique){
+            array_push($uniqueReceiverList, $unique->receiver_id);
+        }
+        //Se unen todos los usuarios que han tenido algun mensaje con el solicitante, ya sea de emisor o receptor
+        $totalUsers = array_unique(array_merge($uniqueTransmitterList,$uniqueReceiverList));  
         $data =[];
-        $allUsers = User::all();
+        $allUsers = User::all()->whereIn("id",$totalUsers);
          
+        
         if($messages->count()==0){
             
             array_push($data, (object)[
@@ -860,7 +876,7 @@ class ApiController extends Controller
                             'department' => $user->employee->position->department->name,
                             'position' => $user->employee->position->name,
                             'conversation'=>$lastMessage->message,
-                            'createdAt' => $lastMessage->created_at
+                            'createdAt' => $lastMessage->created_at,
                         ]);
                     }
                     
