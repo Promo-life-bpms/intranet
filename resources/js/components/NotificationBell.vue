@@ -61,7 +61,7 @@ export default {
       /* console.log("Notificacion guardada");
       console.log(e); */
     });
-    this.obtenerMensajes();
+      this.obtenerMensajes();
   },
   data() {
     return {

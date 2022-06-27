@@ -80,6 +80,7 @@ export default {
   mounted: function () {
     setTimeout(() => {
       this.obtenerUsuarios();
+      this.getChats();
     }, 200);
     setInterval(() => {
       this.obtenerUsuarios();
@@ -134,6 +135,7 @@ export default {
         this.listaChatsAbiertos = Array.from(this.listaChats);
         /* console.log(this.listaChats); */
         this.listaChats.size;
+        this.saveChats();
       }
     },
     cerrarChat: function (id) {
@@ -141,6 +143,22 @@ export default {
       /*  console.log("Click event on the button of the children with: " + id); */
       this.listaChats.delete(id);
       this.listaChatsAbiertos = Array.from(this.listaChats);
+      localStorage.setItem("statusChat", JSON.stringify(this.listaChatsAbiertos));
+    },
+    getChats: function () {
+      const chatStatus = JSON.parse(localStorage.getItem("statusChat"));
+      if (chatStatus === null) {
+        chatStatus = [];
+      } else {
+        console.log(chatStatus);
+
+        this.listaChatsAbiertos = chatStatus;
+      }
+    },
+
+    saveChats: function () {
+      /* console.log(this.listaChatsAbiertos); */
+      localStorage.setItem("statusChat", JSON.stringify(this.listaChatsAbiertos));
     },
   },
 };

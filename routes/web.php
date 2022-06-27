@@ -197,6 +197,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::prefix('social')->group(function () {
         // Publicaciones
         Route::patch('/publication/store', [PublicationsController::class, 'store'])->name('publications.store');
+        Route::post('/publication/items', [PublicationsController::class, 'uploadItems'])->name('publication.uploadItems');
+        Route::post('/publication/deleteItem', [PublicationsController::class, 'deleteItem'])->name('publication.deleteItem');
 
         //Ruta de likes
         Route::post('/publication/{publications}', [LikeController::class, 'update'])->name('like.update');

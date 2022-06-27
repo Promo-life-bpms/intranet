@@ -42,32 +42,53 @@ class PublicationsController extends Controller
     public function store(Request $request)
     {
         // Obtener los datos de la publicacion
-        if (($request->file('photo_public') || $request->content_publication)) {
-            $imageName = "";
-            $content = "";
-            if ($request->file('photo_public')) {
-                $file = $request->file('photo_public');
-                $imageName = 'photos/' . $file->getClientOriginalName();
-
-                Storage::disk('local')->put('public/' . $imageName, File::get($file));
-            }
-
+        if (($request->items != '' || $request->content_publication != '')) {
             if ($request->content_publication) {
                 $content = $request->content_publication;
+            } else {
+                $content = '';
             }
 
             //Crear publicacion
             $publication = Publications::create([
                 'user_id' => auth()->user()->id,
                 'content_publication' => $content,
-                'photo_public' => $imageName
+                'photo_public' => ''
             ]);
+
+            foreach (explode(',', $request->items) as $item) {
+                # code...
+                //Registar imagen
+                $data =[
+                    'resource' => $item,
+                    'type_file' => 'photo',
+                ];
+                $publication->files()->create($data);
+            }
+
+
             return redirect()->action([HomeController::class]);
         } else {
             return back()->with('errorData', 'No hay contenido para tu post!');
         }
     }
-
+    public function uploadItems(Request $request)
+    {
+        $imagen = $request->file('file');
+        $nombreImagen = time() . ' ' . str_replace(',', ' ', $imagen->getClientOriginalName());
+        $imagen->move(public_path('storage/posts/'), $nombreImagen);
+        return response()->json(['correcto' => $nombreImagen]);
+    }
+    public function deleteItem(Request $request)
+    {
+        if ($request->ajax()) {
+            $imagen = $request->get('imagen');
+            if (File::exists('storage/posts/' . $imagen)) {
+                File::delete('storage/posts/' . $imagen);
+            }
+            return response(['mensaje' => 'Imagen Eliminada', 'imagen' => $imagen], 200);
+        }
+    }
 
     /**
      * Display the specified resource.
