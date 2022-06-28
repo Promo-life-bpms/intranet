@@ -1,114 +1,5 @@
 @extends('layouts.app')
-@section('styles')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.1.1/css/jquery.orgchart.min.css"
-        integrity="sha512-bCaZ8dJsDR+slK3QXmhjnPDREpFaClf3mihutFGH+RxkAcquLyd9iwewxWQuWuP5rumVRl7iGbSDuiTvjH1kLw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-@endsection
-@section('scripts')
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.1.1/js/jquery.orgchart.min.js"
-        integrity="sha512-alnBKIRc2t6LkXj07dy2CLCByKoMYf2eQ5hLpDmjoqO44d3JF8LSM4PptrgvohTQT0LzKdRasI/wgLN0ONNgmA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script type="text/javascript">
-        $(function() {
 
-            var datascource = {
-                'name': 'Lao Lao',
-                'title': 'general manager',
-                'children': [{
-                        'name': 'Bo Miao',
-                        'title': 'department manager'
-                    },
-                    {
-                        'name': 'Su Miao',
-                        'title': 'department manager',
-                        'children': [{
-                                'name': 'Tie Hua',
-                                'title': 'senior engineer'
-                            },
-                            {
-                                'name': 'Hei Hei',
-                                'title': 'senior engineer',
-                                'children': [{
-                                        'name': 'Pang Pang',
-                                        'title': 'engineer'
-                                    },
-                                    {
-                                        'name': 'Dan Dan',
-                                        'title': 'UE engineer',
-                                        'children': [{
-                                                'name': 'Er Dan',
-                                                'title': 'engineer'
-                                            },
-                                            {
-                                                'name': 'San Dan',
-                                                'title': 'engineer',
-                                                'children': [{
-                                                        'name': 'Si Dan',
-                                                        'title': 'intern'
-                                                    },
-                                                    {
-                                                        'name': 'Wu Dan',
-                                                        'title': 'intern'
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        'name': 'Hong Miao',
-                        'title': 'department manager'
-                    },
-                    {
-                        'name': 'Chun Miao',
-                        'title': 'department manager',
-                        'children': [{
-                                'name': 'Bing Qin',
-                                'title': 'senior engineer'
-                            },
-                            {
-                                'name': 'Yue Yue',
-                                'title': 'senior engineer',
-                                'children': [{
-                                        'name': 'Er Yue',
-                                        'title': 'engineer'
-                                    },
-                                    {
-                                        'name': 'San Yue',
-                                        'title': 'UE engineer'
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            };
-            var oc = $('#chart-container').orgchart({
-                'data': datascource,
-                'nodeContent': 'title',
-            });
-
-            // $('#home').resize(function() {
-            //     var width = $('#home').width();
-            //     console.log(width);
-            //     if (width > 576) {
-            //         oc.init({
-            //             'verticalLevel': undefined
-            //         });
-            //     } else {
-            //         oc.init({
-            //             'verticalLevel': 2
-            //         });
-            //     }
-            // });
-
-        });
-    </script>
-@endsection
 @section('content')
     <div class="card-header">
         <h3>Organigrama</h3>
@@ -126,7 +17,6 @@
         </ul>
         <div class="tab-content mx-2" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <div id="chart-container"></div>
                 <div id="tree"></div>
             </div>
             <div class="tab-pane fade show" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -156,17 +46,18 @@
     </div>
 @stop
 
-{{-- @section('styles')
+@section('styles')
     <style>
         .edit-form-avatar img {
             object-fit: cover;
 
         }
+
     </style>
 
 @endsection
 
-@section('scrispts')
+@section('scripts')
     <script src="{{ asset('assets\vendors\orgchartjs\orgchart.js') }}"></script>
     <script>
         async function obtenerEmpleados(check) {
@@ -237,6 +128,7 @@
             width: 100%;
             height: 100%;
         }
+
     </style>
 @endsection
 
@@ -387,4 +279,4 @@
             }
         }
     </script>
-@stop --}}
+@stop

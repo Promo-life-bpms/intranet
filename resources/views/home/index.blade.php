@@ -5,27 +5,25 @@
         <!-- Seccion principal -->
         <div class="col-md-8">
             <!-- Crear publicacion -->
-            <div class="card col-md-12 my-1 py-4 mb-4 box">
-                <div class="container-style-main">
-                    <div class="container-usuario-publicar d-flex">
-                        <div class="avatar avatar-xl">
-                            <div class="card-photo" style="width: 45px; height:40px;">
-                                @if (auth()->user()->image == null)
-                                    <a style="color: inherit;" href="{{ route('profile.index') }}">
-                                        <p
-                                            class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
-                                            <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
-                                        </p>
-                                    </a>
-                                @else
-                                    <a href="{{ route('profile.index') }}">
-                                        <img style="width: 100%; height:100%; object-fit: cover;"
-                                            src="{{ asset(auth()->user()->image) }}">
-                                    </a>
-                                @endif
-                            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <div class="">
+                            @if (auth()->user()->image == null)
+                                <a style="color: inherit;" href="{{ route('profile.index') }}">
+                                    <p
+                                        class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
+                                        <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
+                                    </p>
+                                </a>
+                            @else
+                                <a href="{{ route('profile.index') }}">
+                                    <img style="width: 55px; height:55px; object-fit: cover;" class="rounded-circle"
+                                        src="{{ asset(auth()->user()->image) }}">
+                                </a>
+                            @endif
                         </div>
-                        <form action="{{ route('publications.store') }}" class="form-publicar n1-2 flex-grow-1"
+                        <form action="{{ route('publications.store') }}" class="form-publicar ml-2 flex-grow-1"
                             id="formCreate" method="post">
                             {!! csrf_field() !!}
                             @method('PATCH')
@@ -34,8 +32,22 @@
                                     {{ session('errorData') }}
                                 </div>
                             @endif
-                            <textarea id="exampleFormControlTextarea1" class="form-control" name="content_publication"
+                            <textarea id="exampleFormControlTextarea1" class="form-control" name="content_publication" style="height: 55px"
                                 placeholder="¿Que estas pensando?"></textarea>
+                            <div class="collapse" id="collapseExample">
+                                <div class="form-group" id="itemsElement">
+                                    <label for="imagen">
+                                    </label>
+                                    <div id="dropzoneItems" class="dropzone form-control text-center" style="height: auto;">
+                                    </div>
+                                    <input type="hidden" name="items" id="items" value="{{ old('items') }}">
+                                    @error('items')
+                                        <div class="text-danger">
+                                            {{ $message }}</div>
+                                    @enderror
+                                    <p id="error"></p>
+                                </div>
+                            </div>
                             <div class="d-flex justify-content-between" class="public_items">
                                 <div class="mt-3">
                                     <button class="boton" type="button" data-bs-toggle="collapse"
@@ -48,26 +60,8 @@
                                     <input type="submit" class="boton" value="Publicar"></button>
                                 </div>
                             </div>
-                            <div class="collapse" id="collapseExample">
-                                <div class="form-group" id="itemsElement">
-                                    <label for="imagen">
-                                    </label>
-                                    <div id="dropzoneItems" class="dropzone form-control text-center"
-                                        style="height: auto;">
-                                    </div>
-                                    <input type="hidden" name="items" id="items"
-                                        value="{{ old('items') }}">
-                                    @error('items')
-                                        <div class="text-danger">
-                                            {{ $message }}</div>
-                                    @enderror
-                                    <p id="error"></p>
-                                </div>
-                            </div>
                         </form>
                     </div>
-
-                    {{-- <div class="container-usuarios-publicaciones"></div> --}}
                 </div>
             </div>
 
@@ -165,15 +159,55 @@
                                     <p class="mt-4 ">
                                         {{ $publication->content_publication }} </p>
                                     @if (count($publication->files) > 0)
-                                        <div class="d-flex flex-wrap" style="overflow:hidden;">
-                                            @foreach ($publication->files as $item)
-                                                <div class="p-1"><a
-                                                        href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
-                                                        data-lightbox="photos"><img width="250"
-                                                            src="{{ asset('/storage/posts/') . '/' . $item->resource }}"></a>
-
-                                                </div>
-                                            @endforeach
+                                        <div class="row" style="overflow:hidden;">
+                                            @if (count($publication->files) == 1)
+                                                @foreach ($publication->files as $item)
+                                                    <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                                        data-lightbox="photos.{{ $publication->id }}"
+                                                        style="height: 600px;">
+                                                        <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
+                                                            class="rounded shadow-sm"
+                                                            src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
+                                                    </a>
+                                                @endforeach
+                                            @elseif (count($publication->files) == 2)
+                                                @foreach ($publication->files as $item)
+                                                    <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                                        data-lightbox="photos.{{ $publication->id }}"
+                                                        style="height: 300px;" class="col-md-6">
+                                                        <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
+                                                            class="rounded shadow-sm"
+                                                            src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
+                                                    </a>
+                                                @endforeach
+                                            @elseif (count($publication->files) == 3)
+                                                @foreach ($publication->files as $item)
+                                                    <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                                        data-lightbox="photos.{{ $publication->id }}"
+                                                        style="height: 200px;" class="col-md-4">
+                                                        <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
+                                                            class="rounded shadow-sm"
+                                                            src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
+                                                    </a>
+                                                @endforeach
+                                            @elseif (count($publication->files) > 3)
+                                                @foreach ($publication->files as $item)
+                                                    <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                                        data-lightbox="photos.{{ $publication->id }}"
+                                                        style="height: {{ $loop->iteration > 4 ? '0' : '200' }}px;"
+                                                        class="col-md-3">
+                                                        <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
+                                                            class="rounded shadow-sm {{ $loop->iteration > 3 && count($publication->files) > 4 ? 'd-none' : '' }}"
+                                                            src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
+                                                        @if ($loop->iteration == 4 && count($publication->files) > 4)
+                                                            <div
+                                                                class="w-100 h-100 d-flex justify-content-center align-items-center mas-fotos" style="background-color: #dcdcdc;">
+                                                                <p style="font-size: 15px; font-weight: bold">Ver mas</p>
+                                                            </div>
+                                                        @endif
+                                                    </a>
+                                                @endforeach
+                                            @endif
                                         </div>
                                     @endif
                                     <hr>
@@ -710,8 +744,8 @@
                 // Dropzone
                 const dropzoneItem = new Dropzone('#dropzoneItems', {
                     url: "/social/publication/items",
-                    dictDefaultMessage: 'Adjunta las imagenes que quiera compartir',
-                    //acceptedFiles: '.pdf,.png,.jpg,.jpeg,.gif,.bmp',
+                    dictDefaultMessage: 'Arrastra aqui tus imagenes',
+                    acceptedFiles: '.png,.jpg,.jpeg,.gif',
                     addRemoveLinks: true,
                     dictRemoveFile: 'Borrar Archivo',
                     headers: {
