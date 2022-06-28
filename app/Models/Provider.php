@@ -33,7 +33,6 @@ class Provider extends Model
         'type' => 'required',
         'name_contact' => 'required',
         'position' => 'required',
-        'tel_office' => 'required'
     ];
 
     protected $perPage = 20;

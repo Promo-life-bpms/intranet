@@ -57,7 +57,7 @@
                                 <tbody>
                                     @foreach ($providers as $provider)
                                         <tr>
-                                            <td>{{ ++$i }}</td>
+                                            <td>{{ $loop->iteration }}</td>
 
                                             <td>{{ $provider->name }}</td>
                                             <td>{{ $provider->service }}</td>
@@ -89,7 +89,7 @@
                         </div>
                     </div>
                 </div>
-                {!! $providers->links() !!}
+
             </div>
         </div>
     </div>
