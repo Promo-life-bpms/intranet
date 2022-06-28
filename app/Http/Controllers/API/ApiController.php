@@ -14,6 +14,7 @@ use App\Models\Directory as ModelsDirectory;
 use App\Models\Employee;
 use App\Models\Like;
 use App\Models\Manual;
+use App\Models\Media;
 use App\Models\Message;
 use App\Models\Notification;
 use App\Models\Publications;
@@ -546,19 +547,33 @@ class ApiController extends Controller
                     
                 }
             }
-            if ($pub->photo_public == "") {
-                $photo = "no photo";
-            } else {
-                $photo = $pub->photo_public;
+
+            $publicationImageData =[];
+            $publicationImage = Media::all()->where('publication_id',$pub->id);
+
+            if (count($publicationImage) >0) {
+                $publicationImageData =[];
+                foreach($publicationImage as $media){
+                    array_push($publicationImageData, (object)[
+                        'typeFile' =>  $media->type_file,
+                        'resource' => "storage/posts/". $media->resource,
+                    ]); 
+                } 
+                
+            }else{
+                array_push($publicationImageData, (object)[
+                    'typeFile' => "no data",
+                    'resource' => "no data",
+                ]); 
             }
 
             if($publi_comments == []){
                 array_push($publi_comments, (object)[
 
                     'id' => $pub->id,
-                    'userName' => "sin datos",
-                    'photo' => "sin datos",
-                    'content' => "sin datos",
+                    'userName' => "no data",
+                    'photo' => "no data",
+                    'content' => "no data",
                 ]);
             }
             array_push($data, (object)[
@@ -568,7 +583,7 @@ class ApiController extends Controller
                 'userName' => $fullname,
                 'created' => $created,
                 'contentPublication' => $pub->content_publication,
-                'photoPublication' => $photo,
+                'photoPublication' => $publicationImageData,
                 'likes' => $totalLikes,
                 'isLike'=>$isLike,
                 'comments'=>$publi_comments,
