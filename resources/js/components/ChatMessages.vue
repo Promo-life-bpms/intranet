@@ -33,7 +33,7 @@
                 userId == mensaje.transmitter_id ? 'bg-white ml-2 p-2' : 'chat mr-2 p-2'
               "
             >
-              <span class="let">{{ mensaje.message }}</span>
+              <span style="font-size: 12px">{{ mensaje.message }}</span>
               <div
                 class="d-flex text"
                 :class="
@@ -171,9 +171,6 @@ body {
   border: 1px solid #e7e7e9;
   font-size: 10px;
   border-radius: 20px;
-}
-.let {
-  font-size: 11px;
 }
 .zoom:hover {
   transform: scale(1.3);
