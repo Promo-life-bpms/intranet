@@ -86,7 +86,7 @@
                     <img src="{{ asset('/img/tickets.png') }}" style="width: 100%; height:120px;  object-fit: contain;"
                         class="card-img-top" alt="imagen">
                     <div class="card-body" style="padding-top:0; padding-bottom:0">
-                        <h5 class="card-title text-center">Sistema de Tickets</h5>
+                        <h5 class="card-title text-center">Sistema de Diseño</h5>
                         <a href="https://tdesign.promolife.lat" style="width: 100%" target="_blank"
                             class="btn btn-primary with">ABRIR</a>
                     </div>
