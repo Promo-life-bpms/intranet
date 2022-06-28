@@ -865,6 +865,7 @@ class ApiController extends Controller
                 'position' => "no data",
                 'conversation'=>"no data",
                 'createdAt' => "no data",
+                'time' => "no data",
             ]); 
 
             return $data;
@@ -874,8 +875,17 @@ class ApiController extends Controller
               /*   dd(strval($user->id) ); */
                 if($messages->contains('transmitter_id',$user->id) || $messages->contains('receiver_id',$user->id)){
                     
-                    $lastMessage= DB::table('messages')->where('transmitter_id',$user->id)->orWhere('receiver_id',$user->id)->latest('created_at')->first();
+                    $userID = $user->id;
+                    $myUserID= $user_id;
+                    $lastMessage= Message::where(function ($query) use ($userID) {
+                        return $query->where('transmitter_id', '=', $userID)
+                              ->orWhere('receiver_id', '=', $userID);
+                    })->where(function ($query) use ($myUserID) {
+                        return $query->where('transmitter_id', '=', $myUserID)
+                              ->orWhere('receiver_id', '=', $myUserID);
+                    })->orderBy('created_at', 'desc')->first();
 
+                    
                     $image = '';
                     if ($user->image == null) {
                         $image = "img/default_user.png";
@@ -892,6 +902,7 @@ class ApiController extends Controller
                             'position' => $user->employee->position->name,
                             'conversation'=>$lastMessage->message,
                             'createdAt' => $lastMessage->created_at,
+                            'time' => date('H:i', strtotime($lastMessage->created_at)),
                         ]);
                     }
                     
