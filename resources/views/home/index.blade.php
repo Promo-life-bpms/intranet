@@ -286,7 +286,7 @@
                 <br>
                 <img class="mobileLogo" src="{{ asset('/img/movil.png') }}" alt="app-movil">
                 <br>
-                <a href="#" type="button" class="btn btn-info">Android</a>
+                <a href="{{ asset('/files/intranet.apk') }}" type="button" class="btn btn-info">Android</a>
                 <br>
                 <a href="#" type="button" class="btn btn-light">IOS</a>
 
