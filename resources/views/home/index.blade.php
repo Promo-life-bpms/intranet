@@ -37,25 +37,33 @@
                             <textarea id="exampleFormControlTextarea1" class="form-control" name="content_publication"
                                 placeholder="¿Que estas pensando?"></textarea>
                             <div class="d-flex justify-content-between" class="public_items">
+                                <div class="mt-3">
+                                    <button class="boton" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseExample" aria-expanded="false"
+                                        aria-controls="collapseExample">
+                                        <i class="bi bi-file-earmark-image"></i>
+                                    </button>
+                                </div>
+                                <div class=" mt-3">
+                                    <input type="submit" class="boton" value="Publicar"></button>
+                                </div>
+                            </div>
+                            <div class="collapse" id="collapseExample">
                                 <div class="form-group" id="itemsElement">
                                     <label for="imagen">
-                                        Archivos necesarios para la solicitud:
                                     </label>
-                                    <div id="dropzoneItems" class="dropzone form-control text-center" style="height: auto;">
+                                    <div id="dropzoneItems" class="dropzone form-control text-center"
+                                        style="height: auto;">
                                     </div>
-                                    <input type="hidden" name="items" id="items" value="{{ old('items') }}">
+                                    <input type="hidden" name="items" id="items"
+                                        value="{{ old('items') }}">
                                     @error('items')
                                         <div class="text-danger">
                                             {{ $message }}</div>
                                     @enderror
                                     <p id="error"></p>
                                 </div>
-
-                                <div class=" mt-3">
-                                    <input type="submit" class="boton" value="Publicar"></button>
-                                </div>
                             </div>
-
                         </form>
                     </div>
 
@@ -67,7 +75,8 @@
             <div class="card p-3 box">
                 <div class="row">
                     <div class="col-md-12">
-                        <div id="carouselExampleCaptions" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="15000">
+                        <div id="carouselExampleCaptions" class="carousel slide carousel-fade" data-bs-ride="carousel"
+                            data-bs-interval="15000">
                             <div class="carousel-inner">
 
                                 @if (count($communiquesImage) == 0)
@@ -155,17 +164,18 @@
                                     </div>
                                     <p class="mt-4 ">
                                         {{ $publication->content_publication }} </p>
+                                    @if (count($publication->files) > 0)
+                                        <div class="d-flex flex-wrap" style="overflow:hidden;">
+                                            @foreach ($publication->files as $item)
+                                                <div class="p-1"><a
+                                                        href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                                        data-lightbox="photos"><img width="250"
+                                                            src="{{ asset('/storage/posts/') . '/' . $item->resource }}"></a>
 
-                                    <div class="d-flex flex-wrap" style="overflow:hidden;">
-                                        @foreach ($publication->files as $item)
-                                            <div class="p-1"><a
-                                                    href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
-                                                    data-lightbox="photos"><img width="250"
-                                                        src="{{ asset('/storage/posts/') . '/' . $item->resource }}"></a>
-
-                                            </div>
-                                        @endforeach
-                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                     <hr>
                                     <div class="d-flex justify-content">
                                         <div id="boton">
@@ -268,10 +278,10 @@
         <!-- Sidebar  -->
         <div class="col-md-4">
 
-             <!-- App movil  -->
+            <!-- App movil  -->
             <div class="card p-4"
-            style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;"
-            style="border-radius:20px;">
+                style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;"
+                style="border-radius:20px;">
                 <h4 class="d-flex justify-content-center text-center">¡Descarga nuestra aplicación móvil!</h4>
                 <br>
                 <img class="mobileLogo" src="{{ asset('/img/movil.png') }}" alt="app-movil">
@@ -288,7 +298,8 @@
                 <h4 class="d-flex justify-content-center">Cumpleaños del Mes</h4>
                 <div class="row">
                     <div class="col">
-                        <div id="carousel2" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="15000">
+                        <div id="carousel2" class="carousel slide carousel-fade" data-bs-ride="carousel"
+                            data-bs-interval="15000">
                             <div class="carousel-inner">
 
                                 @if (count($employeesBirthday) == 0)
@@ -343,7 +354,8 @@
 
                 <div class="row">
                     <div class="col">
-                        <div id="carousel3" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="15000">
+                        <div id="carousel3" class="carousel slide carousel-fade" data-bs-ride="carousel"
+                            data-bs-interval="15000">
                             <div class="carousel-inner">
 
                                 @if (count($employeesAniversary) == 0)
@@ -367,7 +379,7 @@
                                                     class="aniversary-text">{{ $employee->user->name . ' ' . $employee->user->lastname }}</span>
                                                 <br>
                                                 <span
-                                                    class="aniversary-text">{{$date - $employee->date_admission->format('Y') . " "."años" }}</span>
+                                                    class="aniversary-text">{{ $date - $employee->date_admission->format('Y') . ' ' . 'años' }}</span>
                                             </div>
 
                                         </div>
@@ -677,6 +689,7 @@
                 document.querySelector('#messageError').style.display = "none"
             }, 5000);
         });
+
         function readURL(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();

@@ -107,7 +107,7 @@ body {
 }
 
 .form-control::placeholder {
-  font-size: 11px;
+  font-size: 12px;
   color: #6c6c6c;
 }
 .type_msg {

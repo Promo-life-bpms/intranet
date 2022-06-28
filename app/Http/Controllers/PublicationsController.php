@@ -56,14 +56,16 @@ class PublicationsController extends Controller
                 'photo_public' => ''
             ]);
 
-            foreach (explode(',', $request->items) as $item) {
-                # code...
-                //Registar imagen
-                $data =[
-                    'resource' => $item,
-                    'type_file' => 'photo',
-                ];
-                $publication->files()->create($data);
+            if (trim($request->items) != "" || $request->items != null) {
+                foreach (explode(',', $request->items) as $item) {
+                    # code...
+                    //Registar imagen
+                    $data = [
+                        'resource' => $item,
+                        'type_file' => 'photo',
+                    ];
+                    $publication->files()->create($data);
+                }
             }
 
 

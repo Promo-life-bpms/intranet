@@ -16,7 +16,7 @@
           class="style-1"
         >
           <div
-            class="d-flex flex-row p-3 usuario"
+            class="d-flex flex-row p-2 usuario"
             v-for="user in filteredUsers"
             :key="user.id"
             @click="abrirchat(user)"
@@ -189,15 +189,11 @@ body {
 
 .form-control {
   border: 1px solid #9e9e9e;
-  font-size: 11px;
-}
-
-.form-control:focus {
-  box-shadow: none;
+  font-size: 13px;
 }
 
 .form-control::placeholder {
-  font-size: 11px;
+  font-size: 12px;
   color: #6c6c6c;
 }
 .contenedor {
@@ -228,7 +224,7 @@ body {
   transition: 1s ease-out;
 }
 .usuario:hover {
-  background: #cacaca;
+  background: #eaeaea;
 }
 .style-1::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
