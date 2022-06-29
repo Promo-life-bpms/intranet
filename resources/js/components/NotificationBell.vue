@@ -10,7 +10,14 @@
         >
           <li class="dropdown-header">Notificaciones</li>
           <li
-            class="d-flex flex-row p-3 hoverlist justify-content-between align-items-center"
+            class="
+              d-flex
+              flex-row
+              p-3
+              hoverlist
+              justify-content-between
+              align-items-center
+            "
             v-for="(notification, index) in notifications"
             :key="index"
           >
@@ -30,7 +37,9 @@
               {{ notification.data.message }}
             </div>
             <div class="close-notification">
-              <a :href="`/chat/eliminarNotificacion/${notification.id}`" style="ml-60px"
+              <a
+                :href="`/chat/eliminarNotificacion/${notification.id}`"
+                style="ml-60px"
                 ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -57,11 +66,12 @@
 <script>
 export default {
   mounted() {
+    this.obtenerMensajes();
     window.Echo.channel("chat").listen("MessageSent", (e) => {
       /* console.log("Notificacion guardada");
       console.log(e); */
-    });
       this.obtenerMensajes();
+    });
   },
   data() {
     return {

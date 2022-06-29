@@ -82,7 +82,7 @@ class UserController extends Controller
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->clientExtension();
-            $fileNameToStore = $filename . '.' . $extension;
+            $fileNameToStore = time(). $filename . '.' . $extension;
             $path = 'storage/profile/200x300'. $fileNameToStore;
 
             $request->file('image')->move('storage/profile/', $fileNameToStore);
@@ -188,7 +188,7 @@ class UserController extends Controller
                 $filenameWithExt = $request->file('image')->getClientOriginalName();
                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension = $request->file('image')->clientExtension();
-                $fileNameToStore = $filename . '.' . $extension;
+                $fileNameToStore = time(). $filename . '.' . $extension;
                 $path = 'storage/profile/200x300'. $fileNameToStore;
 
                 $request->file('image')->move('storage/profile/', $fileNameToStore);
@@ -208,7 +208,7 @@ class UserController extends Controller
                 $filenameWithExt = $request->file('image')->getClientOriginalName();
                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension = $request->file('image')->clientExtension();
-                $fileNameToStore = $filename . '.' . $extension;
+                $fileNameToStore = time(). $filename . '.' . $extension;
                 $path = 'storage/profile/200x300'. $fileNameToStore;
 
                 $request->file('image')->move('storage/profile/', $fileNameToStore);

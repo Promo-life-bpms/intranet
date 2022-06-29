@@ -41,12 +41,12 @@ class ProfileController extends Controller
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
-            $fileNameToStore = $filename . '.' . $extension;
+            $fileNameToStore = time() .  $filename . '.' . $extension;
             $path = 'storage/profile/200x300' . $fileNameToStore;
 
             $request->file('image')->move('storage/profile/', $fileNameToStore);
             Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(200, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
-            Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(300, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
+            Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(300, 300)->save(public_path("storage/profile/300x300{$fileNameToStore}"));
             File::delete(public_path("storage/profile/{$fileNameToStore}"));
         } else {
             return redirect()->action([ProfileController::class, 'index']);
