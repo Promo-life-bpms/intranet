@@ -23,9 +23,9 @@ class ProfileController extends Controller
     {
         $id = Auth::user()->id;
         $user = User::all()->where('id', $id);
-        $publications = Publications::where('user_id',$id)->orderBy('created_at', 'desc')->get();
-        
-        return view('profile.index', compact('user','publications'));
+        $publications = Publications::where('user_id', $id)->orderBy('created_at', 'desc')->get();
+
+        return view('profile.index', compact('user', 'publications'));
     }
 
 
@@ -36,18 +36,18 @@ class ProfileController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            
+
             File::delete(Auth::user()->image);
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
             $fileNameToStore = $filename . '.' . $extension;
-            $path = 'storage/profile/200x300'. $fileNameToStore;
-            
+            $path = 'storage/profile/200x300' . $fileNameToStore;
+
             $request->file('image')->move('storage/profile/', $fileNameToStore);
             Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(200, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
+            Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(300, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
             File::delete(public_path("storage/profile/{$fileNameToStore}"));
-
         } else {
             return redirect()->action([ProfileController::class, 'index']);
         }
@@ -96,14 +96,13 @@ class ProfileController extends Controller
     {
         $id = Auth::user()->id;
         $user = User::all()->where('id', $prof->id);
-        $publications = Publications::where('user_id',$prof->id)->orderBy('created_at', 'desc')->get();
-        
-        if($id == $prof->id ){
+        $publications = Publications::where('user_id', $prof->id)->orderBy('created_at', 'desc')->get();
+
+        if ($id == $prof->id) {
             return redirect()->action([ProfileController::class, 'index']);
         }
-        
-        return view('profile.view', compact('user','publications'));
-        
+
+        return view('profile.view', compact('user', 'publications'));
     }
 
     /**
