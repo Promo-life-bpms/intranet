@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\API\ApiController;
+use App\Http\Controllers\CompanyController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/getAllUsers', [ApiController::class, 'getAllUsers']);
+Route::get('company/getEmployees', [CompanyController::class, 'getAllEmployees']);
 
 Route::get('/manuals', [APIController::class, 'manuals'])->name('api.manual');
 Route::get('/month-employees', [APIController::class, 'monthEmployees'])->name('api.month.employees');

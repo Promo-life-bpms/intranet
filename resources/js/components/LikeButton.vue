@@ -1,6 +1,10 @@
 <template>
-  <div class="like-container">
-    <span class="like-btn" @click="likePublication" :class="{ 'like-active': this.like }">
+  <div class="like-container p-0">
+    <span
+      class="like-btn"
+      @click="likePublication"
+      :class="{ 'like-active': this.like }"
+    >
     </span>
     <span class="badge bg-danger notification-icon">{{ cantidadLikes }} </span>
   </div>
