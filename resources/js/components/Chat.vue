@@ -23,7 +23,11 @@
           >
             <div class="img_cont">
               <img
-                :src="'/' + user.image"
+                :src="
+                  user.image === null || user.image === ''
+                    ? 'https://cdn.pixabay.com/photo/2016/08/31/11/54/icon-1633249_960_720.png'
+                    : '/' + user.image
+                "
                 class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons"
                 style="width: 30px; height: 30px"
               />
