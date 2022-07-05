@@ -5340,6 +5340,10 @@ function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-on
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -5518,6 +5522,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _ChatForm_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ChatForm.vue */ "./resources/js/components/ChatForm.vue");
+//
+//
+//
+//
 //
 //
 //
@@ -49784,7 +49792,12 @@ var render = function () {
                             staticClass:
                               "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons",
                             staticStyle: { width: "30px", height: "30px" },
-                            attrs: { src: "/" + user.image },
+                            attrs: {
+                              src:
+                                user.image === null || user.image === ""
+                                  ? "https://cdn-icons.flaticon.com/png/512/2550/premium/2550383.png?token=exp=1656952747~hmac=ed262840f58c4e24269fa611714af05a"
+                                  : "/" + user.image,
+                            },
                           }),
                           _vm._v(" "),
                           user.userOnline
@@ -50051,7 +50064,13 @@ var render = function () {
                               staticClass:
                                 "rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon",
                               staticStyle: { width: "25px", height: "25px" },
-                              attrs: { src: "/" + _vm.userData.image },
+                              attrs: {
+                                src:
+                                  _vm.userData.image === null ||
+                                  _vm.userData.image === ""
+                                    ? "https://cdn-icons.flaticon.com/png/512/2550/premium/2550383.png?token=exp=1656952747~hmac=ed262840f58c4e24269fa611714af05a"
+                                    : "/" + _vm.user.image,
+                              },
                             })
                           : _vm._e(),
                         _vm._v(" "),

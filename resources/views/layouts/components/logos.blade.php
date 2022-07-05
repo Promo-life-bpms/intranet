@@ -1,4 +1,4 @@
-<div class="contenedor-logo  rounded p-3" style="margin-top: -40px;">
+<div class="contenedor-logo  rounded p-3" style="margin-top: -87px;">
     <ul class="logos p-3"
         style="background: #ffffff; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
     border-radius: 10px;
