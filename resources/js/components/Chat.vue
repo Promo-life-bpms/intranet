@@ -25,7 +25,7 @@
               <img
                 :src="
                   user.image === null || user.image === ''
-                    ? 'https://cdn.pixabay.com/photo/2016/08/31/11/54/icon-1633249_960_720.png'
+                    ? 'https://cdn-icons.flaticon.com/png/512/2550/premium/2550383.png?token=exp=1656952747~hmac=ed262840f58c4e24269fa611714af05a'
                     : '/' + user.image
                 "
                 class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons"
