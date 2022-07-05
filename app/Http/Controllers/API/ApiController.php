@@ -39,7 +39,7 @@ class ApiController extends Controller
 {
     public function getAllUsers()
     {
-        $users = User::all();
+        $users = User::where('status', 1)->get();
         return response()->json($users);
     }
 
@@ -92,7 +92,7 @@ class ApiController extends Controller
             $expiration= [];
 
             $vacation_duration= Vacations::all()->where('users_id',$usr->id);
-        
+
             foreach($vacation_duration as $vacation){
                 if($vacation == null || $vacation == []){
                     array_push($expiration, (object)[
@@ -262,7 +262,7 @@ class ApiController extends Controller
 
     public function directory()
     {
-        $user = User::all();
+        $user = User::where('status', 1)->get();
         $data = [];
         $directory = ModelsDirectory::all();
         $directory_data = [];
@@ -310,7 +310,7 @@ class ApiController extends Controller
 
     public function organization($id)
     {
-        $user = User::all();
+        $user = User::where('status', 1)->get();
         $data = [];
         foreach ($user as $usr) {
             if ($usr->employee->position->department->id == $id) {
@@ -412,9 +412,9 @@ class ApiController extends Controller
             $date= date("G:i:s", strtotime($request->start));
             $manager = "";
             foreach($employee as $emp){
-                $manager = $emp->jefe_directo_id; 
+                $manager = $emp->jefe_directo_id;
             }
-        
+
             $req = new ModelsRequest();
             $req->employee_id = $user_id;
             $req->type_request = $request->typeRequest;
@@ -446,13 +446,13 @@ class ApiController extends Controller
                 $request_calendar->users_id = $user_id;
                 $request_calendar->requests_id =$req->id;
                 $request_calendar->save();
-            
+
             }
             $data_send = [
                 "id"=>$req->id,
                 "employee_id"=>$user_id,
                 "direct_manager_status"=>"Pendiente",
-                "human_resources_status"=>"Pendiente" 
+                "human_resources_status"=>"Pendiente"
             ];
 
             $notification = new Notification();
@@ -462,12 +462,12 @@ class ApiController extends Controller
             $notification->notifiable_id = $manager;
             $notification->data = json_encode($data_send);
             $notification->save();
-    
+
         }
-        
+
         return  true;
-        
-       
+
+
     }
 
     static function managertNotification($req)
@@ -500,11 +500,11 @@ class ApiController extends Controller
                 if ($like->publication_id == $pub->id) {
                     $totalLikes = $totalLikes + 1;
                     if($like->user_id == $user_id){
-                        
+
                         $isLike = true;
                     }
                 }
-                
+
             }
 
             foreach($user as $usr){
@@ -521,18 +521,18 @@ class ApiController extends Controller
             foreach($comments as $com){
 
                 if($com->publication_id == $pub->id){
-                   
+
                     $comment_user = User::all()->where('id',$com->user_id);
                     foreach($comment_user as $com_user){
-                       
+
                         $com_fullname = $com_user->name . " " . $com_user->lastname;
-                        
+
                         $com_image = '';
                         if ($com_user->image == null) {
                             $com_image = "img/default_user.png";
                         } else {
                             $com_image = $com_user->image;
-                            
+
                         }
 
                         array_push($publi_comments, (object)[
@@ -543,8 +543,8 @@ class ApiController extends Controller
                             'content' => $com->content,
                         ]);
                     }
-                  
-                    
+
+
                 }
             }
 
@@ -557,14 +557,14 @@ class ApiController extends Controller
                     array_push($publicationImageData, (object)[
                         'typeFile' =>  $media->type_file,
                         'resource' => "storage/posts/". $media->resource,
-                    ]); 
-                } 
-                
+                    ]);
+                }
+
             }else{
                 array_push($publicationImageData, (object)[
                     'typeFile' => "no data",
                     'resource' => "no data",
-                ]); 
+                ]);
             }
 
             if($publi_comments == []){
@@ -594,19 +594,19 @@ class ApiController extends Controller
     }
 
     public function postPublications(Request $request){
-        
+
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
 
         if($user_id!=null || $user_id !=[]){
-            
+
             $data = new Publications();
             $data->id = $request->id;
             $data->user_id = $user_id;
             $data->content_publication = $request->contentPublication;
             $data->photo_public = "sin foto";
             $data->save();
-    
+
             return $token;
 
         }
@@ -626,15 +626,15 @@ class ApiController extends Controller
 
     public function postUnlike(Request $request){
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
-        $user_id = $token->tokenable_id;    
+        $user_id = $token->tokenable_id;
 
         DB::table('likes')->where('user_id',  $user_id)->where('publication_id',$request->publicationID)->delete();
     }
 
     public function postComment(Request $request){
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
-        $user_id = $token->tokenable_id;    
-        
+        $user_id = $token->tokenable_id;
+
         if($user_id!=null || $user_id !=[]){
 
             $comment = new Comment();
@@ -642,7 +642,7 @@ class ApiController extends Controller
             $comment->publication_id = $request->publicationID;
             $comment->content =$request->content;
             $comment->save();
-    
+
             return true;
         }
 
@@ -655,7 +655,7 @@ class ApiController extends Controller
         $comments = Comment::all();
         $data = [];
         $user_publication = [];
-        
+
         foreach ($user as $usr) {
 
             $image = '';
@@ -667,15 +667,15 @@ class ApiController extends Controller
 
             if(count($publications)==0 ){
                 $publi_comments= [];
-                
+
                 array_push($publi_comments, (object)[
-        
+
                     'id' => "sin datos",
                     'userName' => "sin datos",
                     'photo' => "sin datos",
                     'content' => "sin datos",
                 ]);
-            
+
             array_push($user_publication, (object)[
                 'id' => "sin datos",
                 'userId' => "sin datos",
@@ -687,7 +687,7 @@ class ApiController extends Controller
                 'likes' => "sin datos",
                 'isLike'=>"sin datos",
                 'comments'=>$publi_comments,
-                
+
             ]);
             }else{
                 foreach ($publications as $pub) {
@@ -699,21 +699,21 @@ class ApiController extends Controller
                     $isLike =false;
                     $user= User::all()->where('id', $pub->user_id);
                     $publi_comments= [];
-        
+
                     foreach ($likes as $like) {
                         if ($like->publication_id == $pub->id) {
                             $totalLikes = $totalLikes + 1;
                             if($like->user_id == $id){
-                                
+
                                 $isLike = true;
                             }
                         }
-                        
+
                     }
-        
+
                     foreach($user as $usr){
                         $fullname = $usr->name . " " . $usr->lastname;
-        
+
                         $image = '';
                         if ($usr->image == null) {
                             $image = "img/default_user.png";
@@ -721,34 +721,34 @@ class ApiController extends Controller
                             $image = $usr->image;
                         }
                     }
-        
+
                     foreach($comments as $com){
-        
+
                         if($com->publication_id == $pub->id){
-                           
+
                             $comment_user = User::all()->where('id',$com->user_id);
                             foreach($comment_user as $com_user){
-                               
+
                                 $com_fullname = $com_user->name . " " . $com_user->lastname;
-                                
+
                                 $com_image = '';
                                 if ($com_user->image == null) {
                                     $com_image = "img/default_user.png";
                                 } else {
                                     $com_image = $com_user->image;
-                                    
+
                                 }
-        
+
                                 array_push($publi_comments, (object)[
-        
+
                                     'id' => $com->publication_id,
                                     'userName' => $com_fullname,
                                     'photo' => $com_image,
                                     'content' => $com->content,
                                 ]);
                             }
-                          
-                            
+
+
                         }
                     }
                     if ($pub->photo_public == "") {
@@ -756,10 +756,10 @@ class ApiController extends Controller
                     } else {
                         $photo = $pub->photo_public;
                     }
-        
+
                     if($publi_comments == []){
                         array_push($publi_comments, (object)[
-        
+
                             'id' => $pub->id,
                             'userName' => "sin datos",
                             'photo' => "sin datos",
@@ -777,13 +777,13 @@ class ApiController extends Controller
                         'likes' => $totalLikes,
                         'isLike'=>$isLike,
                         'comments'=>$publi_comments,
-                        
+
                     ]);
                 }
-        
-    
+
+
             }
-            
+
             array_push($data, (object)[
                 'id' => $usr->id,
                 'fullname' => $usr->name . " " . $usr->lastname,
@@ -801,9 +801,9 @@ class ApiController extends Controller
 
     public function postDeleteRequest(Request $request){
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
-        $user_id = $token->tokenable_id;    
+        $user_id = $token->tokenable_id;
 
-        if($user_id!=null){                    
+        if($user_id!=null){
             DB::table('request_calendars')->where('requests_id',  $request->requestID)->delete();
             DB::table('requests')->where('id',  $request->requestID)->delete();
         }
@@ -811,12 +811,12 @@ class ApiController extends Controller
 
     public function postDeletePublication(Request $request){
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
-        $user_id = $token->tokenable_id;    
+        $user_id = $token->tokenable_id;
 
         if($user_id!=null){
 
             $publication = Publications::all()->where('id',$request->publciationID);
-            
+
             if($publication->photo_public!=null || $publication->photo_public|=""){
                 File::delete($publication->photo_public);
             }
@@ -829,33 +829,33 @@ class ApiController extends Controller
 
     public function getUserMessages($hashedToken){
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
-        $user_id = $token->tokenable_id; 
+        $user_id = $token->tokenable_id;
 
         //Obtiene todos los empleados que tienen conversarion con el usuario
         $messages = DB::table('messages')->where('transmitter_id',$user_id)->orWhere('receiver_id',$user_id)->orderBy('created_at', 'desc')->get();
-        
+
         $uniqueTransmitter = $messages->unique('transmitter_id');
         $uniqueReceiver = $messages->unique('receiver_id');
-        
-        $uniqueTransmitterList = []; 
+
+        $uniqueTransmitterList = [];
         $uniqueReceiverList = [];
 
-        //Se trae el id del objeto a una lista 
+        //Se trae el id del objeto a una lista
         foreach($uniqueTransmitter as $uniqueTrans){
             array_push($uniqueTransmitterList, $uniqueTrans->transmitter_id);
-        } 
-        //Se trae el id del objeto a una lista 
+        }
+        //Se trae el id del objeto a una lista
         foreach($uniqueReceiver as $unique){
             array_push($uniqueReceiverList, $unique->receiver_id);
         }
         //Se unen todos los usuarios que han tenido algun mensaje con el solicitante, ya sea de emisor o receptor
-        $totalUsers = array_unique(array_merge($uniqueTransmitterList,$uniqueReceiverList));  
+        $totalUsers = array_unique(array_merge($uniqueTransmitterList,$uniqueReceiverList));
         $data =[];
         $allUsers = User::all()->whereIn("id",$totalUsers);
-         
-        
+
+
         if($messages->count()==0){
-            
+
             array_push($data, (object)[
                 'id' => $user_id,
                 'fullname' =>"no data" ,
@@ -866,7 +866,7 @@ class ApiController extends Controller
                 'conversation'=>"no data",
                 'createdAt' => "no data",
                 'time' => "no data",
-            ]); 
+            ]);
 
             return $data;
         }else{
@@ -874,7 +874,7 @@ class ApiController extends Controller
             foreach($allUsers as $user){
               /*   dd(strval($user->id) ); */
                 if($messages->contains('transmitter_id',$user->id) || $messages->contains('receiver_id',$user->id)){
-                    
+
                     $userID = $user->id;
                     $myUserID= $user_id;
                     $lastMessage= Message::where(function ($query) use ($userID) {
@@ -885,7 +885,7 @@ class ApiController extends Controller
                               ->orWhere('receiver_id', '=', $myUserID);
                     })->orderBy('created_at', 'desc')->first();
 
-                    
+
                     $image = '';
                     if ($user->image == null) {
                         $image = "img/default_user.png";
@@ -905,20 +905,20 @@ class ApiController extends Controller
                             'time' => date('H:i', strtotime($lastMessage->created_at)),
                         ]);
                     }
-                    
-                }  
+
+                }
 
             }
-            
+
             return $data;
-            
+
         }
-  
+
     }
 
     public function postUserMessages(Request $request){
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
-        $user_id = $token->tokenable_id;    
+        $user_id = $token->tokenable_id;
 
         $conversationUserID = $request->conversationUserID;
 
@@ -935,7 +935,7 @@ class ApiController extends Controller
         $data =[];
 
         if($mensajesEnviados->count()==0){
-            
+
             array_push($data, (object)[
                 'id' => $user_id,
                 'transmitterID' => $user_id,
@@ -957,20 +957,20 @@ class ApiController extends Controller
                     'updated' => date('H:i', strtotime($mensaje->created_at)),
                 ]);
             }
-        
+
             return $data;
         }
-     
+
     }
 
 
     public function postConversation(Request $request){
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
-        $user_id = $token->tokenable_id;    
+        $user_id = $token->tokenable_id;
         $user_name = DB::table('users')->where('id',$user_id)->value('name');
         $user_lastname = DB::table('users')->where('id',$user_id)->value('lastname');
         $user_image = DB::table('users')->where('id',$user_id)->value('image');
- 
+
         //Crear mensaje en la BD
         $message = new Message();
         $message->transmitter_id =  $user_id;
@@ -982,12 +982,12 @@ class ApiController extends Controller
             'emisor' => $user_id,
             'message' => $request->message,
             'transmitter_name' => $user_name. " ".$user_lastname ,
-            'image' => $user_image, 
+            'image' => $user_image,
         ];
-        
-      
+
+
         $notification = new Notification();
-        $notification->id =uniqid();       
+        $notification->id =uniqid();
         $notification->type = "App\Notifications\MessageNotification";
         $notification->notifiable_type = "App\Models\User";
         $notification->notifiable_id = intval($request->receiverID) ;
@@ -1003,5 +1003,5 @@ class ApiController extends Controller
 
         return true;
     }
-    
+
 }

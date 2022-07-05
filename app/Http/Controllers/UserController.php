@@ -27,7 +27,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users =  User::all();
+        $users =  User::where('status', true)->get();
         return view('admin.user.index', compact('users'));
     }
 
@@ -82,8 +82,8 @@ class UserController extends Controller
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->clientExtension();
-            $fileNameToStore = time(). $filename . '.' . $extension;
-            $path = 'storage/profile/200x300'. $fileNameToStore;
+            $fileNameToStore = time() . $filename . '.' . $extension;
+            $path = 'storage/profile/200x300' . $fileNameToStore;
 
             $request->file('image')->move('storage/profile/', $fileNameToStore);
             Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(200, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
@@ -113,12 +113,6 @@ class UserController extends Controller
 
         $user->roles()->attach($request->roles);
         $user->employee->companies()->attach($request->companies);
-
-        $user->directory()->create([
-            'type' => 'Email',
-            'data' => $user->email,
-            'company' => $request->companies[0],
-        ]);
         // Enviar notificacion de registro
         $dataNotification = [
             'name' => $request->name . ' ' . $request->lastname,
@@ -188,8 +182,8 @@ class UserController extends Controller
                 $filenameWithExt = $request->file('image')->getClientOriginalName();
                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension = $request->file('image')->clientExtension();
-                $fileNameToStore = time(). $filename . '.' . $extension;
-                $path = 'storage/profile/200x300'. $fileNameToStore;
+                $fileNameToStore = time() . $filename . '.' . $extension;
+                $path = 'storage/profile/200x300' . $fileNameToStore;
 
                 $request->file('image')->move('storage/profile/', $fileNameToStore);
                 Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(200, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
@@ -208,8 +202,8 @@ class UserController extends Controller
                 $filenameWithExt = $request->file('image')->getClientOriginalName();
                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension = $request->file('image')->clientExtension();
-                $fileNameToStore = time(). $filename . '.' . $extension;
-                $path = 'storage/profile/200x300'. $fileNameToStore;
+                $fileNameToStore = time() . $filename . '.' . $extension;
+                $path = 'storage/profile/200x300' . $fileNameToStore;
 
                 $request->file('image')->move('storage/profile/', $fileNameToStore);
                 Image::make(public_path("storage/profile/{$fileNameToStore}"))->fit(200, 300)->save(public_path("storage/profile/200x300{$fileNameToStore}"));
@@ -259,13 +253,12 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function destroy(User $user)
     {
-        DB::table('users')->where('id',  $user->id)->delete();
-        DB::table('employees')->where('user_id',  $user->id)->delete();
-        DB::table('manager')->where('users_id',  $user->id)->delete();
-
-        return redirect()->action([UserController::class, 'index']);
+        $user->status = false;
+        $user->save();
+        return redirect()->action([UserController::class, 'index'])->with('success', 'El usuario ' . $user->name . ' ' . $user->lastname . ' ha sido eliminado');
     }
 
     public function getPosition($id)
@@ -289,7 +282,7 @@ class UserController extends Controller
     }
     public function sendAccess()
     {
-        $users = User::all();
+        $users = User::where('status', 1)->get();
         foreach ($users as $user) {
             $pass = Str::random(8);
             $user->password = Hash::make($pass);

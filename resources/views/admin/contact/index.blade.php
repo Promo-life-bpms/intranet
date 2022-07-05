@@ -8,7 +8,7 @@
                 {!! Form::open(['route' => 'contacts.export']) !!}
                     {!! Form::submit('Exportar', ['class' => 'btn btn-success']) !!}
                 {!! Form::close() !!}
-            @endrole 
+            @endrole
         </div>
     </div>
     <div class="card-body">
@@ -28,7 +28,7 @@
             <button class="tablinks" onclick="openDepartment(event, 'Cancun')">Cancun</button>
             <button class="tablinks" onclick="openDepartment(event, 'Direccion')">Direccion</button>
           </div>
-          
+
           <div id="General" class="tabcontent">
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -48,7 +48,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($contacts as $contact)
                             <tr>
@@ -62,21 +62,21 @@
                                 <td>{{ $contact->correo3 }}</td>
                                 <td>{{ $contact->correo4 }}</td>
                                 @role('systems')
-                                    <td> 
+                                    <td>
                                         <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                             type="button" class="btn btn-primary">Editar</a>
                                     </td>
                                 @endrole
                             </tr>
                         @endforeach
-        
+
                     </tbody>
                 </table>
             </div>
-            
+
             {{ $contacts->links() }}
           </div>
-          
+
           <div id="RH" class="tabcontent">
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -95,7 +95,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($userContact as $contact)
                             @if ($contact->user->employee->position->department->name == 'Recursos Humanos')
@@ -109,7 +109,7 @@
                                     <td>{{ $contact->correo3 }}</td>
                                     <td>{{ $contact->correo4 }}</td>
                                     @role('systems')
-                                        <td> 
+                                        <td>
                                             <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                                 type="button" class="btn btn-primary">Editar</a>
                                         </td>
@@ -122,7 +122,7 @@
             </div>
 
           </div>
-          
+
           <div id="Administracion" class="tabcontent">
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -141,7 +141,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($userContact as $contact)
                             @if ($contact->user->employee->position->department->name == 'Administracion')
@@ -155,7 +155,7 @@
                                 <td>{{ $contact->correo3 }}</td>
                                 <td>{{ $contact->correo4 }}</td>
                                 @role('systems')
-                                    <td> 
+                                    <td>
                                         <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                             type="button" class="btn btn-primary">Editar</a>
                                     </td>
@@ -167,7 +167,7 @@
                 </table>
             </div>
           </div>
-          
+
           <div id="VentasBH" class="tabcontent">
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -186,7 +186,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($userContact as $contact)
                         @if ($contact->user->employee->position->department->name == 'Ventas BH')
@@ -200,7 +200,7 @@
                             <td>{{ $contact->correo3 }}</td>
                             <td>{{ $contact->correo4 }}</td>
                             @role('systems')
-                                <td> 
+                                <td>
                                     <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                         type="button" class="btn btn-primary">Editar</a>
                                 </td>
@@ -231,7 +231,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($userContact as $contact)
                         @if ($contact->user->employee->position->department->name == 'Ventas PL')
@@ -245,7 +245,7 @@
                             <td>{{ $contact->correo3 }}</td>
                             <td>{{ $contact->correo4 }}</td>
                             @role('systems')
-                                <td> 
+                                <td>
                                     <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                         type="button" class="btn btn-primary">Editar</a>
                                 </td>
@@ -253,7 +253,7 @@
                         </tr>
                         @endif
                         @endforeach
-        
+
                     </tbody>
                 </table>
             </div>
@@ -277,7 +277,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($userContact as $contact)
                         @if ($contact->user->employee->position->department->name == 'Importaciones')
@@ -291,7 +291,7 @@
                             <td>{{ $contact->correo3 }}</td>
                             <td>{{ $contact->correo4 }}</td>
                             @role('systems')
-                                <td> 
+                                <td>
                                     <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                         type="button" class="btn btn-primary">Editar</a>
                                 </td>
@@ -299,10 +299,10 @@
                         </tr>
                         @endif
                         @endforeach
-        
+
                     </tbody>
                 </table>
-            </div>  
+            </div>
         </div>
 
         <div id="Diseno" class="tabcontent">
@@ -323,7 +323,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($userContact as $contact)
                         @if ($contact->user->employee->position->department->name == 'Diseno')
@@ -337,7 +337,7 @@
                             <td>{{ $contact->correo3 }}</td>
                             <td>{{ $contact->correo4 }}</td>
                             @role('systems')
-                                <td> 
+                                <td>
                                     <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                         type="button" class="btn btn-primary">Editar</a>
                                 </td>
@@ -345,7 +345,7 @@
                         </tr>
                         @endif
                         @endforeach
-        
+
                     </tbody>
                 </table>
             </div>
@@ -369,7 +369,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($userContact as $contact)
                         @if ($contact->user->employee->position->department->name == 'Sistemas')
@@ -383,7 +383,7 @@
                             <td>{{ $contact->correo3 }}</td>
                             <td>{{ $contact->correo4 }}</td>
                             @role('systems')
-                                <td> 
+                                <td>
                                     <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                         type="button" class="btn btn-primary">Editar</a>
                                 </td>
@@ -391,7 +391,7 @@
                         </tr>
                         @endif
                         @endforeach
-        
+
                     </tbody>
                 </table>
             </div>
@@ -415,7 +415,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($userContact as $contact)
                         @if ($contact->user->employee->position->department->name == 'Operaciones')
@@ -429,7 +429,7 @@
                             <td>{{ $contact->correo3 }}</td>
                             <td>{{ $contact->correo4 }}</td>
                             @role('systems')
-                                <td> 
+                                <td>
                                     <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                         type="button" class="btn btn-primary">Editar</a>
                                 </td>
@@ -437,12 +437,12 @@
                         </tr>
                         @endif
                         @endforeach
-        
+
                     </tbody>
                 </table>
             </div>
          </div>
- 
+
 
         <div id="Tecnologia" class="tabcontent">
             <div class="table-responsive">
@@ -462,7 +462,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($userContact as $contact)
                         @if ($contact->user->employee->position->department->name == 'Tecnologia e Innovacion')
@@ -476,7 +476,7 @@
                             <td>{{ $contact->correo3 }}</td>
                             <td>{{ $contact->correo4 }}</td>
                             @role('systems')
-                                <td> 
+                                <td>
                                     <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                         type="button" class="btn btn-primary">Editar</a>
                                 </td>
@@ -484,7 +484,7 @@
                         </tr>
                         @endif
                         @endforeach
-        
+
                     </tbody>
                 </table>
             </div>
@@ -508,7 +508,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($userContact as $contact)
                         @if ($contact->user->employee->position->department->name == 'E-commerce')
@@ -522,7 +522,7 @@
                             <td>{{ $contact->correo3 }}</td>
                             <td>{{ $contact->correo4 }}</td>
                             @role('systems')
-                                <td> 
+                                <td>
                                     <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                         type="button" class="btn btn-primary">Editar</a>
                                 </td>
@@ -530,12 +530,12 @@
                         </tr>
                         @endif
                         @endforeach
-        
+
                     </tbody>
                 </table>
             </div>
         </div>
-            
+
         <div id="Cancun" class="tabcontent">
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -554,7 +554,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($userContact as $contact)
                         @if ($contact->user->employee->position->department->name == 'Cancun')
@@ -568,20 +568,20 @@
                             <td>{{ $contact->correo3 }}</td>
                             <td>{{ $contact->correo4 }}</td>
                             @role('systems')
-                                <td> 
+                                <td>
                                     <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                         type="button" class="btn btn-primary">Editar</a>
                                 </td>
                             @endrole
                         </tr>
-                        @endif 
+                        @endif
                         @endforeach
-        
+
                     </tbody>
                 </table>
             </div>
         </div>
-        
+
         <div id="Direccion" class="tabcontent">
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -600,7 +600,7 @@
                             @endrole
                         </tr>
                     </thead>
-        
+
                     <tbody>
                         @foreach ($userContact as $contact)
                         @if ($contact->user->employee->position->department->name == 'Direccion')
@@ -614,20 +614,20 @@
                             <td>{{ $contact->correo3 }}</td>
                             <td>{{ $contact->correo4 }}</td>
                             @role('systems')
-                                <td> 
+                                <td>
                                     <a style="width: 100%;" href="{{ route('admin.contacts.edit', ['contact' => $contact->id]) }}"
                                         type="button" class="btn btn-primary">Editar</a>
                                 </td>
                             @endrole
                         </tr>
-                        @endif  
+                        @endif
                         @endforeach
-        
+
                     </tbody>
                 </table>
             </div>
         </div>
-        
+
     </div>
 @stop
 @section('styles')
@@ -638,7 +638,7 @@
       border: 1px solid #ccc;
       background-color: #f1f1f1;
     }
-    
+
     /* Style the buttons inside the tab */
     .tab button {
       background-color: inherit;
@@ -650,17 +650,17 @@
       transition: 0.3s;
       font-size: 17px;
     }
-    
+
     /* Change background color of buttons on hover */
     .tab button:hover {
       background-color: #ddd;
     }
-    
+
     /* Create an active/current tablink class */
     .tab button.active {
       background-color: #ccc;
     }
-    
+
     /* Style the tab content */
     .tabcontent {
       display: none;
@@ -718,7 +718,7 @@
     <script>
           let jquery_datatable = $("#tableTickets").DataTable()
     </script>
-    
 
-  
+
+
 @stop

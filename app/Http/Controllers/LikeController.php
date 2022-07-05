@@ -21,13 +21,10 @@ class LikeController extends Controller
     {
 
         //Almacena los likes de un usuario a una publicacion
-
-try {
-    return auth()->user()->meGusta()->toggle($publications);
-    //code...
-} catch (Exception $e) {
-    return $e;
-
-}
+        try {
+            return auth()->user()->meGusta()->toggle($publications);
+        } catch (Exception $e) {
+            return $e;
+        }
     }
 }

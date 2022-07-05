@@ -26,7 +26,7 @@ class VacationsController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::where('status',1)->get();
         return view('admin.vacations.index', compact('users'));
     }
 
@@ -130,7 +130,7 @@ class VacationsController extends Controller
     public function updateVacations()
     {
         // Obtener a todos los usuarios
-        $users = User::all();
+        $users = User::where('status', 1)->get();
         // Calcular, en base a su fecha de ingreso, los dias disponibles del periodo actual y del anterior
         foreach ($users as $user) {
             $date = Carbon::parse($user->employee->date_admission);
@@ -205,7 +205,7 @@ class VacationsController extends Controller
     }
     public function updateExpiration()
     {
-        $users = User::all();
+        $users = User::where('status', 1)->get();
         // Calcular, en base a su fecha de ingreso, los dias disponibles del periodo actual y del anterior
         foreach ($users as $user) {
             $dataVacations = $user->vacationsAvailables()->where('period', '<>', 3)->get();

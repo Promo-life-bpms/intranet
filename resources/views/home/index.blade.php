@@ -116,190 +116,7 @@
                 </div>
             </div>
 
-            @if (count($publications) <= 0)
-                <p>No hay Publicaciones</p>
-            @else
-                @foreach ($publications as $publication)
-                    <div class="card mb-4 shadow-sm" style="border-radius: 20px">
-                        <div class="card-body">
-                            <div class="d-flex">
-                                <div class="imagen px-1">
-                                    <div class="avatar avatar-xl">
-                                        <div class="card-photo" style="width: 40px; height:40px;">
-                                            @if (auth()->user()->image == null)
-                                                <a style="color: inherit;"
-                                                    href="{{ route('profile.view', ['prof' => $publication->user_id]) }}">
-                                                    <p
-                                                        class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
-                                                        <span>{{ substr($publication->user->name, 0, 1) . substr($publication->user->lastname, 0, 1) }}</span>
-                                                    </p>
-                                                </a>
-                                            @else
-                                                <a style="color: inherit;"
-                                                    href="{{ route('profile.view', ['prof' => $publication->user_id]) }}">
-                                                    <img style="width: 100%; height:100%; object-fit: cover;"
-                                                        src="{{ asset($publication->user->image) }}">
-                                                </a>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="m-0 " style="font-weight: bold">
-                                        {{ $publication->user->name . ' ' . $publication->user->lastname }}
-                                    </p>
-                                    <p class="m-0">
-                                        {{ $publication->created_at->diffForHumans() }} </p>
-                                </div>
-                            </div>
-                            <p class="mt-4 ">
-                                {{ $publication->content_publication }} </p>
-                            @if (count($publication->files) > 0)
-                                <div class="row" style="overflow:hidden;">
-                                    @if (count($publication->files) == 1)
-                                        @foreach ($publication->files as $item)
-                                            <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
-                                                data-lightbox="photos.{{ $publication->id }}" style="height: 600px;">
-                                                <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
-                                                    class="rounded shadow-sm"
-                                                    src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
-                                            </a>
-                                        @endforeach
-                                    @elseif (count($publication->files) == 2)
-                                        @foreach ($publication->files as $item)
-                                            <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
-                                                data-lightbox="photos.{{ $publication->id }}" style="height: 300px;"
-                                                class="col-md-6">
-                                                <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
-                                                    class="rounded shadow-sm"
-                                                    src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
-                                            </a>
-                                        @endforeach
-                                    @elseif (count($publication->files) == 3)
-                                        @foreach ($publication->files as $item)
-                                            <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
-                                                data-lightbox="photos.{{ $publication->id }}" style="height: 200px;"
-                                                class="col-md-4">
-                                                <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
-                                                    class="rounded shadow-sm"
-                                                    src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
-                                            </a>
-                                        @endforeach
-                                    @elseif (count($publication->files) > 3)
-                                        @foreach ($publication->files as $item)
-                                            <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
-                                                data-lightbox="photos.{{ $publication->id }}"
-                                                style="height: {{ $loop->iteration > 4 ? '0' : '200' }}px;"
-                                                class="col-md-3">
-                                                <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
-                                                    class="rounded shadow-sm {{ $loop->iteration > 3 && count($publication->files) > 4 ? 'd-none' : '' }}"
-                                                    src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
-                                                @if ($loop->iteration == 4 && count($publication->files) > 4)
-                                                    <div class="w-100 h-100 d-flex justify-content-center align-items-center mas-fotos"
-                                                        style="background-color: #dcdcdc;">
-                                                        <p style="font-size: 15px; font-weight: bold">Ver mas
-                                                        </p>
-                                                    </div>
-                                                @endif
-                                            </a>
-                                        @endforeach
-                                    @endif
-                                </div>
-                            @endif
-                            <div class="d-flex justify-content-between my-1">
-                                <div id="boton" class="p-0">
-                                    <like-button style="margin-top: -24px; overflow:hidden;"
-                                        publication-id="{{ $publication->id }}"
-                                        like="{{ auth()->user()->meGusta->contains($publication->id) }}"
-                                        likes="{{ $publication->like->count() }}">
-                                    </like-button>
-                                </div>
-                                <a style="font-size:18px; color:#000000;" data-bs-toggle="collapse"
-                                    href="#collapse{{ $publication->id }}" role="button"
-                                    aria-controls="collapse{{ $publication->id }}">
-                                    @php
-                                        $contador = 0;
-                                        foreach ($publication->comments as $comment) {
-                                            $contador = $contador + 1;
-                                        }
-                                    @endphp
-                                    Ver comentarios (<?= $contador ?>)
-                                </a>
-                            </div>
-                            <form method="POST" action="{{ route('comment') }}" style="margin-top: -25px;">
-                                @csrf
-                                <input name="id_publication" id="id_publication" type="hidden"
-                                    value="{{ $publication->id }}">
-                                <div class="d-flex align-items-center my-2">
-                                    @if (auth()->user()->image == null)
-                                        <a style="color: inherit;" href="{{ route('profile.index') }}" class="mr-1">
-                                            <p
-                                                class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
-                                                <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
-                                            </p>
-                                        </a>
-                                    @else
-                                        <a href="{{ route('profile.index') }}" class="mr-1">
-                                            <img style="width: 35px; height:35px; object-fit: cover;"
-                                                class="rounded-circle" src="{{ asset(auth()->user()->image) }}">
-                                        </a>
-                                    @endif
-                                    <input type="text"id="content" name="content"
-                                        class="form-control flex-grow-1  @error('content') is-invalid @enderror"
-                                        placeholder="Escribe tu comentario...">
-                                    <button type="submit" class="boton">
-                                        Comentar
-                                    </button>
-                                </div>
-                                @error('content')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </form>
-                            <div class="collapse mt-2 ml-3 mb-1" id="collapse{{ $publication->id }}">
-                                @foreach ($publication->comments as $comment)
-                                    <div class="nombre d-flex flex-row">
-                                        <div class="com_image">
-                                            <div class="card-photo rounded-circle " style="width: 35px; height:35px;">
-                                                @if ($comment->user->image == null)
-                                                    <a style="color: inherit;"
-                                                        href="{{ route('profile.view', ['prof' => $comment->user_id]) }}">
-                                                        <p
-                                                            class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
-                                                            <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
-                                                        </p>
-                                                    </a>
-                                                @else
-                                                    <a style="color: inherit;"
-                                                        href="{{ route('profile.view', ['prof' => $comment->user_id]) }}">
-                                                        <img style="width: 100%; height:100%; object-fit: cover;"
-                                                            src="{{ $comment->user->image }}">
-                                                    </a>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="com_content">
-                                            <div class="d-flex">
-                                                <p class="ml-1 my-0 " style="font-weight: bold">
-                                                    {{ $comment->user->name . ' ' . $comment->user->lastname }}
-                                                </p>
-                                                <p class="ml-1  my-0">
-                                                    {{ $comment->created_at->diffforhumans() }}
-                                                </p>
-                                            </div>
-                                            <p class="ml-1  my-0">
-                                                {{ $comment->content }}
-                                            </p>
-                                        </div>
-                                        <hr>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            @endif
+            @livewire('publications-component')
         </div>
 
         <!-- Termino de la seccion principal  -->
@@ -477,16 +294,90 @@
                 </div>
             </div>
 
+            <!-- Vacaciones  Proximas -->
+            <div class="card p-4"
+                style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; border-radius:20px;">
+                <h4 class="d-flex justify-content-center text-center">Ausencias del Dia de Hoy</h4>
+                @if (count($empleadosAusentes) > 0)
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>
+                                    Colaborador
+                                </td>
+                                <td>
+                                    Relevo
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($empleadosAusentes as $item)
+                                <tr>
+                                    <td>
+                                        {{ $item->name . ' ' . $item->lastname }}
+                                    </td>
+                                    <td>
+                                        Ninguno
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <p>No tenemos ausencias registradas</p>
+                @endif
+
+            </div>
+            <!-- Vacaciones  -->
+            <div class="card p-4"
+                style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; border-radius:20px;">
+                <h4 class="d-flex justify-content-center text-center">Proximas Vacaciones</h4>
+                @if (count($proximasVacaciones) > 0)
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>
+                                    Colaborador
+                                </td>
+                                <td>
+                                    Relevo
+                                </td>
+                                <td>
+                                    Fechas ausente
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($proximasVacaciones as $item)
+                                <tr>
+                                    <td>
+                                        {{ $item->employee->user->name . ' ' . $item->employee->user->lastname }}
+                                    </td>
+                                    <td>
+                                        Ninguno
+                                    </td>
+                                    <td>
+                                        @foreach ($item->requestdays as $day)
+                                            {{ $day->start }}
+                                        @endforeach
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <p>No tenemos vacaciones proximas registradas</p>
+                @endif
+            </div>
+
         </div>
 
     </div>
 @stop
 
 @section('styles')
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    {{-- Libreria del Calendario de Eventos --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css"
         integrity="sha512-jU/7UFiaW5UBGODEopEqnbIAHOI8fO6T99m7Tsmqs2gkdujByJfkCbbfPSN4Wlqlb9TGnsuC0YgUgWkRBK7B9A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -572,10 +463,7 @@
 
 
 @section('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"
         integrity="sha512-oQq8uth41D+gIH/NJvSJvVB85MFk1eWpMK6glnkg6I7EdMqC1XVkW7RxLheXwmFdG03qScCM7gKS/Cx3FYt7Tg=="

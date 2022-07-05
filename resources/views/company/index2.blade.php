@@ -161,7 +161,7 @@
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            fetch('http://localhost:8001/api/company/getEmployees')
+            fetch('/company/getEmployees')
                 .then(function(response) {
                     return response.json();
                 })

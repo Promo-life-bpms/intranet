@@ -3,16 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Communique;
-use App\Models\CommuniqueCompany;
-use App\Models\CommuniqueDepartment;
 use App\Models\Employee;
 use App\Models\Events;
 use App\Models\NoWorkingDays;
-use App\Models\Comment;
 use App\Models\Publications;
+use App\Models\Request as ModelsRequest;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -45,11 +41,44 @@ class HomeController extends Controller
                 $birthday = explode('-', $employee->date_admission);
                 $monthAniversaryth = $birthday[1];
                 if ($monthAniversaryth == $date) {
-                    array_push($employeesAniversary, $employee);
+                    $dateAdmission = Carbon::parse($employee->date_admission);
+                    $yearsWork = $dateAdmission->diffInYears($carbon->now()->addMonth());
+                    if ($yearsWork > 0) {
+                        array_push($employeesAniversary, $employee);
+                    }
                 }
             }
         }
 
+        $empleadosAusentes = [];
+        $carbon = new \Carbon\Carbon();
+        $date = $carbon->now()->format('Y-m-d');
+        $vacations = DB::table('requests')
+            ->join('request_calendars', 'requests.id', '=', 'request_calendars.requests_id')
+            ->where('request_calendars.start', $date)
+            ->where('requests.human_resources_status', 'Aprobada')
+            ->select('requests.id')
+            ->get();
+        foreach ($vacations as $vacation) {
+            $vacation = ModelsRequest::find($vacation->id);
+            array_push($empleadosAusentes, $vacation->employee->user);
+        }
+
+        $proximasVacaciones = [];
+        $carbon = new \Carbon\Carbon();
+        $date = $carbon->now()->format('Y-m-d');
+        $vacations = DB::table('requests')
+            ->join('request_calendars', 'requests.id', '=', 'request_calendars.requests_id')
+            ->where('request_calendars.start', '>', $date)
+            ->where('requests.human_resources_status', 'Aprobada')
+            ->select('requests.id')
+            ->groupBy('requests.id')
+            ->get();
+
+        foreach ($vacations as $vacation) {
+            $vacation = ModelsRequest::find($vacation->id);
+            array_push($proximasVacaciones, $vacation);
+        }
 
         $toDay = $carbon->now();
         $date = $toDay->format('Y');
@@ -61,10 +90,10 @@ class HomeController extends Controller
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
 
         $monthEmployeeController = MonthController::getEmpoyeeMonth();
-        
+
         $publications = Publications::orderBy('created_at', 'desc')->paginate(10);
 
-        return view('home.index', compact('employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController', 'publications','date'));
+        return view('home.index', compact('proximasVacaciones', 'employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController', 'publications', 'date', 'empleadosAusentes'));
     }
 
 
@@ -74,21 +103,22 @@ class HomeController extends Controller
         return array_values($comunique);
     }
 
-    public function validateCommunicated(){
+    public function validateCommunicated()
+    {
         $communiques =  Communique::all();
 
-       foreach( $communiques as  $communique){
+        foreach ($communiques as  $communique) {
             $day = $communique->created_at->format('Y-m-d');
-       
+
             $expiration = Carbon::parse($day)->addDays(5);
             $expirationFormat = $expiration->format('Y-m-d');
 
             $today = Carbon::now();
             $todayFormat = $today->format('Y-m-d');
 
-            if( $todayFormat >=$expirationFormat   ){
+            if ($todayFormat >= $expirationFormat) {
                 $communique->delete();
             }
-       }
+        }
     }
 }

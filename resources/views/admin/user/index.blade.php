@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+    @if ($message = Session::get('success'))
+        <div class="alert alert-success">
+            <p>{{ $message }}</p>
+        </div>
+    @endif
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Lista de usuarios</h3>
@@ -85,8 +90,11 @@
                                 </form>
 
                                 @role('admin')
-                                    <a href="{{ route('admin.user.sendAccessUnit', ['user' => $user->id]) }}" type="button"
-                                        class="btn btn-primary">Resetear acceso</a>
+                                    <form class="form-reset"
+                                        action="{{ route('admin.user.sendAccessUnit', ['user' => $user->id]) }}" method="GET">
+                                        @csrf
+                                        <button style="width: 80px" type="submit" class="btn btn-primary">Resetear acceso</button>
+                                    </form>
                                 @endrole
                             </td>
                         </tr>
@@ -418,6 +426,24 @@
             Swal.fire({
                 title: '¿Estás seguro?',
                 text: "¡El registro se eliminará permanentemente!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '¡Si, eliminar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            })
+        });
+        $('.form-reset').submit(function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Se reseteara la contraseña y se enviara un email con sus datos!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

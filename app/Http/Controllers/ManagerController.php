@@ -52,7 +52,7 @@ class ManagerController extends Controller
             'users_id' => 'required',
             'department_id' => 'required'
         ]);
-        
+
         $manager = new Manager();
         $manager->users_id = $request->users_id;
         $manager->department_id = $request->department_id;
@@ -114,7 +114,7 @@ class ManagerController extends Controller
     public function getEmployee($id)
     {
         $employeesPos = Employee::all()->where('position_id',$id)->pluck('id','user_id');
-        $employees = User::all()->whereIn('id', $employeesPos)->pluck('name', 'id');
+        $employees = User::where('status', 1)->whereIn('id', $employeesPos)->pluck('name', 'id');
         return json_encode($employees);
     }
 }

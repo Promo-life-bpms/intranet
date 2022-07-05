@@ -25,6 +25,7 @@ class User extends Authenticatable
         'image',
         'email',
         'password',
+        'status',
     ];
 
     /**
@@ -86,6 +87,10 @@ class User extends Authenticatable
     public function directory()
     {
         return $this->hasMany(Directory::class, 'user_id');
+    }
+    public function publications()
+    {
+        return $this->hasMany(Publications::class, 'user_id');
     }
 
     public function meGusta()

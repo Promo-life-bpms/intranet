@@ -20,10 +20,8 @@ class DirectoryController extends Controller
      */
     public function index()
     {
-        $users =  User::all();
-        $directories = Directory::find(1);
-
-        return view('directory.index', compact('directories', 'users'));
+        $users =  User::where('status', 1)->get();
+        return view('directory.index', compact('users'));
     }
 
     /**
@@ -33,7 +31,7 @@ class DirectoryController extends Controller
      */
     public function create()
     {
-        $list = User::all();
+        $list = User::where('status', 1)->get();
         $listCompany = Company::all();
         $directory = new Directory();
         return view('directory.create', compact('directory', 'list', 'listCompany'));
@@ -55,7 +53,7 @@ class DirectoryController extends Controller
             'data' => 'required',
             'company' => 'required',
         ]);
-        
+
         $directory = Directory::create($request->all());
 
         return redirect()->route('directories.index')
@@ -70,10 +68,10 @@ class DirectoryController extends Controller
      */
     public function show($id)
     {
-        $directory = Directory::where('user_id',$id)->get();   
-        $user = User::where('id',$id)->get();
-        $companies = Company::all()->pluck('name_company','id');
-        return view('directory.show', compact('directory','user','companies'));
+        $directory = Directory::where('user_id', $id)->get();
+        $user = User::where('id', $id)->get();
+        $companies = Company::all()->pluck('name_company', 'id');
+        return view('directory.show', compact('directory', 'user', 'companies'));
     }
 
     /**
@@ -84,7 +82,7 @@ class DirectoryController extends Controller
      */
     public function edit($id)
     {
-        $list = User::all();
+        $list = User::where('status', 1)->get();
         $listCompany = Company::all();
         $directory = Directory::find($id);
         return view('directory.edit', compact('directory', 'list', 'listCompany'));

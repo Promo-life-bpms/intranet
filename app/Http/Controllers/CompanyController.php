@@ -30,33 +30,34 @@ class CompanyController extends Controller
         $dataEmployees = [];
         foreach ($employees as $employee) {
             $position = '';
+            if ($employee->user->status) {
+                if (!empty($employee->position)) {
+                    $position = $employee->position->name;
+                } else {
+                    $position = 'Sin puesto asignado';
+                }
+                $tags = [];
+                if ($position == 'Asistente de Dirección') {
+                    array_push($tags, 'assistant');
+                }
+                $img = 'https://www.laufer.group/wp-content/uploads/2022/01/user-member-avatar-face-profile-icon-vector-22965342-300x300-1.jpg';
 
-            if (!empty($employee->position)) {
-                $position = $employee->position->name;
-            } else {
-                $position = 'Sin puesto asignado';
+                if ($employee->user->image) {
+                    $imgReplace = str_replace('\\', '/', $employee->user->image);
+                    $img = asset('storage/profile/300x300' . str_replace('200x300', '', explode("/", $imgReplace)[count(explode('/', $imgReplace)) - 1]));
+                }
+
+                $emp = [
+                    "id" => $employee->id,
+                    "pid" => $employee->jefe_directo_id,
+                    'tags' => $tags,
+                    "name" => $employee->user->name,
+                    "title" => $position,
+                    "img" => $img,
+                ];
+
+                array_push($dataEmployees, $emp);
             }
-            $tags = [];
-            if ($position == 'Asistente de Dirección') {
-                array_push($tags, 'assistant');
-            }
-            $img = 'https://www.laufer.group/wp-content/uploads/2022/01/user-member-avatar-face-profile-icon-vector-22965342-300x300-1.jpg';
-
-            if ($employee->user->image) {
-                $imgReplace = str_replace('\\', '/', $employee->user->image);
-                $img = asset('storage/profile/300x300' . str_replace('200x300','',explode("/", $imgReplace)[count(explode('/', $imgReplace)) - 1]));
-            }
-
-            $emp = [
-                "id" => $employee->id,
-                "pid" => $employee->jefe_directo_id,
-                'tags' => $tags,
-                "name" => $employee->user->name,
-                "title" => $position,
-                "img" => $img,
-            ];
-
-            array_push($dataEmployees, $emp);
         }
 
         return response()->json($dataEmployees);

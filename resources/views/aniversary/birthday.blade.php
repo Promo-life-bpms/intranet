@@ -2,23 +2,27 @@
 
 @section('content')
     <div class="card-header">
-        <h3>Cumpleaños de {{ $monthBirthday }}</h3>
+        <h3>Cumpleaños de {{ now()->formatLocalized('%B') }}</h3>
     </div>
     <div class="card-body">
-        <div class="row">
+        <div class="row justify-content-center">
             @foreach ($employees as $employee)
-                <div class="card aniversary-card" style="width: 240px; height:300px; padding:0;">
+                <div class="card aniversary-card" style="width: 16rem;">
                     @if ($employee->user->image != null)
                         <img src="{{ asset($employee->user->image) }}"
-                            style="width: 100%; height:220px; object-fit: cover;" class="card-img-top" alt="imagen">
+                            style="width: 100%; object-position:top center; height:220px; object-fit: cover;"
+                            class="card-img-top" alt="imagen">
                     @else
                         <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                            style="width: 100%; height:220px; object-fit: cover;" class="card-img-top" alt="imagen">
+                            style="width: 100%; object-position:top center; height:220px; object-fit: cover;"
+                            class="card-img-top" alt="imagen">
                     @endif
-                    <div class="card-body" style="padding-top:0; padding-bottom:0">
-                        <p class="card-title text-center" style=" white-space: wrap; margin-top:10px;  margin-bottom:5px;">
-                            {{ $employee->user->name . ' ' . $employee->user->lastname }}</p>
-                        {{-- <p class="card-text text-center">{{ $employee->birthday_date }}</p> --}}
+                    <div class="card-body">
+                        <h5 class="card-title text-center"> {{ $employee->user->name . ' ' . $employee->user->lastname }}
+                        </h5>
+                        <p class="card-text text-center">
+                            {{ $employee->birthday_date->format('d \d\e ') . $employee->birthday_date->formatLocalized('%B') }}
+                        </p>
                     </div>
                 </div>
             @endforeach

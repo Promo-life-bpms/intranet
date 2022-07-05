@@ -83,7 +83,7 @@ class MessageController extends Controller
     //obtener usuarios
     public function obtenerUsuarios()
     {
-        $users =  User::all();
+        $users =  User::where('status', 1)->get();
         $newUsers = [];
 
         foreach ($users as $user) {
