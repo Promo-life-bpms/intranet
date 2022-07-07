@@ -14,7 +14,7 @@
         <li class="p-0 m-0"><a href="#"><img style="width: 70px;" src="{{ asset('/img/trademarket.png') }}"
                     alt="trademarket"></a>
         </li>
-        <li class="pr-4 m-0 d-flex">
+        <li class="pr-4 m-0 d-flex" id="app">
 
 
             {{-- <notification-bell></notification-bell> --}}
