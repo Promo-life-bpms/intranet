@@ -811,20 +811,26 @@ class ApiController extends Controller
 
     public function postDeletePublication(Request $request){
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
-        $user_id = $token->tokenable_id;
+        $user_id = $token->tokenable_id;    
 
         if($user_id!=null){
 
             $publication = Publications::all()->where('id',$request->publciationID);
-
-            if($publication->photo_public!=null || $publication->photo_public|=""){
-                File::delete($publication->photo_public);
+            
+            foreach ($publication as $pub){
+                if($pub->photo_public!=null || $pub->photo_public!=""){
+                    File::delete($pub->photo_public);
+                }
             }
+            
+            DB::table('likes')->where('publication_id',  intval($request-> publciationID))->delete();
+            DB::table('comments')->where('publication_id', intval($request-> publciationID))->delete();
+            DB::table('publications')->where('id', intval($request-> publciationID))->delete();
 
-            DB::table('likes')->where('publication_id',  $request->publciationID)->delete();
-            DB::table('comments')->where('publication_id',  $request->publciationID)->delete();
-            DB::table('publications')->where('id',  $request->publciationID)->delete();
+            return  true;
         }
+
+        return  false;
     }
 
     public function getUserMessages($hashedToken){
