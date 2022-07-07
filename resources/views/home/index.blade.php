@@ -115,6 +115,7 @@
                     </div>
                 </div>
             </div>
+            {{-- Publicaciones --}}
 
             @livewire('publications-component')
         </div>
@@ -132,9 +133,16 @@
                 <br>
                 <img class="mobileLogo" src="{{ asset('/img/movil.png') }}" alt="app-movil">
                 <br>
-                <a href="{{ asset('/files/intranet.apk') }}" type="button" class="btn btn-info">Android</a>
-                <br>
-                <a href="#" type="button" class="btn btn-light">IOS</a>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="text-center">Android</p>
+                        <img src="{{ asset('/img/qrdroid.png') }}" alt="" srcset="" class="img-fluid">
+                    </div>
+                    <div class="col-md-6">
+                        <p class="text-center">iOS</p>
+                        <p class="text-center">Próximamente</p>
+                    </div>
+                </div>
 
             </div>
 
@@ -385,6 +393,18 @@
 
 
     <style>
+        .notification-icon {
+            position: absolute;
+            margin-left: -34px;
+            margin-top: 40px;
+            border-radius: 50px;
+        }
+
+        .like-container {
+            margin-left: -25px;
+            position: relative;
+        }
+
         body {
             margin: 40px 10px;
             padding: 0;

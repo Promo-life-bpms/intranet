@@ -56,12 +56,12 @@ class Employee extends Model
     }
 
     // Solicitudes creadas y recibidas para su autorizacion
-    public function yourRequests()
+    public function requestDone()
     {
         return $this->hasMany(Request::class);
     }
 
-    public function yourAuthRequests()
+    public function requestToAuth()
     {
         return $this->hasMany(Request::class, 'direct_manager_id');
     }

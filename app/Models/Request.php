@@ -14,8 +14,8 @@ class Request extends Model
     protected $fillable = [
         'type_request',
         'payment',
-        'days',
-        /* 'admission', */
+        'start',
+        'end',
         'reason',
         'direct_manager_id',
         'direct_manager_status',
@@ -40,10 +40,13 @@ class Request extends Model
         return $this->hasMany(RequestCalendar::class, 'requests_id');
     }
 
+    public function requestrejected()
+    {
+        return $this->hasMany(RequestRejected::class, 'requests_id');
+    }
+
     public function vacations()
     {
         return $this->belongsTo(Vacations::class, 'employee_id');
     }
-
-
 }

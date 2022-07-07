@@ -2,435 +2,130 @@
 
 @section('content')
 
-<div class="card">
-    <div class="card-header">
-        <div class="d-flex justify-content-between">
-            <h3>Mis solicitudes</h3>
-            <a href="{{ route('request.create') }}" type="button" class="btn btn-success">Agregar</a>
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <h3>Mis solicitudes</h3>
+                <a href="{{ route('request.create') }}" type="button" class="btn btn-success">Agregar</a>
+            </div>
         </div>
-    </div>
-    <div class="card-body">
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab"
-                    aria-controls="home" aria-selected="true">Pendientes</span>
-                </a>
-            </li>
-            <li class="nav-item" role="process">
-                <a class="nav-link" id="process-tab" data-bs-toggle="tab" href="#process" role="tab"
-                    aria-controls="process" aria-selected="false">
-                    @php
-                    $contador1 = 0;
-                        foreach ($myrequests as $notification){
-                          
-                            if ($notification->direct_manager_status =="Aprobada" && $notification->human_resources_status =="Pendiente"){
-                                $contador1 = $contador1 + 1;
-                            }
-                            
-                        }
-                    @endphp
-                    En proceso
-                    <span class="badge bg-primary"><?=$contador1 ?> </span>
-                </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab"
-                    aria-controls="profile" aria-selected="false">
-                    @php
-                    $contador2 = 0;
-                        foreach (auth()->user()->unreadNotifications as $notification){
-                            if($notification->type=="App\Notifications\RequestNotification"){
-                                if ($notification->data['direct_manager_status'] =="Aprobada" && $notification->data['human_resources_status'] =="Aprobada"){
-                                $contador2 = $contador2 + 1;
-                                }
-                            }
-                        }
-                    @endphp
-                    Aprobadas
-                    <span class="badge bg-primary"><?=$contador2 ?> </span>
-                </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab"
-                    aria-controls="contact" aria-selected="false">
-                      @php
-                            $contador3 = 0;
-                            foreach (auth()->user()->unreadNotifications as $notification){
-                                if($notification->type=="App\Notifications\RequestNotification"){
-                                    if ($notification->data['direct_manager_status'] =="Rechazada" ||$notification->data['human_resources_status'] =="Rechazada"  ){
-                                    $contador3 = $contador3 + 1;
-                                    }
-                                }
-                            }
-                      @endphp
-                    Rechazadas
-                    <span class="badge bg-primary"><?=$contador3 ?> </span>
-                </a>
-            </li>
-        </ul>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col"># </th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Fechas de ausencia</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($myrequests as $request)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $request->type_request }}</td>
+                            <td>
+                                @foreach ($request->requestdays as $day)
+                                    @php
+                                        $dayFormater = \Carbon\Carbon::parse($day->start);
+                                    @endphp
+                                    {{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}
+                                    <br>
+                                @endforeach
+                            </td>
 
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between">
-                            <h6>Solicitudes pendientes</h6>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"># </th>
-                                        <th scope="col">Solicitante</th>
-                                        <th scope="col">Tipo</th>
-                                        <th scope="col">Pago</th>
-                                        <th scope="col">Fechas de ausencia</th>
-                                        <th scope="col">Tiempo</th>
-                                        <th scope="col">Motivo</th>
-                                        <th scope="col">Jefe status </th>
-                                        <th scope="col">RH status</th>
-                                        <th style="width: 10%" scope="col">Opciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                             
-                                    @foreach ($myrequests as $request)
-                                        @if ( $request->human_resources_status == "Pendiente" &&  $request->direct_manager_status== "Pendiente")
-                                        <tr>
-                    
-                                            <td>{{ $request->id }}</td>
-                                            <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }} </td>
-                                            <td>{{ $request->type_request }}</td>
-                                            <td>{{ $request->payment }}</td>
-                                            <td>
-                                                @foreach ($requestDays as $requestDay)
-                                                    @if ($request->id == $requestDay->requests_id)
-                                                        {{ $requestDay->start }} ,
-
-                                                    @endif
-                                                @endforeach
-                                            </td>
-
-                                            <td>
-                                                @if ($request->payment != "A cuenta de vacaciones")
-                                                    @if ($request->end ==null) 
-                                                    {{'Salida: '. $request->start . ' ' }}
-                                                    @else
-                                                        {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
-                                                    @endif
-                                                @else
-                                                    Tiempo completo
-                                                @endif
-                                                </td>
-                                            <td>{{ $request->reason }}</td>
-                                            <td><b> {{ $request->direct_manager_status }} </b></td>
-                                            <td><b>{{ $request->human_resources_status }}</b> </td>
-                                            <td>
-                                                <a style="width: 100%" href="{{ route('request.edit', ['request' => $request->id]) }}" type="button"
-                                                    class="btn btn-primary">Detalles</a>
-                                                <form class="form-delete"
-                                                    action="{{ route('request.destroy', ['request' => $request->id]) }}" method="POST">
-                                                    @csrf
-                                                    @method('delete')
-                                                    <button style="width: 100%" type="submit" class="btn btn-danger">Borrar</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        @else
-                                       
-                                        @endif
-                                    @endforeach
-                    
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="process" role="process" aria-labelledby="process-tab">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between">
-                            <h6>Solicitudes en proceso</h6>
-                        </div>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"># </th>
-                                        <th scope="col">Solicitante</th>
-                                        <th scope="col">Tipo</th>
-                                        <th scope="col">Pago</th>
-                                        <th scope="col">Fechas de ausencia</th>
-                                        <th scope="col">Tiempo</th>
-                                        <th scope="col">Motivo</th>
-                                        <th scope="col">Jefe status </th>
-                                        <th scope="col">RH status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                             
-                                    @foreach ($myrequests as $request)
-                                        @if ($request->human_resources_status == "Pendiente" && $request->direct_manager_status== "Aprobada")
-                                        <tr>
-                    
-                                            <td>{{ $request->id }}</td>
-                                            <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }} </td>
-                                            <td>{{ $request->type_request }}</td>
-                                            <td>{{ $request->payment }}</td>
-                                            <td>
-                                                @foreach ($requestDays as $requestDay)
-                                                    @if ($request->id == $requestDay->requests_id)
-                                                        {{ $requestDay->start }} ,
-
-                                                    @endif
-                                                @endforeach
-                                            </td>
-
-                                            <td>
-                                                @if ($request->payment != "A cuenta de vacaciones")
-                                                    @if ($request->end ==null) 
-                                                    {{'Salida: '. $request->start . ' ' }}
-                                                    @else
-                                                        {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
-                                                    @endif
-                                                @else
-                                                    Tiempo completo
-                                                @endif
-                                                </td>
-                                            <td>{{ $request->reason }}</td>
-                                            <td><b>{{ $request->direct_manager_status }}</b> </td>
-                                            <td><b>{{ $request->human_resources_status }}</b> </td>
-                                        </tr>
-                                        @else
-                
-                                        @endif
-                
-                                    @endforeach
-                    
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                                
-            </div>
-
-
-
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between">
-                            <h6>Solicitudes aprobadas</h6>
-                        </div>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"># </th>
-                                        <th scope="col">Solicitante</th>
-                                        <th scope="col">Tipo</th>
-                                        <th scope="col">Pago</th>
-                                        <th style="width: 15%" scope="col">Fechas de ausencia</th>
-                                        <th scope="col">Tiempo</th>
-                                        <th scope="col">Motivo</th>
-                                        <th scope="col">Jefe status </th>
-                                        <th scope="col">RH status</th>
-                                        @if (auth()->user()->unreadNotifications->count() > 0)   
-                                            <th style="width: 200px" scope="col">
-                                                Opciones
-                                            </th>
-                                        @endif
-                                      
-                                    </tr>
-                                </thead>
-                                <tbody>
-                             
-                                    @foreach ($myrequests as $request)
-                                        @if ($request->human_resources_status == "Aprobada" && $request->direct_manager_status== "Aprobada")
-                                        <tr>
-                    
-                                            <td>{{ $request->id }}</td>
-                                            <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }} </td>
-                                            <td>{{ $request->type_request }}</td>
-                                            <td>{{ $request->payment }}</td>
-                                            <td>
-                                                @foreach ($requestDays as $requestDay)
-                                                     @if ($request->id == $requestDay->requests_id)
-                                                        {{ $requestDay->start }} ,
-
-                                                    @endif
-                                                @endforeach
-                                            </td>
-
-                                            <td>
-                                                @if ($request->payment != "A cuenta de vacaciones")
-                                                    @if ($request->end ==null) 
-                                                    {{'Salida: '. $request->start . ' ' }}
-                                                    @else
-                                                        {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
-                                                    @endif
-                                                @else
-                                                    Tiempo completo
-                                                @endif
-                                                </td>
-                                            <td>{{ $request->reason }}</td>
-                                            <td><b>{{ $request->direct_manager_status }}</b> </td>
-                                            <td><b>{{ $request->human_resources_status }}</b> </td>
-                                            <td>
-                                                
-                                                @foreach (auth()->user()->unreadNotifications as $notification)
-                                                    @if ($notification->type=="App\Notifications\RequestNotification")
-                                                        @if ($notification->data['id'] == $request->id)
-                                                        <form class="form-notification"
-                                                        action="{{ route('request.delete.notification', ['request' => $request->id]) }}" method="POST">
-                                                        @csrf
-                                                        @method('delete')
-                                                        <button style="width: 100%" type="submit" class="btn btn-primary">
-                                                            <i class="fa fa-eye" aria-hidden="true"></i>
-                                                            Marcar como leida
-                                                        </button>
-                                                        </form>
-                                                        @endif 
-                                                    @endif
-                                                    
-                                                   {{--  <a style="width: 100%"  type="button"
-                                                        class="btn btn-transparent">
-                                                        <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                                        Leida</a>
-                                                    @endif  --}}
-                                                @endforeach
-                                            
-                                            </td>
-                                        </tr>
-                                        @else
-                
-                                        @endif
-                
-                                    @endforeach
-                    
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                                
-            </div>
-            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between">
-                            <h6>Solicitudes rechazadas</h6>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"># </th>
-                                        <th scope="col">Solicitante</th>
-                                        <th scope="col">Tipo</th>
-                                        <th scope="col">Pago</th>
-                                        <th scope="col">Fechas de ausencia</th>
-                                        <th scope="col">Tiempo</th>
-                                        <th scope="col">Motivo</th>
-                                        <th scope="col">Jefe status </th>
-                                        <th scope="col">RH status</th>
-                                        @if (auth()->user()->unreadNotifications->count() > 0)   
-                                        <th style="width: 200px" scope="col">
-                                            Opciones
-                                        </th>
+                            {{-- @if ($request->payment != 'A cuenta de vacaciones')
+                                    @if ($request->end == null)
+                                        {{ 'Salida: ' . $request->start . ' ' }}
+                                    @else
+                                        {{ 'Salida: ' . $request->start . ' ' . 'Reingreso:' . ' ' . $request->end }}
                                     @endif
-                                    </tr>
-                                </thead>
-                                <tbody>
-                            
-                                    @foreach ($myrequests as $request)
-                                        @if ($request->direct_manager_status == "Rechazada" || $request->human_resources_status == "Rechazada"  )
-                                        <tr>
-                    
-                                            <td>{{ $request->id }}</td>
-                                            <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }} </td>
-                                            <td>{{ $request->type_request }}</td>
-                                            <td>{{ $request->payment }}</td>
-                                            <td>
-                                                @foreach ($requestDays as $requestDay)
-                                                    @if ($request->id == $requestDay->requests_id)
-                                                        {{ $requestDay->start }} ,
+                                @else
+                                    Tiempo completo
+                                @endif --}}
+                            <td>
 
-                                                    @endif
-                                                @endforeach
-                                            </td>
-
-                                            <td>
-                                                @if ($request->payment != "A cuenta de vacaciones")
-                                                    @if ($request->end ==null) 
-                                                    {{'Salida: '. $request->start . ' ' }}
+                                @if ($request->human_resources_status == 'Pendiente' && $request->direct_manager_status == 'Pendiente')
+                                    <b> En espera de la autorizacion del jefe directo</b>
+                                @elseif ($request->human_resources_status == 'Pendiente' && $request->direct_manager_status == 'Aprobada')
+                                    <b> En espera de la autorizacion de RH</b>
+                                @elseif ($request->human_resources_status == 'Aprobada' && $request->direct_manager_status == 'Aprobada')
+                                    <b> Vacaciones aprobadas</b>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#modalDetails{{ $request->id }}">
+                                    Ver Detalles
+                                </button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="modalDetails{{ $request->id }}" tabindex="-1"
+                                    aria-labelledby="modalDetails{{ $request->id }}Label" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalDetails{{ $request->id }}Label">
+                                                    {{ $request->type_request }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-left">
+                                                <p> Dias ausente:
+                                                    @foreach ($request->requestdays as $day)
+                                                        @php
+                                                            $dayFormater = \Carbon\Carbon::parse($day->start);
+                                                        @endphp
+                                                        {{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}
+                                                    @endforeach
+                                                </p>
+                                                <p>
+                                                    Tiempo:
+                                                    @if ($request->payment != 'A cuenta de vacaciones')
+                                                        @if ($request->start != null)
+                                                            {{ 'Entrada: ' . $request->start }}
+                                                        @endif
+                                                        @if ($request->end != null)
+                                                            {{ 'Salida: ' . $request->end . ' ' }}
+                                                        @endif
                                                     @else
-                                                        {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
+                                                        Tiempo completo
                                                     @endif
-                                                @else
-                                                    Tiempo completo
-                                                @endif
-                                                </td>
-                                            <td>{{ $request->reason }}</td>
-                                            <td><b> {{ $request->direct_manager_status }} </b></td>
-                                            <td><b>{{ $request->human_resources_status }}</b> </td>
-                                            <td>
-                                                
-                                                @foreach (auth()->user()->unreadNotifications as $notification)
-                                                    @if ($notification->type=="App\Notifications\RequestNotification")
-                                                        @if ($notification->data['id'] == $request->id)
-                                                        <form class="form-notification"
-                                                        action="{{ route('request.delete.notification', ['request' => $request->id]) }}" method="POST">
-                                                        @csrf
-                                                        @method('delete')
-                                                        <button style="width: 100%" type="submit" class="btn btn-primary">
-                                                            <i class="fa fa-eye" aria-hidden="true"></i>
-                                                            Marcar como leida
-                                                        </button>
-                                                        </form>
-                                                        @endif 
-                                                    @endif 
-                                                @endforeach
-                                            
-                                            </td>
-                                           {{--  <td>
-                                                
-                                                <form class="form-delete"
-                                                    action="{{ route('request.destroy', ['request' => $request->id]) }}" method="POST">
-                                                    @csrf
-                                                    @method('delete')
-                                                    <button style="width: 100%" type="submit" class="btn btn-danger">Borrar</button>
-                                                </form>
-                                            </td> --}}
-                                        </tr>
-                                        
-                                        @endif
-                                    @endforeach
-                    
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                                </p>
+                                                <p>
+                                                    Tipo de Pago: {{ $request->payment }}
+                                                </p>
+                                                <p>
+                                                    Motivo: {{ $request->reason }}
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Cerrar</button>
+                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                </div>
-            </div>
+                                @if ($request->human_resources_status == 'Pendiente' && $request->direct_manager_status == 'Pendiente')
+                                    <form class="form-delete"
+                                        action="{{ route('request.destroy', ['request' => $request->id]) }}"
+                                        method="POST">
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" class="btn btn-danger">Borrar</button>
+                                    </form>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+
+                </tbody>
+            </table>
         </div>
     </div>
-</div>
+
 
 
 
@@ -439,11 +134,11 @@
 
 
 @section('styles')
-<style>
-    .nav-link{
-        font-size: 20px;
-    }
-</style>
+    <style>
+        .nav-link {
+            font-size: 20px;
+        }
+    </style>
 @stop
 @section('scripts')
 

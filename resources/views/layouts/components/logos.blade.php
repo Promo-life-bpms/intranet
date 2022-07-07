@@ -15,8 +15,11 @@
                     alt="trademarket"></a>
         </li>
         <li class="pr-4 m-0 d-flex" id="app">
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> dev_antonio
             {{-- <notification-bell></notification-bell> --}}
             <chat-component :authId="{{ auth()->user()->id }}"></chat-component>
             <notify :auth-id={{ auth()->user()->id }}></notify>

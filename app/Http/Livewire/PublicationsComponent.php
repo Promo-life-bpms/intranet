@@ -10,7 +10,7 @@ class PublicationsComponent extends Component
 {
     use WithPagination;
 
-    public $comment;
+    public $publication;
 
     public function render()
     {
@@ -18,24 +18,5 @@ class PublicationsComponent extends Component
         return view('livewire.publications-component', ['publications' => $publications]);
     }
 
-    public function like($id)
-    {
-        $publications = Publications::find($id);
-        auth()->user()->meGusta()->toggle($publications);
-        // Enviar la notificacion:
-    }
 
-    public function comentar($publication_id)
-    {
-        $this->validate([
-            'comment.' . $publication_id => 'required'
-        ]);
-        $publications = Publications::find($publication_id);
-        $publications->comments()->create([
-            'user_id' => auth()->user()->id,
-            'content' => $this->comment[$publication_id]
-        ]);
-
-        $this->comment[$publication_id] = '';
-    }
 }

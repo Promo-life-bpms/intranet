@@ -11,27 +11,17 @@ use App\Exports\RequestExport;
 use App\Mail\rejectedRequestMail;
 use App\Mail\RequestMail;
 use App\Models\Employee;
-use App\Models\Notification;
 use App\Models\NoWorkingDays;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
 use App\Models\RequestRejected;
-use App\Models\Role;
-use App\Models\User;
 use App\Models\Vacations;
-use App\Notifications\RequestNotification;
-use App\Notifications\UserNotification;
 use Exception;
-use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Maatwebsite\Excel\Facades\Excel;
-use Nette\Utils\ArrayList;
-use PhpParser\Node\Expr\List_;
 
 class RequestController extends Controller
 {
@@ -79,42 +69,20 @@ class RequestController extends Controller
         }
     }
 
+    // Pantalla Inicial
     public function index(Request $request)
     {
-
-        if ($request->ajax()) {
-
-            $data = RequestCalendar::whereDate('start', '>=', $request->start)
-                ->whereDate('end',   '<=', $request->end)
-                ->get(['id', 'title', 'start', 'end']);
-
-            return response()->json($data);
-        }
-
-        $myrequests = auth()->user()->employee->yourRequests;
-
-        $id = Auth::id();
-        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('dv');
-        $expiration  = DB::table('employees')->where('id', $id)->value('date_admission');
-        if ($vacations == null) {
-            $vacations = 0;
-        }
-
-        $requestDays = RequestCalendar::all();
-        $rejectedDays = RequestRejected::all();
-        $notifications = Notification::all();
-
-        return view('request.index', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'requestDays', 'notifications', 'rejectedDays'));
+        $myrequests = auth()->user()->employee->requestDone()->orderBy('created_at', "DESC")->get();
+        return view('request.index', compact('myrequests'));
     }
 
     public function create()
     {
-        $id = Auth::id();
-
-        DB::table('request_calendars')->where('requests_id', null)->where('users_id', $id)->delete();
-
+        // Eliminar los dias selecionados con anterioridad qie no estan ligados a un request
+        auth()->user()->daysSelected()->delete();
+        // Obtener dias no laborables
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
+        // Obtener dias de vacaciones
         $vacations = auth()->user()->vacationsAvailables->where('period', '<>', 3)->sum('dv');
         $dataVacations  = auth()->user()->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'DESC')->get();
 
@@ -125,10 +93,8 @@ class RequestController extends Controller
         return view('request.create', compact('noworkingdays', 'vacations', 'dataVacations'));
     }
 
-
     public function store(Request $request)
     {
-
         if (auth()->user()->employee->jefe_directo_id == null) {
             return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado o no llenaste todos los campos');
         }
@@ -139,12 +105,16 @@ class RequestController extends Controller
             'reason' => 'required|max:255',
         ]);
 
-        if ($request->type_request != "Faltar a sus labores" && $request->type_request != "Solicitar vacaciones") {
-            $request->validate([
-                'start' => 'required',
-            ]);
+        if ($request->type_request === "Salir durante la jornada") {
+            if ($request->start === null && $request->end === null) {
+                return back()->with('message', 'Especifica la hora de tu salida o entrada');
+            }
         }
-        $id = Auth::id();
+        //Valida que el usuario no envie solicitudes sin dias asignados
+        if (count(auth()->user()->daysSelected) <= 0) {
+            return back()->with('message', 'No puedes crear solicitudes por que no agregaste dias en el calendario');
+        }
+
         $req = new ModelsRequest();
         $req->employee_id = auth()->user()->employee->id;
         $req->type_request = $request->type_request;
@@ -156,61 +126,70 @@ class RequestController extends Controller
         $req->direct_manager_id = auth()->user()->employee->jefe_directo_id;
         $req->direct_manager_status = "Pendiente";
         $req->human_resources_status = "Pendiente";
+
         $req->save();
 
-        $lastRequest = $req->id;
+        //Actualizar el request de los dias seleccionados
+        auth()->user()->daysSelected()->update(['requests_id' => $req->id]);
 
-        //Obtiene el id de la solicitud despues de crearla para asignar a la vista del calendario
-        DB::table('request_calendars')->where('users_id', $id)->where('requests_id', null)->update(['requests_id' => $lastRequest]);
+        // Enviar notificacion
 
-        //Valida que el usuario no envie solicitudes sin dias asignados
-        $lastRequestUser = DB::table('request_calendars')->where('users_id', $id)->where('requests_id', $lastRequest)->latest('id')->value('users_id');
-        $daysUsed =    DB::table('request_calendars')->where('users_id', $id)->where('requests_id', $lastRequest)->get();
-        if ($lastRequestUser == null) {
-            $employee_id = DB::table('employees')->where('id', $id)->value('id');
-            DB::table('requests')->where('employee_id', $employee_id)->where('id', $lastRequest)->delete();
-            return back()->with('message', 'No puedes crear solicitudes por que no agregaste dias en el calendario');
-        }
-
-        self::managertNotification($req);
 
         return redirect()->action([RequestController::class, 'index']);
     }
 
-    public function edit(Request $req, ModelsRequest $request)
+    public function edit(ModelsRequest $request)
     {
-
-        $myrequests = auth()->user()->employee->yourRequests;
-
-        $id = Auth::id();
+        auth()->user()->daysSelected()->delete();
+        // Obtener dias no laborables
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $id)->value('dv');
-        $expiration  = DB::table('employees')->where('id', $id)->value('date_admission');
+        // Obtener dias de vacaciones
+        $vacations = auth()->user()->vacationsAvailables->where('period', '<>', 3)->sum('dv');
+        $dataVacations  = auth()->user()->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'DESC')->get();
         if ($vacations == null) {
             $vacations = 0;
         }
 
         $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
 
-        return view('request.edit', compact('noworkingdays', 'vacations', 'expiration', 'myrequests', 'daysSelected', 'request'));
+        return view('request.edit', compact('noworkingdays', 'vacations', 'daysSelected', 'request', 'dataVacations'));
     }
 
-    public function update(Request $req, ModelsRequest $request)
+    public function update(Request $request, ModelsRequest $modelRequest)
     {
-        $req->validate([
+        if (auth()->user()->employee->jefe_directo_id == null) {
+            return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado o no llenaste todos los campos');
+        }
+
+        $request->validate([
             'type_request' => 'required',
             'payment' => 'required',
-            'reason' => 'required'
+            'reason' => 'required|max:255',
         ]);
 
-        $request->update($req->all());
+        if ($request->type_request === "Salir durante la jornada") {
+            if ($request->start === null && $request->end === null) {
+                return back()->with('message', 'Especifica la hora de tu salida o entrada');
+            }
+        }
+
+        $modelRequest->update([
+            'type_request' => $request->type_request,
+            'payment' => $request->payment,
+            'reason' => $request->reason,
+            'start' => $request->start,
+            'end' => $request->end,
+        ]);
+
+        //Actualizar el request de los dias seleccionados
+        auth()->user()->daysSelected()->update(['requests_id' => $modelRequest->id]);
 
         return redirect()->action([RequestController::class, 'index']);
     }
 
     public function destroy(ModelsRequest $request)
     {
-        DB::table('request_calendars')->where('requests_id',  $request->id)->delete();
+        $request->requestdays()->delete();
         DB::table('notifications')->whereRaw("JSON_EXTRACT(`data`, '$.id') = ?", [$request->id])->delete();
         $request->delete();
         return redirect()->action([RequestController::class, 'index']);
@@ -218,23 +197,8 @@ class RequestController extends Controller
 
     public function authorizeRequestManager()
     {
-
-        $id = Auth::user()->id;
-        $manager = DB::table('manager')->where('id', $id)->value('users_id');
-        $position = DB::table('employees')->where('user_id', $id)->value('position_id');
-        $rh = DB::table('positions')->where('id', $position)->value('department_id');
-
-        if ($rh == 1) {
-            $requests = ModelsRequest::all()->where('direct_manager_id', $id);
-        } else {
-            $requests = ModelsRequest::all()->where('direct_manager_id', $id);
-        }
-
-        $requestDays = RequestCalendar::all();
-
-        $rejectedDays = RequestRejected::all();
-
-        return view('request.authorize', compact('requestDays', 'requests', 'rejectedDays'));
+        $requests = auth()->user()->employee->requestToAuth()->orderBy('created_at', 'DESC')->get();
+        return view('request.authorize', compact('requests'));
     }
 
     public function show()
@@ -397,8 +361,8 @@ class RequestController extends Controller
                             $total = $total - $dataVacation->dv;
                             $dataVacation->dv = 0;
                             $dataVacation->save();
-                        }else{
-                            $dataVacation->days_enjoyed =$dataVacation->days_enjoyed + $total;
+                        } else {
+                            $dataVacation->days_enjoyed = $dataVacation->days_enjoyed + $total;
                             $dataVacation->dv = $dataVacation->dv - $total;
                             $dataVacation->save();
                             break;
@@ -408,7 +372,7 @@ class RequestController extends Controller
             }
         } elseif ($req->human_resources_status == "Rechazada") {
 
-             try {
+            try {
                 self::sendRejectedMail($request, $req);
                 throw new Exception();
             } catch (Exception $e) {

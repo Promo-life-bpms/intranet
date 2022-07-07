@@ -23,7 +23,7 @@
 </head>
 
 <body>
-    <div id="app">
+    <div id="app1">
 
         @include('layouts.components.sidebar')
         @yield('title')
