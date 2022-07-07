@@ -10,8 +10,8 @@ try {
     window.Popper = require('popper.js').default;
     window.$ = window.jQuery = require('jquery');
 
-    require('bootstrap');
-    require('toastr');
+    window.bootstrap = require('bootstrap');
+    window.toastr = require('toastr');
 } catch (e) { }
 
 /**

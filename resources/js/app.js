@@ -21,13 +21,13 @@ window.Vue = require('vue').default;
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 // Vue.component('like-button', require('./components/LikeButton.vue').default);
 Vue.component('chat-component', require('./components/Chat.vue').default);
 Vue.component('chat-messages', require('./components/ChatMessages.vue').default);
 Vue.component('chat-form', require('./components/ChatForm.vue').default);
 Vue.component('notify', require('./components/Notify.vue').default);
 Vue.component('notification-bell', require('./components/NotificationBell.vue').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -38,6 +38,3 @@ const app = new Vue({
     el: '#app',
 });
 
-$('.like-btn').on('click', function () {
-    $(this).toggleClass('like-active');
-});

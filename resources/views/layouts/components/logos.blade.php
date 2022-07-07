@@ -14,7 +14,7 @@
         <li class="p-0 m-0"><a href="#"><img style="width: 70px;" src="{{ asset('/img/trademarket.png') }}"
                     alt="trademarket"></a>
         </li>
-        <li class="pr-4 m-0">
+        <li class="pr-4 m-0" id="app">
             <notification-bell></notification-bell>
             <chat-component :authId="{{ auth()->user()->id }}"></chat-component>
             <notify :auth-id={{ auth()->user()->id }}></notify>

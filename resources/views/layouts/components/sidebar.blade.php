@@ -186,17 +186,6 @@
                         <a href="{{ route('request.index') }}" class='sidebar-link'>
                             <i class="fa fa-pencil-square" aria-hidden="true"></i>
                             <span>Solicitudes</span>
-                            @role('employee')
-                                <span
-                                    class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}
-                                </span>
-                            @endrole('employee')
-
-                            @role('manager')
-                                <span
-                                    class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}
-                                </span>
-                            @endrole('manager')
                         </a>
 
                         <ul class="submenu ">
@@ -204,21 +193,12 @@
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.index') }}">
                                     <span>Mis Solicitudes</span>
-                                    @role('employee')
-                                        <span
-                                            class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}
-                                        </span>
-                                    @endrole('employee')
-
                                 </a>
                             </li>
                             @if (count(auth()->user()->employee->subordinados) > 0)
                                 <li class="submenu-item ">
                                     <a class="dropdown-item" href="{{ route('request.authorizeManager') }}">
                                         <span>Autorizar Solicitudes</span>
-                                        <span
-                                            class="badge bg-secondary">{{ auth()->user()->unreadNotifications->count() }}
-                                        </span>
                                     </a>
                                 </li>
                             @endif

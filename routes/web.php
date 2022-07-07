@@ -158,6 +158,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('request/dataFilter', [RequestController::class, 'getDataFilter'])->name('request.export.filterdata');;
     Route::get('request/reports', [RequestController::class, 'reportRequest'])->middleware('role:rh')->name('request.reportRequest');
     Route::get('request/getPayment/{id}', [RequestController::class, 'getPayment']);
+    Route::post('fullcalenderAjax', [RequestController::class, 'ajax']);
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
     Route::get('request/getData/{lista}', [EmployeeController::class, 'getData']);
@@ -176,7 +177,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::put('/events/{event}', [EventsController::class, 'update'])->middleware('role:rh')->name('admin.events.update');
     Route::delete('/events/{event}', [EventsController::class, 'destroy'])->middleware('role:rh')->name('admin.events.destroy');
 
-    Route::post('fullcalenderAjax', [RequestController::class, 'ajax']);
 
 
     Route::get('/com/department', [CommuniqueController::class, 'department'])->name('communiques.department');

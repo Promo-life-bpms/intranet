@@ -101,4 +101,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class, 'transmitter_id');
     }
+
+    // Dias seleccionados que no estan ligados a un request
+    public function daysSelected()
+    {
+        return $this->hasMany(RequestCalendar::class,'users_id')->where('requests_id', null);
+    }
 }

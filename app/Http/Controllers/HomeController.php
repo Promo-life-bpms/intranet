@@ -91,7 +91,7 @@ class HomeController extends Controller
 
         $monthEmployeeController = MonthController::getEmpoyeeMonth();
 
-        $publications = Publications::orderBy('created_at', 'desc')->paginate(10);
+        $publications = Publications::orderBy('created_at', 'desc')->simplePaginate(10); //get first 10 rows
 
         return view('home.index', compact('proximasVacaciones', 'employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController', 'publications', 'date', 'empleadosAusentes'));
     }
