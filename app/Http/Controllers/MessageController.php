@@ -127,14 +127,10 @@ class MessageController extends Controller
     }
     public function markAsRead(DatabaseNotification $notification)
     {
-        try {
-            $notification->markAsRead();
-            return back();
-        } catch (\Throwable $th) {
-            return response()->json(['error' => 'Error al eliminar la notificacion']);
-        }
+        $notification->markAsRead();
+        return back();
     }
-    public function Notificaciones()
+    /*public function Notificaciones()
     {
 
         $notificationUnread = auth()->user()->unreadNotifications;
@@ -142,5 +138,5 @@ class MessageController extends Controller
 
 
         return response()->json(['countNotifications' => $countNotifications, 'notificationUnread' => $notificationUnread]);
-    }
+    } */
 }

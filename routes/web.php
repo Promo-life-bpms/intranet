@@ -219,7 +219,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         //Chat
         Route::get('/fetchMessages/{userId}', [MessageController::class, 'fetchMessages'])->name('fetch.message');
         Route::post('/sendMessage', [MessageController::class, 'sendMessage'])->name('send.message');
-        Route::get('/markNotification/{notification}', 'MessageController@markAsRead')->name('message.markAsRead');
+        Route::get('/markNotification/{notification}', [MessageController::class, 'markAsRead'])->name('message.markAsRead');
         Route::get('/Notificaciones', [MessageController::class, 'Notificaciones'])->name('message.notification');
         Route::get('eliminarNotificacion/{notification}', [MessageController::class, 'markAsRead'])->name('eliminar.notificacion');
     });

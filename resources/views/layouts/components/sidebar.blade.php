@@ -348,31 +348,6 @@
                             <a class="sidebar-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                         </li>
                     @endif
-                @else
-                    <li class="sidebar-item  has-sub">
-                        <a href="#" class='sidebar-link'>
-                            <i class="fa fa-user" aria-hidden="true"></i>
-                            <span>{{ Auth::user()->name }}</span>
-                        </a>
-                        <ul class="submenu ">
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('profile.index') }}">
-                                    <span>Mi cuenta</span>
-                                </a>
-                            </li>
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                                    {{ __('Cerrar sesion') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                    style="display: none;">
-                                    @csrf
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
                 @endguest
             </ul>
         </div>
