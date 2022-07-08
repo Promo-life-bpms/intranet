@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Request;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,19 +10,22 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class RequestEvent
+class RHResponseRequestEvent
 {
-    public $request;
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct(Request $request)
+    public $type;
+    public $receptor;
+    public $emisor;
+    public $status;
+    public $emisor_name;
+    public function __construct($type, $receptor, $emisor, $emisor_name, $status)
     {
-        $this->request = $request;
+        $this->type = $type;
+        $this->status = $status;
+        $this->receptor = $receptor;
+        $this->emisor = $emisor;
+        $this->emisor_name = $emisor_name;
     }
 
     /**
@@ -33,6 +35,6 @@ class RequestEvent
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return ['updateRHRequest'];
     }
 }

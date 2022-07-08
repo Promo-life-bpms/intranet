@@ -1,31 +1,30 @@
-<div class="contenedor-logo  rounded p-3" style="margin-top: -87px;">
-    <ul class="logos p-3"
+<div class="contenedor-logo  rounded pt-3 px-1">
+    <ul class="logos px-1 py-2"
         style="background: #ffffff; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
     border-radius: 10px;
     ">
-        <li class="pl-4 m-0"><a href="#"><img style="width: 70px" src="{{ asset('/img/bhtrade.png') }}"
-                    alt="bhtrade"></a> </li>
-        <li class="p-0 m-0"><a href="#"><img style="width: 150px;" src="{{ asset('/img/promolife.png') }}"
-                    alt="promolife"></a>
+        {{-- Menu Hamburguesa --}}
+        <header class="d-xl-none">
+            <a href="#" class="burger-btn d-block">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+        <li class="pl-4 m-0"><img style="width: 45px" src="{{ asset('/img/bhtrade.png') }}" alt="bhtrade"> </li>
+        <li class="p-0 m-0"><img style="width: 100px;" src="{{ asset('/img/promolife.png') }}" alt="promolife">
         </li>
-        <li class="p-0 m-0"><a href="#"><img style="width: 70px;" src="{{ asset('/img/promodreams.png') }}"
-                    alt="promodreams"></a>
+        <li class="p-0 m-0"><img style="width: 45px;" src="{{ asset('/img/promodreams.png') }}" alt="promodreams">
         </li>
-        <li class="p-0 m-0"><a href="#"><img style="width: 70px;" src="{{ asset('/img/trademarket.png') }}"
-                    alt="trademarket"></a>
+        <li class="p-0 m-0"><img style="width: 45px;" src="{{ asset('/img/trademarket.png') }}" alt="trademarket">
         </li>
-        <li class="pr-4 m-0 d-flex" id="app">
-
-
+        <li class="pr-4 m-0 d-flex align-items-center" id="app">
             {{-- <notification-bell></notification-bell> --}}
             <chat-component :authId="{{ auth()->user()->id }}"></chat-component>
             <notify :auth-id={{ auth()->user()->id }}></notify>
             @livewire('notify-component')
-
             {{-- <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false"> --}}
             <div class="dropdown">
-                <div class="d-flex align-items-center nav-link dropdown-toggle" id="navbarDropdownMenuLink"
+                <div class="d-flex align-items-center nav-link dropdown-toggle px-0" id="navbarDropdownMenuLink"
                     role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <h6 class="font-bold">
                         {{ auth()->user()->name }}

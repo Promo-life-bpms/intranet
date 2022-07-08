@@ -393,25 +393,6 @@
 
 
     <style>
-        .notification-icon {
-            position: absolute;
-            margin-left: -34px;
-            margin-top: 40px;
-            border-radius: 50px;
-        }
-
-        .like-container {
-            margin-left: -25px;
-            position: relative;
-        }
-
-        body {
-            margin: 40px 10px;
-            padding: 0;
-            font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-            font-size: 14px;
-        }
-
         #calendar {
             width: 100%;
         }

@@ -140,7 +140,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::delete('/request/{request}', [RequestController::class, 'destroy'])->name('request.destroy');
 
     Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
-    Route::get('request/show-all', [RequestController::class, 'show'])->name('request.showAll');
+    Route::get('request/authorize-rh', [RequestController::class, 'authorizeRequestRH'])->name('request.authorizeRH');
     Route::put('request-auth/{request}', [RequestController::class, 'authorizeRHUpdate'])->name('request.authorize.update');
     Route::put('request-auth-manager/{request}', [RequestController::class, 'authorizeManagerUpdate'])->name('request.manager.update');
     Route::get('request/{request}/auth-edit', [RequestController::class, 'authorizeEdit'])->name('request.authorize.edit');

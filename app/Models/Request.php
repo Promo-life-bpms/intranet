@@ -32,7 +32,7 @@ class Request extends Model
 
     public function manager()
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(Employee::class, 'direct_manager_id');
     }
 
     public function requestdays()

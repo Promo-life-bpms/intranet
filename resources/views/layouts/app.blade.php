@@ -23,67 +23,24 @@
 </head>
 
 <body>
-    <div id="app1">
-
-        @include('layouts.components.sidebar')
-        @yield('title')
-        {{-- <div class="col-12 order-md-1 order-last d-flex justify-content-end align-items-center">
-            <div class="d-flex align-items-center">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <svg class="bi bell" fill="currentColor">
-                        <use
-                            xlink:href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.svg#bell-fill') }}" />
-                    </svg>
-                    <span class="badge-number position-absolute translate-middle badge rounded-pill bg-danger"
-                        style="font-size: 0.7rem">
-                        {{ count(auth()->user()->unreadNotifications) }}
-                    </span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-dark" style="max-height: 500px; overflow-y: scroll;"
-                    aria-labelledby="navbarDropdownMenuLink">
-                    @include('layouts.components.notifies')
-                </ul>
-
-            </div>
-        </div> --}}
-        <div id="main">
-            <div style="margin-right: 20px">
-                @include('layouts.components.logos')
-                <div class="px-3">
-                    {{-- Menu Hamburguesa --}}
-                    <header class="mb-3 d-xl-none">
-                        <a href="#" class="burger-btn d-block">
-                            <i class="bi bi-justify fs-3"></i>
-                        </a>
-                    </header>
-                    <div class="page-heading ">
-                        <div id="appVue">
-                            <div class="page-title">
-                                <div class="row">
-                                    <div class="col-12">
-                                        @yield('title')
-                                    </div>
-                                </div>
-                            </div>
-                            <section class="section">
-                                @yield('dashboard')
-                                <div class="card">
-                                    @yield('content')
-                                </div>
-                            </section>
-                        </div>
-                    </div>
-                    @include('layouts.components.footer')
-
+    @include('layouts.components.sidebar')
+    @yield('title')
+    <div id="main" class="mt-0 pt-0 px-1">
+        @include('layouts.components.logos')
+        <div class="px-2">
+            <section class="section">
+                @yield('dashboard')
+                <div class="card">
+                    @yield('content')
                 </div>
-            </div>
+            </section>
+            @include('layouts.components.footer')
         </div>
     </div>
 
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/vendors/momentjs/moment.js') }}"></script>
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app2.js') }}"></script>
     <script src="{{ asset('assets/js/mazer.js') }}"></script>
 
 

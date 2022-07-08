@@ -94,14 +94,12 @@ class ProfileController extends Controller
      */
     public function show(User $prof)
     {
-        $id = Auth::user()->id;
-        $user = User::all()->where('id', $prof->id);
         $publications = Publications::where('user_id', $prof->id)->orderBy('created_at', 'desc')->get();
 
-        if ($id == $prof->id) {
+        if (auth()->user()->id == $prof->id) {
             return redirect()->action([ProfileController::class, 'index']);
         }
-
+        $user[0] = $prof;
         return view('profile.view', compact('user', 'publications'));
     }
 

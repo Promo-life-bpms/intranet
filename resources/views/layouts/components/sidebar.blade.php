@@ -106,7 +106,7 @@
                                 </a>
                             </li>
                             <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('request.showAll') }}">
+                                <a class="dropdown-item" href="{{ route('request.authorizeRH') }}">
                                     <span>Ver solicitudes</span>
                                     <span
                                         class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}

@@ -2,11 +2,9 @@
 
 namespace App\Providers;
 
-use App\Events\RequestEvent;
-use App\Listeners\RequestListener;
-use App\Events\RHRequestEvent;
+use App\Events\CreateRequestEvent;
 use App\Events\UserEvent;
-use App\Listeners\RHRequestListener;
+use App\Listeners\CreateRequestListener;
 use App\Listeners\UserListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -24,11 +22,14 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        RequestEvent::class => [
-            RequestListener::class,
+        CreateRequestEvent::class=>[
+            CreateRequestListener::class
         ],
-        RHRequestEvent::class => [
-            RHRequestListener::class,
+        ManagerResponseRequestEvent::class=>[
+            ManagerResponseRequestListener::class
+        ],
+        RHResponseRequestEvent::class=>[
+            RHResponseRequestListener::class
         ],
         UserEvent::class => [
             UserListener::class,

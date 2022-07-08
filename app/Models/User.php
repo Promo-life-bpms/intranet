@@ -81,7 +81,7 @@ class User extends Authenticatable
 
     public function vacationsAvailables()
     {
-        return $this->hasMany(Vacations::class, 'users_id');
+        return $this->hasMany(Vacations::class, 'users_id')->where('period', '<>', 3);
     }
 
     public function directory()
@@ -105,6 +105,6 @@ class User extends Authenticatable
     // Dias seleccionados que no estan ligados a un request
     public function daysSelected()
     {
-        return $this->hasMany(RequestCalendar::class,'users_id')->where('requests_id', null);
+        return $this->hasMany(RequestCalendar::class, 'users_id')->where('requests_id', null);
     }
 }

@@ -47,11 +47,15 @@
                             <td>
 
                                 @if ($request->human_resources_status == 'Pendiente' && $request->direct_manager_status == 'Pendiente')
-                                    <b> En espera de la autorizacion del jefe directo</b>
+                                    <b> En espera de la autorización del jefe directo</b>
                                 @elseif ($request->human_resources_status == 'Pendiente' && $request->direct_manager_status == 'Aprobada')
-                                    <b> En espera de la autorizacion de RH</b>
+                                    <b> En espera de la autorización de RH</b>
                                 @elseif ($request->human_resources_status == 'Aprobada' && $request->direct_manager_status == 'Aprobada')
                                     <b> Vacaciones aprobadas</b>
+                                @elseif ($request->direct_manager_status == 'Rechazada')
+                                    <b> Rechazado por el jefe directo</b>
+                                @elseif ($request->human_resources_status == 'Rechazada')
+                                    <b> Rechazado por RH</b>
                                 @endif
                             </td>
                             <td class="text-center">

@@ -50,12 +50,10 @@ class MessageNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-
             'emisor' => $this->emisor,
             'message' => $this->message,
             'transmitter_name' => $this->transmitter_name,
             'image'=> $this->image,
-
         ];
     }
 }
