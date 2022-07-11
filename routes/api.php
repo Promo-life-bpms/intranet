@@ -33,4 +33,5 @@ Route::post('/postDeletePublication', [APIController::class, 'postDeletePublicat
 Route::get('/getUserMessages/{hashedToken}', [APIController::class, 'getUserMessages'])->name('api.getUserMessages');
 Route::post('/postUserMessages', [APIController::class, 'postUserMessages'])->name('api.postUserMessages');
 Route::post('/postConversation', [APIController::class, 'postConversation'])->name('api.postConversation');
+Route::post('/postUpdatePublication', [APIController::class, 'postUpdatePublication'])->name('api.postUpdatePublication');
 

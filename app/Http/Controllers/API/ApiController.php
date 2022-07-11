@@ -1004,4 +1004,12 @@ class ApiController extends Controller
         return true;
     }
 
+
+    public function postUpdatePublication(Request $request){
+
+        
+        DB::table('publications')->where('id', $request->publicationID)->update(['content_publication' => $request->contentPublication]);
+
+    }
+
 }
