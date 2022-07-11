@@ -302,7 +302,7 @@
                 </div>
             </div>
 
-            <!-- Vacaciones  Proximas -->
+            {{-- <!-- Ausencias -->
             <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; border-radius:20px;">
                 <h4 class="d-flex justify-content-center text-center">Ausencias del Dia de Hoy</h4>
@@ -336,7 +336,7 @@
                 @endif
 
             </div>
-            <!-- Vacaciones  -->
+            <!-- Vacaciones porximas  -->
             <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; border-radius:20px;">
                 <h4 class="d-flex justify-content-center text-center">Proximas Vacaciones</h4>
@@ -376,8 +376,7 @@
                 @else
                     <p>No tenemos vacaciones proximas registradas</p>
                 @endif
-            </div>
-
+            </div> --}}
         </div>
 
     </div>

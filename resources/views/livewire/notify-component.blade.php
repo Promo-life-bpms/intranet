@@ -37,6 +37,11 @@
                                     <p class="my-0">ha respondido a tu solicitud</p>
                                     <p class="my-0">Estado: {{ $notification->data['status'] }}</p>
                                 @break
+                                @case('App\Notifications\RHResponseRequestNotification')
+                                    <b>{{ $notification->data['emisor_name'] }}</b>
+                                    <p class="my-0">ha respondido a tu solicitud</p>
+                                    <p class="my-0">Estado: {{ $notification->data['status'] }}</p>
+                                @break
                                 @default
                             @endswitch
                         </div>
