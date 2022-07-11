@@ -18,6 +18,7 @@
         <div class="tab-content mx-2" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 <div id="tree"></div>
+                <iframe src="{{ asset('company_data') }}" title="description" style="width: 100%; height: 800px;"></iframe>
             </div>
             <div class="tab-pane fade show" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div id="tree-especifico"></div>
@@ -46,7 +47,7 @@
     </div>
 @stop
 
-@section('styles')
+{{-- @section('styles')
     <style>
         .edit-form-avatar img {
             object-fit: cover;
@@ -58,7 +59,7 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('assets\vendors\orgchartjs\orgchart.js') }}"></script>
+    <script src="{{ asset('assets\vendors\orgchartjs\orgchart1.js') }}"></script>
     <script>
         async function obtenerEmpleados(check) {
             let res = await axios.get("/company/getEmployees");
@@ -280,3 +281,4 @@
         }
     </script>
 @stop
+ --}}

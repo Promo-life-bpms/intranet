@@ -50,7 +50,7 @@ class RHResponseRequestNotification extends Notification
                 'receptor_name' => $this->receptor_name,
             ])
             ->subject('Actualizacion de tu solicitud')
-            ->from('admin@intranet.promolife.lat', env('APP_NAME', 'Laravel'));
+            ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
     }
 
     /**

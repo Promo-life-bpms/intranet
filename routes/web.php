@@ -9,7 +9,6 @@ use App\Http\Controllers\MonthController;
 use App\Http\Controllers\CommuniqueController;
 use App\Http\Controllers\ManualController;
 use App\Http\Controllers\AccessController;
-use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
@@ -17,7 +16,6 @@ use App\Http\Controllers\WorkController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\DirectoryController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\OrganizationController;
@@ -61,7 +59,6 @@ Route::get('/loginEmail', [LoginController::class, 'loginWithLink'])->name('logi
 Route::get('/disabled', function () {
     return view('home.disabled');
 })->name('user.disable');
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
@@ -73,6 +70,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/about/trademarket', [AboutController::class, 'trademarket'])->name('about_trademarket');
 
     Route::get('/company', [CompanyController::class, 'index'])->name('company');
+    Route::get('/company_data', [CompanyController::class, 'index_data'])->name('company_data');
     Route::get('company/getPosition/{id}', [CompanyController::class, 'getPositions']);
     Route::get('company/getEmployees', [CompanyController::class, 'getAllEmployees']);
     Route::get('company/getEmployeesByOrganization/{organization}', [CompanyController::class, 'getEmployeesByOrganization']);
@@ -141,20 +139,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
     Route::get('request/authorize-rh', [RequestController::class, 'authorizeRequestRH'])->name('request.authorizeRH');
-    Route::put('request-auth/{request}', [RequestController::class, 'authorizeRHUpdate'])->name('request.authorize.update');
-    Route::put('request-auth-manager/{request}', [RequestController::class, 'authorizeManagerUpdate'])->name('request.manager.update');
-    Route::get('request/{request}/auth-edit', [RequestController::class, 'authorizeEdit'])->name('request.authorize.edit');
-    Route::get('request/{request}/rh-edit', [RequestController::class, 'authorizeRHEdit'])->name('request.rh.edit');
-    Route::delete('request/{request}/notification', [RequestController::class, 'deleteNotification'])->name('request.delete.notification');
-    Route::delete('request/{request}/all', [RequestController::class, 'deleteAll'])->name('request.delete.all');
-    /*  Route::post('request/filter-request', [RequestController::class, 'filterRequest'])->name('request.filter.request'); */
     Route::post('request/filter', [RequestController::class, 'filter'])->name('request.filter');
     Route::post('request/filter-date', [RequestController::class, 'filterDate'])->name('request.filter.data');
     Route::get('request/reports/all', [RequestController::class, 'exportAll'])->name('request.report.all');
-    Route::get('request/reports/filter', [RequestController::class, 'filterExport'])->name('request.report.filter');
     Route::post('request/export/', [RequestController::class, 'export'])->name('request.export');
     Route::post('request/export/filter', [RequestController::class, 'exportFilter'])->name('request.export.filter');
-    /*     Route::post('request/export/data', [RequestController::class, 'exportDataFilter'])->name('request.export.data'); */
     Route::post('request/dataFilter', [RequestController::class, 'getDataFilter'])->name('request.export.filterdata');;
     Route::get('request/reports', [RequestController::class, 'reportRequest'])->middleware('role:rh')->name('request.reportRequest');
     Route::get('request/getPayment/{id}', [RequestController::class, 'getPayment']);

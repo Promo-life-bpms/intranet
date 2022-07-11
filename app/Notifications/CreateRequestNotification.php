@@ -52,7 +52,7 @@ class CreateRequestNotification extends Notification
                 'receptor_name' => $this->receptor_name,
             ])
             ->subject('Solicitud de ausencia')
-            ->from('admin@intranet.promolife.lat', env('APP_NAME', 'Laravel'));
+            ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
     }
 
     /**
