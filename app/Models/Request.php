@@ -17,6 +17,7 @@ class Request extends Model
         'start',
         'end',
         'reason',
+        'reveal_id',
         'direct_manager_id',
         'direct_manager_status',
         'human_resources_status',
@@ -48,5 +49,10 @@ class Request extends Model
     public function vacations()
     {
         return $this->belongsTo(Vacations::class, 'employee_id');
+    }
+
+    public function reveal()
+    {
+        return $this->belongsTo(User::class, 'reveal_id');
     }
 }

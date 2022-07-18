@@ -38,7 +38,11 @@
                     </div>
                     <div class="form-group">
                         {!! Form::label('payment', 'Forma de Pago') !!}
-                        {!! Form::text('payment', '', ['class' => 'form-control formaPago', 'placeholder' => 'Forma de Pago', 'readonly']) !!}
+                        {!! Form::text('payment', '', [
+                            'class' => 'form-control formaPago',
+                            'placeholder' => 'Forma de Pago',
+                            'readonly',
+                        ]) !!}
                         @error('payment')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
@@ -65,6 +69,15 @@
                         {!! Form::label('reason', 'Motivo (Obligatorio)') !!}
                         <textarea name="reason" cols="30" rows="4" class="form-control" placeholder="Ingrese el motivo"></textarea>
                         @error('reason')
+                            <small>
+                                <font color="red"> {{ $message }} </font>
+                            </small>
+                        @enderror
+                    </div>
+                    <div class="mb-2 form-group">
+                        <label for="">Quien estara a cargo en tu ausencia?</label>
+                        {!! Form::select('reveal', $users, null, ['class' => 'form-control', 'placeholder' => 'Seleccione...']) !!}
+                        @error('reveal')
                             <small>
                                 <font color="red"> {{ $message }} </font>
                             </small>
@@ -131,53 +144,62 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script type="text/javascript">
         jQuery(document).ready(function() {
+            // Constantes
+            const request_time = document.getElementById('request_time');
+            const SITEURL = "{{ url('/') }}";
+            let noworkingdays = @json($noworkingdays);
+            let dateActual = moment().format('YYYY-MM-DD');
+            // Mensaje de los dias disponibles del usuario
+            const diasDisponiblesEl = document.querySelector('#diasDisponiblesEl')
+            //  Dias totales de vacaciones
+            let daysAvailablesToTake = {{ $vacations }};
+            let tipoSolicitud = '';
+            // Dias ordenados por periodo y expiracion
+            let dataVacations = @json($dataVacations);
+            // Selector del div del calendario
+            const calendarEl = document.getElementById('calendar');
 
-            var request_time = document.getElementById('request_time');
+            // Dias Seleccionados si guardarse en la DB
+            let daysSelecteds = new Set();
 
-
-            jQuery('select[name="type_request"]').on('change', function() {
-                var id = jQuery(this).val();
-                if (id) {
-                    jQuery.ajax({
-                        url: '/request/getPayment/' + id,
-                        type: "GET",
-                        dataType: "json",
-                        success: function(data) {
-
-                            if (data.display == "false") {
-                                $('#request_time').addClass("d-none");
-                                $('#request_time').removeClass("d-flex");
-                            } else {
-                                $('#request_time').addClass("d-flex");
-                                $('#request_time').removeClass("d-none");
-                            }
-                            console.log(data)
-                            $('.formaPago').val('');
-                            $('.formaPago').val(data.name)
-                        }
-                    });
-                } else {
-                    $('.formaPago').val('');
-                }
-            });
-        });
-        $(document).ready(function() {
-
-            var SITEURL = "{{ url('/') }}";
-
+            // Asignacion del token a AJAX
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
 
+            // Mostrar u ocultar los campos de hora de salida y entrada en el select de tipo de solicitud
+            jQuery('select[name="type_request"]').on('change', function() {
+                const id = jQuery(this).val();
+                tipoSolicitud = id
+                data = {}
+                if (id == "Solicitar vacaciones") {
+                    data.name =  'A cuenta de vacaciones';
+                    data.display =  'false';
+                } else if (id == "Salir durante la jornada") {
+                    data.name =  'Descontar Tiempo/Dia';
+                    data.display =  'true';
+                } else {
+                    data.name =  'Descontar Tiempo/Dia';
+                    data.display =  'false';
+                }
 
-            let noworkingdays = @json($noworkingdays)
+                if (data.display == "false") {
+                    $('#request_time').addClass("d-none");
+                    $('#request_time').removeClass("d-flex");
+                } else {
+                    $('#request_time').addClass("d-flex");
+                    $('#request_time').removeClass("d-none");
+                }
+                $('.formaPago').val('');
+                $('.formaPago').val(data.name)
+            });
 
-            events = []
+            // Asignacion de los dias no laborales
+            let events = []
             noworkingdays.forEach(element => {
                 events.push({
                     title: element.reason,
@@ -189,15 +211,7 @@
                 })
             });
 
-
-
-            let dateActual = moment().format('YYYY-MM-DD');
-            const fechasSeleccionadasEl = document.querySelector('#fechasSeleccionadas')
-            const diasDisponiblesEl = document.querySelector('#diasDisponiblesEl')
-            var calendarEl = document.getElementById('calendar');
-            var daysSelecteds = new Set();
-            let daysAvailablesToTake = {{ $vacations }}
-            let dataVacations = @json($dataVacations);
+            // Arreglo de los dias disponibles y su expiracion
             const vacationsExpirationsFinally = dataVacations.map(data => {
                 return {
                     cutoff_date: data.cutoff_date,
@@ -211,8 +225,6 @@
                 }
             })
 
-            console.log('VaEx', vacationsExpirations);
-
             var calendar = $('#calendar').fullCalendar({
                 editable: true,
                 events: SITEURL + "/event",
@@ -221,6 +233,7 @@
                 events,
                 selectable: true,
                 selectHelper: true,
+                dragScroll: false,
                 eventMaxStack: 1,
                 nextDayThreshold: '00:00:00',
                 monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto',
@@ -232,28 +245,25 @@
                 dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
                 dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
                 select: function(start, end, allDay) {
-                    //Valida si selecciona un dia festivo
-                    var dates = start.format('YYYY-MM-DD');
-                    var check = false;
-
-                    if (events.length === 0) {
-                        check = true
-                        // displayAlert("No hay dias festivos asignados")
-                    }
+                    // Variable de estado (Revisa si la fecha se puede seleccionar)
+                    let check = false;
+                    //Valida si selecciona un dia no laborable
+                    const dates = start.format('YYYY-MM-DD');
                     events.forEach(function(e) {
+                        console.log(start);
                         if (dates == e.start) {
                             displayInfo("No puedes seleccionar un día festivo")
                             throw BreakException
                         } else {
-
                             check = true
                         }
                     });
-
+                    if (events.length === 0) {
+                        check = true
+                    }
                     if (check == true) {
-
                         check = false
-                        var title = 'Día seleccionado'
+                        let title = 'Ausente'
                         var startDate = moment(start),
                             endDate = moment(end),
                             date = startDate.clone(),
@@ -273,123 +283,95 @@
                         } else {
                             var start = $.fullCalendar.formatDate(start, "Y-MM-DD");
                             var end = $.fullCalendar.formatDate(end, "Y-MM-DD");
-
-                            console.log(daysAvailablesToTake);
-
                             if (daysAvailablesToTake > 0) {
                                 let canSelected = false;
                                 let dataVacationsSelected = null;
-                                if (vacationsExpirations.length == 2) {
-                                    if (start <= vacationsExpirations[0].cutoff_date && start <=
-                                        vacationsExpirations[1].cutoff_date) {
-                                        if (vacationsExpirations[0].dv > 0) {
-                                            canSelected = true
-                                            dataVacationsSelected = 0
-                                        } else if (vacationsExpirations[1].dv > 0) {
-                                            canSelected = true
-                                            dataVacationsSelected = 1
-                                        } else {
-                                            canSelected = false
-                                        }
-                                    } else if (start > vacationsExpirations[0].cutoff_date && start <=
-                                        vacationsExpirations[1].cutoff_date) {
-                                        if (vacationsExpirations[1].dv > 0) {
-                                            canSelected = true
-                                            dataVacationsSelected = 1
-                                        } else {
+                                if (tipoSolicitud == 'Solicitar vacaciones') {
+                                    if (vacationsExpirations.length == 2) {
+                                        if (start <= vacationsExpirations[0].cutoff_date && start <=
+                                            vacationsExpirations[1].cutoff_date) {
+                                            if (vacationsExpirations[0].dv > 0) {
+                                                canSelected = true
+                                                dataVacationsSelected = 0
+                                            } else if (vacationsExpirations[1].dv > 0) {
+                                                canSelected = true
+                                                dataVacationsSelected = 1
+                                            } else {
+                                                canSelected = false
+                                            }
+                                        } else if (start > vacationsExpirations[0].cutoff_date &&
+                                            start <=
+                                            vacationsExpirations[1].cutoff_date) {
+                                            if (vacationsExpirations[1].dv > 0) {
+                                                canSelected = true
+                                                dataVacationsSelected = 1
+                                            } else {
+                                                displayAlert('No puedes seleccionar este dia')
+                                            }
+                                        } else if (start > vacationsExpirations[0].cutoff_date) {
                                             displayAlert('No puedes seleccionar este dia')
                                         }
-                                    } else if (start > vacationsExpirations[0].cutoff_date) {
-                                        displayAlert('No puedes seleccionar este dia')
+                                    } else {
+                                        if (start <= vacationsExpirations[0].cutoff_date) {
+                                            if (vacationsExpirations[0].dv > 0) {
+                                                canSelected = true
+                                                dataVacationsSelected = 0
+                                            } else {
+                                                canSelected = false
+                                            }
+                                        } else if (start > vacationsExpirations[0].cutoff_date) {
+                                            displayAlert('No puedes seleccionar este dia')
+                                        }
                                     }
                                 } else {
-                                    if (start <= vacationsExpirations[0].cutoff_date) {
-                                        if (vacationsExpirations[0].dv > 0) {
-                                            canSelected = true
-                                            dataVacationsSelected = 0
-                                        } else {
-                                            canSelected = false
-                                        }
-                                    } else if (start > vacationsExpirations[0].cutoff_date) {
-                                        displayAlert('No puedes seleccionar este dia')
-                                    }
+                                    canSelected = true
                                 }
                                 if (canSelected) {
-                                    if (dateActual <= start) {
-                                        $.ajax({
-                                            url: SITEURL + "/fullcalenderAjax",
-                                            data: {
+                                    $.ajax({
+                                        url: SITEURL + "/fullcalenderAjax",
+                                        data: {
+                                            title: title,
+                                            start: start,
+                                            end: end,
+                                            allDay: false,
+                                            type: 'add',
+                                        },
+                                        type: "POST",
+                                        success: function(data) {
+                                            if (data.exist) {
+                                                displayError(
+                                                    'Ya has seleccionado este dia'
+                                                )
+                                                return;
+                                            }
+                                            calendar.fullCalendar('renderEvent', {
+                                                id: data.id,
                                                 title: title,
                                                 start: start,
                                                 end: end,
                                                 allDay: false,
-                                                type: 'add',
-                                            },
-                                            type: "POST",
-                                            success: function(data) {
-                                                if (data.exist) {
-                                                    displayError(
-                                                        'Ya has seleccionado este dia'
-                                                    )
-                                                    return;
-                                                }
-                                                calendar.fullCalendar('renderEvent', {
-                                                    id: data.id,
-                                                    title: title,
-                                                    start: start,
-                                                    end: end,
-                                                    allDay: false,
-                                                }, true);
+                                            }, true);
+                                            if (tipoSolicitud == 'Solicitar vacaciones') {
                                                 daysAvailablesToTake--
                                                 vacationsExpirations[dataVacationsSelected]
                                                     .dv--;
                                                 canSelected = false
-                                                console.log(vacationsExpirations)
                                                 diasDisponiblesEl.innerHTML =
                                                     daysAvailablesToTake
-                                                displayMessage(
-                                                    "Día seleccionado satisfactoriamente"
-                                                );
-                                                // console.log(data);
-                                                calendar.fullCalendar('unselect');
                                             }
-                                        });
-
-                                    } else {
-                                        displayInfo('No puedes seleccionar fechas atrasadas ')
-                                    }
+                                            displayMessage(
+                                                "Día seleccionado satisfactoriamente"
+                                            );
+                                            calendar.fullCalendar('unselect');
+                                        }
+                                    });
                                 }
                             } else {
                                 displayError('No tienes dias disponibles')
                             }
-                            /*  } else {
-                                 displayError('No puedes seleccionar fechas no disponibles')
-                             } */
-                            /* } else {
-                                displayError('No tienes dias disponibles')
-                            } */
                         }
 
                     }
-                },
-                eventDrop: function(event, delta) {
-                    var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD");
-                    var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD");
-
-                    $.ajax({
-                        url: SITEURL + '/fullcalenderAjax',
-                        data: {
-                            title: event.title,
-                            start: start,
-                            end: end,
-                            id: event.id,
-                            type: 'update'
-                        },
-                        type: "POST",
-                        success: function(response) {
-                            displayMessage("Dia actualizado satisfactoriaente");
-                        }
-                    });
                 },
                 eventClick: function(event) {
                     Swal.fire({
@@ -405,32 +387,31 @@
                         if (result.isConfirmed) {
                             let start = event.start._i
                             let dataVacationsSelected = null;
-                            console.log(start);
-                            console.log('final', vacationsExpirationsFinally[0].dv);
-                            if (vacationsExpirationsFinally.length == 2) {
-                                if (start <= vacationsExpirations[0].cutoff_date) {
-                                    if (vacationsExpirations[0].dv <
-                                        vacationsExpirationsFinally[0]
-                                        .dv) {
-                                        dataVacationsSelected = 0
-                                    } else if (vacationsExpirations[1].dv <
-                                        vacationsExpirationsFinally[1]
-                                        .dv) {
-                                        dataVacationsSelected = 1
+                            if (tipoSolicitud == 'Solicitar vacaciones') {
+                                if (vacationsExpirationsFinally.length == 2) {
+                                    if (start <= vacationsExpirations[0].cutoff_date) {
+                                        if (vacationsExpirations[0].dv <
+                                            vacationsExpirationsFinally[0]
+                                            .dv) {
+                                            dataVacationsSelected = 0
+                                        } else if (vacationsExpirations[1].dv <
+                                            vacationsExpirationsFinally[1]
+                                            .dv) {
+                                            dataVacationsSelected = 1
+                                        }
+                                    } else if (start > vacationsExpirations[0].cutoff_date &&
+                                        start <=
+                                        vacationsExpirations[1].cutoff_date) {
+                                        if (vacationsExpirations[1].dv <
+                                            vacationsExpirationsFinally[1]
+                                            .dv) {
+                                            dataVacationsSelected = 1
+                                        }
                                     }
-                                } else if (start > vacationsExpirations[0].cutoff_date &&
-                                    start <=
-                                    vacationsExpirations[1].cutoff_date) {
-                                    if (vacationsExpirations[1].dv <
-                                        vacationsExpirationsFinally[1]
-                                        .dv) {
-                                        dataVacationsSelected = 1
-                                    }
+                                } else {
+                                    dataVacationsSelected = 0
                                 }
-                            } else {
-                                dataVacationsSelected = 0
                             }
-                            console.log(dataVacationsSelected);
                             $.ajax({
                                 type: "POST",
                                 url: SITEURL + '/fullcalenderAjax',
@@ -440,12 +421,13 @@
                                 },
                                 success: function(response) {
                                     calendar.fullCalendar('removeEvents', event.id);
-                                    daysAvailablesToTake++
-                                    vacationsExpirations[dataVacationsSelected]
-                                        .dv++;
-                                    console.log(vacationsExpirations)
-                                    diasDisponiblesEl.innerHTML =
-                                        daysAvailablesToTake
+                                    if (tipoSolicitud == 'Solicitar vacaciones') {
+                                        daysAvailablesToTake++
+                                        vacationsExpirations[dataVacationsSelected]
+                                            .dv++;
+                                        diasDisponiblesEl.innerHTML =
+                                            daysAvailablesToTake
+                                    }
                                     displayMessage(
                                         "Día borrado satisfactoriamente");
                                 }

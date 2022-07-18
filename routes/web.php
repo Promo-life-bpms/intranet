@@ -80,9 +80,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
 
     Route::get('/month', MonthController::class)->name('month');
-    /*    Route::get('/manual', ManualController::class)->name('manual'); */
-    Route::get('/folder', FolderController::class)->name('folder');
-    Route::get('/work', WorkController::class)->name('work');
 
     Route::resource('/directories', DirectoryController::class);
 
@@ -146,11 +143,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('request/export/filter', [RequestController::class, 'exportFilter'])->name('request.export.filter');
     Route::post('request/dataFilter', [RequestController::class, 'getDataFilter'])->name('request.export.filterdata');;
     Route::get('request/reports', [RequestController::class, 'reportRequest'])->middleware('role:rh')->name('request.reportRequest');
-    Route::get('request/getPayment/{id}', [RequestController::class, 'getPayment']);
     Route::post('fullcalenderAjax', [RequestController::class, 'ajax']);
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
-    Route::get('request/getData/{lista}', [EmployeeController::class, 'getData']);
     Route::get('manager/getPosition/{id}', [ManagerController::class, 'getPosition']);
     Route::get('manager/getEmployee/{id}', [ManagerController::class, 'getEmployee']);
     Route::get('user/getPosition/{id}', [UserController::class, 'getPosition']);
@@ -209,7 +204,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/fetchMessages/{userId}', [MessageController::class, 'fetchMessages'])->name('fetch.message');
         Route::post('/sendMessage', [MessageController::class, 'sendMessage'])->name('send.message');
         Route::get('/markNotification/{notification}', [MessageController::class, 'markAsRead'])->name('message.markAsRead');
-        Route::get('/Notificaciones', [MessageController::class, 'Notificaciones'])->name('message.notification');
         Route::get('eliminarNotificacion/{notification}', [MessageController::class, 'markAsRead'])->name('eliminar.notificacion');
     });
 
@@ -219,3 +213,4 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
+Route::get('request/alertRequesPendients/', [RequestController::class, 'alertPendient']);

@@ -40,17 +40,18 @@ class ListRequestRH extends Component
                         break;
                     }
                 }
-                $request->save();
             }else{
                 return 2;
             }
         }
+        $request->save();
         $user = auth()->user();
         $userReceiver = Employee::find($request->employee_id)->user;
         event(new RHResponseRequestEvent($request->type_request, $request->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $request->human_resources_status));
         $userReceiver->notify(new RHResponseRequestNotification($request->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $request->human_resources_status));
         return 1;
     }
+
     public function rechazar(Request $request)
     {
         $request->human_resources_status = "Rechazada";

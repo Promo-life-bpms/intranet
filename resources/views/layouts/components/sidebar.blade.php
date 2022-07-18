@@ -95,33 +95,11 @@
                         <a href="#" class='sidebar-link'>
                             <i class="fa fa-users" aria-hidden="true"></i>
                             <span>Gestion </span>
-                            <span
-                                class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}
-                            </span>
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.users.index') }}">
                                     <span>Empleados</span>
-                                </a>
-                            </li>
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('request.authorizeRH') }}">
-                                    <span>Ver solicitudes</span>
-                                    <span
-                                        class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('request.reportRequest') }}">
-                                    <span>Reportes de ausencias</span>
-                                </a>
-                            </li>
-
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">
-                                    <span>Vacaciones</span>
                                 </a>
                             </li>
 
@@ -140,6 +118,36 @@
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.events.index') }}">
                                     <span>Eventos</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-item has-sub">
+                        <a href="#" class='sidebar-link'>
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            <span>Vacaciones </span>
+                            <span
+                                class="badge bg-secondary">{{ count(App\Models\Request::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Pendiente')->get()) }}
+                            </span>
+                        </a>
+                        <ul class="submenu ">
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('request.authorizeRH') }}">
+                                    <span>Ver solicitudes</span>
+                                    <span
+                                        class="badge bg-secondary">{{ count(App\Models\Request::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Pendiente')->get()) }}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('request.reportRequest') }}">
+                                    <span>Reportes de ausencias</span>
+                                </a>
+                            </li>
+
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">
+                                    <span>Vacaciones Disponibles</span>
                                 </a>
                             </li>
                         </ul>
@@ -186,6 +194,11 @@
                         <a href="{{ route('request.index') }}" class='sidebar-link'>
                             <i class="fa fa-pencil-square" aria-hidden="true"></i>
                             <span>Solicitudes</span>
+                            @if (count(auth()->user()->employee->subordinados) > 0)
+                                <span
+                                    class="badge bg-secondary">{{ count(auth()->user()->employee->requestToAuth()->where('direct_manager_status', 'Pendiente')->get()) }}
+                                </span>
+                            @endif
                         </a>
 
                         <ul class="submenu ">
@@ -199,6 +212,9 @@
                                 <li class="submenu-item ">
                                     <a class="dropdown-item" href="{{ route('request.authorizeManager') }}">
                                         <span>Autorizar Solicitudes</span>
+                                        <span
+                                            class="badge bg-secondary">{{ count(auth()->user()->employee->requestToAuth()->where('direct_manager_status', 'Pendiente')->get()) }}
+                                        </span>
                                     </a>
                                 </li>
                             @endif
@@ -259,13 +275,6 @@
                                 <span>Comunicados de área</span>
                             </a>
                         </li>
-                        @role('manager')
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.communique.show') }}">
-                                    <span>Administrar Comunicados</span>
-                                </a>
-                            </li>
-                        @endrole('manager')
                         @role('rh')
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.communique.show') }}">

@@ -8,6 +8,7 @@ use App\Models\Events;
 use App\Models\NoWorkingDays;
 use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -57,11 +58,16 @@ class HomeController extends Controller
             ->join('request_calendars', 'requests.id', '=', 'request_calendars.requests_id')
             ->where('request_calendars.start', $date)
             ->where('requests.human_resources_status', 'Aprobada')
-            ->select('requests.id')
+            ->select('requests.id', 'requests.reveal_id')
             ->get();
         foreach ($vacations as $vacation) {
             $vacation = ModelsRequest::find($vacation->id);
-            array_push($empleadosAusentes, $vacation->employee->user);
+            $user = $vacation->employee->user;
+            $user->reveal = '';
+            if ($vacation->reveal_id) {
+                $user->reveal =  User::find($vacation->reveal_id)->name;
+            }
+            array_push($empleadosAusentes, $user);
         }
 
         $proximasVacaciones = [];

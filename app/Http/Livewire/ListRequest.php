@@ -5,8 +5,9 @@ namespace App\Http\Livewire;
 use App\Events\ManagerResponseRequestEvent;
 use App\Models\Employee;
 use App\Models\Request;
-use App\Models\User;
+use App\Models\Role;
 use App\Notifications\ManagerResponseRequestNotification;
+use App\Notifications\ManagerResponseRequestToRHNotification;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -28,6 +29,12 @@ class ListRequest extends Component
         $userReceiver = Employee::find($request->employee_id)->user;
         event(new ManagerResponseRequestEvent($request->type_request, $request->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $request->direct_manager_status));
         $userReceiver->notify(new ManagerResponseRequestNotification($request->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $request->direct_manager_status));
+        $usersRH = Role::where('name', 'rh')->first()->users;
+        if (!auth()->user()->hasRole('rh')) {
+            foreach ($usersRH as $userRH) {
+                $userRH->notify(new ManagerResponseRequestToRHNotification($request->type_request, $userReceiver->name . ' ' . $userReceiver->lastname,  $user->name . ' ' . $user->lastname));
+            }
+        }
         return 1;
     }
     public function rechazar(Request $request)

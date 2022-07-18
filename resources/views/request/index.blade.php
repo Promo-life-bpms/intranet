@@ -34,18 +34,7 @@
                                     <br>
                                 @endforeach
                             </td>
-
-                            {{-- @if ($request->payment != 'A cuenta de vacaciones')
-                                    @if ($request->end == null)
-                                        {{ 'Salida: ' . $request->start . ' ' }}
-                                    @else
-                                        {{ 'Salida: ' . $request->start . ' ' . 'Reingreso:' . ' ' . $request->end }}
-                                    @endif
-                                @else
-                                    Tiempo completo
-                                @endif --}}
                             <td>
-
                                 @if ($request->human_resources_status == 'Pendiente' && $request->direct_manager_status == 'Pendiente')
                                     <b> En espera de la autorización del jefe directo</b>
                                 @elseif ($request->human_resources_status == 'Pendiente' && $request->direct_manager_status == 'Aprobada')
@@ -75,7 +64,7 @@
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-left">
-                                                <p> Dias ausente:
+                                                <p class="m-0"><b> Dias ausente:</b>
                                                     @foreach ($request->requestdays as $day)
                                                         @php
                                                             $dayFormater = \Carbon\Carbon::parse($day->start);
@@ -83,8 +72,8 @@
                                                         {{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}
                                                     @endforeach
                                                 </p>
-                                                <p>
-                                                    Tiempo:
+                                                <p class="m-0">
+                                                    <b>Tiempo:</b>
                                                     @if ($request->payment != 'A cuenta de vacaciones')
                                                         @if ($request->start != null)
                                                             {{ 'Entrada: ' . $request->start }}
@@ -96,17 +85,28 @@
                                                         Tiempo completo
                                                     @endif
                                                 </p>
-                                                <p>
-                                                    Tipo de Pago: {{ $request->payment }}
+                                                <p class="m-0">
+                                                    <b>Tipo de Pago: </b>{{ $request->payment }}
                                                 </p>
-                                                <p>
-                                                    Motivo: {{ $request->reason }}
+                                                <p class="m-0">
+                                                    <b>Estado Jefe Directo:</b> {{ $request->direct_manager_status }}
                                                 </p>
+                                                <p class="m-0">
+                                                    <b> Estado RH:</b> {{ $request->human_resources_status }}
+                                                </p>
+                                                <p class="m-0">
+                                                    <b> Motivo: </b>{{ $request->reason }}
+                                                </p>
+                                                @if ($request->reveal)
+                                                    <p class="m-0">
+                                                        <b>Apoyo durante tu ausencia:</b>
+                                                        {{ $request->reveal->name . ' ' . $request->reveal->lastname }}
+                                                    </p>
+                                                @endif
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Cerrar</button>
-                                                <button type="button" class="btn btn-primary">Save changes</button>
                                             </div>
                                         </div>
                                     </div>

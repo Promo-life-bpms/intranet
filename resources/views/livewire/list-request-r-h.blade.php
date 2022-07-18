@@ -49,6 +49,22 @@
                                             {{ $request->type_request }}
                                         </p>
                                         <br>
+                                        <p class="m-0"><b>Vacaciones Disponibles</b></p>
+                                        @php
+                                            $dataVacations = $request->employee->user->vacationsAvailables;
+                                            $vacations = $dataVacations->sum('dv');
+                                        @endphp
+                                        <p class="m-0">Dias de vacaciones diponibles: <b id="diasDisponiblesEl">
+                                                {{ $vacations }} </b> </p>
+                                        @foreach ($dataVacations as $item)
+                                            @php
+                                                $dayFormater = \Carbon\Carbon::parse($item->cutoff_date);
+                                            @endphp
+                                            <p class="m-0"><b>{{ $item->dv }} </b> dias disponibles hasta el <b>
+                                                    {{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}</b>
+                                            </p>
+                                        @endforeach
+                                        <br>
                                         <p class="m-0">
                                             <b>Tipo de Pago: </b>
                                             {{ $request->payment }}
@@ -130,7 +146,9 @@
                                 Swal.fire('¡Se ha autorizado la solicitud!', '', 'success')
                             }
                             if (response == 2) {
-                                Swal.fire('No tiene suficientes dias disponibles para aprobar esta solicitud', '', 'success')
+                                Swal.fire(
+                                    'No tiene suficientes dias disponibles para aprobar esta solicitud',
+                                    '', 'success')
                             }
                         }, function() {
                             // one or more failed

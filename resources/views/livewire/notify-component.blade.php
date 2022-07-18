@@ -37,16 +37,36 @@
                                     <p class="my-0">ha respondido a tu solicitud</p>
                                     <p class="my-0">Estado: {{ $notification->data['status'] }}</p>
                                 @break
+
                                 @case('App\Notifications\RHResponseRequestNotification')
                                     <b>{{ $notification->data['emisor_name'] }}</b>
                                     <p class="my-0">ha respondido a tu solicitud</p>
                                     <p class="my-0">Estado: {{ $notification->data['status'] }}</p>
                                 @break
+
+                                @case('App\Notifications\AlertRequestToAuth')
+                                    <b>No has autorizado la solicitud de:</b>
+                                    <p class="my-0">{{ $notification->data['emisor_name'] }}</p>
+                                    <p class="my-0">{{ $notification->data['type'] }}</p>
+                                @break
+
+                                @case('App\Notifications\AlertRequestToRH')
+                                    <b>Tienes solicitudes por aprobar:</b>
+                                    <p class="my-0">Siendo departamento de RRHH</p>
+                                @break
+
+                                @case('App\Notifications\ManagerResponseRequestToRHNotification')
+                                    <b>{{ $notification->data['user_name'] }}</b>
+                                    <p class="my-0">Ha autorizado una solicitud de:</p>
+                                    <p class="my-0">{{ $notification->data['emisor_name'] }}</p>
+                                @break
+
                                 @default
                             @endswitch
                         </div>
                         <div class="m-0 d-flex justify-content-between">
-                            <p class="m-0" style="font-size: 12px">{{ $notification->created_at->diffForHumans() }}
+                            <p class="m-0" style="font-size: 12px">
+                                {{ $notification->created_at->diffForHumans() }}
                             </p>
                             <a href="{{ route('message.markAsRead', ['notification' => $notification->id]) }}"
                                 class="btn btn-sm " style=""><svg xmlns="http://www.w3.org/2000/svg"

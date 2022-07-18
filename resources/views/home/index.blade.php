@@ -297,7 +297,7 @@
                 </div>
             </div>
 
-            {{-- <!-- Ausencias -->
+            <!-- Ausencias -->
             <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; border-radius:20px;">
                 <h4 class="d-flex justify-content-center text-center">Ausencias del Dia de Hoy</h4>
@@ -309,7 +309,7 @@
                                     Colaborador
                                 </td>
                                 <td>
-                                    Relevo
+                                    Apoyo
                                 </td>
                             </tr>
                         </thead>
@@ -320,7 +320,11 @@
                                         {{ $item->name . ' ' . $item->lastname }}
                                     </td>
                                     <td>
-                                        Ninguno
+                                        @if ($item->reveal != '')
+                                            {{ $item->reveal }}
+                                        @else
+                                            Ninguno
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -343,7 +347,7 @@
                                     Colaborador
                                 </td>
                                 <td>
-                                    Relevo
+                                    Apoyo
                                 </td>
                                 <td>
                                     Fechas ausente
@@ -357,7 +361,11 @@
                                         {{ $item->employee->user->name . ' ' . $item->employee->user->lastname }}
                                     </td>
                                     <td>
-                                        Ninguno
+                                        @if ($item->reveal)
+                                            {{ $item->reveal->name . ' ' . $item->reveal->lastname }}
+                                        @else
+                                            Ninguno
+                                        @endif
                                     </td>
                                     <td>
                                         @foreach ($item->requestdays as $day)
@@ -371,7 +379,7 @@
                 @else
                     <p>No tenemos vacaciones proximas registradas</p>
                 @endif
-            </div> --}}
+            </div>
         </div>
 
     </div>

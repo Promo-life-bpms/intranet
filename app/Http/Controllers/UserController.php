@@ -257,6 +257,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->status = false;
+        $user->email = 'disabled' . $user->email;
         $user->save();
         return redirect()->action([UserController::class, 'index'])->with('success', 'El usuario ' . $user->name . ' ' . $user->lastname . ' ha sido eliminado');
     }
