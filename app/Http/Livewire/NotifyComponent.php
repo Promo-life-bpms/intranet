@@ -14,7 +14,7 @@ class NotifyComponent extends Component
     public function getNotify()
     {
         return [
-            'echo:notification,MessageSendEvent' => 'updateNotifies',
+            'echo:chat,MessageSent' => 'updateNotifies',
         ];
     }
     public function render()
