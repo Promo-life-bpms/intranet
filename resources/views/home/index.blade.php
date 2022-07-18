@@ -129,14 +129,12 @@
             <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;"
                 style="border-radius:20px;">
-                <h4 class="d-flex justify-content-center text-center">¡Descarga nuestra aplicación móvil!</h4>
+                <h4 class="d-flex justify-content-center text-center">¡Descarga la aplicación móvil!</h4>
                 <br>
                 <img class="mobileLogo" src="{{ asset('/img/movil.png') }}" alt="app-movil">
                 <br>
                 <div class="row">
                     <a href="{{ asset('/files/intranet.apk') }}" type="button" class="btn btn-info">Android</a>
-                    <br>
-                    <a href="#" type="button" class="btn btn-light">IOS</a>
                 </div>
 
             </div>
@@ -251,49 +249,69 @@
                 </div>
             </div>
 
-            <!-- Calendario de eventos  -->
+            {{-- <!-- Calendario de eventos  -->
             <div class="card p-4 mt-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;"
                 style="border-radius:20px;">
                 <h4 class="d-flex justify-content-center text-center">Calendario de Eventos</h4>
                 <br>
                 <div id='calendar'></div>
-            </div>
+            </div> --}}
 
             <!--  Empleado del mes  -->
             <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;">
                 <h4>Empleado del Mes de la Evaluacion 360</h4>
                 <br>
+                <div id="carousel4" class="carousel slide carousel-fade" data-bs-ride="carousel"
+                    data-bs-interval="15000">
+                    <div class="carousel-inner">
 
-                <div class="d-flex flex-wrap w-100 h-30 justify-content-around content-employees">
-
-                    @foreach ($monthEmployeeController as $employeeMonth)
-                        <div class="row" style="width: 100%">
-                            <div class="card text-center shadow p-3 mx-5 bg-body rounded"
-                                style="margin-left:0!important;margin-right:0!important">
-                                @if ($employeeMonth->photo == null)
-                                    <img src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
-                                        alt="Card image cap">
-                                @else
-                                    <img src="{{ asset($employeeMonth->photo) }}" alt="Card image cap"
-                                        style="object-fit: cover">
-                                @endif
-                                <h5 class="card-title">{{ $employeeMonth->name }}</h5>
-                                <p class="card-text">{{ $employeeMonth->position }}</p>
-                                <div class="d-flex justify-content-center align-items-center">
-                                    <p class="card-text m-0 mx-1">{{ $employeeMonth->star }}</p>
-                                    <div style="width: 30px;" class="mx-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                            fill="currentColor">
-                                            <path
-                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                    </div>
-                                </div>
+                        @if (count($monthEmployeeController) == 0)
+                            <div class="carousel-item active">
+                                <p>Sin Aniversarios disponibles</p>
                             </div>
-                        </div>
-                    @endforeach
+                        @else
+                            @foreach ($monthEmployeeController as $employee)
+                                <div class="carousel-item {{ $loop->iteration == 1 ? 'active' : '' }}">
+                                    @if ($employee->photo == null)
+                                        <img style="object-fit: cover; height: 420px;"
+                                            src="https://image.freepik.com/free-vector/man-shows-gesture-great-idea_10045-637.jpg"
+                                            class="d-block w-100 " alt="...">
+                                    @else
+                                        <img style="object-fit: cover; height: 420px;"
+                                            src="{{ asset($employee->photo) }}" class="d-block w-100 " alt="...">
+                                    @endif
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <span class="aniversary-text">{{ $employee->name }}</span>
+                                        <br>
+                                        <div class="d-flex justify-content-center align-items-center ">
+                                            <p class="card-text m-0 mx-1 aniversary-text">{{ $employee->star }}</p>
+                                            <div style="width: 30px;" class="mx-1 aniversary-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                    viewBox="0 0 20 20" fill="currentColor">
+                                                    <path
+                                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel4"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carousel4"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
             </div>
 
@@ -309,7 +327,7 @@
                                     Colaborador
                                 </td>
                                 <td>
-                                    Apoyo
+                                    Responsable
                                 </td>
                             </tr>
                         </thead>
@@ -347,7 +365,7 @@
                                     Colaborador
                                 </td>
                                 <td>
-                                    Apoyo
+                                    Responsable
                                 </td>
                                 <td>
                                     Fechas ausente

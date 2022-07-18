@@ -3,7 +3,7 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3>Crear solicitud</h3>
+            <h3>Solicitar un Permiso</h3>
         </div>
         <div class="card-body">
             @if (session('message'))
@@ -14,6 +14,28 @@
             {!! Form::open(['route' => 'request.store']) !!}
             <div class="row">
                 <div class=" col-md-6">
+                    <div class="text-center">
+                        @if ($vacations >= 0)
+                            <p class="mt-2" style="font-size: 20px">Dias de vacaciones diponibles: <b id="diasDisponiblesEl">
+                                    {{ $vacations }} </b> </p>
+                            <p class="m-0 my-2 text-danger">Informacion importante acerca de tus dias de vacaciones!</p>
+                            <p class="mb-0">Actualmente cuentas con: </p>
+                            @foreach ($dataVacations as $item)
+                                @if ($item->dv > 0)
+                                    @php
+                                        $dayFormater = \Carbon\Carbon::parse($item->cutoff_date);
+                                    @endphp
+                                    <p class="m-0"><b>{{ $item->dv }} </b> dias disponibles hasta el
+                                        <b>{{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}</b>
+                                    </p>
+                                @endif
+                            @endforeach
+                        @else
+                            <p style="font-size: 20px">No puedes seleccionar vacaciones. Consulta con RRHH para resolver
+                                esta situacion</p>
+                        @endif
+                    </div>
+                    <br>
                     <div class="form-group">
                         @php
                             $opc = [];
@@ -23,7 +45,7 @@
                                 $opc = ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores'];
                             }
                         @endphp
-                        {!! Form::label('type_request', 'Tipo de Solicitud (Obligatorio)') !!}
+                        {!! Form::label('type_request', '¿Cual es el tipo de solicitud? (Obligatorio)') !!}
                         {!! Form::select('type_request', $opc, null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
                         @error('type_request')
                             <small>
@@ -37,7 +59,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        {!! Form::label('payment', 'Forma de Pago') !!}
+                        {!! Form::label('payment', 'Forma de Pago (Esta asignacion es automatica)') !!}
                         {!! Form::text('payment', '', [
                             'class' => 'form-control formaPago',
                             'placeholder' => 'Forma de Pago',
@@ -66,8 +88,9 @@
                         </div>
                     </div>
                     <div class="mb-2 form-group">
-                        {!! Form::label('reason', 'Motivo (Obligatorio)') !!}
-                        <textarea name="reason" cols="30" rows="4" class="form-control" placeholder="Ingrese el motivo"></textarea>
+                        {!! Form::label('reason', '¿Cual es la razon de tu ausencia? (Obligatorio)') !!}
+                        <textarea name="reason" cols="30" rows="4" class="form-control"
+                            placeholder="Ingrese las razones de tu ausencia"></textarea>
                         @error('reason')
                             <small>
                                 <font color="red"> {{ $message }} </font>
@@ -75,7 +98,7 @@
                         @enderror
                     </div>
                     <div class="mb-2 form-group">
-                        <label for="">Quien estara a cargo en tu ausencia?</label>
+                        <label for="">¿Quien sera el responsable de atender tus pendientes?</label>
                         {!! Form::select('reveal', $users, null, ['class' => 'form-control', 'placeholder' => 'Seleccione...']) !!}
                         @error('reveal')
                             <small>
@@ -86,23 +109,15 @@
                 </div>
                 <div class="col-md-6">
                     <div class="mb-2 form-group">
-                        {!! Form::label('days', 'Seleccionar dias ') !!}
+                        {!! Form::label('days', 'Selecciona los dias que no te presentas a la oficina') !!}
+                        <p class="mt'5"></p>
                         <div class="days" id='calendar'></div>
-                        @if ($vacations >= 0)
-                            <p class="mt-2">Dias de vacaciones diponibles: <b id="diasDisponiblesEl">
-                                    {{ $vacations }} </b> </p>
-                            <p class="m-0 mt-2 text-danger">Importante!</p>
-                            @foreach ($dataVacations as $item)
-                                <p class="m-0"><b>{{ $item->dv }} </b> dias disponibles hasta el <b>
-                                        {{ $item->cutoff_date }} </b> </p>
-                            @endforeach
-                        @else
-                            <p>No puedes seleccionar vacaciones. Consulta con RRHH para resolver esta situacion</p>
-                        @endif
                     </div>
                 </div>
             </div>
-            {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4', 'name' => 'submit']) !!}
+            <div class=" text-center">
+                {!! Form::submit('Guardar', ['class' => 'btnCreate mt-4', 'name' => 'submit']) !!}
+            </div>
             {!! Form::close() !!}
         </div>
     </div>
@@ -136,6 +151,11 @@
 
         td.fc-day.fc-past {
             background-color: #ECECEC;
+        }
+
+        .btnCreate {
+            display: inline !important;
+            width: 25% !important;
         }
     </style>
 @stop
@@ -177,14 +197,14 @@
                 tipoSolicitud = id
                 data = {}
                 if (id == "Solicitar vacaciones") {
-                    data.name =  'A cuenta de vacaciones';
-                    data.display =  'false';
+                    data.name = 'A cuenta de vacaciones';
+                    data.display = 'false';
                 } else if (id == "Salir durante la jornada") {
-                    data.name =  'Descontar Tiempo/Dia';
-                    data.display =  'true';
+                    data.name = 'Descontar Tiempo/Dia';
+                    data.display = 'true';
                 } else {
-                    data.name =  'Descontar Tiempo/Dia';
-                    data.display =  'false';
+                    data.name = 'Descontar Tiempo/Dia';
+                    data.display = 'false';
                 }
 
                 if (data.display == "false") {
