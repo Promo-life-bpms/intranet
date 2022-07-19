@@ -596,15 +596,31 @@ class ApiController extends Controller
         $user_id = $token->tokenable_id;
 
         if($user_id!=null || $user_id !=[]){
-
+            $contPublication = "";
+            if($request->contentPublication != null || $request->contentPublication != ""){
+                $contPublication = $request->contentPublication;
+            }
             $data = new Publications();
             $data->id = $request->id;
             $data->user_id = $user_id;
-            $data->content_publication = $request->contentPublication;
-            $data->photo_public = "sin foto";
+            $data->content_publication = $contPublication;
+            $data->photo_public = "";
             $data->save();
 
+            if($request->photo != null || $request->photo != "" ){
+                $lastPublication = Publications::all()->where('user_id',$user_id)->last();
+                
+                $media = new Media();
+                $media->id = hexdec(uniqid());
+                $media->publication_id = $lastPublication->id;
+                $media->resource= $request->photo;
+                $media->type_file = "photo";
+                $media->save();
+            } 
+
             return $token;
+
+            
 
         }
 
