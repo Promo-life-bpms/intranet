@@ -54,14 +54,8 @@
 
         <div class="sidebar-menu">
             <ul class="menu">
-                <li class="sidebar-title">Menu</li>
-                <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
-                    <a href="{{ route('home') }}" class='sidebar-link'>
-                        <i class="bi bi-house-door-fill"></i>
-                        <span>Inicio</span>
-                    </a>
-                </li>
                 @role('admin')
+                    <li class="sidebar-title">Administrador</li>
                     <li class="sidebar-item has-sub {{ request()->is('admin') ? 'active' : '' }}">
 
                         <a href="{{ route('admin.users.index') }}" class='sidebar-link'>
@@ -91,6 +85,7 @@
                     </li>
                 @endrole
                 @role('rh')
+                    <li class="sidebar-title">Gestion y RH</li>
                     <li class="sidebar-item has-sub">
                         <a href="#" class='sidebar-link'>
                             <i class="fa fa-users" aria-hidden="true"></i>
@@ -153,7 +148,13 @@
                         </ul>
                     </li>
                 @endrole('rh')
-
+                <li class="sidebar-title">Menu</li>
+                <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
+                    <a href="{{ route('home') }}" class='sidebar-link'>
+                        <i class="bi bi-house-door-fill"></i>
+                        <span>Inicio</span>
+                    </a>
+                </li>
                 <li class="sidebar-item has-sub {{ request()->is('about') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-info-circle-fill"></i>
@@ -170,19 +171,8 @@
                                 <span>BH-Trade</span>
                             </a>
                         </li>
-                        {{-- <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('about_promodreams') }}">
-                                <span>Promodreams</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('about_trademarket') }}">
-                                <span>Trademarket 57 </span>
-                            </a>
-                        </li> --}}
                     </ul>
                 </li>
-
                 <li class="sidebar-item {{ request()->is('company') ? 'active' : '' }}">
                     <a href="{{ route('company') }}" class='sidebar-link'>
                         <i class="bi bi-diagram-3-fill"></i>
@@ -193,7 +183,7 @@
                     <li class="sidebar-item  has-sub {{ request()->is('request') ? 'active' : '' }}">
                         <a href="{{ route('request.index') }}" class='sidebar-link'>
                             <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                            <span>Solicitudes</span>
+                            <span>Permisos y Vacaciones</span>
                             @if (count(auth()->user()->employee->subordinados) > 0)
                                 <span
                                     class="badge bg-secondary">{{ count(auth()->user()->employee->requestToAuth()->where('direct_manager_status', 'Pendiente')->get()) }}
@@ -252,7 +242,7 @@
                     </ul>
                 </li>
 
-                <li class="sidebar-item {{ request()->is('month') ? 'active' : '' }}">
+                {{-- <li class="sidebar-item {{ request()->is('month') ? 'active' : '' }}">
                     <a href="{{ route('month') }}" class='sidebar-link'>
                         <i class="fa fa-trophy" aria-hidden="true"></i>
                         <span>Empleado del Mes</span>
@@ -283,7 +273,7 @@
                             </li>
                         @endrole('rh')
                     </ul>
-                </li>
+                </li> --}}
 
                 <li class="sidebar-item {{ request()->is('manual') ? 'active' : '' }}">
                     <a href="{{ route('manual.index') }}" class='sidebar-link'>
