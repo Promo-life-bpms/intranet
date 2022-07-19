@@ -30,6 +30,7 @@ use Illuminate\Validation\ValidationException;
 use JetBrains\PhpStorm\Internal\ReturnTypeContract;
 use Illuminate\Support\Facades\File;
 use Cache;
+use Error;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -828,16 +829,22 @@ class ApiController extends Controller
 
         if($user_id!=null){
 
-            $publication = Publications::all()->where('id',$request->publciationID);
+            
 
-            foreach ($publication as $pub){
-                if($pub->photo_public!=null || $pub->photo_public!=""){
-                    File::delete($pub->photo_public);
+            $photo= DB::table('media')->where('publication_id', intval($request-> publciationID))->value('resource');
+
+            if ($photo != "") {
+                try{
+                    File::delete('storage/posts/' . $photo);
+                }catch(Exception $e){
+
                 }
+                
             }
 
             DB::table('likes')->where('publication_id',  intval($request-> publciationID))->delete();
             DB::table('comments')->where('publication_id', intval($request-> publciationID))->delete();
+            DB::table('media')->where('publication_id', intval($request-> publciationID))->delete();
             DB::table('publications')->where('id', intval($request-> publciationID))->delete();
 
             return  true;
