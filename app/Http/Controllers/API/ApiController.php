@@ -31,6 +31,9 @@ use JetBrains\PhpStorm\Internal\ReturnTypeContract;
 use Illuminate\Support\Facades\File;
 use Cache;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic as Image;
+
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -1012,4 +1015,28 @@ class ApiController extends Controller
 
     }
 
+    public function postImageRequest(Request $request){
+  
+        if ($request->hasFile('image')) {
+            $request->validate([
+                'image' => 'required|image|mimes:jpg,jpeg,png,gif',
+            ]);
+            $image =  $request->file('image');
+          
+            $filenameWithExt = $request->file('image')->getClientOriginalName();
+             
+            
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('image')->clientExtension();
+            $fileNameToStore = time() . $filename . '.' . $extension;
+            $path = 'storage/profile/200x300' . $fileNameToStore;
+           
+            $path = Storage::disk('postImages')->put('storage/posts', $image); 
+
+            return $path;
+
+        } else {
+            return "";
+        }
+    }
 }

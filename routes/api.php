@@ -35,3 +35,4 @@ Route::post('/postUserMessages', [APIController::class, 'postUserMessages'])->na
 Route::post('/postConversation', [APIController::class, 'postConversation'])->name('api.postConversation');
 Route::post('/postUpdatePublication', [APIController::class, 'postUpdatePublication'])->name('api.postUpdatePublication');
 
+Route::post('/postImageRequest', [APIController::class, 'postImageRequest'])->name('api.postImageRequest');
