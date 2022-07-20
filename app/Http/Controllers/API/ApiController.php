@@ -417,10 +417,14 @@ class ApiController extends Controller
             foreach($employee as $emp){
                 $manager = $emp->jefe_directo_id;
             }
-
+            $reveal_id = null;
+            if($request->revealID != "" ||$request->revealID != null ){
+                $reveal_id = intval($request->revealID);
+            }
             $req = new ModelsRequest();
             $req->employee_id = $user_id;
             $req->type_request = $request->typeRequest;
+            $req->reveal_id = $reveal_id;
             $req->payment = $request->payment;
             $req->reason = $request->reason;
             $req->start = $date;
