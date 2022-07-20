@@ -379,6 +379,18 @@ class ApiController extends Controller
             foreach ($date as  $calendar) {
                 $days = $days . "," . $calendar->start;
             }
+            
+            
+            $revealData = "";
+            if($req->reveal_id != null){
+                $userReveal = User::all()->where('id', $req->reveal_id);
+                foreach($userReveal as $user){
+                    $revealData = $user->name . " ".$user->lastname ;
+                }
+                
+            }else{
+                $revealData = "no data";
+            }
 
             $days = substr($days, 1);
 
@@ -386,6 +398,7 @@ class ApiController extends Controller
                 'id' => $req->id,
                 'employeeID' => $req->employee_id,
                 'typeRequest' => $req->type_request,
+                'revealName' =>$revealData,
                 'payment' => $req->payment,
                 'payment' => $req->payment,
                 'start' => $start,
