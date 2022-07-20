@@ -1060,6 +1060,43 @@ class ApiController extends Controller
 
         } else {
             return "";
+        } 
+    }
+
+
+    public function getTeamMembers($hashedToken){
+
+        $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
+        $user_id = $token->tokenable_id;
+        
+        $user = User::where('id',$user_id)->get();
+        $data = [];
+        foreach($user as $usr){
+            $departmentID =  $usr->employee->position->department->id;
+            $users = User::all();
+            foreach($users as $user ){
+               
+                if( $user->employee->position->department->id == $departmentID ){
+                     array_push($data, (object)[
+                        'id' => $user->id,
+                        'fullname' => $user->name . " " . $user->lastname,
+                        'department' =>$user->employee->position->department->id
+                    ]);
+                } 
+
+            }
+
+            if($data == []){
+                array_push($data, (object)[
+                    'id' => $user_id,
+                    'fullname' => "no data",
+                    'department' =>"no data"
+                ]);
+            }
+            return $data;
         }
+
+
+       
     }
 }

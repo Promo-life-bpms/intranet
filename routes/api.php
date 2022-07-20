@@ -36,3 +36,4 @@ Route::post('/postConversation', [APIController::class, 'postConversation'])->na
 Route::post('/postUpdatePublication', [APIController::class, 'postUpdatePublication'])->name('api.postUpdatePublication');
 
 Route::post('/postImageRequest', [APIController::class, 'postImageRequest'])->name('api.postImageRequest');
+Route::get('/getTeamMembers/{hashedToken}', [APIController::class, 'getTeamMembers'])->name('api.getTeamMembers');
