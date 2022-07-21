@@ -1,10 +1,10 @@
 <div>
     <div class="input-group">
-        <textarea name="message" class="form-control type_msg" placeholder="Escribe tu mensaje..." v-model="newMessage"
-            {{-- @keyup.enter="sendMessage" --}}></textarea>
+        <input type="text" name="message" class="form-control type_msg" placeholder="Escribe tu mensaje..."
+            wire:model="message">
 
         <span class="input-group-btn">
-            <button class="btn btn-primary" id="btn-chat" {{-- @click="sendMessage" --}}>
+            <button class="btn btn-primary" id="btn-chat" wire:click="sendMessage">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-send-fill" viewBox="0 0 16 16">
                     <path

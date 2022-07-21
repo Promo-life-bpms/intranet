@@ -6,23 +6,37 @@ use App\Events\MessageSent;
 use App\Models\Message;
 use App\Models\User;
 use App\Notifications\MessageNotification;
-use Illuminate\Filesystem\Cache;
 use Illuminate\Queue\Listener;
 use Illuminate\Validation\Rules\Exists;
 use Livewire\Component;
+use PhpOffice\PhpSpreadsheet\Calculation\TextData\Search;
+use Illuminate\Support\Facades\Cache;
 
 class ChatComponent extends Component
 {
 
-
+    public $search = '';
     public $listaChatsAbiertos = [];
     public $listUsersCollapse = false;
-
+    protected $listeners = ['closeEvent' => 'cerrarChat'];
 
     public function render()
     {
-        $users   = User::where('status', 1)->orderBy("name", "ASC")->get();
-        return view('livewire.chat-component', compact('users'));
+        $search = '%' . $this->search . '%';
+        $users   = User::where('name', 'LIKE', $search)->where('status', 1)->orderBy("name", "ASC")->get();
+        $usersOnline = [];
+
+        foreach ($users as $user) {
+            $userOnline = false;
+
+            if (Cache::has('user-is-online-' . $user->id)) {
+                $userOnline = true;
+            }
+            $user->isOnline = $userOnline;
+
+            array_push($usersOnline, $user);
+        }
+        return view('livewire.chat-component', ['users' => $usersOnline]);
     }
 
     public function openChat($id)
@@ -37,36 +51,9 @@ class ChatComponent extends Component
     {
         $this->listUsersCollapse =  !$this->listUsersCollapse;
     }
-    /* public function getMessage()
+
+    public function cerrarChat($id)
     {
-        return [
-            'echo:chat,MessageSent' => 'updateMessage',
-        ];
-    } */
-    /*     public function obetenerUsuarios()
-    {
-
-        if (Cache::has('user-is-online-' . $user->id)) {
-            $userOnline = true;
-        }
-
-
-        //dd($newUsers);
-    } */
-
-    /*   public function fetchMessages($userId)
-    {
-
-        $mensajes = DB::table('messages')
-            ->where('transmitter_id', auth()->user()->id)
-            ->where('receiver_id', $userId);
-
-        $mensajesEnviados = DB::table('messages')
-            ->where('receiver_id', auth()->user()->id)
-            ->where('transmitter_id', $userId)->union($mensajes)->orderBy('created_at', 'asc')->get();
-
-        $chat = $mensajes->union($mensajesEnviados)->orderBy('created_at', 'desc')->get();
-
-         return response()->json(['mensajesEnviados' => $mensajesEnviados], 200);
-    } */
+        unset($this->listaChatsAbiertos[array_search($id, $this->listaChatsAbiertos)]);
+    }
 }
