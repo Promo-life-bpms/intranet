@@ -18,11 +18,16 @@ class UserIsActive
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
-            if (!auth()->user()->status) {
-                return redirect()->route('user.disable');
+            if (auth()->user()->status) {
+                return $next($request);
+            } else {
+
+                Auth::guard('web')->logout();
+                return response()->view('home.disabled');
+                // return view('home.disabled');
             }
-            return $next($request);
         }
         return $next($request);
+        # code...
     }
 }
