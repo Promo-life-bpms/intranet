@@ -56,9 +56,6 @@ Auth::routes();
 
 Route::get('/loginEmail', [LoginController::class, 'loginWithLink'])->name('loginWithLink');
 
-Route::get('/disabled', function () {
-    return view('home.disabled');
-})->name('user.disable');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 

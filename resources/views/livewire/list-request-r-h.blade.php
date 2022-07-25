@@ -84,12 +84,12 @@
                                         </p>
                                         <p class="m-0">
                                             <b>Tiempo:</b>
-                                            @if ($request->payment == 'Salir durante la jornada')
+                                            @if ($request->type_request == 'Salir durante la jornada')
                                                 @if ($request->start != null)
-                                                    {{ 'Entrada: ' . $request->start }}
+                                                    {{ 'Salida: ' . $request->start }}
                                                 @endif
                                                 @if ($request->end != null)
-                                                    {{ 'Salida: ' . $request->end . ' ' }}
+                                                    {{ 'Entrada: ' . $request->end . ' ' }}
                                                 @endif
                                             @else
                                                 Tiempo completo
@@ -122,11 +122,6 @@
         {{ $requests->links() }}
     </div>
     <script>
-        document.addEventListener('livewire:load', function() {
-            function aceptar(id) {
-
-            }
-        })
         window.addEventListener('swal', event => {
             Swal.fire({
                 title: '¿Deseas responder a esta solicitud?',

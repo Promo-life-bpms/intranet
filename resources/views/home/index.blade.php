@@ -341,7 +341,7 @@
                                         @if ($item->reveal != '')
                                             {{ $item->reveal }}
                                         @else
-                                            Ninguno
+                                            No Disponible
                                         @endif
                                     </td>
                                 </tr>
@@ -382,7 +382,7 @@
                                         @if ($item->reveal)
                                             {{ $item->reveal->name . ' ' . $item->reveal->lastname }}
                                         @else
-                                            Ninguno
+                                            No Disponible
                                         @endif
                                     </td>
                                     <td>
