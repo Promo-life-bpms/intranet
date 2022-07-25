@@ -41,7 +41,7 @@ class ChatComponent extends Component
 
     public function openChat($id)
     {
-        if (count($this->listaChatsAbiertos) < 3) {
+        if (count($this->listaChatsAbiertos) < 2) {
             if (in_array($id, $this->listaChatsAbiertos) == false) {
                 array_push($this->listaChatsAbiertos, $id);
             }
