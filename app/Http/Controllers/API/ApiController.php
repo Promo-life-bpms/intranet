@@ -450,51 +450,29 @@ class ApiController extends Controller
             $req->visible = 1;
             $req->save();
 
-            $days = collect( $request->days);
-            $daySelected= str_replace (array('["', '"]'), '' , $days);
-            $tag_array = explode(',', $daySelected );
-
-            foreach($tag_array as $day){
-                $daySelected2= str_replace (array('[', ']'), '' , $day);
-
-                $dayInt = intval($daySelected2);
-
-                $date = DateTime::createFromFormat('dmY', $dayInt)->format('Y-m-d');
+            $days = explode( ",", $request->days);
+            
+            foreach($days as $day){
 
                 $request_calendar = new RequestCalendar();
                 $request_calendar->title = "Día seleccionado";
-                $request_calendar->start =  $date;
-                $request_calendar->end = $date;
+                $request_calendar->start = $day;
+                $request_calendar->end = $day;
                 $request_calendar->users_id = $user_id;
                 $request_calendar->requests_id =$req->id;
                 $request_calendar->save();
 
-            }
-            /* $data_send = [
-                "id"=>$req->id,
-                "employee_id"=>$user_id,
-                "direct_manager_status"=>"Pendiente",
-                "human_resources_status"=>"Pendiente"
-            ];
+            } 
 
-            $notification = new Notification();
-            $notification->id = $req->id;
-            $notification->type = "App\Notifications\RequestNotification";
-            $notification->notifiable_type = "App\Models\User";
-            $notification->notifiable_id = $manager;
-            $notification->data = json_encode($data_send);
-            $notification->save(); */
-
-            foreach($userData as $user){
+             foreach($userData as $user){
                 $userReceiver = Employee::find($manager)->user; 
                 event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
                 $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
-            }
+            } 
 
         }
 
-        return  true;
-
+        return  true; 
 
     }
 
