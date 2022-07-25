@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\CreateRequestEvent;
 use App\Events\MessageSent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
@@ -20,6 +21,7 @@ use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
 use App\Models\Vacations;
+use App\Notifications\CreateRequestNotification;
 use App\Notifications\MessageNotification;
 use Carbon\Carbon;
 use DateTime;
@@ -423,7 +425,7 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
         $employee = Employee::all()->where('user_id',$user_id);
-
+        $userData = User::all()->where('id',$user_id);
         if($token !=null || $token !=""){
             $date= date("G:i:s", strtotime($request->start));
             $manager = "";
@@ -468,7 +470,7 @@ class ApiController extends Controller
                 $request_calendar->save();
 
             }
-            $data_send = [
+            /* $data_send = [
                 "id"=>$req->id,
                 "employee_id"=>$user_id,
                 "direct_manager_status"=>"Pendiente",
@@ -481,7 +483,13 @@ class ApiController extends Controller
             $notification->notifiable_type = "App\Models\User";
             $notification->notifiable_id = $manager;
             $notification->data = json_encode($data_send);
-            $notification->save();
+            $notification->save(); */
+
+            foreach($userData as $user){
+                $userReceiver = Employee::find($manager)->user; 
+                event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
+                $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
+            }
 
         }
 
@@ -1063,13 +1071,6 @@ class ApiController extends Controller
             ]);
             $image =  $request->file('image');
           
-            $filenameWithExt = $request->file('image')->getClientOriginalName();
-             
-            
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('image')->clientExtension();
-            $fileNameToStore = time() . $filename . '.' . $extension;
-            $path = 'storage/profile/200x300' . $fileNameToStore;
            
             $path = Storage::disk('postImages')->put('storage/posts', $image); 
 
