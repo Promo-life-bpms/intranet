@@ -40,7 +40,7 @@
 
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/vendors/momentjs/moment.js') }}"></script>
-    <script src="{{ asset('js/app4.js') }}"></script>
+    <script src="{{ asset('js/app5.js') }}"></script>
     <script src="{{ asset('assets/js/mazer.js') }}"></script>
 
 

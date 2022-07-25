@@ -28,7 +28,6 @@
                 : 'justify-content-end'
             "
           >
-            {{ user.image === null || user.image === "" }}
             <img
               v-if="userId == mensaje.transmitter_id"
               style="width: 25px; height: 25px"
