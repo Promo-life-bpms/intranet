@@ -459,12 +459,12 @@ class ApiController extends Controller
 
                 $dayInt = intval($daySelected2);
 
-                $date = DateTime::createFromFormat('dmY', $dayInt);
+                $date = DateTime::createFromFormat('dmY', $dayInt)->format('Y-m-d');
 
                 $request_calendar = new RequestCalendar();
                 $request_calendar->title = "Día seleccionado";
-                $request_calendar->start =  $date->format('Y-m-d');
-                $request_calendar->end = $date->format('Y-m-d');
+                $request_calendar->start =  $date;
+                $request_calendar->end = $date;
                 $request_calendar->users_id = $user_id;
                 $request_calendar->requests_id =$req->id;
                 $request_calendar->save();
