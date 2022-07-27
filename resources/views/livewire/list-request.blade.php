@@ -69,7 +69,7 @@
                                                     {{ 'Salida: ' . $request->start }}
                                                 @endif
                                                 @if ($request->end != null)
-                                                    {{ 'Entrada: ' . $request->end . ' ' }}
+                                                    {{ 'Entrada o Reingreso: ' . $request->end . ' ' }}
                                                 @endif
                                             @else
                                                 Tiempo completo

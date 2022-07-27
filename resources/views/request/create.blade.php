@@ -49,16 +49,15 @@
                     @if ($vacations >= 0)
                         <p class="mt-2" style="font-size: 20px">Días de vacaciones disponibles: <b id="diasDisponiblesEl">
                                 {{ $vacations }} </b> </p>
-                        <p class="m-0 my-2 text-danger">¡Información importante acerca de tus días de vacaciones!
-                        </p>
-                        <p class="mb-0">Actualmente cuentas con: </p>
+                        <p class="mb-0">Actualmente: </p>
                         @foreach ($dataVacations as $item)
                             @if ($item->dv > 0)
                                 @php
                                     $dayFormater = \Carbon\Carbon::parse($item->cutoff_date);
+                                    $fecha = $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y');
                                 @endphp
-                                <p class="m-0"><b>{{ $item->dv }} </b> días disponibles hasta el
-                                    <b>{{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}</b>
+                                <p class="m-0">Tienes <b>{{ $item->dv }} </b> días disponibles
+                                    {!! $item->period == 1 ? 'de tu periodo actual y estos dias vencen el <b>' . $fecha. '</b>.' : 'que vencen el <b>' . $fecha. '</b>.' !!}
                                 </p>
                             @endif
                         @endforeach

@@ -59,48 +59,52 @@ Route::get('/loginEmail', [LoginController::class, 'loginWithLink'])->name('logi
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
-    Route::get('/home', HomeController::class)->name('home');
-
-    Route::get('/about/promolife', [AboutController::class, 'promolife'])->name('about_promolife');
-    Route::get('/about/bhtrade', [AboutController::class, 'bh'])->name('about_trade');
-    Route::get('/about/promodreams', [AboutController::class, 'promodreams'])->name('about_promodreams');
-    Route::get('/about/trademarket', [AboutController::class, 'trademarket'])->name('about_trademarket');
-
-    Route::get('/company', [CompanyController::class, 'index'])->name('company');
-    Route::get('/company_data', [CompanyController::class, 'index_data'])->name('company_data');
-    Route::get('company/getPosition/{id}', [CompanyController::class, 'getPositions']);
-    Route::get('company/getEmployees', [CompanyController::class, 'getAllEmployees']);
-    Route::get('company/getEmployeesByOrganization/{organization}', [CompanyController::class, 'getEmployeesByOrganization']);
-    Route::get('company/getEmployeesByDepartment/{department}', [CompanyController::class, 'getEmployeesByDepartment']);
-
-    Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
-    Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
-
-    Route::get('/month', MonthController::class)->name('month');
-
-    Route::resource('/directories', DirectoryController::class);
-
-    Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
-
-        // Route::resource('roles', RoleController::class);
+    // Administrador
+    Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('departments', DepartmentsController::class);
         Route::resource('position', PositionController::class);
         Route::resource('manager', ManagerController::class);
         Route::resource('organization', OrganizationController::class);
-    });
-
-    Route::resource('manuals', ManualController::class);
-    Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', UserController::class);
         Route::get('sendAccess/', [UserController::class, 'sendAccess'])->name('user.sendAccess');
         Route::get('sendAccess/{user}', [UserController::class, 'sendAccessPerUser'])->name('user.sendAccessUnit');
     });
 
+    // Inicio
+    Route::get('/home', HomeController::class)->name('home');
+
+    // Acerca de
+    Route::get('/about/promolife', [AboutController::class, 'promolife'])->name('about_promolife');
+    Route::get('/about/bhtrade', [AboutController::class, 'bh'])->name('about_trade');
+
+    // Organigrama
+    Route::get('/company', [CompanyController::class, 'index'])->name('company');
+    Route::get('/company_data', [CompanyController::class, 'index_data'])->name('company_data');
+    Route::get('company/getEmployees', [CompanyController::class, 'getAllEmployees']);
+    Route::get('company/getPosition/{id}', [CompanyController::class, 'getPositions']);
+    Route::get('company/getEmployeesByOrganization/{organization}', [CompanyController::class, 'getEmployeesByOrganization']);
+    Route::get('company/getEmployeesByDepartment/{department}', [CompanyController::class, 'getEmployeesByDepartment']);
+
+    // Permisos y Vacaciones
+
+    // Aniversarios y cumpleaños
+    Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
+    Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
+
+    // Empleado del mes
+    Route::get('/month', MonthController::class)->name('month');
+
+    // Directorio de Proveedores
+    Route::resource('/directories', DirectoryController::class);
+
+    // Manuales
+    Route::resource('manuals', ManualController::class);
+
+
 
     Route::resource('communiques', CommuniqueController::class)->except(["show"]);
 
-    /*     Route::resource('days-no-working', NoWorkingDaysController::class);
- */
+    /*     Route::resource('days-no-working', NoWorkingDaysController::class);  */
     Route::get('/days-no-working', [NoWorkingDaysController::class, 'index'])->name('admin.noworkingdays.index');
     Route::get('/days-no-working/create', [NoWorkingDaysController::class, 'create'])->name('admin.noworkingdays.create');
     Route::post('/days-no-working', [NoWorkingDaysController::class, 'store'])->name('admin.noworkingdays.store');
@@ -158,11 +162,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::put('/events/{event}', [EventsController::class, 'update'])->middleware('role:rh')->name('admin.events.update');
     Route::delete('/events/{event}', [EventsController::class, 'destroy'])->middleware('role:rh')->name('admin.events.destroy');
 
-
-
     Route::get('/com/department', [CommuniqueController::class, 'department'])->name('communiques.department');
     Route::get('communiques/show', [CommuniqueController::class, 'show'])->name('admin.communique.show');
-
 
     Route::put('communiques/{communique}', [CommuniqueController::class, 'update'])->name('admin.communique.update');
 

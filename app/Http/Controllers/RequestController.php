@@ -81,7 +81,7 @@ class RequestController extends Controller
         // Eliminar los dias selecionados con anterioridad qie no estan ligados a un request
         auth()->user()->daysSelected()->delete();
         // Obtener dias no laborables
-        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
+        $noworkingdays = NoWorkingDays::orderBy('day')->get();
         // Obtener dias de vacaciones
         $vacations = auth()->user()->vacationsAvailables->where('period', '<>', 3)->sum('dv');
         $dataVacations  = auth()->user()->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'DESC')->get();

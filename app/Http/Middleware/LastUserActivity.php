@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\User;
 use Carbon\Carbon;
 use Closure;
-
+use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache as FacadesCache;
 
@@ -21,7 +21,9 @@ class LastUserActivity
     public function handle($request, Closure $next)
     {
         if (Auth::check()) {
-            $expiresAt = Carbon::now()->addMinutes(2);
+            auth()->user()->last_login = new DateTime();
+            auth()->user()->save();
+            $expiresAt = Carbon::now()->addMinutes(1);
             FacadesCache::put('user-is-online-' . Auth::user()->id, true, $expiresAt);
         }
         return $next($request);

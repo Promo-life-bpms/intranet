@@ -20,7 +20,7 @@ class Vacations extends Component
         $keyWord = '%' . $this->keyWord . '%';
         $users = User::orWhere('name', 'LIKE', $keyWord)
             ->orWhere('lastname', 'LIKE', $keyWord)
-            ->paginate(10);
+            ->paginate(5);
         return view('admin.vacations.table-vacations', [
             'users' => $users,
         ]);

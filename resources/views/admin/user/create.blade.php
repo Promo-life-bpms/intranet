@@ -12,135 +12,146 @@
         @endif
         {!! Form::open(['route' => 'admin.users.store', 'enctype' => 'multipart/form-data']) !!}
         <div class="row">
-            <div class="form-group col-md-4">
-                {!! Form::label('name', 'Nombre') !!}
-                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
-                @error('name')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-            <div class="form-group col-md-4">
-                {!! Form::label('lastname', 'Apellidos') !!}
-                {!! Form::text('lastname', null, ['class' => 'form-control', 'placeholder' => 'Ingrese los apellidos']) !!}
-                @error('lastname')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-            <div class="form-group col-md-4">
-                {!! Form::label('name', 'Correo') !!}
-                {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el correo de acceso']) !!}
-                @error('email')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-
-            <div class="form-group col-md-4">
-                <div class="mb-2 form-group">
-                    {!! Form::label('image', 'Imagen de usuario') !!}
-                    {!! Form::file('image', ['class' => 'form-control']) !!}
+            <div class="col-md-4">
+                <p>Informacion Personal</p>
+                <div class="form-group">
+                    {!! Form::label('name', 'Nombre') !!}
+                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
+                    @error('name')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    {!! Form::label('lastname', 'Apellidos') !!}
+                    {!! Form::text('lastname', null, ['class' => 'form-control', 'placeholder' => 'Ingrese los apellidos']) !!}
+                    @error('lastname')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    {!! Form::label('name', 'Correo') !!}
+                    {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el correo de acceso']) !!}
+                    @error('email')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <div class="mb-2 form-group">
+                        {!! Form::label('image', 'Imagen de usuario') !!}
+                        {!! Form::file('image', ['class' => 'form-control']) !!}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {!! Form::label('birthday_date', 'Fecha de Cumpleaños') !!}
+                    {!! Form::date('birthday_date', null, ['class' => 'form-control']) !!}
+                    @error('birthday_date')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
                 </div>
             </div>
-            <div class="form-group col-md-4">
-                {!! Form::label('birthday_date', 'Fecha de Cumpleaños') !!}
-                {!! Form::date('birthday_date', null, ['class' => 'form-control']) !!}
-                @error('birthday_date')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-            <div class="form-group col-md-4">
-                {!! Form::label('date_admission', 'Fecha de Ingreso') !!}
-                {!! Form::date('date_admission', null, ['class' => 'form-control']) !!}
-                @error('date_admission')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
+            <div class="col-md-4">
+                <p>Informacion Complemetaria</p>
+                <div class="form-group">
+                    {!! Form::label('date_admission', 'Fecha de Ingreso') !!}
+                    {!! Form::date('date_admission', null, ['class' => 'form-control']) !!}
+                    @error('date_admission')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
 
+                <div class="form-group">
+                    {!! Form::label('department', 'Departamento') !!}
+                    {!! Form::select('department', $departments, null, [
+                        'class' => 'form-control',
+                        'placeholder' => 'Selecciona Departamento',
+                    ]) !!}
+                    @error('department')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
 
+                <div class="form-group">
+                    {!! Form::label('position', 'Puesto') !!}
+                    {!! Form::select('position', $positions, null, [
+                        'class' => 'form-control',
+                        'placeholder' => 'Selecciona Puesto',
+                    ]) !!}
+                    @error('position')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    {!! Form::label('jefe_directo_id', 'Jefe Directo') !!}
+                    {!! Form::select('jefe_directo_id', $manager, null, [
+                        'class' => 'form-control',
+                        'placeholder' => 'Selecciona jefe directo ',
+                    ]) !!}
 
-            <div class="form-group col-md-4">
-                {!! Form::label('department', 'Departamento') !!}
-                {!! Form::select('department', $departments, null, ['class' => 'form-control', 'placeholder' => 'Selecciona Departamento']) !!}
-                @error('department')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
+                    @error('jefe_directo_id')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
             </div>
-
-            <div class="form-group col-md-4">
-                {!! Form::label('position', 'Puesto') !!}
-                {!! Form::select('position', $positions, null, ['class' => 'form-control', 'placeholder' => 'Selecciona Puesto']) !!}
-                @error('position')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-            <div class="form-group col-md-4">
-                {!! Form::label('jefe_directo_id', 'Jefe Directo') !!}
-                {!! Form::select('jefe_directo_id', $manager, null, ['class' => 'form-control', 'placeholder' => 'Selecciona jefe directo ']) !!}
-
-                @error('jefe_directo_id')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-
-            <div class="row">
-
-            </div>
-            <div class="form-group col-md-4 ">
-                {!! Form::label('empresas', 'Empresas a las que pertenece') !!}
-                @foreach ($companies as $company)
-                    <div>
-                        <label>
-                            {!! Form::checkbox('companies[]', $company->id, null, ['class' => 'mr-4']) !!}
-                            {{ $company->name_company }}
-                        </label>
-                    </div>
-                @endforeach
-                @error('companies')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-            <div class="form-group col-md-4">
-                {!! Form::label('roles', 'Roles') !!}
-                @foreach ($roles as $role)
-                    <div>
-                        <label>
-                            {!! Form::checkbox('roles[]', $role->id, null, ['class' => 'mr-4']) !!}
-                            {{ $role->display_name }}
-                        </label>
-                    </div>
-                @endforeach
-                @error('roles')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
+            <div class="col-md-4">
+                <p>Empresas y Roles que maneja</p>
+                <div class="form-group ">
+                    {!! Form::label('empresas', 'Empresas a las que pertenece') !!}
+                    @foreach ($companies as $company)
+                        <div>
+                            <label>
+                                {!! Form::checkbox('companies[]', $company->id, null, ['class' => 'mr-4']) !!}
+                                {{ $company->name_company }}
+                            </label>
+                        </div>
+                    @endforeach
+                    @error('companies')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    {!! Form::label('roles', 'Roles') !!}
+                    @foreach ($roles as $role)
+                        <div>
+                            <label>
+                                {!! Form::checkbox('roles[]', $role->id, null, ['class' => 'mr-4']) !!}
+                                {{ $role->display_name }}
+                            </label>
+                        </div>
+                    @endforeach
+                    @error('roles')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
             </div>
         </div>
         {!! Form::submit('CREAR USUARIO', ['class' => 'btnCreate mt-4']) !!}
@@ -182,8 +193,7 @@
             });
         });
     </script>
-{{--
-    <script type="text/javascript">
+    {{-- <script type="text/javascript">
         jQuery(document).ready(function() {
             jQuery('select[name="position"]').on('change', function() {
                 var id = jQuery(this).val();
