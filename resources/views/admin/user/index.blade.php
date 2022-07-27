@@ -9,7 +9,10 @@
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h3>Lista de usuarios</h3>
-            <a href="{{ route('admin.users.create') }}" type="button" class="btn btn-success">Agregar</a>
+            <div>
+                <a href="{{ route('admin.user.exportUsuarios') }}" type="button" class="btn btn-info">Descargar Informacion de los Usuarios</a>
+                <a href="{{ route('admin.users.create') }}" type="button" class="btn btn-success">Agregar</a>
+            </div>
         </div>
     </div>
     <div class="card-body">

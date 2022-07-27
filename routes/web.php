@@ -66,6 +66,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::resource('manager', ManagerController::class);
         Route::resource('organization', OrganizationController::class);
         Route::resource('users', UserController::class);
+
+        Route::get('exportUsuarios/', [UserController::class, 'exportUsuarios'])->name('user.exportUsuarios');
         Route::get('sendAccess/', [UserController::class, 'sendAccess'])->name('user.sendAccess');
         Route::get('sendAccess/{user}', [UserController::class, 'sendAccessPerUser'])->name('user.sendAccessUnit');
     });
