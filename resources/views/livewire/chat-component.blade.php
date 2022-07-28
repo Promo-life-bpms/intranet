@@ -14,7 +14,7 @@
                 <div style="max-height: 250px; overflow-y: scroll" id="style-3"
                     class="{{ !$listUsersCollapse ? 'd-none' : '' }}">
                     @foreach ($users as $user)
-                        <div class="d-flex flex-row p-2 usuario" wire:click="openChat({{ $user->id }})">
+                        <div class="d-flex flex-row p-2 usuario" wire:click="openChat({{ $user->id }})" style="cursor: pointer">
 
                             <div class="img_cont">
                                 <img src="https://www.kindpng.com/picc/m/269-2697881_computer-icons-user-clip-art-transparent-png-icon.png"
@@ -24,7 +24,7 @@
                                     <span class="online_icon"></span>
                                 @endif
                             </div>
-                            <p> {{ $user->name . ' ' . $user->lastname }}</p>
+                            <p> {{ $user->name }}</p>
 
                         </div>
                     @endforeach
@@ -53,8 +53,8 @@
 
         .contenedor {
             z-index: 100;
-            right: 360px;
-            bottom: 1px;
+            right: 300px;
+            bottom: 0px;
         }
 
 
@@ -162,18 +162,6 @@
             font-weight: 500;
             font-size: 20px;
             background: -webkit-linear-gradient(left, #72c3d6, #0390f5);
-        }
-
-        .wrapper .chat-box {
-            padding: 1px;
-            width: 100%;
-        }
-
-        .chat-box .desc-text {
-            color: #515365;
-            text-align: center;
-            line-height: 25px;
-            font-weight: 500;
         }
     </style>
 </div>

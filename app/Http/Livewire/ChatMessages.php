@@ -13,7 +13,17 @@ class ChatMessages extends Component
 
     public $mensajesEnviados = [];
 
-    protected $listeners = ['messageEvent' => 'fetchMessages'];
+    protected $listeners = [
+        'messageEvent' => 'fetchMessages',
+        'scrollMessage' => 'messageScroll'
+    ];
+
+    public function getListeners()
+    {
+        return [
+            'echo:chat,MessageSent' => 'updateMessage',
+        ];
+    }
 
     public function render()
     {
@@ -42,5 +52,19 @@ class ChatMessages extends Component
     public function fetchMessages($message)
     {
         $message;
+    }
+    public function updateMessage($mensajes)
+    {
+        $mensajes = DB::table('messages')
+            ->where('transmitter_id', auth()->user()->id)
+            ->where('receiver_id', $this->idUser);
+
+        $this->mensajesEnviados = DB::table('messages')
+            ->where('receiver_id', auth()->user()->id)
+            ->where('transmitter_id', $this->idUser)->union($mensajes)->orderBy('created_at', 'asc')->get();
+    }
+    public function messageScroll()
+    {
+        $this->emit('messageNew');
     }
 }
