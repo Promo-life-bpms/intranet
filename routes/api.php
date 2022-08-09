@@ -37,3 +37,8 @@ Route::post('/postUpdatePublication', [APIController::class, 'postUpdatePublicat
 
 Route::post('/postImageRequest', [APIController::class, 'postImageRequest'])->name('api.postImageRequest');
 Route::get('/getTeamMembers/{hashedToken}', [APIController::class, 'getTeamMembers'])->name('api.getTeamMembers');
+
+
+/* Intranet movil version 1.1 */
+
+Route::post('/postRequestV11', [APIController::class, 'postRequestV11'])->name('api.postRequest.new');
