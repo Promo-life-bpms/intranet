@@ -1060,10 +1060,12 @@ class ApiController extends Controller
             ]);
             $image =  $request->file('image');
           
-           
-            $path = Storage::disk('postImages')->put('storage/posts', $image); 
+            $nombreImagen = time() . ' ' . str_replace(',', ' ', $image->getClientOriginalName());
+            $image->move(public_path('storage/posts/'), $nombreImagen);
 
-            return $path;
+            /* $path = Storage::disk('postImages')->put('storage/posts', $image);  */
+
+            return $nombreImagen;
 
         } else {
             return "";
