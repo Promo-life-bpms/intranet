@@ -1188,4 +1188,142 @@ class ApiController extends Controller
         return  true; 
 
     }
+
+    public function getManagerRequest($hashedToken)
+    {
+        $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
+        $user_id = $token->tokenable_id;
+        
+        $request = ModelsRequest::all()->where('direct_manager_id',$user_id);
+     
+        $data = [];
+        foreach ($request as $req) {
+
+            $days = "";
+
+            if ($req->start == null) {
+                $start = "Sin especificar";
+            } else {
+                $start = $req->start;
+            }
+
+            if ($req->end == null) {
+                $end = "Sin especificar";
+            } else {
+                $end = $req->end;
+            }
+
+            if ($req->direct_manager_status == "Rechazada" || $req->human_resources_status == "Rechazada") {
+                $date =  DB::table('request_rejected')->where('users_id', $req->employee_id)->where('requests_id', $req->id)->get();
+            } else {
+                $date = DB::table('request_calendars')->where('users_id', $req->employee_id)->where('requests_id', $req->id)->get();
+            }
+
+            foreach ($date as  $calendar) {
+                $days = $days . "," . $calendar->start;
+            }
+            
+            
+            $revealData = "";
+            if($req->reveal_id != null){
+                $userReveal = User::all()->where('id', $req->reveal_id);
+                foreach($userReveal as $user){
+                    $revealData = $user->name . " ".$user->lastname ;
+                }
+                
+            }else{
+                $revealData = "no data";
+            }
+
+            $days = substr($days, 1);
+
+            array_push($data, (object)[
+                'id' => $req->id,
+                'employeeID' => $req->employee_id,
+                'typeRequest' => $req->type_request,
+                'revealName' =>$revealData,
+                'payment' => $req->payment,
+                'payment' => $req->payment,
+                'start' => $start,
+                'end' => $end,
+                'reason' => $req->reason,
+                'directManagerId' => $req->direct_manager_id,
+                'directManagerStatus' => $req->direct_manager_status,
+                'humanResourcesStatus' => $req->human_resources_status,
+                'visible' => $req->visible,
+                'days' => $days,
+                
+            ]);
+        }
+
+        return $data;
+    }
+
+    public function getRhRequest()
+    {
+        $request = ModelsRequest::all()->where('direct_manager_status', 'Aprobada');
+
+        $data = [];
+        foreach ($request as $req) {
+
+            $days = "";
+
+            if ($req->start == null) {
+                $start = "Sin especificar";
+            } else {
+                $start = $req->start;
+            }
+
+            if ($req->end == null) {
+                $end = "Sin especificar";
+            } else {
+                $end = $req->end;
+            }
+
+            if ($req->direct_manager_status == "Rechazada" || $req->human_resources_status == "Rechazada") {
+                $date =  DB::table('request_rejected')->where('users_id', $req->employee_id)->where('requests_id', $req->id)->get();
+            } else {
+                $date = DB::table('request_calendars')->where('users_id', $req->employee_id)->where('requests_id', $req->id)->get();
+            }
+
+            foreach ($date as  $calendar) {
+                $days = $days . "," . $calendar->start;
+            }
+            
+            
+            $revealData = "";
+            if($req->reveal_id != null){
+                $userReveal = User::all()->where('id', $req->reveal_id);
+                foreach($userReveal as $user){
+                    $revealData = $user->name . " ".$user->lastname ;
+                }
+                
+            }else{
+                $revealData = "no data";
+            }
+
+            $days = substr($days, 1);
+
+            array_push($data, (object)[
+                'id' => $req->id,
+                'employeeID' => $req->employee_id,
+                'typeRequest' => $req->type_request,
+                'revealName' =>$revealData,
+                'payment' => $req->payment,
+                'payment' => $req->payment,
+                'start' => $start,
+                'end' => $end,
+                'reason' => $req->reason,
+                'directManagerId' => $req->direct_manager_id,
+                'directManagerStatus' => $req->direct_manager_status,
+                'humanResourcesStatus' => $req->human_resources_status,
+                'visible' => $req->visible,
+                'days' => $days,
+                
+            ]);
+        }
+
+        return $data;
+    }
 }
+
