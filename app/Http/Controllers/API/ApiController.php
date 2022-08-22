@@ -1237,9 +1237,11 @@ class ApiController extends Controller
 
             $days = substr($days, 1);
 
+            $user = User::all()->where('id', $req->employee_id)->first();
             array_push($data, (object)[
                 'id' => $req->id,
                 'employeeID' => $req->employee_id,
+                'fullname' =>  $user->name . " " . $user->lastname,
                 'typeRequest' => $req->type_request,
                 'revealName' =>$revealData,
                 'payment' => $req->payment,
@@ -1304,9 +1306,11 @@ class ApiController extends Controller
 
             $days = substr($days, 1);
 
+            $user = User::all()->where('id', $req->employee_id)->first();
             array_push($data, (object)[
                 'id' => $req->id,
                 'employeeID' => $req->employee_id,
+                'fullname' =>  $user->name . " " . $user->lastname,
                 'typeRequest' => $req->type_request,
                 'revealName' =>$revealData,
                 'payment' => $req->payment,
