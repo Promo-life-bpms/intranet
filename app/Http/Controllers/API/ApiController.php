@@ -20,6 +20,7 @@ use App\Models\Notification;
 use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
+use App\Models\Role;
 use App\Models\Vacations;
 use App\Notifications\CreateRequestNotification;
 use App\Notifications\MessageNotification;
@@ -36,7 +37,7 @@ use Error;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
-
+use Laratrust\Http\Controllers\RolesController;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -80,6 +81,9 @@ class ApiController extends Controller
         $user_id = $token->tokenable_id;
         $user = User::where('id', $user_id)->get();
         $vacations = DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv');
+        $user_roles = DB::table('role_user')->where("user_id",$user_id)->get("role_id");
+        $roles = [];
+        
         $data = [];
 
         if ($vacations == null) {
@@ -112,6 +116,22 @@ class ApiController extends Controller
                 }
             }
 
+            if(count($user_roles)==0){
+                array_push($roles, (object)[
+                    'id' => 0,
+                    'role' => "no data",
+                ]);
+            }else{
+                foreach($user_roles as $role){
+                    
+                    $rol = DB::table('roles')->where("id",$role->role_id)->get();     
+                    array_push($roles, (object)[
+                        'id' => $rol[0]->id,
+                        'role' => $rol[0]->display_name,
+                    ]);
+                }            
+            }
+                    
             array_push($data, (object)[
                 'id' => $usr->id,
                 'fullname' => $usr->name . " " . $usr->lastname,
@@ -121,6 +141,7 @@ class ApiController extends Controller
                 'position' => $usr->employee->position->name,
                 'daysAvailables' => intval($vacations),
                 'expiration'=>$expiration,
+                'roles'=>$roles
             ]);
         }
 
