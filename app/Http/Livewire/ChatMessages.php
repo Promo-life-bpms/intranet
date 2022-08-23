@@ -15,7 +15,6 @@ class ChatMessages extends Component
 
     protected $listeners = [
         'messageEvent' => 'fetchMessages',
-        'scrollMessage' => 'messageScroll'
     ];
 
     public function getListeners()
@@ -37,11 +36,15 @@ class ChatMessages extends Component
 
         $user = User::find($this->idUser);
         return view('livewire.chat-messages', compact('user'));
+        $this->dispatchBrowserEvent('messageNew');
     }
+
     public function collapseChat()
     {
         $this->ChatCollapse = !$this->ChatCollapse;
+        $this->dispatchBrowserEvent('messageNew');
     }
+
     public function cerrarChat($idUser)
     {
         $this->emit('closeEvent', $idUser);
@@ -62,9 +65,10 @@ class ChatMessages extends Component
         $this->mensajesEnviados = DB::table('messages')
             ->where('receiver_id', auth()->user()->id)
             ->where('transmitter_id', $this->idUser)->union($mensajes)->orderBy('created_at', 'asc')->get();
+        $this->dispatchBrowserEvent('messageNew');
     }
-    public function messageScroll()
+    /* public function messageScroll()
     {
-        $this->emit('messageNew');
-    }
+        $this->dispatchBrowserEvent('messageNew');
+    } */
 }

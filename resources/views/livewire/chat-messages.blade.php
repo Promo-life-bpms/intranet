@@ -16,8 +16,8 @@
         </div>
         <div class="cont">
             <div class="{{ !$ChatCollapse ? 'd-none' : '' }}">
-                <div style="height: 300px; overflow-y: auto" class="style-3">
-                    <button wire:click="$emit('scrollMessage')"></button>
+                <div style="height: 300px; overflow-y: auto" class="style-3" id="formChat">
+                    {{-- <button wire:click="messageScroll">Scroll</button> --}}
                     @foreach ($mensajesEnviados as $mensaje)
                         <div
                             class="d-flex flex-row p-2
@@ -54,13 +54,12 @@
 
     </div>
     <script>
-        window.onload = function() {
-            Livewire.on('messageNew', () => {
-                alert(1)
-                /* const objDiv = document.getElementById("formChat");
-                objDiv.scrollTop = objDiv.scrollHeight; */
-            })
-        }
+        window.addEventListener('messageNew', event => {
+            setTimeout(() => {
+                const objDiv = document.getElementById("formChat");
+                objDiv.scrollTop = objDiv.scrollHeight;
+            }, 50);
+        });
     </script>
 
     <style scoped>
