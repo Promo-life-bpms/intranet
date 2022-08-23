@@ -46,3 +46,7 @@ Route::post('/postRequestV11', [APIController::class, 'postRequestV11'])->name('
 
 Route::get('/getManagerRequest/{hashedToken}', [APIController::class, 'getManagerRequest'])->name('api.getManagerRequest');
 Route::get('/getRhRequest', [APIController::class, 'getRhRequest'])->name('api.getRhRequest');
+
+
+Route::post('/postManagerRequest', [APIController::class, 'postManagerRequest'])->name('api.postManagerRequest');
+Route::post('/postRhRequest', [APIController::class, 'postRhRequest'])->name('api.postRhRequest');

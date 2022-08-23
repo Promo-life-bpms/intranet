@@ -20,6 +20,7 @@ use App\Models\Notification;
 use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
+use App\Models\RequestRejected;
 use App\Models\Role;
 use App\Models\Vacations;
 use App\Notifications\CreateRequestNotification;
@@ -1328,6 +1329,31 @@ class ApiController extends Controller
         }
 
         return $data;
+    }
+
+    public function postManagerRequest(Request $request)
+    {
+        if($request->responseRequest == "Aprobada"){
+
+            DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Aprobada"]);
+            return true;
+        
+        }else if($request->responseRequest == "Rechazada"){
+
+            DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Rechazada"]);
+            $requestCalendar = RequestCalendar::all()->where('requests_id',$request->requestID);
+            foreach($requestCalendar as $calendar){
+                $rejectedCalendar = new RequestRejected();
+                $rejectedCalendar->title = $calendar->title;
+                $rejectedCalendar->start = $calendar->start;
+                $rejectedCalendar->end = $calendar->end;
+                $rejectedCalendar->users_id = $calendar->users_id;
+                $rejectedCalendar->requests_id = $calendar->requests_id;
+                $rejectedCalendar->save();
+            }
+
+            return false;
+        }
     }
 }
 
