@@ -1382,6 +1382,31 @@ class ApiController extends Controller
         if($request->responseRequest == "Aprobada"){
 
             DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Aprobada"]);
+            
+            $req = ModelsRequest::all()->where('id', $request->requestID)->first();
+            if ($req->type_request == "Solicitar vacaciones") {
+                $user = User::all()->where('id',$req->employee_id)->first();
+                $dias= RequestCalendar::all()->where('requests_id',  $request->requestID);
+                $totalDiasSolicitados = count($dias);
+                $totalDiasDisponibles = $user->vacationsAvailables()->orderBy('period', 'DESC')->sum('dv');
+                if ((int) $totalDiasDisponibles >= $totalDiasSolicitados) {
+                    foreach ($user->vacationsAvailables()->orderBy('period', 'DESC')->get() as $dataVacation) {
+                        if ($dataVacation->dv < $totalDiasSolicitados) {
+                            $dataVacation->days_enjoyed = $dataVacation->dv;
+                            $totalDiasSolicitados = $totalDiasSolicitados - $dataVacation->dv;
+                            $dataVacation->dv = 0;
+                            $dataVacation->save();
+                        } else {
+                            $dataVacation->days_enjoyed = $dataVacation->days_enjoyed + $totalDiasSolicitados;
+                            $dataVacation->dv = $dataVacation->dv - $totalDiasSolicitados;
+                            $dataVacation->save();
+                            break;
+                        }
+                    }
+                }else{
+                    return 2;
+                }
+            }
             return true;
         
         }else if($request->responseRequest == "Rechazada"){
