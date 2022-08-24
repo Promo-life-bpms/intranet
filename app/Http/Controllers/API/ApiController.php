@@ -1336,11 +1336,57 @@ class ApiController extends Controller
         if($request->responseRequest == "Aprobada"){
 
             DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Aprobada"]);
+            $req = ModelsRequest::where('id', $request->requestID)->get()->first();
+
+            //Notificacion manual RH
+            $data_send = [
+                "id"=>$req->id,
+                "employee_id"=>$req->employee_id,
+                "direct_manager_status"=>"Aprobada",
+                "human_resources_status"=>"Pendiente"
+            ];
+
+            $usersRH =  Role::where('name', 'rh')->first()->users;
+            foreach ($usersRH as $userRH) {
+                $notification = new Notification();
+                $notification->id = uniqid();
+                $notification->type = "App\Notifications\RequestNotification";
+                $notification->notifiable_type = "App\Models\User";
+                $notification->notifiable_id = $userRH->id;
+                $notification->data = json_encode($data_send);
+                $notification->save();
+            }
+
             return true;
         
         }else if($request->responseRequest == "Rechazada"){
 
             DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Rechazada"]);
+            $requestCalendar = RequestCalendar::all()->where('requests_id',$request->requestID);
+            foreach($requestCalendar as $calendar){
+                $rejectedCalendar = new RequestRejected();
+                $rejectedCalendar->title = $calendar->title;
+                $rejectedCalendar->start = $calendar->start;
+                $rejectedCalendar->end = $calendar->end;
+                $rejectedCalendar->users_id = $calendar->users_id;
+                $rejectedCalendar->requests_id = $calendar->requests_id;
+                $rejectedCalendar->save();
+            }
+
+            return false;
+        }
+    }
+
+    public function postRhRequest(Request $request)
+    {
+        if($request->responseRequest == "Aprobada"){
+
+            DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Aprobada"]);
+            return true;
+        
+        }else if($request->responseRequest == "Rechazada"){
+
+            DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Rechazada"]);
             $requestCalendar = RequestCalendar::all()->where('requests_id',$request->requestID);
             foreach($requestCalendar as $calendar){
                 $rejectedCalendar = new RequestRejected();
