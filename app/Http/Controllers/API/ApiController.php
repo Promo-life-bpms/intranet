@@ -1426,5 +1426,61 @@ class ApiController extends Controller
             return false;
         }
     }
+
+    public function postCreateRequest(Request $request)
+    {
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;
+        $employee = Employee::all()->where('user_id',$user_id);
+        $userData = User::all()->where('id',$user_id);
+        if($token !=null || $token !=""){
+            $date= date("G:i:s", strtotime($request->start));
+            $manager = "";
+            foreach($employee as $emp){
+                $manager = $emp->jefe_directo_id;
+            }
+            $reveal_id = null;
+            if($request->revealID != "" ||$request->revealID != null ){
+                $reveal_id = intval($request->revealID);
+            }
+            $req = new ModelsRequest();
+            $req->employee_id = $user_id;
+            $req->type_request = $request->typeRequest;
+            $req->reveal_id = $reveal_id;
+            $req->payment = $request->payment;
+            $req->reason = $request->reason;
+            $req->start = $date;
+            $req->end = null;
+            $req->direct_manager_id = $manager;
+            $req->direct_manager_status = "Pendiente";
+            $req->human_resources_status = "Pendiente";
+            $req->visible = 1;
+            $req->save();
+
+            $days = explode( ",", $request->days);
+            
+            foreach($days as $day){
+
+                $request_calendar = new RequestCalendar();
+                $request_calendar->title = "Día seleccionado";
+                $request_calendar->start = $day;
+                $request_calendar->end = $day;
+                $request_calendar->users_id = $user_id;
+                $request_calendar->requests_id =$req->id;
+                $request_calendar->save();
+
+            } 
+
+             foreach($userData as $user){
+                $userReceiver = Employee::find($manager)->user; 
+                event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
+                $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
+            } 
+
+        }
+
+        return  true; 
+
+    }
 }
 

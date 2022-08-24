@@ -41,12 +41,13 @@ Route::get('/getTeamMembers/{hashedToken}', [APIController::class, 'getTeamMembe
 
 /* Intranet movil version 1.1 */
 
-Route::post('/postRequestV11', [APIController::class, 'postRequestV11'])->name('api.postRequest.new');
+Route::post('/postRequestV11', [APIController::class, 'postRequestV11'])->name('api.postRequestV11');
 
 
 Route::get('/getManagerRequest/{hashedToken}', [APIController::class, 'getManagerRequest'])->name('api.getManagerRequest');
 Route::get('/getRhRequest', [APIController::class, 'getRhRequest'])->name('api.getRhRequest');
 
+Route::post('/postCreateRequest', [APIController::class, 'postCreateRequest'])->name('api.postCreateRequest');
 
 Route::post('/postManagerRequest', [APIController::class, 'postManagerRequest'])->name('api.postManagerRequest');
 Route::post('/postRhRequest', [APIController::class, 'postRhRequest'])->name('api.postRhRequest');
