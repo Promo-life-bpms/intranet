@@ -1391,22 +1391,29 @@ class ApiController extends Controller
                 $totalDiasDisponibles = $user->vacationsAvailables()->orderBy('period', 'DESC')->sum('dv');
                 if ((int) $totalDiasDisponibles >= $totalDiasSolicitados) {
                     foreach ($user->vacationsAvailables()->orderBy('period', 'DESC')->get() as $dataVacation) {
-                        if ($dataVacation->dv < $totalDiasSolicitados) {
-                            $dataVacation->days_enjoyed = $dataVacation->dv;
-                            $totalDiasSolicitados = $totalDiasSolicitados - $dataVacation->dv;
-                            $dataVacation->dv = 0;
-                            $dataVacation->save();
+
+                        if ($dataVacation->dv <= $totalDiasSolicitados && $totalDiasSolicitados == count($request->requestdays)) {
+                            if ($dataVacation->dv > 0) {
+                                $dataVacation->days_enjoyed = (int) $dataVacation->days_availables;
+                                $totalDiasSolicitados = (int)$totalDiasSolicitados - (int) $dataVacation->dv;
+                                $dataVacation->dv = 0;
+                                $dataVacation->save();
+                            }
                         } else {
                             $dataVacation->days_enjoyed = $dataVacation->days_enjoyed + $totalDiasSolicitados;
                             $dataVacation->dv = $dataVacation->dv - $totalDiasSolicitados;
                             $dataVacation->save();
                             break;
                         }
+
                     }
                 }else{
+                    DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Pendiente"]);
+                    
                     return 2;
                 }
             }
+
             return true;
         
         }else if($request->responseRequest == "Rechazada"){
