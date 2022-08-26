@@ -37,7 +37,7 @@
             $opc = [];
             $ingreso = \Carbon\Carbon::parse(auth()->user()->employee->date_admission);
             $diff = $ingreso->diffInMonths(now());
-            if ($vacations >= 0 and $diff > 5) {
+            if ($vacations > 0 && $diff > 5) {
                 $opc = ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones'];
             } else {
                 $opc = ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores'];
@@ -47,20 +47,27 @@
             <div class="card shadow text-center">
                 <div class="card-body">
                     @if ($vacations >= 0)
-                        <p class="mt-2" style="font-size: 20px">Días de vacaciones disponibles: <b id="diasDisponiblesEl">
-                                {{ $vacations }} </b> </p>
-                        <p class="mb-0">Actualmente: </p>
-                        @foreach ($dataVacations as $item)
-                            @if ($item->dv > 0)
-                                @php
-                                    $dayFormater = \Carbon\Carbon::parse($item->cutoff_date);
-                                    $fecha = $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y');
-                                @endphp
-                                <p class="m-0">Tienes <b>{{ $item->dv }} </b> días disponibles
-                                    {!! $item->period == 1 ? 'de tu periodo actual y estos dias vencen el <b>' . $fecha. '</b>.' : 'que vencen el <b>' . $fecha. '</b>.' !!}
-                                </p>
-                            @endif
-                        @endforeach
+                        @if ($vacations > 0)
+                            <p class="mt-2" style="font-size: 20px">Días de vacaciones disponibles: <b
+                                    id="diasDisponiblesEl">
+                                    {{ $vacations }} </b> </p>
+                            <p class="mb-0">Actualmente: </p>
+                            @foreach ($dataVacations as $item)
+                                @if ($item->dv > 0)
+                                    @php
+                                        $dayFormater = \Carbon\Carbon::parse($item->cutoff_date);
+                                        $fecha = $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y');
+                                    @endphp
+                                    <p class="m-0">Tienes <b>{{ $item->dv }} </b> días disponibles
+                                        {!! $item->period == 1
+                                            ? 'de tu periodo actual y estos dias vencen el <b>' . $fecha . '</b>.'
+                                            : 'que vencen el <b>' . $fecha . '</b>.' !!}
+                                    </p>
+                                @endif
+                            @endforeach
+                        @else
+                            <p style="font-size: 20px">No tienes dias de Vacaciones Disponibles</p>
+                        @endif
                     @else
                         <p style="font-size: 20px">No puedes seleccionar vacaciones. Consulta con RRHH para resolver
                             esta situacion</p>
@@ -348,10 +355,10 @@
                         } else {
                             var start = $.fullCalendar.formatDate(start, "Y-MM-DD");
                             var end = $.fullCalendar.formatDate(end, "Y-MM-DD");
-                            if (daysAvailablesToTake > 0) {
-                                let canSelected = false;
-                                let dataVacationsSelected = null;
-                                if (tipoSolicitud == 'Solicitar vacaciones') {
+                            let canSelected = false;
+                            let dataVacationsSelected = null;
+                            if (tipoSolicitud == 'Solicitar vacaciones') {
+                                if (daysAvailablesToTake > 0) {
                                     if (vacationsExpirations.length == 2) {
                                         if (start <= vacationsExpirations[0].cutoff_date && start <=
                                             vacationsExpirations[1].cutoff_date) {
@@ -389,51 +396,52 @@
                                         }
                                     }
                                 } else {
-                                    canSelected = true
+                                    displayError('No tienes dias disponibles')
                                 }
-                                if (canSelected) {
-                                    $.ajax({
-                                        url: SITEURL + "/fullcalenderAjax",
-                                        data: {
+                            } else {
+                                canSelected = true
+                            }
+                            if (canSelected) {
+                                $.ajax({
+                                    url: SITEURL + "/fullcalenderAjax",
+                                    data: {
+                                        title: title,
+                                        start: start,
+                                        end: end,
+                                        allDay: false,
+                                        type: 'add',
+                                    },
+                                    type: "POST",
+                                    success: function(data) {
+                                        if (data.exist) {
+                                            displayError(
+                                                'Ya has seleccionado este dia'
+                                            )
+                                            return;
+                                        }
+                                        calendar.fullCalendar('renderEvent', {
+                                            id: data.id,
                                             title: title,
                                             start: start,
                                             end: end,
                                             allDay: false,
-                                            type: 'add',
-                                        },
-                                        type: "POST",
-                                        success: function(data) {
-                                            if (data.exist) {
-                                                displayError(
-                                                    'Ya has seleccionado este dia'
-                                                )
-                                                return;
-                                            }
-                                            calendar.fullCalendar('renderEvent', {
-                                                id: data.id,
-                                                title: title,
-                                                start: start,
-                                                end: end,
-                                                allDay: false,
-                                            }, true);
-                                            if (tipoSolicitud == 'Solicitar vacaciones') {
-                                                daysAvailablesToTake--
-                                                vacationsExpirations[dataVacationsSelected]
-                                                    .dv--;
-                                                canSelected = false
-                                                diasDisponiblesEl.innerHTML =
-                                                    daysAvailablesToTake
-                                            }
-                                            displayMessage(
-                                                "Día seleccionado satisfactoriamente"
-                                            );
-                                            calendar.fullCalendar('unselect');
+                                        }, true);
+                                        if (tipoSolicitud == 'Solicitar vacaciones') {
+                                            daysAvailablesToTake--
+                                            vacationsExpirations[dataVacationsSelected]
+                                                .dv--;
+                                            canSelected = false
+                                            diasDisponiblesEl.innerHTML =
+                                                daysAvailablesToTake
                                         }
-                                    });
-                                }
-                            } else {
-                                displayError('No tienes dias disponibles')
+                                        displayMessage(
+                                            "Día seleccionado satisfactoriamente"
+                                        );
+                                        calendar.fullCalendar('unselect');
+                                    }
+                                });
                             }
+
                         }
 
                     }

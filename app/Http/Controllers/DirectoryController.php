@@ -68,10 +68,10 @@ class DirectoryController extends Controller
      */
     public function show($id)
     {
-        $directory = Directory::where('user_id', $id)->get();
-        $user = User::where('id', $id)->get();
-        $companies = Company::all()->pluck('name_company', 'id');
-        return view('directory.show', compact('directory', 'user', 'companies'));
+        $user = User::find($id);
+        $directories = $user->directory;
+        $companies = Company::all();
+        return view('directory.show', compact('directories', 'user', 'companies'));
     }
 
     /**
@@ -108,7 +108,7 @@ class DirectoryController extends Controller
 
         $directory->update($request->all());
 
-        return redirect()->route('directories.index')
+        return redirect()->route('directories.show', $request->user_id)
             ->with('success', 'Directory updated successfully');
     }
 

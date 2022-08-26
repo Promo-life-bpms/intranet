@@ -26,7 +26,9 @@ class HomeController extends Controller
                 $birthday = explode('-', $employee->birthday_date);
                 $monthAniversaryth = $birthday[1];
                 if ($monthAniversaryth == $date) {
-                    array_push($employeesBirthday, $employee);
+                    if ($employee->user->status) {
+                        array_push($employeesBirthday, $employee);
+                    }
                 }
             }
         }
@@ -41,10 +43,12 @@ class HomeController extends Controller
                 $birthday = explode('-', $employee->date_admission);
                 $monthAniversaryth = $birthday[1];
                 if ($monthAniversaryth == $date) {
-                    $dateAdmission = Carbon::parse($employee->date_admission);
-                    $yearsWork = $dateAdmission->diffInYears($carbon->now()->addMonth());
-                    if ($yearsWork > 0) {
-                        array_push($employeesAniversary, $employee);
+                    if ($employee->user->status) {
+                        $dateAdmission = Carbon::parse($employee->date_admission);
+                        $yearsWork = $dateAdmission->diffInYears($carbon->now()->addMonth());
+                        if ($yearsWork > 0) {
+                            array_push($employeesAniversary, $employee);
+                        }
                     }
                 }
             }

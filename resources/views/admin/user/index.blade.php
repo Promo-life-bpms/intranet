@@ -10,7 +10,8 @@
         <div class="d-flex justify-content-between">
             <h3>Lista de usuarios</h3>
             <div>
-                <a href="{{ route('admin.user.exportUsuarios') }}" type="button" class="btn btn-info">Descargar Informacion de los Usuarios</a>
+                <a href="{{ route('admin.user.exportUsuarios') }}" type="button" class="btn btn-info">Descargar Informacion de
+                    los Usuarios</a>
                 <a href="{{ route('admin.users.create') }}" type="button" class="btn btn-success">Agregar</a>
             </div>
         </div>
@@ -21,16 +22,10 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        {{-- <th style="width: 5%"  scope="col">Foto</th> --}}
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Correo</th>
-                        {{-- <th scope="col">Area</th>
-                        <th scope="col">Puesto</th> --}}
-                        {{-- <th scope="col">Empresas</th> --}}
-                        <th scope="col">Ingreso</th>
-                        <th scope="col">Cumpleaños</th>
+                        <th scope="col">Nombre y correo</th>
+                        <th scope="col" class="text-center">Fecha de Ingreso</th>
+                        <th scope="col" class="text-center">Cumpleaños</th>
                         <th scope="col">Jefe Directo</th>
-                        {{-- <th scope="col">Status</th> --}}
                         <th scope="col">Rol</th>
                         <th scope="col">Opciones</th>
                     </tr>
@@ -38,84 +33,52 @@
                 <tbody>
                     @foreach ($users as $user)
                         <tr>
-                            {{-- <td  class="text-center" >{{ $user->id }}</td> --}}
                             <td class="text-center">{{ $loop->iteration }}</td>
-
-                            {{-- @if ($user->image != null)
-                            <td >
-                                <img style="width: 100%; " src="{{ asset($user->image )}}" alt="">
-
-                            </td>
-                            @else
-                                <td  class="text-center" > Sin imagen</td>
-                            @endif --}}
-                            <td>{{ $user->name . ' ' . $user->lastname }}</td>
-                            <td>{{ $user->email }}</td>
-                            {{-- <td>
-                                @if ($user->employee->position)
-                                    {{ $user->employee->position->department->name }}
-                                @endif
-                            </td>
-                            <td>
-                                @if ($user->employee->position)
-                                    {{ $user->employee->position->name }}
-                                @endif
-                            </td> --}}
-                            {{-- <td>
-                                @foreach ($user->employee->companies as $company)
-                                    {{ $company->name_company }}
-                                @endforeach
-                            </td> --}}
-                            <td>{{ explode(' ', $user->employee->date_admission)[0] }}</td>
-                            <td>{{ explode(' ', $user->employee->birthday_date)[0] }}</td>
+                            <td><b>{{ $user->name . ' ' . $user->lastname }} </b><br> {{ $user->email }}</td>
+                            <td class="text-center">{{ $user->employee->date_admission->format('d-m-Y') }}</td>
+                            <td class="text-center">{{ $user->employee->birthday_date->format('d-m-Y') }}</td>
                             <td>
                                 @if ($user->employee->jefeDirecto)
                                     {{ $user->employee->jefeDirecto->user->name }}
                                 @endif
                             </td>
-                            {{-- <td>
-                                {{ $user->employee->status == 1 ? 'Activo' : 'Inactivo' }}
-                            </td> --}}
                             <td>
                                 @if ($user->roles)
                                     {{ $user->roles[0]->display_name }}
                                 @endif
                             </td>
-                            <td >
+                            <td>
                                 <div class="d-flex">
 
                                     <div>
                                         <a style="" href="{{ route('admin.users.edit', ['user' => $user->id]) }}"
                                             type="button" class="btn btn-warning">Editar</a>
-                                        </div>
-                                        <div>
-                                            <form class="form-delete"
-                                            action="{{ route('admin.users.destroy', ['user' => $user->id]) }}" method="POST">
+                                    </div>
+                                    <div>
+                                        <form class="form-delete"
+                                            action="{{ route('admin.users.destroy', ['user' => $user->id]) }}"
+                                            method="POST">
                                             @csrf
                                             @method('delete')
                                             <button style="" type="submit" class="btn btn-danger">Borrar</button>
                                         </form>
                                     </div>
                                 </div>
-
-                                @role('admin')
-                                    <div class="w-100">
-                                        <form class="form-reset"
-                                            action="{{ route('admin.user.sendAccessUnit', ['user' => $user->id]) }}"
-                                            method="GET">
-                                            @csrf
-                                            <button style="" type="submit" class="btn btn-primary btn-block mt-1">Acceso</button>
-                                        </form>
-                                    </div>
-                                @endrole
+                                <div class="w-100">
+                                    <form class="form-reset"
+                                        action="{{ route('admin.user.sendAccessUnit', ['user' => $user->id]) }}"
+                                        method="GET">
+                                        @csrf
+                                        <button style="" type="submit"
+                                            class="btn btn-primary btn-block mt-1">Acceso</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
-
-        {{-- {{ $users->links() }} --}}
     </div>
 @stop
 

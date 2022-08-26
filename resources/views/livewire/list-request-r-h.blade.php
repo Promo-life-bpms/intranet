@@ -1,4 +1,23 @@
 <div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="">Buscar Usuario</label>
+                <input type="text" class="form-control" wire:model="searchName">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="">Buscar por estatus</label>
+                <select name="" id="" class="form-control" wire:model="searchStatus">
+                    <option value="">Todos</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Aprobada">Aprobada</option>
+                    <option value="Rechazada">Rechazada</option>
+                </select>
+            </div>
+        </div>
+    </div>
     <table class="table">
         <thead>
             <tr>
@@ -70,11 +89,12 @@
                                             {{ $request->payment }}
                                         </p>
                                         <p class="m-0">
-                                            <b>Estado: </b>
+                                            <b>Estado RH: </b>
                                             {{ $request->human_resources_status }}
                                         </p>
                                         <br>
                                         <p class="m-0"> <b> Dias ausente:</b>
+                                            {{-- {{ dd($request)}} --}}
                                             @foreach ($request->requestdays as $day)
                                                 @php
                                                     $dayFormater = \Carbon\Carbon::parse($day->start);

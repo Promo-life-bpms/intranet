@@ -33,61 +33,57 @@
 
             <tbody>
                 @foreach ($users as $user)
-                    @if ($user->status == 1)
-                        @if (!$user->hasRole('becario'))
-                            <tr>
-                                <td>{{ $user->name }} {{ $user->lastname }} <br>
-                                    Ingreso: {{ $user->employee->date_admission->format('d-m-Y') }} <br>
-                                    Dias disponibles de ambos periodos:
-                                    <b>{{ $user->vacationsAvailables()->where('period', '<>', 3)->sum('dv') }}</b>
-                                </td>
-                                @foreach ($user->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'ASC')->get() as $vacation)
-                                    <td>
-                                        @php
-                                            $dateCut = new \Carbon\Carbon($vacation->cutoff_date);
-                                        @endphp
-                                        <div>
-                                            <strong>Periodo:</strong>
-                                            {{ $dateCut->subYears(2)->format('d-m-Y') . ' - ' . $dateCut->addYear(1)->format('d-m-Y') }}
-                                            <br>
-                                            <strong>Vencimiento:</strong> {{ $dateCut->addYear(1)->format('d-m-Y') }}
-                                            <br>
-                                            <strong>Dias
-                                                {{ $vacation->period == 1 ? 'Actuales Calculados' : 'Vencidos Calculados' }}:</strong>
-                                            {{ $vacation->days_availables }}
-                                            <br>
-                                            {{-- <strong>Dias Disponibles
-                                                {{ $vacation->period == 1 ? 'del Periodo Actual: ' : 'del Periodo Vencido: ' }}</strong>
-                                            {{ $vacation->dv }}
-                                            <br> --}}
-                                            <strong>Dias Disfrutados
-                                                {{ $vacation->period == 1 ? 'del Periodo Actual: ' : 'del Periodo Vencido: ' }}</strong>
-                                            {{ $vacation->days_enjoyed }}
-                                            <!-- Button trigger modal -->
-                                            @role('admin')
-                                                <div class="d-flex">
-                                                    <input type="number"
-                                                        wire:model="daysEnjoyed.{{ $user->id }}.{{ $vacation->period }}"
-                                                        class="form-control" placeholder="Colocar dias disfrutados">
-                                                    <button class="btn btn-warning d-flex"
-                                                        wire:click="updateDays({{ $vacation->id }}, {{ $user->id }}, {{ $vacation->period }})">Actualizar
-                                                    </button>
-                                                </div>
-                                            @endrole()
-                                        </div>
-                                        @php
-                                            $dateCut = 0;
-                                        @endphp
-                                    </td>
-                                @endforeach
-                                @if (count($user->vacationsAvailables) == 1)
-                                    <td>
-                                        No hay informacion del periodo anterior
-                                    </td>
-                                @endif
-                            </tr>
+                    <tr>
+                        <td>{{ $user->name }} {{ $user->lastname }} <br>
+                            Ingreso: {{ $user->employee->date_admission->format('d-m-Y') }} <br>
+                            Dias disponibles de ambos periodos:
+                            <b>{{ $user->vacationsAvailables()->where('period', '<', 3)->sum('dv') }}</b>
+                        </td>
+                        @foreach ($user->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'ASC')->get() as $vacation)
+                            <td>
+                                @php
+                                    $dateCut = new \Carbon\Carbon($vacation->cutoff_date);
+                                @endphp
+                                <div>
+                                    <strong>Periodo:</strong>
+                                    {{ $dateCut->subYears(2)->format('d-m-Y') . ' - ' . $dateCut->addYear(1)->format('d-m-Y') }}
+                                    <br>
+                                    <strong>Vencimiento:</strong> {{ $dateCut->addYear(1)->format('d-m-Y') }}
+                                    <br>
+                                    <strong>Dias
+                                        {{ $vacation->period == 1 ? 'Actuales Calculados' : 'Vencidos Calculados' }}:</strong>
+                                    {{ $vacation->days_availables }}
+                                    <br>
+                                    <strong>Dias Disponibles
+                                        {{ $vacation->period == 1 ? 'del Periodo Actual: ' : 'del Periodo Vencido: ' }}</strong>
+                                    {{ $vacation->dv }}
+                                    <br>
+                                    <strong>Dias Disfrutados
+                                        {{ $vacation->period == 1 ? 'del Periodo Actual: ' : 'del Periodo Vencido: ' }}</strong>
+                                    {{ $vacation->days_enjoyed }}
+                                    <!-- Button trigger modal -->
+                                    {{-- @role('admin') --}}
+                                    <div class="d-flex">
+                                        <input type="number"
+                                            wire:model="daysEnjoyed.{{ $user->id }}.{{ $vacation->period }}"
+                                            class="form-control" placeholder="Colocar dias disfrutados">
+                                        <button class="btn btn-warning d-flex"
+                                            wire:click="updateDays({{ $vacation->id }}, {{ $user->id }}, {{ $vacation->period }})">Actualizar
+                                        </button>
+                                    </div>
+                                    {{-- @endrole() --}}
+                                </div>
+                                @php
+                                    $dateCut = 0;
+                                @endphp
+                            </td>
+                        @endforeach
+                        @if (count($user->vacationsAvailables) == 1)
+                            <td>
+                                No hay informacion del periodo anterior
+                            </td>
                         @endif
-                    @endif
+                    </tr>
                 @endforeach
             </tbody>
         </table>
