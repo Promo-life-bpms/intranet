@@ -11,5 +11,9 @@ class RequestRejected extends Model
 
     public $table = "request_rejected";
 
-    
+    protected $fillable = [
+        'title', 'start', 'end', 'users_id','requests_id'
+    ];
+
+
 }

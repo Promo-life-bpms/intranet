@@ -18,9 +18,9 @@ class Vacations extends Component
     public function render()
     {
         $keyWord = '%' . $this->keyWord . '%';
-        $users = User::orWhere('name', 'LIKE', $keyWord)
-            ->orWhere('lastname', 'LIKE', $keyWord)
-            ->paginate(5);
+        $users = User::where('name', 'LIKE', $keyWord)
+            ->where('status', '=', 1)
+            ->paginate(10);
         return view('admin.vacations.table-vacations', [
             'users' => $users,
         ]);
