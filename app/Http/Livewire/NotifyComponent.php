@@ -11,10 +11,10 @@ class NotifyComponent extends Component
 
     public $active = false;
 
-    public function getNotify()
+    public function getListeners()
     {
         return [
-            'echo:notification,MessageSendEvent' => 'updateNotifies',
+            'echo:chat,MessageSent' => 'updateNotifies',
         ];
     }
     public function render()

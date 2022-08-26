@@ -16,11 +16,15 @@
         </li>
         <li class="p-0 m-0"><img style="width: 45px;" src="{{ asset('/img/trademarket.png') }}" alt="trademarket">
         </li>
-        <li class="pr-4 m-0 d-flex align-items-center" id="app">
-            {{-- <notification-bell></notification-bell> --}}
-            <chat-component :authId="{{ auth()->user()->id }}"></chat-component>
+        <li class="d-none" id="app">
             <notify :auth-id={{ auth()->user()->id }}></notify>
+        </li>
+        <li class="pr-4 m-0 d-flex align-items-center">
+            {{-- <notification-bell></notification-bell> --}}
+            {{-- <chat-component :authId="{{ auth()->user()->id }}"></chat-component> --}}
             @livewire('notify-component')
+            @livewire('chat-component')
+
             {{-- <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false"> --}}
             <div class="dropdown">
