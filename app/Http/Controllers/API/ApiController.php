@@ -20,6 +20,8 @@ use App\Models\Notification;
 use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
+use App\Models\RequestRejected;
+use App\Models\Role;
 use App\Models\Vacations;
 use App\Notifications\CreateRequestNotification;
 use App\Notifications\MessageNotification;
@@ -36,7 +38,7 @@ use Error;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
-
+use Laratrust\Http\Controllers\RolesController;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -80,6 +82,9 @@ class ApiController extends Controller
         $user_id = $token->tokenable_id;
         $user = User::where('id', $user_id)->get();
         $vacations = DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv');
+        $user_roles = DB::table('role_user')->where("user_id",$user_id)->get("role_id");
+        $roles = [];
+        
         $data = [];
 
         if ($vacations == null) {
@@ -106,12 +111,28 @@ class ApiController extends Controller
                     ]);
                 }else{
                     array_push($expiration, (object)[
-                        'daysAvailables' => strval(floor($vacation->days_availables)) ,
+                        'daysAvailables' => strval(floor($vacation->dv)) ,
                         'cutoffDate' => date('d-m-Y', strtotime( $vacation->cutoff_date)),
                     ]);
                 }
             }
 
+            if(count($user_roles)==0){
+                array_push($roles, (object)[
+                    'id' => 0,
+                    'role' => "no data",
+                ]);
+            }else{
+                foreach($user_roles as $role){
+                    
+                    $rol = DB::table('roles')->where("id",$role->role_id)->get();     
+                    array_push($roles, (object)[
+                        'id' => $rol[0]->id,
+                        'role' => $rol[0]->display_name,
+                    ]);
+                }            
+            }
+                    
             array_push($data, (object)[
                 'id' => $usr->id,
                 'fullname' => $usr->name . " " . $usr->lastname,
@@ -121,6 +142,7 @@ class ApiController extends Controller
                 'position' => $usr->employee->position->name,
                 'daysAvailables' => intval($vacations),
                 'expiration'=>$expiration,
+                'roles'=>$roles
             ]);
         }
 
@@ -425,21 +447,17 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
         $employee = Employee::all()->where('user_id',$user_id);
-        $userData = User::all()->where('id',$user_id);
+
         if($token !=null || $token !=""){
             $date= date("G:i:s", strtotime($request->start));
             $manager = "";
             foreach($employee as $emp){
                 $manager = $emp->jefe_directo_id;
             }
-            $reveal_id = null;
-            if($request->revealID != "" ||$request->revealID != null ){
-                $reveal_id = intval($request->revealID);
-            }
+
             $req = new ModelsRequest();
             $req->employee_id = $user_id;
             $req->type_request = $request->typeRequest;
-            $req->reveal_id = $reveal_id;
             $req->payment = $request->payment;
             $req->reason = $request->reason;
             $req->start = $date;
@@ -450,29 +468,44 @@ class ApiController extends Controller
             $req->visible = 1;
             $req->save();
 
-            $days = explode( ",", $request->days);
-            
-            foreach($days as $day){
+            $days = collect( $request->days);
+            $daySelected= str_replace (array('["', '"]'), '' , $days);
+            $tag_array = explode(',', $daySelected );
+
+            foreach($tag_array as $day){
+                $daySelected2= str_replace (array('[', ']'), '' , $day);
+
+                $dayInt = intval($daySelected2);
+
+                $date = DateTime::createFromFormat('dmY', $dayInt);
 
                 $request_calendar = new RequestCalendar();
                 $request_calendar->title = "Día seleccionado";
-                $request_calendar->start = $day;
-                $request_calendar->end = $day;
+                $request_calendar->start =  $date->format('Y-m-d');
+                $request_calendar->end = $date->format('Y-m-d');
                 $request_calendar->users_id = $user_id;
                 $request_calendar->requests_id =$req->id;
                 $request_calendar->save();
 
-            } 
+            }
+            $data_send = [
+                "id"=>$req->id,
+                "employee_id"=>$user_id,
+                "direct_manager_status"=>"Pendiente",
+                "human_resources_status"=>"Pendiente"
+            ];
 
-             foreach($userData as $user){
-                $userReceiver = Employee::find($manager)->user; 
-                event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
-                $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
-            } 
+            $notification = new Notification();
+            $notification->id = $req->id;
+            $notification->type = "App\Notifications\RequestNotification";
+            $notification->notifiable_type = "App\Models\User";
+            $notification->notifiable_id = $manager;
+            $notification->data = json_encode($data_send);
+            $notification->save();
 
         }
 
-        return  true; 
+        return  true;
 
     }
 
@@ -1049,10 +1082,12 @@ class ApiController extends Controller
             ]);
             $image =  $request->file('image');
           
-           
-            $path = Storage::disk('postImages')->put('storage/posts', $image); 
+            $nombreImagen = time() . ' ' . str_replace(',', ' ', $image->getClientOriginalName());
+            $image->move(public_path('storage/posts/'), $nombreImagen);
 
-            return $path;
+            /* $path = Storage::disk('postImages')->put('storage/posts', $image);  */
+
+            return $nombreImagen;
 
         } else {
             return "";
@@ -1095,4 +1130,364 @@ class ApiController extends Controller
 
        
     }
+
+
+/*     Controladores app movil version 1.1 */
+
+    public function postRequestV11(Request $request)
+    {
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;
+        $employee = Employee::all()->where('user_id',$user_id);
+        $userData = User::all()->where('id',$user_id);
+        if($token !=null || $token !=""){
+            $date= date("G:i:s", strtotime($request->start));
+            $manager = "";
+            foreach($employee as $emp){
+                $manager = $emp->jefe_directo_id;
+            }
+            $reveal_id = null;
+            if($request->revealID != "" ||$request->revealID != null ){
+                $reveal_id = intval($request->revealID);
+            }
+            $req = new ModelsRequest();
+            $req->employee_id = $user_id;
+            $req->type_request = $request->typeRequest;
+            $req->reveal_id = $reveal_id;
+            $req->payment = $request->payment;
+            $req->reason = $request->reason;
+            $req->start = $date;
+            $req->end = null;
+            $req->direct_manager_id = $manager;
+            $req->direct_manager_status = "Pendiente";
+            $req->human_resources_status = "Pendiente";
+            $req->visible = 1;
+            $req->save();
+
+            $days = explode( ",", $request->days);
+            
+            foreach($days as $day){
+
+                $request_calendar = new RequestCalendar();
+                $request_calendar->title = "Día seleccionado";
+                $request_calendar->start = $day;
+                $request_calendar->end = $day;
+                $request_calendar->users_id = $user_id;
+                $request_calendar->requests_id =$req->id;
+                $request_calendar->save();
+
+            } 
+
+             foreach($userData as $user){
+                $userReceiver = Employee::find($manager)->user; 
+                event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
+                $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
+            } 
+
+        }
+
+        return  true; 
+
+    }
+
+    public function getManagerRequest($hashedToken)
+    {
+        $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
+        $user_id = $token->tokenable_id;
+        
+        $request = ModelsRequest::all()->where('direct_manager_id',$user_id);
+     
+        $data = [];
+        foreach ($request as $req) {
+
+            $days = "";
+
+            if ($req->start == null) {
+                $start = "Sin especificar";
+            } else {
+                $start = $req->start;
+            }
+
+            if ($req->end == null) {
+                $end = "Sin especificar";
+            } else {
+                $end = $req->end;
+            }
+
+            if ($req->direct_manager_status == "Rechazada" || $req->human_resources_status == "Rechazada") {
+                $date =  DB::table('request_rejected')->where('users_id', $req->employee_id)->where('requests_id', $req->id)->get();
+            } else {
+                $date = DB::table('request_calendars')->where('users_id', $req->employee_id)->where('requests_id', $req->id)->get();
+            }
+
+            foreach ($date as  $calendar) {
+                $days = $days . "," . $calendar->start;
+            }
+            
+            
+            $revealData = "";
+            if($req->reveal_id != null){
+                $userReveal = User::all()->where('id', $req->reveal_id);
+                foreach($userReveal as $user){
+                    $revealData = $user->name . " ".$user->lastname ;
+                }
+                
+            }else{
+                $revealData = "no data";
+            }
+
+            $days = substr($days, 1);
+
+            $user = User::all()->where('id', $req->employee_id)->first();
+            array_push($data, (object)[
+                'id' => $req->id,
+                'employeeID' => $req->employee_id,
+                'fullname' =>  $user->name . " " . $user->lastname,
+                'typeRequest' => $req->type_request,
+                'revealName' =>$revealData,
+                'payment' => $req->payment,
+                'payment' => $req->payment,
+                'start' => $start,
+                'end' => $end,
+                'reason' => $req->reason,
+                'directManagerId' => $req->direct_manager_id,
+                'directManagerStatus' => $req->direct_manager_status,
+                'humanResourcesStatus' => $req->human_resources_status,
+                'visible' => $req->visible,
+                'days' => $days,
+                
+            ]);
+        }
+
+        return $data;
+    }
+
+    public function getRhRequest()
+    {
+        $request = ModelsRequest::all()->where('direct_manager_status', 'Aprobada');
+
+        $data = [];
+        foreach ($request as $req) {
+
+            $days = "";
+
+            if ($req->start == null) {
+                $start = "Sin especificar";
+            } else {
+                $start = $req->start;
+            }
+
+            if ($req->end == null) {
+                $end = "Sin especificar";
+            } else {
+                $end = $req->end;
+            }
+
+            if ($req->direct_manager_status == "Rechazada" || $req->human_resources_status == "Rechazada") {
+                $date =  DB::table('request_rejected')->where('users_id', $req->employee_id)->where('requests_id', $req->id)->get();
+            } else {
+                $date = DB::table('request_calendars')->where('users_id', $req->employee_id)->where('requests_id', $req->id)->get();
+            }
+
+            foreach ($date as  $calendar) {
+                $days = $days . "," . $calendar->start;
+            }
+            
+            
+            $revealData = "";
+            if($req->reveal_id != null){
+                $userReveal = User::all()->where('id', $req->reveal_id);
+                foreach($userReveal as $user){
+                    $revealData = $user->name . " ".$user->lastname ;
+                }
+                
+            }else{
+                $revealData = "no data";
+            }
+
+            $days = substr($days, 1);
+
+            $user = User::all()->where('id', $req->employee_id)->first();
+            array_push($data, (object)[
+                'id' => $req->id,
+                'employeeID' => $req->employee_id,
+                'fullname' =>  $user->name . " " . $user->lastname,
+                'typeRequest' => $req->type_request,
+                'revealName' =>$revealData,
+                'payment' => $req->payment,
+                'payment' => $req->payment,
+                'start' => $start,
+                'end' => $end,
+                'reason' => $req->reason,
+                'directManagerId' => $req->direct_manager_id,
+                'directManagerStatus' => $req->direct_manager_status,
+                'humanResourcesStatus' => $req->human_resources_status,
+                'visible' => $req->visible,
+                'days' => $days,
+                
+            ]);
+        }
+
+        return $data;
+    }
+
+    public function postManagerRequest(Request $request)
+    {
+        if($request->responseRequest == "Aprobada"){
+
+            DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Aprobada"]);
+            $req = ModelsRequest::where('id', $request->requestID)->get()->first();
+
+            //Notificacion manual RH
+            $data_send = [
+                "id"=>$req->id,
+                "employee_id"=>$req->employee_id,
+                "direct_manager_status"=>"Aprobada",
+                "human_resources_status"=>"Pendiente"
+            ];
+
+            $usersRH =  Role::where('name', 'rh')->first()->users;
+            foreach ($usersRH as $userRH) {
+                $notification = new Notification();
+                $notification->id = uniqid();
+                $notification->type = "App\Notifications\RequestNotification";
+                $notification->notifiable_type = "App\Models\User";
+                $notification->notifiable_id = $userRH->id;
+                $notification->data = json_encode($data_send);
+                $notification->save();
+            }
+
+            return true;
+        
+        }else if($request->responseRequest == "Rechazada"){
+
+            DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Rechazada"]);
+            $requestCalendar = RequestCalendar::all()->where('requests_id',$request->requestID);
+            foreach($requestCalendar as $calendar){
+                $rejectedCalendar = new RequestRejected();
+                $rejectedCalendar->title = $calendar->title;
+                $rejectedCalendar->start = $calendar->start;
+                $rejectedCalendar->end = $calendar->end;
+                $rejectedCalendar->users_id = $calendar->users_id;
+                $rejectedCalendar->requests_id = $calendar->requests_id;
+                $rejectedCalendar->save();
+            }
+
+            return false;
+        }
+    }
+
+    public function postRhRequest(Request $request)
+    {
+        if($request->responseRequest == "Aprobada"){
+
+            DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Aprobada"]);
+            
+            $req = ModelsRequest::all()->where('id', $request->requestID)->first();
+            if ($req->type_request == "Solicitar vacaciones") {
+                $user = User::all()->where('id',$req->employee_id)->first();
+                $dias= RequestCalendar::all()->where('requests_id',  $request->requestID);
+                $totalDiasSolicitados = count($dias);
+                $totalDiasDisponibles = $user->vacationsAvailables()->orderBy('period', 'DESC')->sum('dv');
+                if ((int) $totalDiasDisponibles >= $totalDiasSolicitados) {
+                    foreach ($user->vacationsAvailables()->orderBy('period', 'DESC')->get() as $dataVacation) {
+
+                        if ($dataVacation->dv <= $totalDiasSolicitados && $totalDiasSolicitados == count($request->requestdays)) {
+                            if ($dataVacation->dv > 0) {
+                                $dataVacation->days_enjoyed = (int) $dataVacation->days_availables;
+                                $totalDiasSolicitados = (int)$totalDiasSolicitados - (int) $dataVacation->dv;
+                                $dataVacation->dv = 0;
+                                $dataVacation->save();
+                            }
+                        } else {
+                            $dataVacation->days_enjoyed = $dataVacation->days_enjoyed + $totalDiasSolicitados;
+                            $dataVacation->dv = $dataVacation->dv - $totalDiasSolicitados;
+                            $dataVacation->save();
+                            break;
+                        }
+
+                    }
+                }else{
+                    DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Pendiente"]);
+                    
+                    return 2;
+                }
+            }
+
+            return true;
+        
+        }else if($request->responseRequest == "Rechazada"){
+
+            DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Rechazada"]);
+            $requestCalendar = RequestCalendar::all()->where('requests_id',$request->requestID);
+            foreach($requestCalendar as $calendar){
+                $rejectedCalendar = new RequestRejected();
+                $rejectedCalendar->title = $calendar->title;
+                $rejectedCalendar->start = $calendar->start;
+                $rejectedCalendar->end = $calendar->end;
+                $rejectedCalendar->users_id = $calendar->users_id;
+                $rejectedCalendar->requests_id = $calendar->requests_id;
+                $rejectedCalendar->save();
+            }
+
+            return false;
+        }
+    }
+
+    public function postCreateRequest(Request $request)
+    {
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;
+        $employee = Employee::all()->where('user_id',$user_id);
+        $userData = User::all()->where('id',$user_id);
+        if($token !=null || $token !=""){
+            $date= date("G:i:s", strtotime($request->start));
+            $manager = "";
+            foreach($employee as $emp){
+                $manager = $emp->jefe_directo_id;
+            }
+            $reveal_id = null;
+            if($request->revealID != "" ||$request->revealID != null ){
+                $reveal_id = intval($request->revealID);
+            }
+            $req = new ModelsRequest();
+            $req->employee_id = $user_id;
+            $req->type_request = $request->typeRequest;
+            $req->reveal_id = $reveal_id;
+            $req->payment = $request->payment;
+            $req->reason = $request->reason;
+            $req->start = $date;
+            $req->end = null;
+            $req->direct_manager_id = $manager;
+            $req->direct_manager_status = "Pendiente";
+            $req->human_resources_status = "Pendiente";
+            $req->visible = 1;
+            $req->save();
+
+            $days = explode( ",", $request->days);
+            
+            foreach($days as $day){
+
+                $request_calendar = new RequestCalendar();
+                $request_calendar->title = "Día seleccionado";
+                $request_calendar->start = $day;
+                $request_calendar->end = $day;
+                $request_calendar->users_id = $user_id;
+                $request_calendar->requests_id =$req->id;
+                $request_calendar->save();
+
+            } 
+
+             foreach($userData as $user){
+                $userReceiver = Employee::find($manager)->user; 
+                event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
+                $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
+            } 
+
+        }
+
+        return  true; 
+
+    }
 }
+
