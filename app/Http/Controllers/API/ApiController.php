@@ -421,6 +421,10 @@ class ApiController extends Controller
             }
 
             $days = substr($days, 1);
+            
+            if($days == null || $days == false){
+                $days = "dias no encontrados";
+            }
 
             array_push($data, (object)[
                 'id' => $req->id,
@@ -1242,6 +1246,10 @@ class ApiController extends Controller
 
             $days = substr($days, 1);
 
+            if($days == null || $days == false){
+                $days = "dias no encontrados";
+            }
+
             $user = User::all()->where('id', $req->employee_id)->first();
             array_push($data, (object)[
                 'id' => $req->id,
@@ -1310,6 +1318,10 @@ class ApiController extends Controller
             }
 
             $days = substr($days, 1);
+
+            if($days == null || $days == false){
+                $days = "dias no encontrados";
+            }
 
             $user = User::all()->where('id', $req->employee_id)->first();
             array_push($data, (object)[
