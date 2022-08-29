@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Events\CreateRequestEvent;
+use App\Events\ManagerResponseRequestEvent;
 use App\Events\MessageSent;
+use App\Events\RHResponseRequestEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\User;
@@ -24,7 +26,9 @@ use App\Models\RequestRejected;
 use App\Models\Role;
 use App\Models\Vacations;
 use App\Notifications\CreateRequestNotification;
+use App\Notifications\ManagerResponseRequestNotification;
 use App\Notifications\MessageNotification;
+use App\Notifications\RHResponseRequestNotification;
 use Carbon\Carbon;
 use DateTime;
 use Exception;
@@ -1357,6 +1361,10 @@ class ApiController extends Controller
                 $notification->save();
             }
 
+            $user = User::all()->where('id',$req->direct_manager_id)->first();
+            $userReceiver = Employee::find($req->employee_id)->user;
+            event(new ManagerResponseRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $req->direct_manager_status));
+            $userReceiver->notify(new ManagerResponseRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $req->direct_manager_status));
             return true;
         
         }else if($request->responseRequest == "Rechazada"){
@@ -1372,6 +1380,12 @@ class ApiController extends Controller
                 $rejectedCalendar->requests_id = $calendar->requests_id;
                 $rejectedCalendar->save();
             }
+
+            $req = ModelsRequest::all()->where('id', $request->requestID)->first();
+            $user = User::all()->where('id',$req->direct_manager_id)->first();
+            $userReceiver = Employee::find($req->employee_id)->user;
+            event(new ManagerResponseRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $req->direct_manager_status));
+            $userReceiver->notify(new ManagerResponseRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $req->direct_manager_status));
 
             return false;
         }
@@ -1414,11 +1428,19 @@ class ApiController extends Controller
                 }
             }
 
+            $rh = DB::table('roles')->where('display_name','Recursos Humanos')->first();
+            $rhID= DB::table('role_user')->where('role_id',$rh->id)->first();
+            $user = User::all()->where('id',$rhID->user_id)->first();
+            $userReceiver = Employee::find($request->requestID)->user;
+            event(new RHResponseRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $req->human_resources_status));
+            $userReceiver->notify(new RHResponseRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $req->human_resources_status));
+
             return true;
         
         }else if($request->responseRequest == "Rechazada"){
 
             DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Rechazada"]);
+            $req = ModelsRequest::all()->where('id', $request->requestID)->first();
             $requestCalendar = RequestCalendar::all()->where('requests_id',$request->requestID);
             foreach($requestCalendar as $calendar){
                 $rejectedCalendar = new RequestRejected();
@@ -1429,6 +1451,13 @@ class ApiController extends Controller
                 $rejectedCalendar->requests_id = $calendar->requests_id;
                 $rejectedCalendar->save();
             }
+           
+            $rh = DB::table('roles')->where('display_name','Recursos Humanos')->first();
+            $rhID= DB::table('role_user')->where('role_id',$rh->id)->first();
+            $user = User::all()->where('id',$rhID->user_id)->first();
+            $userReceiver = Employee::find($request->requestID)->user;
+            event(new RHResponseRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $req->human_resources_status));
+            $userReceiver->notify(new RHResponseRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $req->human_resources_status));
 
             return false;
         }
