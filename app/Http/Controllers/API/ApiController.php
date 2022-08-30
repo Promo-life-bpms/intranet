@@ -121,22 +121,41 @@ class ApiController extends Controller
                 }
             }
 
-            if(count($user_roles)==0){
+            $directManager = Employee::all()->where('jefe_directo_id',$usr->id);
+            $rhID = Role::all()->where('display_name','Recursos Humanos')->first();
+            $isRH = DB::table('role_user')->where('user_id', $usr->id)->where('role_id',$rhID->id)->first();
+            
+            if($isRH != null){
                 array_push($roles, (object)[
-                    'id' => 0,
-                    'role' => "no data",
+                    'id' => 1,
+                    'role' => "Recursos Humanos",
                 ]);
-            }else{
-                foreach($user_roles as $role){
-                    
-                    $rol = DB::table('roles')->where("id",$role->role_id)->get();     
+                
+                if(count($directManager) != 0){
                     array_push($roles, (object)[
-                        'id' => $rol[0]->id,
-                        'role' => $rol[0]->display_name,
+                        'id' => 1,
+                        'role' => "Manager",
                     ]);
-                }            
+                }else{
+                    array_push($roles, (object)[
+                        'id' => 1,
+                        'role' => "Empleado",
+                    ]);
+                }
+            }else{
+                if(count($directManager) != 0){
+                    array_push($roles, (object)[
+                        'id' => 1,
+                        'role' => "Manager",
+                    ]);
+                }else{
+                    array_push($roles, (object)[
+                        'id' => 1,
+                        'role' => "Empleado",
+                    ]);
+                }
             }
-                    
+        
             array_push($data, (object)[
                 'id' => $usr->id,
                 'fullname' => $usr->name . " " . $usr->lastname,
