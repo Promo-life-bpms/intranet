@@ -122,40 +122,29 @@ class ApiController extends Controller
             }
 
             $directManager = Employee::all()->where('jefe_directo_id',$usr->id);
+           
             $rhID = Role::all()->where('display_name','Recursos Humanos')->first();
             $isRH = DB::table('role_user')->where('user_id', $usr->id)->where('role_id',$rhID->id)->first();
             
+            if(count($directManager) != 0){
+                array_push($roles, (object)[
+                    'id' => 1,
+                    'role' => "Manager",
+                ]);
+            }else{
+                array_push($roles, (object)[
+                    'id' => 1,
+                    'role' => "Empleado",
+                ]);
+            }
+
             if($isRH != null){
                 array_push($roles, (object)[
                     'id' => 1,
                     'role' => "Recursos Humanos",
-                ]);
-                
-                if(count($directManager) != 0){
-                    array_push($roles, (object)[
-                        'id' => 1,
-                        'role' => "Manager",
-                    ]);
-                }else{
-                    array_push($roles, (object)[
-                        'id' => 1,
-                        'role' => "Empleado",
-                    ]);
-                }
-            }else{
-                if(count($directManager) != 0){
-                    array_push($roles, (object)[
-                        'id' => 1,
-                        'role' => "Manager",
-                    ]);
-                }else{
-                    array_push($roles, (object)[
-                        'id' => 1,
-                        'role' => "Empleado",
-                    ]);
-                }
+                ]);                
             }
-        
+            
             array_push($data, (object)[
                 'id' => $usr->id,
                 'fullname' => $usr->name . " " . $usr->lastname,
