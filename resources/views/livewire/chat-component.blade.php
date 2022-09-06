@@ -14,7 +14,8 @@
                 <div style="max-height: 250px; overflow-y: scroll" id="style-3"
                     class="{{ !$listUsersCollapse ? 'd-none' : '' }}">
                     @foreach ($users as $user)
-                        <div class="d-flex flex-row p-2 usuario" wire:click="openChat({{ $user->id }})" style="cursor: pointer">
+                        <div class="d-flex flex-row p-2 usuario" wire:click="openChat({{ $user->id }})"
+                            style="cursor: pointer">
 
                             <div class="img_cont">
                                 <img src="https://www.kindpng.com/picc/m/269-2697881_computer-icons-user-clip-art-transparent-png-icon.png"
@@ -46,6 +47,25 @@
             @endforeach
         </div>
     </div>
+    <script>
+        window.addEventListener('chatStorage', event => {
+            const listaChats = event.detail.chat;
+            console.log(listaChats);
+            localStorage.setItem("statusChat", JSON.stringify(listaChats));
+
+        })
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('livewire:load', function() {
+                const chatStatus = JSON.parse(localStorage.getItem("statusChat"));
+                @this.listaChatsAbiertos = chatStatus;
+
+                console.log(chatStatus);
+
+            })
+
+        })
+    </script>
     <style scoped>
         @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap");
 

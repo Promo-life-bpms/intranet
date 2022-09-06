@@ -16,7 +16,7 @@
         </div>
         <div class="cont">
             <div class="{{ !$ChatCollapse ? 'd-none' : '' }}">
-                <div style="height: 300px; overflow-y: auto" class="style-3" id="formChat">
+                <div style="height: 300px; overflow-y: auto" class="style-3" id="formChat{{ $idUser }}">
                     {{-- <button wire:click="messageScroll">Scroll</button> --}}
                     @foreach ($mensajesEnviados as $mensaje)
                         <div
@@ -54,12 +54,16 @@
 
     </div>
     <script>
-        window.addEventListener('messageNew', event => {
-            setTimeout(() => {
-                const objDiv = document.getElementById("formChat");
-                objDiv.scrollTop = objDiv.scrollHeight;
-            }, 50);
-        });
+        let id = "{{ $idUser }}"
+        alert("formChat" + id)
+        document.addEventListener('messageNew', () => {
+
+            const objDiv = document.getElementById("formChat" + id);
+            objDiv.scrollTop = objDiv.scrollHeight;
+            console.log("evento recibido");
+
+
+        })
     </script>
 
     <style scoped>

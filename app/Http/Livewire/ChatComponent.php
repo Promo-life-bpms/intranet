@@ -46,6 +46,7 @@ class ChatComponent extends Component
                 array_push($this->listaChatsAbiertos, $id);
             }
         }
+        $this->dispatchBrowserEvent('chatStorage', ['chat' => $this->listaChatsAbiertos]);
     }
     public function collapseListUsers()
     {
@@ -55,5 +56,7 @@ class ChatComponent extends Component
     public function cerrarChat($id)
     {
         unset($this->listaChatsAbiertos[array_search($id, $this->listaChatsAbiertos)]);
+
+        $this->dispatchBrowserEvent('chatStorage', ['chat' => $this->listaChatsAbiertos]);
     }
 }
