@@ -1,6 +1,6 @@
 <div>
 
-    <div class="wrapper1 my-0 mx-2">
+    <div class="animate__animated animate__bounceIn wrapper1 my-0 mx-2">
         <div class="head-text d-flex">
             {{ $user->name }}
             <div class="d-flex" style="align-items: center">
@@ -55,7 +55,7 @@
     </div>
     <script>
         let id = "{{ $idUser }}"
-        alert("formChat" + id)
+        /* alert("formChat" + id) */
         document.addEventListener('messageNew', () => {
 
             const objDiv = document.getElementById("formChat" + id);
@@ -64,6 +64,9 @@
 
 
         })
+
+        /* const element = document.querySelector('.my-element');
+        element.classList.add('animate__animated', 'animate__bounceIn'); */
     </script>
 
     <style scoped>
