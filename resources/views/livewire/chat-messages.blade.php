@@ -1,6 +1,6 @@
 <div>
 
-    <div class="animate__animated animate__bounceIn wrapper1 my-0 mx-2">
+    <div class="wrapper1 my-0 mx-2" id="chatContent">
         <div class="head-text d-flex">
             {{ $user->name }}
             <div class="d-flex" style="align-items: center">
@@ -17,7 +17,6 @@
         <div class="cont">
             <div class="{{ !$ChatCollapse ? 'd-none' : '' }}">
                 <div style="height: 300px; overflow-y: auto" class="style-3" id="formChat{{ $idUser }}">
-                    {{-- <button wire:click="messageScroll">Scroll</button> --}}
                     @foreach ($mensajesEnviados as $mensaje)
                         <div
                             class="d-flex flex-row p-2
@@ -55,18 +54,24 @@
     </div>
     <script>
         let id = "{{ $idUser }}"
+        let receiver = "{{ $lastMessage->receiver_id }}"
+        alert(receiver);
         /* alert("formChat" + id) */
         document.addEventListener('messageNew', () => {
 
             const objDiv = document.getElementById("formChat" + id);
             objDiv.scrollTop = objDiv.scrollHeight;
             console.log("evento recibido");
-
-
         })
 
-        /* const element = document.querySelector('.my-element');
-        element.classList.add('animate__animated', 'animate__bounceIn'); */
+
+        /* if (id == receiver_id) {
+            const chatContent = document.querySelector('.wrapper1');
+            chatContent.classList.add('animate__animated', 'animate__bounceIn');
+
+        } else {
+
+        } */
     </script>
 
     <style scoped>

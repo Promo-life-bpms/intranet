@@ -10,12 +10,9 @@ class ChatMessages extends Component
 {
     public $idUser;
     public $ChatCollapse = true;
+    public $lastMessage;
 
     public $mensajesEnviados = [];
-
-    protected $listeners = [
-        'messageEvent' => 'fetchMessages',
-    ];
 
     public function getListeners()
     {
@@ -54,7 +51,7 @@ class ChatMessages extends Component
     //obtener mensajes
     public function fetchMessages($message)
     {
-        $message;
+        $this->lastMessage = $message;
     }
     public function updateMessage($mensajes)
     {
@@ -65,7 +62,8 @@ class ChatMessages extends Component
         $this->mensajesEnviados = DB::table('messages')
             ->where('receiver_id', auth()->user()->id)
             ->where('transmitter_id', $this->idUser)->union($mensajes)->orderBy('created_at', 'asc')->get();
-        $this->dispatchBrowserEvent('messageNew', ["id" => $this->idUser]);
+
+        $this->dispatchBrowserEvent('messageNew', ["id" => $this->idUser, "lastMessage" => $this->lastMessage->receiver_id]);
     }
     /* public function messageScroll()
     {
