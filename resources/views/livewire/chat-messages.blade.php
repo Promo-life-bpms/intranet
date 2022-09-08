@@ -53,25 +53,23 @@
 
     </div>
     <script>
-        let id = "{{ $idUser }}"
-        let receiver = "{{ $lastMessage->receiver_id }}"
-        alert(receiver);
         /* alert("formChat" + id) */
-        document.addEventListener('messageNew', () => {
-
-            const objDiv = document.getElementById("formChat" + id);
-            objDiv.scrollTop = objDiv.scrollHeight;
+        let id = "{{ $idUser }}"
+        document.addEventListener('messageNew', event => {
+            let receiver = event.detail.receiver_id
             console.log("evento recibido");
+            if (id == receiver) {
+                const objDiv = document.getElementById("formChat" + id);
+                objDiv.scrollTop = objDiv.scrollHeight;
+
+            }
+            if (receiver == {{ auth()->id() }}) {
+                const chatContent = document.querySelector('.wrapper1');
+                chatContent.classList.add('animate__animated', 'animate__pulse');
+                const objDiv = document.getElementById("formChat" + id);
+                objDiv.scrollTop = objDiv.scrollHeight;
+            }
         })
-
-
-        /* if (id == receiver_id) {
-            const chatContent = document.querySelector('.wrapper1');
-            chatContent.classList.add('animate__animated', 'animate__bounceIn');
-
-        } else {
-
-        } */
     </script>
 
     <style scoped>
@@ -137,5 +135,14 @@
             margin-top: 0;
             font-size: 10px;
         }
+
+        .animate__animated.animate__pulse {
+            --animate-duration: 2s;
+            --animate-repeat: 3;
+
+        }
+
+        /* This changes all the animations globally */
+
     </style>
 </div>

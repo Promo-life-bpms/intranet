@@ -33,7 +33,7 @@ class ChatMessages extends Component
 
         $user = User::find($this->idUser);
         return view('livewire.chat-messages', compact('user'));
-        $this->dispatchBrowserEvent('messageNew');
+
     }
 
     public function collapseChat()
@@ -51,10 +51,11 @@ class ChatMessages extends Component
     //obtener mensajes
     public function fetchMessages($message)
     {
-        $this->lastMessage = $message;
+        $message;
     }
-    public function updateMessage($mensajes)
+    public function updateMessage($message)
     {
+
         $mensajes = DB::table('messages')
             ->where('transmitter_id', auth()->user()->id)
             ->where('receiver_id', $this->idUser);
@@ -63,7 +64,7 @@ class ChatMessages extends Component
             ->where('receiver_id', auth()->user()->id)
             ->where('transmitter_id', $this->idUser)->union($mensajes)->orderBy('created_at', 'asc')->get();
 
-        $this->dispatchBrowserEvent('messageNew', ["id" => $this->idUser, "lastMessage" => $this->lastMessage->receiver_id]);
+        $this->dispatchBrowserEvent('messageNew', ["id" => $this->idUser, "receiver_id" => $message['receptor']]);
     }
     /* public function messageScroll()
     {
