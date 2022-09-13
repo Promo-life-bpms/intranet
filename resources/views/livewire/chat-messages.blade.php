@@ -65,14 +65,15 @@
             }
             if (receiver == {{ auth()->id() }}) {
                 const chatContent = document.querySelector('.wrapper1');
-                chatContent.classList.add('animate__animated', 'animate__pulse');
+                chatContent.classList.add('animate__animated', 'animate__pulse', 'animate__repeat-3');
                 const objDiv = document.getElementById("formChat" + id);
                 objDiv.scrollTop = objDiv.scrollHeight;
             }
+
         })
     </script>
 
-    <style scoped>
+    <style>
         .cont {
             width: 300px;
             display: flex;
@@ -135,14 +136,5 @@
             margin-top: 0;
             font-size: 10px;
         }
-
-        .animate__animated.animate__pulse {
-            --animate-duration: 2s;
-            --animate-repeat: 3;
-
-        }
-
-        /* This changes all the animations globally */
-
     </style>
 </div>

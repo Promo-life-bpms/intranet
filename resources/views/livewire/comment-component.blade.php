@@ -18,6 +18,6 @@
         class="form-control px-2 flex-grow-1  @error('comment') is-invalid @enderror"
         placeholder="Escribe tu comentario...">
     <button class="boton" wire:click="comentar">
-        >
+        Comentar
     </button>
 </div>
