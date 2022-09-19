@@ -89,12 +89,11 @@
                                             {{ $request->payment }}
                                         </p>
                                         <p class="m-0">
-                                            <b>Estado RH: </b>
+                                            <b>Estado: </b>
                                             {{ $request->human_resources_status }}
                                         </p>
                                         <br>
                                         <p class="m-0"> <b> Dias ausente:</b>
-                                            {{-- {{ dd($request)}} --}}
                                             @foreach ($request->requestdays as $day)
                                                 @php
                                                     $dayFormater = \Carbon\Carbon::parse($day->start);

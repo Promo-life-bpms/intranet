@@ -86,9 +86,9 @@ class ApiController extends Controller
         $user_id = $token->tokenable_id;
         $user = User::where('id', $user_id)->get();
         $vacations = DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv');
-        $user_roles = DB::table('role_user')->where("user_id",$user_id)->get("role_id");
+        $user_roles = DB::table('role_user')->where("user_id", $user_id)->get("role_id");
         $roles = [];
-        
+
         $data = [];
 
         if ($vacations == null) {
@@ -103,48 +103,48 @@ class ApiController extends Controller
             } else {
                 $image = $usr->image;
             }
-            $expiration= [];
+            $expiration = [];
 
-            $vacation_duration= Vacations::all()->where('users_id',$usr->id);
+            $vacation_duration = Vacations::all()->where('users_id', $usr->id);
 
-            foreach($vacation_duration as $vacation){
-                if($vacation == null || $vacation == []){
+            foreach ($vacation_duration as $vacation) {
+                if ($vacation == null || $vacation == []) {
                     array_push($expiration, (object)[
                         'daysAvailables' => "Sin dias disponibles",
                         'cutoffDate' => "Sin fecha de corte disponible",
                     ]);
-                }else{
+                } else {
                     array_push($expiration, (object)[
-                        'daysAvailables' => strval(floor($vacation->dv)) ,
-                        'cutoffDate' => date('d-m-Y', strtotime( $vacation->cutoff_date)),
+                        'daysAvailables' => strval(floor($vacation->dv)),
+                        'cutoffDate' => date('d-m-Y', strtotime($vacation->cutoff_date)),
                     ]);
                 }
             }
 
-            $directManager = Employee::all()->where('jefe_directo_id',$usr->id);
-           
-            $rhID = Role::all()->where('display_name','Recursos Humanos')->first();
-            $isRH = DB::table('role_user')->where('user_id', $usr->id)->where('role_id',$rhID->id)->first();
-            
-            if(count($directManager) != 0){
+            $directManager = Employee::all()->where('jefe_directo_id', $usr->id);
+
+            $rhID = Role::all()->where('display_name', 'Recursos Humanos')->first();
+            $isRH = DB::table('role_user')->where('user_id', $usr->id)->where('role_id', $rhID->id)->first();
+
+            if (count($directManager) != 0) {
                 array_push($roles, (object)[
                     'id' => 1,
                     'role' => "Manager",
                 ]);
-            }else{
+            } else {
                 array_push($roles, (object)[
                     'id' => 1,
                     'role' => "Empleado",
                 ]);
             }
 
-            if($isRH != null){
+            if ($isRH != null) {
                 array_push($roles, (object)[
                     'id' => 1,
                     'role' => "Recursos Humanos",
-                ]);                
+                ]);
             }
-            
+
             array_push($data, (object)[
                 'id' => $usr->id,
                 'fullname' => $usr->name . " " . $usr->lastname,
@@ -153,8 +153,8 @@ class ApiController extends Controller
                 'department' => $usr->employee->position->department->name,
                 'position' => $usr->employee->position->name,
                 'daysAvailables' => intval($vacations),
-                'expiration'=>$expiration,
-                'roles'=>$roles
+                'expiration' => $expiration,
+                'roles' => $roles
             ]);
         }
 
@@ -242,7 +242,7 @@ class ApiController extends Controller
                     $month = new \Carbon\Carbon();
                     $totalAdmission = $month->format('Y');
 
-                    $totalYears= $employee->date_admission->format('Y');
+                    $totalYears = $employee->date_admission->format('Y');
 
 
                     array_push($employees, (object)[
@@ -250,7 +250,7 @@ class ApiController extends Controller
                         'name' => $employee->user->name,
                         'lastname' => $employee->user->lastname,
                         'photo' => $image,
-                        'date' => $totalAdmission-$totalYears ,
+                        'date' => $totalAdmission - $totalYears,
                     ]);
                 }
             }
@@ -415,22 +415,21 @@ class ApiController extends Controller
             foreach ($date as  $calendar) {
                 $days = $days . "," . $calendar->start;
             }
-            
-            
+
+
             $revealData = "";
-            if($req->reveal_id != null){
+            if ($req->reveal_id != null) {
                 $userReveal = User::all()->where('id', $req->reveal_id);
-                foreach($userReveal as $user){
-                    $revealData = $user->name . " ".$user->lastname ;
+                foreach ($userReveal as $user) {
+                    $revealData = $user->name . " " . $user->lastname;
                 }
-                
-            }else{
+            } else {
                 $revealData = "no data";
             }
 
             $days = substr($days, 1);
-            
-            if($days == null || $days == false){
+
+            if ($days == null || $days == false) {
                 $days = "dias no encontrados";
             }
 
@@ -438,7 +437,7 @@ class ApiController extends Controller
                 'id' => $req->id,
                 'employeeID' => $req->employee_id,
                 'typeRequest' => $req->type_request,
-                'revealName' =>$revealData,
+                'revealName' => $revealData,
                 'payment' => $req->payment,
                 'payment' => $req->payment,
                 'start' => $start,
@@ -462,12 +461,12 @@ class ApiController extends Controller
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
-        $employee = Employee::all()->where('user_id',$user_id);
+        $employee = Employee::all()->where('user_id', $user_id);
 
-        if($token !=null || $token !=""){
-            $date= date("G:i:s", strtotime($request->start));
+        if ($token != null || $token != "") {
+            $date = date("G:i:s", strtotime($request->start));
             $manager = "";
-            foreach($employee as $emp){
+            foreach ($employee as $emp) {
                 $manager = $emp->jefe_directo_id;
             }
 
@@ -484,12 +483,12 @@ class ApiController extends Controller
             $req->visible = 1;
             $req->save();
 
-            $days = collect( $request->days);
-            $daySelected= str_replace (array('["', '"]'), '' , $days);
-            $tag_array = explode(',', $daySelected );
+            $days = collect($request->days);
+            $daySelected = str_replace(array('["', '"]'), '', $days);
+            $tag_array = explode(',', $daySelected);
 
-            foreach($tag_array as $day){
-                $daySelected2= str_replace (array('[', ']'), '' , $day);
+            foreach ($tag_array as $day) {
+                $daySelected2 = str_replace(array('[', ']'), '', $day);
 
                 $dayInt = intval($daySelected2);
 
@@ -500,15 +499,14 @@ class ApiController extends Controller
                 $request_calendar->start =  $date->format('Y-m-d');
                 $request_calendar->end = $date->format('Y-m-d');
                 $request_calendar->users_id = $user_id;
-                $request_calendar->requests_id =$req->id;
+                $request_calendar->requests_id = $req->id;
                 $request_calendar->save();
-
             }
             $data_send = [
-                "id"=>$req->id,
-                "employee_id"=>$user_id,
-                "direct_manager_status"=>"Pendiente",
-                "human_resources_status"=>"Pendiente"
+                "id" => $req->id,
+                "employee_id" => $user_id,
+                "direct_manager_status" => "Pendiente",
+                "human_resources_status" => "Pendiente"
             ];
 
             $notification = new Notification();
@@ -518,11 +516,9 @@ class ApiController extends Controller
             $notification->notifiable_id = $manager;
             $notification->data = json_encode($data_send);
             $notification->save();
-
         }
 
         return  true;
-
     }
 
 
@@ -542,22 +538,21 @@ class ApiController extends Controller
             $fullname = "";
             $totalLikes = 0;
             $photo = "";
-            $isLike =false;
-            $user= User::all()->where('id', $pub->user_id);
-            $publi_comments= [];
+            $isLike = false;
+            $user = User::all()->where('id', $pub->user_id);
+            $publi_comments = [];
 
             foreach ($likes as $like) {
                 if ($like->publication_id == $pub->id) {
                     $totalLikes = $totalLikes + 1;
-                    if($like->user_id == $user_id){
+                    if ($like->user_id == $user_id) {
 
                         $isLike = true;
                     }
                 }
-
             }
 
-            foreach($user as $usr){
+            foreach ($user as $usr) {
                 $fullname = $usr->name . " " . $usr->lastname;
 
                 $image = '';
@@ -568,12 +563,12 @@ class ApiController extends Controller
                 }
             }
 
-            foreach($comments as $com){
+            foreach ($comments as $com) {
 
-                if($com->publication_id == $pub->id){
+                if ($com->publication_id == $pub->id) {
 
-                    $comment_user = User::all()->where('id',$com->user_id);
-                    foreach($comment_user as $com_user){
+                    $comment_user = User::all()->where('id', $com->user_id);
+                    foreach ($comment_user as $com_user) {
 
                         $com_fullname = $com_user->name . " " . $com_user->lastname;
 
@@ -582,7 +577,6 @@ class ApiController extends Controller
                             $com_image = "img/default_user.png";
                         } else {
                             $com_image = $com_user->image;
-
                         }
 
                         array_push($publi_comments, (object)[
@@ -593,31 +587,28 @@ class ApiController extends Controller
                             'content' => $com->content,
                         ]);
                     }
-
-
                 }
             }
 
-            $publicationImageData =[];
-            $publicationImage = Media::all()->where('publication_id',$pub->id);
+            $publicationImageData = [];
+            $publicationImage = Media::all()->where('publication_id', $pub->id);
 
-            if (count($publicationImage) >0) {
-                $publicationImageData =[];
-                foreach($publicationImage as $media){
+            if (count($publicationImage) > 0) {
+                $publicationImageData = [];
+                foreach ($publicationImage as $media) {
                     array_push($publicationImageData, (object)[
                         'typeFile' =>  $media->type_file,
-                        'resource' => "storage/posts/". $media->resource,
+                        'resource' => "storage/posts/" . $media->resource,
                     ]);
                 }
-
-            }else{
+            } else {
                 array_push($publicationImageData, (object)[
                     'typeFile' => "no data",
                     'resource' => "no data",
                 ]);
             }
 
-            if($publi_comments == []){
+            if ($publi_comments == []) {
                 array_push($publi_comments, (object)[
 
                     'id' => $pub->id,
@@ -635,22 +626,23 @@ class ApiController extends Controller
                 'contentPublication' => $pub->content_publication,
                 'photoPublication' => $publicationImageData,
                 'likes' => $totalLikes,
-                'isLike'=>$isLike,
-                'comments'=>$publi_comments,
+                'isLike' => $isLike,
+                'comments' => $publi_comments,
             ]);
         }
 
         return  $data;
     }
 
-    public function postPublications(Request $request){
+    public function postPublications(Request $request)
+    {
 
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
 
-        if($user_id!=null || $user_id !=[]){
+        if ($user_id != null || $user_id != []) {
             $contPublication = "";
-            if($request->contentPublication != null || $request->contentPublication != ""){
+            if ($request->contentPublication != null || $request->contentPublication != "") {
                 $contPublication = $request->contentPublication;
             }
             $data = new Publications();
@@ -660,26 +652,23 @@ class ApiController extends Controller
             $data->photo_public = "";
             $data->save();
 
-            if($request->photo != null || $request->photo != "" ){
-                $lastPublication = Publications::all()->where('user_id',$user_id)->last();
-                
+            if ($request->photo != null || $request->photo != "") {
+                $lastPublication = Publications::all()->where('user_id', $user_id)->last();
+
                 $media = new Media();
                 $media->id = hexdec(uniqid());
                 $media->publication_id = $lastPublication->id;
-                $media->resource= $request->photo;
+                $media->resource = $request->photo;
                 $media->type_file = "photo";
                 $media->save();
-            } 
+            }
 
             return $token;
-
-            
-
         }
-
     }
 
-    public function postLike(Request $request){
+    public function postLike(Request $request)
+    {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
 
@@ -687,36 +676,37 @@ class ApiController extends Controller
         $like->user_id = $user_id;
         $like->publication_id = $request->publicationID;
         $like->save();
-
     }
 
-    public function postUnlike(Request $request){
+    public function postUnlike(Request $request)
+    {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
 
-        DB::table('likes')->where('user_id',  $user_id)->where('publication_id',$request->publicationID)->delete();
+        DB::table('likes')->where('user_id',  $user_id)->where('publication_id', $request->publicationID)->delete();
     }
 
-    public function postComment(Request $request){
+    public function postComment(Request $request)
+    {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
 
-        if($user_id!=null || $user_id !=[]){
+        if ($user_id != null || $user_id != []) {
 
             $comment = new Comment();
-            $comment->user_id =$user_id;
+            $comment->user_id = $user_id;
             $comment->publication_id = $request->publicationID;
-            $comment->content =$request->content;
+            $comment->content = $request->content;
             $comment->save();
 
             return true;
         }
-
     }
 
-    public function getProfile($id){
-        $user = User::all()->where('id',$id);
-        $publications = Publications::all()->where('user_id',$id);
+    public function getProfile($id)
+    {
+        $user = User::all()->where('id', $id);
+        $publications = Publications::all()->where('user_id', $id);
         $likes = DB::table('likes')->get();
         $comments = Comment::all();
         $data = [];
@@ -731,8 +721,8 @@ class ApiController extends Controller
                 $image = $usr->image;
             }
 
-            if(count($publications)==0 ){
-                $publi_comments= [];
+            if (count($publications) == 0) {
+                $publi_comments = [];
 
                 array_push($publi_comments, (object)[
 
@@ -742,42 +732,41 @@ class ApiController extends Controller
                     'content' => "sin datos",
                 ]);
 
-            array_push($user_publication, (object)[
-                'id' => "sin datos",
-                'userId' => "sin datos",
-                'photo' => "sin datos",
-                'userName' => "sin datos",
-                'created' => "sin datos",
-                'contentPublication' => "sin datos",
-                'photoPublication' => "sin datos",
-                'likes' => "sin datos",
-                'isLike'=>"sin datos",
-                'comments'=>$publi_comments,
+                array_push($user_publication, (object)[
+                    'id' => "sin datos",
+                    'userId' => "sin datos",
+                    'photo' => "sin datos",
+                    'userName' => "sin datos",
+                    'created' => "sin datos",
+                    'contentPublication' => "sin datos",
+                    'photoPublication' => "sin datos",
+                    'likes' => "sin datos",
+                    'isLike' => "sin datos",
+                    'comments' => $publi_comments,
 
-            ]);
-            }else{
+                ]);
+            } else {
                 foreach ($publications as $pub) {
 
                     $created = $pub->created_at->diffForHumans(null, false, false, 1);;
                     $fullname = "";
                     $totalLikes = 0;
                     $photo = "";
-                    $isLike =false;
-                    $user= User::all()->where('id', $pub->user_id);
-                    $publi_comments= [];
+                    $isLike = false;
+                    $user = User::all()->where('id', $pub->user_id);
+                    $publi_comments = [];
 
                     foreach ($likes as $like) {
                         if ($like->publication_id == $pub->id) {
                             $totalLikes = $totalLikes + 1;
-                            if($like->user_id == $id){
+                            if ($like->user_id == $id) {
 
                                 $isLike = true;
                             }
                         }
-
                     }
 
-                    foreach($user as $usr){
+                    foreach ($user as $usr) {
                         $fullname = $usr->name . " " . $usr->lastname;
 
                         $image = '';
@@ -788,12 +777,12 @@ class ApiController extends Controller
                         }
                     }
 
-                    foreach($comments as $com){
+                    foreach ($comments as $com) {
 
-                        if($com->publication_id == $pub->id){
+                        if ($com->publication_id == $pub->id) {
 
-                            $comment_user = User::all()->where('id',$com->user_id);
-                            foreach($comment_user as $com_user){
+                            $comment_user = User::all()->where('id', $com->user_id);
+                            foreach ($comment_user as $com_user) {
 
                                 $com_fullname = $com_user->name . " " . $com_user->lastname;
 
@@ -802,7 +791,6 @@ class ApiController extends Controller
                                     $com_image = "img/default_user.png";
                                 } else {
                                     $com_image = $com_user->image;
-
                                 }
 
                                 array_push($publi_comments, (object)[
@@ -813,8 +801,6 @@ class ApiController extends Controller
                                     'content' => $com->content,
                                 ]);
                             }
-
-
                         }
                     }
                     if ($pub->photo_public == "") {
@@ -823,7 +809,7 @@ class ApiController extends Controller
                         $photo = $pub->photo_public;
                     }
 
-                    if($publi_comments == []){
+                    if ($publi_comments == []) {
                         array_push($publi_comments, (object)[
 
                             'id' => $pub->id,
@@ -841,13 +827,11 @@ class ApiController extends Controller
                         'contentPublication' => $pub->content_publication,
                         'photoPublication' => $photo,
                         'likes' => $totalLikes,
-                        'isLike'=>$isLike,
-                        'comments'=>$publi_comments,
+                        'isLike' => $isLike,
+                        'comments' => $publi_comments,
 
                     ]);
                 }
-
-
             }
 
             array_push($data, (object)[
@@ -857,47 +841,46 @@ class ApiController extends Controller
                 'photo' => $image,
                 'department' => $usr->employee->position->department->name,
                 'position' => $usr->employee->position->name,
-                'publications' =>$user_publication,
+                'publications' => $user_publication,
             ]);
         }
 
         return $data;
-
     }
 
-    public function postDeleteRequest(Request $request){
+    public function postDeleteRequest(Request $request)
+    {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
 
-        if($user_id!=null){
+        if ($user_id != null) {
             DB::table('request_calendars')->where('requests_id',  $request->requestID)->delete();
             DB::table('requests')->where('id',  $request->requestID)->delete();
         }
     }
 
-    public function postDeletePublication(Request $request){
+    public function postDeletePublication(Request $request)
+    {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
 
-        if($user_id!=null){
+        if ($user_id != null) {
 
-            
 
-            $photo= DB::table('media')->where('publication_id', intval($request-> publciationID))->value('resource');
+
+            $photo = DB::table('media')->where('publication_id', intval($request->publciationID))->value('resource');
 
             if ($photo != "") {
-                try{
+                try {
                     File::delete('storage/posts/' . $photo);
-                }catch(Exception $e){
-
+                } catch (Exception $e) {
                 }
-                
             }
 
-            DB::table('likes')->where('publication_id',  intval($request-> publciationID))->delete();
-            DB::table('comments')->where('publication_id', intval($request-> publciationID))->delete();
-            DB::table('media')->where('publication_id', intval($request-> publciationID))->delete();
-            DB::table('publications')->where('id', intval($request-> publciationID))->delete();
+            DB::table('likes')->where('publication_id',  intval($request->publciationID))->delete();
+            DB::table('comments')->where('publication_id', intval($request->publciationID))->delete();
+            DB::table('media')->where('publication_id', intval($request->publciationID))->delete();
+            DB::table('publications')->where('id', intval($request->publciationID))->delete();
 
             return  true;
         }
@@ -905,12 +888,13 @@ class ApiController extends Controller
         return  false;
     }
 
-    public function getUserMessages($hashedToken){
+    public function getUserMessages($hashedToken)
+    {
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
 
         //Obtiene todos los empleados que tienen conversarion con el usuario
-        $messages = DB::table('messages')->where('transmitter_id',$user_id)->orWhere('receiver_id',$user_id)->orderBy('created_at', 'desc')->get();
+        $messages = DB::table('messages')->where('transmitter_id', $user_id)->orWhere('receiver_id', $user_id)->orderBy('created_at', 'desc')->get();
 
         $uniqueTransmitter = $messages->unique('transmitter_id');
         $uniqueReceiver = $messages->unique('receiver_id');
@@ -919,48 +903,48 @@ class ApiController extends Controller
         $uniqueReceiverList = [];
 
         //Se trae el id del objeto a una lista
-        foreach($uniqueTransmitter as $uniqueTrans){
+        foreach ($uniqueTransmitter as $uniqueTrans) {
             array_push($uniqueTransmitterList, $uniqueTrans->transmitter_id);
         }
         //Se trae el id del objeto a una lista
-        foreach($uniqueReceiver as $unique){
+        foreach ($uniqueReceiver as $unique) {
             array_push($uniqueReceiverList, $unique->receiver_id);
         }
         //Se unen todos los usuarios que han tenido algun mensaje con el solicitante, ya sea de emisor o receptor
-        $totalUsers = array_unique(array_merge($uniqueTransmitterList,$uniqueReceiverList));
-        $data =[];
-        $allUsers = User::all()->whereIn("id",$totalUsers);
+        $totalUsers = array_unique(array_merge($uniqueTransmitterList, $uniqueReceiverList));
+        $data = [];
+        $allUsers = User::all()->whereIn("id", $totalUsers);
 
 
-        if($messages->count()==0){
+        if ($messages->count() == 0) {
 
             array_push($data, (object)[
                 'id' => $user_id,
-                'fullname' =>"no data" ,
+                'fullname' => "no data",
                 'email' => "no data",
-                'photo' =>"no data",
+                'photo' => "no data",
                 'department' => "no data",
                 'position' => "no data",
-                'conversation'=>"no data",
+                'conversation' => "no data",
                 'createdAt' => "no data",
                 'time' => "no data",
             ]);
 
             return $data;
-        }else{
+        } else {
 
-            foreach($allUsers as $user){
-              /*   dd(strval($user->id) ); */
-                if($messages->contains('transmitter_id',$user->id) || $messages->contains('receiver_id',$user->id)){
+            foreach ($allUsers as $user) {
+                /*   dd(strval($user->id) ); */
+                if ($messages->contains('transmitter_id', $user->id) || $messages->contains('receiver_id', $user->id)) {
 
                     $userID = $user->id;
-                    $myUserID= $user_id;
-                    $lastMessage= Message::where(function ($query) use ($userID) {
+                    $myUserID = $user_id;
+                    $lastMessage = Message::where(function ($query) use ($userID) {
                         return $query->where('transmitter_id', '=', $userID)
-                              ->orWhere('receiver_id', '=', $userID);
+                            ->orWhere('receiver_id', '=', $userID);
                     })->where(function ($query) use ($myUserID) {
                         return $query->where('transmitter_id', '=', $myUserID)
-                              ->orWhere('receiver_id', '=', $myUserID);
+                            ->orWhere('receiver_id', '=', $myUserID);
                     })->orderBy('created_at', 'desc')->first();
 
 
@@ -970,7 +954,7 @@ class ApiController extends Controller
                     } else {
                         $image = $user->image;
                     }
-                    if($lastMessage != null){
+                    if ($lastMessage != null) {
                         array_push($data, (object)[
                             'id' => $user->id,
                             'fullname' => $user->name . " " . $user->lastname,
@@ -978,23 +962,20 @@ class ApiController extends Controller
                             'photo' => $image,
                             'department' => $user->employee->position->department->name,
                             'position' => $user->employee->position->name,
-                            'conversation'=>$lastMessage->message,
+                            'conversation' => $lastMessage->message,
                             'createdAt' => $lastMessage->created_at,
                             'time' => date('H:i', strtotime($lastMessage->created_at)),
                         ]);
                     }
-
                 }
-
             }
 
             return $data;
-
         }
-
     }
 
-    public function postUserMessages(Request $request){
+    public function postUserMessages(Request $request)
+    {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
 
@@ -1002,7 +983,7 @@ class ApiController extends Controller
 
 
         $mensajes = DB::table('messages')
-            ->where('transmitter_id',$user_id)
+            ->where('transmitter_id', $user_id)
             ->where('receiver_id', $conversationUserID);
 
 
@@ -1010,9 +991,9 @@ class ApiController extends Controller
             ->where('receiver_id', $user_id)
             ->where('transmitter_id', $conversationUserID)->union($mensajes)->orderBy('created_at', 'asc')->get();
 
-        $data =[];
+        $data = [];
 
-        if($mensajesEnviados->count()==0){
+        if ($mensajesEnviados->count() == 0) {
 
             array_push($data, (object)[
                 'id' => $user_id,
@@ -1024,8 +1005,8 @@ class ApiController extends Controller
             ]);
 
             return $data;
-        }else{
-            foreach($mensajesEnviados as $mensaje){
+        } else {
+            foreach ($mensajesEnviados as $mensaje) {
                 array_push($data, (object)[
                     'id' => $user_id,
                     'transmitterID' => $mensaje->transmitter_id,
@@ -1038,16 +1019,16 @@ class ApiController extends Controller
 
             return $data;
         }
-
     }
 
 
-    public function postConversation(Request $request){
+    public function postConversation(Request $request)
+    {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
-        $user_name = DB::table('users')->where('id',$user_id)->value('name');
-        $user_lastname = DB::table('users')->where('id',$user_id)->value('lastname');
-        $user_image = DB::table('users')->where('id',$user_id)->value('image');
+        $user_name = DB::table('users')->where('id', $user_id)->value('name');
+        $user_lastname = DB::table('users')->where('id', $user_id)->value('lastname');
+        $user_image = DB::table('users')->where('id', $user_id)->value('image');
 
         //Crear mensaje en la BD
         $message = new Message();
@@ -1059,111 +1040,108 @@ class ApiController extends Controller
         $data_send = [
             'emisor' => $user_id,
             'message' => $request->message,
-            'transmitter_name' => $user_name. " ".$user_lastname ,
+            'transmitter_name' => $user_name . " " . $user_lastname,
             'image' => $user_image,
         ];
 
 
         $notification = new Notification();
-        $notification->id =uniqid();
+        $notification->id = uniqid();
         $notification->type = "App\Notifications\MessageNotification";
         $notification->notifiable_type = "App\Models\User";
-        $notification->notifiable_id = intval($request->receiverID) ;
-        $notification->data =json_encode($data_send);
+        $notification->notifiable_id = intval($request->receiverID);
+        $notification->data = json_encode($data_send);
         $notification->save();
 
         $carbon = new \Carbon\Carbon();
         $date = $carbon->now();
         $date = $date->format('Y-m-d H:i:s');
 
-        broadcast(new MessageSent( $request->message, intval($request->receiverID), $user_id ,$user_name. " ".$user_lastname, $date ))->toOthers();
+        broadcast(new MessageSent($request->message, intval($request->receiverID), $user_id, $user_name . " " . $user_lastname, $date))->toOthers();
 
 
         return true;
     }
 
 
-    public function postUpdatePublication(Request $request){
+    public function postUpdatePublication(Request $request)
+    {
 
-        
+
         DB::table('publications')->where('id', $request->publicationID)->update(['content_publication' => $request->contentPublication]);
-
     }
 
-    public function postImageRequest(Request $request){
-  
+    public function postImageRequest(Request $request)
+    {
+
         if ($request->hasFile('image')) {
             $request->validate([
                 'image' => 'required|image|mimes:jpg,jpeg,png,gif',
             ]);
             $image =  $request->file('image');
-          
+
             $nombreImagen = time() . ' ' . str_replace(',', ' ', $image->getClientOriginalName());
             $image->move(public_path('storage/posts/'), $nombreImagen);
 
             /* $path = Storage::disk('postImages')->put('storage/posts', $image);  */
 
             return $nombreImagen;
-
         } else {
             return "";
-        } 
+        }
     }
 
 
-    public function getTeamMembers($hashedToken){
+    public function getTeamMembers($hashedToken)
+    {
 
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
-        
-        $user = User::where('id',$user_id)->get();
+
+        $user = User::where('id', $user_id)->get();
         $data = [];
-        foreach($user as $usr){
+        foreach ($user as $usr) {
             $departmentID =  $usr->employee->position->department->id;
             $users = User::all();
-            foreach($users as $user ){
-               
-                if( $user->employee->position->department->id == $departmentID ){
-                     array_push($data, (object)[
+            foreach ($users as $user) {
+
+                if ($user->employee->position->department->id == $departmentID) {
+                    array_push($data, (object)[
                         'id' => $user->id,
                         'fullname' => $user->name . " " . $user->lastname,
-                        'department' =>$user->employee->position->department->id
+                        'department' => $user->employee->position->department->id
                     ]);
-                } 
-
+                }
             }
 
-            if($data == []){
+            if ($data == []) {
                 array_push($data, (object)[
                     'id' => $user_id,
                     'fullname' => "no data",
-                    'department' =>"no data"
+                    'department' => "no data"
                 ]);
             }
             return $data;
         }
-
-
-       
     }
 
 
-/*     Controladores app movil version 1.1 */
+    /*     Controladores app movil version 1.1 */
 
     public function postRequestV11(Request $request)
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
-        $employee = Employee::all()->where('user_id',$user_id);
-        $userData = User::all()->where('id',$user_id);
-        if($token !=null || $token !=""){
-            $date= date("G:i:s", strtotime($request->start));
+        $employee = Employee::all()->where('user_id', $user_id);
+        $userData = User::all()->where('id', $user_id);
+        if ($token != null || $token != "") {
+            $date = date("G:i:s", strtotime($request->start));
             $manager = "";
-            foreach($employee as $emp){
+            foreach ($employee as $emp) {
                 $manager = $emp->jefe_directo_id;
             }
             $reveal_id = null;
-            if($request->revealID != "" ||$request->revealID != null ){
+            if ($request->revealID != "" || $request->revealID != null) {
                 $reveal_id = intval($request->revealID);
             }
             $req = new ModelsRequest();
@@ -1180,39 +1158,36 @@ class ApiController extends Controller
             $req->visible = 1;
             $req->save();
 
-            $days = explode( ",", $request->days);
-            
-            foreach($days as $day){
+            $days = explode(",", $request->days);
+
+            foreach ($days as $day) {
 
                 $request_calendar = new RequestCalendar();
                 $request_calendar->title = "Día seleccionado";
                 $request_calendar->start = $day;
                 $request_calendar->end = $day;
                 $request_calendar->users_id = $user_id;
-                $request_calendar->requests_id =$req->id;
+                $request_calendar->requests_id = $req->id;
                 $request_calendar->save();
+            }
 
-            } 
-
-             foreach($userData as $user){
-                $userReceiver = Employee::find($manager)->user; 
+            foreach ($userData as $user) {
+                $userReceiver = Employee::find($manager)->user;
                 event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
                 $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
-            } 
-
+            }
         }
 
-        return  true; 
-
+        return  true;
     }
 
     public function getManagerRequest($hashedToken)
     {
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
-        
-        $request = ModelsRequest::all()->where('direct_manager_id',$user_id);
-     
+
+        $request = ModelsRequest::all()->where('direct_manager_id', $user_id);
+
         $data = [];
         foreach ($request as $req) {
 
@@ -1239,22 +1214,21 @@ class ApiController extends Controller
             foreach ($date as  $calendar) {
                 $days = $days . "," . $calendar->start;
             }
-            
-            
+
+
             $revealData = "";
-            if($req->reveal_id != null){
+            if ($req->reveal_id != null) {
                 $userReveal = User::all()->where('id', $req->reveal_id);
-                foreach($userReveal as $user){
-                    $revealData = $user->name . " ".$user->lastname ;
+                foreach ($userReveal as $user) {
+                    $revealData = $user->name . " " . $user->lastname;
                 }
-                
-            }else{
+            } else {
                 $revealData = "no data";
             }
 
             $days = substr($days, 1);
 
-            if($days == null || $days == false){
+            if ($days == null || $days == false) {
                 $days = "dias no encontrados";
             }
 
@@ -1264,7 +1238,7 @@ class ApiController extends Controller
                 'employeeID' => $req->employee_id,
                 'fullname' =>  $user->name . " " . $user->lastname,
                 'typeRequest' => $req->type_request,
-                'revealName' =>$revealData,
+                'revealName' => $revealData,
                 'payment' => $req->payment,
                 'payment' => $req->payment,
                 'start' => $start,
@@ -1275,7 +1249,7 @@ class ApiController extends Controller
                 'humanResourcesStatus' => $req->human_resources_status,
                 'visible' => $req->visible,
                 'days' => $days,
-                
+
             ]);
         }
 
@@ -1312,22 +1286,21 @@ class ApiController extends Controller
             foreach ($date as  $calendar) {
                 $days = $days . "," . $calendar->start;
             }
-            
-            
+
+
             $revealData = "";
-            if($req->reveal_id != null){
+            if ($req->reveal_id != null) {
                 $userReveal = User::all()->where('id', $req->reveal_id);
-                foreach($userReveal as $user){
-                    $revealData = $user->name . " ".$user->lastname ;
+                foreach ($userReveal as $user) {
+                    $revealData = $user->name . " " . $user->lastname;
                 }
-                
-            }else{
+            } else {
                 $revealData = "no data";
             }
 
             $days = substr($days, 1);
 
-            if($days == null || $days == false){
+            if ($days == null || $days == false) {
                 $days = "dias no encontrados";
             }
 
@@ -1337,7 +1310,7 @@ class ApiController extends Controller
                 'employeeID' => $req->employee_id,
                 'fullname' =>  $user->name . " " . $user->lastname,
                 'typeRequest' => $req->type_request,
-                'revealName' =>$revealData,
+                'revealName' => $revealData,
                 'payment' => $req->payment,
                 'payment' => $req->payment,
                 'start' => $start,
@@ -1348,7 +1321,7 @@ class ApiController extends Controller
                 'humanResourcesStatus' => $req->human_resources_status,
                 'visible' => $req->visible,
                 'days' => $days,
-                
+
             ]);
         }
 
@@ -1357,17 +1330,17 @@ class ApiController extends Controller
 
     public function postManagerRequest(Request $request)
     {
-        if($request->responseRequest == "Aprobada"){
+        if ($request->responseRequest == "Aprobada") {
 
             DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Aprobada"]);
             $req = ModelsRequest::where('id', $request->requestID)->get()->first();
 
             //Notificacion manual RH
             $data_send = [
-                "id"=>$req->id,
-                "employee_id"=>$req->employee_id,
-                "direct_manager_status"=>"Aprobada",
-                "human_resources_status"=>"Pendiente"
+                "id" => $req->id,
+                "employee_id" => $req->employee_id,
+                "direct_manager_status" => "Aprobada",
+                "human_resources_status" => "Pendiente"
             ];
 
             $usersRH =  Role::where('name', 'rh')->first()->users;
@@ -1381,17 +1354,16 @@ class ApiController extends Controller
                 $notification->save();
             }
 
-            $user = User::all()->where('id',$req->direct_manager_id)->first();
+            $user = User::all()->where('id', $req->direct_manager_id)->first();
             $userReceiver = Employee::find($req->employee_id)->user;
             event(new ManagerResponseRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $req->direct_manager_status));
             $userReceiver->notify(new ManagerResponseRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $req->direct_manager_status));
             return true;
-        
-        }else if($request->responseRequest == "Rechazada"){
+        } else if ($request->responseRequest == "Rechazada") {
 
             DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Rechazada"]);
-            $requestCalendar = RequestCalendar::all()->where('requests_id',$request->requestID);
-            foreach($requestCalendar as $calendar){
+            $requestCalendar = RequestCalendar::all()->where('requests_id', $request->requestID);
+            foreach ($requestCalendar as $calendar) {
                 $rejectedCalendar = new RequestRejected();
                 $rejectedCalendar->title = $calendar->title;
                 $rejectedCalendar->start = $calendar->start;
@@ -1402,7 +1374,7 @@ class ApiController extends Controller
             }
 
             $req = ModelsRequest::all()->where('id', $request->requestID)->first();
-            $user = User::all()->where('id',$req->direct_manager_id)->first();
+            $user = User::all()->where('id', $req->direct_manager_id)->first();
             $userReceiver = Employee::find($req->employee_id)->user;
             event(new ManagerResponseRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $req->direct_manager_status));
             $userReceiver->notify(new ManagerResponseRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $req->direct_manager_status));
@@ -1413,14 +1385,14 @@ class ApiController extends Controller
 
     public function postRhRequest(Request $request)
     {
-        if($request->responseRequest == "Aprobada"){
+        if ($request->responseRequest == "Aprobada") {
 
             DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Aprobada"]);
-            
+
             $req = ModelsRequest::all()->where('id', $request->requestID)->first();
             if ($req->type_request == "Solicitar vacaciones") {
-                $user = User::all()->where('id',$req->employee_id)->first();
-                $dias= RequestCalendar::all()->where('requests_id',  $request->requestID);
+                $user = User::all()->where('id', $req->employee_id)->first();
+                $dias = RequestCalendar::all()->where('requests_id',  $request->requestID);
                 $totalDiasSolicitados = count($dias);
                 $totalDiasDisponibles = $user->vacationsAvailables()->orderBy('period', 'DESC')->sum('dv');
                 if ((int) $totalDiasDisponibles >= $totalDiasSolicitados) {
@@ -1439,30 +1411,28 @@ class ApiController extends Controller
                             $dataVacation->save();
                             break;
                         }
-
                     }
-                }else{
+                } else {
                     DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Pendiente"]);
-                    
+
                     return 2;
                 }
             }
 
-            $rh = DB::table('roles')->where('display_name','Recursos Humanos')->first();
-            $rhID= DB::table('role_user')->where('role_id',$rh->id)->first();
-            $user = User::all()->where('id',$rhID->user_id)->first();
+            $rh = DB::table('roles')->where('display_name', 'Recursos Humanos')->first();
+            $rhID = DB::table('role_user')->where('role_id', $rh->id)->first();
+            $user = User::all()->where('id', $rhID->user_id)->first();
             $userReceiver = Employee::find($request->requestID)->user;
             event(new RHResponseRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $req->human_resources_status));
             $userReceiver->notify(new RHResponseRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $req->human_resources_status));
 
             return true;
-        
-        }else if($request->responseRequest == "Rechazada"){
+        } else if ($request->responseRequest == "Rechazada") {
 
             DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Rechazada"]);
             $req = ModelsRequest::all()->where('id', $request->requestID)->first();
-            $requestCalendar = RequestCalendar::all()->where('requests_id',$request->requestID);
-            foreach($requestCalendar as $calendar){
+            $requestCalendar = RequestCalendar::all()->where('requests_id', $request->requestID);
+            foreach ($requestCalendar as $calendar) {
                 $rejectedCalendar = new RequestRejected();
                 $rejectedCalendar->title = $calendar->title;
                 $rejectedCalendar->start = $calendar->start;
@@ -1471,10 +1441,10 @@ class ApiController extends Controller
                 $rejectedCalendar->requests_id = $calendar->requests_id;
                 $rejectedCalendar->save();
             }
-           
-            $rh = DB::table('roles')->where('display_name','Recursos Humanos')->first();
-            $rhID= DB::table('role_user')->where('role_id',$rh->id)->first();
-            $user = User::all()->where('id',$rhID->user_id)->first();
+
+            $rh = DB::table('roles')->where('display_name', 'Recursos Humanos')->first();
+            $rhID = DB::table('role_user')->where('role_id', $rh->id)->first();
+            $user = User::all()->where('id', $rhID->user_id)->first();
             $userReceiver = Employee::find($request->requestID)->user;
             event(new RHResponseRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $req->human_resources_status));
             $userReceiver->notify(new RHResponseRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $req->human_resources_status));
@@ -1487,16 +1457,16 @@ class ApiController extends Controller
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
-        $employee = Employee::all()->where('user_id',$user_id);
-        $userData = User::all()->where('id',$user_id);
-        if($token !=null || $token !=""){
-            $date= date("G:i:s", strtotime($request->start));
+        $employee = Employee::all()->where('user_id', $user_id);
+        $userData = User::all()->where('id', $user_id);
+        if ($token != null || $token != "") {
+            $date = date("G:i:s", strtotime($request->start));
             $manager = "";
-            foreach($employee as $emp){
+            foreach ($employee as $emp) {
                 $manager = $emp->jefe_directo_id;
             }
             $reveal_id = null;
-            if($request->revealID != "" ||$request->revealID != null ){
+            if ($request->revealID != "" || $request->revealID != null) {
                 $reveal_id = intval($request->revealID);
             }
             $req = new ModelsRequest();
@@ -1513,30 +1483,26 @@ class ApiController extends Controller
             $req->visible = 1;
             $req->save();
 
-            $days = explode( ",", $request->days);
-            
-            foreach($days as $day){
+            $days = explode(",", $request->days);
+
+            foreach ($days as $day) {
 
                 $request_calendar = new RequestCalendar();
                 $request_calendar->title = "Día seleccionado";
                 $request_calendar->start = $day;
                 $request_calendar->end = $day;
                 $request_calendar->users_id = $user_id;
-                $request_calendar->requests_id =$req->id;
+                $request_calendar->requests_id = $req->id;
                 $request_calendar->save();
+            }
 
-            } 
-
-             foreach($userData as $user){
-                $userReceiver = Employee::find($manager)->user; 
+            foreach ($userData as $user) {
+                $userReceiver = Employee::find($manager)->user;
                 event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
                 $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
-            } 
-
+            }
         }
 
-        return  true; 
-
+        return  true;
     }
 }
-

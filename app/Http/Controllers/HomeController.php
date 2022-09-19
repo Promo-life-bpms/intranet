@@ -94,7 +94,7 @@ class HomeController extends Controller
 
         $eventos = Events::all();
 
-        $communiquesImage = DB::table('communiques')->whereNotNull('image')->get();
+        $communiquesImage = DB::table('communiques')->whereNotNull('image')->orderBy('created_at', "DESC")->get();
 
         $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
 

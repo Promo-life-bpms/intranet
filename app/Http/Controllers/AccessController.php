@@ -16,15 +16,15 @@ class AccessController extends Controller
      */
     public function index()
     {
-        $url1 = env("URL_COURSES", "https://dev-cursos.promolife.lat");
+        $url1 = env("URL_COURSES", "https://elearning.promolife.online");
         $url2 = env("URL_TASK_MANAGER", "https://taskmanagerplbh.promolife.lat");
-        $url3 = env("URL_CATALOGO", "http://catalogodeproductos.nextratgy.com");
+        $url3 = env("URL_CATALOGO", "https://catalogodeproductos.promolife.online");
         $routeCourses = $url1 . "/loginEmail?email=" . auth()->user()->email . "&password=password";
         $routeTaskManager = $url2 . "/loginEmail?email=" . auth()->user()->email . "&password=password";
         $routeCatalogo = $url3 . "/loginEmail?email=" . auth()->user()->email . "&password=password";
         $id = Auth::user()->id;
         $access = Access::all()->where('users_id', $id);
-        return view('access.index', compact('access', 'routeCourses','routeTaskManager','routeCatalogo'));
+        return view('access.index', compact('access', 'routeCourses', 'routeTaskManager', 'routeCatalogo'));
     }
 
     /**

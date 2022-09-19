@@ -134,7 +134,8 @@
                 <img class="mobileLogo" src="{{ asset('/img/movil.png') }}" alt="app-movil">
                 <br>
                 <div class="row">
-                    <a href="{{ asset('/files/intranet.apk') }}" type="button" class="btn btn-info">Android</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.promolife.intranet_movil" type="button"
+                        class="btn btn-info" target="_blank">Android</a>
                 </div>
 
             </div>
@@ -269,7 +270,7 @@
 
                         @if (count($monthEmployeeController) == 0)
                             <div class="carousel-item active">
-                                <p>Sin Aniversarios disponibles</p>
+                                <p>Sin Informacion disponible</p>
                             </div>
                         @else
                             @foreach ($monthEmployeeController as $employee)

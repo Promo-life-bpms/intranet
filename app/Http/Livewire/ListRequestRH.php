@@ -71,12 +71,6 @@ class ListRequestRH extends Component
     public function rechazar(Request $request)
     {
         $request->human_resources_status = "Rechazada";
-        // foreach ($request->requestdays() as $dayRejected) {
-        //     $request->requestrejected()->create([
-        //         'title' => $dayRejected->title, 'start' => $dayRejected->start, 'end' => $dayRejected->end, 'users_id' => $dayRejected->users_id
-        //     ]);
-        // }
-
         // $request->requestdays()->delete();
         $request->save();
         $user = auth()->user();
