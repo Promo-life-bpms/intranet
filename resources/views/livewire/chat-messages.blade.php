@@ -1,6 +1,6 @@
 <div>
 
-    <div class="wrapper1 my-0 mx-2">
+    <div class="wrapper1 my-0 mx-3">
         <div class="head-text d-flex">
             {{ $user->name }}
             <div class="d-flex" style="align-items: center">
@@ -54,7 +54,7 @@
 
     </div>
     <script>
-        window.addEventListener('messageNew', event => {
+        document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const objDiv = document.getElementById("formChat");
                 objDiv.scrollTop = objDiv.scrollHeight;

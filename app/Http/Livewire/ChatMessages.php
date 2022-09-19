@@ -36,7 +36,6 @@ class ChatMessages extends Component
 
         $user = User::find($this->idUser);
         return view('livewire.chat-messages', compact('user'));
-        $this->dispatchBrowserEvent('messageNew');
     }
 
     public function collapseChat()

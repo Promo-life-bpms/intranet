@@ -53,7 +53,6 @@ class PublicationsController extends Controller
             $publication = Publications::create([
                 'user_id' => auth()->user()->id,
                 'content_publication' => $content,
-                'photo_public' => ''
             ]);
 
             if (trim($request->items) != "" || $request->items != null) {
@@ -74,6 +73,7 @@ class PublicationsController extends Controller
             return back()->with('errorData', 'No hay contenido para tu post!');
         }
     }
+
     public function uploadItems(Request $request)
     {
         $imagen = $request->file('file');

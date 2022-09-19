@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/js/lightbox.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
 @section('content')
 

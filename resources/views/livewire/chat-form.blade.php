@@ -1,5 +1,4 @@
 <div>
-
     <div class="input-group">
         <input type="text" name="message" class="form-control" placeholder="Escribe tu mensaje..."
             wire:model="message">
@@ -14,7 +13,6 @@
             </button>
         </span>
     </div>
-
     <style scoped>
         @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap");
 

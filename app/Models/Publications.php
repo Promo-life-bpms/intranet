@@ -12,7 +12,7 @@ class Publications extends Model
     protected $fillable = [
         'user_id',
         'content_publication',
-        'photo_public'
+        'visible',
     ];
 
     //Conexion con el usuario
