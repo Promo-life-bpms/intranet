@@ -11,7 +11,14 @@ class PublicationsProfileComponent extends Component
 
     public function render()
     {
-        $publications = $this->user->publications()->orderBy('created_at', 'desc')->simplePaginate(10); //get first 10 rows
+        $publications = $this->user->publications()->where('visible', 1)->orderBy('created_at', 'desc')->simplePaginate(10); //get first 10 rows
         return view('livewire.publications-component', ['publications' => $publications]);
+    }
+
+    public function eliminar(Publications $publication)
+    {
+        $publication->visible = 0;
+        $publication->save();
+        return 1;
     }
 }

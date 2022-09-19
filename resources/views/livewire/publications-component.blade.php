@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                             <div>
-                                <p class="m-0" style="font-weight: bold">
+                                <p class="m-0 " style="font-weight: bold">
                                     {{ $publication->user->name . ' ' . $publication->user->lastname }}
                                 </p>
                                 <p class="m-0">
@@ -37,9 +37,27 @@
                                 </p>
                             </div>
                         </div>
+                        <div class="d-flex">
+                            @if ($publication->user_id == auth()->user()->id)
+                            <div class="dropdown">
+                                <button class="btn btn-link" type="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                        <path
+                                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                                    </svg>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {{-- <li><button class="dropdown-item">Editar</button></li> --}}
+                                    <li><button class="dropdown-item" onclick="eliminar({{ $publication->id }})">Eliminar</button></li>
+                                </ul>
+                            </div>
+                            @endif
+                        </div>
                     </div>
                     <p class="mt-4 ">
-                        {{ $publication->content_publication }}
+                        {!! $publication->content_publication !!}
                     </p>
                     @if (count($publication->files) > 0)
                         <div class="row" style="overflow:hidden;">
@@ -162,66 +180,89 @@
             </div>
         </div>
     @endif
-    {{-- <script>
-            document.addEventListener('livewire:load', function() {
-                window.addEventListener('comment-added', event => {
-                    const commentCreated = event.detail.commentCreated
-                    const listComments = document.querySelector('#collapse' + commentCreated.publication_id)
-                    if (!listComments.classList.contains('collapse')) {
-                        listComments.classList.add('collapse');
+    <script>
+        document.addEventListener('livewire:load', function() {
+            window.addEventListener('comment-added', event => {
+                const commentCreated = event.detail.commentCreated
+                const listComments = document.querySelector('#collapse' + commentCreated.publication_id)
+                if (!listComments.classList.contains('collapse')) {
+                    listComments.classList.add('collapse');
+                    listComments.classList.add('show');
+                } else {
+                    if (!listComments.classList.contains('show')) {
                         listComments.classList.add('show');
-                    } else {
-                        if (!listComments.classList.contains('show')) {
-                            listComments.classList.add('show');
-                        }
                     }
-                    console.log(listComments);
-                    const content = document.querySelector('#collapse' + commentCreated.publication_id).innerHTML;
-                    var commentHTML = `<div class="nombre d-flex flex-row">
-                                <div class="com_image">
-                                    <div class="card-photo rounded-circle " style="width: 35px; height:35px;">
-                                        @if (auth()->user()->image == null)
-                                            <a style="color: inherit;"
-                                                href="{{ route('profile.view', ['prof' =>  auth()->user()->id]) }}">
-                                                <p
-                                                    class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
-                                                    <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
-                                                </p>
-                                            </a>
-                                        @else
-                                            <a style="color: inherit;"
-                                                href="{{ route('profile.view', ['prof' => auth()->user()->id]) }}">
-                                                <img style="width: 100%; height:100%; object-fit: cover;"
-                                                    src="{{ auth()->user()->image }}">
-                                            </a>
-                                        @endif
-                                    </div>
+                }
+                console.log(listComments);
+                const content = document.querySelector('#collapse' + commentCreated.publication_id).innerHTML;
+                var commentHTML = `<div class="nombre d-flex flex-row">
+                            <div class="com_image">
+                                <div class="card-photo rounded-circle " style="width: 35px; height:35px;">
+                                    @if (auth()->user()->image == null)
+                                        <a style="color: inherit;"
+                                            href="{{ route('profile.view', ['prof' =>  auth()->user()->id]) }}">
+                                            <p
+                                                class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon">
+                                                <span>{{ substr(auth()->user()->name, 0, 1) . substr(auth()->user()->lastname, 0, 1) }}</span>
+                                            </p>
+                                        </a>
+                                    @else
+                                        <a style="color: inherit;"
+                                            href="{{ route('profile.view', ['prof' => auth()->user()->id]) }}">
+                                            <img style="width: 100%; height:100%; object-fit: cover;"
+                                                src="{{ auth()->user()->image }}">
+                                        </a>
+                                    @endif
                                 </div>
-                                <div>
-                                    <div class="d-flex">
-                                        <p class="m-0 px-2" style="font-weight: bold">
-                                            {{ auth()->user()->name.' '. auth()->user()->lastname }}
-                                        </p>
-                                    </div>
-                                    <p class="m-0 px-2">
-                                        <span style="font-size: 12px">
-                                            {{ now()->diffforhumans() }}
-                                        </span>
-                                        <br>
-                                        ` + commentCreated.content + `
+                            </div>
+                            <div>
+                                <div class="d-flex">
+                                    <p class="m-0 px-2" style="font-weight: bold">
+                                        {{ auth()->user()->name.' '. auth()->user()->lastname }}
                                     </p>
                                 </div>
-                                <hr>
-                            </div>`;
-                    listComments.innerHTML = commentHTML + content
+                                <p class="m-0 px-2">
+                                    <span style="font-size: 12px">
+                                        {{ now()->diffforhumans() }}
+                                    </span>
+                                    <br>
+                                    ` + commentCreated.content + `
+                                </p>
+                            </div>
+                            <hr>
+                        </div>`;
+                listComments.innerHTML = commentHTML + content
 
-                })
             })
-            document.addEventListener('DOMContentLoaded', () => {
-                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-                var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-                    return new bootstrap.Tooltip(tooltipTriggerEl)
-                })
+        })
+        document.addEventListener('DOMContentLoaded', () => {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
             })
-        </script> --}}
+        })
+
+        function eliminar(id) {
+            Swal.fire({
+                title: '¿Deseas eliminar la publicacion?',
+                showCancelButton: true,
+                cancelButtonText: 'Salir',
+                confirmButtonText: 'Aceptar',
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                   let respuesta = @this.eliminar(id)
+                   respuesta
+                        .then((response) => {
+                            console.log(response);
+                            if (response == 1) {
+                                Swal.fire('¡Se ha eliminado correctamente!', '', 'success')
+                            }
+                        }, function() {
+                            // one or more failed
+                            Swal.fire('¡Error al autorizar!', '', 'error')
+                        });
+                } } )
+        }
+    </script>
 </div>
