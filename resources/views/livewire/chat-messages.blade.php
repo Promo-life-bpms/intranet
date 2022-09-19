@@ -1,6 +1,6 @@
 <div>
 
-    <div class="wrapper1 my-0 mx-2">
+    <div class="wrapper1 my-0 mx-2" id="chatContent">
         <div class="head-text d-flex">
             {{ $user->name }}
             <div class="d-flex" style="align-items: center">
@@ -16,8 +16,7 @@
         </div>
         <div class="cont">
             <div class="{{ !$ChatCollapse ? 'd-none' : '' }}">
-                <div style="height: 300px; overflow-y: auto" class="style-3" id="formChat">
-                    {{-- <button wire:click="messageScroll">Scroll</button> --}}
+                <div style="height: 300px; overflow-y: auto" class="style-3" id="formChat{{ $idUser }}">
                     @foreach ($mensajesEnviados as $mensaje)
                         <div
                             class="d-flex flex-row p-2
@@ -54,15 +53,27 @@
 
     </div>
     <script>
-        window.addEventListener('messageNew', event => {
-            setTimeout(() => {
-                const objDiv = document.getElementById("formChat");
+        /* alert("formChat" + id) */
+        let id = "{{ $idUser }}"
+        document.addEventListener('messageNew', event => {
+            let receiver = event.detail.receiver_id
+            console.log("evento recibido");
+            if (id == receiver) {
+                const objDiv = document.getElementById("formChat" + id);
                 objDiv.scrollTop = objDiv.scrollHeight;
-            }, 50);
-        });
+
+            }
+            if (receiver == {{ auth()->id() }}) {
+                const chatContent = document.querySelector('.wrapper1');
+                chatContent.classList.add('animate__animated', 'animate__pulse', 'animate__repeat-3');
+                const objDiv = document.getElementById("formChat" + id);
+                objDiv.scrollTop = objDiv.scrollHeight;
+            }
+
+        })
     </script>
 
-    <style scoped>
+    <style>
         .cont {
             width: 300px;
             display: flex;

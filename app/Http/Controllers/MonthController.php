@@ -11,7 +11,7 @@ class MonthController extends Controller
     public function __invoke()
     {
         $monthEmployeeController = MonthController::getEmpoyeeMonth();
-        return view('month.index',compact('monthEmployeeController'));
+        return view('month.index', compact('monthEmployeeController'));
     }
 
     public static function getEmpoyeeMonth()
@@ -24,19 +24,22 @@ class MonthController extends Controller
         $res = json_decode($res);
         $users = [];
         $employeesMonth = [];
-        foreach ($res as $data) {
-            try {
-                $user = User::where('email', '=', $data->email)->firstOrFail();
-                if ($user != null) {
-                    array_push($users, $user);
-                    array_push($employeesMonth, (object)[
-                        'name' => $user->name . ' ' . $user->lastname,
-                        'position' => $data->puesto,
-                        'star' => $data->star,
-                        'photo' => $user->image
-                    ]);
+        if ($res) {
+
+            foreach ($res as $data) {
+                try {
+                    $user = User::where('email', '=', $data->email)->firstOrFail();
+                    if ($user != null) {
+                        array_push($users, $user);
+                        array_push($employeesMonth, (object)[
+                            'name' => $user->name . ' ' . $user->lastname,
+                            'position' => $data->puesto,
+                            'star' => $data->star,
+                            'photo' => $user->image
+                        ]);
+                    }
+                } catch (Exception $e) {
                 }
-            } catch (Exception $e) {
             }
         }
         return $employeesMonth;
