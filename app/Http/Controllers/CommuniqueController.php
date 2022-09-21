@@ -7,7 +7,6 @@ use App\Models\CommuniqueCompany;
 use App\Models\CommuniqueDepartment;
 use App\Models\Company;
 use App\Models\Department;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +25,7 @@ class CommuniqueController extends Controller
         $employeeID = DB::table('employees')->where('user_id', $id)->value('id');
         $companyEmployee = DB::table('company_employee')->where('employee_id', $employeeID)->value('company_id');
         $companyCom = CommuniqueCompany::all()->where('company_id', $companyEmployee)->pluck('communique_id', 'communique_id');
-        $companyCommuniques = Communique::all()->whereIn('id', $companyCom);        
+        $companyCommuniques = Communique::all()->whereIn('id', $companyCom);
 
         return view('communique.index', compact('companyCommuniques'));
     }
@@ -100,7 +99,6 @@ class CommuniqueController extends Controller
     public function show(/* Communique $communique */)
     {
         $communiques =  Communique::all(); /* auth()->user()->employee->communiques; */
-        self::validateCommunicated();
         return view('communique.show', compact('communiques'));
     }
 
@@ -207,12 +205,13 @@ class CommuniqueController extends Controller
         return view('communique.area', compact('departmentCommuniques'));
     }
 
-    public function validateCommunicated(){
-        $communiques =  Communique::all();
+    public function validateCommunicated()
+    {
+        /*  $communiques =  Communique::all();
 
        foreach( $communiques as  $communique){
             $day = $communique->created_at->format('Y-m-d');
-       
+
             $expiration = Carbon::parse($day)->addDays(5);
             $expirationFormat = $expiration->format('Y-m-d');
 
@@ -222,6 +221,6 @@ class CommuniqueController extends Controller
             if( $todayFormat >=$expirationFormat   ){
                 $communique->delete();
             }
-       }
+       } */
     }
 }

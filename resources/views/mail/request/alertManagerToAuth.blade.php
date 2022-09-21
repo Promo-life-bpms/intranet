@@ -1,5 +1,6 @@
 @component('mail::message')
 # ¡Buen día, {{ $receptor_name }}!
+# Tomate el tiempo para acceder a la Intranet Corporativa y responder esta solicitud.
 # {{ $emisor_name }} ha realizado un nueva solicitud:
 Tipo:  {{ $type }}
 

@@ -7,12 +7,16 @@
                 <i class="fab fa-facebook-messenger"></i>
                 <i class="fas fa-times"></i>
             </label>
+            <input type="checkbox" id="click" wire:click="collapseListUsers">
+            <label for="click">
+                <i class="fab fa-facebook-messenger"></i>
+                <i class="fas fa-times"></i>
+            </label>
             <div class="wrapper">
                 <div class="head-text">
                     Contactos</div>
 
-                <div style="max-height: 250px; overflow-y: scroll" id="style-3"
-                    class="{{ !$listUsersCollapse ? 'd-none' : '' }}">
+                <div style="max-height: 250px; overflow-y: scroll" id="style-3">
                     @foreach ($users as $user)
                         <div class="d-flex flex-row p-2 usuario" wire:click="openChat({{ $user->id }})"
                             style="cursor: pointer">
@@ -25,7 +29,7 @@
                                     <span class="online_icon"></span>
                                 @endif
                             </div>
-                            <p> {{ $user->name }}</p>
+                            <p class="m-0 mx-1"> {{ $user->name }}</p>
 
                         </div>
                     @endforeach
@@ -68,8 +72,6 @@
     </script>
     <style scoped>
         @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap");
-
-
 
         .contenedor {
             z-index: 100;

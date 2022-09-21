@@ -1,9 +1,9 @@
 @component('mail::message')
-# ¡Buen día, {{ $receptor_name }}!
-# {{ $emisor_name }} ha realizado un nueva solicitud:
-Tipo:  {{ $type }}
+# ¡Buen día Departamento de RRHH!
+# Tomate el tiempo para acceder a la Intranet Corporativa y responder las solicitudes pendientes.
+#
 
-@component('mail::button', ['url' => $url.'/request/authorize-manager', 'color' => 'blue'])
+@component('mail::button', ['url' => $url.'/request/authorize-rh', 'color' => 'blue'])
     Revisar
 @endcomponent
 Si quieres reportar algún error, hacer una pregunta o solicitar una característica nueva, puedes hacerlo desde aquí:

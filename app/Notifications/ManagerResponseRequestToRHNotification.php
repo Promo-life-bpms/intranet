@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CreateRequestNotification extends Notification
+class ManagerResponseRequestToRHNotification extends Notification
 {
     use Queueable;
 
@@ -18,12 +18,12 @@ class CreateRequestNotification extends Notification
      */
     public $type;
     public $emisor_name;
-    public $receptor_name;
-    public function __construct($type, $emisor_name, $receptor_name)
+    public $user_name;
+    public function __construct($type, $emisor_name, $user_name)
     {
         $this->type = $type;
         $this->emisor_name = $emisor_name;
-        $this->receptor_name = $receptor_name;
+        $this->user_name = $user_name;
     }
 
     /**
@@ -46,12 +46,13 @@ class CreateRequestNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->markdown('mail.request.create', [
-                'url' => url('/'),  'type' => $this->type,
+            ->markdown('mail.request.manager_response-to-rh', [
+                'url' => url('/'),
+                'type' => $this->type,
                 'emisor_name' => $this->emisor_name,
-                'receptor_name' => $this->receptor_name,
+                'user_name' => $this->user_name,
             ])
-            ->subject('Solicitud de ausencia')
+            ->subject('Autorizacion de un Jefe Directo')
             ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
     }
 
@@ -66,6 +67,7 @@ class CreateRequestNotification extends Notification
         return [
             'type' => $this->type,
             'emisor_name' => $this->emisor_name,
+            'user_name' => $this->user_name,
         ];
     }
 }

@@ -16,6 +16,7 @@ class CreateRequestsTable extends Migration
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
+            $table->integer('reveal_id')->nullable();
             $table->string('type_request');
             $table->string('payment');
             $table->time('start')->nullable();

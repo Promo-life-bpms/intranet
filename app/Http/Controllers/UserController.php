@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManagerStatic as Image;
 
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
 class UserController extends Controller
 {
     /**
@@ -257,8 +260,140 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->status = false;
+        $user->email = time() . 'disabled' . $user->email;
         $user->save();
         return redirect()->action([UserController::class, 'index'])->with('success', 'El usuario ' . $user->name . ' ' . $user->lastname . ' ha sido eliminado');
+    }
+
+    public function exportUsuarios()
+    {
+
+        $documento = new Spreadsheet();
+        $documento
+            ->getProperties()
+            ->setCreator("Aquí va el creador, como cadena")
+            ->setLastModifiedBy('Parzibyte') // última vez modificado por
+            ->setTitle('Mi primer documento creado con PhpSpreadSheet')
+            ->setSubject('El asunto')
+            ->setDescription('Este documento fue generado para parzibyte.me')
+            ->setKeywords('etiquetas o palabras clave separadas por espacios')
+            ->setCategory('La categoría');
+
+        $nombreDelDocumento = "Reporte de Usuarios con corte al ".now()->format('d-m-Y').".xlsx";
+
+        $hoja = $documento->getActiveSheet();
+        $hoja->setTitle("Usuarios");
+        $users = User::where('status', 1)->get();
+        $i = 2;
+        $hoja->setCellValueByColumnAndRow(1, 1,  'Nombre');
+        $hoja->setCellValueByColumnAndRow(2, 1,  'Apellido');
+        $hoja->setCellValueByColumnAndRow(3, 1,  'Correo');
+        $hoja->setCellValueByColumnAndRow(4, 1,  'Fecha de Cumpleaños');
+        $hoja->setCellValueByColumnAndRow(5, 1,  'Fecha de Ingreso');
+        $hoja->setCellValueByColumnAndRow(6, 1,  'Departamento');
+        $hoja->setCellValueByColumnAndRow(7, 1,  'Puesto');
+        $hoja->setCellValueByColumnAndRow(8, 1,  'Jefe Directo');
+        $hoja->setCellValueByColumnAndRow(9, 1,  'Empresas');
+        $hoja->setCellValueByColumnAndRow(10, 1,  'Roles');
+        $hoja->setCellValueByColumnAndRow(11, 1,  'Ultimo Inicio de Sesion');
+
+        foreach ($users as $user) {
+            $hoja->setCellValueByColumnAndRow(1, $i,  $user->name);
+            $hoja->setCellValueByColumnAndRow(2, $i,  $user->lastname);
+            $hoja->setCellValueByColumnAndRow(3, $i,  $user->email);
+            $hoja->setCellValueByColumnAndRow(4, $i,  $user->employee->birthday_date->format('d/m/Y'));
+            $hoja->setCellValueByColumnAndRow(5, $i,  $user->employee->date_admission->format('d/m/Y'));
+            $hoja->setCellValueByColumnAndRow(6, $i,  $user->employee->position->department->name);
+            $hoja->setCellValueByColumnAndRow(7, $i, $user->employee->position->name);
+            if ($user->employee->jefeDirecto) {
+                $hoja->setCellValueByColumnAndRow(8, $i, $user->employee->jefeDirecto->user->name . ' ' . $user->employee->jefeDirecto->user->lastname);
+            } else {
+                $hoja->setCellValueByColumnAndRow(8, $i, 'Ninguno');
+            }
+            $companies = '';
+            if ($user->employee->companies) {
+                foreach ($user->employee->companies as $company) {
+                    $companies = $companies . $company->name_company . ', ';
+                }
+            }
+            $hoja->setCellValueByColumnAndRow(9, $i, $companies);
+            $roles = '';
+            if ($user->roles) {
+                foreach ($user->roles as $role) {
+                    $roles = $roles . $role->display_name . ', ';
+                }
+            }
+            $hoja->setCellValueByColumnAndRow(10, $i, $roles);
+            $hoja->setCellValueByColumnAndRow(11, $i,  $user->last_login);
+            $i++;
+        }
+
+        // Para crear siguiente hoja
+        $hoja = $documento->createSheet();
+
+        // Generale el nombre de hoja para que confirmes que tienes la hoja creada
+        $hoja->setTitle("Usuarios Eliminados");
+        $users = User::where('status', 0)->get();
+        $i = 2;
+        $hoja->setCellValueByColumnAndRow(1, 1,  'Nombre');
+        $hoja->setCellValueByColumnAndRow(2, 1,  'Apellido');
+        $hoja->setCellValueByColumnAndRow(3, 1,  'Correo');
+        $hoja->setCellValueByColumnAndRow(4, 1,  'Fecha de Cumpleaños');
+        $hoja->setCellValueByColumnAndRow(5, 1,  'Fecha de Ingreso');
+        $hoja->setCellValueByColumnAndRow(6, 1,  'Departamento');
+        $hoja->setCellValueByColumnAndRow(7, 1,  'Puesto');
+        $hoja->setCellValueByColumnAndRow(8, 1,  'Jefe Directo');
+        $hoja->setCellValueByColumnAndRow(9, 1,  'Empresas');
+        $hoja->setCellValueByColumnAndRow(10, 1,  'Roles');
+        $hoja->setCellValueByColumnAndRow(11, 1,  'Ultimo Inicio de Sesion');
+        $hoja->setCellValueByColumnAndRow(12, 1,  'Fecha de Eliminacion de la Intranet');
+
+        foreach ($users as $user) {
+            $hoja->setCellValueByColumnAndRow(1, $i,  $user->name);
+            $hoja->setCellValueByColumnAndRow(2, $i,  $user->lastname);
+            $hoja->setCellValueByColumnAndRow(3, $i,  $user->email);
+            $hoja->setCellValueByColumnAndRow(4, $i,  $user->employee->birthday_date->format('d/m/Y'));
+            $hoja->setCellValueByColumnAndRow(5, $i,  $user->employee->date_admission->format('d/m/Y'));
+            $hoja->setCellValueByColumnAndRow(6, $i,  $user->employee->position->department->name);
+            $hoja->setCellValueByColumnAndRow(7, $i, $user->employee->position->name);
+            if ($user->employee->jefeDirecto) {
+                $hoja->setCellValueByColumnAndRow(8, $i, $user->employee->jefeDirecto->user->name . ' ' . $user->employee->jefeDirecto->user->lastname);
+            } else {
+                $hoja->setCellValueByColumnAndRow(8, $i, 'Ninguno');
+            }
+            $companies = '';
+            if ($user->employee->companies) {
+                foreach ($user->employee->companies as $company) {
+                    $companies = $companies . $company->name_company . ', ';
+                }
+            }
+            $hoja->setCellValueByColumnAndRow(9, $i, $companies);
+            $roles = '';
+            if ($user->roles) {
+                foreach ($user->roles as $role) {
+                    $roles = $roles . $role->display_name . ', ';
+                }
+            }
+            $hoja->setCellValueByColumnAndRow(10, $i, $roles);
+            $hoja->setCellValueByColumnAndRow(11, $i,  $user->last_login);
+            $hoja->setCellValueByColumnAndRow(12, $i,  $user->updated_at->format('d/m/Y'));
+            $i++;
+        }
+
+        /**
+         * Los siguientes encabezados son necesarios para que
+         * el navegador entienda que no le estamos mandando
+         * simple HTML
+         * Por cierto: no hagas ningún echo ni cosas de esas; es decir, no imprimas nada
+         */
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $nombreDelDocumento . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = IOFactory::createWriter($documento, 'Xlsx');
+        $writer->save('php://output');
+        exit;
     }
 
     public function getPosition($id)
@@ -280,7 +415,7 @@ class UserController extends Controller
 
         return json_encode($users);
     }
-    public function sendAccess()
+    /* public function sendAccess()
     {
         $users = User::where('status', 1)->get();
         foreach ($users as $user) {
@@ -295,7 +430,7 @@ class UserController extends Controller
             ];
             $user->notify(new RegisteredUser($dataNotification));
         }
-    }
+    } */
     public function sendAccessPerUser(User $user)
     {
         $pass = Str::random(8);

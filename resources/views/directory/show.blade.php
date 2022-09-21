@@ -3,25 +3,29 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-
-            @foreach ($user as $user)
-                <h3>{{ $user->name . ' ' . $user->lastname }}</h3>
-            @endforeach
-
+            <h3>{{ $user->name . ' ' . $user->lastname }}</h3>
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalImage">Agregar</button>
         </div>
     </div>
     <div class="card-body">
 
         <div class="row">
-            @foreach ($directory as $directory)
-                {!! Form::model($directory, ['route' => ['directories.update', $directory], 'method' => 'put', 'enctype' => 'multipart/form-data']) !!}
+            @foreach ($directories as $directory)
+                {!! Form::model($directory, [
+                    'route' => ['directories.update', $directory],
+                    'method' => 'put',
+                ]) !!}
 
                 <div class="card bg-light p-4">
                     <div class="row">
                         <div class="col-md-2">
                             {!! Form::label('type', 'Tipo') !!}
-                            {!! Form::select('type', ['Email' => 'Email', 'Extension' => 'Extension', 'Celular' => 'Celular', 'Telefono' => 'Telefono'], null, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
+                            {!! Form::select(
+                                'type',
+                                ['Email' => 'Email', 'Extension' => 'Extension', 'Celular' => 'Celular', 'Telefono' => 'Telefono'],
+                                null,
+                                ['class' => 'form-control', 'placeholder' => 'Tipo'],
+                            ) !!}
 
                             @error('type')
                                 <small>
@@ -47,7 +51,10 @@
 
                         <div class="col-md-2">
                             {!! Form::label('company', 'Empresa') !!}
-                            {!! Form::select('company', $companies, $directory->company, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
+                            {!! Form::select('company', $companies, $directory->company, [
+                                'class' => 'form-control',
+                                'placeholder' => 'Tipo',
+                            ]) !!}
 
                             @error('company')
                                 <small>
@@ -78,12 +85,11 @@
                             </form>
                         </div>
                     </div>
-
                 </div>
             @endforeach
-
         </div>
 
+        {{-- Modal de ingreso de datos --}}
         <div class="modal fade" id="modalImage" tabindex="-1" aria-labelledby="modalImageLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -100,7 +106,12 @@
 
                             <div class="col-md-6">
                                 {!! Form::label('type', 'Tipo') !!}
-                                {!! Form::select('type', ['Email' => 'Email', 'Extension' => 'Extension', 'Celular' => 'Celular', 'Telefono' => 'Telefono'], null, ['class' => 'form-control', 'placeholder' => 'Tipo']) !!}
+                                {!! Form::select(
+                                    'type',
+                                    ['Email' => 'Email', 'Extension' => 'Extension', 'Celular' => 'Celular', 'Telefono' => 'Telefono'],
+                                    null,
+                                    ['class' => 'form-control', 'placeholder' => 'Tipo'],
+                                ) !!}
 
                                 @error('type')
                                     <small>
@@ -113,7 +124,10 @@
 
                             <div class="col-md-6">
                                 {!! Form::label('company', 'Empresa') !!}
-                                {!! Form::select('company', $companies, null, ['class' => 'form-control', 'placeholder' => 'Seleccione la empresa']) !!}
+                                {!! Form::select('company', $companies, null, [
+                                    'class' => 'form-control',
+                                    'placeholder' => 'Seleccione la empresa',
+                                ]) !!}
 
                                 @error('company')
                                     <small>

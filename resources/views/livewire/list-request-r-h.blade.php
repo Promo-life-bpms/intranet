@@ -1,4 +1,23 @@
 <div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="">Buscar Usuario</label>
+                <input type="text" class="form-control" wire:model="searchName">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="">Buscar por estatus</label>
+                <select name="" id="" class="form-control" wire:model="searchStatus">
+                    <option value="">Todos</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Aprobada">Aprobada</option>
+                    <option value="Rechazada">Rechazada</option>
+                </select>
+            </div>
+        </div>
+    </div>
     <table class="table">
         <thead>
             <tr>
@@ -49,6 +68,22 @@
                                             {{ $request->type_request }}
                                         </p>
                                         <br>
+                                        <p class="m-0"><b>Vacaciones Disponibles</b></p>
+                                        @php
+                                            $dataVacations = $request->employee->user->vacationsAvailables;
+                                            $vacations = $dataVacations->sum('dv');
+                                        @endphp
+                                        <p class="m-0">Dias de vacaciones diponibles: <b id="diasDisponiblesEl">
+                                                {{ $vacations }} </b> </p>
+                                        @foreach ($dataVacations as $item)
+                                            @php
+                                                $dayFormater = \Carbon\Carbon::parse($item->cutoff_date);
+                                            @endphp
+                                            <p class="m-0"><b>{{ $item->dv }} </b> dias disponibles hasta el <b>
+                                                    {{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}</b>
+                                            </p>
+                                        @endforeach
+                                        <br>
                                         <p class="m-0">
                                             <b>Tipo de Pago: </b>
                                             {{ $request->payment }}
@@ -68,12 +103,12 @@
                                         </p>
                                         <p class="m-0">
                                             <b>Tiempo:</b>
-                                            @if ($request->payment == 'Salir durante la jornada')
+                                            @if ($request->type_request == 'Salir durante la jornada')
                                                 @if ($request->start != null)
-                                                    {{ 'Entrada: ' . $request->start }}
+                                                    {{ 'Salida: ' . $request->start }}
                                                 @endif
                                                 @if ($request->end != null)
-                                                    {{ 'Salida: ' . $request->end . ' ' }}
+                                                    {{ 'Entrada o Reingreso: ' . $request->end . ' ' }}
                                                 @endif
                                             @else
                                                 Tiempo completo
@@ -106,11 +141,6 @@
         {{ $requests->links() }}
     </div>
     <script>
-        document.addEventListener('livewire:load', function() {
-            function aceptar(id) {
-
-            }
-        })
         window.addEventListener('swal', event => {
             Swal.fire({
                 title: '¿Deseas responder a esta solicitud?',
@@ -130,7 +160,9 @@
                                 Swal.fire('¡Se ha autorizado la solicitud!', '', 'success')
                             }
                             if (response == 2) {
-                                Swal.fire('No tiene suficientes dias disponibles para aprobar esta solicitud', '', 'success')
+                                Swal.fire(
+                                    'No tiene suficientes dias disponibles para aprobar esta solicitud',
+                                    '', 'success')
                             }
                         }, function() {
                             // one or more failed

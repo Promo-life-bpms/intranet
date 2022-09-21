@@ -7,10 +7,18 @@
         @click="collapseChat()"
       ></i>
       <span class="pb-3">{{ userData.name + " " + userData.lastname }}</span>
-      <i class="fas fa-times zoom ease" style="font-size: 20px" @click="cerrarChat()"></i>
+      <i
+        class="fas fa-times zoom ease"
+        style="font-size: 20px"
+        @click="cerrarChat()"
+      ></i>
     </div>
     <div v-if="chatCollapse">
-      <div style="height: 300px; overflow-y: auto" id="formChat" class="style-1">
+      <div
+        style="height: 300px; overflow-y: auto"
+        id="formChat"
+        class="style-1"
+      >
         <div v-for="(mensaje, i) in messages" :key="i.id">
           <div
             class="d-flex flex-row p-2"
@@ -22,19 +30,24 @@
           >
             <img
               v-if="userId == mensaje.transmitter_id"
-              :src="
-                userData.image === null || userData.image === ''
-                  ? 'https://cdn-icons.flaticon.com/png/512/2550/premium/2550383.png?token=exp=1656952747~hmac=ed262840f58c4e24269fa611714af05a'
-                  : '/' + user.image
-              "
               style="width: 25px; height: 25px"
-              class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icon"
+              class="
+                rounded-circle
+                border border-primary
+                m-0
+                d-flex
+                justify-content-center
+                align-items-center
+                width-icon
+              "
             />
 
             <div
               class="chat ml-2 p-1"
               :class="
-                userId == mensaje.transmitter_id ? 'bg-white ml-2 p-2' : 'chat mr-2 p-2'
+                userId == mensaje.transmitter_id
+                  ? 'bg-white ml-2 p-2'
+                  : 'chat mr-2 p-2'
               "
             >
               <span style="font-size: 12px">{{ mensaje.message }}</span>
@@ -52,7 +65,11 @@
           </div>
         </div>
       </div>
-      <ChatForm :authId="authId" :userId="userId" v-on:cerrarChat="cerrarChat" />
+      <ChatForm
+        :authId="authId"
+        :userId="userId"
+        v-on:cerrarChat="cerrarChat"
+      />
     </div>
   </div>
 </template>

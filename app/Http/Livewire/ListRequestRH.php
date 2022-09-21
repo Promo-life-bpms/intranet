@@ -12,10 +12,24 @@ use Livewire\WithPagination;
 class ListRequestRH extends Component
 {
     use WithPagination;
-
+    public $searchName, $searchStatus;
     public function render()
     {
-        $requests = Request::where('direct_manager_status', 'Aprobada')->orderBy('created_at', 'DESC')->simplePaginate(10);
+        $user = '%' . $this->searchName . '%';
+        $status = $this->searchStatus;
+        $operadorStatus = '=';
+        if ($this->searchStatus == "") {
+            $status = null;
+            $operadorStatus = '!=';
+        }
+        $requests = Request::join('employees', 'requests.employee_id', '=', 'employees.id')
+            ->join('users', 'employees.user_id', '=', 'users.id')
+            ->where('requests.direct_manager_status', 'Aprobada')
+            ->where('requests.human_resources_status', $operadorStatus, $status)
+            ->where('users.name', 'LIKE', $user)
+            ->orderBy('requests.created_at', 'DESC')
+            ->select('requests.*')
+            ->simplePaginate(10);
         return view('livewire.list-request-r-h', ['requests' => $requests]);
     }
 
@@ -28,11 +42,13 @@ class ListRequestRH extends Component
             $totalDiasDisponibles = $user->vacationsAvailables()->orderBy('period', 'DESC')->sum('dv');
             if ((int) $totalDiasDisponibles >= $totalDiasSolicitados) {
                 foreach ($user->vacationsAvailables()->orderBy('period', 'DESC')->get() as $dataVacation) {
-                    if ($dataVacation->dv < $totalDiasSolicitados) {
-                        $dataVacation->days_enjoyed = $dataVacation->dv;
-                        $totalDiasSolicitados = $totalDiasSolicitados - $dataVacation->dv;
-                        $dataVacation->dv = 0;
-                        $dataVacation->save();
+                    if ($dataVacation->dv <= $totalDiasSolicitados && $totalDiasSolicitados == count($request->requestdays)) {
+                        if ($dataVacation->dv > 0) {
+                            $dataVacation->days_enjoyed = (int) $dataVacation->days_availables;
+                            $totalDiasSolicitados = (int)$totalDiasSolicitados - (int) $dataVacation->dv;
+                            $dataVacation->dv = 0;
+                            $dataVacation->save();
+                        }
                     } else {
                         $dataVacation->days_enjoyed = $dataVacation->days_enjoyed + $totalDiasSolicitados;
                         $dataVacation->dv = $dataVacation->dv - $totalDiasSolicitados;
@@ -40,20 +56,22 @@ class ListRequestRH extends Component
                         break;
                     }
                 }
-                $request->save();
-            }else{
+            } else {
                 return 2;
             }
         }
+        $request->save();
         $user = auth()->user();
         $userReceiver = Employee::find($request->employee_id)->user;
         event(new RHResponseRequestEvent($request->type_request, $request->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $request->human_resources_status));
         $userReceiver->notify(new RHResponseRequestNotification($request->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $request->human_resources_status));
         return 1;
     }
+
     public function rechazar(Request $request)
     {
         $request->human_resources_status = "Rechazada";
+        // $request->requestdays()->delete();
         $request->save();
         $user = auth()->user();
         $userReceiver = Employee::find($request->employee_id)->user;

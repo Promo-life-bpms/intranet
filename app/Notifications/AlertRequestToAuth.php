@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CreateRequestNotification extends Notification
+class AlertRequestToAuth extends Notification
 {
     use Queueable;
 
@@ -46,12 +46,12 @@ class CreateRequestNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->markdown('mail.request.create', [
+            ->markdown('mail.request.alertManagerToAuth', [
                 'url' => url('/'),  'type' => $this->type,
                 'emisor_name' => $this->emisor_name,
                 'receptor_name' => $this->receptor_name,
             ])
-            ->subject('Solicitud de ausencia')
+            ->subject('Aún no has autorizado a esta solicitud')
             ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
     }
 

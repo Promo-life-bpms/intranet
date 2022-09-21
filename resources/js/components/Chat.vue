@@ -25,7 +25,7 @@
               <img
                 :src="
                   user.image === null || user.image === ''
-                    ? 'https://cdn-icons.flaticon.com/png/512/2550/premium/2550383.png?token=exp=1656952747~hmac=ed262840f58c4e24269fa611714af05a'
+                    ? '/img/profileChat.png'
                     : '/' + user.image
                 "
                 class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons"
@@ -37,7 +37,9 @@
             <p>{{ user.name }}</p>
           </div>
         </div>
-        <div class="input-group">
+        <div
+        v-if="listUsersCollapse"
+        class="input-group">
           <span class="input-group-text">
             <svg
               xmlns="http://www.w3.org/2000/svg"

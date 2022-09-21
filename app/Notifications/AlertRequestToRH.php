@@ -7,23 +7,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CreateRequestNotification extends Notification
+class AlertRequestToRH extends Notification
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
-    public $type;
-    public $emisor_name;
-    public $receptor_name;
-    public function __construct($type, $emisor_name, $receptor_name)
+    public function __construct()
     {
-        $this->type = $type;
-        $this->emisor_name = $emisor_name;
-        $this->receptor_name = $receptor_name;
     }
 
     /**
@@ -46,12 +35,10 @@ class CreateRequestNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->markdown('mail.request.create', [
-                'url' => url('/'),  'type' => $this->type,
-                'emisor_name' => $this->emisor_name,
-                'receptor_name' => $this->receptor_name,
+            ->markdown('mail.request.alertManagerToRH', [
+                'url' => url('/')
             ])
-            ->subject('Solicitud de ausencia')
+            ->subject('Tienes solicitudes pendientes')
             ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
     }
 
@@ -64,8 +51,7 @@ class CreateRequestNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'type' => $this->type,
-            'emisor_name' => $this->emisor_name,
+            'data' => 'Alert'
         ];
     }
 }

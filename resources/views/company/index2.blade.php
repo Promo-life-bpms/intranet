@@ -1,32 +1,13 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="eS">
 
-@section('content')
-    <div class="card-header">
-        <h3>Organigrama</h3>
-    </div>
-    <div class="card-body">
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
-                    role="tab" aria-controls="home" aria-selected="true">General</button>
-            </li>
-            {{-- <li class="nav-item" role="presentation">
-                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
-                    role="tab" aria-controls="profile" aria-selected="false">Especifico</button>
-            </li> --}}
-        </ul>
-        <div class="tab-content mx-2" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <div class="org">
-                    <div class="organigrama">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-@stop
-
-@section('styles')
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <style>
         .org {
 
@@ -156,9 +137,42 @@
             margin-left: -5px;
             margin-bottom: 5px;
         }
+
+        .conten_info .pluss {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 0;
+        }
+
+        .conten_info .pluss1 {
+            position: relative;
+        }
+
+        .conten_info .pluss1 div {
+            font-size: 15px;
+            width: 25px;
+            flex-shrink: 1;
+            background-color: #fff;
+            border-radius: 50%;
+            border: 1px #039BE5 solid;
+            position: relative;
+            top: 10px;
+            z-index: 100;
+        }
+
+        .conten_info .pluss1 div:hover {
+            cursor: pointer;
+        }
     </style>
-@endsection
-@section('scripts')
+</head>
+
+<body>
+    <div class="organigrama d-flex ">
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             fetch('/company/getEmployees')
@@ -176,8 +190,9 @@
                         // a must be equal to b
                         return 0;
                     });
-                    console.log(response);
+
                     addNodos(response, [])
+                    focusMe()
                 });
 
             function addNodos(response, paramdataOrg) {
@@ -197,21 +212,23 @@
                             beforeElement = elementData
                         }
                     }
-                    console.log('parent', elementParent);
-                    console.log('before', beforeElement);
-                    console.log('person', person);
-                    console.log('');
+
                     let branchPerson = document.createElement('li');
                     branchPerson.setAttribute("id", `${person.id}`);
-                    let dataPerson = `<a href="#" onclick="showHide(this)" class="text-decoration-none text-dark contenido-user">
-                                        <div class="">
+                    let dataPerson = `<a class="text-decoration-none text-dark contenido-user">
+                                        <div class="conten_info">
                                             <div class="d-flex justify-content-between">
                                                 <div class="img-photo">
-                                                    <img src="${person.img}" alt="" class="rounded-circle">
+                                                    <img src="${person.img}" alt="" class="rounded-circle" style="width: 100px; height: 100px; object-fit:cover;">
                                                 </div>
                                                 <p class="mt-1" style="font-size: 12px;">${person.title}</p>
                                             </div>
                                             <p class="mb-1 name" style="font-size: 15px;"><strong>${person.name}</strong></p>
+                                            <div class="pluss" >
+                                                <div class="pluss1">
+                                                    <div onclick="showHide(this, event)">+</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </a>`;
 
@@ -246,26 +263,56 @@
                         })
                         elementParent.branchPerson.appendChild(listPerson)
                     } else if (elementParent == null && beforeElement == null && person.pid != null) {
-                        console.log('No se registra aun tu jefe', person);
+
                         faltantes.push(person);
-                        console.log(faltantes);
+
                     }
                 }
                 if (faltantes.length > 0) {
                     addNodos(faltantes, dataOrg)
                 }
+
+                const nodos_finish = document.querySelectorAll('.contenido-user')
+
+                nodos_finish.forEach(element => {
+                    if (element.parentNode.lastElementChild.tagName !== 'UL') {
+                        element.lastElementChild.lastElementChild.lastElementChild.lastElementChild
+                            .classList.add('d-none')
+                    }
+                });
+
             }
         })
 
-        function showHide(e) {
-            if (e.parentNode.lastElementChild.tagName == 'UL') {
-                if (e.parentNode.lastElementChild.classList.toggle('d-none')) {
-                    console.log(1);
-                } else {
+        function focusMe() {
+            var i = 0,
+                d = document,
+                inp = Array.from(d.querySelectorAll(".contenido-user")),
+                max = inp.length,
+                sdiv = d.querySelector(".organigrama");
 
-                }
+            for (; i < max; i++) {
+                var e = inp[i],
+                    equation = e.addEventListener("click", (e) => {
+                        console.log(e);
+                        var elemento = e.srcElement;
+                        console.log(elemento.offsetLeft - (sdiv.clientWidth / 2), 0);
+                        sdiv.scrollTo(elemento.offsetLeft - (sdiv.clientWidth / 2), 0);
+                    });
+                console.log(e);
             }
+        }
+
+
+
+        function showHide(element, event) {
+            element.parentNode.parentNode.parentNode.parentNode.parentNode.lastElementChild.classList.toggle('d-none')
+            const org = document.querySelector('.organigrama')
+            var sLeft = element.scrollLeft;
+            // justify-content-center
 
         }
     </script>
-@endsection
+</body>
+
+</html>

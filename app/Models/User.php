@@ -26,6 +26,7 @@ class User extends Authenticatable
         'email',
         'password',
         'status',
+        'last_login'
     ];
 
     /**
@@ -58,10 +59,10 @@ class User extends Authenticatable
         /*  static::created(function ($user) {
             $user->contact()->create();
         });
- */
+
         static::created(function ($user) {
             $user->vacation()->create();
-        });
+        });*/
     }
 
     public function employee()

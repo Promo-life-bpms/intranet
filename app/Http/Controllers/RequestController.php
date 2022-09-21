@@ -7,10 +7,16 @@ use App\Exports\DateRequestExport;
 use App\Exports\FilterRequestExport;
 use App\Exports\RequestExport;
 use App\Models\Employee;
+use App\Models\Manager;
 use App\Models\NoWorkingDays;
+use App\Models\Position;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
+use App\Models\Role;
+use App\Models\User;
 use App\Models\Vacations;
+use App\Notifications\AlertRequestToAuth;
+use App\Notifications\AlertRequestToRH;
 use App\Notifications\CreateRequestNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -75,7 +81,7 @@ class RequestController extends Controller
         // Eliminar los dias selecionados con anterioridad qie no estan ligados a un request
         auth()->user()->daysSelected()->delete();
         // Obtener dias no laborables
-        $noworkingdays = NoWorkingDays::orderBy('day', 'ASC')->get();
+        $noworkingdays = NoWorkingDays::orderBy('day')->get();
         // Obtener dias de vacaciones
         $vacations = auth()->user()->vacationsAvailables->where('period', '<>', 3)->sum('dv');
         $dataVacations  = auth()->user()->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'DESC')->get();
@@ -84,7 +90,18 @@ class RequestController extends Controller
             $vacations = 0;
         }
 
-        return view('request.create', compact('noworkingdays', 'vacations', 'dataVacations'));
+        $dep = auth()->user()->employee->position->department;
+        $positions = Position::all()->where("department_id", $dep)->pluck("name", "id");
+        $data = $dep->positions;
+        $users = [];
+        foreach ($data as $dat) {
+            foreach ($dat->getEmployees as $emp) {
+                $users["{$emp->user->id}"] = $emp->user->name;
+            }
+        }
+
+
+        return view('request.create', compact('noworkingdays', 'vacations', 'dataVacations', 'users'));
     }
 
     public function store(Request $request)
@@ -96,6 +113,7 @@ class RequestController extends Controller
         $request->validate([
             'type_request' => 'required',
             'reason' => 'required|max:255',
+            'reveal' => 'required',
         ]);
 
         if ($request->type_request === "Salir durante la jornada") {
@@ -123,6 +141,7 @@ class RequestController extends Controller
         $req->reason = $request->reason;
         $req->start = $request->start;
         $req->end = $request->end;
+        $req->reveal_id = $request->reveal;
 
         $req->direct_manager_id = $user->employee->jefe_directo_id;
         $req->direct_manager_status = "Pendiente";
@@ -285,14 +304,23 @@ class RequestController extends Controller
         return  Excel::download(new DateRequestExport($start, $end, $daySelected), 'solicitudes_por_periodo.xlsx');
     }
 
-    public function getPayment($id)
+    // Recordar las solicitudes que estan pendientes a los jefes directos y a rh
+    public function alertPendient()
     {
-        if ($id == "Solicitar vacaciones") {
-            return response()->json(['name' => 'A cuenta de vacaciones', 'display' => 'false']);
-        } else if ($id == "Salir durante la jornada") {
-            return response()->json(['name' => 'Descontar Tiempo/Dia', 'display' => 'true']);
-        } else {
-            return response()->json(['name' => 'Descontar Tiempo/Dia', 'display' => 'false']);
+        $request = ModelsRequest::where('direct_manager_status', 'Pendiente')->get();
+        $requestRH = ModelsRequest::where('direct_manager_status', '=', 'Aprobada')->where('human_resources_status', 'Pendiente')->get();
+        $usersRH = Role::where('name', 'rh')->first()->users;
+
+        foreach ($request as $req) {
+            $userReceiver = $req->manager->user;
+            $user = $req->employee->user;
+            $userReceiver->notify(new AlertRequestToAuth($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $req->direct_manager_status));
+        }
+
+        if (count($requestRH) > 0) {
+            foreach ($usersRH as $userRH) {
+                $userRH->notify(new AlertRequestToRH());
+            }
         }
     }
 }

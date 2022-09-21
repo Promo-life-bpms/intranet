@@ -9,7 +9,6 @@ use App\Http\Controllers\MonthController;
 use App\Http\Controllers\CommuniqueController;
 use App\Http\Controllers\ManualController;
 use App\Http\Controllers\AccessController;
-use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
@@ -17,7 +16,6 @@ use App\Http\Controllers\WorkController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\DirectoryController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\OrganizationController;
@@ -58,57 +56,57 @@ Auth::routes();
 
 Route::get('/loginEmail', [LoginController::class, 'loginWithLink'])->name('loginWithLink');
 
-Route::get('/disabled', function () {
-    return view('home.disabled');
-})->name('user.disable');
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
-    Route::get('/home', HomeController::class)->name('home');
-
-    Route::get('/about/promolife', [AboutController::class, 'promolife'])->name('about_promolife');
-    Route::get('/about/bhtrade', [AboutController::class, 'bh'])->name('about_trade');
-    Route::get('/about/promodreams', [AboutController::class, 'promodreams'])->name('about_promodreams');
-    Route::get('/about/trademarket', [AboutController::class, 'trademarket'])->name('about_trademarket');
-
-    Route::get('/company', [CompanyController::class, 'index'])->name('company');
-    Route::get('company/getPosition/{id}', [CompanyController::class, 'getPositions']);
-    Route::get('company/getEmployees', [CompanyController::class, 'getAllEmployees']);
-    Route::get('company/getEmployeesByOrganization/{organization}', [CompanyController::class, 'getEmployeesByOrganization']);
-    Route::get('company/getEmployeesByDepartment/{department}', [CompanyController::class, 'getEmployeesByDepartment']);
-
-    Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
-    Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
-
-    Route::get('/month', MonthController::class)->name('month');
-    /*    Route::get('/manual', ManualController::class)->name('manual'); */
-    Route::get('/folder', FolderController::class)->name('folder');
-    Route::get('/work', WorkController::class)->name('work');
-
-    Route::resource('/directories', DirectoryController::class);
-
-    Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
-
-        // Route::resource('roles', RoleController::class);
+    // Administrador
+    Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('departments', DepartmentsController::class);
         Route::resource('position', PositionController::class);
         Route::resource('manager', ManagerController::class);
         Route::resource('organization', OrganizationController::class);
-    });
-
-    Route::resource('manuals', ManualController::class);
-    Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', UserController::class);
+
+        Route::get('exportUsuarios/', [UserController::class, 'exportUsuarios'])->name('user.exportUsuarios');
         Route::get('sendAccess/', [UserController::class, 'sendAccess'])->name('user.sendAccess');
         Route::get('sendAccess/{user}', [UserController::class, 'sendAccessPerUser'])->name('user.sendAccessUnit');
     });
 
+    // Inicio
+    Route::get('/home', HomeController::class)->name('home');
+
+    // Acerca de
+    Route::get('/about/promolife', [AboutController::class, 'promolife'])->name('about_promolife');
+    Route::get('/about/bhtrade', [AboutController::class, 'bh'])->name('about_trade');
+
+    // Organigrama
+    Route::get('/company', [CompanyController::class, 'index'])->name('company');
+    Route::get('/company_data', [CompanyController::class, 'index_data'])->name('company_data');
+    Route::get('company/getEmployees', [CompanyController::class, 'getAllEmployees']);
+    Route::get('company/getPosition/{id}', [CompanyController::class, 'getPositions']);
+    Route::get('company/getEmployeesByOrganization/{organization}', [CompanyController::class, 'getEmployeesByOrganization']);
+    Route::get('company/getEmployeesByDepartment/{department}', [CompanyController::class, 'getEmployeesByDepartment']);
+
+    // Permisos y Vacaciones
+
+    // Aniversarios y cumpleaños
+    Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
+    Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
+
+    // Empleado del mes
+    Route::get('/month', MonthController::class)->name('month');
+
+    // Directorio de Proveedores
+    Route::resource('/directories', DirectoryController::class);
+
+    // Manuales
+    Route::resource('manuals', ManualController::class);
+
+
 
     Route::resource('communiques', CommuniqueController::class)->except(["show"]);
 
-    /*     Route::resource('days-no-working', NoWorkingDaysController::class);
- */
+    /*     Route::resource('days-no-working', NoWorkingDaysController::class);  */
     Route::get('/days-no-working', [NoWorkingDaysController::class, 'index'])->name('admin.noworkingdays.index');
     Route::get('/days-no-working/create', [NoWorkingDaysController::class, 'create'])->name('admin.noworkingdays.create');
     Route::post('/days-no-working', [NoWorkingDaysController::class, 'store'])->name('admin.noworkingdays.store');
@@ -141,27 +139,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
     Route::get('request/authorize-rh', [RequestController::class, 'authorizeRequestRH'])->name('request.authorizeRH');
-    Route::put('request-auth/{request}', [RequestController::class, 'authorizeRHUpdate'])->name('request.authorize.update');
-    Route::put('request-auth-manager/{request}', [RequestController::class, 'authorizeManagerUpdate'])->name('request.manager.update');
-    Route::get('request/{request}/auth-edit', [RequestController::class, 'authorizeEdit'])->name('request.authorize.edit');
-    Route::get('request/{request}/rh-edit', [RequestController::class, 'authorizeRHEdit'])->name('request.rh.edit');
-    Route::delete('request/{request}/notification', [RequestController::class, 'deleteNotification'])->name('request.delete.notification');
-    Route::delete('request/{request}/all', [RequestController::class, 'deleteAll'])->name('request.delete.all');
-    /*  Route::post('request/filter-request', [RequestController::class, 'filterRequest'])->name('request.filter.request'); */
     Route::post('request/filter', [RequestController::class, 'filter'])->name('request.filter');
     Route::post('request/filter-date', [RequestController::class, 'filterDate'])->name('request.filter.data');
     Route::get('request/reports/all', [RequestController::class, 'exportAll'])->name('request.report.all');
-    Route::get('request/reports/filter', [RequestController::class, 'filterExport'])->name('request.report.filter');
     Route::post('request/export/', [RequestController::class, 'export'])->name('request.export');
     Route::post('request/export/filter', [RequestController::class, 'exportFilter'])->name('request.export.filter');
-    /*     Route::post('request/export/data', [RequestController::class, 'exportDataFilter'])->name('request.export.data'); */
     Route::post('request/dataFilter', [RequestController::class, 'getDataFilter'])->name('request.export.filterdata');;
     Route::get('request/reports', [RequestController::class, 'reportRequest'])->middleware('role:rh')->name('request.reportRequest');
-    Route::get('request/getPayment/{id}', [RequestController::class, 'getPayment']);
     Route::post('fullcalenderAjax', [RequestController::class, 'ajax']);
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
-    Route::get('request/getData/{lista}', [EmployeeController::class, 'getData']);
     Route::get('manager/getPosition/{id}', [ManagerController::class, 'getPosition']);
     Route::get('manager/getEmployee/{id}', [ManagerController::class, 'getEmployee']);
     Route::get('user/getPosition/{id}', [UserController::class, 'getPosition']);
@@ -177,11 +164,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::put('/events/{event}', [EventsController::class, 'update'])->middleware('role:rh')->name('admin.events.update');
     Route::delete('/events/{event}', [EventsController::class, 'destroy'])->middleware('role:rh')->name('admin.events.destroy');
 
-
-
     Route::get('/com/department', [CommuniqueController::class, 'department'])->name('communiques.department');
     Route::get('communiques/show', [CommuniqueController::class, 'show'])->name('admin.communique.show');
-
 
     Route::put('communiques/{communique}', [CommuniqueController::class, 'update'])->name('admin.communique.update');
 
@@ -220,7 +204,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/fetchMessages/{userId}', [MessageController::class, 'fetchMessages'])->name('fetch.message');
         Route::post('/sendMessage', [MessageController::class, 'sendMessage'])->name('send.message');
         Route::get('/markNotification/{notification}', [MessageController::class, 'markAsRead'])->name('message.markAsRead');
-        Route::get('/Notificaciones', [MessageController::class, 'Notificaciones'])->name('message.notification');
         Route::get('eliminarNotificacion/{notification}', [MessageController::class, 'markAsRead'])->name('eliminar.notificacion');
     });
 
@@ -230,3 +213,4 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
+Route::get('request/alertRequesPendients/', [RequestController::class, 'alertPendient']);

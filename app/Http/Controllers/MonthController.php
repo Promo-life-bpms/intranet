@@ -25,7 +25,6 @@ class MonthController extends Controller
         $users = [];
         $employeesMonth = [];
         if ($res) {
-
             foreach ($res as $data) {
                 try {
                     $user = User::where('email', '=', $data->email)->firstOrFail();

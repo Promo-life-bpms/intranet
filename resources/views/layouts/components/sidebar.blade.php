@@ -54,14 +54,8 @@
 
         <div class="sidebar-menu">
             <ul class="menu">
-                <li class="sidebar-title">Menu</li>
-                <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
-                    <a href="{{ route('home') }}" class='sidebar-link'>
-                        <i class="bi bi-house-door-fill"></i>
-                        <span>Inicio</span>
-                    </a>
-                </li>
                 @role('admin')
+                    <li class="sidebar-title">Administrador</li>
                     <li class="sidebar-item has-sub {{ request()->is('admin') ? 'active' : '' }}">
 
                         <a href="{{ route('admin.users.index') }}" class='sidebar-link'>
@@ -91,37 +85,16 @@
                     </li>
                 @endrole
                 @role('rh')
+                    <li class="sidebar-title">Gestion y RH</li>
                     <li class="sidebar-item has-sub">
                         <a href="#" class='sidebar-link'>
                             <i class="fa fa-users" aria-hidden="true"></i>
                             <span>Gestion </span>
-                            <span
-                                class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}
-                            </span>
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.users.index') }}">
                                     <span>Empleados</span>
-                                </a>
-                            </li>
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('request.authorizeRH') }}">
-                                    <span>Ver solicitudes</span>
-                                    <span
-                                        class="badge bg-secondary">{{ auth()->user()->unreadNotifications->where('type', 'App\Notifications\RequestNotification')->count() }}
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('request.reportRequest') }}">
-                                    <span>Reportes de ausencias</span>
-                                </a>
-                            </li>
-
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">
-                                    <span>Vacaciones</span>
                                 </a>
                             </li>
 
@@ -144,8 +117,44 @@
                             </li>
                         </ul>
                     </li>
-                @endrole('rh')
+                    <li class="sidebar-item has-sub">
+                        <a href="#" class='sidebar-link'>
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            <span>Vacaciones </span>
+                            <span
+                                class="badge bg-secondary">{{ count(App\Models\Request::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Pendiente')->get()) }}
+                            </span>
+                        </a>
+                        <ul class="submenu ">
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('request.authorizeRH') }}">
+                                    <span>Ver solicitudes</span>
+                                    <span
+                                        class="badge bg-secondary">{{ count(App\Models\Request::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Pendiente')->get()) }}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('request.reportRequest') }}">
+                                    <span>Reportes de ausencias</span>
+                                </a>
+                            </li>
 
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">
+                                    <span>Vacaciones Disponibles</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endrole('rh')
+                <li class="sidebar-title">Menu</li>
+                <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
+                    <a href="{{ route('home') }}" class='sidebar-link'>
+                        <i class="bi bi-house-door-fill"></i>
+                        <span>Inicio</span>
+                    </a>
+                </li>
                 <li class="sidebar-item has-sub {{ request()->is('about') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-info-circle-fill"></i>
@@ -162,19 +171,8 @@
                                 <span>BH-Trade</span>
                             </a>
                         </li>
-                        {{-- <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('about_promodreams') }}">
-                                <span>Promodreams</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item ">
-                            <a class="dropdown-item" href="{{ route('about_trademarket') }}">
-                                <span>Trademarket 57 </span>
-                            </a>
-                        </li> --}}
                     </ul>
                 </li>
-
                 <li class="sidebar-item {{ request()->is('company') ? 'active' : '' }}">
                     <a href="{{ route('company') }}" class='sidebar-link'>
                         <i class="bi bi-diagram-3-fill"></i>
@@ -185,7 +183,12 @@
                     <li class="sidebar-item  has-sub {{ request()->is('request') ? 'active' : '' }}">
                         <a href="{{ route('request.index') }}" class='sidebar-link'>
                             <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                            <span>Solicitudes</span>
+                            <span>Permisos y Vacaciones</span>
+                            @if (count(auth()->user()->employee->subordinados) > 0)
+                                <span
+                                    class="badge bg-secondary">{{ count(auth()->user()->employee->requestToAuth()->where('direct_manager_status', 'Pendiente')->get()) }}
+                                </span>
+                            @endif
                         </a>
 
                         <ul class="submenu ">
@@ -199,6 +202,9 @@
                                 <li class="submenu-item ">
                                     <a class="dropdown-item" href="{{ route('request.authorizeManager') }}">
                                         <span>Autorizar Solicitudes</span>
+                                        <span
+                                            class="badge bg-secondary">{{ count(auth()->user()->employee->requestToAuth()->where('direct_manager_status', 'Pendiente')->get()) }}
+                                        </span>
                                     </a>
                                 </li>
                             @endif
@@ -236,7 +242,7 @@
                     </ul>
                 </li>
 
-                <li class="sidebar-item {{ request()->is('month') ? 'active' : '' }}">
+                {{-- <li class="sidebar-item {{ request()->is('month') ? 'active' : '' }}">
                     <a href="{{ route('month') }}" class='sidebar-link'>
                         <i class="fa fa-trophy" aria-hidden="true"></i>
                         <span>Empleado del Mes</span>
@@ -259,13 +265,6 @@
                                 <span>Comunicados de área</span>
                             </a>
                         </li>
-                        @role('manager')
-                            <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('admin.communique.show') }}">
-                                    <span>Administrar Comunicados</span>
-                                </a>
-                            </li>
-                        @endrole('manager')
                         @role('rh')
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.communique.show') }}">
@@ -274,7 +273,7 @@
                             </li>
                         @endrole('rh')
                     </ul>
-                </li>
+                </li> --}}
 
                 <li class="sidebar-item {{ request()->is('manual') ? 'active' : '' }}">
                     <a href="{{ route('manual.index') }}" class='sidebar-link'>

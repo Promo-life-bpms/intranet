@@ -5,21 +5,16 @@
     </div>
 
     <div class="d-flex justify-content-between">
-        <div>
-            <p>Resultados de Busqueda</p>
-        </div>
-        <div wire:poll.2000ms>
-            @if (session()->has('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-            @if (session()->has('message'))
-                <div class="alert alert-success">
-                    {{ session('message') }}
-                </div>
-            @endif
-        </div>
+        @if (session()->has('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+        @if (session()->has('message'))
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
+        @endif
         <div wire:loading.flex>
             <div class="spinner-border text-info" role="status">
                 <span class="sr-only">Loading...</span>
@@ -30,63 +25,69 @@
         <table class="table table-striped" id="table-directory">
             <thead>
                 <tr>
-                    <th>#</th>
                     <th>Nombre</th>
-                    <th>Fecha de Ingreso</th>
                     <th>Periodo Actual</th>
                     <th>Periodo Anterior</th>
-                    <th>Opciones</th>
                 </tr>
             </thead>
 
             <tbody>
                 @foreach ($users as $user)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $user->name }} <br>{{ $user->lastname }}</td>
-                        <td>{{ Str::limit($user->employee->date_admission, 10) }}</td>
-                        @php
-                            $diasDisponibles = 0;
-                        @endphp
-                        @foreach ($user->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'ASC')->get()
-    as $vacation)
-                            <td>
-                                @php
-                                    $randomKey = time();
-                                    $diasDisponibles = $diasDisponibles + $vacation->dv;
-                                @endphp
-                                <div>
-                                    <strong>Periodo:</strong> {{ $vacation->period == 1 ? 'Actual' : 'Vencido' }}
-                                    <br>
-                                    <strong>Expiracion:</strong> {{ $vacation->cutoff_date }}
-                                    <br>
-                                    <strong>Calculados:</strong> {{ $vacation->days_availables }}
-                                    <br>
-                                    <strong>Disponibles:</strong> {{ $vacation->dv }}
-                                    <br>
-                                    <strong>Disfrutados:</strong> {{ $vacation->days_enjoyed }}
-                                    <!-- Button trigger modal -->
-                                    <div class="d-flex">
-                                        <input type="number"
-                                            wire:model="daysEnjoyed.{{ $user->id }}.{{ $vacation->period }}"
-                                            class="form-control" placeholder="Colocar dias disfrutados">
-                                        <button class="btn btn-warning d-flex"
-                                            wire:click="updateDays({{ $vacation->id }}, {{ $user->id }}, {{ $vacation->period }})">Actualizar
-                                        </button>
-                                    </div>
-                                </div>
-                                {{-- @livewire('vacations.update-days-enjoyed', ['data' => $vacation], key($user->id)) --}}
-                            </td>
-                        @endforeach
-                        @if (count($user->vacationsAvailables) == 1)
-                            <td>
-                                No hay informacion del periodo anterior
-                            </td>
+                    @if ($user->status == 1)
+                        @if (!$user->hasRole('becario'))
+                            <tr>
+                                <td>{{ $user->name }} {{ $user->lastname }} <br>
+                                    Ingreso: {{ $user->employee->date_admission->format('d-m-Y') }} <br>
+                                    Dias disponibles de ambos periodos:
+                                    <b>{{ $user->vacationsAvailables()->where('period', '<>', 3)->sum('dv') }}</b>
+                                </td>
+                                @foreach ($user->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'ASC')->get() as $vacation)
+                                    <td>
+                                        @php
+                                            $dateCut = new \Carbon\Carbon($vacation->cutoff_date);
+                                        @endphp
+                                        <div>
+                                            <strong>Periodo:</strong>
+                                            {{ $dateCut->subYears(2)->format('d-m-Y') . ' - ' . $dateCut->addYear(1)->format('d-m-Y') }}
+                                            <br>
+                                            <strong>Vencimiento:</strong> {{ $dateCut->addYear(1)->format('d-m-Y') }}
+                                            <br>
+                                            <strong>Dias
+                                                {{ $vacation->period == 1 ? 'Actuales Calculados' : 'Vencidos Calculados' }}:</strong>
+                                            {{ $vacation->days_availables }}
+                                            <br>
+                                            <strong>Dias Disponibles
+                                                {{ $vacation->period == 1 ? 'del Periodo Actual: ' : 'del Periodo Vencido: ' }}</strong>
+                                            {{ $vacation->dv }}
+                                            <br>
+                                            <strong>Dias Disfrutados
+                                                {{ $vacation->period == 1 ? 'del Periodo Actual: ' : 'del Periodo Vencido: ' }}</strong>
+                                            {{ $vacation->days_enjoyed }}
+                                            <!-- Button trigger modal -->
+                                            @role('admin')
+                                                <div class="d-flex">
+                                                    <input type="number"
+                                                        wire:model="daysEnjoyed.{{ $user->id }}.{{ $vacation->period }}"
+                                                        class="form-control" placeholder="Colocar dias disfrutados">
+                                                    <button class="btn btn-warning d-flex"
+                                                        wire:click="updateDays({{ $vacation->id }}, {{ $user->id }}, {{ $vacation->period }})">Actualizar
+                                                    </button>
+                                                </div>
+                                            @endrole()
+                                        </div>
+                                        @php
+                                            $dateCut = 0;
+                                        @endphp
+                                    </td>
+                                @endforeach
+                                @if (count($user->vacationsAvailables) == 1)
+                                    <td>
+                                        No hay informacion del periodo anterior
+                                    </td>
+                                @endif
+                            </tr>
                         @endif
-                        <td class="">
-                            <p>{{ $diasDisponibles }} dias disponibles</p>
-                        </td>
-                    </tr>
+                    @endif
                 @endforeach
             </tbody>
         </table>

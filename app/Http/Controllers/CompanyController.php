@@ -16,6 +16,12 @@ class CompanyController extends Controller
         $departments = Department::all();
         return view('company.index', compact('departments', 'organizations'));
     }
+    public function index_data()
+    {
+        $organizations = Organization::all();
+        $departments = Department::all();
+        return view('company.index2', compact('departments', 'organizations'));
+    }
 
     public function getPositions($id)
     {
