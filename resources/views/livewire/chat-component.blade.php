@@ -18,7 +18,7 @@
                             style="cursor: pointer">
 
                             <div class="img_cont">
-                                <img src="https://www.kindpng.com/picc/m/269-2697881_computer-icons-user-clip-art-transparent-png-icon.png"
+                                <img src="https://images.vexels.com/media/users/3/136558/isolated/lists/43cc80b4c098e43a988c535eaba42c53-icono-de-usuario-de-persona.png"
                                     class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons"
                                     style="width: 30px; height: 30px" />
                                 @if ($user->isOnline)

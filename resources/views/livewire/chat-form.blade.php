@@ -2,7 +2,7 @@
 
     <div class="input-group">
         <input type="text" name="message" class="form-control" placeholder="Escribe tu mensaje..."
-            wire:model="message">
+            wire:model="message" wire:keydown.enter="sendMessage">
 
         <span class="input-group-btn">
             <button class="btn btn-primary" wire:click="sendMessage">

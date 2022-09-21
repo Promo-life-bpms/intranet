@@ -3,7 +3,7 @@
     <div class="wrapper1 my-0 mx-2" id="chatContent">
         <div class="head-text d-flex">
             {{ $user->name }}
-            <div class="d-flex" style="align-items: center">
+            <div class="d-flex" style="align-items: center" id="hola">
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                     class="bi bi-dash-lg button-chat" viewBox="0 0 16 16" wire:click="collapseChat"
@@ -22,7 +22,7 @@
                             class="d-flex flex-row p-2
                             {{ $mensaje->transmitter_id == $user->id ? 'justify-content-start' : 'justify-content-end' }}">
                             <img src="{{ $user->image === null || $user->image === ''
-                                ? 'https://www.kindpng.com/picc/m/269-2697881_computer-icons-user-clip-art-transparent-png-icon.png'
+                                ? 'https://images.vexels.com/media/users/3/136558/isolated/lists/43cc80b4c098e43a988c535eaba42c53-icono-de-usuario-de-persona.png'
                                 : $user->image }}"
                                 style="width: 25px; height: 25px"
                                 class="rounded-circle border border-primary m-0  {{ $mensaje->transmitter_id == $user->id ? 'd-flex' : 'd-none' }} justify-content-center align-items-center width-icon" />
@@ -53,11 +53,10 @@
 
     </div>
     <script>
-        /* alert("formChat" + id) */
         let id = "{{ $idUser }}"
         document.addEventListener('messageNew', event => {
             let receiver = event.detail.receiver_id
-            console.log("evento recibido");
+            /*  console.log("evento recibido"); */
             if (id == receiver) {
                 const objDiv = document.getElementById("formChat" + id);
                 objDiv.scrollTop = objDiv.scrollHeight;
@@ -71,6 +70,12 @@
             }
 
         })
+        function scroll() {
+            const objDiv = document.getElementById("formChat" + id);
+            objDiv.scrollTop = objDiv.scrollHeight;
+            console.log(1);
+        }
+        scroll();
     </script>
 
     <style>

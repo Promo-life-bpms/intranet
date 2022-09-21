@@ -39,7 +39,7 @@ class ChatMessages extends Component
     public function collapseChat()
     {
         $this->ChatCollapse = !$this->ChatCollapse;
-        $this->dispatchBrowserEvent('messageNew', ["id" => $this->idUser]);
+
     }
 
     public function cerrarChat($idUser)
