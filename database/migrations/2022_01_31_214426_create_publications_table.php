@@ -17,6 +17,7 @@ class CreatePublicationsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->string('content_publication');
+            $table->boolean('visible');
             $table->timestamps();
         });
     }

@@ -9,8 +9,7 @@ const { default: axios } = require('axios');
 require('./bootstrap');
 
 window.Vue = require('vue').default;
-import PhotoSwipeLightbox from 'photoswipe/lightbox';
-import 'photoswipe/style.css';
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -27,7 +26,7 @@ import 'photoswipe/style.css';
 Vue.component('chat-messages', require('./components/ChatMessages.vue').default);
 Vue.component('chat-form', require('./components/ChatForm.vue').default); */
 Vue.component('notify', require('./components/Notify.vue').default);
-Vue.component('notification-bell', require('./components/NotificationBell.vue').default);
+/* Vue.component('notification-bell', require('./components/NotificationBell.vue').default); */
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

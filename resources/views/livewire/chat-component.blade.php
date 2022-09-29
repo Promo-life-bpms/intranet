@@ -3,12 +3,12 @@
         <div class="d-flex flex-row-reverse align-items-end">
 
             <input type="checkbox" id="click" wire:click="collapseListUsers">
-            <label for="click">
+            <label class="buble" for="click">
                 <i class="fab fa-facebook-messenger"></i>
                 <i class="fas fa-times"></i>
             </label>
             <input type="checkbox" id="click" wire:click="collapseListUsers">
-            <label for="click">
+            <label class="buble" for="click">
                 <i class="fab fa-facebook-messenger"></i>
                 <i class="fas fa-times"></i>
             </label>
@@ -115,7 +115,7 @@
             display: none;
         }
 
-        label {
+        .buble {
             z-index: 100;
             position: fixed;
             right: 30px;
@@ -131,7 +131,7 @@
             cursor: pointer;
         }
 
-        label i {
+        .buble i {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -139,18 +139,18 @@
             transition: all 0.4s ease;
         }
 
-        label i.fas {
+        .buble i.fas {
             opacity: 0;
             pointer-events: none;
         }
 
-        #click:checked~label i.fas {
+        #click:checked~.buble i.fas {
             opacity: 1;
             pointer-events: auto;
             transform: translate(-50%, -50%) rotate(180deg);
         }
 
-        #click:checked~label i.fab {
+        #click:checked~.buble i.fab {
             opacity: 0;
             pointer-events: none;
             transform: translate(-50%, -50%) rotate(180deg);
