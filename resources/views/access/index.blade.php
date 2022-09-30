@@ -71,10 +71,10 @@
 
             <div class="col-md-4 col-lg-3 col-xl-3">
                 <div class="card text-dark bg-light rounded shadow p-4">
-                    <img src="{{ asset('/img/cotizador.png') }}" style="width: 100%; height:120px;  object-fit: contain;"
+                    <img src="{{ asset('/img/connect.png') }}" style="width: 100%; height:120px;  object-fit: contain;"
                         class="card-img-top" alt="imagen">
                     <div class="card-body" style="padding-top:0; padding-bottom:0">
-                        <h5 class="card-title text-center">CATALOGO</h5>
+                        <h5 class="card-title text-center">Promo Connect</h5>
                         <a href="{{ $routeCatalogo }}" style="width: 100%" target="_blank"
                             class="btn btn-primary with">ABRIR</a>
                     </div>
