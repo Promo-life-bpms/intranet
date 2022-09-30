@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/app1.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app10.css') }}">
 </head>
 
 <body>
@@ -45,7 +45,7 @@
     </div>
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('js/app1.js') }}"></script>
+    <script src="{{ asset('js/app10.js') }}"></script>
     <script src="{{ asset('assets/vendors/jquery/jquery.min.js') }}"></script>
     @yield('scripts')
     <script src="{{ asset('assets\vendors\toastify\toastify.js') }}"></script>

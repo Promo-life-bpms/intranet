@@ -57,11 +57,28 @@ class PublicationsController extends Controller
 
             if (trim($request->items) != "" || $request->items != null) {
                 foreach (explode(',', $request->items) as $item) {
+                    $extension = explode('.',  $item)[count(explode('.',  $item)) - 1];
+                    $type_file = 'photo';
+                    switch ($extension) {
+                        case 'mp4':
+                            $type_file = 'video';
+                            break;
+                        case 'avi':
+                            $type_file = 'video';
+                            break;
+                        case 'mkv':
+                            $type_file = 'video';
+                            break;
+                        default:
+                            # code...
+                            break;
+                    }
+                    // Photo o Video
                     # code...
                     //Registar imagen
                     $data = [
                         'resource' => $item,
-                        'type_file' => 'photo',
+                        'type_file' => $type_file,
                     ];
                     $publication->files()->create($data);
                 }

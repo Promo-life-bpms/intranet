@@ -64,12 +64,16 @@
             }
             if (receiver == {{ auth()->id() }}) {
                 const chatContent = document.querySelector('.wrapper1');
-                chatContent.classList.add('animate__animated', 'animate__pulse', 'animate__repeat-3');
+                chatContent.classList.add('animate__animated', 'animate__headShake', 'animate__repeat-2');
                 const objDiv = document.getElementById("formChat" + id);
                 objDiv.scrollTop = objDiv.scrollHeight;
+                setTimeout(() => {
+                    chatContent.classList.remove('animate__animated', 'animate__headShake', 'animate__repeat-2');
+                }, 2000);
             }
 
         })
+
         function scroll() {
             const objDiv = document.getElementById("formChat" + id);
             objDiv.scrollTop = objDiv.scrollHeight;

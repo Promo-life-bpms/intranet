@@ -22,7 +22,9 @@
                             style="cursor: pointer">
 
                             <div class="img_cont">
-                                <img src="https://images.vexels.com/media/users/3/136558/isolated/lists/43cc80b4c098e43a988c535eaba42c53-icono-de-usuario-de-persona.png"
+                                <img src="{{ $user->image === null || $user->image === ''
+                                    ? 'https://images.vexels.com/media/users/3/136558/isolated/lists/43cc80b4c098e43a988c535eaba42c53-icono-de-usuario-de-persona.png'
+                                    : $user->image }}"
                                     class="rounded-circle border border-primary m-0 d-flex justify-content-center align-items-center width-icons"
                                     style="width: 30px; height: 30px" />
                                 @if ($user->isOnline)

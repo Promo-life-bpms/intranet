@@ -39,20 +39,21 @@
                         </div>
                         <div class="d-flex">
                             @if ($publication->user_id == auth()->user()->id)
-                            <div class="dropdown">
-                                <button class="btn btn-link" type="button" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                                        <path
-                                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    {{-- <li><button class="dropdown-item">Editar</button></li> --}}
-                                    <li><button class="dropdown-item" onclick="eliminar({{ $publication->id }})">Eliminar</button></li>
-                                </ul>
-                            </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-link" type="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                                            <path
+                                                d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        {{-- <li><button class="dropdown-item">Editar</button></li> --}}
+                                        <li><button class="dropdown-item"
+                                                onclick="eliminar({{ $publication->id }})">Eliminar</button></li>
+                                    </ul>
+                                </div>
                             @endif
                         </div>
                     </div>
@@ -63,53 +64,98 @@
                         <div class="row" style="overflow:hidden;">
                             @if (count($publication->files) == 1)
                                 @foreach ($publication->files as $item)
-                                    <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
-                                        wire:key="img-{{ $publication->id }}{{ $item->id }}"
-                                        data-lightbox="photos.{{ $publication->id }}" style="height: 600px;">
-                                        <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
-                                            class="rounded shadow-sm"
-                                            src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
-                                    </a>
+                                    @if ($item->type_file == 'video')
+                                        <video controls class="w-100">
+                                            <source src="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                                type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    @else
+                                        <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                            wire:key="img-{{ $publication->id }}{{ $item->id }}"
+                                            data-lightbox="photos.{{ $publication->id }}">
+                                            <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
+                                                class="rounded shadow-sm"
+                                                src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
+                                        </a>
+                                    @endif
                                 @endforeach
                             @elseif (count($publication->files) == 2)
                                 @foreach ($publication->files as $item)
-                                    <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
-                                        wire:key="img-{{ $publication->id }}{{ $item->id }}"
-                                        data-lightbox="photos.{{ $publication->id }}" style="height: 300px;"
-                                        class="col-md-6">
-                                        <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
-                                            class="rounded shadow-sm"
-                                            src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
-                                    </a>
+                                    @if ($item->type_file == 'video')
+                                        <video controls class="col-md-6"
+                                            style="height: 300px; object-fit: cover; background-position: center center;">
+                                            <source src="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                                type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    @else
+                                        <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                            wire:key="img-{{ $publication->id }}{{ $item->id }}"
+                                            data-lightbox="photos.{{ $publication->id }}" style="height: 300px;"
+                                            class="col-md-6">
+                                            <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
+                                                class="rounded shadow-sm"
+                                                src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
+
+                                        </a>
+                                    @endif
                                 @endforeach
                             @elseif (count($publication->files) == 3)
                                 @foreach ($publication->files as $item)
-                                    <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
-                                        wire:key="img-{{ $publication->id }}{{ $item->id }}"
-                                        data-lightbox="photos.{{ $publication->id }}" style="height: 200px;"
-                                        class="col-md-4">
-                                        <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
-                                            class="rounded shadow-sm"
-                                            src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
-                                    </a>
+                                    @if ($item->type_file == 'video')
+                                        <video controls class="col-md-4"
+                                            style="height: 200px; object-fit: cover; background-position: center center;">
+                                            <source src="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                                type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    @else
+                                        <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                            wire:key="img-{{ $publication->id }}{{ $item->id }}"
+                                            data-lightbox="photos.{{ $publication->id }}" style="height: 200px;"
+                                            class="col-md-4">
+
+                                            <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
+                                                class="rounded shadow-sm"
+                                                src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
+                                        </a>
+                                    @endif
                                 @endforeach
                             @elseif (count($publication->files) > 3)
                                 @foreach ($publication->files as $item)
-                                    <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
-                                        wire:key="img-{{ $publication->id }}{{ $item->id }}"
-                                        data-lightbox="photos.{{ $publication->id }}"
-                                        style="height: {{ $loop->iteration > 4 ? '0' : '200' }}px;" class="col-md-3">
-                                        <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
-                                            class="rounded shadow-sm {{ $loop->iteration > 3 && count($publication->files) > 4 ? 'd-none' : '' }}"
-                                            src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
-                                        @if ($loop->iteration == 4 && count($publication->files) > 4)
+                                    @if ($item->type_file == 'video')
+                                        <video controls
+                                            class="col-md-3 {{ $loop->iteration > 3 && count($publication->files) > 4 ? 'd-none' : '' }}"
+                                            style="height: {{ $loop->iteration > 4 ? '0' : '200' }}px; object-fit: cover; background-position: center center;">
+                                            <source src="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                                type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    @else
+                                        <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                            wire:key="img-{{ $publication->id }}{{ $item->id }}"
+                                            data-lightbox="photos.{{ $publication->id }}"
+                                            style="height: {{ $loop->iteration > 4 ? '0' : '200' }}px;"
+                                            class="col-md-3">
+                                            <img style="width:100%; height: 100%; object-fit: cover; background-position: center center;"
+                                                class="rounded shadow-sm {{ $loop->iteration > 3 && count($publication->files) > 4 ? 'd-none' : '' }}"
+                                                src="{{ asset('/storage/posts/') . '/' . $item->resource }}">
+                                        </a>
+                                    @endif
+                                    @if ($loop->iteration == 4 && count($publication->files) > 4)
+                                        <a href="{{ asset('/storage/posts/') . '/' . $item->resource }}"
+                                            wire:key="img-{{ $publication->id }}{{ $item->id }}"
+                                            data-lightbox="photos.{{ $publication->id }}"
+                                            style="height: {{ $loop->iteration > 4 ? '0' : '200' }}px;"
+                                            class="col-md-3">
                                             <div class="w-100 h-100 d-flex justify-content-center align-items-center mas-fotos"
                                                 style="background-color: #dcdcdc;">
                                                 <p style="font-size: 15px; font-weight: bold">Ver mas
                                                 </p>
                                             </div>
-                                        @endif
-                                    </a>
+                                        </a>
+                                    @endif
                                 @endforeach
                             @endif
                         </div>

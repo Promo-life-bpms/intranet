@@ -650,7 +650,7 @@
                 const dropzoneItem = new Dropzone('#dropzoneItems', {
                     url: "/social/publication/items",
                     dictDefaultMessage: 'Arrastra aqui tus imagenes',
-                    acceptedFiles: '.png,.jpg,.jpeg,.gif',
+                    acceptedFiles: '.png,.jpg,.jpeg,.gif,.mp4,.avi,.mkv',
                     addRemoveLinks: true,
                     dictRemoveFile: 'Borrar Archivo',
                     headers: {
