@@ -64,7 +64,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.addEventListener('livewire:load', function() {
                 const chatStatus = JSON.parse(localStorage.getItem("statusChat"));
-                @this.listaChatsAbiertos = chatStatus;
+                if(chatStatus){
+                    @this.listaChatsAbiertos = chatStatus;
+                }
 
                 console.log(chatStatus);
 
