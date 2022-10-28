@@ -527,7 +527,7 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
 
-        $publications = Publications::orderBy("created_at", "desc")->get();
+        $publications = Publications::where('visible', true)->orderBy("created_at", "desc")->get();
         $data = [];
         $likes = DB::table('likes')->get();
         $comments = Comment::all();
@@ -866,21 +866,9 @@ class ApiController extends Controller
 
         if ($user_id != null) {
 
-
-
-            $photo = DB::table('media')->where('publication_id', intval($request->publciationID))->value('resource');
-
-            if ($photo != "") {
-                try {
-                    File::delete('storage/posts/' . $photo);
-                } catch (Exception $e) {
-                }
-            }
-
-            DB::table('likes')->where('publication_id',  intval($request->publciationID))->delete();
-            DB::table('comments')->where('publication_id', intval($request->publciationID))->delete();
-            DB::table('media')->where('publication_id', intval($request->publciationID))->delete();
-            DB::table('publications')->where('id', intval($request->publciationID))->delete();
+            $publicacion = Publications::find(intval($request->publciationID));
+            $publicacion->visible = false;
+            $publicacion->save();
 
             return  true;
         }
