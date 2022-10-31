@@ -5,10 +5,14 @@ namespace App\Http\Controllers;
 use App\Exports\VacationsExport;
 use App\Models\Employee;
 use App\Models\Position;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\VacationPerYear;
 use App\Models\Vacations;
+use App\Notifications\InfoRemembersAdmin;
+use App\Notifications\TakeVacationsNotification;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -133,7 +137,7 @@ class VacationsController extends Controller
         $users = User::where('status', 1)->get();
         // Calcular, en base a su fecha de ingreso, los dias disponibles del periodo actual y del anterior
         foreach ($users as $user) {
-            if (!$user->hasRole('becario') && !$user->hasRole('director')) {
+            if (!$user->hasRole('becario') && !$user->hasRole('boss')) {
                 $date = Carbon::parse($user->employee->date_admission);
                 $now = $this->time;
                 // Años laborando
@@ -229,5 +233,74 @@ class VacationsController extends Controller
             echo '<br>';
         }
         $this->updateVacations();
+    }
+
+    public function sendRemembers()
+    {
+        $users =  User::where('status', 1)->get();
+        $errors = [];
+        $usersData = [];
+        foreach ($users as $user) {
+            if (!$user->hasRole('becario') && !$user->hasRole('boss')) {
+                try {
+                    $dataVacations = $user->vacationsAvailables()->where('period', '=', 2)->get();
+                    if (count($dataVacations) == 1) {
+                        $dataVacation = $dataVacations[0];
+                        if ($dataVacation->dv > 0) {
+                            $dateExpiration =   new \Carbon\Carbon($dataVacation->cutoff_date);
+                            $dateNow = now();
+                            $diff = $dateNow->diffInDays($dateExpiration);
+                            $diffInMonths = $dateNow->diffInMonths($dateExpiration);
+                            if ($diff <= 65) {
+                                try {
+                                    $fecha = $dateExpiration->format('d \d\e ') . $dateExpiration->formatLocalized('%B') . ' de ' . $dateExpiration->format('Y');
+                                    $dataUser = [
+                                        "id" => $user->id,
+                                        "user" => $user->name . ' ' . $user->lastname,
+                                        "exp" => $fecha,
+                                        "diff" => $diff,
+                                        "diffInMonths" => $diffInMonths,
+                                        "days" => $dataVacation->dv
+                                    ];
+                                    array_push($usersData, $dataUser);
+                                    $user->notify(new TakeVacationsNotification($dataUser));
+                                } catch (Exception $th) {
+                                    array_push(
+                                        $errors,
+                                        [
+                                            "id" => $user->id,
+                                            "user" => $user->name . ' ' . $user->lastname,
+                                            "msg" => $th->getMessage()
+                                        ]
+                                    );
+                                }
+                            }
+                        }
+                    } elseif (count($dataVacations) >= 2) {
+                        array_push(
+                            $errors,
+                            [
+                                "id" => $user->id,
+                                "user" => $user->name . ' ' . $user->lastname,
+                                "msg" => "Este usuario tiene mas de un registro de segundo periodo, revisalo"
+                            ]
+                        );
+                    }
+                } catch (Exception $th) {
+                    array_push(
+                        $errors,
+                        [
+                            "id" => $user->id,
+                            "user" => $user->name . ' ' . $user->lastname,
+                            "msg" => $th->getMessage()
+                        ]
+                    );
+                }
+            }
+        }
+        $usersAdmin = User::find(32);
+        if ($usersAdmin) {
+            $usersAdmin->notify(new InfoRemembersAdmin([$errors, $usersData]));
+        }
     }
 }
