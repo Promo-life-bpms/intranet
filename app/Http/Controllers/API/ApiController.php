@@ -257,14 +257,15 @@ class ApiController extends Controller
 
                     $totalYears = $employee->date_admission->format('Y');
 
-
-                    array_push($employees, (object)[
-                        'id' => $employee->user->id,
-                        'name' => $employee->user->name,
-                        'lastname' => $employee->user->lastname,
-                        'photo' => $image,
-                        'date' => $totalAdmission - $totalYears,
-                    ]);
+                    if($employee->user->status){
+                        array_push($employees, (object)[
+                            'id' => $employee->user->id,
+                            'name' => $employee->user->name,
+                            'lastname' => $employee->user->lastname,
+                            'photo' => $image,
+                            'date' => $totalAdmission - $totalYears,
+                        ]);
+                    }
                 }
             }
         }
@@ -290,14 +291,15 @@ class ApiController extends Controller
                     } else {
                         $image = $employee->user->image;
                     }
-
-                    array_push($employees, (object)[
-                        'id' => $employee->user->id,
-                        'name' => $employee->user->name,
-                        'lastname' => $employee->user->lastname,
-                        'photo' => $image,
-                        'date' => $employee->birthday_date->format('d-m'),
-                    ]);
+                    if($employee->user->status){
+                        array_push($employees, (object)[
+                            'id' => $employee->user->id,
+                            'name' => $employee->user->name,
+                            'lastname' => $employee->user->lastname,
+                            'photo' => $image,
+                            'date' => $employee->birthday_date->format('d-m'),
+                        ]);
+                    }
                 }
             }
         }

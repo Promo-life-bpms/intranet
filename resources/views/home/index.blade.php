@@ -129,13 +129,16 @@
             <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;"
                 style="border-radius:20px;">
-                <h4 class="d-flex justify-content-center text-center">¡Descarga la aplicación móvil!</h4>
+                <h4 class="d-flex justify-content-center text-center">¡Accede a Promo Connect!</h4>
+
                 <br>
-                <img class="mobileLogo" src="{{ asset('/img/movil.png') }}" alt="app-movil">
+                <div class="d-flex justify-content-center">
+                    <img class="mobileLogo" style="width: 50%; height:50%;" src="{{ asset('/img/connect.png') }}"
+                        alt="app-movil">
+                </div>
                 <br>
                 <div class="row">
-                    <a href="https://play.google.com/store/apps/details?id=com.promolife.intranet_movil" type="button"
-                        class="btn btn-info" target="_blank">Android</a>
+                    <a href="{{ $routeCatalogo }}" type="button" class="btn btn-info" target="_blank">Acceder</a>
                 </div>
 
             </div>

@@ -102,7 +102,10 @@ class HomeController extends Controller
 
         $publications = Publications::orderBy('created_at', 'desc')->simplePaginate(10); //get first 10 rows
 
-        return view('home.index', compact('proximasVacaciones', 'employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController', 'publications', 'date', 'empleadosAusentes'));
+        $url3 = env("URL_CATALOGO", "https://catalogodeproductos.promolife.online");
+        $routeCatalogo = $url3 . "/loginEmail?email=" . auth()->user()->email . "&password=password";
+
+        return view('home.index', compact('proximasVacaciones', 'employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController', 'publications', 'date', 'empleadosAusentes', 'routeCatalogo'));
     }
 
 
