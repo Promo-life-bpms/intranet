@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\ApiController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/getUsers', [ApiController::class, 'getUsers']);
 Route::get('/getAllUsers', [ApiController::class, 'getAllUsers']);
 
 Route::get('/manuals', [APIController::class, 'manuals'])->name('api.manual');

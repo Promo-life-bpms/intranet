@@ -48,6 +48,19 @@ use function PHPUnit\Framework\isEmpty;
 
 class ApiController extends Controller
 {
+    public function getUsers(Request $request)
+    {
+        try {
+            if ($request->header('token') == 'r8349ru894ruc3ruc39rde3wcdx') {
+                $users = User::where('status', 1)->get();
+                return response()->json($users);
+            } else {
+                return response()->json(['message' => 'No Tienes autorizacion'], 400);
+            }
+        } catch (Exception $th) {
+            return  response()->json(["Server Error Validate: " => $th->getMessage()], 400);
+        }
+    }
     public function getAllUsers()
     {
         $users = User::where('status', 1)->get();
