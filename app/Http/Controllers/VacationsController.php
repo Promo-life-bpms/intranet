@@ -21,7 +21,7 @@ class VacationsController extends Controller
     public $time;
     public function __construct()
     {
-        $this->time = Carbon::parse('2022-12-12')->addDays(20);
+        $this->time = Carbon::now();
     }
     /**
      * Display a listing of the resource.
