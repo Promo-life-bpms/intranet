@@ -21,7 +21,7 @@ class VacationsController extends Controller
     public $time;
     public function __construct()
     {
-        $this->time = Carbon::now();
+        $this->time = Carbon::parse('2022-12-12')->addDays(20);
     }
     /**
      * Display a listing of the resource.
@@ -194,7 +194,9 @@ class VacationsController extends Controller
                             $dataVacations->days_availables =  $diasDispobibles;
                             $dataVacations->cutoff_date =  $lastPeriod->addYears(2);
                             $dataVacations->dv =  floor($diasDispobibles) - $dataVacations->days_enjoyed;
-                            $dataVacations->save();
+                            if ($lastPeriod->isAfter(Carbon::parse('2024-01-01'))) {
+                                $dataVacations->save();
+                            }
                         } else {
                             $user->vacationsAvailables()->firstOrCreate([
                                 'period' => 2,
