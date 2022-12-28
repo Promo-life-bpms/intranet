@@ -100,6 +100,12 @@
                                                 @endphp
                                                 {{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}
                                             @endforeach
+                                            @foreach ($request->requestrejected as $day)
+                                                @php
+                                                    $dayFormater = \Carbon\Carbon::parse($day->start);
+                                                @endphp
+                                                {{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}
+                                            @endforeach
                                         </p>
                                         <p class="m-0">
                                             <b>Tiempo:</b>

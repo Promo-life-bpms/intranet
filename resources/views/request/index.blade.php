@@ -33,6 +33,13 @@
                                     {{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}
                                     <br>
                                 @endforeach
+                                @foreach ($request->requestrejected as $day)
+                                    @php
+                                        $dayFormater = \Carbon\Carbon::parse($day->start);
+                                    @endphp
+                                    {{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}
+                                    <br>
+                                @endforeach
                             </td>
                             <td>
                                 @if ($request->human_resources_status == 'Pendiente' && $request->direct_manager_status == 'Pendiente')
@@ -40,7 +47,7 @@
                                 @elseif ($request->human_resources_status == 'Pendiente' && $request->direct_manager_status == 'Aprobada')
                                     <b> En espera de la autorización de RH</b>
                                 @elseif ($request->human_resources_status == 'Aprobada' && $request->direct_manager_status == 'Aprobada')
-                                    <b> Vacaciones aprobadas</b>
+                                    <b> Solicitud Aprobada</b>
                                 @elseif ($request->direct_manager_status == 'Rechazada')
                                     <b> Rechazado por el jefe directo</b>
                                 @elseif ($request->human_resources_status == 'Rechazada')
@@ -66,6 +73,12 @@
                                             <div class="modal-body text-left">
                                                 <p class="m-0"><b> Dias ausente:</b>
                                                     @foreach ($request->requestdays as $day)
+                                                        @php
+                                                            $dayFormater = \Carbon\Carbon::parse($day->start);
+                                                        @endphp
+                                                        {{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}
+                                                    @endforeach
+                                                    @foreach ($request->requestrejected as $day)
                                                         @php
                                                             $dayFormater = \Carbon\Carbon::parse($day->start);
                                                         @endphp

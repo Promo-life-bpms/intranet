@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Events\ManagerResponseRequestEvent;
 use App\Models\Employee;
 use App\Models\Request;
+use App\Models\RequestRejected;
 use App\Models\Role;
 use App\Notifications\ManagerResponseRequestNotification;
 use App\Notifications\ManagerResponseRequestToRHNotification;
@@ -40,6 +41,17 @@ class ListRequest extends Component
     public function rechazar(Request $request)
     {
         $request->direct_manager_status = "Rechazada";
+        $requestCalendar = $request->requestdays;
+        foreach ($requestCalendar as $calendar) {
+            $rejectedCalendar = new RequestRejected();
+            $rejectedCalendar->title = $calendar->title;
+            $rejectedCalendar->start = $calendar->start;
+            $rejectedCalendar->end = $calendar->end;
+            $rejectedCalendar->users_id = $calendar->users_id;
+            $rejectedCalendar->requests_id = $calendar->requests_id;
+            $rejectedCalendar->save();
+        }
+        $request->requestdays()->delete();
         $request->save();
         $user = auth()->user();
         $userReceiver = Employee::find($request->employee_id)->user;
