@@ -133,6 +133,11 @@
                                                 data-bs-dismiss="modal">Aceptar - Rechazar
                                             </button>
                                         @endif
+                                        @if ($request->human_resources_status == 'Aprobada')
+                                            <button class="btn btn-info" wire:click="auth({{ $request }})"
+                                                data-bs-dismiss="modal"> Rechazar
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
