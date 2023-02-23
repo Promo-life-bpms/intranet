@@ -257,7 +257,7 @@ class ApiController extends Controller
 
                     $totalYears = $employee->date_admission->format('Y');
 
-                    if($employee->user->status){
+                    if ($employee->user->status) {
                         array_push($employees, (object)[
                             'id' => $employee->user->id,
                             'name' => $employee->user->name,
@@ -291,7 +291,7 @@ class ApiController extends Controller
                     } else {
                         $image = $employee->user->image;
                     }
-                    if($employee->user->status){
+                    if ($employee->user->status) {
                         array_push($employees, (object)[
                             'id' => $employee->user->id,
                             'name' => $employee->user->name,
@@ -334,7 +334,7 @@ class ApiController extends Controller
                     array_push($directory_data, (object)[
                         'type' => $dir->type,
                         'data' => $dir->data,
-                        'company' => $dir->companyName->name_company,
+                        'company' => $dir->companyName ? $dir->companyName->name_company : "Sin Informacion",
                     ]);
                 }
             }

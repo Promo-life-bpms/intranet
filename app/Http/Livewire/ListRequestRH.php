@@ -31,7 +31,18 @@ class ListRequestRH extends Component
             ->orderBy('requests.created_at', 'DESC')
             ->select('requests.*')
             ->simplePaginate(10);
-        return view('livewire.list-request-r-h', ['requests' => $requests]);
+        $requestsWithoutAuth = Request::join('employees', 'requests.employee_id', '=', 'employees.id')
+            ->join('users', 'employees.user_id', '=', 'users.id')
+            ->where('requests.direct_manager_status', 'Pendiente')
+            ->where('users.status', 1)
+            ->where('requests.human_resources_status', 'Pendiente')
+            ->orderBy('requests.created_at', 'DESC')
+            ->select('requests.*')
+            ->get();
+        return view('livewire.list-request-r-h', [
+            'requests' => $requests,
+            'requestsWithoutAuth' => $requestsWithoutAuth
+        ]);
     }
 
     public function autorizar(Request $request)
