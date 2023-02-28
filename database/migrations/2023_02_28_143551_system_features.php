@@ -16,7 +16,7 @@ class SystemFeatures extends Migration
 
         Schema::create('device_status', function (Blueprint $table) {
             $table->id();
-            $table->string('device_status');
+            $table->string('status');
             $table->string('description')->nullable();
             $table->timestamps();
         });
@@ -30,13 +30,10 @@ class SystemFeatures extends Migration
             $table->integer('processor')->nullable();
             $table->integer('ram')->nullable();
             $table->integer('storage')->nullable();
-            $table->foreign('device_status_id')->references('id')->on('device_status')->onDelete('cascade');
+            $table->foreignId('device_status_id')->references('id')->on('device_status')->onDelete('cascade');
             $table->bigInteger('user_id')->nullable();
             $table->timestamps();
         });
-
-       
-
     }
 
     /**
@@ -46,7 +43,7 @@ class SystemFeatures extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('devices');
+        Schema::dropIfExists('devi');
         Schema::dropIfExists('device_status');
     }
 }

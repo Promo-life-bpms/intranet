@@ -13,10 +13,10 @@ class EmployeeFeatures extends Migration
      */
     public function up()
     {
-        Schema::create('users_details ', function (Blueprint $table) {
+        Schema::create('users_details', function (Blueprint $table) {
             $table->id();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('place_of_birth ');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('place_of_birth');
             $table->date('birthdate');
             $table->string('fathers_name')->nullable();
             $table->string('mothers_name')->nullable();
@@ -54,7 +54,7 @@ class EmployeeFeatures extends Migration
             $table->id();
             $table->string('actual_position');
             $table->string('salary')->nullable();
-            $table->foreign('users_details_id')->references('id')->on('users_details')->onDelete('cascade');
+            $table->foreignId('users_details_id')->references('id')->on('users_details')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -63,20 +63,19 @@ class EmployeeFeatures extends Migration
             $table->string('name');
             $table->string('phone')->nullable();
             $table->integer('porcentage');
-            $table->foreign('users_details_id')->references('id')->on('users_details')->onDelete('cascade');
+            $table->foreignId('users_details_id')->references('id')->on('users_details')->onDelete('cascade');
             $table->timestamps();
         });
 
         
-        Schema::create('postulant_documentation', function (Blueprint $table) {
+        Schema::create('users_documentation', function (Blueprint $table) {
             $table->id();
             $table->string('type');
             $table->string('description')->nullable();
             $table->string('resource');
-            $table->string('postulant_details')->nullable();
-            $table->foreign('postulant_id')->references('id')->on('postulant')->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
-        });
+        }); 
       
     }
 
@@ -90,6 +89,6 @@ class EmployeeFeatures extends Migration
         Schema::dropIfExists('users_details');
         Schema::dropIfExists('salary_history');
         Schema::dropIfExists('user_beneficiary');
-        Schema::dropIfExists('postulant_documentation');
+        Schema::dropIfExists('postulant_documentation'); 
     }
 }

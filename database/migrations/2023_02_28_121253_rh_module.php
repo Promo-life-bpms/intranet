@@ -24,10 +24,10 @@ class RhModule extends Migration
             $table->timestamps();
         });
 
-        Schema::create('postulant_details ', function (Blueprint $table) {
+        Schema::create('postulant_details', function (Blueprint $table) {
             $table->id();
-            $table->foreign('postulant_id')->references('id')->on('postulant')->onDelete('cascade');
-            $table->string('place_of_birth ');
+            $table->foreignId('postulant_id')->references('id')->on('postulant')->onDelete('cascade');
+            $table->string('place_of_birth');
             $table->date('birthdate');
             $table->string('fathers_name')->nullable();
             $table->string('mothers_name')->nullable();
@@ -66,7 +66,7 @@ class RhModule extends Migration
             $table->string('name');
             $table->string('phone')->nullable();
             $table->integer('porcentage');
-            $table->foreign('postulant_details_id')->references('id')->on('postulant_details')->onDelete('cascade');
+            $table->foreignId('postulant_details_id')->references('id')->on('postulant_details')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -76,11 +76,9 @@ class RhModule extends Migration
             $table->string('type');
             $table->string('description')->nullable();
             $table->string('resource');
-            $table->string('postulant_details')->nullable();
-            $table->foreign('postulant_id')->references('id')->on('postulant')->onDelete('cascade');
+            $table->foreignId('postulant_id')->references('id')->on('postulant')->onDelete('cascade');
             $table->timestamps();
         });
-      
 
 
     }
@@ -95,6 +93,6 @@ class RhModule extends Migration
         Schema::dropIfExists('postulant_details');
         Schema::dropIfExists('postulant_beneficiary');
         Schema::dropIfExists('postulant_documentation');
-        Schema::dropIfExists('postulant');
+        Schema::dropIfExists('postulant'); 
     }
 }
