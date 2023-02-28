@@ -29,6 +29,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
+use App\Http\Controllers\Systems\DevicesController;
 use App\Models\Message;
 use App\Models\RequestCalendar;
 use App\Models\User;
@@ -209,6 +210,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::resource('providers', ProviderController::class);
     Route::get('/providers/import/create', [ProviderController::class, 'create_import'])->name('providers.createImport');
     Route::post('/providers/import/store', [ProviderController::class, 'store_import'])->name('providers.storeImport');
+
+    //Sistemas
+    Route::get('/systems/devices', [DevicesController::class, 'index'])->name('systems.devices');
+
+
+
+    //Recursos humanos - empleados
+
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
