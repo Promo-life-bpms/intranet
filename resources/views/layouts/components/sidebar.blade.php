@@ -147,6 +147,31 @@
                             </li>
                         </ul>
                     </li>
+
+                    <li class="sidebar-item has-sub">
+                        <a href="#" class='sidebar-link'>
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            <span>Altas y bajas </span>
+                        </a>
+                        <ul class="submenu ">
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('rh.stadistics') }}">
+                                    <span>Estadisticas</span>
+                                </a>
+                            </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('rh.newUser') }}">
+                                    <span>Generar alta</span>
+                                </a>
+                            </li> 
+
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('rh.dropUser') }}">
+                                    <span>Generar baja</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 @endrole('rh')
                 <li class="sidebar-title">Menu</li>
                 <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">

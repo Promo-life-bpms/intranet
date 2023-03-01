@@ -25,6 +25,7 @@ use App\Http\Controllers\NoWorkingDaysController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\HumanResources\RhController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
@@ -214,9 +215,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     //Sistemas
     Route::get('/systems/devices', [DevicesController::class, 'index'])->name('systems.devices');
 
+    //Recursos humanos - gestion de empleados
+    Route::get('/rh/stadistics', [RhController::class, 'stadistics'])->name('rh.stadistics');
+    Route::get('/rh/new-user', [RhController::class, 'newUser'])->name('rh.newUser');
+    Route::get('/rh/drop-user', [RhController::class, 'dropUser'])->name('rh.dropUser');
 
-
-    //Recursos humanos - empleados
+    Route::get('/rh/drop-documentation/{user}', [RhController::class, 'dropDocumentation'])->name('rh.dropDocumentation');
+    Route::delete('/rh/drop-delete-user', [RhController::class, 'dropDeleteUser'])->name('rh.dropDeleteUser');
 
 });
 
