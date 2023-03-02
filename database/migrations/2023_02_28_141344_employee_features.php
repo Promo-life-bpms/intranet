@@ -76,6 +76,28 @@ class EmployeeFeatures extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         }); 
+
+        Schema::create('users_down_motive', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('growth_salary',6)->nullable();
+            $table->string('growth_promotion',6)->nullable();
+            $table->string('growth_activity',6)->nullable();
+            $table->string('climate_partnet',6)->nullable();
+            $table->string('climate_manager',6)->nullable();
+            $table->string('climate_boss',6)->nullable();
+            $table->string('psicosocial_workloads',6)->nullable();
+            $table->string('psicosocial_appreciation',6)->nullable();
+            $table->string('psicosocial_violence',6)->nullable();
+            $table->string('psicosocial_workday',6)->nullable();
+            $table->string('demographics_distance',6)->nullable();
+            $table->string('demographics_physical',6)->nullable();
+            $table->string('demographics_personal',6)->nullable();
+            $table->string('demographics_school',6)->nullable();
+            $table->string('health_personal',6)->nullable();
+            $table->string('health_familiar',6)->nullable();
+            $table->timestamps();
+        }); 
       
     }
 

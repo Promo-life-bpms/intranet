@@ -222,6 +222,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/rh/drop-documentation/{user}', [RhController::class, 'dropDocumentation'])->name('rh.dropDocumentation');
     Route::delete('/rh/drop-delete-user', [RhController::class, 'dropDeleteUser'])->name('rh.dropDeleteUser');
+    Route::post('/rh/build-down-documentation/', [RhController::class, 'buildDownDocumentation'])->name('rh.buildDownDocumentation');
+    Route::post('/rh/create-motive-down/', [RhController::class, 'createMotiveDown'])->name('rh.createMotiveDown');
 
 });
 
