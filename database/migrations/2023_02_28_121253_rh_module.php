@@ -21,43 +21,45 @@ class RhModule extends Migration
             $table->string('mail')->nullable();
             $table->string('phone')->nullable();
             $table->string('cv')->nullable();
+            $table->string('status')->nullable();
+            $table->bigInteger('company_id')->nullable();
             $table->timestamps();
         });
 
         Schema::create('postulant_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('postulant_id')->references('id')->on('postulant')->onDelete('cascade');
-            $table->string('place_of_birth');
-            $table->date('birthdate');
+            $table->string('place_of_birth')->nullable();
+            $table->date('birthdate')->nullable();
             $table->string('fathers_name')->nullable();
             $table->string('mothers_name')->nullable();
-            $table->string('civil_status');
-            $table->integer('age');
-            $table->string('address');
-            $table->string('street');
-            $table->string('colony');
-            $table->string('delegation');
-            $table->string('postal_code',10);
-            $table->string('cell_phone',20);
-            $table->string('home_phone',20);
-            $table->string('curp',20);
-            $table->string('rfc',20);
-            $table->string('imss_number');
-            $table->string('fiscal_postal_code');
-            $table->string('position');
-            $table->string('area');
-            $table->decimal('salary_sd',8,2);
-            $table->decimal('salary_sbc',8,2);
-            $table->string('horary');
-            $table->date('date_admission');
-            $table->string('card_number');
+            $table->string('civil_status')->nullable();
+            $table->integer('age')->nullable();
+            $table->string('address')->nullable();
+            $table->string('street')->nullable();
+            $table->string('colony')->nullable();
+            $table->string('delegation')->nullable();
+            $table->string('postal_code',10)->nullable();
+            $table->string('cell_phone',20)->nullable();
+            $table->string('home_phone',20)->nullable();
+            $table->string('curp',20)->nullable();
+            $table->string('rfc',20)->nullable();
+            $table->string('imss_number')->nullable();
+            $table->string('fiscal_postal_code')->nullable();
+            $table->string('position')->nullable();
+            $table->string('area')->nullable();
+            $table->decimal('salary_sd',8,2)->nullable();
+            $table->decimal('salary_sbc',8,2)->nullable();
+            $table->string('horary')->nullable();
+            $table->date('date_admission')->nullable();
+            $table->string('card_number')->nullable();
             $table->string('bank_name')->nullable();
-            $table->string('infonavit_credit');
-            $table->string('factor_credit_number');
-            $table->string('fonacot_credit');
-            $table->string('discount_credit_number');
-            $table->string('home_references');
-            $table->string('house_characteristics');
+            $table->string('infonavit_credit')->nullable();
+            $table->string('factor_credit_number')->nullable();
+            $table->string('fonacot_credit')->nullable();
+            $table->string('discount_credit_number')->nullable();
+            $table->string('home_references')->nullable();
+            $table->string('house_characteristics')->nullable();
             $table->timestamps();
         }); 
 
@@ -69,7 +71,6 @@ class RhModule extends Migration
             $table->foreignId('postulant_details_id')->references('id')->on('postulant_details')->onDelete('cascade');
             $table->timestamps();
         });
-
         
         Schema::create('postulant_documentation', function (Blueprint $table) {
             $table->id();
@@ -79,7 +80,6 @@ class RhModule extends Migration
             $table->foreignId('postulant_id')->references('id')->on('postulant')->onDelete('cascade');
             $table->timestamps();
         });
-
 
     }
 

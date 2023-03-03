@@ -225,6 +225,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/rh/build-down-documentation/', [RhController::class, 'buildDownDocumentation'])->name('rh.buildDownDocumentation');
     Route::post('/rh/create-motive-down/', [RhController::class, 'createMotiveDown'])->name('rh.createMotiveDown');
 
+    Route::get('/rh/create-postulant/', [RhController::class, 'createPostulant'])->name('rh.createPostulant');
+
+
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');

@@ -110,4 +110,11 @@ class RhController extends Controller
         return redirect()->back()->with('message', 'Motivo de baja guardado satisfactoriamente');
     }
 
+    public function createPostulant()
+    {
+        $companies = Company::all()->pluck('name_company', 'id');
+        
+        return view('rh.create-postulant', compact('companies'));
+    }
+
 }
