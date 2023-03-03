@@ -35,8 +35,9 @@ class RhController extends Controller
         $user = User::all()->where('id',$user)->first();
         $companies = Company::all()->pluck('name_company', 'id' );
         $departments = Department::all()->pluck('name','id');
+        $user_down_motive = UserDownMotive::all()->where('user_id',$user->id);
 
-        return view('rh.drop-documentation', compact('user', 'companies', 'departments'));
+        return view('rh.drop-documentation', compact('user', 'companies', 'departments', 'user_down_motive'));
     }
     
     public function dropDeleteUser(Request $request)
@@ -83,32 +84,30 @@ class RhController extends Controller
 
     public function createMotiveDown(Request $request)
     {
-        $find_user_motive = UserDownMotive::all()->where('id',$request->user_id)->last();
-
+        DB::table('users_down_motive')->where('user_id', intval($request->user_id))->delete();
         
-            $create_user_motive = new UserDownMotive();
-            $create_user_motive->user_id  = $request->user_id;
-            $create_user_motive->growth_salary  = $request->growth_salary;
-            $create_user_motive->growth_promotion  = $request->growth_promotion;
-            $create_user_motive->growth_activity  = $request->growth_activity;
-            $create_user_motive->climate_partnet  = $request->climate_partnet;
-            $create_user_motive->climate_manager  = $request->climate_manager;
-            $create_user_motive->climate_boss  = $request->climate_boss;
-            $create_user_motive->psicosocial_workloads  = $request->psicosocial_workloads;
-            $create_user_motive->psicosocial_appreciation	  = $request->psicosocial_appreciation	;
-            $create_user_motive->psicosocial_violence  = $request->psicosocial_violence;
-            $create_user_motive->psicosocial_workday  = $request->psicosocial_workday;
-            $create_user_motive->demographics_distance  = $request->demographics_distance;
-            $create_user_motive->demographics_physical  = $request->demographics_physical;
-            $create_user_motive->demographics_personal  = $request->demographics_personal;
-            $create_user_motive->demographics_school  = $request->demographics_school;
-            $create_user_motive->health_personal  = $request->health_personal;
-            $create_user_motive->health_familiar  = $request->health_familiar;
+        $create_user_motive = new UserDownMotive();
+        $create_user_motive->user_id  = $request->user_id;
+        $create_user_motive->growth_salary  = $request->growth_salary;
+        $create_user_motive->growth_promotion  = $request->growth_promotion;
+        $create_user_motive->growth_activity  = $request->growth_activity;
+        $create_user_motive->climate_partnet  = $request->climate_partnet;
+        $create_user_motive->climate_manager  = $request->climate_manager;
+        $create_user_motive->climate_boss  = $request->climate_boss;
+        $create_user_motive->psicosocial_workloads  = $request->psicosocial_workloads;
+        $create_user_motive->psicosocial_appreciation	  = $request->psicosocial_appreciation	;
+        $create_user_motive->psicosocial_violence  = $request->psicosocial_violence;
+        $create_user_motive->psicosocial_workday  = $request->psicosocial_workday;
+        $create_user_motive->demographics_distance  = $request->demographics_distance;
+        $create_user_motive->demographics_physical  = $request->demographics_physical;
+        $create_user_motive->demographics_personal  = $request->demographics_personal;
+        $create_user_motive->demographics_school  = $request->demographics_school;
+        $create_user_motive->health_personal  = $request->health_personal;
+        $create_user_motive->health_familiar  = $request->health_familiar;
             
-            $create_user_motive->save();
-    
-        return redirect()->action([RhController::class, 'dropUser'])->with('message', 'Motivo guardado satisfactoriamente');
-       
+        $create_user_motive->save();
+
+        return redirect()->back()->with('message', 'Motivo de baja guardado satisfactoriamente');
     }
 
 }
