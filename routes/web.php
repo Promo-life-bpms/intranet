@@ -226,6 +226,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/rh/create-motive-down/', [RhController::class, 'createMotiveDown'])->name('rh.createMotiveDown');
 
     Route::get('/rh/create-postulant/', [RhController::class, 'createPostulant'])->name('rh.createPostulant');
+    Route::post('/rh/store-postulant/', [RhController::class, 'storePostulant'])->name('rh.storePostulant');
+
 
 
 });
