@@ -12,8 +12,6 @@ use App\Models\User;
 use App\Models\UserDownMotive;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
-use Symfony\Component\Console\Input\Input;
 
 class RhController extends Controller
 {
@@ -24,7 +22,27 @@ class RhController extends Controller
 
     public function newUser()
     {  
-        return view('rh.new-user');  
+        $postulants_data = [];
+        $postulants = Postulant::all();
+        
+        foreach($postulants as $postulant){
+            $company = Company::all()->where('id', $postulant->company_id)->last();
+            $department = Department::all()->where('id', $postulant->company_id)->last();
+
+            array_push($postulants_data, (object)[
+                'id' => $postulant->id,
+                'fullname' => $postulant->fullname. " ". $postulant->lastname,
+                'mail' =>  $postulant->mail,
+                'phone' => $postulant->phone,
+                'cv' => $postulant->cv,
+                'status' => $postulant->status,
+                'company'=>$company->name_company,
+                'department' => $department->name,
+                'interview_date' => $postulant->interview_date,
+            ]);
+
+        } 
+        return view('rh.new-user', compact('postulants_data'));  
     }
 
     public function dropUser()
@@ -116,8 +134,8 @@ class RhController extends Controller
     public function createPostulant()
     {
         $companies = Company::all()->pluck('name_company', 'id');
-        
-        return view('rh.create-postulant', compact('companies'));
+        $departments = Department::all()->pluck('name','id');
+        return view('rh.create-postulant', compact('companies','departments'));
     }
 
     public function storePostulant(Request $request)
@@ -128,7 +146,8 @@ class RhController extends Controller
             'status' => 'required',
             'mail' => 'required',
             'phone' => 'required',
-            'company_id' => 'required'
+            'company_id' => 'required',
+            'department_id' => 'required'
         ]);
 
         $cv = null;
@@ -149,10 +168,12 @@ class RhController extends Controller
         $create_postulant->cv  = $cv;
         $create_postulant->status  = $request->status;
         $create_postulant->company_id  = $request->company_id;
+        $create_postulant->department_id  = $request->department_id;
+        $create_postulant->interview_date = $request->interview_date;
         $create_postulant->save();  
         
         
-        if($request->has('rfc')){
+        if($request->rfc <>null){
             $postulant_id = Postulant::all()->where('name',$request->name)->where('mail',$request->mail)->last();
             $create_postulant_details = new PostulantDetails;
             $create_postulant_details->postulant_id  = $postulant_id->postulant_id;

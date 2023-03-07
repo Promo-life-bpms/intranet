@@ -21,8 +21,10 @@ class RhModule extends Migration
             $table->string('mail')->nullable();
             $table->string('phone')->nullable();
             $table->string('cv')->nullable();
-            $table->string('status')->nullable();
+            $table->string('status');
             $table->bigInteger('company_id')->nullable();
+            $table->bigInteger('department_id')->nullable();
+            $table->dateTime('interview_date')->nullable();
             $table->timestamps();
         });
 

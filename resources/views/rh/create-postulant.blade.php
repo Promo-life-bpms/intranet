@@ -63,33 +63,26 @@
                 {!! Form::text('phone', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono celular']) !!}
             </div>
               
-            <div class="col-sm ">
-                {!! Form::label('company_id', 'Empresa de interes') !!}
-                {!! Form::select('company_id', $companies, null, ['class' => 'form-control']) !!}
-                    @error('name')
-                        <small>
-                            <font color="red"> *Este campo es requerido* </font>
-                        </small>
-                        <br>
-                    @enderror
+            <div class="col-sm">
+                {!! Form::label('cv', 'CV o Solicitud Elaborada (opcional)') !!}
+                {!! Form::file('cv', ['class' => 'form-control']) !!}
             </div>  
         </div>
         <div class="row form-group">
             <div class="col-sm">
-                {!! Form::label('cv', 'CV o Solicitud Elaborada (opcional)') !!}
-                {!! Form::file('cv', ['class' => 'form-control']) !!}
-                @error('name')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
+                {!! Form::label('company_id', 'Empresa de interes') !!}
+                {!! Form::select('company_id', $companies, null, ['class' => 'form-control']) !!}
             </div>
 
             <div class="col-sm ">
+                {!! Form::label('department_id', 'Departamento de interes') !!}
+                {!! Form::select('department_id', $departments, null, ['class' => 'form-control']) !!}
             </div>
 
             <div class="col-sm ">
+                {!! Form::label('department_id', 'Fecha de entrevista (opcional)') !!}
+                <input type="datetime-local" id="meeting-time"
+                name="interview_date" class="form-control">
             </div>
         </div>
         <br>
