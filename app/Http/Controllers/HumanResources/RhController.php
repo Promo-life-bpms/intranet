@@ -15,6 +15,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+
 class RhController extends Controller
 {
     public function stadistics()
@@ -372,6 +377,63 @@ class RhController extends Controller
 
     public function buildPostulantDocumentation(Request $request)
     {
-        return $request;
+
+        $postulant = Postulant::all()->where('id',$request->postulant)->last();
+        //Personal de alta
+        if($request->has('up_personal')){
+            $spreadsheet = new Spreadsheet();
+
+            
+            $sheet = $spreadsheet->getActiveSheet();
+            $styleArray = [
+                'borders' => [
+                    'outline' => [
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ];
+
+            $sheet->getStyle('A1:G51')->applyFromArray($styleArray);
+
+            $sheet->setCellValue('A4', 'EMPRESA:');
+            $sheet->setCellValue('A6', 'NOMBRE:'); 
+            $sheet->setCellValue('B6', $postulant->name);
+            $sheet->setCellValue('A8', 'LUGAR DE NACIMIENTO:');
+            $sheet->setCellValue('A10', 'FECHA DE NACIMIENTO:');
+            $sheet->setCellValue('A12', 'NOMBRE DEL PADRE:');
+            $sheet->setCellValue('A14', 'NOMBRE DE LA MADRE:');
+            $sheet->setCellValue('A16', 'ESTADO CIVIL:');
+            $sheet->setCellValue('A18', 'DIRECCION:');
+            $sheet->setCellValue('A19', 'CALLE:');
+            $sheet->setCellValue('A21', 'COLONIA:');
+            $sheet->setCellValue('A23', 'DELEGACION O MUNICIPIO:');
+            $sheet->setCellValue('A25', 'TELEFONO:');
+            $sheet->setCellValue('A27', 'CURP:');
+            $sheet->setCellValue('A29', 'NO. AFILIACION IMSS:');
+            $sheet->setCellValue('A31', 'PUESTO:');
+            $sheet->setCellValue('A33', 'SUELDO:');
+            $sheet->setCellValue('A35', 'FECHA DE INGRESO:');
+            $sheet->setCellValue('A37', 'NO. TARJETA / NO. CUENTA');
+            $sheet->setCellValue('A39', 'BENEFICIARIOS:');
+            $sheet->setCellValue('A42', 'CREDITO INFONAVIT:');
+            $sheet->setCellValue('A44', 'CREDITO FONACOT:');
+            $sheet->setCellValue('A46', 'REFERENCIAS DOMICILIO:');
+            $sheet->setCellValue('A48', 'CARACTERISTICAS DE CASA:');
+            $sheet->setCellValue('A49', 'CORREO ELECTRONICO:');
+
+
+            $writer = new Xlsx($spreadsheet);
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="myfile.xls"');
+            header('Cache-Control: max-age=0');
+
+            
+            $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
+            $writer->save('php://output');
+        }
+       
+       
+
     }
 }
