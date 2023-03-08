@@ -229,8 +229,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/rh/store-postulant/', [RhController::class, 'storePostulant'])->name('rh.storePostulant');
     Route::get('/rh/edit-postulant/{postulant}', [RhController::class, 'editPostulant'])->name('rh.editPostulant');
     Route::put('/rh/update-postulant/', [RhController::class, 'updatePostulant'])->name('rh.updatePostulant');
-
-
+    Route::get('/rh/create-postulant-documentation/{postulant}', [RhController::class, 'createPostulantDocumentation'])->name('rh.createPostulantDocumentation');
+    Route::post('/rh/build-postulant-documentation/', [RhController::class, 'buildPostulantDocumentation'])->name('rh.buildPostulantDocumentation');
 
 });
 

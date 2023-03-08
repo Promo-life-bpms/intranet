@@ -85,7 +85,7 @@
                                     <h6>Factores demograficos</h6>
                                     <input class="check" type="checkbox" name="demographics_distance" value="true"> <label for="cbox2">Distancia</label>
                                     <br>
-                                    <input class="check" type="checkbox" name="demographics_physical" value="true""> <label for="cbox2">Riesgos fisicos</label>
+                                    <input class="check" type="checkbox" name="demographics_physical" value="true"> <label for="cbox2">Riesgos fisicos</label>
                                     <br>
                                     <input class="check" type="checkbox" name="demographics_personal" value="true"> <label for="cbox2">Actividades personales</label>
                                     <br>

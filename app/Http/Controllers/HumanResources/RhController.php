@@ -10,6 +10,7 @@ use App\Models\PostulantBeneficiary;
 use App\Models\PostulantDetails;
 use App\Models\User;
 use App\Models\UserDownMotive;
+use Facade\FlareClient\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -363,4 +364,14 @@ class RhController extends Controller
         return redirect()->back()->with('message', 'Información guardada correctamente');;
     }
 
+    public function createPostulantDocumentation($postulant_id)
+    {
+        $postulant = Postulant::all()->where('id',$postulant_id)->last();
+        return View('rh.create-postulant-documentation', compact('postulant'));
+    }
+
+    public function buildPostulantDocumentation(Request $request)
+    {
+        return $request;
+    }
 }
