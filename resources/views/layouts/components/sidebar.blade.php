@@ -160,7 +160,7 @@
                                 </a>
                             </li>
                             <li class="submenu-item ">
-                                <a class="dropdown-item" href="{{ route('rh.newUser') }}">
+                                <a class="dropdown-item" href="{{ route('rh.postulants') }}">
                                     <span>Generar alta</span>
                                 </a>
                             </li> 

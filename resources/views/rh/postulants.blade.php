@@ -41,6 +41,10 @@
                                 {{ $postulant->mail}}
                                 <br>
                                 {{ $postulant->phone}}
+                                <br>
+                                @if ($postulant->cv <> '')
+                                    <a href="{{ asset($postulant->cv) }}" target="_blank">CV</a>
+                                @endif
                             </td>
                             <td class="text-center">
                                 @if ($postulant->company <> null)
@@ -61,11 +65,15 @@
                             <td>
                                 <div class="d-flex w-100 ">
                                     <div>
-                                       
+                                        <a  href="{{ route('rh.editPostulant', ['postulant' => $postulant->id]) }}"
+                                            type="button" class="btn btn-option">Editar info</a>
                                     </div>
                                 </div>
                                 <div class="d-flex" >
-                                    ¿
+                                    <div>
+                                        <a  href="{{ route('rh.editPostulant', ['postulant' => $postulant->id]) }}"
+                                            type="button" class="btn btn-option">Generar doc</a>
+                                    </div>
                                 </div>
                             </td>
                         </tr>

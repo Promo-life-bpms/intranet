@@ -217,7 +217,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     //Recursos humanos - gestion de empleados
     Route::get('/rh/stadistics', [RhController::class, 'stadistics'])->name('rh.stadistics');
-    Route::get('/rh/new-user', [RhController::class, 'newUser'])->name('rh.newUser');
+    Route::get('/rh/postulants', [RhController::class, 'postulants'])->name('rh.postulants');
     Route::get('/rh/drop-user', [RhController::class, 'dropUser'])->name('rh.dropUser');
 
     Route::get('/rh/drop-documentation/{user}', [RhController::class, 'dropDocumentation'])->name('rh.dropDocumentation');
@@ -227,6 +227,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/rh/create-postulant/', [RhController::class, 'createPostulant'])->name('rh.createPostulant');
     Route::post('/rh/store-postulant/', [RhController::class, 'storePostulant'])->name('rh.storePostulant');
+    Route::get('/rh/edit-postulant/{postulant}', [RhController::class, 'editPostulant'])->name('rh.editPostulant');
+    Route::put('/rh/update-postulant/', [RhController::class, 'updatePostulant'])->name('rh.updatePostulant');
 
 
 

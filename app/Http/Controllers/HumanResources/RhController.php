@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\UserDownMotive;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class RhController extends Controller
 {
@@ -20,18 +21,18 @@ class RhController extends Controller
         return view('rh.stadistics');
     }
 
-    public function newUser()
+    public function postulants()
     {  
         $postulants_data = [];
         $postulants = Postulant::all();
         
         foreach($postulants as $postulant){
             $company = Company::all()->where('id', $postulant->company_id)->last();
-            $department = Department::all()->where('id', $postulant->company_id)->last();
+            $department = Department::all()->where('id', $postulant->department_id)->last();
 
             array_push($postulants_data, (object)[
                 'id' => $postulant->id,
-                'fullname' => $postulant->fullname. " ". $postulant->lastname,
+                'fullname' => $postulant->name. " ". $postulant->lastname,
                 'mail' =>  $postulant->mail,
                 'phone' => $postulant->phone,
                 'cv' => $postulant->cv,
@@ -42,7 +43,7 @@ class RhController extends Controller
             ]);
 
         } 
-        return view('rh.new-user', compact('postulants_data'));  
+        return view('rh.postulants', compact('postulants_data'));  
     }
 
     public function dropUser()
@@ -146,8 +147,6 @@ class RhController extends Controller
             'status' => 'required',
             'mail' => 'required',
             'phone' => 'required',
-            'company_id' => 'required',
-            'department_id' => 'required'
         ]);
 
         $cv = null;
@@ -156,7 +155,7 @@ class RhController extends Controller
             $filenameWithExt = $request->file('cv')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('cv')->clientExtension();
-            $fileNameToStore = $filename . '.' . $extension;
+            $fileNameToStore = time(). $filename . '.' . $extension;
             $cv = $request->file('cv')->move('storage/postulant/', $fileNameToStore);
         }
 
@@ -171,12 +170,58 @@ class RhController extends Controller
         $create_postulant->department_id  = $request->department_id;
         $create_postulant->interview_date = $request->interview_date;
         $create_postulant->save();  
+
+        return redirect()->action([RhController::class, 'postulants']);
+
+    }
+
+    public function editPostulant($post)
+    {
+        $postulant = Postulant::all()->where('id',$post)->last();
+        $companies = Company::all()->pluck('name_company', 'id');
+        $departments = Department::all()->pluck('name','id');
+        $postulant_details = PostulantDetails::all()->where('postulant_id',$postulant->id)->last();
+        if($postulant_details == null){
+            $postulant_beneficiaries  = [];
+        }else{
+            $postulant_beneficiaries = PostulantBeneficiary::all()->where('postulant_details_id',$postulant_details->id);
+        }
+
+        return view('rh.edit-postulant', compact('postulant', 'companies', 'departments', 'postulant_details', 'postulant_beneficiaries'));
+    }
+    
+
+    public function updatePostulant(Request $request)
+    {
+        $cv = null;
+
+        if ($request->hasFile('cv')) {
+            $find_postulant = Postulant::all()->where('id', $request->postulant_id)->last();
+            File::delete($find_postulant->cv);
+            $filenameWithExt = $request->file('cv')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('cv')->clientExtension();
+            $fileNameToStore = time(). $filename . '.' . $extension;
+            $cv = $request->file('cv')->move('storage/postulant/', $fileNameToStore);
+        }
+
+        DB::table('postulant')->where('id', intval($request->postulant_id))->update([
+            'name' => $request->name,
+            'lastname' => $request->lastname,
+            'mail' => $request->mail,
+            'phone' => $request->phone,
+            'cv' => $cv,
+            'status' => $request->status,
+            'company_id' => $request->company_id,
+            'department_id' => $request->department_id,
+            'interview_date' => $request->interview_date,
+        ]); 
+
+        $find_postulant_details = PostulantDetails::all()->where('postulant_id', $request->postulant_id)->last();
         
-        
-        if($request->rfc <>null){
-            $postulant_id = Postulant::all()->where('name',$request->name)->where('mail',$request->mail)->last();
+        if($find_postulant_details==null){
             $create_postulant_details = new PostulantDetails;
-            $create_postulant_details->postulant_id  = $postulant_id->postulant_id;
+            $create_postulant_details->postulant_id  = $request->postulant_id;
             $create_postulant_details->place_of_birth  = $request->place_of_birth;
             $create_postulant_details->birthdate  = $request->birthdate;
             $create_postulant_details->fathers_name  = $request->fathers_name;
@@ -209,40 +254,103 @@ class RhController extends Controller
             $create_postulant_details->home_references  = $request->home_references;
             $create_postulant_details->house_characteristics  = $request->house_characteristics;
             $create_postulant_details->save();
+            
+            $find_postulant_details = PostulantDetails::all()->where('postulant_id', $request->postulant_id)->last();
 
-            $postulant_details_id = PostulantDetails::all()->where('postulant_id',$postulant_id)->last();
-
-            if($request->has('beneficiary1')){
+            if($request->beneficiary1<>null){
                 $create_postulant_beneficiary = new  PostulantBeneficiary();
                 $create_postulant_beneficiary->name = $request->beneficiary1;
                 $create_postulant_beneficiary->phone = null;
                 $create_postulant_beneficiary->porcentage = $request->porcentage1;
-                $create_postulant_beneficiary->postulant_details_id = $postulant_details_id->id;
+                $create_postulant_beneficiary->postulant_details_id = $find_postulant_details->id;
                 $create_postulant_beneficiary->save();
             }
 
-            if($request->has('beneficiary2')){
+            if($request->beneficiary2<>null){
                 $create_postulant_beneficiary = new  PostulantBeneficiary();
                 $create_postulant_beneficiary->name = $request->beneficiary2;
                 $create_postulant_beneficiary->phone = null;
                 $create_postulant_beneficiary->porcentage = $request->porcentage2;
-                $create_postulant_beneficiary->postulant_details_id = $postulant_details_id->id;
+                $create_postulant_beneficiary->postulant_details_id = $find_postulant_details->id;
                 $create_postulant_beneficiary->save();
             }
 
-            if($request->has('beneficiary3')){
+            if($request->beneficiary3<>null){
                 $create_postulant_beneficiary = new  PostulantBeneficiary();
                 $create_postulant_beneficiary->name = $request->beneficiary3;
                 $create_postulant_beneficiary->phone = null;
                 $create_postulant_beneficiary->porcentage = $request->porcentage3;
-                $create_postulant_beneficiary->postulant_details_id = $postulant_details_id->id;
+                $create_postulant_beneficiary->postulant_details_id = $find_postulant_details->id;
                 $create_postulant_beneficiary->save();
             }
 
+        }else{
+            DB::table('postulant_details')->where('postulant_id', intval($request->postulant_id))->update([
+                'place_of_birth' => $request->place_of_birth,
+                'birthdate' => $request->birthdate,
+                'fathers_name' => $request->fathers_name,
+                'mothers_name' => $request->mothers_name,
+                'civil_status' => $request->civil_status,
+                'age' => $request->age,
+                'address' => $request->address,
+                'street' => $request->street,
+                'colony' => $request->colony,
+                'delegation' => $request->delegation,
+                'postal_code' => $request->postal_code,
+                'cell_phone' => $request->cell_phone,
+                'home_phone' => $request->home_phone,
+                'curp' => $request->curp,
+                'rfc' => $request->rfc,
+                'imss_number' => $request->imss_number,
+                'fiscal_postal_code' => $request->fiscal_postal_code,
+                'position' => $request->position,
+                'area' => $request->area,
+                'salary_sd' => $request->salary_sd,
+                'salary_sbc' => $request->salary_sbc,
+                'horary' => $request->horary,
+                'date_admission' => $request->date_admission,
+                'card_number' => $request->card_number,
+                'bank_name' => $request->bank_name,
+                'infonavit_credit' => $request->infonavit_credit,
+                'factor_credit_number' => $request->factor_credit_number,
+                'fonacot_credit' => $request->fonacot_credit,
+                'discount_credit_number' => $request->discount_credit_number,
+                'home_references' => $request->home_references,
+                'house_characteristics' => $request->house_characteristics,
+            ]); 
+
+            $find_postulant_details_to_beneficiary = PostulantDetails::all()->where('postulant_id', $request->postulant_id)->last();
+            DB::table('postulant_beneficiary')->where('postulant_details_id', intval($find_postulant_details_to_beneficiary->id))->delete();
+            $find_postulant_details = PostulantDetails::all()->where('postulant_id', $request->postulant_id)->last();
+
+            if($request->beneficiary1 <> null){
+                $create_postulant_beneficiary = new  PostulantBeneficiary();
+                $create_postulant_beneficiary->name = $request->beneficiary1;
+                $create_postulant_beneficiary->phone = null;
+                $create_postulant_beneficiary->porcentage = $request->porcentage1;
+                $create_postulant_beneficiary->postulant_details_id = $find_postulant_details->id;
+                $create_postulant_beneficiary->save();
+            }
+
+            if($request->beneficiary2<>null){
+                $create_postulant_beneficiary = new  PostulantBeneficiary();
+                $create_postulant_beneficiary->name = $request->beneficiary2;
+                $create_postulant_beneficiary->phone = null;
+                $create_postulant_beneficiary->porcentage = $request->porcentage2;
+                $create_postulant_beneficiary->postulant_details_id = $find_postulant_details->id;
+                $create_postulant_beneficiary->save();
+            }
+
+            if($request->beneficiary3<>null){
+                $create_postulant_beneficiary = new  PostulantBeneficiary();
+                $create_postulant_beneficiary->name = $request->beneficiary3;
+                $create_postulant_beneficiary->phone = null;
+                $create_postulant_beneficiary->porcentage = $request->porcentage3;
+                $create_postulant_beneficiary->postulant_details_id = $find_postulant_details->id;
+                $create_postulant_beneficiary->save();
+            }
         }
-
-        return redirect()->action([RhController::class, 'newUser']);
-
+        return redirect()->back()->with('message', 'Información guardada correctamente');;
     }
 
 }
