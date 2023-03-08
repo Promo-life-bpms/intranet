@@ -184,7 +184,17 @@ class RhController extends Controller
         if($postulant_details == null){
             $postulant_beneficiaries  = [];
         }else{
-            $postulant_beneficiaries = PostulantBeneficiary::all()->where('postulant_details_id',$postulant_details->id);
+            $postulant_beneficiaries_data = PostulantBeneficiary::all()->where('postulant_details_id',$postulant_details->id);
+            $postulant_beneficiaries  = [];
+            foreach($postulant_beneficiaries_data as $beneficiary){
+                array_push($postulant_beneficiaries, (object)[
+                    'id' => $beneficiary->id,
+                    'name' => $beneficiary->name,
+                    'phone' =>  $beneficiary->phone,
+                    'porcentage' => $beneficiary->porcentage,
+                    'postulant_details_id' => $beneficiary->postulant_details_id,
+                ]);
+            }
         }
 
         return view('rh.edit-postulant', compact('postulant', 'companies', 'departments', 'postulant_details', 'postulant_beneficiaries'));
