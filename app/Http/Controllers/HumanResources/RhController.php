@@ -377,8 +377,10 @@ class RhController extends Controller
 
     public function buildPostulantDocumentation(Request $request)
     {
-
+        return $request;
         $postulant = Postulant::all()->where('id',$request->postulant)->last();
+        $postulant_details = PostulantDetails::all()->where('postulant_id',$request->postulant)->last();
+
         //Personal de alta
         if($request->has('up_personal')){
             $spreadsheet = new Spreadsheet();
@@ -397,8 +399,9 @@ class RhController extends Controller
             $sheet->getStyle('A1:G51')->applyFromArray($styleArray);
 
             $sheet->setCellValue('A4', 'EMPRESA:');
+            $sheet->setCellValue('B4', $request->company);
             $sheet->setCellValue('A6', 'NOMBRE:'); 
-            $sheet->setCellValue('B6', $postulant->name);
+            $sheet->setCellValue('B6', $postulant->name .''. $postulant->lastname);
             $sheet->setCellValue('A8', 'LUGAR DE NACIMIENTO:');
             $sheet->setCellValue('A10', 'FECHA DE NACIMIENTO:');
             $sheet->setCellValue('A12', 'NOMBRE DEL PADRE:');
