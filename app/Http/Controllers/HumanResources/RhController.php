@@ -19,7 +19,8 @@ use Illuminate\Support\Facades\File;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Style\Language;
 
 class RhController extends Controller
 {
@@ -78,37 +79,37 @@ class RhController extends Controller
 
     public function buildDownDocumentation(Request $request)
     {
+
         //Promolife
         if($request->company_id == 1){
-            $pathfile= 'files/RENUNCIAPL.doc'; 
-            return  response()->download($pathfile, 'Renuncia.doc');
+            $company = "PROMO LIFE, S. DE R.L. DE C.V.";
+            $this->employeeDown($request->name, $request->lastname,$company);
         }
 
         //BH tardemarket
         if($request->company_id == 2){
-            $pathfile= 'files/RENUNCIABH.doc'; 
-            return  response()->download($pathfile, 'Renuncia.doc');
+            $company = "BH TRADE MARKET, S.A. DE C.V.";
+            $this->employeeDown($request->name, $request->lastname,$company);
         }
 
         //Promo zale
         if($request->company_id == 3){
-            $pathfile= 'files/RENUNCIAPZ.doc'; 
-            return  response()->download($pathfile, 'Renuncia.doc');
+            $company = "PROMO ZALE S.A. DE C.V."; 
+            $this->employeeDown($request->name, $request->lastname,$company);
         }
 
         //Trademarket 57
         if($request->company_id == 4){
-            $pathfile= 'files/RENUNCIATM57.doc'; 
-            return  response()->download($pathfile, 'Renuncia.doc');
+            $company = "TRADE MARKET 57, S.A. DE C.V."; 
+            $this->employeeDown($request->name, $request->lastname,$company);
         } 
 
         //Unipromtex
         if($request->company_id == 5){
-            $pathfile= 'files/RENUNCIAUNIPROMTEX.doc'; 
-            return  response()->download($pathfile, 'Renuncia.doc');
+            $company = "UNIPROMTEX S.A. DE C.V."; 
+            $this->employeeDown($request->name, $request->lastname,$company);
         } 
 
-    
     }
 
     public function createMotiveDown(Request $request)
@@ -385,6 +386,10 @@ class RhController extends Controller
 
         if($request->has('up_personal')){ 
             $this->upDocument($postulant, $postulant_details, $postulant_beneficiaries, $request );
+        }
+
+        if($request->has('determined_contract')){
+            $this->determinateContract();
         }
     }
 
@@ -669,6 +674,158 @@ class RhController extends Controller
           
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
         $writer->save('php://output');
+    }
+
+    public function determinateContract()
+    {
+        // Creating the new document...
+    $phpWord = new \PhpOffice\PhpWord\PhpWord();
+
+    /* Note: any element you append to a document must reside inside of a Section. */
+
+    // Adding an empty Section to the document...
+    $section = $phpWord->addSection();
+    // Adding Text element to the Section having font styled by default...
+    $section->addText(
+        '"Learn from yesterday, live for today, hope for tomorrow. '
+            . 'The important thing is not to stop questioning." '
+            . '(Albert Einstein)'
+    );
+
+    /*
+    * Note: it's possible to customize font style of the Text element you add in three ways:
+    * - inline;
+    * - using named font style (new font style object will be implicitly created);
+    * - using explicitly created font style object.
+    */
+
+    // Adding Text element with font customized inline...
+    $section->addText(
+        '"Great achievement is usually born of great sacrifice, '
+            . 'and is never the result of selfishness." '
+            . '(Napoleon Hill)',
+        array('name' => 'Tahoma', 'size' => 10)
+    );
+
+    // Adding Text element with font customized using named font style...
+    $fontStyleName = 'oneUserDefinedStyle';
+    $phpWord->addFontStyle(
+        $fontStyleName,
+        array('name' => 'Tahoma', 'size' => 10, 'color' => '1B2232', 'bold' => true)
+    );
+    $section->addText(
+        '"The greatest accomplishment is not in never falling, '
+            . 'but in rising again after you fall." '
+            . '(Vince Lombardi)',
+        $fontStyleName
+    );
+
+    // Adding Text element with font customized using explicitly created font style object...
+    $fontStyle = new \PhpOffice\PhpWord\Style\Font();
+    $fontStyle->setBold(true);
+    $fontStyle->setName('Tahoma');
+    $fontStyle->setSize(13);
+    $myTextElement = $section->addText('"Believe you can and you\'re halfway there." (Theodor Roosevelt)');
+    $myTextElement->setFontStyle($fontStyle);
+
+    
+    header("Content-Description: File Transfer");
+    header('Content-Disposition: attachment; filename="' . 'CONTRATO DETERMINADO' . '.doc');
+    header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    header('Content-Transfer-Encoding: binary');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Expires: 0');
+    $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+    $xmlWriter->save("php://output");
+    }
+
+    public function employeeDown($name,$lastname, $company)
+    {
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $phpWord->getSettings()->setThemeFontLang(new Language(Language::ES_ES));
+
+        //Font name
+        $TimesNewRomanStyle = 'Times New Roman';
+
+        //Font styles
+        $phpWord->addFontStyle(
+            $TimesNewRomanStyle,
+            array(
+                'name' => 'Times New Roman', 
+                'size' => 14, 'bold' => false,
+                )
+        );
+
+        $phpWord->setDefaultParagraphStyle(
+            array(
+            'align' => 'both',
+            'lineHeight' => 2.0
+            )
+        );
+        
+        //create section component
+        $section = $phpWord->addSection();
+
+        $section->addText(
+            $company,
+            $TimesNewRomanStyle
+        );
+        
+        $section->addText(
+            'Presente:',
+            $TimesNewRomanStyle
+        );
+
+        $section->addText(
+            '',
+            $TimesNewRomanStyle
+        );
+
+        $section->addText(
+            'Por medio de la presente, hago constar que con esta fecha y por así convenir a mis intereses, '. 
+            'doy por terminado voluntariamente el trabajo que tenía con ustedes, y se da por concluida la '.
+            'relación laboral que mantenía con la empresa '. $company,
+            $TimesNewRomanStyle,
+        );
+        $section->addText(
+            'Les manifiesto que no me adeudan ninguna cantidad por ningún concepto ya que durante el tiempo '.
+            'que mantuvimos relaciones, me fueron pagadas todas las prestaciones que pactamos y las cantidades '.
+            'a que tuve derecho, sin quedar ningún compromiso de por medio, y aprovecho la oportunidad para '.
+            'agradecerles las atenciones que tuvieron para conmigo.',
+            $TimesNewRomanStyle
+        );
+
+        $section->addText(
+            'Queda vigente el convenio de confidencialidad que firmé con la Empresa el primer día de trabajo, '.
+            'por lo que me sujeto a las cláusulas establecidas en él.',
+            $TimesNewRomanStyle
+        );
+
+        $section->addText(
+            'ATENTAMENTE',
+            $TimesNewRomanStyle
+        );
+
+        $section->addText(
+            '_____________________________________',
+            $TimesNewRomanStyle
+        );
+
+        $section->addText(
+            strtoupper($name)  .' '. strtoupper($lastname),
+            $TimesNewRomanStyle
+        );
+
+
+        header("Content-Description: File Transfer");
+        header('Content-Disposition: attachment; filename="' . 'RENUNCIA ' . strtoupper($name) .' '. strtoupper($lastname) . '.doc');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Expires: 0');
+        $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $xmlWriter->save("php://output");
+
     }
    
 }
