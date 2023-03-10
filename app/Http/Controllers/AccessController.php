@@ -16,7 +16,7 @@ class AccessController extends Controller
      */
     public function index()
     {
-        $url1 = env("URL_COURSES", "https://elearning.promolife.online");
+        $url1 = env("URL_COURSES", "https://elearning.promolife.lat");
         $url2 = env("URL_TASK_MANAGER", "https://taskmanagerplbh.promolife.lat");
         $url3 = env("URL_CATALOGO", "https://catalogodeproductos.promolife.online");
         $routeCourses = $url1 . "/loginEmail?email=" . auth()->user()->email . "&password=password";

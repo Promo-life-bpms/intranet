@@ -5,7 +5,7 @@
     <div class="card">
         <div class="card-header">
             <div class="d-flex justify-content-between">
-                <h3>Solicitudes autorizadas por los jefes directos</h3>
+                <h3>Solicitudes realizadas</h3>
             </div>
         </div>
         <div class="card-body">

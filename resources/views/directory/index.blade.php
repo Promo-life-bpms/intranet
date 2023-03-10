@@ -49,7 +49,7 @@
                                                 </p>
                                                 @foreach ($user->directory as $directory)
                                                     <p class="m-0 my-1"><strong>{{ $directory->type }}
-                                                            {{ $directory->companyName->name_company }}:</strong>
+                                                            {{$directory->companyName ? $directory->companyName->name_company :"Sin Informacion" }}:</strong>
                                                         {{ $directory->data }}
                                                     </p>
                                                 @endforeach
