@@ -29,12 +29,9 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
-use App\Models\Message;
-use App\Models\RequestCalendar;
-use App\Models\User;
-use App\Models\Vacations;
+use App\Http\Controllers\Soporte\SoporteController;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\Mime\MessageConverter;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -209,6 +206,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::resource('providers', ProviderController::class);
     Route::get('/providers/import/create', [ProviderController::class, 'create_import'])->name('providers.createImport');
     Route::post('/providers/import/store', [ProviderController::class, 'store_import'])->name('providers.storeImport');
+    //soporte
+    Route::prefix('soporte')->group(function () {
+        Route::get('/', [SoporteController::class, 'index'])->name('soporte');
+        Route::get('/create', [SoporteController::class, 'create'])->name('soporte.create');
+        Route::get('/store', [SoporteController::class, 'store'])->name('soporte.store');
+    });
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
