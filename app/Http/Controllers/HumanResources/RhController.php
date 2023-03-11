@@ -393,7 +393,7 @@ class RhController extends Controller
         }
 
         if($request->has('confidentiality_agreement')){
-            $this->confidentialityAgreement(strtoupper($postulant->name), strtoupper($postulant->lastname), $postulant->company_id, date('d/m/Y', strtotime( $postulant_details->date_admission))); 
+            $this->confidentialityAgreement(strtoupper($postulant->name), strtoupper($postulant->lastname),intval($request->company) , date('d/m/Y', strtotime( $postulant_details->date_admission))); 
         }
 
        
@@ -835,8 +835,40 @@ class RhController extends Controller
 
     }
 
-    public function confidentialityAgreement($name, $lastname, $company, $date_admission)
+    public function confidentialityAgreement($name, $lastname, $company_id, $date_admission)
     {
+        $company = "";
+        $employer = "";
+         //Promolife
+        if($company_id == 1){
+            $company = "PROMO LIFE, S. DE R.L. DE C.V.";
+            $employer = "C. RAÚL TORRES MÁRQUEZ";
+        }
+
+        //BH tardemarket
+        if($company_id == 2){
+            $company = "BH TRADE MARKET, S.A. DE C.V.";
+            $employer = "C. DAVID LEVY HANO";
+        }
+
+        //Promo zale
+        if($company_id == 3){
+            $company = "PROMO ZALE S.A. DE C.V."; 
+            $employer = "C. DANIEL LEVY HANO";
+        }
+
+        //Trademarket 57
+        if($company_id== 4){
+            $company = "TRADE MARKET 57, S.A. DE C.V."; 
+            $employer = "C. MÓNICA REYES RESENDIZ";
+        } 
+
+        //Unipromtex
+        if($company_id== 5){
+            $company = "UNIPROMTEX S.A. DE C.V."; 
+            $employer = "DAVID LEVY HANO";
+        } 
+
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $phpWord->getSettings()->setMirrorMargins(true);
         $phpWord->getSettings()->setThemeFontLang(new Language(Language::ES_ES));
@@ -894,7 +926,7 @@ class RhController extends Controller
 
 
         //Word Document
-        $section1 = "<p>CONVENIO DE CONFIDENCIALIDAD QUE CELEBRAN POR UNA PARTE <b>$name $lastname</b> POR SU PROPIO DERECHO EN SU CARÁCTER DE <b>EMPLEADO</b> Y POR LA OTRA PARTE, <b>PROMO ZALE S.A. DE C.V.</b>, EN SU CARÁCTER DE EMPLEADOR AL TENOR DE LAS SIGUIENTES ANTECEDENTES DECLARACIONES Y CLAUSULAS:</p>";
+        $section1 = "<p>CONVENIO DE CONFIDENCIALIDAD QUE CELEBRAN POR UNA PARTE <b>$name $lastname</b> POR SU PROPIO DERECHO EN SU CARÁCTER DE <b>EMPLEADO</b> Y POR LA OTRA PARTE, <b>$company</b>, EN SU CARÁCTER DE EMPLEADOR AL TENOR DE LAS SIGUIENTES ANTECEDENTES DECLARACIONES Y CLAUSULAS:</p>";
         $htmlsection->addHtml($section, $section1);
        
 
@@ -987,20 +1019,39 @@ class RhController extends Controller
         $section12 = "<p><b>DECIMA TERCERA.- ENCABEZADOS Y TITULOS: </b>Los encabezamientos y títulos que se utilizan en este convenio son únicamente por conveniencia y no se considerarán de naturaleza sustancial para interpretación del mismo.</p>";
         $htmlsection->addHtml($section, $section12);
 
-        $section12 = "<p><b>DECIMA CUARTA.- JURISDICCION: </b>Para todo lo que se refiere a la interpretación y cumplimiento del presente convenio, “LAS PARTES” se someten expresamente a la jurisdicción y competencia de las Leyes y Tribunales del Estado de México renunciando expresamente a cualquier otro fuero que por razones de su domicilio presente o futuro pudiera corresponderles.</p>";
-        $htmlsection->addHtml($section, $section12);
+        $section13 = "<p><b>DECIMA CUARTA.- JURISDICCION: </b>Para todo lo que se refiere a la interpretación y cumplimiento del presente convenio, “LAS PARTES” se someten expresamente a la jurisdicción y competencia de las Leyes y Tribunales del Estado de México renunciando expresamente a cualquier otro fuero que por razones de su domicilio presente o futuro pudiera corresponderles.</p>";
+        $htmlsection->addHtml($section, $section13);
 
-        $section12 = "<p>Leído el presente contrato y enteradas las partes de su contenido y alcance, lo firman en dos tantos de plena conformidad, en la Estado de México, el día <b>$date_admission.</b></p>";
-        $htmlsection->addHtml($section, $section12);
+        $section14 = "<p>Leído el presente contrato y enteradas las partes de su contenido y alcance, lo firman en dos tantos de plena conformidad, en la Estado de México, el día <b>$date_admission.</b></p>";
+        $htmlsection->addHtml($section, $section14);
+
+        $section15 = "<p></p>";
+        $htmlsection->addHtml($section, $section15);
 
         $cellRowSpan = array('width' => 5000);
      
         $table = $section->addTable([]);
         $table->addRow();
-        $table->addCell(5000, $cellRowSpan)->addText("1aaaaaaaaaaaaaaaaa");
-        $table->addCell(5000, $cellRowSpan)->addText("1aaaaaaaaaaaaaaaaa");
+        $table->addCell(5000, $cellRowSpan)->addText('EMPLEADOR',$titleCenterBoldStyle, $center);
+        $table->addCell(5000, $cellRowSpan)->addText('EMPLEADO',$titleCenterBoldStyle, $center);
+
+        $table->addRow();
+        $table->addCell(5000, $cellRowSpan)->addText($company,$titleCenterBoldStyle, $center);
+        $table->addCell(5000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
        
-        
+        $table->addRow();
+        $table->addCell(5000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+        $table->addCell(5000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+        $table->addRow();
+        $table->addCell(5000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+        $table->addCell(5000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+     
+
+        $table->addRow();
+        $table->addCell(5000, $cellRowSpan)->addText($employer,$titleCenterBoldStyle, $center);
+        $table->addCell(5000, $cellRowSpan)->addText('C. '. $name. ' '. $lastname,$titleCenterBoldStyle, $center);
+       
+
         header("Content-Description: File Transfer");
         header('Content-Disposition: attachment; filename="' . 'CONVENIO DE CONFIDENCIALIDAD ' . strtoupper($company) . ' ' . strtoupper($name) .' '. strtoupper($lastname) . '.doc');
         header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');

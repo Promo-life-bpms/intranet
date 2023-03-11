@@ -52,15 +52,15 @@
         </div>
         <div class="col-md-5 cont2">
             <h6>Seleccionar Empresa</h6>
-            <input type="radio" name="company" value="Promo life S de RL de CV" @if($postulant->company_id == 1)checked @endif>
+            <input type="radio" name="company" value="1" @if($postulant->company_id == 1)checked @endif>
             <label for="promolife">Promo life S de RL de CV</label><br>
-            <input type="radio" name="company" value="BH Tade Market SA de CV" @if($postulant->company_id == 2)checked @endif>
+            <input type="radio" name="company" value="2" @if($postulant->company_id == 2)checked @endif>
             <label for="bhtrademarket">BH Tade Market SA de CV</label><br>
-            <input type="radio" name="company" value="Promo Zale SA de CV"  @if($postulant->company_id == 3)checked @endif>
+            <input type="radio" name="company" value="3"  @if($postulant->company_id == 3)checked @endif>
             <label for="promozale">Promo Zale SA de CV</label><br>
-            <input type="radio" name="company" value="Trade Market 57 SA de CV" @if($postulant->company_id == 4)checked @endif>
+            <input type="radio" name="company" value="4" @if($postulant->company_id == 4)checked @endif>
             <label for="trademarket57">Trade Market 57 SA de CV</label><br>
-            <input type="radio" name="company" value="Unipromtex SA de CV" @if($postulant->company_id == 5)checked @endif>
+            <input type="radio" name="company" value="5" @if($postulant->company_id == 5)checked @endif>
             <label for="unipromtex">Unipromtex SA de CV</label><br>
         </div>
     </div>
