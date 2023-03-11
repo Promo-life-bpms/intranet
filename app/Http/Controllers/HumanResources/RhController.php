@@ -389,15 +389,31 @@ class RhController extends Controller
         }
 
         if($request->has('determined_contract')){
-            $this->determinateContract();
+            $this->determinateContract(strtoupper($postulant->name), strtoupper($postulant->lastname),strtoupper($postulant_details->position),intval($request->company) , date('d/m/Y', strtotime( $postulant_details->date_admission))); 
+        }
+
+        if($request->has('indetermined_contract')){
+            $this->indeterminateContract(strtoupper($postulant->name), strtoupper($postulant->lastname),strtoupper($postulant_details->position),intval($request->company) , date('d/m/Y', strtotime( $postulant_details->date_admission))); 
         }
 
         if($request->has('confidentiality_agreement')){
             $this->confidentialityAgreement(strtoupper($postulant->name), strtoupper($postulant->lastname),intval($request->company) , date('d/m/Y', strtotime( $postulant_details->date_admission))); 
         }
 
+        if($request->has('work_condition_update')){
+            $this->workConditionUpdate(strtoupper($postulant->name), strtoupper($postulant->lastname),strtoupper($postulant_details->position)); 
+        }
+
+        
+       
+
        
     }
+
+
+
+
+    /* ---------------------------- DOCUMENTOS GENERADOS ------------------------------*/
 
     public function upDocument($postulant, $postulant_details, $postulant_beneficiaries, $request )
     {
@@ -682,67 +698,428 @@ class RhController extends Controller
         $writer->save('php://output');
     }
 
-    public function determinateContract()
+    public function determinateContract($name, $lastname, $company_id, $date_admission)
     {
-        // Creating the new document...
-    $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $company = "";
+        $employer = "";
+         //Promolife
+        if($company_id == 1){
+            $company = "PROMO LIFE, S. DE R.L. DE C.V.";
+            $employer = "C. RAÚL TORRES MÁRQUEZ";
+        }
 
-    /* Note: any element you append to a document must reside inside of a Section. */
+        //BH tardemarket
+        if($company_id == 2){
+            $company = "BH TRADE MARKET, S.A. DE C.V.";
+            $employer = "C. DAVID LEVY HANO";
+        }
 
-    // Adding an empty Section to the document...
-    $section = $phpWord->addSection();
-    // Adding Text element to the Section having font styled by default...
-    $section->addText(
-        '"Learn from yesterday, live for today, hope for tomorrow. '
-            . 'The important thing is not to stop questioning." '
-            . '(Albert Einstein)'
-    );
+        //Promo zale
+        if($company_id == 3){
+            $company = "PROMO ZALE S.A. DE C.V."; 
+            $employer = "C. DANIEL LEVY HANO";
+        }
 
-    /*
-    * Note: it's possible to customize font style of the Text element you add in three ways:
-    * - inline;
-    * - using named font style (new font style object will be implicitly created);
-    * - using explicitly created font style object.
-    */
+        //Trademarket 57
+        if($company_id== 4){
+            $company = "TRADE MARKET 57, S.A. DE C.V."; 
+            $employer = "C. MÓNICA REYES RESENDIZ";
+        } 
 
-    // Adding Text element with font customized inline...
-    $section->addText(
-        '"Great achievement is usually born of great sacrifice, '
-            . 'and is never the result of selfishness." '
-            . '(Napoleon Hill)',
-        array('name' => 'Tahoma', 'size' => 10)
-    );
+        //Unipromtex
+        if($company_id== 5){
+            $company = "UNIPROMTEX S.A. DE C.V."; 
+            $employer = "DAVID LEVY HANO";
+        } 
 
-    // Adding Text element with font customized using named font style...
-    $fontStyleName = 'oneUserDefinedStyle';
-    $phpWord->addFontStyle(
-        $fontStyleName,
-        array('name' => 'Tahoma', 'size' => 10, 'color' => '1B2232', 'bold' => true)
-    );
-    $section->addText(
-        '"The greatest accomplishment is not in never falling, '
-            . 'but in rising again after you fall." '
-            . '(Vince Lombardi)',
-        $fontStyleName
-    );
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $phpWord->getSettings()->setMirrorMargins(true);
+        $phpWord->getSettings()->setThemeFontLang(new Language(Language::ES_ES));
 
-    // Adding Text element with font customized using explicitly created font style object...
-    $fontStyle = new \PhpOffice\PhpWord\Style\Font();
-    $fontStyle->setBold(true);
-    $fontStyle->setName('Tahoma');
-    $fontStyle->setSize(13);
-    $myTextElement = $section->addText('"Believe you can and you\'re halfway there." (Theodor Roosevelt)');
-    $myTextElement->setFontStyle($fontStyle);
+        //Global styles
+        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontSize(8);
+        
+        //Font Styles
+        $phpWord->setDefaultParagraphStyle(
+            array(
+                'align' => 'both',
+                'lineHeight' => 1.0
+            )
+        );
+        $titleStyle = array(
+            'align' => 'both',
+            'lineHeight' => 1.0,
+            'bold' => false
+        );
+        $titleBoldStyle = array(
+            'align' => 'both',
+            'lineHeight' => 2.0,
+            'bold' => true
+        ); 
+        $titleCenterBoldStyle = array(
+            'lineHeight' => 1.0,
+            'bold' => true
+        ); 
 
-    
-    header("Content-Description: File Transfer");
-    header('Content-Disposition: attachment; filename="' . 'CONTRATO DETERMINADO' . '.doc');
-    header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-    header('Content-Transfer-Encoding: binary');
-    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-    header('Expires: 0');
-    $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-    $xmlWriter->save("php://output");
+        //Paragraph Styles
+        $centerTitle = array(
+            'size' => 20,
+            'align'=> 'center'
+        );
+
+        $center = array(
+            'align'=> 'center'
+        );
+
+        $justify_center = array(
+            'align' => 'both',
+        );
+
+        $list = array(
+            'lineHeight' => 0.5,
+        );
+
+        //Secctions
+        $section = $phpWord->addSection();
+        $htmlsection= new \PhpOffice\PhpWord\Shared\Html();
+
+        //Setting page margins
+        $phpWord->getSettings()->setMirrorMargins(false);
+        $sectionStyle = $section->getStyle();
+        $sectionStyle->setMarginLeft(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
+        $sectionStyle->setMarginRight(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
+        $sectionStyle->setMarginTop(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
+        $sectionStyle->setMarginBottom(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
+
+        $section->addText(
+            'BH TRADE MARKET, S.A. DE C.V.',
+            $titleCenterBoldStyle, $centerTitle
+        );
+
+        
+        $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR TIEMPO INDETERMINADO QUE CELEBRAN POR UNA PARTE BH TRADE MARKET, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+        $htmlsection->addHtml($section, $section2);
+
+
+        $cellRowSpan = array('width' => 5000);
+        $table = $section->addTable([]);
+        $table->addRow();
+        $table->addCell(2000, $cellRowSpan)->addText('EL (SR.) LA (SRA.) (SRITA.):',[], []);
+        $table->addCell(3000, $cellRowSpan)->addText($name . ' ' .$lastname,$titleCenterBoldStyle, $center);
+
+        $table->addRow();
+        $table->addCell(2000, $cellRowSpan)->addText('DE NACIONALIDAD:',[], []);
+        $table->addCell(3000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+       
+        $table->addRow();
+        $table->addCell(2000, $cellRowSpan)->addText('ESTADO CIVIL:',[], []);
+        $table->addCell(3000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+
+        $table->addRow();
+        $table->addCell(2000, $cellRowSpan)->addText('DOMICILIO:',[], []);
+        $table->addCell(3000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+
+        $table->addRow();
+        $table->addCell(2000, $cellRowSpan)->addText('AÑOS DE EDAD:',[], []);
+        $table->addCell(3000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+
+        $table->addRow();
+        $table->addCell(2000, $cellRowSpan)->addText('CURP:',[], []);
+        $table->addCell(3000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+
+        $section->addText(
+            'A QUIEN EN LO SUCESIVO SE LE DENOMINARA EL (LA) EMPLEADO (A).',
+            $titleStyle,
+        );
+
+        $section->addText(
+            'EL PRESENTE CONTRATO SE CELEBRARA DE ACUERDO CON LAS DECLARACIONES Y CLAUSULAS SIGUIENTES:',
+            $titleStyle,
+        );
+
+        $section->addText(
+            'D E C L A R A C I O N E S',
+            $titleCenterBoldStyle, $center
+        );
+
+        $section->addText(
+            'I.- LA EMPRESA DECLARA SER UNA SOCIEDAD MERCANTIL CONSTITUIDA ANTE LAS LEYES MEXICANAS, CON DOMICILIO FISCAL EN LA CALLE DE SAN ANDRES ATOTO No. 155 PISO 1 LOCAL A COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, QUE SU OBJETIVO SOCIAL OTROS SERVICIOS DE PUBLICIDAD.',
+            $titleStyle,
+        );
+
+        $section2 = "<p>II.- EL EMPLEADO POR SU PARTE DECLARA QUE QUEDA DEBIDAMENTE ENTERADO DE LA CAUSA QUE ORIGINA SU CONTRATACIÓN Y ESTA CONFORME EN PRESTAR SUS SERVICIOS PERSONALES A “LA EMPRESA” EN LOS TERMINOS QUE MAS ADELANTE PACTAN, MANIFESTANDO TENER LOS CONOCIMIENTOS SUFICIENTES PARA REALIZAR TAL SERVICIO DE (PUESTO DE TRABAJO) QUE CONSISTE EN (OBJETIVO DEL PUESTO).</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section->addText(
+            'EN VIRTUD DE LO ANTERIOR, LAS PARTES OTORGAN LAS SIGUIENTES:',
+            $titleStyle,
+        );
+
+        $section->addText(
+            'C L A U S U L A S',
+            $titleCenterBoldStyle, $center
+        );
+
+        $section2 = "<p>PRIMERA.- “LA EMPRESA” CONTRATARA AL EMPLEADO PARA QUE LE PRESTE SUS SERVICIOS PERSONALES BAJO SU DIRECCIÓN Y DEPENDENCIA, CON EL CARÁCTER DE EMPLEADO PUESTO DE TRABAJO Y TENDRA UN PERIODO DE TIEMPO INDEFINIDO.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>SEGUNDA.- EL LUGAR DE LA PRESTACIÓN DE SERVICIOS SERA TANTO EN EL DOMICILIO DE “LA EMPRESA”, ASI COMO EN EL DE TODAS AQUELLAS PERSONAS FÍSICAS O MORALES QUE CONTRATEN SERVICIOS CON “LA EMPRESA” SEA CUAL FUERE SU UBICACIÓN DENTRO DE LA REPUBLICA MEXICANA.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>TERCERA.- CONVIENEN LAS PARTES EXPRESAMENTE EN QUE EL PRESENTE CONTRATO INDIVIDUAL DE TRABAJO QUE CELEBRAN POR TIEMPO INDETERMINADO CONSISTE EN EL DESARROLLO DE LAS LABORES DEL EMPLEADO DE ESTA EMPRESA EN EL DOMICILIO QUE CORRESPONDEN CONFORME LA CLAUSULA SEGUNDA DE ESTE CONTRATO.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>CUARTA.- CONVIENEN LAS PARTES EN QUE EL EMPLEADO RECIBIRA COMO RETRIBUCIÓN DE SUS SERVICIOS  LA CANTIDAD DE  (NÚMERO Y DECIMALES) (CANTIDAD CON LETRA 00/100 M.N.)  DIARIOS, ADICIONALMENTE EL TRABAJADOR RECIBIRA ADEMAS DE LAS PRESTACIONES DE LEY, LAS SIGUIENTES PRESTACIONES SIEMPRE Y CUANDO CUMPLA CON LOS REQUISITOS ESTABLECIDOS PARA OBTENERLAS ESTAS SON: UN 10% DE PREMIO DE PUNTUALIDAD; 10% PREMIO DE ASISTENCIA Y DESPENSA EN EFECTIVO LOS CUALES   LE SERAN PAGADOS EN MONEDA NACIONAL VIA TRANSFERENCIA ELECTRONICA A LA TARJETA DE NOMINA BANCOMER, LA CUAL LE SERA ASIGNADA EN EL MOMENTO DE SU CONTRATACION, LOS DIAS 15 Y ULTIMO DE CADA MES.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>QUINTA.- CONVIENEN LAS PARTES EN QUE POR CADA SEIS DIAS DE TRABAJO EL EMPLEADO DISFRUTARA DE UN DIA DE DESCANSO CON GOCE DE SALARIO INTEGRO CUBRIENDO 48 HORAS DE TRABAJO SEMANALES, YA SEA EN EL DOMICILIO DE LA EMPRESA O DONDE SE LE ASIGNE,  IGUALMENTE TENDRA DERECHO A DISFRUTAR DE SALARIOS EN LOS DIAS DE DESCANSO OBLIGATORIO QUE SEÑALA LA LEY FEDERAL DEL TRABAJO, CUANDO ESTOS OCURRAN DENTRO DEL TERMINO DE SU CONTRATACIÓN.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>SEXTA.- CONVIENEN LAS PARTES EN QUE POR LO QUE HACE A RIESGOS PROFESIONALES O ENFERMEDADES NO PROFESIONALES, SE SUJETARAN A LAS DISPOSICIONES QUE SOBRE EL PARTICULAR, ESTABLECE LA LEY DEL INSTITUTO MEXICANO DEL SEGURO SOCIAL</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>SÉPTIMA.- CONVIENEN LAS PARTES EN QUE INDEPENDIENTEMENTE DE LAS OBLIGACIONES QUE IMPONE AL EMPLEADO LA LEY FEDERAL DEL TRABAJO, SE OBLIGA A LO SIGUIENTE:</p>";
+        $htmlsection->addHtml($section, $section2);
+
+
+        $section2 = "<p>OCTAVA.- CONVIENEN LAS PARTES EN QUE EL EMPLEADO (TRABAJADOR), SERA CAPACITADO PARA EL DESEMPEÑO DE SUS LABORES EN VIRTUD DE QUE YA CUENTAN DE LEY CON LOS TERMINOS DE LOS PLANES Y PROGRAMAS DE CAPACITACION ESTABLECIDOS POR SU CONDUCTO.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>NOVENA.- EL EMPLEADO RECIBIRA LAS VACACIONES, PRIMA VACACIONAL Y AGUINALDO QUE ESTABLECEN LOS ARTICULOS 76, 80 Y 87 DE LA LEY FEDERAL DEL TRABAJO.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>DECIMA.- LAS PARTES CONVIENEN EN QUE LOS DERECHOS Y OBLIGACIONES QUE MUTUAMENTE LES CORRESPONDEN Y QUE NO HAYA SIDO OBJETO DE MENCION ESPECIFICA, SE SUJETARAN A LAS DISPOSICIONES DE LA LEY FEDERAL DEL TRABAJO.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>DECIMA PRIMERA.- DERIVADO DEL ARTICULO 25 (FRACC. X) DE LA LEY FEDERAL DE TRABAJO, EL EMPLEADO DESIGNA EN ESTE ACTO A BENEFICIARIOS  PARA EFECTOS DE PAGO DE PRESTACIONES Y REMUNERACIONES QUE SE GENEREN POR CAUSA DE FALLECIMIENTO O DESAPARICIÓN A CAUSA DE UN DELITO.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+
+        $section2 = "<p>EL PRESENTE CONTRATO SE FIRMA POR DUPLICADO EN EL ESTADO DE MÉXICO, A LOS (FECHA TRES MESES DESPUÉS DE SU INGRESO FORMATO DD,MM,AAAA).</p>";
+        $htmlsection->addHtml($section, $section2);
+
+
+        header("Content-Description: File Transfer");
+        header('Content-Disposition: attachment; filename="' . 'CONVENIO DE CONFIDENCIALIDAD ' . strtoupper($company) . ' ' . strtoupper($name) .' '. strtoupper($lastname) . '.doc');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Expires: 0');
+        $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $xmlWriter->save("php://output");   
+    }
+
+    public function indeterminateContract($name, $lastname, $company_id, $date_admission)
+    {
+        $company = "";
+        $employer = "";
+         //Promolife
+        if($company_id == 1){
+            $company = "PROMO LIFE, S. DE R.L. DE C.V.";
+            $employer = "C. RAÚL TORRES MÁRQUEZ";
+        }
+
+        //BH tardemarket
+        if($company_id == 2){
+            $company = "BH TRADE MARKET, S.A. DE C.V.";
+            $employer = "C. DAVID LEVY HANO";
+        }
+
+        //Promo zale
+        if($company_id == 3){
+            $company = "PROMO ZALE S.A. DE C.V."; 
+            $employer = "C. DANIEL LEVY HANO";
+        }
+
+        //Trademarket 57
+        if($company_id== 4){
+            $company = "TRADE MARKET 57, S.A. DE C.V."; 
+            $employer = "C. MÓNICA REYES RESENDIZ";
+        } 
+
+        //Unipromtex
+        if($company_id== 5){
+            $company = "UNIPROMTEX S.A. DE C.V."; 
+            $employer = "DAVID LEVY HANO";
+        } 
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $phpWord->getSettings()->setMirrorMargins(true);
+        $phpWord->getSettings()->setThemeFontLang(new Language(Language::ES_ES));
+
+        //Global styles
+        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontSize(8);
+        
+        //Font Styles
+        $phpWord->setDefaultParagraphStyle(
+            array(
+                'align' => 'both',
+                'lineHeight' => 1.0
+            )
+        );
+        $titleStyle = array(
+            'align' => 'both',
+            'lineHeight' => 1.0,
+            'bold' => false
+        );
+        $titleBoldStyle = array(
+            'align' => 'both',
+            'lineHeight' => 2.0,
+            'bold' => true
+        ); 
+        $titleCenterBoldStyle = array(
+            'lineHeight' => 1.0,
+            'bold' => true
+        ); 
+
+        //Paragraph Styles
+        $centerTitle = array(
+            'size' => 20,
+            'align'=> 'center'
+        );
+
+        $center = array(
+            'align'=> 'center'
+        );
+
+        $justify_center = array(
+            'align' => 'both',
+        );
+
+        $list = array(
+            'lineHeight' => 0.5,
+        );
+
+        //Secctions
+        $section = $phpWord->addSection();
+        $htmlsection= new \PhpOffice\PhpWord\Shared\Html();
+
+        //Setting page margins
+        $phpWord->getSettings()->setMirrorMargins(false);
+        $sectionStyle = $section->getStyle();
+        $sectionStyle->setMarginLeft(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
+        $sectionStyle->setMarginRight(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
+        $sectionStyle->setMarginTop(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
+        $sectionStyle->setMarginBottom(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
+
+        $section->addText(
+            'BH TRADE MARKET, S.A. DE C.V.',
+            $titleCenterBoldStyle, $centerTitle
+        );
+
+        
+        $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR TIEMPO INDETERMINADO QUE CELEBRAN POR UNA PARTE BH TRADE MARKET, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+        $htmlsection->addHtml($section, $section2);
+
+
+        $cellRowSpan = array('width' => 5000);
+        $table = $section->addTable([]);
+        $table->addRow();
+        $table->addCell(2000, $cellRowSpan)->addText('EL (SR.) LA (SRA.) (SRITA.):',[], []);
+        $table->addCell(3000, $cellRowSpan)->addText($name . ' ' .$lastname,$titleCenterBoldStyle, $center);
+
+        $table->addRow();
+        $table->addCell(2000, $cellRowSpan)->addText('DE NACIONALIDAD:',[], []);
+        $table->addCell(3000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+       
+        $table->addRow();
+        $table->addCell(2000, $cellRowSpan)->addText('ESTADO CIVIL:',[], []);
+        $table->addCell(3000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+
+        $table->addRow();
+        $table->addCell(2000, $cellRowSpan)->addText('DOMICILIO:',[], []);
+        $table->addCell(3000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+
+        $table->addRow();
+        $table->addCell(2000, $cellRowSpan)->addText('AÑOS DE EDAD:',[], []);
+        $table->addCell(3000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+
+        $table->addRow();
+        $table->addCell(2000, $cellRowSpan)->addText('CURP:',[], []);
+        $table->addCell(3000, $cellRowSpan)->addText('',$titleCenterBoldStyle, $center);
+
+        $section->addText(
+            'A QUIEN EN LO SUCESIVO SE LE DENOMINARA EL (LA) EMPLEADO (A).',
+            $titleStyle,
+        );
+
+        $section->addText(
+            'EL PRESENTE CONTRATO SE CELEBRARA DE ACUERDO CON LAS DECLARACIONES Y CLAUSULAS SIGUIENTES:',
+            $titleStyle,
+        );
+
+        $section->addText(
+            'D E C L A R A C I O N E S',
+            $titleCenterBoldStyle, $center
+        );
+
+        $section->addText(
+            'I.- LA EMPRESA DECLARA SER UNA SOCIEDAD MERCANTIL CONSTITUIDA ANTE LAS LEYES MEXICANAS, CON DOMICILIO FISCAL EN LA CALLE DE SAN ANDRES ATOTO No. 155 PISO 1 LOCAL A COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, QUE SU OBJETIVO SOCIAL OTROS SERVICIOS DE PUBLICIDAD.',
+            $titleStyle,
+        );
+
+        $section2 = "<p>II.- EL EMPLEADO POR SU PARTE DECLARA QUE QUEDA DEBIDAMENTE ENTERADO DE LA CAUSA QUE ORIGINA SU CONTRATACIÓN Y ESTA CONFORME EN PRESTAR SUS SERVICIOS PERSONALES A “LA EMPRESA” EN LOS TERMINOS QUE MAS ADELANTE PACTAN, MANIFESTANDO TENER LOS CONOCIMIENTOS SUFICIENTES PARA REALIZAR TAL SERVICIO DE (PUESTO DE TRABAJO) QUE CONSISTE EN (OBJETIVO DEL PUESTO).</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section->addText(
+            'EN VIRTUD DE LO ANTERIOR, LAS PARTES OTORGAN LAS SIGUIENTES:',
+            $titleStyle,
+        );
+
+        $section->addText(
+            'C L A U S U L A S',
+            $titleCenterBoldStyle, $center
+        );
+
+        $section2 = "<p>PRIMERA.- “LA EMPRESA” CONTRATARA AL EMPLEADO PARA QUE LE PRESTE SUS SERVICIOS PERSONALES BAJO SU DIRECCIÓN Y DEPENDENCIA, CON EL CARÁCTER DE EMPLEADO PUESTO DE TRABAJO Y TENDRA UN PERIODO DE TIEMPO INDEFINIDO.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>SEGUNDA.- EL LUGAR DE LA PRESTACIÓN DE SERVICIOS SERA TANTO EN EL DOMICILIO DE “LA EMPRESA”, ASI COMO EN EL DE TODAS AQUELLAS PERSONAS FÍSICAS O MORALES QUE CONTRATEN SERVICIOS CON “LA EMPRESA” SEA CUAL FUERE SU UBICACIÓN DENTRO DE LA REPUBLICA MEXICANA.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>TERCERA.- CONVIENEN LAS PARTES EXPRESAMENTE EN QUE EL PRESENTE CONTRATO INDIVIDUAL DE TRABAJO QUE CELEBRAN POR TIEMPO INDETERMINADO CONSISTE EN EL DESARROLLO DE LAS LABORES DEL EMPLEADO DE ESTA EMPRESA EN EL DOMICILIO QUE CORRESPONDEN CONFORME LA CLAUSULA SEGUNDA DE ESTE CONTRATO.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>CUARTA.- CONVIENEN LAS PARTES EN QUE EL EMPLEADO RECIBIRA COMO RETRIBUCIÓN DE SUS SERVICIOS  LA CANTIDAD DE  (NÚMERO Y DECIMALES) (CANTIDAD CON LETRA 00/100 M.N.)  DIARIOS, ADICIONALMENTE EL TRABAJADOR RECIBIRA ADEMAS DE LAS PRESTACIONES DE LEY, LAS SIGUIENTES PRESTACIONES SIEMPRE Y CUANDO CUMPLA CON LOS REQUISITOS ESTABLECIDOS PARA OBTENERLAS ESTAS SON: UN 10% DE PREMIO DE PUNTUALIDAD; 10% PREMIO DE ASISTENCIA Y DESPENSA EN EFECTIVO LOS CUALES   LE SERAN PAGADOS EN MONEDA NACIONAL VIA TRANSFERENCIA ELECTRONICA A LA TARJETA DE NOMINA BANCOMER, LA CUAL LE SERA ASIGNADA EN EL MOMENTO DE SU CONTRATACION, LOS DIAS 15 Y ULTIMO DE CADA MES.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>QUINTA.- CONVIENEN LAS PARTES EN QUE POR CADA SEIS DIAS DE TRABAJO EL EMPLEADO DISFRUTARA DE UN DIA DE DESCANSO CON GOCE DE SALARIO INTEGRO CUBRIENDO 48 HORAS DE TRABAJO SEMANALES, YA SEA EN EL DOMICILIO DE LA EMPRESA O DONDE SE LE ASIGNE,  IGUALMENTE TENDRA DERECHO A DISFRUTAR DE SALARIOS EN LOS DIAS DE DESCANSO OBLIGATORIO QUE SEÑALA LA LEY FEDERAL DEL TRABAJO, CUANDO ESTOS OCURRAN DENTRO DEL TERMINO DE SU CONTRATACIÓN.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>SEXTA.- CONVIENEN LAS PARTES EN QUE POR LO QUE HACE A RIESGOS PROFESIONALES O ENFERMEDADES NO PROFESIONALES, SE SUJETARAN A LAS DISPOSICIONES QUE SOBRE EL PARTICULAR, ESTABLECE LA LEY DEL INSTITUTO MEXICANO DEL SEGURO SOCIAL</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>SÉPTIMA.- CONVIENEN LAS PARTES EN QUE INDEPENDIENTEMENTE DE LAS OBLIGACIONES QUE IMPONE AL EMPLEADO LA LEY FEDERAL DEL TRABAJO, SE OBLIGA A LO SIGUIENTE:</p>";
+        $htmlsection->addHtml($section, $section2);
+
+
+        $section2 = "<p>OCTAVA.- CONVIENEN LAS PARTES EN QUE EL EMPLEADO (TRABAJADOR), SERA CAPACITADO PARA EL DESEMPEÑO DE SUS LABORES EN VIRTUD DE QUE YA CUENTAN DE LEY CON LOS TERMINOS DE LOS PLANES Y PROGRAMAS DE CAPACITACION ESTABLECIDOS POR SU CONDUCTO.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>NOVENA.- EL EMPLEADO RECIBIRA LAS VACACIONES, PRIMA VACACIONAL Y AGUINALDO QUE ESTABLECEN LOS ARTICULOS 76, 80 Y 87 DE LA LEY FEDERAL DEL TRABAJO.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>DECIMA.- LAS PARTES CONVIENEN EN QUE LOS DERECHOS Y OBLIGACIONES QUE MUTUAMENTE LES CORRESPONDEN Y QUE NO HAYA SIDO OBJETO DE MENCION ESPECIFICA, SE SUJETARAN A LAS DISPOSICIONES DE LA LEY FEDERAL DEL TRABAJO.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+        $section2 = "<p>DECIMA PRIMERA.- DERIVADO DEL ARTICULO 25 (FRACC. X) DE LA LEY FEDERAL DE TRABAJO, EL EMPLEADO DESIGNA EN ESTE ACTO A BENEFICIARIOS  PARA EFECTOS DE PAGO DE PRESTACIONES Y REMUNERACIONES QUE SE GENEREN POR CAUSA DE FALLECIMIENTO O DESAPARICIÓN A CAUSA DE UN DELITO.</p>";
+        $htmlsection->addHtml($section, $section2);
+
+
+        $section2 = "<p>EL PRESENTE CONTRATO SE FIRMA POR DUPLICADO EN EL ESTADO DE MÉXICO, A LOS (FECHA TRES MESES DESPUÉS DE SU INGRESO FORMATO DD,MM,AAAA).</p>";
+        $htmlsection->addHtml($section, $section2);
+
+
+        header("Content-Description: File Transfer");
+        header('Content-Disposition: attachment; filename="' . 'CONVENIO DE CONFIDENCIALIDAD ' . strtoupper($company) . ' ' . strtoupper($name) .' '. strtoupper($lastname) . '.doc');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Expires: 0');
+        $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $xmlWriter->save("php://output");   
     }
 
     public function employeeDown($name,$lastname, $company)
@@ -1060,8 +1437,147 @@ class RhController extends Controller
         header('Expires: 0');
         $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         $xmlWriter->save("php://output");
+    }
+
+    public function workConditionUpdate($name, $lastname,$position )
+    {
+       
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $phpWord->getSettings()->setMirrorMargins(true);
+        $phpWord->getSettings()->setThemeFontLang(new Language(Language::ES_ES));
+
+        //Global styles
+        $phpWord->setDefaultFontName('Arial');
+        $phpWord->setDefaultFontSize(10);
+        
+        //Font Styles
+        $phpWord->setDefaultParagraphStyle(
+            array(
+                'align' => 'both',
+                'lineHeight' => 1.15
+            )
+        );
+        $titleStyle = array(
+            'align' => 'both',
+            'lineHeight' => 1.0,
+            'bold' => false
+        );
+        $titleBoldStyle = array(
+            'align' => 'both',
+            'lineHeight' => 2.0,
+            'bold' => true
+        ); 
+        $titleCenterBoldStyle = array(
+            'lineHeight' => 1.0,
+            'bold' => true
+        ); 
+
+        //Paragraph Styles
+        $center = array(
+            'align'=> 'center'
+        );
+
+        $justify_center = array(
+            'align' => 'both',
+        );
+
+        $list = array(
+            'lineHeight' => 0.5,
+        );
+
+        //Secctions
+        $section = $phpWord->addSection();
+        $htmlsection= new \PhpOffice\PhpWord\Shared\Html();
+
+        $section->addText(
+            'CONSTANCIA DE ACTUALIZACIÓN DE CONDICIONES DE TRABAJO',
+            $titleCenterBoldStyle, $center
+        );
+
+        $section11 = "<p>Por medio de la presente se hace constar que <b>$name $lastname</b> de nacionalidad <b>NACIONALIDAD</b> con fecha de nacimiento <b>DÍA, MES, AÑO</b>, <b>GÉNERO (MASCULINO/FEMENINO)</b>, estado civil ______, con RFC ___________ con domicilio en _____________________ y con correo electrónico: _________________ desempeño mis funciones y actividades, bajo las siguientes condiciones: </p>";
+        $htmlsection->addHtml($section, $section11);
+
+        $section11 = "<p>FECHA DE INGRESO: <b>FORMATO DÍA, MES, AÑO (DD, MM, AAAA)</b></p>";
+        $htmlsection->addHtml($section, $section11);
+
+        $section11 = "<p>PUESTO: <b>PUESTO</b></p>";
+        $htmlsection->addHtml($section, $section11);
+
+        $section11 = "<p>CONTRATACIÓN: <b>3 MESES</b></p>";
+        $htmlsection->addHtml($section, $section11);
+
+        $section11 = "<p>SALARIO: <b>SUELDO MENSUAL (NETO/BRUTO)</b>  DIA DE PAGO:<b>15 Y ÚLTIMO DE CADA MES</b></p>";
+        $htmlsection->addHtml($section, $section11);
+
+        $section11 = "<p>HORARIO: DE L A V DE 9:00 A.M. A 06:00 P.M. Y S DE 9:00 A.M. A 2:00 P.M.</p>";
+        $htmlsection->addHtml($section, $section11);
+
+        $section11 = "<p>DIAS DE DESCANSO: DOMINGOS.</p>";
+        $htmlsection->addHtml($section, $section11);
+        
+        $section->addText(
+            'LUGAR Y FORMA DE PAGO: Estado de México- Transferencia',
+            $titleStyle
+        );
+
+        $section->addText(
+            'PRESTACIONES LEGALES: En términos de la Ley Federal del Trabajo.',
+            $titleStyle
+        );
+
+        $section->addText(
+            'Así mismo hago mención que recibo constantemente capacitación y adiestramiento, en los términos y bajo los lineamientos que establece la Ley Federal del Trabajo, así como los Planes y Programas que para tal efecto resultan aplicables en el domicilio del Patrón.',
+            $titleStyle
+        );
+
+        $section11 = "<p>Por último, manifiesto mi conformidad en que a partir del día: <b>FECHA DE INGRESO (FORMATO DD,MM,AAAA)</b>, <b>mis recibos de pago de salario se me harán llegar vía correo electrónico a la cuenta que yo proporcione</b>, en el entendido que tendré 5 días para solicitar cualquier corrección, con posterioridad a dicho plazo, se entenderá como una aceptación tácita, con fundamentó en el artículo 99, de la Ley del Impuesto sobre la Renta.</p>";
+        $htmlsection->addHtml($section, $section11);
+       
+        $section->addText(
+            '',
+            $titleCenterBoldStyle, $center
+        );
+        
+        $section->addText(
+            'ATENTAMENTE',
+            $titleCenterBoldStyle, $center
+        );
+
+        $section->addText(
+            '',
+            $titleCenterBoldStyle, $center
+        );
+        $section->addText(
+            '______________________________',
+            $titleCenterBoldStyle, $center
+        );
+        $section->addText(
+            $name. ' '.$lastname,
+            $titleCenterBoldStyle, $center
+        );
+        $section->addText(
+            $position,
+            $titleCenterBoldStyle, $center
+        );
+
+        //Setting page margins
+        $phpWord->getSettings()->setMirrorMargins(false);
+        $sectionStyle = $section->getStyle();
+        $sectionStyle->setMarginLeft(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
+        $sectionStyle->setMarginRight(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
+        $sectionStyle->setMarginTop(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
+        $sectionStyle->setMarginBottom(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
 
 
+        header("Content-Description: File Transfer");
+        header('Content-Disposition: attachment; filename="' . 'CONVENIO DE CONFIDENCIALIDAD ' . '.doc');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Expires: 0');
+        $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $xmlWriter->save("php://output");
+       
     }
    
 }

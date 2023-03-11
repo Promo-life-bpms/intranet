@@ -35,7 +35,7 @@
                     </div>
                 </div>
             </div>
-            <input class="check" type="checkbox" name="confidentiality_agreement" value="true"> <label for="cbox2">Contrato indeterminado</label> 
+            <input class="check" type="checkbox" name="indetermined_contract" value="true"> <label for="cbox2">Contrato indeterminado</label> 
             
             <br><br>
             <h6>Convenios</h6>
@@ -45,7 +45,7 @@
             <br>
             <br>
             <h6>Constrancias</h6>
-            <input class="check" type="checkbox" name="update_certificate" value="true"> <label for="cbox2">Constancia de actualización de condiciones de trabajo</label>
+            <input class="check" type="checkbox" name="work_condition_update" value="true"> <label for="cbox2">Constancia de actualización de condiciones de trabajo</label>
             <br> <br>
             <h6>Cartas</h6>
             <input class="check" type="checkbox" name="letter_for_bank" value="true"> <label for="cbox2">Carta para banco</label>
