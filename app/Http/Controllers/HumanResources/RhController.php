@@ -956,6 +956,45 @@ class RhController extends Controller
         $htmlsection->addHtml($section, $section2);
 
 
+        $cellRowSpan2 = array(
+            'width' => 20000,
+            'borderColor' =>'000000',
+            'borderSize' => 5,
+        );
+        
+        $table = $section->addTable();
+        $table->addRow();
+        $table->addCell(7000, $cellRowSpan2)->addText('NOMBRE DE BENEFICIARIO',$bodyCenterBoldStyle, $center);
+        $table->addCell(3000, $cellRowSpan2 )->addText('PARENTESCO' ,$bodyCenterBoldStyle, $center);
+        $table->addCell(3000, $cellRowSpan2 )->addText('PORCENTAJE' ,$bodyCenterBoldStyle, $center);
+        $table->addCell(7000, $cellRowSpan2 )->addText('DIRECCION Y TELÉFONO' ,$bodyCenterBoldStyle, $center);
+
+        $table->addRow();
+        $table->addCell(7000, $cellRowSpan2)->addText('<w:br/>',$bodyCenterBoldStyle, $center);
+        $table->addCell(3000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
+        $table->addCell(3000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
+        $table->addCell(7000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
+
+        $table->addRow();
+        $table->addCell(7000, $cellRowSpan2)->addText('<w:br/>',$bodyCenterBoldStyle, $center);
+        $table->addCell(3000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
+        $table->addCell(3000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
+        $table->addCell(7000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
+
+        $table->addRow();
+        $table->addCell(7000, $cellRowSpan2)->addText('<w:br/>',$bodyCenterBoldStyle, $center);
+        $table->addCell(3000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
+        $table->addCell(3000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
+        $table->addCell(7000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
+
+          $table->addRow();
+        $table->addCell(7000, $cellRowSpan2)->addText('<w:br/>',$bodyCenterBoldStyle, $center);
+        $table->addCell(3000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
+        $table->addCell(3000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
+        $table->addCell(7000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
+
+
+
         $section2 = "<p>EL PRESENTE CONTRATO SE FIRMA POR DUPLICADO EN EL ESTADO DE MÉXICO, A LOS (FECHA TRES MESES DESPUÉS DE SU INGRESO FORMATO DD,MM,AAAA).</p>";
         $htmlsection->addHtml($section, $section2);
 
