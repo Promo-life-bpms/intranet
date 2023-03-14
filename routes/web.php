@@ -232,6 +232,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/rh/create-postulant-documentation/{postulant}', [RhController::class, 'createPostulantDocumentation'])->name('rh.createPostulantDocumentation');
     Route::post('/rh/build-postulant-documentation/', [RhController::class, 'buildPostulantDocumentation'])->name('rh.buildPostulantDocumentation');
 
+    
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');

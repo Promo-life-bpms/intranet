@@ -389,7 +389,7 @@ class RhController extends Controller
         }
 
         if($request->has('determined_contract')){
-            $this->determinateContract($postulant, $postulant_details,intval($request->company) , $request->determined_contract_duration ); 
+            $this->determinateContract($postulant, $postulant_details,$request->company, $request->determined_contract_duration ); 
 
         }
 
@@ -716,46 +716,21 @@ class RhController extends Controller
         $civil_status = strtoupper($postulant_details->civil_status) ;
         $domicile = strtoupper($postulant_details->address) ;
         $age = $postulant_details->age;
-        $curp = $postulant_details->curp;
-        $position = $postulant_details->position;
-        $duration_months = "";
+        $curp = strtoupper($postulant_details->curp);
+        $position = strtoupper($postulant_details->position);
+        $duration_months = $duration;
+        $month_string = "MESES";
+        $date_admission = date('d,m,Y', strtotime($postulant_details->date_admission));
 
         if($duration == null || $duration = ""){
-            $duration_months = "3 MESES";
-        }else{
-            $duration_months = $duration . ' '. 'MESES';
+            $duration_months = "3";
+        }
+
+        if($duration_months == "1" ){
+            $month_string = "MES";
         }
        
-         //Promolife
-        if($company_id == 1){
-            $company = "PROMO LIFE, S. DE R.L. DE C.V.";
-            $employer = "C. RAÚL TORRES MÁRQUEZ";
-        }
-
-        //BH tardemarket
-        if($company_id == 2){
-            $company = "BH TRADE MARKET, S.A. DE C.V.";
-            $employer = "C. DAVID LEVY HANO";
-        }
-
-        //Promo zale
-        if($company_id == 3){
-            $company = "PROMO ZALE S.A. DE C.V."; 
-            $employer = "C. DANIEL LEVY HANO";
-        }
-
-        //Trademarket 57
-        if($company_id== 4){
-            $company = "TRADE MARKET 57, S.A. DE C.V."; 
-            $employer = "C. MÓNICA REYES RESENDIZ";
-        } 
-
-        //Unipromtex
-        if($company_id== 5){
-            $company = "UNIPROMTEX S.A. DE C.V."; 
-            $employer = "DAVID LEVY HANO";
-        } 
-
+        
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $phpWord->getSettings()->setMirrorMargins(true);
         $phpWord->getSettings()->setThemeFontLang(new Language(Language::ES_ES));
@@ -781,6 +756,12 @@ class RhController extends Controller
             'lineHeight' => 1.0,
             'bold' => true,
             'size' => 20,
+        );
+        
+        $titleCenterBoldStyle2 = array(
+            'lineHeight' => 1.0,
+            'bold' => true,
+            'size' => 26,
         ); 
 
         $bodyCenterBoldStyle = array(
@@ -834,13 +815,69 @@ class RhController extends Controller
         $sectionStyle->setMarginTop(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
         $sectionStyle->setMarginBottom(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
 
-        $section->addText(
-            'BH TRADE MARKET, S.A. DE C.V.',
-            $titleCenterBoldStyle, $centerTitle
-        );
+       
 
+        //Promolife
+        if($company_id == 1){
+            $company = "PROMO LIFE, S. DE R.L. DE C.V.";
+            $employer = "C. RAÚL TORRES MÁRQUEZ";
+            $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE PROMO LIFE, S. DE R.L. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. RAUL TORRES MARQUEZ, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+            
+            $section->addText(
+                $company,
+                $titleCenterBoldStyle, $centerTitle
+            );
         
-        $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE BH TRADE MARKET, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+        }
+
+        //BH tardemarket
+        if($company_id == 2){
+            $company = "BH TRADE MARKET, S.A. DE C.V.";
+            $employer = "C. DAVID LEVY HANO";
+            $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE BH TRADE MARKET, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+            
+            $section->addText(
+                $company,
+                $titleCenterBoldStyle, $centerTitle
+            );
+        }
+
+        //Promo zale
+        if($company_id == 3){
+            $company = "PROMO ZALE S.A. DE C.V."; 
+            $employer = "C. DANIEL LEVY HANO";
+            $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE PROMO ZALE, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DANIEL LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL E COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+            
+            $section->addText(
+                $company,
+                $titleCenterBoldStyle, $centerTitle
+            );
+        }
+
+        //Trademarket 57
+        if($company_id== 4){
+            $company = "TRADE MARKET 57, S.A. DE C.V."; 
+            $employer = "C. MÓNICA REYES RESENDIZ";
+            $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE TRADE MARKET 57, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. MÓNICA REYES RESENDIZ, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PLANTA BAJA, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+            
+            $section->addText(
+                $company,
+                $titleCenterBoldStyle, $centerTitle
+            );
+        } 
+
+        //Unipromtex
+        if($company_id== 5){
+            $company = "UNIPROMTEX S.A. DE C.V."; 
+            $employer = "DAVID LEVY HANO";
+            $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE UNIPROMTEX, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN C. CIELITO LINDO 18 B, PARQUE INDUSTRIAL IZCALLI, NEZAHUALCOYOTL ESTADO DE MÉXICO. C.P. 57810 A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+            
+            $section->addText(
+                $company,
+                $titleCenterBoldStyle2, $centerTitle
+            );
+        } 
+
         $htmlsection->addHtml($section, $section2);
 
 
@@ -888,7 +925,7 @@ class RhController extends Controller
         );
 
         $section->addText(
-            'EL PRESENTE CONTRATO SE CELEBRARA DE ACUERDO CON LAS DECLARACIONES Y CLAUSULAS SIGUIENTES:',
+            'EL PRESENTE CONTRATO SE CELEBRARÁ DE ACUERDO CON LAS DECLARACIONES Y CLAUSULAS SIGUIENTES:',
             $titleStyle,
         );
 
@@ -917,7 +954,7 @@ class RhController extends Controller
             $bodyCenterBoldStyle, $center
         );
 
-        $section2 = "<p>PRIMERA.- “LA EMPRESA” CONTRATARA AL EMPLEADO PARA QUE LE PRESTE SUS SERVICIOS PERSONALES BAJO SU DIRECCIÓN Y DEPENDENCIA, CON EL CARÁCTER DE EMPLEADO <b>$position</b> Y TENDRA UN PERIODO <b>$duration_months</b>.</p>";
+        $section2 = "<p>PRIMERA.- “LA EMPRESA” CONTRATARA AL EMPLEADO PARA QUE LE PRESTE SUS SERVICIOS PERSONALES BAJO SU DIRECCIÓN Y DEPENDENCIA, CON EL CARÁCTER DE EMPLEADO <b>$position</b> Y TENDRA UN PERIODO <b>DE $duration_months $month_string</b>.</p>";
         $htmlsection->addHtml($section, $section2);
 
         $section2 = "<p>SEGUNDA.- EL LUGAR DE LA PRESTACIÓN DE SERVICIOS SERA TANTO EN EL DOMICILIO DE “LA EMPRESA”, ASI COMO EN EL DE TODAS AQUELLAS PERSONAS FÍSICAS O MORALES QUE CONTRATEN SERVICIOS CON “LA EMPRESA” SEA CUAL FUERE SU UBICACIÓN DENTRO DE LA REPUBLICA MEXICANA.</p>";
@@ -987,20 +1024,34 @@ class RhController extends Controller
         $table->addCell(3000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
         $table->addCell(7000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
 
-          $table->addRow();
+        $table->addRow();
         $table->addCell(7000, $cellRowSpan2)->addText('<w:br/>',$bodyCenterBoldStyle, $center);
         $table->addCell(3000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
         $table->addCell(3000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
         $table->addCell(7000, $cellRowSpan2 )->addText('<w:br/>' ,$bodyCenterBoldStyle, $center);
 
+        $section->addText('');
 
-
-        $section2 = "<p>EL PRESENTE CONTRATO SE FIRMA POR DUPLICADO EN EL ESTADO DE MÉXICO, A LOS (FECHA TRES MESES DESPUÉS DE SU INGRESO FORMATO DD,MM,AAAA).</p>";
+        $section2 = "<p>EL PRESENTE CONTRATO SE FIRMA POR DUPLICADO EN EL ESTADO DE MÉXICO, A LOS <b>$date_admission</b></p>";
         $htmlsection->addHtml($section, $section2);
+        
+        $section->addText('');
+
+        $table = $section->addTable();
+        $table->addRow();
+        $table->addCell(5000, $cellRowSpan)->addText('POR LA EMPREASA<w:br/>'.$company,$bodyCenterBoldStyle,$center);
+        $table->addCell(5000, $cellRowSpan )->addText('EL(LA) EMPLEADO (A)<w:br/>',$bodyCenterBoldStyle, $center); 
+
+        $section->addText('');
 
 
+        $table = $section->addTable();
+        $table->addRow();
+        $table->addCell(5000, $cellRowSpan)->addText('____________________________________<w:br/>'.$employer.$company,$bodyCenterBoldStyle,$center);
+        $table->addCell(5000, $cellRowSpan )->addText('____________________________________<w:br/>'.'C. '.$name. ' '. $lastname,$bodyCenterBoldStyle, $center);
+       
         header("Content-Description: File Transfer");
-        header('Content-Disposition: attachment; filename="' . 'CONVENIO DE CONFIDENCIALIDAD ' . strtoupper($company) . ' ' . strtoupper($name) .' '. strtoupper($lastname) . '.doc');
+        header('Content-Disposition: attachment; filename="' . 'CONTRATO DETERMINADO ' . strtoupper($name) .' '. strtoupper($lastname) . '.doc');
         header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
