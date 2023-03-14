@@ -1,14 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="card-header">
+<div class="card-header">
+    <div class="d-flex justify-content-between">
         <h3>Editar usuario</h3>
+        <div>
+            <a style="" href="{{ route('rh.moreInformation') }}"
+                type="button" class="btn btn-info">Información adicional</a>            
+        </div>
     </div>
+</div>
     <div class="card-body">
         @if (session('message'))
             <div class="alert alert-danger">
                 {{ session('message') }}
             </div>
+
         @endif
         {!! Form::model($user, [
             'route' => ['admin.users.update', $user],
