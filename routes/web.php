@@ -234,7 +234,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/rh/build-postulant-documentation/', [RhController::class, 'buildPostulantDocumentation'])->name('rh.buildPostulantDocumentation');
 
     Route::get('/rh/more-information/{id}', [UserDetails::class, 'moreInformation'])->name('rh.moreInformation');
-    Route::post('/rh/create-more-information/', [RhController::class, 'createMoreInformation'])->name('rh.createMoreInformation');
+    
+    Route::post('/rh/create-more-information/', [UserDetails::class, 'createMoreInformation'])->name('rh.createMoreInformation');
     
 
 });
