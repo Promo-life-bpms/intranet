@@ -22,6 +22,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Style\Language;
 
+
 class RhController extends Controller
 {
     public function stadistics()
@@ -368,7 +369,7 @@ class RhController extends Controller
                 $create_postulant_beneficiary->save();
             }
         }
-        return redirect()->back()->with('message', 'Información guardada correctamente');;
+        return redirect()->back()->with('message', 'Información guardada correctamente');
     }
 
     public function createPostulantDocumentation($postulant_id)
@@ -405,9 +406,9 @@ class RhController extends Controller
             $this->workConditionUpdate(strtoupper($postulant->name), strtoupper($postulant->lastname),strtoupper($postulant_details->position)); 
         }
 
-        /* if($request->has('no_compete_agreement')){
-            $this->noCompeteAgreement(strtoupper($postulant->name), strtoupper($postulant->lastname),strtoupper($postulant_details->position)); 
-        } */
+        if($request->has('no_compete_agreement')){
+            $this->noCompeteAgreement($postulant, $postulant_details,$request->company, $request->determined_contract_duration ); 
+        } 
 
 
 
@@ -1882,47 +1883,30 @@ class RhController extends Controller
        
     }
 
-    public function noCompeteAgreement($name, $lastname, $company_id, $date_admission)
+    public function noCompeteAgreement($postulant, $postulant_details, $company_id, $duration)
     {
         $company = "";
         $employer = "";
-         //Promolife
-        if($company_id == 1){
-            $company = "PROMO LIFE, S. DE R.L. DE C.V.";
-            $employer = "C. RAÚL TORRES MÁRQUEZ";
-        }
-
-        //BH tardemarket
-        if($company_id == 2){
-            $company = "BH TRADE MARKET, S.A. DE C.V.";
-            $employer = "C. DAVID LEVY HANO";
-        }
-
-        //Promo zale
-        if($company_id == 3){
-            $company = "PROMO ZALE S.A. DE C.V."; 
-            $employer = "C. DANIEL LEVY HANO";
-        }
-
-        //Trademarket 57
-        if($company_id== 4){
-            $company = "TRADE MARKET 57, S.A. DE C.V."; 
-            $employer = "C. MÓNICA REYES RESENDIZ";
-        } 
-
-        //Unipromtex
-        if($company_id== 5){
-            $company = "UNIPROMTEX S.A. DE C.V."; 
-            $employer = "DAVID LEVY HANO";
-        } 
-
+        $name = strtoupper($postulant->name);
+        $lastname = strtoupper($postulant->lastname); 
+        $nacionality = " ";  
+        $civil_status = strtoupper($postulant_details->civil_status) ;
+        $domicile = strtoupper($postulant_details->address) ;
+        $age = $postulant_details->age;
+        $curp = strtoupper($postulant_details->curp);
+        $position = strtoupper($postulant_details->position);
+        $duration_months = $duration;
+        $month_string = "MESES";
+        $date_admission = date('d,m,Y', strtotime($postulant_details->date_admission));
+ 
+       
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $phpWord->getSettings()->setMirrorMargins(true);
         $phpWord->getSettings()->setThemeFontLang(new Language(Language::ES_ES));
 
         //Global styles
-        $phpWord->setDefaultFontName('Georgia');
-        $phpWord->setDefaultFontSize(12);
+        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontSize(9);
         
         //Font Styles
         $phpWord->setDefaultParagraphStyle(
@@ -1936,17 +1920,57 @@ class RhController extends Controller
             'lineHeight' => 1.0,
             'bold' => false
         );
-        $titleBoldStyle = array(
-            'align' => 'both',
-            'lineHeight' => 2.0,
-            'bold' => true
-        ); 
+
+        $textLineBoldCenter = array(
+            'underline' => 'single',
+            'bold' => true,
+            'align'=> 'center'
+        );
+      
         $titleCenterBoldStyle = array(
+            'lineHeight' => 1.0,
+            'bold' => true,
+            'size' => 20,
+        );
+        
+        $titleCenterBoldStyle2 = array(
+            'lineHeight' => 1.0,
+            'bold' => true,
+            'size' => 26,
+        ); 
+
+        $bodyCenterBoldStyle = array(
+            'lineHeight' => 1.0,
+            'bold' => true,
+        ); 
+
+        $bodyBoldStyle = array(
+            'align' => 'both',
             'lineHeight' => 1.0,
             'bold' => true
         ); 
 
+        $bodyNormalStyle = array(
+            'align' => 'both',
+            'lineHeight' => 1.0,
+            'bold' => false
+        ); 
+
+
+        $bodyBoldUnderlineStyle = array(
+            'bold' => true,
+        ); 
         //Paragraph Styles
+        $centerTitle = array(
+            'size' => 20,
+            'align'=> 'center'
+        );
+
+        $centerBody = array(
+            'size' => 8,
+            'align'=> 'center'
+        );
+
         $center = array(
             'align'=> 'center'
         );
@@ -1962,20 +1986,95 @@ class RhController extends Controller
         //Secctions
         $section = $phpWord->addSection();
         $htmlsection= new \PhpOffice\PhpWord\Shared\Html();
+        
 
-        $section->addText(
-            'CONVENIO DE NO COMPETENCIA Y CONFIDENCIALIDAD (EL “CONVENIO”) QUE CELEBRAN POR UNA PARTE BH TRADE MARKET S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL SEÑOR DAVID LEVY HANO, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO “BH TRADE MARKET”, Y POR OTRA PARTE EL C.  NOMBRE COMPLETO  POR SU PROPIO DERECHO, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO “EMPLEADO” Y CONJUNTAMENTE CON BH TRADE MARKET COMO LAS “PARTES”, AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS. ',
-            $titleBoldStyle, 
-        );
+        //Setting page margins
+        $phpWord->getSettings()->setMirrorMargins(false);
+        $sectionStyle = $section->getStyle();
+        $sectionStyle->setMarginLeft(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
+        $sectionStyle->setMarginRight(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
+        $sectionStyle->setMarginTop(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
+        $sectionStyle->setMarginBottom(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
+
+        //Promolife
+        if($company_id == 1){
+            $company = "PROMO LIFE, S. DE R.L. DE C.V.";
+            $employer = "C. RAÚL TORRES MÁRQUEZ";
+            $section2 = "<p><b>CONVENIO DE NO COMPETENCIA Y CONFIDENCIALIDAD (EL “<u>CONVENIO</u>”) QUE CELEBRAN POR UNA PARTE PROMO LIFE S. DE R.L. DE C.V., REPRESENTADA EN ESTE ACTO POR EL SEÑOR RAÚL TORRES MARQUEZ, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO “PROMO LIFE”, Y POR OTRA PARTE EL/LA C. $name $lastname POR SU PROPIO DERECHO, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO EL “EMPLEADO” Y CONJUNTAMENTE CON PROMO LIFE COMO LAS “PARTES”, AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS.</b></p>";
+        }
+        
+        //BH tardemarket
+        if($company_id == 2){
+            $company = "BH TRADE MARKET, S.A. DE C.V.";
+            $employer = "C. DAVID LEVY HANO";
+            $section2 = "<p><b>CONVENIO DE NO COMPETENCIA Y CONFIDENCIALIDAD (EL “<u>CONVENIO</u>”) QUE CELEBRAN POR UNA PARTE BH TRADE MARKET S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL SEÑOR DAVID LEVY HANO, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO “BH TRADE MARKET”, Y POR OTRA PARTE EL C. $name $lastname POR SU PROPIO DERECHO, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO “EMPLEADO” Y CONJUNTAMENTE CON BH TRADE MARKET COMO LAS “PARTES”, AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS.</b></p>";
+        }
+        
+        //Promo zale
+        if($company_id == 3){
+            $company = "PROMO ZALE S.A. DE C.V."; 
+            $employer = "C. DANIEL LEVY HANO";  
+            $section2 = "<p><b>CONVENIO DE NO COMPETENCIA Y CONFIDENCIALIDAD (EL “<u>CONVENIO</u>”) QUE CELEBRAN POR UNA PARTE BH TRADE MARKET S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL SEÑOR DAVID LEVY HANO, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO “BH TRADE MARKET”, Y POR OTRA PARTE EL C. $name $lastname POR SU PROPIO DERECHO, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO “EMPLEADO” Y CONJUNTAMENTE CON BH TRADE MARKET COMO LAS “PARTES”, AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS.<b></p>";
+        }
+        
+        //Trademarket 57
+        if($company_id== 4){
+            $company = "TRADE MARKET 57, S.A. DE C.V."; 
+            $employer = "C. MÓNICA REYES RESENDIZ";
+            $section2 = "<p><b>CONVENIO DE NO COMPETENCIA Y CONFIDENCIALIDAD (EL “<u>CONVENIO</u>”) QUE CELEBRAN POR UNA PARTE  TRADE MARKET 57 S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR LA SEÑORITA MONICA REYES RESENDIZ, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO “TRADE MARKET 57”, Y POR OTRA PARTE EL/LA C. $name $lastname POR SU PROPIO DERECHO,  A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO “EMPLEADO” Y CONJUNTAMENTE CON TRADE MARKET 57 COMO LAS “PARTES”, AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS.</b></p>";
+        } 
+        
+        //Unipromtex
+        if($company_id== 5){
+            $company = "UNIPROMTEX S.A. DE C.V."; 
+            $employer = "DAVID LEVY HANO";
+            $section2 = "<p><b>CONVENIO DE NO COMPETENCIA Y CONFIDENCIALIDAD (EL “<u>CONVENIO</u>”) QUE CELEBRAN POR UNA PARTE BH TRADE MARKET S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL SEÑOR DAVID LEVY HANO, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO “BH TRADE MARKET”, Y POR OTRA PARTE EL C. $name $lastname POR SU PROPIO DERECHO, A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ COMO “EMPLEADO” Y CONJUNTAMENTE CON BH TRADE MARKET COMO LAS “PARTES”, AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS.<></p>";
+        }
+
+        $htmlsection->addHtml($section, $section2);
 
         $section->addText(
             'DECLARACIONES',
-            $titleBoldStyle,$center
+            $textLineBoldCenter,$center
         );
+
+        $multilevelListStyleName = 'multilevel';
+
+        $phpWord->addNumberingStyle(
+            $multilevelListStyleName,
+            [
+                'type' => 'multilevel',
+                'levels' => [
+                    ['format' => 'upperRoman', 'text' => '%1.', 'left' => 360, 'hanging' => 360, 'tabPos' => 360, 'bold'=>true],
+                    ['format' => 'lowerLetter', 'text' => '%2.', 'left' => 720, 'hanging' => 360, 'tabPos' => 720],
+                ],
+            ]
+        );
+
+        $listItemRun = $section->addListItemRun(0, $multilevelListStyleName,[]);
+        $listItemRun->addText('DECLARA TRADE MARKET 57, A TRAVÉS DE SU REPRESENTANTE LEGAL Y BAJO PROTESTA DE DECIR VERDAD QUE:',$bodyBoldStyle);
+        $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
+        $listItemRun->addText('ES UNA SOCIEDAD CONSTITUIDA DE CONFORMIDAD CON LAS LEYES DE LOS ESTADOS UNIDOS MEXICANOS, SEGÚN CONSTA EN LA ESCRITURA NÚMERO 2062, DE FECHA 08 DE JULIO DE 2015, OTORGADA ANTE EL LICENCIADO CLAUDIA GABRIELA FRANCÓZ GÁRATE, TITULAR DE LA NOTARÍA NÚMERO 153 DEL ESTADO DE MÉXICO.',$bodyNormalStyle);
+        $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
+        $listItemRun->addText('SU REPRESENTANTE CUENTA CON LAS FACULTADES SUFICIENTES PARA OBLIGAR A SU REPRESENTADA EN LOS TÉRMINOS DE ESTE CONVENIO, SEGÚN CONSTA EN LA ESCRITURA NÚMERO 2062, DE FECHA 08 DE JULIO DE 2015, OTORGADA ANTE EL LICENCIADO CLAUDIA GABRIELA FRANCÓZ GÁRATE, TITULAR DE LA NOTARÍA NÚMERO 153 DEL ESTADO DE MÉXICO, MISMAS QUE A LA FECHA NO LE HAN SIDO REVOCADAS, LIMITADAS O MODIFICADAS DE FORMA ALGUNA. ',$bodyNormalStyle);
+        $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
+        $listItemRun->addText('ES SU DESEO CELEBRAR EL PRESENTE CONVENIO, SUJETO A LOS TÉRMINOS Y CONDICIONES QUE MÁS ADELANTE SE INDICAN.',$bodyNormalStyle);
+
+        $listItemRun = $section->addListItemRun(0, $multilevelListStyleName,[]);
+        $listItemRun->addText('DECLARA EL EMPLEADO, POR SU PROPIO DERECHO Y BAJO PROTESTA DE DECIR VERDAD QUE:  ',$bodyBoldStyle);
+        $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
+        $listItemRun->addText('ES UNA PERSONA FÍSICA CON PLENA CAPACIDAD JURÍDICA Y PLENO USO DE SUS FACULTADES LEGALES PARA SUSCRIBIR EL PRESENTE CONVENIO.',$bodyNormalStyle);
+        $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
+        $listItemRun->addText('CUENTA CON REGISTRO FEDERAL DE CONTRIBUYENTES RFC COMPLETO SEGÚN CONSTA EN LA CEDULA DE IDENTIFICACIÓN FISCAL, EXPEDIDA POR LA SECRETARIA DE HACIENDA Y CRÉDITO PÚBLICO.',$bodyNormalStyle);
+        $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
+        $listItemRun->addText('DERIVADO DE SU RELACIÓN COMERCIAL Y/O PROFESIONAL Y/O PERSONAL CON TRADE MARKET 57, CON SUS ACCIONISTAS Y/O CON SUS DIRECTORES, QUE HA TENIDO DESDE HACE VARIOS AÑOS.  HA TENIDO Y SEGUIRÁ TENIENDO ACCESO A INFORMACIÓN CONFIDENCIAL DE TRADE MARKET 57 Y/O DE SUS CLIENTES, ASÍ COMO A INFORMACIÓN CONFIDENCIAL DE GIRO COMERCIAL Y “KNOW HOW” DEL NEGOCIO DE TRADE MARKET 57, RECONOCIENDO QUE DICHA INFORMACIÓN CONFIDENCIAL REPRESENTA UN ACTIVO Y VENTAJA COMPETITIVA DE TRADE MARKET 57 EN EL MERCADO, Y FRENTE A SUS COMPETIDORES.',$bodyNormalStyle);
+
+
+
 
         $section->addText(
             'I.	DECLARA BH TRADE MARKET, A TRAVÉS DE SU REPRESENTANTE LEGAL Y BAJO PROTESTA DE DECIR VERDAD QUE: ',
-            $titleBoldStyle,
+            $bodyBoldStyle,
         );
 
         $section->addText(
@@ -1996,7 +2095,7 @@ class RhController extends Controller
 
         $section->addText(
             'II. DECLARA EL EMPLEADO, POR SU PROPIO DERECHO Y BAJO PROTESTA DE DECIR VERDAD QUE: ',
-            $titleBoldStyle,
+            $bodyBoldStyle,
         );
 
         $section->addText(
@@ -2036,8 +2135,10 @@ class RhController extends Controller
 
         $section->addText(
             'CLÁUSULAS',
-            $titleBoldStyle, $center
+            $bodyBoldStyle, $center
         );
+
+        
 
         $section2 = "<p><b>PRIMERA.- OBJETO.</b> EL EMPLEADO SE OBLIGA CON BH TRADE MARKET A LA ABSTENCIÓN DE LA REALIZACIÓN DE CUALQUIER ACTO QUE REPRESENTE DE CUALQUIER MANERA DIRECTA O INDIRECTA COMPETENCIA COMERCIAL O DE CUALQUIER OTRA ÍNDOLE A BH TRADE MARKET, SUS ACCIONISTAS, FILIALES, SUBSIDIARIAS, SUS EMPLEADOS, REPRESENTANTES, AGENTES, CONSULTORES Y/O APODERADOS DE CONFORMIDAD CON LO ESTABLECIDO EN EL PRESENTE CONVENIO.</p>";
         $htmlsection->addHtml($section, $section2);
@@ -2062,14 +2163,15 @@ class RhController extends Controller
 
         $section2 = "<p>EL EMPLEADO CONVIENE EN CONCEDER A PARTIR DE ESTA FECHA, TRATO CONFIDENCIAL Y DE ACCESO RESTRINGIDO A LA INFORMACIÓN CONFIDENCIAL A LA QUE PUDIERA TENER ACCESO POR CUALQUIER MOTIVO, COMPROMETIÉNDOSE A MANTENER EN SU PODER ÚNICAMENTE LA INFORMACIÓN CONFIDENCIAL ESTRICTAMENTE NECESARIA PARA EL CUMPLIMIENTO DE SUS OBLIGACIONES COMERCIALES, CONTRACTUALES O DE CUALQUIER OTRA ÍNDOLE FRENTE A BH TRADE MARKET, ASÍ COMO A CONSERVARLA EN SU PODER EL TIEMPO QUE SEA ESTRICTAMENTE NECESARIO (LA “CONFIDENCIALIDAD”).</p>";
         $htmlsection->addHtml($section, $section2);
-        //Setting page margins
-        $phpWord->getSettings()->setMirrorMargins(false);
-        $sectionStyle = $section->getStyle();
-        $sectionStyle->setMarginLeft(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
-        $sectionStyle->setMarginRight(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
-        $sectionStyle->setMarginTop(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
-        $sectionStyle->setMarginBottom(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
-
+     
+        header("Content-Description: File Transfer");
+        header('Content-Disposition: attachment; filename="' . 'CONVENIO DE CONFIDENCIALIDAD ' . '.doc');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Expires: 0');
+        $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $xmlWriter->save("php://output");
         
     }
     
