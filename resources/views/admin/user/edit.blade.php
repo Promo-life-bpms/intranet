@@ -4,9 +4,15 @@
 <div class="card-header">
     <div class="d-flex justify-content-between">
         <h3>Editar usuario</h3>
-        <div>
-            <a style="" href="{{ route('rh.moreInformation') }}"
-                type="button" class="btn btn-info">Información adicional</a>            
+        <div>                
+            <form class="form-delete"
+                action="{{ route('rh.moreInformation', ['id' => $user->id]) }}"
+                method="GET">
+                 @csrf
+                <button style="" type="submit" class="btn btn-info">Información adicional</button>
+             </form>
+        
+
         </div>
     </div>
 </div>
