@@ -10,6 +10,12 @@
     </div>
 </div>
 <div class="card-body">
+    @if (session('error'))
+        <div class="alert alert-warning">
+            {{ session('error') }}
+        </div>
+    @endif
+
     {!! Form::open(['route' => 'rh.buildPostulantDocumentation', 'enctype' => 'multipart/form-data']) !!}
     <h5>{{ $postulant->name . ' '. $postulant->lastname}}</h5>
     <br>
