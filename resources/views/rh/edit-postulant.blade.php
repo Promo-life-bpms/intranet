@@ -88,6 +88,24 @@
                 name="interview_date" class="form-control">
             </div>
         </div>
+
+        <div class="row form-group">
+            <div class="col-sm ">
+                {!! Form::label('nationality', 'Nacionalidad') !!}
+                {!! Form::text('nationality', null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="col-sm ">
+                {!! Form::label('credencial_id', 'Credencial') !!}
+                {!! Form::text('credencial_id', null, ['class' => 'form-control']) !!}
+            </div>
+
+            <div class="col-sm ">
+                {!! Form::label('credencial_id', 'Credencial') !!}
+                {!! Form::text('credencial_id', null, ['class' => 'form-control']) !!}
+            </div>
+        </div>
+
         <br>
 
    
@@ -288,8 +306,8 @@
                 </div>
 
                 <div class="col-sm ">
-                    {!! Form::label('horary', 'Horario') !!}
-                    {!! Form::text('horary', isset($postulant_details->horary) ? $postulant_details->horary : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el horario ']) !!}
+                <!--     {!! Form::label('horary', 'Horario') !!}
+                    {!! Form::text('horary', isset($postulant_details->horary) ? $postulant_details->horary : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el horario ']) !!} -->
                 </div>
                 
                 <div class="col-sm ">

@@ -84,6 +84,11 @@
                 <input type="datetime-local" id="meeting-time"
                 name="interview_date" class="form-control">
             </div>
+
+            <div class="col-sm ">
+                {!! Form::label('nationality', 'Nacionalidad') !!}
+                {!! Form::text('nationality', null, ['class' => 'form-control']) !!}
+            </div>
         </div>
 
         {!! Form::submit('GUARDAR', ['class' => 'btnCreate mt-4']) !!}
