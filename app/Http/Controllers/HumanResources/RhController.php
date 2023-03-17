@@ -407,10 +407,19 @@ class RhController extends Controller
         }
 
         if($request->has('no_compete_agreement')){
+            
+            //Promo zale
+            if(intval($request->company) == 3){
+                return redirect()->back()->with('error', 'Archivo no disponible para la empresa Promo Zale');          
+            }
+            //Unipromtex
+            if(intval($request->company)== 5){
+                return redirect()->back()->with('error', 'Archivo no disponible para la empresa Unipromtex');          
+            }
             $this->noCompeteAgreement($postulant, $postulant_details,intval($request->company) , $request->determined_contract_duration ); 
         } 
 
-        return redirect()->back();          
+                 
 
 
 
@@ -1924,10 +1933,7 @@ class RhController extends Controller
             $company_address = 'SAN ANDRES ATOTO 155 PISO 1 LOC. B, UNIDAD SAN ESTEBAN. NAUCALPAN DE JUÁREZ ESTADO DE MÉXICO, C.P. 53550.'; 
         }
         
-        //Promo zale
-        if($company_id == 3){
-            return redirect()->back()->with('error', 'Archivo no disponible para la empresa Promo Zale');          
-        }   
+           
         
         //Trademarket 57
         if($company_id== 4){
@@ -1943,10 +1949,7 @@ class RhController extends Controller
             $company_address = 'SAN ANDRES ATOTO 155 PLANTA BAJA, UNIDAD SAN ESTEBAN. NAUCALPAN DDE JUÁREZ. ESTADO DE MÉXICO 53550';
         } 
         
-        //Unipromtex
-        if($company_id== 5){
-            return redirect()->back()->with('error', 'Archivo no disponible para la empresa Unipromtex');          
-        }
+        
        
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $phpWord->getSettings()->setMirrorMargins(true);
@@ -2271,7 +2274,7 @@ class RhController extends Controller
         $table->addCell(5000, $cellRowSpan)->addText($social_reason. '<w:br/>'.'REPRESENTADA POR:'. '<w:br/>'.$employer ,$bodyBoldStyle, $center);
        
         header("Content-Description: File Transfer");
-        header('Content-Disposition: attachment; filename="' . 'NO COMPETE' . strtoupper($company_name) . ' ' . strtoupper($name) .' '. strtoupper($lastname) . '.doc');
+        header('Content-Disposition: attachment; filename="' . 'NO COMPETE' . strtoupper($company_name) . ' ' . strtoupper($name) .' '. strtoupper($lastname) . '.docx');
         header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');

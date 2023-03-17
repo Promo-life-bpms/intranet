@@ -11,7 +11,7 @@
 </div>
 <div class="card-body">
     @if (session('error'))
-        <div class="alert alert-warning">
+        <div class="alert alert-info">
             {{ session('error') }}
         </div>
     @endif
