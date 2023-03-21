@@ -285,7 +285,7 @@ class UpDocument extends Controller
 
         $writer = new Xlsx($spreadsheet);
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="ALTA_PERSONAL.xls"');
+        header('Content-Disposition: attachment;filename="' . 'ALTA PERSONAL ' . strtoupper($postulant->name) . ' ' . strtoupper($postulant->lastname)  . '.xls');
         header('Cache-Control: max-age=0');
           
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');

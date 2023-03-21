@@ -368,37 +368,40 @@ class RhController extends Controller
 
     public function buildPostulantDocumentation(Request $request)
     {
-        
+
         $postulant = Postulant::all()->where('id',$request->postulant)->last();
         $postulant_details = PostulantDetails::all()->where('postulant_id',$request->postulant)->last();
         $postulant_beneficiaries = PostulantBeneficiary::all()->where('postulant_details_id',$postulant_details->id)->values('name','porcentage');
 
-        if($request->has('up_personal')){ 
+        if($request->document == null){
+            return redirect()->back()->with('error', 'No has seleccionado ningun documento a generar');          
+        }
+        if($request->document =='up_personal'){ 
             $up_document = new UpDocument();
             $up_document->upDocument($postulant, $postulant_details, $postulant_beneficiaries, $request);
         }
 
-        if($request->has('determined_contract')){
+        if($request->document == 'determined_contract'){
             $determined_contract = new DeterminateContract();
             $determined_contract->determinateContract($postulant, $postulant_details,$request->company, $request->determined_contract_duration );
         }
 
-        if($request->has('indetermined_contract')){
+        if($request->document == 'indetermined_contract'){
             $indeterminate_contract = new IndeterminateContract();
             $indeterminate_contract->indeterminateContract($postulant, $postulant_details,$request->company, $request->determined_contract_duration );
         }
 
-        if($request->has('confidentiality_agreement')){
+        if($request->document == 'confidentiality_agreement'){
             $confidentiality_agreement = new confidentialityAgreement();
             $confidentiality_agreement->confidentialityAgreement(strtoupper($postulant->name), strtoupper($postulant->lastname),intval($request->company) , date('d/m/Y', strtotime( $postulant_details->date_admission)));
         }
 
-        if($request->has('work_condition_update')){
+        if($request->document == 'work_condition_update'){
             $work_condition_update = new WorkConditionUpdate();
             $work_condition_update->workConditionUpdate(strtoupper($postulant->name), strtoupper($postulant->lastname),strtoupper($postulant_details->position));
         }
 
-        if($request->has('no_compete_agreement')){
+        if($request->document == 'no_compete_agreement'){
 
             //Promo zale
             if(intval($request->company) == 3){
