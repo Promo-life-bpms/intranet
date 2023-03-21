@@ -225,7 +225,7 @@ class ConfidentialityAgreement extends Controller
        
 
         header("Content-Description: File Transfer");
-        header('Content-Disposition: attachment; filename="' . 'CONVENIO DE CONFIDENCIALIDAD ' . strtoupper($company) . ' ' . strtoupper($name) .' '. strtoupper($lastname) . '.doc');
+        header('Content-Disposition: attachment; filename="' . 'CONVENIO DE CONFIDENCIALIDAD ' . ' ' . strtoupper($name) .' '. strtoupper($lastname) . '.doc');
         header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');

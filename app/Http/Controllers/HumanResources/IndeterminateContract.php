@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HumanResources;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use PhpOffice\PhpWord\Style\Language;
 
 class IndeterminateContract extends Controller
@@ -22,7 +23,7 @@ class IndeterminateContract extends Controller
         $duration_months = $duration;
         $month_string = "MESES";
         $date_admission = date('d,m,Y', strtotime($postulant_details->date_admission));
-
+        $next_sign_date = date('d,m,Y',strtotime('+3 months', strtotime($postulant_details->date_admission)));
         if($duration == null || $duration = ""){
             $duration_months = "3";
         }
@@ -103,7 +104,22 @@ class IndeterminateContract extends Controller
             'lineHeight' => 0.5,
         );
 
-       
+        $multilevelListStyleName = 'multilevel';
+
+        $phpWord->addNumberingStyle(
+            $multilevelListStyleName,
+            [
+                'type' => 'multilevel',
+                'levels' => [
+                    ['format' => 'upperRoman', 'text' => '%1.', 'left' => 360, 'hanging' => 360, 'tabPos' => 360],
+                    ['format' => 'lowerLetter', 'text' => '%2)', 'left' => 720, 'hanging' => 360, 'tabPos' => 720],
+                    ['format' => 'decimal', 'text' => '%2.', 'left' => 720, 'hanging' => 360, 'tabPos' => 720],
+                    ['format' => 'lowerRoman', 'text' => '%2.', 'left' => 720, 'hanging' => 360, 'tabPos' => 720],
+
+                ],
+            ]
+        );
+
         //Secctions
         $section = $phpWord->addSection();
         $htmlsection= new \PhpOffice\PhpWord\Shared\Html();
@@ -122,8 +138,9 @@ class IndeterminateContract extends Controller
         if($company_id == 1){
             $company = "PROMO LIFE, S. DE R.L. DE C.V.";
             $employer = "C. RAÚL TORRES MÁRQUEZ";
-            $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE PROMO LIFE, S. DE R.L. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. RAUL TORRES MARQUEZ, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
-            
+            $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE PROMO LIFE, S. DE R.L. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. RAUL TORRES MARQUEZ, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+            $sectionI = "<p>I.- LA EMPRESA DECLARA SER UNA SOCIEDAD MERCANTIL CONSTITUIDA ANTE LAS LEYES MEXICANAS, CON DOMICILIO FISCAL EN LA CALLE DE SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, QUE SU OBJETIVO SOCIAL OTROS SERVICIOS DE PUBLICIDAD </p>";
+
             $section->addText(
                 $company,
                 $titleCenterBoldStyle, $centerTitle
@@ -135,8 +152,9 @@ class IndeterminateContract extends Controller
         if($company_id == 2){
             $company = "BH TRADE MARKET, S.A. DE C.V.";
             $employer = "C. DAVID LEVY HANO";
-            $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE BH TRADE MARKET, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
-            
+            $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE BH TRADE MARKET, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+            $sectionI = "<p>I.- LA EMPRESA DECLARA SER UNA SOCIEDAD MERCANTIL CONSTITUIDA ANTE LAS LEYES MEXICANAS, CON DOMICILIO FISCAL EN LA CALLE DE SAN ANDRES ATOTO No. 155 PISO 1 LOCAL A COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, QUE SU OBJETIVO SOCIAL OTROS SERVICIOS DE PUBLICIDAD.</p>";
+
             $section->addText(
                 $company,
                 $titleCenterBoldStyle, $centerTitle
@@ -147,8 +165,8 @@ class IndeterminateContract extends Controller
         if($company_id == 3){
             $company = "PROMO ZALE S.A. DE C.V."; 
             $employer = "C. DANIEL LEVY HANO";
-            $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE PROMO ZALE, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DANIEL LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL E COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
-            
+            $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE PROMO ZALE, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DANIEL LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL E COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+            $sectionI = "<p>I.- LA EMPRESA DECLARA SER UNA SOCIEDAD MERCANTIL CONSTITUIDA ANTE LAS LEYES MEXICANAS, CON DOMICILIO FISCAL EN LA CALLE DE SAN ANDRES ATOTO No. 155 PISO 1 LOCAL E COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, QUE SU OBJETIVO SOCIAL OTROS SERVICIOS DE PUBLICIADAD.</p>";
             $section->addText(
                 $company,
                 $titleCenterBoldStyle, $centerTitle
@@ -159,8 +177,8 @@ class IndeterminateContract extends Controller
         if($company_id== 4){
             $company = "TRADE MARKET 57, S.A. DE C.V."; 
             $employer = "C. MÓNICA REYES RESENDIZ";
-            $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE TRADE MARKET 57, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. MÓNICA REYES RESENDIZ, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PLANTA BAJA, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
-            
+            $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE TRADE MARKET 57, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. MÓNICA REYES RESENDIZ, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PLANTA BAJA, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+            $sectionI = "<p>I.- LA EMPRESA DECLARA SER UNA SOCIEDAD MERCANTIL CONSTITUIDA ANTE LAS LEYES MEXICANAS, CON DOMICILIO FISCAL EN LA CALLE DE SAN ANDRES ATOTO  No. 155 PLANTA BAJA, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, QUE SU OBJETIVO SOCIAL ES OTROS SERVICIOS DE PUBLICIDAD. </p>";
             $section->addText(
                 $company,
                 $titleCenterBoldStyle, $centerTitle
@@ -171,15 +189,15 @@ class IndeterminateContract extends Controller
         if($company_id== 5){
             $company = "UNIPROMTEX S.A. DE C.V."; 
             $employer = "DAVID LEVY HANO";
-            $section2 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE UNIPROMTEX, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN C. CIELITO LINDO 18 B, PARQUE INDUSTRIAL IZCALLI, NEZAHUALCOYOTL ESTADO DE MÉXICO. C.P. 57810 A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
-            
+            $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE UNIPROMTEX, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN C. CIELITO LINDO 18 B, PARQUE INDUSTRIAL IZCALLI, NEZAHUALCOYOTL ESTADO DE MÉXICO. C.P. 57810 A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
+            $sectionI = "<p>I.- LA EMPRESA DECLARA SER UNA SOCIEDAD MERCANTIL CONSTITUIDA ANTE LAS LEYES MEXICANAS, CON DOMICILIO FISCAL EN C. CIELITO LINDO 18 B, PARQUE INDUSTRIAL IZCALLI, NEZAHUALCOYOTL ESTADO DE MÉXICO. C.P. 57810.</p>";
             $section->addText(
                 $company,
                 $titleCenterBoldStyle2, $centerTitle
             );
         } 
 
-        $htmlsection->addHtml($section, $section2);
+        $htmlsection->addHtml($section, $section1);
 
 
         $cellRowSpan = array(
@@ -235,10 +253,7 @@ class IndeterminateContract extends Controller
             $bodyCenterBoldStyle, $center
         );
 
-        $section->addText(
-            'I.- LA EMPRESA DECLARA SER UNA SOCIEDAD MERCANTIL CONSTITUIDA ANTE LAS LEYES MEXICANAS, CON DOMICILIO FISCAL EN LA CALLE DE SAN ANDRES ATOTO No. 155 PISO 1 LOCAL A COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, QUE SU OBJETIVO SOCIAL OTROS SERVICIOS DE PUBLICIDAD.',
-            $titleStyle,
-        );
+        $htmlsection->addHtml($section, $sectionI);
 
         $section2 = "<p>II.- EL EMPLEADO POR SU PARTE DECLARA QUE QUEDA DEBIDAMENTE ENTERADO DE LA CAUSA QUE ORIGINA SU CONTRATACIÓN Y ESTA CONFORME EN PRESTAR SUS SERVICIOS PERSONALES A “LA EMPRESA” EN LOS TERMINOS QUE MAS ADELANTE PACTAN, MANIFESTANDO TENER LOS CONOCIMIENTOS SUFICIENTES PARA REALIZAR TAL <b>SERVICIO DE $position QUE CONSISTE EN (OBJETIVO DEL PUESTO).</b></p>";
         $htmlsection->addHtml($section, $section2);
@@ -255,7 +270,7 @@ class IndeterminateContract extends Controller
             $bodyCenterBoldStyle, $center
         );
 
-        $section2 = "<p>PRIMERA.- “LA EMPRESA” CONTRATARA AL EMPLEADO PARA QUE LE PRESTE SUS SERVICIOS PERSONALES BAJO SU DIRECCIÓN Y DEPENDENCIA, CON EL CARÁCTER DE EMPLEADO <b>$position</b> Y TENDRA UN PERIODO <b>DE $duration_months $month_string</b>.</p>";
+        $section2 = "<p>PRIMERA.- “LA EMPRESA” CONTRATARA AL EMPLEADO PARA QUE LE PRESTE SUS SERVICIOS PERSONALES BAJO SU DIRECCIÓN Y DEPENDENCIA, CON EL CARÁCTER DE EMPLEADO <b>$position</b> Y TENDRA UN PERIODO <b>DE TIEMPO INDEFINIDO</b>.</p>";
         $htmlsection->addHtml($section, $section2);
 
         $section2 = "<p>SEGUNDA.- EL LUGAR DE LA PRESTACIÓN DE SERVICIOS SERA TANTO EN EL DOMICILIO DE “LA EMPRESA”, ASI COMO EN EL DE TODAS AQUELLAS PERSONAS FÍSICAS O MORALES QUE CONTRATEN SERVICIOS CON “LA EMPRESA” SEA CUAL FUERE SU UBICACIÓN DENTRO DE LA REPUBLICA MEXICANA.</p>";
@@ -276,14 +291,20 @@ class IndeterminateContract extends Controller
         $section2 = "<p>SÉPTIMA.- CONVIENEN LAS PARTES EN QUE INDEPENDIENTEMENTE DE LAS OBLIGACIONES QUE IMPONE AL EMPLEADO LA LEY FEDERAL DEL TRABAJO, SE OBLIGA A LO SIGUIENTE:</p>";
         $htmlsection->addHtml($section, $section2);
 
-        $section->addListItem('a) A PRESTAR SUS SERVICIOS CON EL MAYOR INTERES, EFICIENCIA, ESMERO Y LA DEBIDA PRESENTACIÓN PERSONAL.', 0, null, 'multilevel');
-        $section->addListItem('b) A OBSERVAR LAS DISPOSICIONES QUE SOBRE HORARIOS DE TRABAJO EXISTAN.', 1, null, 'multilevel');
+        $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
+        $listItemRun->addText('A PRESTAR SUS SERVICIOS CON EL MAYOR INTERES, EFICIENCIA, ESMERO Y LA DEBIDA PRESENTACIÓN PERSONAL.',[]);
 
+        $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
+        $listItemRun->addText('A OBSERVAR LAS DISPOSICIONES QUE SOBRE HORARIOS DE TRABAJO EXISTAN.',[]);
+
+ 
         //Unipromtex
         if($company_id== 5){
-            $section->addListItem('c) LA JORNADA DE TRABAJO SERA DE LUNES A VIERNES DE _______________ A _______________ HRS., Y LOS DÍAS SABADOS DE _______________ A  _________________ HRS.  DEBIENDO CUBRIR LAS 48 HORAS A LA SEMANA. ', 1, null, 'multilevel');
+            $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
+            $listItemRun->addText('LA JORNADA DE TRABAJO SERA DE LUNES A VIERNES DE _______________ A _______________ HRS., Y LOS DÍAS SABADOS DE _______________ A  _________________ HRS.  DEBIENDO CUBRIR LAS 48 HORAS A LA SEMANA.',[]);
         }else{
-            $section->addListItem('c) LA JORNADA DE TRABAJO SERA DE LUNES A JUEVES DE  ______ A  ________ HRS., Y LOS DÍAS VIERNES DE  _______ A  ________ HRS.  DEBIENDO CUBRIR LAS 48 HORAS A LA SEMANA ', 1, null, 'multilevel');
+            $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
+            $listItemRun->addText('LA JORNADA DE TRABAJO SERA DE LUNES A JUEVES DE  ______ A  ________ HRS., Y LOS DÍAS VIERNES DE  _______ A  ________ HRS.  DEBIENDO CUBRIR LAS 48 HORAS A LA SEMANA',[]);
         }
 
         $section2 = "<p>OCTAVA.- CONVIENEN LAS PARTES EN QUE EL EMPLEADO (TRABAJADOR), SERA CAPACITADO PARA EL DESEMPEÑO DE SUS LABORES EN VIRTUD DE QUE YA CUENTAN DE LEY CON LOS TERMINOS DE LOS PLANES Y PROGRAMAS DE CAPACITACION ESTABLECIDOS POR SU CONDUCTO.</p>";
@@ -338,7 +359,7 @@ class IndeterminateContract extends Controller
 
         $section->addText('');
 
-        $section2 = "<p>EL PRESENTE CONTRATO SE FIRMA POR DUPLICADO EN EL ESTADO DE MÉXICO, A LOS <b>$date_admission</b></p>";
+        $section2 = "<p>EL PRESENTE CONTRATO SE FIRMA POR DUPLICADO EN EL ESTADO DE MÉXICO, A LOS <b>$next_sign_date</b></p>";
         $htmlsection->addHtml($section, $section2);
         
         $section->addText('');
@@ -353,16 +374,16 @@ class IndeterminateContract extends Controller
 
         $table = $section->addTable();
         $table->addRow();
-        $table->addCell(5000, $cellRowSpan)->addText('____________________________________<w:br/>'.$employer.$company,$bodyCenterBoldStyle,$center);
+        $table->addCell(5000, $cellRowSpan)->addText('____________________________________<w:br/>'.$employer,$bodyCenterBoldStyle,$center);
         $table->addCell(5000, $cellRowSpan )->addText('____________________________________<w:br/>'.'C. '.$name. ' '. $lastname,$bodyCenterBoldStyle, $center);
        
         header("Content-Description: File Transfer");
-        header('Content-Disposition: attachment; filename="' . 'CONTRATO DETERMINADO ' . strtoupper($name) .' '. strtoupper($lastname) . '.doc');
+        header('Content-Disposition: attachment; filename="' . 'CONTRATO INDETERMINADO ' . strtoupper($name) .' '. strtoupper($lastname) . '.doc');
         header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Expires: 0');
         $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-        $xmlWriter->save("php://output");    
+        $xmlWriter->save("php://output");  
     }
 }

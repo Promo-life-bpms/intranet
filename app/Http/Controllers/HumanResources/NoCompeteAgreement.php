@@ -47,8 +47,6 @@ class NoCompeteAgreement extends Controller
             $company_address = 'SAN ANDRES ATOTO 155 PISO 1 LOC. B, UNIDAD SAN ESTEBAN. NAUCALPAN DE JUÁREZ ESTADO DE MÉXICO, C.P. 53550.'; 
         }
         
-           
-        
         //Trademarket 57
         if($company_id== 4){
             $social_reason = "TRADE MARKET 57, S.A. DE C.V."; 
@@ -127,6 +125,8 @@ class NoCompeteAgreement extends Controller
 
         $multilevelListStyleName = 'multilevel';
 
+        $singleListStyleName = 'multilevel';
+
         $phpWord->addNumberingStyle(
             $multilevelListStyleName,
             [
@@ -134,8 +134,8 @@ class NoCompeteAgreement extends Controller
                 'levels' => [
                     ['format' => 'upperRoman', 'text' => '%1.', 'left' => 360, 'hanging' => 360, 'tabPos' => 360],
                     ['format' => 'lowerLetter', 'text' => '%2.', 'left' => 720, 'hanging' => 360, 'tabPos' => 720],
-                    ['format' => 'decimal', 'text' => '%2.', 'left' => 720, 'hanging' => 360, 'tabPos' => 720],
-                    ['format' => 'lowerRoman', 'text' => '%2.', 'left' => 720, 'hanging' => 360, 'tabPos' => 720],
+                    ['format' => 'decimal', 'text' => '%3.', 'left' => 720, 'hanging' => 360, 'tabPos' => 720],
+                    ['format' => 'lowerRoman', 'text' => '(%4)', 'left' => 720, 'hanging' => 360, 'tabPos' => 720],
 
                 ],
             ]
@@ -168,12 +168,12 @@ class NoCompeteAgreement extends Controller
 
         $section->addText(
             'EN VIRTUD DE LO ANTERIOR Y NO EXISTIENDO DOLO, VIOLENCIA, LESIÓN, O ALGÚN OTRO TIPO DE VICIO EN EL CONSENTIMIENTO, LAS PARTES SE SOMETEN A LAS SIGUIENTES:',
-            $bodyBoldStyle,
+            $bodyNormalStyle,
         );
 
         $section->addText(
             'CLÁUSULAS',
-            $bodyNormalStyle,$center
+            $textLineBoldCenter,$center
         );       
 
         $section2 = "<p><b>PRIMERA.- OBJETO.</b> EL EMPLEADO SE OBLIGA CON $company_name A LA ABSTENCIÓN DE LA REALIZACIÓN DE CUALQUIER ACTO QUE REPRESENTE DE CUALQUIER MANERA DIRECTA O INDIRECTA COMPETENCIA COMERCIAL O DE CUALQUIER OTRA ÍNDOLE A $company_name, SUS ACCIONISTAS, FILIALES, SUBSIDIARIAS, SUS EMPLEADOS, REPRESENTANTES, AGENTES, CONSULTORES Y/O APODERADOS DE CONFORMIDAD CON LO ESTABLECIDO EN EL PRESENTE CONVENIO.</p>";
@@ -209,13 +209,13 @@ class NoCompeteAgreement extends Controller
         $section2 = "<p>PARA LOS EFECTOS DE ESTE CONVENIO, NO SE CONSIDERARÁ INFORMACIÓN CONFIDENCIAL AQUELLA INFORMACIÓN:</p>";
         $htmlsection->addHtml($section, $section2); 
 
-        $listItemRun = $section->addListItemRun(3, $multilevelListStyleName,[]);
+        $listItemRun = $section->addListItemRun(2, $singleListStyleName,[]);
         $listItemRun->addText('QUE SEA O LLEGUE A SER DEL DOMINIO PÚBLICO, SIN MEDIAR INCUMPLIMIENTO DE ESTE CONVENIO POR EL EMPLEADO.',$bodyNormalStyle);
 
-        $listItemRun = $section->addListItemRun(3, $multilevelListStyleName,[]);
+        $listItemRun = $section->addListItemRun(2, $singleListStyleName,[]);
         $listItemRun->addText('QUE '. $company_name . ' AUTORICE EL EMPLEADO, PREVIA NOTIFICACIÓN Y POR ESCRITO, PARA SU DIVULGACIÓN O ENTREGA DE INFORMACIÓN CONFIDENCIAL A UN TERCERO; Y ',$bodyNormalStyle);
         
-        $listItemRun = $section->addListItemRun(3, $multilevelListStyleName,[]);
+        $listItemRun = $section->addListItemRun(2, $singleListStyleName,[]);
         $listItemRun->addText('QUE EL EMPLEADO SEA INSTRUIDO MEDIANTE REQUERIMIENTO JUDICIAL DE ENTREGAR PARCIAL O TOTALMENTE LA INFORMACIÓN CONFIDENCIAL, EN CUYO CASO EL EMPLEADO, PREVIO A CUALQUIER ENTREGA DE LA INFORMACIÓN CONFIDENCIAL, SE OBLIGA A INFORMAR INMEDIATAMENTE A '.$company_name.' RESPECTO DE DICHO REQUERIMIENTO Y DEBERÁ REALIZAR LOS ACTOS QUE ESTÉN A SU ALCANCE PARA PREVENIR LA ENTREGA DE LA INFORMACIÓN CONFIDENCIAL PREVIO A INFORMAR A '. $company_name .'.',$bodyNormalStyle);
 
         $section2 = "<p><b>CUARTA.- SECRETO INDUSTRIAL.</b> PARA TODOS LOS EFECTOS A QUE HAYA LUGAR, LAS PARTES CONSIDERARÁN QUE LA INFORMACIÓN CONFIDENCIAL SE EQUIPARA O ES EQUIVALENTE AL SECRETO INDUSTRIAL CONFORME A LA LEY DE LA PROPIEDAD INDUSTRIAL.</p>";
@@ -242,16 +242,16 @@ class NoCompeteAgreement extends Controller
         $section2 = "<p><b>SÉPTIMA. - OBLIGACIONES DE EL EMPLEADO</b> EN TODO MOMENTO DURANTE LA VIGENCIA DEL PRESENTE CONVENIO, <b>EL EMPLEADO</b> ESTARÁ OBLIGADA A: </p>";
         $htmlsection->addHtml($section, $section2);
 
-        $listItemRun = $section->addListItemRun(4, $multilevelListStyleName,[]);
+        $listItemRun = $section->addListItemRun(3, $multilevelListStyleName,[]);
         $listItemRun->addText('CUMPLIR CON LAS OBLIGACIONES DE NO COMPETENCIA ESTABLECIDAS EN LA CLÁUSULA SEGUNDA DEL PRESENTE CONVENIO.',$bodyNormalStyle);
 
-        $listItemRun = $section->addListItemRun(4, $multilevelListStyleName,[]);
+        $listItemRun = $section->addListItemRun(3, $multilevelListStyleName,[]);
         $listItemRun->addText('TOMAR LAS MEDIDAS NECESARIAS PARA PREVENIR EL ROBO O LA PÉRDIDA DE LA INFORMACIÓN CONFIDENCIAL, ASÍ COMO PROTEGERLA CON LA MISMA DILIGENCIA QUE PROTEGE SU PROPIA INFORMACIÓN CONFIDENCIAL;',$bodyNormalStyle);
 
-        $listItemRun = $section->addListItemRun(4, $multilevelListStyleName,[]);
+        $listItemRun = $section->addListItemRun(3, $multilevelListStyleName,[]);
         $listItemRun->addText('RESPONDER POR CUALQUIER VIOLACIÓN A LA OBLIGACIÓN DE NO COMPETENCIA Y/O CONFIDENCIALIDAD AQUÍ ESTABLECIDA, ASÍ COMO A LOS DERECHOS DE PROPIEDAD INTELECTUAL DE' . $company_name .' EN ESTE ACTO, EL EMPLEADO SE OBLIGA A RESPONDER DIRECTAMENTE ANTE '.$company_name. ' POR CUALQUIER VIOLACIÓN A LA NO COMPETENCIA Y/O CONFIDENCIALIDAD QUE SEA COMETIDA POR EL EMPLEADO O EN GENERAL POR CUALQUIER OTRA PERSONA VINCULADA A EL EMPLEADO; Y ;',$bodyNormalStyle);
 
-        $listItemRun = $section->addListItemRun(4, $multilevelListStyleName,[]);
+        $listItemRun = $section->addListItemRun(3, $multilevelListStyleName,[]);
         $listItemRun->addText('DEVOLVER INMEDIATAMENTE A '. $company_name .' TODA LA INFORMACIÓN CONFIDENCIAL, INCLUYENDO LOS DATOS PERSONALES, EN CASO DE QUE ASÍ LO SOLICITE '. $company_name. ' Y/O CUANDO EL PRESENTE CONVENIO SEA TERMINADO O RESCINDIDO POR CUALQUIER MOTIVO. UNA VEZ TERMINADO EL PRESENTE CONVENIO, EL EMPLEADO NO PODRÁ, POR NINGÚN MOTIVO, MANTENER EN SU POSESIÓN INFORMACIÓN CONFIDENCIAL.',$bodyNormalStyle);
 
         $section2 = "<p><b>OCTAVA. - INCUMPLIMIENTO POR PARTE DE EL EMPLEADO</b>. EN CASO DE QUE <b>EL EMPLEADO</b>, O CUALESQUIER PERSONAS VINCULADAS DE CUALQUIER FORMA CON EL MISMO, INCUMPLA CON ALGUNA DE LAS OBLIGACIONES DERIVADAS DE ESTE CONVENIO, ASÍ COMO LAS OBLIGACIONES RESPECTO A LA NO COMPETENCIA, A LA INFORMACIÓN CONFIDENCIAL Y/O LAS OBLIGACIONES ESTABLECIDAS EN LA CLÁUSULA SÉPTIMA DEL PRESENTE CONVENIO, <b>EL EMPLEADO</b> ESTARÁ SUJETA A LA PENA CONVENCIONAL (SEGÚN DICHO TÉRMINO SE DEFINE MÁS ADELANTE) ESTABLECIDA EN LA CLÁUSULA NOVENA DEL PRESENTE CONVENIO; SIN PERJUICIO DE QUE DEBERÁ RESPONDER A LOS DAÑOS Y PERJUICIOS OCASIONADOS A $company_name, SUS EMPLEADOS, FUNCIONARIOS, ACCIONISTAS, O CUALQUIER OTRA PERSONA RELACIONADA CON $company_name. </p>";
@@ -315,9 +315,7 @@ class NoCompeteAgreement extends Controller
         $htmlsection->addHtml($section, $section2);
 
         $section->addText(''); 
-        $section->addText(''); 
-        $section->addText(''); 
-
+        
         $cellRowSpan = array('width' => 5000);
         $table = $section->addTable([]);
         $table->addRow();
@@ -362,8 +360,6 @@ class NoCompeteAgreement extends Controller
         $htmlsection->addHtml($section, $section2);
 
         $section->addText(''); 
-        $section->addText(''); 
-        $section->addText(''); 
 
         $cellRowSpan = array('width' => 5000);
         $table = $section->addTable([]);
@@ -388,7 +384,7 @@ class NoCompeteAgreement extends Controller
         $table->addCell(5000, $cellRowSpan)->addText($social_reason. '<w:br/>'.'REPRESENTADA POR:'. '<w:br/>'.$employer ,$bodyBoldStyle, $center);
        
         header("Content-Description: File Transfer");
-        header('Content-Disposition: attachment; filename="' . 'NO COMPETE' . strtoupper($company_name) . ' ' . strtoupper($name) .' '. strtoupper($lastname) . '.docx');
+        header('Content-Disposition: attachment; filename="' . 'NO COMPETE' . ' ' . strtoupper($name) .' '. strtoupper($lastname) . '.doc');
         header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
         header('Content-Transfer-Encoding: binary');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
