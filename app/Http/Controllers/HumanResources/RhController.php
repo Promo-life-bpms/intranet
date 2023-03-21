@@ -368,7 +368,7 @@ class RhController extends Controller
 
     public function buildPostulantDocumentation(Request $request)
     {
-
+        
         $postulant = Postulant::all()->where('id',$request->postulant)->last();
         $postulant_details = PostulantDetails::all()->where('postulant_id',$request->postulant)->last();
         $postulant_beneficiaries = PostulantBeneficiary::all()->where('postulant_details_id',$postulant_details->id)->values('name','porcentage');
@@ -413,6 +413,11 @@ class RhController extends Controller
             }
             $no_compete_agreement = new NoCompeteAgreement();
             $no_compete_agreement->noCompeteAgreement($postulant, $postulant_details,intval($request->company) , $request->determined_contract_duration );
+        }   
+
+        if($request->document == 'letter_for_bank'){
+            $letter_for_bank = new LetterForBank();
+            $letter_for_bank->letterForBank($postulant,$postulant_details,intval($request->company));
         }   
     }
 
