@@ -289,6 +289,13 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item {{ request()->is('soporte') ? 'active' : '' }}">
+                    <a href="{{ route('soporte') }}" class='sidebar-link'>
+                        <i class="fa fa-wrench" aria-hidden="true"></i>
+                        <span>Soporte</span>
+                    </a>
+                </li>
+
 
                 {{-- <li class="sidebar-item {{ request()->is('folder') ? 'active' : '' }}">
                     <a href="{{ route('folder') }}" class='sidebar-link'>
