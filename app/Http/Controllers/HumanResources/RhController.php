@@ -391,7 +391,7 @@ class RhController extends Controller
         }
         if($request->document =='up_personal'){ 
             $up_document = new UpDocument();
-            $up_document->upDocument($postulant, $postulant_details, $postulant_beneficiaries, $request);
+            $up_document->upDocument($postulant, $postulant_details, $postulant_beneficiaries, intval($request->company));
         }
 
         if($request->document == 'determined_contract'){

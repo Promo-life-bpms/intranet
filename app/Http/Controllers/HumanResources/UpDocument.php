@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\HumanResources;
 
 use App\Http\Controllers\Controller;
+use App\Models\Department;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class UpDocument extends Controller
 {
-    public function UpDocument($postulant, $postulant_details, $postulant_beneficiaries, $request )
+    public function UpDocument($postulant, $postulant_details, $postulant_beneficiaries, $company_id )
     {
+        $departmet = Department::all()->where('id',$postulant->department_id)->last();
+        $company_name = '';
+        $horary = '';
         $postulant_has_infonavit = "";
         $postulant_has_fonacot = "";
         $postulant_no_has_infonavit = "";
@@ -23,6 +27,36 @@ class UpDocument extends Controller
         $porcentage_postulant_beneficiary1 = "";
         $porcentage_postulant_beneficiary2 = "";
         $porcentage_postulant_beneficiary3 = "";
+
+         //Promolife
+         if($company_id == 1){
+            $company_name = "PROMO LIFE, S. DE R.L. DE C.V.";
+            $horary = 'DE L A J DE 8:00 AM A 5:00 PM Y V DE 8:30 AM A 5:00 PM';
+        }
+
+        //BH tardemarket
+        if($company_id == 2){
+            $company_name = "BH TRADE MARKET, S.A. DE C.V.";
+            $horary = 'DE L A J DE 8:00 A.M. A 5:00 P.M. Y V DE 8:30 A.M. A 5:00 P.M.';
+        }
+
+        //Promo zale
+        if($company_id == 3){
+            $company_name = "PROMO ZALE S.A. DE C.V."; 
+            $horary = 'DE L A J DE 8:00 A.M. A 5:00 P.M. Y V DE 8:30 A.M. A 5:00 P.M.';
+        }
+
+        //Trademarket 57
+        if($company_id== 4){
+            $company_name = "TRADE MARKET 57, S.A. DE C.V."; 
+            $horary = 'DE L A J DE 8:00 A.M. A 5:00 P.M. Y V DE 8:30 A.M. A 5:00 P.M.';
+        } 
+
+        //Unipromtex
+        if($company_id== 5){
+            $company_name = "UNIPROMTEX S.A. DE C.V."; 
+            $horary = 'DE L A V DE 9:00 A.M. A 6:00 P.M. Y S DE 9 A.M. A 2:00 P.M.';
+        } 
         
         if($postulant_details->infonavit_credit == "si"){
             $postulant_has_infonavit = "*"; 
@@ -61,7 +95,6 @@ class UpDocument extends Controller
         }        
 
         //Personal de alta
-        
         $spreadsheet = new Spreadsheet();
 
         $sheet = $spreadsheet->getActiveSheet();
@@ -202,7 +235,7 @@ class UpDocument extends Controller
 
         $sheet->setCellValue('A2', '                   ALTA  (  *  )                      BAJA  (    )                      MODIFICACION  (    )');
         $sheet->setCellValue('A4', 'EMPRESA:');
-        $sheet->setCellValue('B4', strtoupper($request->company));
+        $sheet->setCellValue('B4', strtoupper($company_name));
         $sheet->setCellValue('A6', 'NOMBRE:'); 
         $sheet->setCellValue('B6', strtoupper($postulant->name .' '. $postulant->lastname));
         $sheet->setCellValue('A8', 'LUGAR DE NACIMIENTO:');
@@ -226,7 +259,7 @@ class UpDocument extends Controller
         $sheet->setCellValue('A23', 'DELEGACION O MUNICIPIO:');
         $sheet->setCellValue('B23', strtoupper($postulant_details->delegation));
         $sheet->setCellValue('C23', 'C.P.:');
-        $sheet->setCellValue('D23', strtoupper($postulant_details->cp));
+        $sheet->setCellValue('D23', strtoupper($postulant_details->postal_code));
         $sheet->setCellValue('A25', 'TELEFONO:');
         $sheet->setCellValue('B25', strtoupper('CEL: '.$postulant_details->cell_phone));
         $sheet->setCellValue('C25', 'CASA:');
@@ -242,13 +275,13 @@ class UpDocument extends Controller
         $sheet->setCellValue('A31', 'PUESTO:');
         $sheet->setCellValue('B31', strtoupper($postulant_details->position));
         $sheet->setCellValue('C31', 'AREA:');
-        $sheet->setCellValue('D31', strtoupper($postulant_details->area));
+        $sheet->setCellValue('D31', strtoupper($departmet->name));
         $sheet->setCellValue('A33', 'SUELDO:');
-        $sheet->setCellValue('B33', strtoupper($postulant_details->salary_sd));
+        $sheet->setCellValue('B33', strtoupper($postulant_details->month_salary_net));
         $sheet->setCellValue('C33', 'HORARIO:');
-        $sheet->setCellValue('D33', strtoupper($postulant_details->horary));
+        $sheet->setCellValue('D33', strtoupper($horary));
         $sheet->setCellValue('A35', 'FECHA DE INGRESO:');
-        $sheet->setCellValue('B35', date('d-m-Y', strtotime($postulant_details->date_admission)));
+        $sheet->setCellValue('B35', date('d/m/Y', strtotime($postulant_details->date_admission)));
         $sheet->setCellValue('A37', 'NO. TARJETA / NO. CUENTA:');
         $sheet->setCellValue('B37', strtoupper($postulant_details->card_number));
         $sheet->setCellValue('C37', 'BANCO:');
@@ -281,7 +314,6 @@ class UpDocument extends Controller
         $sheet->setCellValue('B56', 'NUM DE EMPLEADO EN NOMINA');
         $sheet->setCellValue('D56', 'SALARIO');
         $sheet->setCellValue('B53','EXCLUSIVO RECURSOS HUMANOS');
-
 
         $writer = new Xlsx($spreadsheet);
         header('Content-Type: application/vnd.ms-excel');
