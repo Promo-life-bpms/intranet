@@ -142,8 +142,6 @@ class RhController extends Controller
             'name' => 'required',
             'lastname' => 'required',
             'status' => 'required',
-            'mail' => 'required',
-            'phone' => 'required',
         ]);
 
         $cv = null;
@@ -248,8 +246,6 @@ class RhController extends Controller
             $create_postulant_details->fiscal_postal_code  = $request->fiscal_postal_code;
             $create_postulant_details->position  = $request->position;
             $create_postulant_details->area  = $request->area;
-            $create_postulant_details->salary_sd  = $request->salary_sd;
-            $create_postulant_details->salary_sbc  = $request->salary_sbc;
             $create_postulant_details->horary  = $request->horary;
             $create_postulant_details->date_admission  = $request->date_admission;
             $create_postulant_details->card_number  = $request->card_number;
@@ -260,6 +256,16 @@ class RhController extends Controller
             $create_postulant_details->discount_credit_number  = $request->discount_credit_number;
             $create_postulant_details->home_references  = $request->home_references;
             $create_postulant_details->house_characteristics  = $request->house_characteristics;
+            
+            $create_postulant_details->nacionality  = $request->nacionality;
+            $create_postulant_details->id_credential  = $request->id_credential;
+            $create_postulant_details->gender  = $request->gender;
+            $create_postulant_details->month_salary_net  = $request->month_salary_net;
+            $create_postulant_details->month_salary_gross  = $request->month_salary_gross;
+            $create_postulant_details->daily_salary  = $request->daily_salary;
+            $create_postulant_details->daily_salary_letter  = $request->daily_salary_letter;
+            $create_postulant_details->position_objetive  = $request->	position_objetive;
+  
             $create_postulant_details->save();
             
             $find_postulant_details = PostulantDetails::all()->where('postulant_id', $request->postulant_id)->last();
@@ -312,8 +318,6 @@ class RhController extends Controller
                 'fiscal_postal_code' => $request->fiscal_postal_code,
                 'position' => $request->position,
                 'area' => $request->area,
-                'salary_sd' => $request->salary_sd,
-                'salary_sbc' => $request->salary_sbc,
                 'horary' => $request->horary,
                 'date_admission' => $request->date_admission,
                 'card_number' => $request->card_number,
@@ -324,6 +328,15 @@ class RhController extends Controller
                 'discount_credit_number' => $request->discount_credit_number,
                 'home_references' => $request->home_references,
                 'house_characteristics' => $request->house_characteristics,
+
+                'nacionality' => $request->nacionality,
+                'id_credential' => $request->id_credential,
+                'gender' => $request->gender,
+                'month_salary_net' => $request->month_salary_net,
+                'month_salary_gross' => $request->month_salary_gross,
+                'daily_salary' => $request->daily_salary,
+                'daily_salary_letter' => $request->daily_salary_letter,
+                'position_objetive' => $request->position_objetive,
             ]); 
 
             $find_postulant_details_to_beneficiary = PostulantDetails::all()->where('postulant_id', $request->postulant_id)->last();

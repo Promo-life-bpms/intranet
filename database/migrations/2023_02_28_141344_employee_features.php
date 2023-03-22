@@ -35,8 +35,6 @@ class EmployeeFeatures extends Migration
             $table->string('fiscal_postal_code')->nullable();
             $table->string('position')->nullable();
             $table->string('area')->nullable();
-            $table->decimal('salary_sd',8,2)->nullable();
-            $table->decimal('salary_sbc',8,2)->nullable();
             $table->string('horary')->nullable();
             $table->date('date_admission')->nullable();
             $table->string('card_number')->nullable();
@@ -47,6 +45,14 @@ class EmployeeFeatures extends Migration
             $table->string('discount_credit_number')->nullable();
             $table->string('home_references')->nullable();
             $table->string('house_characteristics')->nullable();
+            $table->string('nacionality')->nullable();
+            $table->string('id_credential')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('month_salary_net')->nullable();
+            $table->string('month_salary_gross')->nullable();
+            $table->string('daily_salary')->nullable();
+            $table->string('daily_salary_letter')->nullable();
+            $table->string('position_objetive')->nullable();
             $table->timestamps();
         }); 
 

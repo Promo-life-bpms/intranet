@@ -16,7 +16,7 @@
             </div>
         @endif
         {!! Form::open(['route' => 'rh.storePostulant', 'enctype' => 'multipart/form-data']) !!}
-        <h6>Informacion Personal</h6>
+        <h5>Informacion Personal</h5>
         <p></p>
         <div class="row form-group">
                 <div class="col-sm">
@@ -83,11 +83,6 @@
                 {!! Form::label('department_id', 'Fecha de entrevista (opcional)') !!}
                 <input type="datetime-local" id="meeting-time"
                 name="interview_date" class="form-control">
-            </div>
-
-            <div class="col-sm ">
-                {!! Form::label('nationality', 'Nacionalidad') !!}
-                {!! Form::text('nationality', null, ['class' => 'form-control']) !!}
             </div>
         </div>
 
