@@ -14,16 +14,20 @@ class IndeterminateContract extends Controller
         $employer = "";
         $name = strtoupper($postulant->name);
         $lastname = strtoupper($postulant->lastname); 
-        $nacionality = " ";  
+        $nacionality = strtoupper($postulant_details->nacionality);  
         $civil_status = strtoupper($postulant_details->civil_status) ;
         $domicile = strtoupper($postulant_details->address) ;
         $age = $postulant_details->age;
         $curp = strtoupper($postulant_details->curp);
         $position = strtoupper($postulant_details->position);
+        $position_objetive =  strtoupper($postulant_details->position_objetive);
         $duration_months = $duration;
         $month_string = "MESES";
         $date_admission = date('d,m,Y', strtotime($postulant_details->date_admission));
         $next_sign_date = date('d,m,Y',strtotime('+3 months', strtotime($postulant_details->date_admission)));
+        $daily_salary = strtoupper($postulant_details->daily_salary); 
+        $daily_salary_letter = strtoupper($postulant_details->daily_salary_letter); 
+       
         if($duration == null || $duration = ""){
             $duration_months = "3";
         }
@@ -255,7 +259,7 @@ class IndeterminateContract extends Controller
 
         $htmlsection->addHtml($section, $sectionI);
 
-        $section2 = "<p>II.- EL EMPLEADO POR SU PARTE DECLARA QUE QUEDA DEBIDAMENTE ENTERADO DE LA CAUSA QUE ORIGINA SU CONTRATACIÓN Y ESTA CONFORME EN PRESTAR SUS SERVICIOS PERSONALES A “LA EMPRESA” EN LOS TERMINOS QUE MAS ADELANTE PACTAN, MANIFESTANDO TENER LOS CONOCIMIENTOS SUFICIENTES PARA REALIZAR TAL <b>SERVICIO DE $position QUE CONSISTE EN (OBJETIVO DEL PUESTO).</b></p>";
+        $section2 = "<p>II.- EL EMPLEADO POR SU PARTE DECLARA QUE QUEDA DEBIDAMENTE ENTERADO DE LA CAUSA QUE ORIGINA SU CONTRATACIÓN Y ESTA CONFORME EN PRESTAR SUS SERVICIOS PERSONALES A “LA EMPRESA” EN LOS TERMINOS QUE MAS ADELANTE PACTAN, MANIFESTANDO TENER LOS CONOCIMIENTOS SUFICIENTES PARA REALIZAR TAL <b>SERVICIO DE $position QUE CONSISTE EN $position_objetive.</b></p>";
         $htmlsection->addHtml($section, $section2);
 
         $section->addText('');
@@ -279,7 +283,7 @@ class IndeterminateContract extends Controller
         $section2 = "<p>TERCERA.- CONVIENEN LAS PARTES EXPRESAMENTE EN QUE EL PRESENTE CONTRATO INDIVIDUAL DE TRABAJO QUE CELEBRAN POR <b>TIEMPO INDETERMINADO</b> CONSISTE EN EL DESARROLLO DE LAS LABORES DEL EMPLEADO DE ESTA EMPRESA EN EL DOMICILIO QUE CORRESPONDEN CONFORME LA CLAUSULA SEGUNDA DE ESTE CONTRATO</p>";
         $htmlsection->addHtml($section, $section2);
 
-        $section2 = "<p>CUARTA.- CONVIENEN LAS PARTES EN QUE EL EMPLEADO RECIBIRA COMO RETRIBUCIÓN DE SUS SERVICIOS  LA CANTIDAD DE <b>$  (NÚMERO Y DECIMALES) (CANTIDAD CON LETRA 00/100 M.N.)</b> DIARIOS, ADICIONALMENTE EL TRABAJADOR RECIBIRA ADEMAS DE LAS PRESTACIONES DE LEY, LAS SIGUIENTES PRESTACIONES SIEMPRE Y CUANDO CUMPLA CON LOS REQUISITOS ESTABLECIDOS PARA OBTENERLAS ESTAS SON: UN 10% DE PREMIO DE PUNTUALIDAD; 10% PREMIO DE ASISTENCIA Y DESPENSA EN EFECTIVO LOS CUALES   LE SERAN PAGADOS EN MONEDA NACIONAL VIA TRANSFERENCIA ELECTRONICA A LA TARJETA DE NOMINA BANCOMER, LA CUAL LE SERA ASIGNADA EN EL MOMENTO DE SU CONTRATACION, LOS DIAS 15 Y ULTIMO DE CADA MES.</p>";
+        $section2 = "<p>CUARTA.- CONVIENEN LAS PARTES EN QUE EL EMPLEADO RECIBIRA COMO RETRIBUCIÓN DE SUS SERVICIOS  LA CANTIDAD DE <b>$$daily_salary ($daily_salary_letter 00/100 M.N.)</b> DIARIOS, ADICIONALMENTE EL TRABAJADOR RECIBIRA ADEMAS DE LAS PRESTACIONES DE LEY, LAS SIGUIENTES PRESTACIONES SIEMPRE Y CUANDO CUMPLA CON LOS REQUISITOS ESTABLECIDOS PARA OBTENERLAS ESTAS SON: UN 10% DE PREMIO DE PUNTUALIDAD; 10% PREMIO DE ASISTENCIA Y DESPENSA EN EFECTIVO LOS CUALES   LE SERAN PAGADOS EN MONEDA NACIONAL VIA TRANSFERENCIA ELECTRONICA A LA TARJETA DE NOMINA BANCOMER, LA CUAL LE SERA ASIGNADA EN EL MOMENTO DE SU CONTRATACION, LOS DIAS 15 Y ULTIMO DE CADA MES.</p>";
         $htmlsection->addHtml($section, $section2);
 
         $section2 = "<p>QUINTA.- CONVIENEN LAS PARTES EN QUE POR CADA SEIS DIAS DE TRABAJO EL EMPLEADO DISFRUTARA DE UN DIA DE DESCANSO CON GOCE DE SALARIO INTEGRO CUBRIENDO 48 HORAS DE TRABAJO SEMANALES, YA SEA EN EL DOMICILIO DE LA EMPRESA O DONDE SE LE ASIGNE,  IGUALMENTE TENDRA DERECHO A DISFRUTAR DE SALARIOS EN LOS DIAS DE DESCANSO OBLIGATORIO QUE SEÑALA LA LEY FEDERAL DEL TRABAJO, CUANDO ESTOS OCURRAN DENTRO DEL TERMINO DE SU CONTRATACIÓN.</p>";
@@ -301,10 +305,10 @@ class IndeterminateContract extends Controller
         //Unipromtex
         if($company_id== 5){
             $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
-            $listItemRun->addText('LA JORNADA DE TRABAJO SERA DE LUNES A VIERNES DE _______________ A _______________ HRS., Y LOS DÍAS SABADOS DE _______________ A  _________________ HRS.  DEBIENDO CUBRIR LAS 48 HORAS A LA SEMANA.',[]);
+            $listItemRun->addText('LA JORNADA DE TRABAJO SERA DE LUNES A VIERNES DE 9:00 A.M. A 6 P.M. HRS., Y LOS DÍAS SABADOS DE 9:00 A.M. A 2 P.M. HRS. DEBIENDO CUBRIR LAS 48 HORAS A LA SEMANA.',[]);
         }else{
             $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
-            $listItemRun->addText('LA JORNADA DE TRABAJO SERA DE LUNES A JUEVES DE  ______ A  ________ HRS., Y LOS DÍAS VIERNES DE  _______ A  ________ HRS.  DEBIENDO CUBRIR LAS 48 HORAS A LA SEMANA',[]);
+            $listItemRun->addText('LA JORNADA DE TRABAJO SERA DE LUNES A JUEVES DE  8:00 A.M. A 5 P.M. HRS., Y LOS DÍAS VIERNES DE  8:30 A.M. A  5 P.M. HRS. DEBIENDO CUBRIR LAS 48 HORAS A LA SEMANA',[]);
         }
 
         $section2 = "<p>OCTAVA.- CONVIENEN LAS PARTES EN QUE EL EMPLEADO (TRABAJADOR), SERA CAPACITADO PARA EL DESEMPEÑO DE SUS LABORES EN VIRTUD DE QUE YA CUENTAN DE LEY CON LOS TERMINOS DE LOS PLANES Y PROGRAMAS DE CAPACITACION ESTABLECIDOS POR SU CONDUCTO.</p>";
@@ -316,7 +320,7 @@ class IndeterminateContract extends Controller
         $section2 = "<p>DECIMA.- LAS PARTES CONVIENEN EN QUE LOS DERECHOS Y OBLIGACIONES QUE MUTUAMENTE LES CORRESPONDEN Y QUE NO HAYA SIDO OBJETO DE MENCION ESPECIFICA, SE SUJETARAN A LAS DISPOSICIONES DE LA LEY FEDERAL DEL TRABAJO.</p>";
         $htmlsection->addHtml($section, $section2);
 
-        $section2 = "<p>DECIMA PRIMERA.- DERIVADO DEL ARTICULO 25 (FRACC. X) DE LA LEY FEDERAL DE TRABAJO, EL EMPLEADO DESIGNA EN ESTE ACTO A BENEFICIARIOS  PARA EFECTOS DE PAGO DE PRESTACIONES Y REMUNERACIONES QUE SE GENEREN POR CAUSA DE FALLECIMIENTO O DESAPARICIÓN A CAUSA DE UN DELITO.</p>";
+        $section2 = "<p>DECIMA PRIMERA.- DERIVADO DEL ARTÍCULO   25 (FRACC. X) DE LA LEY FEDERAL DE TRABAJO, EL EMPLEADO DESIGNA EN ESTE ACTO A BENEFICIARIOS  PARA EFECTOS DE PAGO DE PRESTACIONES Y REMUNERACIONES QUE SE GENEREN POR CAUSA DE FALLECIMIENTO O DESAPARICIÓN A CAUSA DE UN DELITO.</p>";
         $htmlsection->addHtml($section, $section2);
 
 
