@@ -50,37 +50,30 @@ class ScanDocumentsController extends Controller
         File::delete($request1->resource);
         DB::table('users_documentation')->where('id', $request->document_id)->delete();
         return redirect()->back()->with('message', 'Documento eliminado');
-}
-///////////////////////// EDITAR DOCUMENTOS /////////////////////////////////////////////////////////////////
-public function updateDocuments(Request $request)
-{
-    $request->validate([
-        'documents' => 'required',
-        'description' => 'required'
-    ]);
-    
-    $request1 =UserDocumentation::all()->where('id', $request->document_id)->last();
-    File::delete($request1->resource);
-
-    $path="";
-    if ($request->hasFile('documents')) {
-        $filenameWithExt = $request->file('documents')->getClientOriginalName();
-        $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-        $extension = $request->file('documents')->clientExtension();
-        $fileNameToStore = time(). $filename . '.' . $extension;
-        $path= $request->file('documents')->move('storage/user/documents', $fileNameToStore);
-
     }
+    ///////////////////////// EDITAR DOCUMENTOS ////////////////////////////////////////////////////////////////
+    public function updateDocuments(Request $request)
+    {
+        $request->validate([
+            'documents' => 'required',
+            'description' => 'required',
+            'id'=>'required'
+        ]);
+        $request1 = UserDocumentation::all()->where('id', $request->id)->last();
+        File::delete($request1->resource);
+        
+        $path="";
 
-    DB::table('users_documentation')->where('id', $request->document_id)->update(['resource' => $path, 'description'=>$request->description]);
-
-
-
-
-
-
-    
-    return redirect()->back()->with('message', "Documento actualizado correctamente");
-}
-
+        if ($request->hasFile('documents')) {
+            $filenameWithExt = $request->file('documents')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('documents')->clientExtension();
+            $fileNameToStore = time(). $filename . '.' . $extension;
+            $path= $request->file('documents')->move('storage/user/documents', $fileNameToStore);
+        }
+        
+        DB::table('users_documentation')->where('id', $request->id)->update(['resource' => $path, 
+        'description'=>$request->description, 'type'=>$extension]);
+        return redirect()->back()->with('message', "Documento actualizado correctamente");
+    }
 }
