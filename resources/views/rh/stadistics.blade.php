@@ -129,15 +129,11 @@ text-justify: inter-word; font-size:1.2rem;">Periodo: 01/02/2023 al 17/02/2023</
                     labels: ['Tecnología e innovación', 'Ventas'],
                     datasets: [{
                     label: 'Total:',
-                    data: [20, 15, 10, 5, 5, 5],
+                    data: [20, 15],
                     borderWidth: 1,
                     backgroundColor:[
                     'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
+                    'rgba(54, 162, 235, 0.2)'
                         ],
                     borderColor:[
                     'rgba(255, 99, 132, 0.2)',
