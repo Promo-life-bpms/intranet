@@ -264,8 +264,9 @@ class RhController extends Controller
             $create_postulant_details->month_salary_gross  = $request->month_salary_gross;
             $create_postulant_details->daily_salary  = $request->daily_salary;
             $create_postulant_details->daily_salary_letter  = $request->daily_salary_letter;
-            $create_postulant_details->position_objetive  = $request->	position_objetive;
-  
+            $create_postulant_details->position_objetive  = $request->position_objetive;
+            $create_postulant_details->contract_duration  = $request->contract_duration;
+
             $create_postulant_details->save();
             
             $find_postulant_details = PostulantDetails::all()->where('postulant_id', $request->postulant_id)->last();
@@ -337,6 +338,7 @@ class RhController extends Controller
                 'daily_salary' => $request->daily_salary,
                 'daily_salary_letter' => $request->daily_salary_letter,
                 'position_objetive' => $request->position_objetive,
+                'contract_duration' => $request->contract_duration,
             ]); 
 
             $find_postulant_details_to_beneficiary = PostulantDetails::all()->where('postulant_id', $request->postulant_id)->last();
@@ -396,7 +398,7 @@ class RhController extends Controller
 
         if($request->document == 'determined_contract'){
             $determined_contract = new DeterminateContract();
-            $determined_contract->determinateContract($postulant, $postulant_details,$request->company, $request->determined_contract_duration );
+            $determined_contract->determinateContract($postulant, $postulant_details,$request->company);
         }
 
         if($request->document == 'indetermined_contract'){
@@ -411,7 +413,7 @@ class RhController extends Controller
 
         if($request->document == 'work_condition_update'){
             $work_condition_update = new WorkConditionUpdate();
-            $work_condition_update->workConditionUpdate(strtoupper($postulant->name), strtoupper($postulant->lastname),strtoupper($postulant_details->position));
+            $work_condition_update->workConditionUpdate($postulant, $postulant_details,intval($request->company));
         }
 
         if($request->document == 'no_compete_agreement'){
@@ -425,7 +427,7 @@ class RhController extends Controller
                 return redirect()->back()->with('error', 'Archivo no disponible para la empresa Unipromtex');          
             }
             $no_compete_agreement = new NoCompeteAgreement();
-            $no_compete_agreement->noCompeteAgreement($postulant, $postulant_details,intval($request->company) , $request->determined_contract_duration );
+            $no_compete_agreement->noCompeteAgreement($postulant, $postulant_details,intval($request->company));
         }   
 
         if($request->document == 'letter_for_bank'){

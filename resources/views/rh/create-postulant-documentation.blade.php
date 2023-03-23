@@ -28,19 +28,8 @@
             <br><br>
             <h6>Contratos</h6> 
            
-            <div class="row" style="width:90%">
-                <div class="col">
-                    <input type="radio" name="document" value="determined_contract" id="determined_contract"> <label for="cbox2">Contrato determinado</label>  
-                </div>
-                <div class="col" id="form-checked-value" style="display:none">
-                    <div class="input-group"style="margin-top:-10px">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-sm">Duración</span>
-                    </div>
-                    <input id="input_contrato_determinado" type="number" name="determined_contract_duration" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Meses">
-                    </div>
-                </div>
-            </div>
+            <input type="radio" name="document" value="determined_contract" id="determined_contract"> <label for="cbox2">Contrato determinado</label>  
+            <br>
             <input type="radio" name="document" value="indetermined_contract"> <label for="cbox2">Contrato indeterminado</label> 
             
             <br><br>

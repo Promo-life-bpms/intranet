@@ -68,6 +68,7 @@ class RhModule extends Migration
             $table->string('daily_salary')->nullable();
             $table->string('daily_salary_letter')->nullable();
             $table->string('position_objetive')->nullable();
+            $table->string('contract_duration')->nullable();
             $table->timestamps();
         }); 
 

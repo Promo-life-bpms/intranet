@@ -7,7 +7,7 @@ use PhpOffice\PhpWord\Style\Language;
 
 class NoCompeteAgreement extends Controller
 {
-    public function noCompeteAgreement($postulant, $postulant_details, $company_id, $duration)
+    public function noCompeteAgreement($postulant, $postulant_details, $company_id)
     {
         $social_reason = "";
         $company_name = "";

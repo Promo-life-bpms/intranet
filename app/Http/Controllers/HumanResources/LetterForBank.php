@@ -4,6 +4,8 @@ namespace App\Http\Controllers\HumanResources;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use PhpOffice\PhpWord\Element\Header;
 use PhpOffice\PhpWord\Style\Language;
 
 class LetterForBank extends Controller
@@ -108,6 +110,16 @@ class LetterForBank extends Controller
             'bold' => true,
         );
 
+        $headerImageStyle = array(
+            'positioning' => 'absolute',
+            'marginLeft' => -72,
+            'marginTop' => -72,
+            'width' => 595,
+            'wrappingStyle' => 'behind',
+            'posHorizontal' => 'absolute',
+            'posVertical' => 'absolute',
+        );
+
         $center = array(
             'align'=> 'center'
         );
@@ -120,11 +132,21 @@ class LetterForBank extends Controller
         //create section component
         $section = $phpWord->addSection();
         $htmlsection= new \PhpOffice\PhpWord\Shared\Html();
+        $header = $section->addHeader(Header::FIRST);
+        $bh_header = public_path('img\bh_header.png');
 
+
+        $section->addImage($bh_header,  $headerImageStyle);
+
+        $section->addText('');
+
+            
         $section->addText(
             'Naucalpan de Juárez, Estado de México a ' .$date_admission  ,
             $bodyNormalStyle, $right
         );
+
+        
    
         $section->addText('');
         $section->addText('');

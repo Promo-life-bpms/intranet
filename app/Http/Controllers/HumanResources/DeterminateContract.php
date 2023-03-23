@@ -7,7 +7,7 @@ use PhpOffice\PhpWord\Style\Language;
 
 class DeterminateContract extends Controller
 {
-    public function determinateContract($postulant, $postulant_details, $company_id, $duration )
+    public function determinateContract($postulant, $postulant_details, $company_id )
     {
         $company = "";
         $employer = "";
@@ -20,17 +20,19 @@ class DeterminateContract extends Controller
         $curp = strtoupper($postulant_details->curp);
         $position = strtoupper($postulant_details->position);
         $position_objetive =  strtoupper($postulant_details->position_objetive);
-        $duration_months = $duration;
+        $duration_months = $postulant_details->contract_duration;
         $month_string = "MESES";
         $date_admission = date('d,m,Y', strtotime($postulant_details->date_admission));
         $daily_salary = strtoupper($postulant_details->daily_salary); 
         $daily_salary_letter = strtoupper($postulant_details->daily_salary_letter); 
 
-        if($duration == null || $duration = ""){
-            $duration_months = "3";
+        if($postulant_details->contract_duration == 'indefinido'){
+            $duration_months = "INDEFINIDO";
+            $month_string = "";
         }
+       
 
-        if($duration_months == "1" ){
+        if($postulant_details->contract_duration == '1'){
             $month_string = "MES";
         }
        

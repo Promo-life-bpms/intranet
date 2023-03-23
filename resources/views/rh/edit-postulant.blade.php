@@ -17,7 +17,7 @@
         @endif
         {!! Form::model($postulant, ['route' => ['rh.updatePostulant', $postulant], 'method' => 'put','enctype' => 'multipart/form-data']) !!}
 
-        <h5>Información Personal</h5>
+        <h5>Información personal</h5>
         <p></p>
         <div class="row form-group">
                 <div class="col-sm">
@@ -67,7 +67,7 @@
             </div>
               
             <div class="col-sm">
-                {!! Form::label('cv', 'CV o Solicitud Elaborada (opcional)') !!}
+                {!! Form::label('cv', 'CV o solicitud elaborada (opcional)') !!}
                 {!! Form::file('cv', ['class' => 'form-control']) !!}
             </div>  
         </div>
@@ -109,7 +109,7 @@
           
             
             <br>
-            <h5>Información Personal Adicional</h5>
+            <h5>Información adicional</h5>
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('cell_phone', 'Telefono celular') !!}
@@ -139,10 +139,8 @@
                 </div>
                 
                 <div class="col-sm ">
-                    {!! Form::label('imss_number', 'N° Afiliacion IMSS') !!}
-                    {!! Form::text('imss_number', isset($postulant_details->imss_number) ? $postulant_details->imss_number : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de afiliacion del IMSS']) !!}
-
-                    
+                    {!! Form::label('imss_number', 'N° afiliacion IMSS') !!}
+                    {!! Form::text('imss_number', isset($postulant_details->imss_number) ? $postulant_details->imss_number : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de afiliacion del IMSS']) !!} 
                 </div>  
             </div>
 
@@ -153,7 +151,7 @@
                 </div>
 
                 <div class="col-sm ">
-                    {!! Form::label('id_credential', 'ID Credencial') !!}
+                    {!! Form::label('id_credential', 'ID credencial') !!}
                     {!! Form::text('id_credential', isset($postulant_details->id_credential) ? $postulant_details->id_credential : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el ID de la credencial']) !!}
                 </div>
                 
@@ -165,7 +163,7 @@
 
             <div class="row form-group">
                 <div class="col-sm ">
-                    {!! Form::label('civil_status', 'Estado Civil') !!}
+                    {!! Form::label('civil_status', 'Estado civil') !!}
                     {!! Form::select('civil_status', ['soltero' => 'Soltero(a)', 'casado' => 'Casado(a)',  'divorciado' => 'Divorciado(a)', 'viudo' => 'Viudo(a)', 'conviviente' => 'Conviviente' ], isset($postulant_details->civil_status) ? $postulant_details->civil_status : null ,['class' => 'form-control', 'placeholder' => 'Ingrese la estado civil']) !!}
                 </div>
 
@@ -179,9 +177,25 @@
                     {!! Form::date('date_admission', isset($postulant_details->date_admission) ? $postulant_details->date_admission : null, ['class' => 'form-control', 'placeholder' => 'Ingrese fecha de ingreso']) !!}
                 </div>  
             </div>
+
+            <div class="row form-group">
+                <div class="col-sm ">
+                    {!! Form::label('contract_duration', 'Duración contrato') !!}
+                    {!! Form::select('contract_duration', ['indefinido' => 'Tiempo indefinido', '1' => '1 Mes',  '2' => '2 Meses', '3' => '3 Meses', '4' => '4 Meses' ,  '5' => '5 Meses' , '6' => '6 Meses' ], isset($postulant_details->contract_duration) ? $postulant_details->contract_duration : null ,['class' => 'form-control', 'placeholder' => 'Selecciona duracion']) !!}
+                </div>
+
+                <div class="col-sm ">
+
+                </div>
+                
+                <div class="col-sm ">
+
+                </div>  
+            </div>
+
             <br>
 
-            <h5>Detalles del Pueso</h5>
+            <h5>Detalles del puesto</h5>
 
             <div class="row form-group">
                 <div class="col-sm ">
@@ -190,31 +204,31 @@
                 </div>
 
                 <div class="col-sm ">
-                    {!! Form::label('position_objetive', 'Objetivo del Puesto') !!}
+                    {!! Form::label('position_objetive', 'Objetivo del puesto') !!}
                     {!! Form::text('position_objetive', isset($postulant_details->position_objetive) ? $postulant_details->position_objetive : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el objetivo del puesto']) !!}
                 </div> 
             </div>
 
             <div class="row form-group">
                 <div class="col-sm ">
-                    {!! Form::label('month_salary_gross', 'Salario Bruto Mensual') !!}
+                    {!! Form::label('month_salary_gross', 'Salario bruto mensual') !!}
                     {!! Form::text('month_salary_gross', isset($postulant_details->month_salary_gross) ? $postulant_details->month_salary_gross : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario bruto mensual']) !!}
                 </div> 
 
                 <div class="col-sm ">
-                    {!! Form::label('month_salary_net', 'Salario Neto Mensual') !!}
+                    {!! Form::label('month_salary_net', 'Salario neto mensual') !!}
                     {!! Form::text('month_salary_net', isset($postulant_details->month_salary_net) ? $postulant_details->month_salary_net : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario neto mensual']) !!}
                 </div>
             </div>
 
             <div class="row form-group">
                 <div class="col-sm ">
-                    {!! Form::label('daily_salary', 'Salario Diario') !!}
+                    {!! Form::label('daily_salary', 'Salario diario') !!}
                     {!! Form::text('daily_salary', isset($postulant_details->daily_salary) ? $postulant_details->daily_salary : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario diario']) !!}
                 </div> 
 
                 <div class="col-sm ">
-                    {!! Form::label('daily_salary_letter', 'Salario Diario en Letra') !!}
+                    {!! Form::label('daily_salary_letter', 'Salario diario en letra') !!}
                     {!! Form::text('daily_salary_letter', isset($postulant_details->daily_salary_letter) ? $postulant_details->daily_salary_letter : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario diario en letra']) !!}
                 </div>
             </div>
@@ -268,14 +282,14 @@
                 </div>
                 
                 <div class="col-sm ">
-                    {!! Form::label('fiscal_postal_code', 'CP Fiscal') !!}
+                    {!! Form::label('fiscal_postal_code', 'CP fiscal') !!}
                     {!! Form::text('fiscal_postal_code', isset($postulant_details->fiscal_postal_code) ? $postulant_details->fiscal_postal_code : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el codigo postal fiscal']) !!}
                 </div>  
             </div>
             <br>
 
 
-            <h5>Información Familiar</h5>
+            <h5>Información familiar</h5>
 
             <div class="row form-group">
                 <div class="col-sm ">
@@ -293,7 +307,7 @@
 
 
             <br>
-            <h5>Información Bancaria</h5>
+            <h5>Información bancaria</h5>
         
             <div class="row form-group">
                 <div class="col-sm col-md-4">
@@ -302,7 +316,7 @@
                 </div>
 
                 <div class="col-sm col-md-8">
-                    {!! Form::label('card_number', 'N° Tarjeta/Cuenta') !!}
+                    {!! Form::label('card_number', 'N° tarjeta/cuenta') !!}
                     {!! Form::text('card_number', isset($postulant_details->card_number) ? $postulant_details->card_number : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de cuenta']) !!}
                 </div>
                 

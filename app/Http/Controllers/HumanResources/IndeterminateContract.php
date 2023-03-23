@@ -8,7 +8,7 @@ use PhpOffice\PhpWord\Style\Language;
 
 class IndeterminateContract extends Controller
 {
-    public function indeterminateContract($postulant, $postulant_details, $company_id, $duration )
+    public function indeterminateContract($postulant, $postulant_details, $company_id )
     {
         $company = "";
         $employer = "";
@@ -21,17 +21,14 @@ class IndeterminateContract extends Controller
         $curp = strtoupper($postulant_details->curp);
         $position = strtoupper($postulant_details->position);
         $position_objetive =  strtoupper($postulant_details->position_objetive);
-        $duration_months = $duration;
+        $duration_months = $postulant_details->contract_duration;
         $month_string = "MESES";
         $date_admission = date('d,m,Y', strtotime($postulant_details->date_admission));
         $next_sign_date = date('d,m,Y',strtotime('+3 months', strtotime($postulant_details->date_admission)));
         $daily_salary = strtoupper($postulant_details->daily_salary); 
         $daily_salary_letter = strtoupper($postulant_details->daily_salary_letter); 
        
-        if($duration == null || $duration = ""){
-            $duration_months = "3";
-        }
-
+       
         if($duration_months == "1" ){
             $month_string = "MES";
         }
@@ -301,7 +298,6 @@ class IndeterminateContract extends Controller
         $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
         $listItemRun->addText('A OBSERVAR LAS DISPOSICIONES QUE SOBRE HORARIOS DE TRABAJO EXISTAN.',[]);
 
- 
         //Unipromtex
         if($company_id== 5){
             $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
