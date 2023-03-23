@@ -41,6 +41,7 @@
 
                 @default
                 <img src="{{asset('img/Documentos.png')}}">
+                @break;
                 @endswitch
                 <p class="card-text">{{$document->description}}</p>
                 <a href="{{asset($document->resource)}}" style="width: 100%" target="_blank" class="btn btn-primary btn-sm">Abrir</a><br>
