@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\HumanResources;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use PhpOffice\PhpWord\Element\Footer;
 use PhpOffice\PhpWord\Element\Header;
 use PhpOffice\PhpWord\Style\Language;
 
@@ -13,64 +15,172 @@ class LetterForBank extends Controller
     public function letterForBank($postulant,$postulant_details, $company_id)
     {
         $social_reason = "";
-        $employer = "";
         $name = strtoupper($postulant->name);
         $lastname = strtoupper($postulant->lastname); 
-        $nacionality = " ";  
-        $civil_status = strtoupper($postulant_details->civil_status) ;
-        $domicile = strtoupper($postulant_details->address) ;
-        $age = $postulant_details->age;
-        $curp = strtoupper($postulant_details->curp);
         $rfc = strtoupper($postulant_details->rfc);
-        $position = strtoupper($postulant_details->position);
+        $id_credential = strtoupper($postulant_details->id_credential);
         $date_admission = date('d/m/Y', strtotime($postulant_details->date_admission));
+        $header_img = '';
+        $footer_img = '';
 
+        
+        //Sections nad config 
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $phpWord->getSettings()->setThemeFontLang(new Language(Language::ES_ES));
+      
+        $section = $phpWord->addSection();
+        $htmlsection= new \PhpOffice\PhpWord\Shared\Html();
+        $header = $section->addHeader(Header::FIRST);
+        $footer = $section->addFooter(Footer::FIRST);
+        
+        //Setting page margins
+        $phpWord->getSettings()->setMirrorMargins(false);
+        $sectionStyle = $section->getStyle();
+        $sectionStyle->setMarginLeft(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
+        $sectionStyle->setMarginRight(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
+        $sectionStyle->setMarginTop(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
+        $sectionStyle->setMarginBottom(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
 
          //Promolife
          if($company_id == 1){
             $social_reason = "PROMO LIFE, S. DE R.L. DE C.V.";
-            $employer = "C. RAÚL TORRES MÁRQUEZ";
             $footerText = "La empresa PROMO LIFE, S DE RL DE CV con domicilio ubicado en SAN ANDRES ATOTO #155, PISO 1 LOCAL B, CP.53550, COL.UNIDAD SAN ESTEBAN, NAUCALPAN DE JUAREZ, ESTADO DE MEXICO    ";
 
+            $header_img = public_path('img\pl_header.png');
+
+            $headerImageStyle = array(
+                'positioning' => 'absolute',
+                'marginLeft' => 0,
+                'marginTop' => +60,
+                'width' => 160,
+                'wrappingStyle' => 'behind',
+                'posHorizontal' => 'absolute',
+                'posVertical' => 'absolute',
+            );
+
+            $header->addImage($header_img, $headerImageStyle);
         }
 
         //BH tardemarket
         if($company_id == 2){
             $social_reason = "BH TRADE MARKET, S.A. DE C.V.";
-            $employer = "C. DAVID LEVY HANO";
             $footerText = "LA EMPRESA BH TRADE MARKET S.A. DE C.V.  con domicilio ubicado en SAN ANDRES ATOTO #155, PISO 1 LOCAL A, CP.53550, COL.UNIDAD SAN ESTEBAN, NAUCALPAN DE JUAREZ, ESTADO DE MEXICO. 52909100";
+            
+            $header_img = public_path('img\bh_header.png');
+            $footer_img = public_path('img\bh_footer.png');
 
+            $headerImageStyle = array(
+                'positioning' => 'absolute',
+                'marginLeft' => -85,
+                'marginTop' => -36,
+                'width' => 596,
+                'wrappingStyle' => 'behind',
+                'posHorizontal' => 'absolute',
+                'posVertical' => 'absolute',
+            );
+    
+            $footerImageStyle = array(
+                'positioning' => 'absolute',
+                'marginLeft' => -85,
+                'marginTop' => -214,
+                'width' => 266,
+                'wrappingStyle' => 'behind',
+                'posHorizontal' => 'absolute',
+                'posVertical' => 'absolute',
+            );
+
+            $header->addImage($header_img, $headerImageStyle);
+            $footer->addImage($footer_img, $footerImageStyle );
+    
+            
         }
 
         //Promo zale
         if($company_id == 3){
             $social_reason = "PROMO ZALE S.A. DE C.V."; 
-            $employer = "C. DANIEL LEVY HANO";
             $footerText = "La empresa PROMO ZALE SA DE CV con domicilio ubicado en SAN ANDRES ATOTO #155, PISO 1 LOCAL E, CP.53550, COL.UNIDAD SAN ESTEBAN, NAUCALPAN DE JUAREZ, ESTADO DE MEXICO    ";
+
+            $header_img = public_path('img\pz_header.png');
+            $footer_img = public_path('img\pz_footer.png');
+
+            $headerImageStyle = array(
+                'positioning' => 'absolute',
+                'marginLeft' => -85,
+                'marginTop' => -36,
+                'width' => 596,
+                'wrappingStyle' => 'behind',
+                'posHorizontal' => 'absolute',
+                'posVertical' => 'absolute',
+            );
+    
+            $footerImageStyle = array(
+                'positioning' => 'absolute',
+                'marginLeft' => -85,
+                'marginTop' => -119,
+                'width' => 440,
+                'wrappingStyle' => 'behind',
+                'posHorizontal' => 'absolute',
+                'posVertical' => 'absolute',
+            );
+
+            $header->addImage($header_img, $headerImageStyle);
+            $footer->addImage($footer_img, $footerImageStyle );
+
 
         }
 
         //Trademarket 57
         if($company_id== 4){
             $social_reason = "TRADE MARKET 57, S.A. DE C.V."; 
-            $employer = "C. MÓNICA REYES RESENDIZ";
             $footerText = "LA EMPRESA TRADE MARKET 57 S.A. DE C.V.  con domicilio ubicado en SAN ANDRES ATOTO #155, PLANTA BAJA, CP.53550, COL.UNIDAD SAN ESTEBAN, NAUCALPAN DE JUAREZ, ESTADO DE MEXICO";
 
+            $header_img = public_path('img\tm57_header.png');
+            $footer_img = public_path('img\tm57_footer.png');
+
+            $headerImageStyle = array(
+                'positioning' => 'absolute',
+                'marginLeft' => -85,
+                'marginTop' => -36,
+                'width' => 596,
+                'wrappingStyle' => 'behind',
+                'posHorizontal' => 'absolute',
+                'posVertical' => 'absolute',
+            );
+    
+            $footerImageStyle = array(
+                'positioning' => 'absolute',
+                'marginLeft' => -85,
+                'marginTop' => -70,
+                'width' => 596,
+                'wrappingStyle' => 'behind',
+                'posHorizontal' => 'absolute',
+                'posVertical' => 'absolute',
+            );
+
+            $header->addImage($header_img, $headerImageStyle);
+            $footer->addImage($footer_img, $footerImageStyle );
         } 
 
         //Unipromtex
         if($company_id== 5){
             $social_reason = "UNIPROMTEX S.A. DE C.V."; 
-            $employer = "DAVID LEVY HANO";
             $footerText = "UNIPROMTEX, S.A. DE C.V. con domicilio ubicado en, CIELITO LINDO 18B, COL. PARQUE INDUSTRIAL IZCALLI, NEZAHUALCÓYOTL, ESTADO DE MÉXICO, C.P. 57810.";
+        
+            $header_img = public_path('img\up_header.png');
+
+            $headerImageStyle = array(
+                'positioning' => 'absolute',
+                'marginLeft' => 0,
+                'marginTop' => +20,
+                'width' => 140,
+                'wrappingStyle' => 'behind',
+                'posHorizontal' => 'absolute',
+                'posVertical' => 'absolute',
+            );
+
+            $header->addImage($header_img, $headerImageStyle);
+        
         } 
-
-
-        $phpWord = new \PhpOffice\PhpWord\PhpWord();
-        $phpWord->getSettings()->setThemeFontLang(new Language(Language::ES_ES));
-
-        //Font name
-        $TextStyle = 'Arial';
 
         //Font styles
         $phpWord->setDefaultFontName('Arial');
@@ -110,16 +220,7 @@ class LetterForBank extends Controller
             'bold' => true,
         );
 
-        $headerImageStyle = array(
-            'positioning' => 'absolute',
-            'marginLeft' => -72,
-            'marginTop' => -72,
-            'width' => 595,
-            'wrappingStyle' => 'behind',
-            'posHorizontal' => 'absolute',
-            'posVertical' => 'absolute',
-        );
-
+      
         $center = array(
             'align'=> 'center'
         );
@@ -129,34 +230,32 @@ class LetterForBank extends Controller
         $right = array(
             'align'=> 'right',
         );
-        //create section component
-        $section = $phpWord->addSection();
-        $htmlsection= new \PhpOffice\PhpWord\Shared\Html();
-        $header = $section->addHeader(Header::FIRST);
-        $bh_header = public_path('img\bh_header.png');
+        
+      
+        
 
-
-        $section->addImage($bh_header,  $headerImageStyle);
 
         $section->addText('');
-
+        $section->addText('');
+        $section->addText('');
+        $section->addText('');
+        $section->addText('');
             
         $section->addText(
-            'Naucalpan de Juárez, Estado de México a ' .$date_admission  ,
+            'Naucalpan de Juárez, Estado de México a ' .  $date_admission,
             $bodyNormalStyle, $right
-        );
-
-        
+        );        
    
         $section->addText('');
         $section->addText('');
+        
         $section->addText(
             'BBVA Bancomer, S.A.<w:br/>Banca de Empresas<w:br/>Ejecutivo de Cuenta,<w:br/>Presente,',
             $bodyRightBoldStyle, $left
         );
   
         $section->addText('');
-        $section2 = "<p>Por este conducto le solicito amablemente puedan otorgarle una tarjeta de nómina a <b>$name $lastname </b> que se identifica con su credencial de Elector <b>ID CREDENCIAL ELECTOR</b> y RFC <b><u>$rfc</u></b> , ya que está dado(a) de alta en la empresa $social_reason</p>";
+        $section2 = "<p>Por este conducto le solicito amablemente puedan otorgarle una tarjeta de nómina a <b>$name $lastname </b> que se identifica con su credencial de Elector <b>$id_credential</b> y RFC <b><u>$rfc</u></b> , ya que está dado(a) de alta en la empresa $social_reason</p>";
         $htmlsection->addHtml($section, $section2);
         $section->addText('');
         
@@ -171,6 +270,7 @@ class LetterForBank extends Controller
         );
 
         $section->addText('');
+        $section->addText('');
 
         $section->addText(
             '_____________________
@@ -180,6 +280,7 @@ class LetterForBank extends Controller
             $bodyCenterBoldStyle, $center
         );
 
+        
         $section->addText('');
         $section->addText('');
         $section->addText('');
