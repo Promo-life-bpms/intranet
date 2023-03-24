@@ -26,7 +26,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HumanResources\RhController;
+
 use App\Http\Controllers\HumanResources\ScanDocumentsController;
+use App\Http\Controllers\HumanResources\UserDetails;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
@@ -238,11 +240,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/rh/build-postulant-documentation/', [RhController::class, 'buildPostulantDocumentation'])->name('rh.buildPostulantDocumentation');
     
 
-
-
+    Route::get('/rh/more-information/{id}', [UserDetails::class, 'moreInformation'])->name('rh.moreInformation');
     
+    Route::post('/rh/create-more-information/', [UserDetails::class, 'createMoreInformation'])->name('rh.createMoreInformation');
+    
+
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
 Route::get('vacations/sendRemembers/', [VacationsController::class, 'sendRemembers'])->name('admin.vacations.sendRemembers');
 Route::get('request/alertRequesPendients/', [RequestController::class, 'alertPendient']);
+
+
