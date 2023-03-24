@@ -5,14 +5,15 @@
     <div class="d-flex justify-content-between">
         <h3>Editar usuario</h3>
         <div>                
-            <form class="form-delete"
+            <form 
                 action="{{ route('rh.moreInformation', ['id' => $user->id]) }}"
                 method="GET">
                  @csrf
-                <button style="" type="submit" class="btn btn-info">Información adicional</button>
-             </form>
-        
-
+                <button type="submit" class="btn btn-primary"> 
+                    <i class="fa fa-user-plus me-2" aria-hidden="true"></i>
+                    Información adicional
+                </button>
+            </form>
         </div>
     </div>
 </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HumanResources;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\UserDetails as ModelsUserDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,31 +12,13 @@ class UserDetails extends Controller
 {
     //
     public function moreInformation ($user_id)
-    {
-
-        $find_user_details = ModelsUserDetails::all()->where('user_id', $user_id)->last();
-        # code...
-        return view('rh.more-information',compact('user_id', 'find_user_details'));
+    {       
+        $user_details = ModelsUserDetails::all()->where('user_id', $user_id)->last();
+        return view('rh.more-information',compact('user_id', 'user_details'));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     
     public function createMoreInformation(Request $request)
     {
-        # code...
-        
         $find_user_details = ModelsUserDetails::all()->where('user_id', $request->user_id)->last();
         if($find_user_details==null){
             
