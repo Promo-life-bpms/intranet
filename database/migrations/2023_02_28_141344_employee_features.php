@@ -67,9 +67,10 @@ class EmployeeFeatures extends Migration
 
         Schema::create('user_beneficiary', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('phone')->nullable();
-            $table->integer('porcentage');
+            $table->integer('porcentage')->nullable();
+            $table->string('position')->nullable();
             $table->foreignId('users_details_id')->references('id')->on('users_details')->onDelete('cascade');
             $table->timestamps();
         });

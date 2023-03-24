@@ -74,9 +74,10 @@ class RhModule extends Migration
 
         Schema::create('postulant_beneficiary', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('phone')->nullable();
-            $table->integer('porcentage');
+            $table->integer('porcentage')->nullable();
+            $table->string('position')->nullable();
             $table->foreignId('postulant_details_id')->references('id')->on('postulant_details')->onDelete('cascade');
             $table->timestamps();
         });

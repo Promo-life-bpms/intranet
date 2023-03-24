@@ -271,32 +271,32 @@ class RhController extends Controller
             
             $find_postulant_details = PostulantDetails::all()->where('postulant_id', $request->postulant_id)->last();
 
-            if($request->beneficiary1<>null){
+           
                 $create_postulant_beneficiary = new  PostulantBeneficiary();
                 $create_postulant_beneficiary->name = $request->beneficiary1;
                 $create_postulant_beneficiary->phone = null;
                 $create_postulant_beneficiary->porcentage = $request->porcentage1;
+                $create_postulant_beneficiary->position = 'beneficiary1';
                 $create_postulant_beneficiary->postulant_details_id = $find_postulant_details->id;
                 $create_postulant_beneficiary->save();
-            }
-
-            if($request->beneficiary2<>null){
+           
+       
                 $create_postulant_beneficiary = new  PostulantBeneficiary();
                 $create_postulant_beneficiary->name = $request->beneficiary2;
                 $create_postulant_beneficiary->phone = null;
                 $create_postulant_beneficiary->porcentage = $request->porcentage2;
+                $create_postulant_beneficiary->position = 'beneficiary2';
                 $create_postulant_beneficiary->postulant_details_id = $find_postulant_details->id;
                 $create_postulant_beneficiary->save();
-            }
-
-            if($request->beneficiary3<>null){
+         
                 $create_postulant_beneficiary = new  PostulantBeneficiary();
                 $create_postulant_beneficiary->name = $request->beneficiary3;
                 $create_postulant_beneficiary->phone = null;
                 $create_postulant_beneficiary->porcentage = $request->porcentage3;
+                $create_postulant_beneficiary->position = 'beneficiary3';
                 $create_postulant_beneficiary->postulant_details_id = $find_postulant_details->id;
                 $create_postulant_beneficiary->save();
-            }
+           
 
         }else{
             DB::table('postulant_details')->where('postulant_id', intval($request->postulant_id))->update([
@@ -341,36 +341,24 @@ class RhController extends Controller
                 'contract_duration' => $request->contract_duration,
             ]); 
 
-            $find_postulant_details_to_beneficiary = PostulantDetails::all()->where('postulant_id', $request->postulant_id)->last();
-            DB::table('postulant_beneficiary')->where('postulant_details_id', intval($find_postulant_details_to_beneficiary->id))->delete();
-            $find_postulant_details = PostulantDetails::all()->where('postulant_id', $request->postulant_id)->last();
+            $postulant_details = PostulantDetails::all()->where('postulant_id', $request->postulant_id)->last();
 
-            if($request->beneficiary1 <> null){
-                $create_postulant_beneficiary = new  PostulantBeneficiary();
-                $create_postulant_beneficiary->name = $request->beneficiary1;
-                $create_postulant_beneficiary->phone = null;
-                $create_postulant_beneficiary->porcentage = $request->porcentage1;
-                $create_postulant_beneficiary->postulant_details_id = $find_postulant_details->id;
-                $create_postulant_beneficiary->save();
-            }
+            DB::table('postulant_beneficiary')->where('postulant_details_id', intval($postulant_details->id))->where('position','beneficiary1') ->update([
+                'name' => $request->beneficiary1,
+                'porcentage' => $request->porcentage1,
+            ]);
 
-            if($request->beneficiary2<>null){
-                $create_postulant_beneficiary = new  PostulantBeneficiary();
-                $create_postulant_beneficiary->name = $request->beneficiary2;
-                $create_postulant_beneficiary->phone = null;
-                $create_postulant_beneficiary->porcentage = $request->porcentage2;
-                $create_postulant_beneficiary->postulant_details_id = $find_postulant_details->id;
-                $create_postulant_beneficiary->save();
-            }
+            DB::table('postulant_beneficiary')->where('postulant_details_id', intval($postulant_details->id))->where('position','beneficiary2') ->update([
+                'name' => $request->beneficiary2,
+                'porcentage' => $request->porcentage2,
+            ]);
 
-            if($request->beneficiary3<>null){
-                $create_postulant_beneficiary = new  PostulantBeneficiary();
-                $create_postulant_beneficiary->name = $request->beneficiary3;
-                $create_postulant_beneficiary->phone = null;
-                $create_postulant_beneficiary->porcentage = $request->porcentage3;
-                $create_postulant_beneficiary->postulant_details_id = $find_postulant_details->id;
-                $create_postulant_beneficiary->save();
-            }
+            DB::table('postulant_beneficiary')->where('postulant_details_id', intval($postulant_details->id))->where('position','beneficiary3') ->update([
+                'name' => $request->beneficiary3,
+                'porcentage' => $request->porcentage3,
+            ]);
+
+            
         }
         return redirect()->back()->with('message', 'Información guardada correctamente');
     }

@@ -281,7 +281,7 @@
 
                 <div class="row g-0 text-center">
                     <div class="col-sm-6 col-md-8">
-                        {!! Form::text('beneficiary1',isset($postulant_beneficiaries[0]->name) ? $postulant_beneficiaries[0]->name : null, ['class' => 'form-control', 'placeholder' => 'primer beneficiario']) !!} 
+                        {!! Form::text('beneficiary1',isset($user_beneficiaries[0]->name) ? $user_beneficiaries[0]->name : null, ['class' => 'form-control', 'placeholder' => 'primer beneficiario']) !!} 
                     </div>
                     <div class="col-6 col-md-4">
 
@@ -289,7 +289,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">%</span>
                             </div>
-                            {!! Form::text('porcentage1',isset($postulant_beneficiaries[0]->porcentage) ? $postulant_beneficiaries[0]->porcentage : null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
+                            {!! Form::text('porcentage1',isset($user_beneficiaries[0]->porcentage) ? $user_beneficiaries[0]->porcentage : null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
                         </div>
                     </div>
                 </div>
@@ -299,7 +299,7 @@
                     {!! Form::label('', 'Beneficiario 2 ') !!}
                     <div class="row g-0 text-center">
                         <div class="col-sm-6 col-md-8">
-                            {!! Form::text('beneficiary2',isset($postulant_beneficiaries[1]->name) ? $postulant_beneficiaries[1]->name : null, ['class' => 'form-control', 'placeholder' => 'segundo beneficiario']) !!} 
+                            {!! Form::text('beneficiary2',isset($user_beneficiaries[1]->name) ? $user_beneficiaries[1]->name : null, ['class' => 'form-control', 'placeholder' => 'segundo beneficiario']) !!} 
                         </div>
                         <div class="col-6 col-md-4">
 
@@ -307,7 +307,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">%</span>
                                 </div>
-                                {!! Form::text('porcentage2',isset($postulant_beneficiaries[1]->porcentage) ? $postulant_beneficiaries[1]->porcentage : null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
+                                {!! Form::text('porcentage2',isset($user_beneficiaries[1]->porcentage) ? $user_beneficiaries[1]->porcentage : null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
                             </div>
                         </div>
                     </div>
@@ -320,7 +320,7 @@
                     {!! Form::label('', 'Beneficiario 3 ') !!}
                     <div class="row g-0 text-center">
                             <div class="col-sm-6 col-md-8">
-                                {!! Form::text('beneficiary3',isset($postulant_beneficiaries[2]->name) ? $postulant_beneficiaries[2]->name : null, ['class' => 'form-control', 'placeholder' => 'tercer beneficiario']) !!} 
+                                {!! Form::text('beneficiary3',isset($user_beneficiaries[2]->name) ? $user_beneficiaries[2]->name : null, ['class' => 'form-control', 'placeholder' => 'tercer beneficiario']) !!} 
                             </div>
                             <div class="col-6 col-md-4">
 
@@ -328,7 +328,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">%</span>
                                     </div>
-                                    {!! Form::text('porcentage3',isset($postulant_beneficiaries[2]->porcentage) ? $postulant_beneficiaries[2]->porcentage : null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
+                                    {!! Form::text('porcentage3',isset($user_beneficiaries[2]->porcentage) ? $user_beneficiaries[2]->porcentage : null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
                                 </div>
                             </div>
                         </div>
