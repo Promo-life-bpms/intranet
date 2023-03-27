@@ -421,9 +421,9 @@
 
         </div>
         
-        {!! Form::submit('GUARDAR', ['class' => 'btnCreate mt-4']) !!}
+        
     </div>
-
+    {!! Form::submit('GUARDAR', ['class' => 'btnCreate mt-4']) !!}
     {!! Form::close() !!}
    
     </div>
@@ -469,7 +469,7 @@
         function statusChange(event) {
             const currentValue = event.target.value;
             console.log(currentValue);
-            if(currentValue == 'candidato'){
+            if(currentValue == 'candidato' || currentValue == 'empleado'){
                 document.getElementById('more-information').style.display = 'block';
             }else{
                 document.getElementById('more-information').style.display = 'none';

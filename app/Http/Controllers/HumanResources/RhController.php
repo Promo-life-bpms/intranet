@@ -8,11 +8,16 @@ use App\Models\Department;
 use App\Models\Postulant;
 use App\Models\PostulantBeneficiary;
 use App\Models\PostulantDetails;
+use App\Models\RoleUser;
 use App\Models\User;
+use App\Models\UserBeneficiary;
+use App\Models\UserDetails;
 use App\Models\UserDownMotive;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class RhController extends Controller
 {
@@ -24,7 +29,7 @@ class RhController extends Controller
     public function postulants()
     {  
         $postulants_data = [];
-        $postulants = Postulant::all();
+        $postulants = Postulant::all()->whereIn('status', ['postulante','candidato']);
         
         foreach($postulants as $postulant){
             $company = Company::all()->where('id', $postulant->company_id)->last();
@@ -198,6 +203,7 @@ class RhController extends Controller
 
     public function updatePostulant(Request $request)
     {
+
         $cv = null;
 
         if ($request->hasFile('cv')) {
@@ -360,6 +366,111 @@ class RhController extends Controller
 
             
         }
+
+        if($request->status == 'empleado'){
+            $findUser = User::all()->where('name', $request->name)->where('lastname',$request->lastname)->last();
+
+            if($findUser == null){
+
+                $pass = Str::random(8);
+
+                $user = new User();
+                $user->name = $request->name;
+                $user->image = null;
+                $user->lastname = $request->lastname;
+                $user->email = $request->mail;
+                $user->password = Hash::make($pass);
+                $user->save();
+
+                $user->employee->birthday_date = $request->birthdate;
+                $user->employee->date_admission = $request->date_admission;
+                $user->employee->status = 1;
+                $user->employee->jefe_directo_id = null;
+                $user->employee->position_id = null;
+                $user->employee->save();
+
+                $find_user= User::all()->where('name', $request->name)->where('lastname',$request->lastname)->last();
+                
+                $role = new RoleUser();
+                $role->role_id = 5;
+                $role->user_id = $find_user->id;
+                $role->user_type = 'App\Models\User';
+                $role->save();
+
+                $user_details = new UserDetails();
+                
+                $user_details->user_id  = $find_user->id;
+                $user_details->place_of_birth  = $request->place_of_birth;
+                $user_details->birthdate  = $request->birthdate;
+                $user_details->fathers_name  = $request->fathers_name;
+                $user_details->mothers_name  = $request->mothers_name;
+                $user_details->civil_status  = $request->civil_status;
+                $user_details->age	  = $request->age;
+                $user_details->address  = $request->address;
+                $user_details->street  = $request->street;
+                $user_details->colony  = $request->colony;
+                $user_details->delegation  = $request->delegation;
+                $user_details->postal_code  = $request->postal_code;
+                $user_details->cell_phone  = $request->cell_phone;
+                $user_details->home_phone  = $request->home_phone;
+                $user_details->curp  = $request->curp;
+                $user_details->rfc  = $request->rfc;
+                $user_details->imss_number  = $request->imss_number;
+                $user_details->fiscal_postal_code  = $request->fiscal_postal_code;
+                $user_details->position  = $request->position;
+                $user_details->area  = $request->area;
+                $user_details->horary  = $request->horary;
+                $user_details->date_admission  = $request->date_admission;
+                $user_details->card_number  = $request->card_number;
+                $user_details->bank_name  = $request->bank_name;
+                $user_details->infonavit_credit  = $request->infonavit_credit;
+                $user_details->factor_credit_number  = $request->factor_credit_number;
+                $user_details->fonacot_credit  = $request->fonacot_credit;
+                $user_details->discount_credit_number  = $request->discount_credit_number;
+                $user_details->home_references  = $request->home_references;
+                $user_details->house_characteristics  = $request->house_characteristics;
+                
+                $user_details->nacionality  = $request->nacionality;
+                $user_details->id_credential  = $request->id_credential;
+                $user_details->gender  = $request->gender;
+                $user_details->month_salary_net  = $request->month_salary_net;
+                $user_details->month_salary_gross  = $request->month_salary_gross;
+                $user_details->daily_salary  = $request->daily_salary;
+                $user_details->daily_salary_letter  = $request->daily_salary_letter;
+                $user_details->position_objetive  = $request->position_objetive;
+                $user_details->contract_duration  = $request->contract_duration;
+
+                $user_details->save();
+                
+                $find_user_details = UserDetails::all()->where('curp', $request->curp)->last();
+
+                    $user_beneficiary = new UserBeneficiary();
+                    $user_beneficiary->name = $request->beneficiary1;
+                    $user_beneficiary->phone = null;
+                    $user_beneficiary->porcentage = $request->porcentage1;
+                    $user_beneficiary->position = 'beneficiary1';
+                    $user_beneficiary->users_details_id = $find_user_details->id;
+                    $user_beneficiary->save();
+            
+        
+                    $user_beneficiary = new  UserBeneficiary();
+                    $user_beneficiary->name = $request->beneficiary2;
+                    $user_beneficiary->phone = null;
+                    $user_beneficiary->porcentage = $request->porcentage2;
+                    $user_beneficiary->position = 'beneficiary2';
+                    $user_beneficiary->users_details_id = $find_user_details->id;
+                    $user_beneficiary->save();
+            
+                    $user_beneficiary = new  UserBeneficiary();
+                    $user_beneficiary->name = $request->beneficiary3;
+                    $user_beneficiary->phone = null;
+                    $user_beneficiary->porcentage = $request->porcentage3;
+                    $user_beneficiary->position = 'beneficiary3';
+                    $user_beneficiary->users_details_id = $find_user_details->id;
+                    $user_beneficiary->save();
+            }
+        }
+
         return redirect()->back()->with('message', 'Información guardada correctamente');
     }
 
