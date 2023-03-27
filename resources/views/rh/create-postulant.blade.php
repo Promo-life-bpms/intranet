@@ -16,7 +16,7 @@
             </div>
         @endif
         {!! Form::open(['route' => 'rh.storePostulant', 'enctype' => 'multipart/form-data']) !!}
-        <h6>Informacion Personal</h6>
+        <h5>Informacion Personal</h5>
         <p></p>
         <div class="row form-group">
                 <div class="col-sm">
@@ -43,7 +43,7 @@
 
                 <div class="col-sm">
                     {!! Form::label('status', 'Status') !!}
-                    {!! Form::select('status', ['postulante' => 'Postulante', 'candidato' => 'Candidato', 'empleado' => 'Empleado'], 'postulante', ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                    {!! Form::select('status', ['postulante' => 'Postulante', 'candidato' => 'Candidato'], 'postulante', ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
                     @error('name')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>

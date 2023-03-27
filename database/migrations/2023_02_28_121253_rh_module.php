@@ -50,8 +50,6 @@ class RhModule extends Migration
             $table->string('fiscal_postal_code')->nullable();
             $table->string('position')->nullable();
             $table->string('area')->nullable();
-            $table->decimal('salary_sd',8,2)->nullable();
-            $table->decimal('salary_sbc',8,2)->nullable();
             $table->string('horary')->nullable();
             $table->date('date_admission')->nullable();
             $table->string('card_number')->nullable();
@@ -62,14 +60,24 @@ class RhModule extends Migration
             $table->string('discount_credit_number')->nullable();
             $table->string('home_references')->nullable();
             $table->string('house_characteristics')->nullable();
+            $table->string('nacionality')->nullable();
+            $table->string('id_credential')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('month_salary_net')->nullable();
+            $table->string('month_salary_gross')->nullable();
+            $table->string('daily_salary')->nullable();
+            $table->string('daily_salary_letter')->nullable();
+            $table->string('position_objetive')->nullable();
+            $table->string('contract_duration')->nullable();
             $table->timestamps();
         }); 
 
         Schema::create('postulant_beneficiary', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('phone')->nullable();
-            $table->integer('porcentage');
+            $table->integer('porcentage')->nullable();
+            $table->string('position')->nullable();
             $table->foreignId('postulant_details_id')->references('id')->on('postulant_details')->onDelete('cascade');
             $table->timestamps();
         });

@@ -1,14 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="card-header">
+<div class="card-header">
+    <div class="d-flex justify-content-between">
         <h3>Editar usuario</h3>
+        <div>                
+            <form 
+                action="{{ route('rh.moreInformation', ['id' => $user->id]) }}"
+                method="GET">
+                 @csrf
+                <button type="submit" class="btn btn-primary"> 
+                    <i class="fa fa-user-plus me-2" aria-hidden="true"></i>
+                    Información adicional
+                </button>
+            </form>
+        </div>
     </div>
+</div>
     <div class="card-body">
         @if (session('message'))
             <div class="alert alert-danger">
                 {{ session('message') }}
             </div>
+
         @endif
         {!! Form::model($user, [
             'route' => ['admin.users.update', $user],
