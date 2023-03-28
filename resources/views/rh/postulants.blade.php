@@ -71,8 +71,10 @@
                                 </div>
                                 <div class="d-flex" >
                                     <div>
-                                        <a  href="{{ route('rh.createPostulantDocumentation', ['postulant' => $postulant->id]) }}"
+                                        @if ($postulant->status != 'postulante')
+                                            <a  href="{{ route('rh.createPostulantDocumentation', ['postulant' => $postulant->id]) }}"
                                             type="button" class="btn btn-option">Generar doc</a>
+                                        @endif
                                     </div>
                                 </div>
                             </td>

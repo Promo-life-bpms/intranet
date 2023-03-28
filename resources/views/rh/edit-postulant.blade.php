@@ -113,7 +113,7 @@
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('cell_phone', 'Telefono celular') !!}
-                    {!! Form::number('cell_phone', isset($postulant_details->cell_phone) ? $postulant_details->cell_phone : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numeor de telefono celular']) !!}
+                    {!! Form::number('cell_phone', isset($postulant_details->cell_phone) ? $postulant_details->cell_phone : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono celular']) !!}
                 </div>
 
                 <div class="col-sm ">
@@ -124,6 +124,12 @@
                 <div class="col-sm ">
                     {!! Form::label('birthdate', 'Fecha de nacimiento') !!}
                     {!! Form::date('birthdate', isset($postulant_details->birthdate) ? $postulant_details->birthdate : null, ['class' => 'form-control']) !!}
+                    @error('birthdate')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
                 </div>  
             </div>
 
@@ -175,13 +181,20 @@
                 <div class="col-sm ">
                     {!! Form::label('date_admission', 'Fecha de ingreso') !!}
                     {!! Form::date('date_admission', isset($postulant_details->date_admission) ? $postulant_details->date_admission : null, ['class' => 'form-control', 'placeholder' => 'Ingrese fecha de ingreso']) !!}
+
+                    @error('date_admission')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
                 </div>  
             </div>
 
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('contract_duration', 'Duración contrato') !!}
-                    {!! Form::select('contract_duration', ['indefinido' => 'Tiempo indefinido', '1' => '1 Mes',  '2' => '2 Meses', '3' => '3 Meses', '4' => '4 Meses' ,  '5' => '5 Meses' , '6' => '6 Meses' ], isset($postulant_details->contract_duration) ? $postulant_details->contract_duration : null ,['class' => 'form-control', 'placeholder' => 'Selecciona duracion']) !!}
+                    {!! Form::select('contract_duration', ['indefinido' => 'Tiempo indefinido', '3' => '3 Meses', '6' => '6 Meses' ], isset($postulant_details->contract_duration) ? $postulant_details->contract_duration : null ,['class' => 'form-control', 'placeholder' => 'Selecciona duracion']) !!}
                 </div>
 
                 <div class="col-sm ">
