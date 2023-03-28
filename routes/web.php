@@ -227,6 +227,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::delete('/rh/drop-delete-user', [RhController::class, 'dropDeleteUser'])->name('rh.dropDeleteUser');
     Route::post('/rh/build-down-documentation/', [RhController::class, 'buildDownDocumentation'])->name('rh.buildDownDocumentation');
     Route::post('/rh/create-motive-down/', [RhController::class, 'createMotiveDown'])->name('rh.createMotiveDown');
+    Route::get('/rh/down-users/', [RhController::class, 'downUsers'])->name('rh.downUsers');
 
     Route::get('/rh/scan-documents/{id}', [ScanDocumentsController::class, 'scanDocuments'])->name('rh.scanDocuments');
     Route::put('/rh/update-documents/', [ScanDocumentsController::class, 'updateDocuments'])->name('rh.updateDocuments');

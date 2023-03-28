@@ -538,5 +538,11 @@ class RhController extends Controller
         }   
     }
 
+    public function downUsers()
+    {
+        $users = User::all()->where('status',2);
+        return view('rh.down-users', compact('users'));  
+    }
+
 }
 
