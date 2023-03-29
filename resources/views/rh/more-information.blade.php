@@ -4,7 +4,13 @@
     <div class="card-header">
 
     <div class="d-flex justify-content-between">
-        <h3>Información adicional</h3>
+        <div class="d-flex flex-row">
+            <a  href="{{ route('admin.users.edit', ['user' => $user_id]) }}">
+                <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
+            </a>
+            <h3 style="margin-left:16px;" class="separator">Información adicional</h3> 
+        </div>
+        
         <div>                
             <form 
                 action="{{ route('rh.scanDocuments', ['id' => $user_id]) }}"

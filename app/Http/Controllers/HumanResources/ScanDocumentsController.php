@@ -16,7 +16,6 @@ class ScanDocumentsController extends Controller
         return view('admin.user.scan', compact('id','user_documents' ));
     }
 
-    //////////////////// SUBIR DOCUMENTOS ////////////////////////////////////////////////////////////
     public function storeDocuments(Request $request)
     {
         $request->validate([
@@ -43,15 +42,13 @@ class ScanDocumentsController extends Controller
         return redirect()->back()->with('message', "Documento guardado correctamente");
     }
 
-    //////////////// ELIMINAR DOCUMENTOS ////////////////////////////////////////////////////////////////////
-
     public function deleteDocuments(Request $request){
         $request1 =UserDocumentation::all()->where('id', $request->document_id)->last();
         File::delete($request1->resource);
         DB::table('users_documentation')->where('id', $request->document_id)->delete();
         return redirect()->back()->with('message', 'Documento eliminado');
     }
-    ///////////////////////// EDITAR DOCUMENTOS ////////////////////////////////////////////////////////////////
+    
     public function updateDocuments(Request $request)
     {
         $request->validate([

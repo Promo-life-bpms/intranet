@@ -1,7 +1,19 @@
 @extends('layouts.app')
 @section('content')
     <div class="card-header">
-        <h3>Documentos escaneados</h3>
+
+        <div class="d-flex justify-content-between">
+            <div class="d-flex flex-row">
+                <a  href="{{ route('rh.moreInformation', ['id' => $id]) }}">
+                    <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
+                </a>
+                <h3 style="margin-left:16px;" class="separator">Documentos guardados</h3> 
+            </div>
+                        
+            <div class="d-flex">
+                <button type="button" class="btn btn-success m-1" data-bs-toggle="modal"  data-bs-target="#modalAdd"><i class="bi bi-plus-lg"></i>Agregar documento</button>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         @if (session('message'))
@@ -9,13 +21,6 @@
                 {{ session('message') }}
             </div>
         @endif
-
-        <div class="d-flex justify-content-between">
-        <h4>Documentos de baja</h4>
-            <div class="d-flex">
-                <button type="button" class="btn btn-success m-1" data-bs-toggle="modal"  data-bs-target="#modalAdd"><i class="bi bi-plus-lg"></i>Agregar documento</button>
-            </div>
-        </div>
 
         <br>
 
