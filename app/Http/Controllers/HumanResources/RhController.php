@@ -544,5 +544,13 @@ class RhController extends Controller
         return view('rh.down-users', compact('users'));  
     }
 
+    public function upUsers(Request $request)
+    {
+        DB::table('users')->where('id', intval($request->user_id) )->update(['status' => 2]); 
+        return redirect()->back()->with('message', 'Usuario dado de alta satisfactoriamente');
+     
+
+    }
+
 }
 

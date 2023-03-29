@@ -194,7 +194,7 @@
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('contract_duration', 'Duración contrato') !!}
-                    {!! Form::select('contract_duration', ['indefinido' => 'Tiempo indefinido', '3' => '3 Meses', '6' => '6 Meses' ], isset($postulant_details->contract_duration) ? $postulant_details->contract_duration : null ,['class' => 'form-control', 'placeholder' => 'Selecciona duracion']) !!}
+                    {!! Form::select('contract_duration', ['indefinido' => 'Tiempo indefinido', '3' => '3 Meses' ], isset($postulant_details->contract_duration) ? $postulant_details->contract_duration : null ,['class' => 'form-control', 'placeholder' => 'Selecciona duracion']) !!}
                 </div>
 
                 <div class="col-sm ">

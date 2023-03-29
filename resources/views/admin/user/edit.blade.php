@@ -4,9 +4,16 @@
 <div class="card-header">
     <div class="d-flex justify-content-between">
         <div class="d-flex flex-row">
-            <a  href="{{ route('admin.users.index') }}">
-                <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
-            </a>
+            @if($user->status == '1')
+                <a  href="{{ route('admin.users.index') }}">
+                    <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
+                </a>
+            @else
+                <a  href="{{ route('rh.downUsers') }}">
+                    <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
+                </a>
+            @endif
+         
             <h3 style="margin-left:16px;" class="separator">Editar usuario</h3> 
         </div>
       

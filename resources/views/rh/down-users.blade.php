@@ -44,21 +44,18 @@
                                 @endif
                             </td>
                             <td>
-                                <div class="d-flex">
-
-                                    <div>
-                                        <a style="" href="{{ route('admin.users.edit', ['user' => $user->id]) }}"
-                                            type="button" class="btn btn-warning">Ver detalles</a>
-                                    </div>
-                                    
+                                <div class="w-100">                                   
+                                    <a style="width:100%" href="{{ route('admin.users.edit', ['user' => $user->id]) }}"
+                                            type="button" class="btn btn-primary">Ver detalles</a>     
                                 </div>
+                               
                                 <div class="w-100">
                                     <form class="form-reset"
-                                        action="{{ route('admin.user.sendAccessUnit', ['user' => $user->id]) }}"
+                                        action="{{ route('rh.upUsers', ['user_id' => $user->id]) }}"
                                         method="GET">
                                         @csrf
-                                        <button style="" type="submit"
-                                            class="btn btn-primary btn-block mt-1">Restaurar empleado</button>
+                                        <button  type="submit"
+                                            class="btn btn-success btn-block mt-1">Restaurar a empleado</button>
                                     </form>
                                 </div>
                             </td>
@@ -478,24 +475,6 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
 
     <script>
-        $('.form-delete').submit(function(e) {
-            e.preventDefault();
-
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡El registro se eliminará permanentemente!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, eliminar!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.submit();
-                }
-            })
-        });
         $('.form-reset').submit(function(e) {
             e.preventDefault();
 
