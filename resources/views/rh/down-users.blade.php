@@ -52,7 +52,7 @@
                                 <div class="w-100">
                                     <form class="form-reset"
                                         action="{{ route('rh.upUsers', ['user_id' => $user->id]) }}"
-                                        method="GET">
+                                        method="POST">
                                         @csrf
                                         <button  type="submit"
                                             class="btn btn-success btn-block mt-1">Restaurar a empleado</button>
@@ -480,12 +480,12 @@
 
             Swal.fire({
                 title: '¿Estás seguro?',
-                text: "¡Se reseteara la contraseña y se enviara un email con sus datos!",
+                text: "Este usuario será restaurado como empleado",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, resetar acesso!',
+                confirmButtonText: '¡Si, restaurar!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {

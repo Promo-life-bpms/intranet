@@ -546,10 +546,8 @@ class RhController extends Controller
 
     public function upUsers(Request $request)
     {
-        DB::table('users')->where('id', intval($request->user_id) )->update(['status' => 2]); 
+        DB::table('users')->where('id', intval($request->user_id) )->update(['status' => 1]); 
         return redirect()->back()->with('message', 'Usuario dado de alta satisfactoriamente');
-     
-
     }
 
 }
