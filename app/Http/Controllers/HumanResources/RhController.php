@@ -128,6 +128,7 @@ class RhController extends Controller
         $create_user_motive->demographics_school  = $request->demographics_school;
         $create_user_motive->health_personal  = $request->health_personal;
         $create_user_motive->health_familiar  = $request->health_familiar;
+        $create_user_motive->motive  = $request->motive;
             
         $create_user_motive->save();
 

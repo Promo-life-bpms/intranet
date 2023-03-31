@@ -98,6 +98,10 @@
                                     <br>
                                     <input class="check" type="checkbox" name="health_familiar" value="true"> <label for="cbox2">Familiar</label>
                                 </div> 
+                                <div class="col-md-5 cont2" >
+                                    <h6>Otro</h6>
+                                    <input type="text" class="form-control" name="motive"  maxlength="255" >
+                                </div> 
 
                             </div>
 
@@ -161,6 +165,12 @@
                                     <br>
                                     <input class="check" type="checkbox" name="health_familiar" value="true" @if($motive->health_familiar <> null)checked @endif> <label for="cbox2">Familiar</label>
                                 </div> 
+
+                                <div class="col-md-5 cont2" >
+                                    <h6>Otro</h6>
+                                    <input type="text" class="form-control" name="motive"  maxlength="255" value=" @if($motive->other <> null)$motive->other @endif">
+                                </div> 
+                                
                             </div>
 
                             <br>
