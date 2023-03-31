@@ -51,7 +51,7 @@
                                 <div class="d-flex">
 
                                     <div>
-                                        <a style="" href="{{ route('admin.users.edit', ['user' => $user->id]) }}"
+                                        <a href="{{ route('admin.users.edit', ['user' => $user->id]) }}"
                                             type="button" class="btn btn-warning">Editar</a>
                                     </div>
                                     <div>
@@ -60,7 +60,7 @@
                                             method="POST">
                                             @csrf
                                             @method('delete')
-                                            <button style="" type="submit" class="btn btn-danger">Borrar</button>
+                                            <button type="submit" class="btn btn-danger">Borrar</button>
                                         </form>
                                     </div>
                                 </div>

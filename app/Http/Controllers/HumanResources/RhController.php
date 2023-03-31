@@ -495,12 +495,12 @@ class RhController extends Controller
         }
         if($request->document =='up_personal'){ 
             $up_document = new UpDocument();
-            $up_document->upDocument($postulant, $postulant_details, $postulant_beneficiaries, intval($request->company));
+            $up_document->upDocument($postulant, $postulant_details, $postulant_beneficiaries);
         }
 
         if($request->document == 'determined_contract'){
             $determined_contract = new DeterminateContract();
-            $determined_contract->determinateContract($postulant, $postulant_details,$request->company);
+            $determined_contract->determinateContract($postulant, $postulant_details);
         }
 
         if($request->document == 'indetermined_contract'){
@@ -510,26 +510,26 @@ class RhController extends Controller
 
         if($request->document == 'confidentiality_agreement'){
             $confidentiality_agreement = new confidentialityAgreement();
-            $confidentiality_agreement->confidentialityAgreement(strtoupper($postulant->name), strtoupper($postulant->lastname),intval($request->company) , date('d/m/Y', strtotime( $postulant_details->date_admission)));
+            $confidentiality_agreement->confidentialityAgreement($postulant, $postulant_details);
         }
 
         if($request->document == 'work_condition_update'){
             $work_condition_update = new WorkConditionUpdate();
-            $work_condition_update->workConditionUpdate($postulant, $postulant_details,intval($request->company));
+            $work_condition_update->workConditionUpdate($postulant, $postulant_details);
         }
 
         if($request->document == 'no_compete_agreement'){
 
             //Promo zale
-            if(intval($request->company) == 3){
+            if(intval($postulant->company_id) == 3){
                 return redirect()->back()->with('error', 'Archivo no disponible para la empresa Promo Zale');          
             }   
             //Unipromtex
-            if(intval($request->company)== 5){
+            if(intval($postulant->company_id)== 5){
                 return redirect()->back()->with('error', 'Archivo no disponible para la empresa Unipromtex');          
             }
             $no_compete_agreement = new NoCompeteAgreement();
-            $no_compete_agreement->noCompeteAgreement($postulant, $postulant_details,intval($request->company));
+            $no_compete_agreement->noCompeteAgreement($postulant, $postulant_details);
         }   
 
         if($request->document == 'letter_for_bank'){
@@ -548,6 +548,127 @@ class RhController extends Controller
     {
         DB::table('users')->where('id', intval($request->user_id) )->update(['status' => 1]); 
         return redirect()->back()->with('message', 'Usuario dado de alta satisfactoriamente');
+    }
+
+    public function convertToEmployee(Request $request)
+    {
+     
+        $postulant = Postulant::all()->where('id',$request->postulant_id)->last();
+
+        $postulant_details = PostulantDetails::all()->where('postulant_id',$postulant->id)->last();
+        
+        $postulant_beneficiaries = PostulantBeneficiary::all()->where('postulant_details_id',$postulant->id);
+
+        $pass = Str::random(8);
+
+        $user = new User();
+        $user->name = $postulant->name;
+        $user->image = null;
+        $user->lastname = $postulant->lastname;
+        $user->email = $postulant->mail;
+        $user->password = Hash::make($pass);
+        $user->save();
+
+        $user->employee->birthday_date = $postulant_details->birthdate;
+        $user->employee->date_admission = $postulant_details->date_admission;
+        $user->employee->status = 1;
+        $user->employee->jefe_directo_id = null;
+        $user->employee->position_id = null;
+        $user->employee->save();
+
+        $find_user= User::all()->where('name', $postulant->name)->where('lastname',$postulant->lastname)->last();
+                
+        $role = new RoleUser();
+        $role->role_id = 5;
+        $role->user_id = $find_user->id;
+        $role->user_type = 'App\Models\User';
+        $role->save();
+
+        $user_details = new UserDetails();
+                
+        $user_details->user_id  = $find_user->id;
+        $user_details->place_of_birth  = $postulant_details->place_of_birth;
+        $user_details->birthdate  = $postulant_details->birthdate;
+        $user_details->fathers_name  = $postulant_details->fathers_name;
+        $user_details->mothers_name  = $postulant_details->mothers_name;
+        $user_details->civil_status  = $postulant_details->civil_status;
+        $user_details->age	  = $postulant_details->age;
+        $user_details->address  = $postulant_details->address;
+        $user_details->street  = $postulant_details->street;
+        $user_details->colony  = $postulant_details->colony;
+        $user_details->delegation  = $postulant_details->delegation;
+        $user_details->postal_code  = $postulant_details->postal_code;
+        $user_details->cell_phone  = $postulant_details->cell_phone;
+        $user_details->home_phone  = $postulant_details->home_phone;
+        $user_details->curp  = $postulant_details->curp;
+        $user_details->rfc  = $postulant_details->rfc;
+        $user_details->imss_number  = $postulant_details->imss_number;
+        $user_details->fiscal_postal_code  = $postulant_details->fiscal_postal_code;
+        $user_details->position  = $postulant_details->position;
+        $user_details->area  = $postulant_details->area;
+        $user_details->horary  = $postulant_details->horary;
+        $user_details->date_admission  = $postulant_details->date_admission;
+        $user_details->card_number  = $postulant_details->card_number;
+        $user_details->bank_name  = $postulant_details->bank_name;
+        $user_details->infonavit_credit  = $postulant_details->infonavit_credit;
+        $user_details->factor_credit_number  = $postulant_details->factor_credit_number;
+        $user_details->fonacot_credit  = $postulant_details->fonacot_credit;
+        $user_details->discount_credit_number  = $postulant_details->discount_credit_number;
+        $user_details->home_references  = $postulant_details->home_references;
+        $user_details->house_characteristics  = $postulant_details->house_characteristics;
+                
+        $user_details->nacionality  = $postulant_details->nacionality;
+        $user_details->id_credential  = $postulant_details->id_credential;
+        $user_details->gender  = $postulant_details->gender;
+        $user_details->month_salary_net  = $postulant_details->month_salary_net;
+        $user_details->month_salary_gross  = $postulant_details->month_salary_gross;
+        $user_details->daily_salary  = $postulant_details->daily_salary;
+        $user_details->daily_salary_letter  = $postulant_details->daily_salary_letter;
+        $user_details->position_objetive  = $postulant_details->position_objetive;
+        $user_details->contract_duration  = $postulant_details->contract_duration;
+
+        $user_details->save();
+               
+        $find_user_details = UserDetails::all()->where('user_id', $find_user->id)->last();
+
+        $postulant_beneficiaries = PostulantBeneficiary::all()->where('postulant_details_id', $postulant_details    ->id);
+
+        foreach($postulant_beneficiaries as $beneficiary ){
+            if($beneficiary->position == 'beneficiary1' ){
+                $user_beneficiary = new UserBeneficiary();
+                $user_beneficiary->name = $beneficiary->beneficiary1;
+                $user_beneficiary->phone = null;
+                $user_beneficiary->porcentage = $beneficiary->porcentage1;
+                $user_beneficiary->position = 'beneficiary1';
+                $user_beneficiary->users_details_id = $find_user_details->id;
+                $user_beneficiary->save();
+            }
+
+            if($beneficiary->position == 'beneficiary2' ){
+                $user_beneficiary = new  UserBeneficiary();
+                $user_beneficiary->name = $beneficiary->beneficiary2;
+                $user_beneficiary->phone = null;
+                $user_beneficiary->porcentage = $beneficiary->porcentage2;
+                $user_beneficiary->position = 'beneficiary2';
+                $user_beneficiary->users_details_id = $find_user_details->id;
+                $user_beneficiary->save();
+            }
+
+            if($beneficiary->position == 'beneficiary3' ){
+                $user_beneficiary = new  UserBeneficiary();
+                $user_beneficiary->name = $beneficiary->beneficiary3;
+                $user_beneficiary->phone = null;
+                $user_beneficiary->porcentage = $beneficiary->porcentage3;
+                $user_beneficiary->position = 'beneficiary3';
+                $user_beneficiary->users_details_id = $find_user_details->id;
+                $user_beneficiary->save();
+            }
+        }
+
+        DB::table('postulant')->where('id', $request->postulant_id)->update(['status' => 'empleado']); 
+
+        return redirect()->back()->with('message', 'Candidato ha sido promovido a empleado satisfactoriamente');
+
     }
 
 }

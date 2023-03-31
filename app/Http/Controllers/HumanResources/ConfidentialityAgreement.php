@@ -7,36 +7,40 @@ use PhpOffice\PhpWord\Style\Language;
 
 class ConfidentialityAgreement extends Controller
 {
-    public function confidentialityAgreement($name, $lastname, $company_id, $date_admission)
+    public function confidentialityAgreement($postulant, $postulant_details)
     {
         $company = "";
         $employer = "";
+        $name = strtoupper($postulant->name);
+        $lastname = strtoupper($postulant->lastname);
+        $date_admission = date('d/m/Y', strtotime( $postulant_details->date_admission));
+
          //Promolife
-        if($company_id == 1){
+        if($postulant->company_id == 1){
             $company = "PROMO LIFE, S. DE R.L. DE C.V.";
             $employer = "C. RAÚL TORRES MÁRQUEZ";
         }
 
         //BH tardemarket
-        if($company_id == 2){
+        if($postulant->company_id == 2){
             $company = "BH TRADE MARKET, S.A. DE C.V.";
             $employer = "C. DAVID LEVY HANO";
         }
 
         //Promo zale
-        if($company_id == 3){
+        if($postulant->company_id == 3){
             $company = "PROMO ZALE S.A. DE C.V."; 
             $employer = "C. DANIEL LEVY HANO";
         }
 
         //Trademarket 57
-        if($company_id== 4){
+        if($postulant->company_id== 4){
             $company = "TRADE MARKET 57, S.A. DE C.V."; 
             $employer = "C. MÓNICA REYES RESENDIZ";
         } 
 
         //Unipromtex
-        if($company_id== 5){
+        if($postulant->company_id== 5){
             $company = "UNIPROMTEX S.A. DE C.V."; 
             $employer = "DAVID LEVY HANO";
         } 
@@ -61,11 +65,7 @@ class ConfidentialityAgreement extends Controller
             'lineHeight' => 1.0,
             'bold' => false
         );
-        $titleBoldStyle = array(
-            'align' => 'both',
-            'lineHeight' => 2.0,
-            'bold' => true
-        ); 
+      
         $titleCenterBoldStyle = array(
             'lineHeight' => 1.0,
             'bold' => true
@@ -74,14 +74,6 @@ class ConfidentialityAgreement extends Controller
         //Paragraph Styles
         $center = array(
             'align'=> 'center'
-        );
-
-        $justify_center = array(
-            'align' => 'both',
-        );
-
-        $list = array(
-            'lineHeight' => 0.5,
         );
 
         //Secctions

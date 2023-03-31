@@ -8,7 +8,7 @@ use PhpOffice\PhpWord\Style\Language;
 
 class IndeterminateContract extends Controller
 {
-    public function indeterminateContract($postulant, $postulant_details, $company_id )
+    public function indeterminateContract($postulant, $postulant_details )
     {
         $company = "";
         $employer = "";
@@ -21,17 +21,10 @@ class IndeterminateContract extends Controller
         $curp = strtoupper($postulant_details->curp);
         $position = strtoupper($postulant_details->position);
         $position_objetive =  strtoupper($postulant_details->position_objetive);
-        $duration_months = $postulant_details->contract_duration;
-        $month_string = "MESES";
-        $date_admission = date('d,m,Y', strtotime($postulant_details->date_admission));
         $next_sign_date = date('d,m,Y',strtotime('+3 months', strtotime($postulant_details->date_admission)));
         $daily_salary = strtoupper($postulant_details->daily_salary); 
         $daily_salary_letter = strtoupper($postulant_details->daily_salary_letter); 
-       
-       
-        if($duration_months == "1" ){
-            $month_string = "MES";
-        }
+     
        
         
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
@@ -49,6 +42,7 @@ class IndeterminateContract extends Controller
                 'lineHeight' => 1.0
             )
         );
+
         $titleStyle = array(
             'align' => 'both',
             'lineHeight' => 1.0,
@@ -72,13 +66,6 @@ class IndeterminateContract extends Controller
             'bold' => true,
         ); 
 
-        $bodyBoldStyle = array(
-            'align' => 'both',
-            'lineHeight' => 1.0,
-            'bold' => true
-        ); 
-
-
         $bodyBoldUnderlineStyle = array(
             'bold' => true,
         ); 
@@ -88,21 +75,8 @@ class IndeterminateContract extends Controller
             'align'=> 'center'
         );
 
-        $centerBody = array(
-            'size' => 8,
-            'align'=> 'center'
-        );
-
         $center = array(
             'align'=> 'center'
-        );
-
-        $justify_center = array(
-            'align' => 'both',
-        );
-
-        $list = array(
-            'lineHeight' => 0.5,
         );
 
         $multilevelListStyleName = 'multilevel';
@@ -131,12 +105,10 @@ class IndeterminateContract extends Controller
         $sectionStyle->setMarginLeft(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
         $sectionStyle->setMarginRight(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(3));
         $sectionStyle->setMarginTop(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
-        $sectionStyle->setMarginBottom(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
-
-       
+        $sectionStyle->setMarginBottom(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));       
 
         //Promolife
-        if($company_id == 1){
+        if($postulant->company_id == 1){
             $company = "PROMO LIFE, S. DE R.L. DE C.V.";
             $employer = "C. RAÚL TORRES MÁRQUEZ";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE PROMO LIFE, S. DE R.L. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. RAUL TORRES MARQUEZ, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -150,7 +122,7 @@ class IndeterminateContract extends Controller
         }
 
         //BH tardemarket
-        if($company_id == 2){
+        if($postulant->company_id == 2){
             $company = "BH TRADE MARKET, S.A. DE C.V.";
             $employer = "C. DAVID LEVY HANO";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE BH TRADE MARKET, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -163,7 +135,7 @@ class IndeterminateContract extends Controller
         }
 
         //Promo zale
-        if($company_id == 3){
+        if($postulant->company_id == 3){
             $company = "PROMO ZALE S.A. DE C.V."; 
             $employer = "C. DANIEL LEVY HANO";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE PROMO ZALE, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DANIEL LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL E COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -175,7 +147,7 @@ class IndeterminateContract extends Controller
         }
 
         //Trademarket 57
-        if($company_id== 4){
+        if($postulant->company_id== 4){
             $company = "TRADE MARKET 57, S.A. DE C.V."; 
             $employer = "C. MÓNICA REYES RESENDIZ";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE TRADE MARKET 57, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. MÓNICA REYES RESENDIZ, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PLANTA BAJA, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -187,7 +159,7 @@ class IndeterminateContract extends Controller
         } 
 
         //Unipromtex
-        if($company_id== 5){
+        if($postulant->company_id== 5){
             $company = "UNIPROMTEX S.A. DE C.V."; 
             $employer = "DAVID LEVY HANO";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE UNIPROMTEX, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN C. CIELITO LINDO 18 B, PARQUE INDUSTRIAL IZCALLI, NEZAHUALCOYOTL ESTADO DE MÉXICO. C.P. 57810 A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -199,7 +171,6 @@ class IndeterminateContract extends Controller
         } 
 
         $htmlsection->addHtml($section, $section1);
-
 
         $cellRowSpan = array(
             'width' => 5000
@@ -299,7 +270,7 @@ class IndeterminateContract extends Controller
         $listItemRun->addText('A OBSERVAR LAS DISPOSICIONES QUE SOBRE HORARIOS DE TRABAJO EXISTAN.',[]);
 
         //Unipromtex
-        if($company_id== 5){
+        if($postulant->company_id== 5){
             $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
             $listItemRun->addText('LA JORNADA DE TRABAJO SERA DE LUNES A VIERNES DE 9:00 A.M. A 6 P.M. HRS., Y LOS DÍAS SABADOS DE 9:00 A.M. A 2 P.M. HRS. DEBIENDO CUBRIR LAS 48 HORAS A LA SEMANA.',[]);
         }else{
@@ -318,7 +289,6 @@ class IndeterminateContract extends Controller
 
         $section2 = "<p>DECIMA PRIMERA.- DERIVADO DEL ARTÍCULO   25 (FRACC. X) DE LA LEY FEDERAL DE TRABAJO, EL EMPLEADO DESIGNA EN ESTE ACTO A BENEFICIARIOS  PARA EFECTOS DE PAGO DE PRESTACIONES Y REMUNERACIONES QUE SE GENEREN POR CAUSA DE FALLECIMIENTO O DESAPARICIÓN A CAUSA DE UN DELITO.</p>";
         $htmlsection->addHtml($section, $section2);
-
 
         $cellRowSpan2 = array(
             'width' => 20000,

@@ -7,25 +7,19 @@ use PhpOffice\PhpWord\Style\Language;
 
 class WorkConditionUpdate extends Controller
 {
-    public function workConditionUpdate($postulant,$postulant_details, $company_id)
+    public function workConditionUpdate($postulant,$postulant_details)
     {
-        $company = "";
-        $employer = "";
         $name = strtoupper($postulant->name);
         $lastname = strtoupper($postulant->lastname); 
         $nacionality = strtoupper($postulant_details->nacionality);  
         $civil_status = strtoupper($postulant_details->civil_status) ;
         $domicile = strtoupper($postulant_details->address);
         $mail = strtoupper($postulant->mail) ;
-        $age = $postulant_details->age;
-        $curp = strtoupper($postulant_details->curp);
         $rfc = strtoupper($postulant_details->rfc);
         $gender = strtoupper($postulant_details->gender);
         $position = strtoupper($postulant_details->position);
-        $position_objetive =  strtoupper($postulant_details->position_objetive);
         $birthdate = date('d,m,Y', strtotime($postulant_details->birthdate));
         $date_admission = date('d,m,Y', strtotime($postulant_details->date_admission));
-        $next_sign_date = date('d,m,Y',strtotime('+3 months', strtotime($postulant_details->date_admission)));
         $month_salary_net = $postulant_details->month_salary_net; 
         $horary= "DE L A J DE 8:00 A.M. A 05:00 P.M. Y V DE 8:30 A.M. A 5:00 P.M.";
         $rest_days = "SABADOS Y DOMINGOS";
@@ -50,11 +44,6 @@ class WorkConditionUpdate extends Controller
             'lineHeight' => 1.0,
             'bold' => false
         );
-        $titleBoldStyle = array(
-            'align' => 'both',
-            'lineHeight' => 2.0,
-            'bold' => true
-        ); 
         $titleCenterBoldStyle = array(
             'lineHeight' => 1.0,
             'bold' => true
@@ -63,14 +52,6 @@ class WorkConditionUpdate extends Controller
         //Paragraph Styles
         $center = array(
             'align'=> 'center'
-        );
-
-        $justify_center = array(
-            'align' => 'both',
-        );
-
-        $list = array(
-            'lineHeight' => 0.5,
         );
 
         //Secctions
@@ -83,12 +64,10 @@ class WorkConditionUpdate extends Controller
         );
 
         //Unipromtex
-        if($company_id== 5){
+        if($postulant->company_id== 5){
             $horary = "DE L A V DE 9:00 A.M. A 06:00 P.M. Y S DE 9:00 A.M. A 2:00 P.M."; 
             $rest_days = "DOMINGOS";
-           
         } 
-
 
         $section11 = "<p>Por medio de la presente se hace constar que <b>$name $lastname</b> de nacionalidad <b>$nacionality</b> con fecha de nacimiento <b>$birthdate</b>, <b>GÉNERO $gender</b>, estado civil <b>$civil_status</b>, con RFC <b>$rfc</b> con domicilio en <b>$domicile</b> y con correo electrónico: <b>$mail</b> desempeño mis funciones y actividades, bajo las siguientes condiciones: </p>";
         $htmlsection->addHtml($section, $section11);
@@ -110,7 +89,6 @@ class WorkConditionUpdate extends Controller
 
         $section11 = "<p>DIAS DE DESCANSO: <b>$rest_days</b>.</p>";
         $htmlsection->addHtml($section, $section11);
-        
         
         $section11 = "<p>LUGAR Y FORMA DE PAGO: <b>Estado de México- Transferencia</b>.</p>";
         $htmlsection->addHtml($section, $section11);

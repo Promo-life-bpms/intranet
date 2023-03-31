@@ -10,9 +10,9 @@
     </div>
 </div>
 <div class="card-body">
-    @if (session('error'))
-        <div class="alert alert-info">
-            {{ session('error') }}
+    @if (session('message'))
+        <div class="alert alert-success">
+            {{ session('message') }}
         </div>
     @endif
 
@@ -45,43 +45,50 @@
             <h6>Cartas</h6>
             <input type="radio" name="document"  value="letter_for_bank" > <label for="cbox2">Carta para banco</label>
         </div>
-        <div class="col-md-5 cont2">
-            <h6>Seleccionar Empresa</h6>
-            <input type="radio" name="company" value="1" @if($postulant->company_id == 1)checked @endif>
-            <label for="promolife">Promo life S de RL de CV</label><br>
-            <input type="radio" name="company" value="2" @if($postulant->company_id == 2)checked @endif>
-            <label for="bhtrademarket">BH Tade Market SA de CV</label><br>
-            <input type="radio" name="company" value="3"  @if($postulant->company_id == 3)checked @endif>
-            <label for="promozale">Promo Zale SA de CV</label><br>
-            <input type="radio" name="company" value="4" @if($postulant->company_id == 4)checked @endif>
-            <label for="trademarket57">Trade Market 57 SA de CV</label><br>
-            <input type="radio" name="company" value="5" @if($postulant->company_id == 5)checked @endif>
-            <label for="unipromtex">Unipromtex SA de CV</label><br>
-        </div>
+        
     </div>
 
     <br>
     {!! Form::submit('GENERAR DOCUMENTOS', ['class' => 'btnCreate mt-4']) !!}
     {!! Form::close() !!}
 
+    <br>
+
+    @if (!session('message'))
+        <div>
+            <form class="form-convert"
+                action="{{ route('rh.convertToEmployee', ['postulant_id' => $postulant->id]) }}"
+                method="POST">
+                @csrf
+                @method('post')
+                <button type="submit" style="height:48px" class="btn btn-outline-primary w-100 ">CONVERTIR A EMPLEADO</button>
+            </form>
+        </div>
+    @endif
 
 </div>
 @stop
 
 @section('scripts')
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>   
     <script>
+        $('.form-convert').submit(function(e) {
+            e.preventDefault();
 
-        var determined_contract = document.getElementById("determined_contract");
-        determined_contract.addEventListener("click", statusChange);
-
-        function statusChange(event) {
-            const currentValue = event.target.value;
-
-            if(determined_contract.value == 'determined_contract'){
-                document.getElementById('form-checked-value').style.display = 'block';
-            }else{
-                document.getElementById('form-checked-value').style.display = 'none';
-            } 
-        }
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡El candidato cambiará a empleado!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '¡Si, migrar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            })
+        });
     </script>
 @endsection

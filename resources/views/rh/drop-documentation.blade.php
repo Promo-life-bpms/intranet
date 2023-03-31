@@ -47,8 +47,8 @@
                    
                     <!--  Formulario de motivo -->
                     @if(count( $user_down_motive) ==0)
-                        <div class="col-md-1"></div>
-                        <div class="col-md-6 cont">
+                       
+                        <div class="col-md-5 cont">
                             <h5>Motivos de baja</h5>
                             <br>
                             {!! Form::open(['route' => 'rh.createMotiveDown', 'enctype' => 'multipart/form-data']) !!}
@@ -161,7 +161,6 @@
                                     <br>
                                     <input class="check" type="checkbox" name="health_familiar" value="true" @if($motive->health_familiar <> null)checked @endif> <label for="cbox2">Familiar</label>
                                 </div> 
-
                             </div>
 
                             <br>

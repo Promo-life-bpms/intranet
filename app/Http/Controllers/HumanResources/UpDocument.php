@@ -10,7 +10,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class UpDocument extends Controller
 {
-    public function UpDocument($postulant, $postulant_details, $postulant_beneficiaries, $company_id )
+    public function UpDocument($postulant, $postulant_details, $postulant_beneficiaries )
     {
         $departmet = Department::all()->where('id',$postulant->department_id)->last();
         $company_name = '';
@@ -29,31 +29,31 @@ class UpDocument extends Controller
         $porcentage_postulant_beneficiary3 = "";
 
          //Promolife
-         if($company_id == 1){
+         if($postulant->company_id == 1){
             $company_name = "PROMO LIFE, S. DE R.L. DE C.V.";
             $horary = 'DE L A J DE 8:00 AM A 5:00 PM Y V DE 8:30 AM A 5:00 PM';
         }
 
         //BH tardemarket
-        if($company_id == 2){
+        if($postulant->company_id == 2){
             $company_name = "BH TRADE MARKET, S.A. DE C.V.";
             $horary = 'DE L A J DE 8:00 A.M. A 5:00 P.M. Y V DE 8:30 A.M. A 5:00 P.M.';
         }
 
         //Promo zale
-        if($company_id == 3){
+        if($postulant->company_id == 3){
             $company_name = "PROMO ZALE S.A. DE C.V."; 
             $horary = 'DE L A J DE 8:00 A.M. A 5:00 P.M. Y V DE 8:30 A.M. A 5:00 P.M.';
         }
 
         //Trademarket 57
-        if($company_id== 4){
+        if($postulant->company_id== 4){
             $company_name = "TRADE MARKET 57, S.A. DE C.V."; 
             $horary = 'DE L A J DE 8:00 A.M. A 5:00 P.M. Y V DE 8:30 A.M. A 5:00 P.M.';
         } 
 
         //Unipromtex
-        if($company_id== 5){
+        if($postulant->company_id== 5){
             $company_name = "UNIPROMTEX S.A. DE C.V."; 
             $horary = 'DE L A V DE 9:00 A.M. A 6:00 P.M. Y S DE 9 A.M. A 2:00 P.M.';
         } 

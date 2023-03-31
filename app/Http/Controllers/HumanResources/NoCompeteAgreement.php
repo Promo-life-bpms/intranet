@@ -7,7 +7,7 @@ use PhpOffice\PhpWord\Style\Language;
 
 class NoCompeteAgreement extends Controller
 {
-    public function noCompeteAgreement($postulant, $postulant_details, $company_id)
+    public function noCompeteAgreement($postulant, $postulant_details)
     {
         $social_reason = "";
         $company_name = "";
@@ -22,7 +22,7 @@ class NoCompeteAgreement extends Controller
         $address =strtoupper($postulant_details->address);
 
         //Promolife
-        if($company_id == 1){
+        if($postulant->company_id == 1){
             $social_reason = "PROMO LIFE, S. DE R.L. DE C.V.";
             $employer = "C. RAÚL TORRES MÁRQUEZ";
             $company_name = "PROMO LIFE";
@@ -35,7 +35,7 @@ class NoCompeteAgreement extends Controller
         }
         
         //BH tardemarket
-        if($company_id == 2){
+        if($postulant->company_id == 2){
             $social_reason = "BH TRADE MARKET, S.A. DE C.V.";
             $employer = "C. DAVID LEVY HANO";
             $company_name = "BH TRADE MARKET";
@@ -48,7 +48,7 @@ class NoCompeteAgreement extends Controller
         }
         
         //Trademarket 57
-        if($company_id== 4){
+        if($postulant->company_id== 4){
             $social_reason = "TRADE MARKET 57, S.A. DE C.V."; 
             $employer = "C. MÓNICA REYES RESENDIZ";
             $company_name = "TRADE MARKET 57";

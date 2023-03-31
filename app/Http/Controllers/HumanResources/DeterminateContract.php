@@ -7,7 +7,7 @@ use PhpOffice\PhpWord\Style\Language;
 
 class DeterminateContract extends Controller
 {
-    public function determinateContract($postulant, $postulant_details, $company_id )
+    public function determinateContract($postulant, $postulant_details )
     {
         $company = "";
         $employer = "";
@@ -20,22 +20,10 @@ class DeterminateContract extends Controller
         $curp = strtoupper($postulant_details->curp);
         $position = strtoupper($postulant_details->position);
         $position_objetive =  strtoupper($postulant_details->position_objetive);
-        $duration_months = $postulant_details->contract_duration;
-        $month_string = "MESES";
         $date_admission = date('d,m,Y', strtotime($postulant_details->date_admission));
         $daily_salary = strtoupper($postulant_details->daily_salary); 
         $daily_salary_letter = strtoupper($postulant_details->daily_salary_letter); 
 
-        if($postulant_details->contract_duration == 'indefinido'){
-            $duration_months = "INDEFINIDO";
-            $month_string = "";
-        }
-       
-
-        if($postulant_details->contract_duration == '1'){
-            $month_string = "MES";
-        }
-       
         
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $phpWord->getSettings()->setMirrorMargins(true);
@@ -73,14 +61,7 @@ class DeterminateContract extends Controller
         $bodyCenterBoldStyle = array(
             'lineHeight' => 1.0,
             'bold' => true,
-        ); 
-
-        $bodyBoldStyle = array(
-            'align' => 'both',
-            'lineHeight' => 1.0,
-            'bold' => true
-        ); 
-
+        );  
 
         $bodyBoldUnderlineStyle = array(
             'bold' => true,
@@ -91,21 +72,8 @@ class DeterminateContract extends Controller
             'align'=> 'center'
         );
 
-        $centerBody = array(
-            'size' => 8,
-            'align'=> 'center'
-        );
-
         $center = array(
             'align'=> 'center'
-        );
-
-        $justify_center = array(
-            'align' => 'both',
-        );
-
-        $list = array(
-            'lineHeight' => 0.5,
         );
 
         $multilevelListStyleName = 'multilevel';
@@ -136,10 +104,8 @@ class DeterminateContract extends Controller
         $sectionStyle->setMarginTop(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
         $sectionStyle->setMarginBottom(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
 
-       
-
         //Promolife
-        if($company_id == 1){
+        if($postulant->company_id == 1){
             $company = "PROMO LIFE, S. DE R.L. DE C.V.";
             $employer = "C. RAÚL TORRES MÁRQUEZ";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE PROMO LIFE, S. DE R.L. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. RAUL TORRES MARQUEZ, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -149,11 +115,10 @@ class DeterminateContract extends Controller
                 $company,
                 $titleCenterBoldStyle, $centerTitle
             );
-        
         }
 
         //BH tardemarket
-        if($company_id == 2){
+        if($postulant->company_id == 2){
             $company = "BH TRADE MARKET, S.A. DE C.V.";
             $employer = "C. DAVID LEVY HANO";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE BH TRADE MARKET, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -166,7 +131,7 @@ class DeterminateContract extends Controller
         }
 
         //Promo zale
-        if($company_id == 3){
+        if($postulant->company_id == 3){
             $company = "PROMO ZALE S.A. DE C.V."; 
             $employer = "C. DANIEL LEVY HANO";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE PROMO ZALE, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DANIEL LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL E COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -178,7 +143,7 @@ class DeterminateContract extends Controller
         }
 
         //Trademarket 57
-        if($company_id== 4){
+        if($postulant->company_id== 4){
             $company = "TRADE MARKET 57, S.A. DE C.V."; 
             $employer = "C. MÓNICA REYES RESENDIZ";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE TRADE MARKET 57, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. MÓNICA REYES RESENDIZ, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PLANTA BAJA, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -190,7 +155,7 @@ class DeterminateContract extends Controller
         } 
 
         //Unipromtex
-        if($company_id== 5){
+        if($postulant->company_id== 5){
             $company = "UNIPROMTEX S.A. DE C.V."; 
             $employer = "DAVID LEVY HANO";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE UNIPROMTEX, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN C. CIELITO LINDO 18 B, PARQUE INDUSTRIAL IZCALLI, NEZAHUALCOYOTL ESTADO DE MÉXICO. C.P. 57810 A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -202,7 +167,6 @@ class DeterminateContract extends Controller
         } 
 
         $htmlsection->addHtml($section, $section1);
-
 
         $cellRowSpan = array(
             'width' => 5000
@@ -274,7 +238,7 @@ class DeterminateContract extends Controller
             $bodyCenterBoldStyle, $center
         );
 
-        $section2 = "<p>PRIMERA.- “LA EMPRESA” CONTRATARA AL EMPLEADO PARA QUE LE PRESTE SUS SERVICIOS PERSONALES BAJO SU DIRECCIÓN Y DEPENDENCIA, CON EL CARÁCTER DE EMPLEADO <b>$position</b> Y TENDRA UN PERIODO <b>DE $duration_months $month_string</b>.</p>";
+        $section2 = "<p>PRIMERA.- “LA EMPRESA” CONTRATARA AL EMPLEADO PARA QUE LE PRESTE SUS SERVICIOS PERSONALES BAJO SU DIRECCIÓN Y DEPENDENCIA, CON EL CARÁCTER DE EMPLEADO <b>$position</b> Y TENDRA UN PERIODO <b>DE 3 MESES</b>.</p>";
         $htmlsection->addHtml($section, $section2);
 
         $section2 = "<p>SEGUNDA.- EL LUGAR DE LA PRESTACIÓN DE SERVICIOS SERA TANTO EN EL DOMICILIO DE “LA EMPRESA”, ASI COMO EN EL DE TODAS AQUELLAS PERSONAS FÍSICAS O MORALES QUE CONTRATEN SERVICIOS CON “LA EMPRESA” SEA CUAL FUERE SU UBICACIÓN DENTRO DE LA REPUBLICA MEXICANA.</p>";
@@ -303,7 +267,7 @@ class DeterminateContract extends Controller
 
  
         //Unipromtex
-        if($company_id== 5){
+        if($postulant->company_id== 5){
             $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
             $listItemRun->addText('LA JORNADA DE TRABAJO SERA DE LUNES A VIERNES DE 9:00 A.M. A 6 P.M. HRS., Y LOS DÍAS SABADOS DE 9:00 A.M. A 2 P.M. HRS. DEBIENDO CUBRIR LAS 48 HORAS A LA SEMANA.',[]);
         }else{
