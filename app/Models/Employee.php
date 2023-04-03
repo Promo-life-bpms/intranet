@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Employee extends Model
 {
     use HasFactory;
+    public $table='employees';
 
     protected $fillable = [
         'birthday_date',
@@ -21,11 +22,14 @@ class Employee extends Model
         'birthday_date',
         'date_admission',
     ];
+
+
     //Conexion xon el ussario
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    
 
     // Companias y puestos
     public function companies()
@@ -65,4 +69,6 @@ class Employee extends Model
     {
         return $this->hasMany(Request::class, 'direct_manager_id');
     }
+
+    
 }

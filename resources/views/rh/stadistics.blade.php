@@ -17,7 +17,7 @@ define('SUB_COLU','col-4 p-2');
     <div class="card-body p-0">
         <div class ="d-flex flex-row-reverse">    
             <form class="form-delete"
-                    action=""
+                    action="/rh/drop-user/"
                     method="GET">
                      @csrf
                     <button style="" type="submit" class="btn btn-info">Generar baja</button>
@@ -25,8 +25,8 @@ define('SUB_COLU','col-4 p-2');
         <div style="margin-left:10px"></div>
     
             <form class="form-delete"
-                    action=""
-                    method="POST">
+                    action="/rh/postulants/"
+                    method="GET">
                      @csrf
                     <button style="" type="submit" class="btn btn-danger">Generar Alta</button>
             </form>
@@ -42,21 +42,34 @@ define('SUB_COLU','col-4 p-2');
     </div>
 </div>
 
-<p class="mb-4" style=" text-align: justify;
-text-justify: inter-word; font-size:1.2rem;">Periodo: 01/02/2023 al 17/02/2023</p>
+                <div class="form-group">
+                    {!! Form::label('Periodo: ') !!}
+                    {!! Form::date(' ') !!}
+                    @error('')
+                    @enderror
+                    {!! Form::label('a') !!}
+                    {!! Form::date(' ') !!}
+                    @error('')
+                    @enderror
+                    <button style="" type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                
+                </div>
+
+                
 
 
 <div class="d-flex flex-row justify-content-end align-items-center mb-5">
         <h3 class="{{ SUB_TEXT }}">Empresa:</h3>   
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width:190px">
-            Promo Life
+            Selecciona la empresa
             </button>
             <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">BH</a></li>
-            <li><a class="dropdown-item" href="#"></a></li>
-            <li><a class="dropdown-item" href="#"></a></li>
-            </ul>
+                <li><a class="dropdown-item" href="#"></a>Promo Life</li>
+                <li><a class="dropdown-item" href="#"></a>BH Trade Market</li>
+                <li><a class="dropdown-item" href="#"></a>Promo Zale</li>
+                <li><a class="dropdown-item" href="#"></a>Trade Market 57</li>
+                <li><a class="dropdown-item" href="#"></a>Unipromtex</li></ul>
         </div>
             
 </div>
@@ -72,7 +85,7 @@ text-justify: inter-word; font-size:1.2rem;">Periodo: 01/02/2023 al 17/02/2023</
             <div class="card h-100">
                 <div class="card-body" >
                     <h5 class="card-title">TOTAL EMPLEADOS</h5>
-                    <p class="card-text">85</p>
+                    <p class="card-text" style="color:#000080">{{$totalEmpleados->total}}</p>
                 </div>
             </div>
         </div>
@@ -83,7 +96,7 @@ text-justify: inter-word; font-size:1.2rem;">Periodo: 01/02/2023 al 17/02/2023</
             <div class="card h-100">
                 <div class="card-body">
                     <h5 class="card-title">NUEVOS INGRESOS</h5>
-                    <p class="card-text">11</p>
+                    <p class="card-text" style="color:#308446">{{$nuevosingresos}}</p>
                 </div>
             </div>
         </div>
@@ -94,7 +107,7 @@ text-justify: inter-word; font-size:1.2rem;">Periodo: 01/02/2023 al 17/02/2023</
             <div class="card h-100">
                 <div class="card-body">
                     <h5 class="card-title">BAJAS</h5>
-                    <p class="card-text">3</p>
+                    <p class="card-text" style="color:#FF0000">{{$bajas}}</p>
                 </div>
             </div>
         </div>

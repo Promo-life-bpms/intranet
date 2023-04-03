@@ -4,7 +4,9 @@ namespace App\Http\Controllers\HumanResources;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Models\CompanyEmployee;
 use App\Models\Department;
+use App\Models\Employee;
 use App\Models\Postulant;
 use App\Models\PostulantBeneficiary;
 use App\Models\PostulantDetails;
@@ -18,14 +20,91 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class RhController extends Controller
 {
     public function stadistics()
     {
-        return view('rh.stadistics');
+        $totalEmpleados = $this->totalempleados();
+        $nuevosingresos = $this->nuevosingresos();
+        $bajas=$this->bajas();
+
+    
+        return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas'));
     }
 
+    public function totalempleados()
+    {
+        $data = [];
+        //$Promolife = CompanyEmployee::all()->where('company_id', 1);
+        $Promolife = CompanyEmployee::where('company_id', 1)->count();
+        $BhTradeMarket = CompanyEmployee::where('company_id', 2)->count();
+        $PromoZale = CompanyEmployee::where('company_id', 3)->count();
+        $TradeMarket57 = CompanyEmployee::where('company_id', 4)->count();
+
+        $total = $Promolife + $BhTradeMarket + $PromoZale + $TradeMarket57;
+
+        $data = (object)[
+            'Promolife' => ($Promolife),
+            'BhTradeMarket' =>($BhTradeMarket),
+            'PromoZale' =>($PromoZale),
+            'TradeMarket57' =>($TradeMarket57),
+            'total' => $total
+        ];
+        return $data;
+    }
+
+    public function nuevosingresos()
+    {
+        $data = [];
+        $carbon = new \Carbon\Carbon();
+        $date = $carbon->now();
+        $yearpresent = $date->format('Y');
+        $montpresent = $date->format('m');
+        $employee = Employee::all();
+
+        foreach (Employee::all() as $employee) {
+            if ($employee->date_admission) {
+                if ($employee->date_admission != null) {
+                    $admission = explode('-', $employee->date_admission);
+                    $year = $admission[0];
+                    $mont=$admission[1];
+                    if ($year == $yearpresent && $mont== $montpresent) {
+                        array_push($data, $employee);
+                    }
+        
+                }
+            }
+        }
+        return count($data);
+       
+    }
+
+    public function bajas()
+    {
+        $data=[];
+        $carbon = new \Carbon\Carbon();
+        $date = $carbon->now();
+        $yearpresent = $date->format('Y');
+        $montpresent = $date->format('m');
+        foreach (Employee::all() as $employee) {
+            if($employee->user->status ==2){
+                if ($employee->date_admission != null) {
+                    $admission = explode('-', $employee->date_admission);
+                    $year = $admission[0];
+                    $mont = $admission[1];
+                    if ($year == $yearpresent && $mont== $montpresent) {
+                        array_push($data,(object)[
+                            'id' => $employee->user->id
+                        ]);
+                    }
+                }
+            }
+        }
+        return count($data);
+    }
+    
     public function postulants()
     {  
         $postulants_data = [];

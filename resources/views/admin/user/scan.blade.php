@@ -18,7 +18,6 @@
         </div>
 
         <br>
-
         <div class ="row row-cols-2 row-cols-lg-4 g-2 g-lg-3" >
         @foreach ($user_documents as $document)
             <div class="col">

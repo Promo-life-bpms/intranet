@@ -10,6 +10,7 @@ use App\Http\Controllers\CommuniqueController;
 use App\Http\Controllers\ManualController;
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BoardroomController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\WorkController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Systems\DevicesController;
 use App\Models\Message;
 use App\Models\RequestCalendar;
@@ -133,7 +135,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::delete('/vacations/{vacation}', [VacationsController::class, 'destroy'])->middleware('role:rh')->name('admin.vacations.destroy');
     Route::get('vacations/export/', [VacationsController::class, 'export'])->name('admin.vacations.export');
 
-
     Route::get('/request', [RequestController::class, 'index'])->name('request.index');
     Route::get('/request/create', [RequestController::class, 'create'])->name('request.create');
     Route::post('/request', [RequestController::class, 'store'])->name('request.store');
@@ -228,6 +229,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/rh/build-down-documentation/', [RhController::class, 'buildDownDocumentation'])->name('rh.buildDownDocumentation');
     Route::post('/rh/create-motive-down/', [RhController::class, 'createMotiveDown'])->name('rh.createMotiveDown');
 
+    
     Route::get('/rh/scan-documents/{id}', [ScanDocumentsController::class, 'scanDocuments'])->name('rh.scanDocuments');
     Route::put('/rh/update-documents/', [ScanDocumentsController::class, 'updateDocuments'])->name('rh.updateDocuments');
     Route::delete('/rh/drop-delete-document', [ScanDocumentsController::class, 'deleteDocuments'])->name('rh.deleteDocuments');
@@ -241,14 +243,21 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     
 
     Route::get('/rh/more-information/{id}', [UserDetails::class, 'moreInformation'])->name('rh.moreInformation');
-    
+
     Route::post('/rh/create-more-information/', [UserDetails::class, 'createMoreInformation'])->name('rh.createMoreInformation');
     
+
+    //sala recreativa//
+    Route::get('/room/creative/',[BoardroomController::class,'vista'])->name('room.creative');
+    Route::get('/dispo/creative/',[ReservationController::class,'reservation'])->name('dispo.creative');
+    Route::post('/dispo/creative/create/',[ReservationController::class,'store'])->name('dispo.creative.create');
 
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
 Route::get('vacations/sendRemembers/', [VacationsController::class, 'sendRemembers'])->name('admin.vacations.sendRemembers');
 Route::get('request/alertRequesPendients/', [RequestController::class, 'alertPendient']);
+
+
 
 

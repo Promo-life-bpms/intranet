@@ -314,22 +314,24 @@
                     </a>
                 </li>
 
-
-                {{-- <li class="sidebar-item {{ request()->is('folder') ? 'active' : '' }}">
-                    <a href="{{ route('folder') }}" class='sidebar-link'>
-                        <i class="fa fa-folder-open" aria-hidden="true"></i>
-                        <span>Carpetas</span>
+                <li class="sidebar-item  has-sub {{request()->is('dispo.creative') ? 'active' : '' }}">
+                    <a href="{{ route('dispo.creative') }}" class='sidebar-link'>
+                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                        <span>Sala Recreativa</span>
                     </a>
-                </li> --}}
-
-                {{-- <li class="sidebar-item {{ request()->is('work') ? 'active' : '' }}">
-                    <a href="{{ route('work') }}" class='sidebar-link'>
-                        <i class="fa fa-trello" aria-hidden="true"></i>
-                        <span>Trello</span>
-                    </a>
-                </li> --}}
-
-
+                    <ul class="submenu ">
+                    <li class="submenu-item ">
+                        <a class="dropdown-item" href="{{ route('room.creative') }}">
+                            <span>Reservación</span>
+                        </a>
+                    </li>
+                    <li class="submenu-item ">
+                        <a class="dropdown-item" href="{{ route('dispo.creative') }}">
+                            <span>Disponibilidad de la sala</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
                 <!-- <li class="sidebar-item  {{ request()->is('users') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-grid-fill"></i>
