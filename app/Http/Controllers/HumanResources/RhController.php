@@ -108,30 +108,54 @@ class RhController extends Controller
 
     public function createMotiveDown(Request $request)
     {
-        DB::table('users_down_motive')->where('user_id', intval($request->user_id))->delete();
-        
-        $create_user_motive = new UserDownMotive();
-        $create_user_motive->user_id  = $request->user_id;
-        $create_user_motive->growth_salary  = $request->growth_salary;
-        $create_user_motive->growth_promotion  = $request->growth_promotion;
-        $create_user_motive->growth_activity  = $request->growth_activity;
-        $create_user_motive->climate_partnet  = $request->climate_partnet;
-        $create_user_motive->climate_manager  = $request->climate_manager;
-        $create_user_motive->climate_boss  = $request->climate_boss;
-        $create_user_motive->psicosocial_workloads  = $request->psicosocial_workloads;
-        $create_user_motive->psicosocial_appreciation	  = $request->psicosocial_appreciation	;
-        $create_user_motive->psicosocial_violence  = $request->psicosocial_violence;
-        $create_user_motive->psicosocial_workday  = $request->psicosocial_workday;
-        $create_user_motive->demographics_distance  = $request->demographics_distance;
-        $create_user_motive->demographics_physical  = $request->demographics_physical;
-        $create_user_motive->demographics_personal  = $request->demographics_personal;
-        $create_user_motive->demographics_school  = $request->demographics_school;
-        $create_user_motive->health_personal  = $request->health_personal;
-        $create_user_motive->health_familiar  = $request->health_familiar;
-        $create_user_motive->motive  = $request->motive;
-            
-        $create_user_motive->save();
 
+        $down_motive = UserDownMotive::all()->where('user_id', intval($request->user_id))->last();
+
+        if($down_motive == null){
+            $create_user_motive = new UserDownMotive();
+            $create_user_motive->user_id  = $request->user_id;
+            $create_user_motive->growth_salary  = $request->growth_salary;
+            $create_user_motive->growth_promotion  = $request->growth_promotion;
+            $create_user_motive->growth_activity  = $request->growth_activity;
+            $create_user_motive->climate_partnet  = $request->climate_partnet;
+            $create_user_motive->climate_manager  = $request->climate_manager;
+            $create_user_motive->climate_boss  = $request->climate_boss;
+            $create_user_motive->psicosocial_workloads  = $request->psicosocial_workloads;
+            $create_user_motive->psicosocial_appreciation	  = $request->psicosocial_appreciation	;
+            $create_user_motive->psicosocial_violence  = $request->psicosocial_violence;
+            $create_user_motive->psicosocial_workday  = $request->psicosocial_workday;
+            $create_user_motive->demographics_distance  = $request->demographics_distance;
+            $create_user_motive->demographics_physical  = $request->demographics_physical;
+            $create_user_motive->demographics_personal  = $request->demographics_personal;
+            $create_user_motive->demographics_school  = $request->demographics_school;
+            $create_user_motive->health_personal  = $request->health_personal;
+            $create_user_motive->health_familiar  = $request->health_familiar;
+            $create_user_motive->other_motive  = $request->other_motive;
+                
+            $create_user_motive->save();
+        }else{
+            DB::table('users_down_motive')->where('user_id', intval($request->user_id))->update([
+            'growth_salary'  => $request->growth_salary,
+            'growth_promotion'  => $request->growth_promotion,
+            'growth_activity'  => $request->growth_activity,
+            'climate_partnet'  => $request->climate_partnet,
+            'climate_manager'  => $request->climate_manager,
+            'climate_boss'  => $request->climate_boss,
+            'psicosocial_workloads'  => $request->psicosocial_workloads,
+            'psicosocial_appreciation'   => $request->psicosocial_appreciation,
+            'psicosocial_violence' => $request->psicosocial_violence,
+            'psicosocial_workday'  => $request->psicosocial_workday,
+            'demographics_distance'  => $request->demographics_distance,
+            'demographics_physical'  => $request->demographics_physical,
+            'demographics_personal'  => $request->demographics_personal,
+            'demographics_school'  => $request->demographics_school,
+            'health_personal'  => $request->health_personal,
+            'health_familiar'  => $request->health_familiar,
+            'other_motive'   => $request->other_motive,
+            ]);
+
+        }
+        
         return redirect()->back()->with('message', 'Motivo de baja guardado satisfactoriamente');
     }
 

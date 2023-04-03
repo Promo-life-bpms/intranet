@@ -104,7 +104,7 @@ class EmployeeFeatures extends Migration
             $table->string('demographics_school',6)->nullable();
             $table->string('health_personal',6)->nullable();
             $table->string('health_familiar',6)->nullable();
-            $table->string('motive',6)->nullable();
+            $table->string('other_motive')->nullable();
             $table->timestamps();
         }); 
       
