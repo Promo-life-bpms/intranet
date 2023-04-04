@@ -43,47 +43,49 @@ define('SUB_COLU','col-4 p-2');
     </div>
 </div>
 
-<form action="/rh/filterstadistics" method="POST">
+<form class="form-delete"
+    action="{{ route('rh.filterstadistics') }}"
+    method="POST">
+    @csrf
+    @method('post')
     
-    <div class="row">
-        <label>{{ $data }}</label>
-        <div class="col-md-4">
+    <div class="d-flex justify-content-between">
+    
+        <div class="d-flex justify-content-start">
             
-            <div class="form-group">
+            <div class="form-group me-4">
                 <label><b>Fecha de inicio: </b></label>
-                <input type="date" id="from_date" name="from_date" value="<?php if(isset($_GET['from_date'])){ echo $_GET['from_date']; } ?>" class="form-control">
+                <input type="date" id="start" name="start" value="{{$start}}" class="form-control">
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
+            
+            <div class="form-group me-4">
                 <label><b> Fecha de termino: </b></label>
-                <input type="date" name="to_date" id="to_date" value="<?php if(isset($_GET['to_date'])){ echo $_GET['to_date']; } ?>" class="form-control">
+                <input type="date" name="end" id="end" value="{{$end}}" class="form-control">
             </div>
-        </div>
-        <div class="col-md-4">
+   
             <div class="form-group">
                 <label><b></b></label> <br>
               <input type="submit" class="btn btn-primary" value="Filtrar"/>
             </div>
         </div>
+
+        <div class="d-flex align-items-center">
+            <select class="form-control" name="select">
+                <option value="todas" selected>Todas las empresas</option>
+                <option value="promolife">Promo Life</option>
+                <option value="bhtrademarket">BH Trade Market</option>
+                <option value="promozale">Promo Zale</option>
+                <option value="trademarket57">Trade Market 57</option>
+                <option value="unipromtex">Unipromtex</option>
+            </select>
+        </div>
+
     </div>
-    <br>
+  
+
 </form>
 
-<div class="d-flex flex-row justify-content-end align-items-center mb-5">
-            <h3 class="{{ SUB_TEXT }}">Empresa:</h3>   
-            <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width:190px">
-            Selecciona la empresa
-            </button>
-            <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#"></a>Promo Life</li>
-            <li><a class="dropdown-item" href="#"></a>BH Trade Market</li>
-            <li><a class="dropdown-item" href="#"></a>Promo Zale</li>
-            <li><a class="dropdown-item" href="#"></a>Trade Market 57</li>
-            <li><a class="dropdown-item" href="#"></a>Unipromtex</li></ul>
-            </div>
-</div>
+
 
 
 <?php

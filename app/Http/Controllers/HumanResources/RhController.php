@@ -27,12 +27,16 @@ class RhController extends Controller
 {
     public function stadistics()
     {
+        $start = null;
+        $end = null;
+
         $totalEmpleados = $this->totalempleados();
-        $nuevosingresos = $this->nuevosingresos();
+        $nuevosingresos = $this->nuevosingresos($start, $end);
         $bajas = $this->bajas();
        
         
-        return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas'));
+        
+        return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas', 'start', 'end'));
     }
 
     public function totalempleados()
@@ -56,8 +60,9 @@ class RhController extends Controller
         return $data;
     }
 
-    public function nuevosingresos()
+    public function nuevosingresos($start,$end)
     {
+       
         $data = [];
         $carbon = new \Carbon\Carbon();
         $date = $carbon->now();
@@ -65,16 +70,32 @@ class RhController extends Controller
         $monthpresent = $date->format('m');
         $employee = Employee::all();
 
+        $format_start =date('Y-m-d', strtotime($start));
+        $format_end =date('Y-m-d', strtotime($end));
+
+       
         foreach (Employee::all() as $employee) {
             if ($employee->date_admission ) {
                 if ($employee->date_admission != null) {
                     $admission = explode('-', $employee->date_admission);
                     $year = $admission[0];
                     $mont=$admission[1];
-                    if ($year == $yearpresent && $mont== $monthpresent) {
-                        array_push($data, $employee);
+                    
+                    if($start == null && $end == null){
+                        //Con filtro inicial
+                        if ($year == $yearpresent && $mont== $monthpresent) {
+                            array_push($data, $employee);
+                        }
+                     
+                    }else{
+                        //Con filtro de 2 fechas
+                        if ($employee->date_admission >= $format_start && $employee->date_admission <= $format_end) {
+                            array_push($data, $employee);
+                        }
+            
                     }
-        
+
+                   
                 }
             }
         }
@@ -107,9 +128,13 @@ class RhController extends Controller
 
     public function filterstadistics(Request $request)
     {
-        $data = 'hola';
-        //return view('rh.stadistics', compact('data'));
-        return redirect()->action([RhController::class, 'filterstadistics'])->with('message', 'El filtrado ha sido correcto');
+        $start = $request->start;
+        $end= $request->end;
+        $totalEmpleados = $this->totalempleados();
+        $nuevosingresos = $this->nuevosingresos($start, $end);
+        $bajas = $this->bajas();
+      
+        return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas', 'start', 'end'));
     }
 
     public function postulants()
