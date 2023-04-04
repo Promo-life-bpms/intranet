@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HumanResources;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\UserDetails;
 use App\Models\UserDocumentation;
 use Illuminate\Http\Request;
@@ -13,9 +14,14 @@ class ScanDocumentsController extends Controller
 {
     public function scanDocuments($id)
     {
+        $status = 1;
+
+        $user = User::where('id',$id)->get()->last();
         $user_documents= UserDocumentation::all()->where('user_id', $id);
         $user_details = UserDetails::where('user_id',$id)->get();
-        return view('admin.user.scan', compact('id','user_documents','user_details' ));
+
+        $status = $user->status;
+        return view('admin.user.scan', compact('id','user_documents','user_details','status' ));
     }
 
     public function storeDocuments(Request $request)

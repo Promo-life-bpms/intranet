@@ -23,32 +23,34 @@
         @endif
 
         <br>
-
-        
+        @if($status == 1)
         <h5>Generar documentos</h5>
 
-        {!! Form::open(['route' => 'rh.createUserDocument', 'enctype' => 'multipart/form-data']) !!}
-            {!! Form::text('user_id',$id,['class' => 'form-control', 'hidden']) !!}
-            <br>
-            @if(count($user_details)  == 0)
-                <div class="alert alert-light" role="alert">
-                    No es posible generar documentación del empleado hasta llenar su <b>Información adicional</b>. 
-                </div>
-            @else
-               
-                <div class="alert alert-primary" role="alert">
-                    <div class="d-flex justify-content-between">    
-                        <p class="mt-2">  CONTRATO INDETERMINADO  </p>             
-                        <input type="submit" class="btn btn-light" value="Descargar">
-                    </div> 
-                </div>
-                               
-            @endif
-       
-        {!! Form::close() !!}
+            {!! Form::open(['route' => 'rh.createUserDocument', 'enctype' => 'multipart/form-data']) !!}
+                {!! Form::text('user_id',$id,['class' => 'form-control', 'hidden']) !!}
+                <br>
+                @if(count($user_details)  == 0)
+                    <div class="alert alert-light" role="alert">
+                        No es posible generar documentación del empleado hasta llenar su <b>Información adicional</b>. 
+                    </div>
+                @else
+                
+                    <div class="alert alert-primary" role="alert">
+                        <div class="d-flex justify-content-between">    
+                            <p class="mt-2">  CONTRATO INDETERMINADO  </p>             
+                            <input type="submit" class="btn btn-light" value="Descargar">
+                        </div> 
+                    </div>
+                                
+                @endif
 
-        <br>
-        <br>
+            {!! Form::close() !!}
+
+            <br>
+            <br>
+        @endif
+        
+        
      
         <h5>Documentos guardados</h5>
         @if(count($user_documents)  == 0)
