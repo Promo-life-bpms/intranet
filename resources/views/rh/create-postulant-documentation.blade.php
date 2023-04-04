@@ -16,43 +16,114 @@
         </div>
     @endif
 
-    {!! Form::open(['route' => 'rh.buildPostulantDocumentation', 'enctype' => 'multipart/form-data']) !!}
     <h5>{{ $postulant->name . ' '. $postulant->lastname}}</h5>
     <br>
     <div class="row">
         
-        <div class="col-md-5 cont2">
-            {!! Form::text('postulant', $postulant->id,['class' => 'form-control', 'hidden']) !!}
-            <h6>Alta</h6>
-            <input type="radio" name="document" value="up_personal" checked> <label for="cbox2">Alta personal</label>
-            <br><br>
-            <h6>Contratos</h6> 
-           
-            <input type="radio" name="document" value="determined_contract" id="determined_contract"> <label for="cbox2">Contrato determinado</label>  
-            <br>
-            <input type="radio" name="document" value="indetermined_contract"> <label for="cbox2">Contrato indeterminado</label> 
+        <div class="col cont2">
             
-            <br><br>
+            <h6>Altas</h6>
+            {!! Form::open(['route' => 'rh.buildPostulantDocumentation', 'enctype' => 'multipart/form-data']) !!}
+                {!! Form::text('postulant', $postulant->id,['class' => 'form-control', 'hidden']) !!}
+                {!! Form::text('up_personal', "up_personal",['class' => 'form-control', 'hidden']) !!}
+
+                <div class="alert alert-secondary" role="alert">
+                    <div class="d-flex justify-content-between">    
+                        <p class="mt-2">  ALTA PERSONAL  </p>             
+                        <input type="submit" class="btn btn-primary" value="Descargar">
+                    </div> 
+                </div>
+            {!! Form::close() !!}
+            
+            <br>
+            <h6>Contratos</h6> 
+
+            {!! Form::open(['route' => 'rh.buildPostulantDocumentation', 'enctype' => 'multipart/form-data']) !!}
+                {!! Form::text('postulant', $postulant->id,['class' => 'form-control', 'hidden']) !!}
+                {!! Form::text('determined_contract', "determined_contract",['class' => 'form-control', 'hidden']) !!}
+
+                <div class="alert alert-secondary" role="alert">
+                    <div class="d-flex justify-content-between">    
+                        <p class="mt-2">  CONTRATO DETERMINADO  </p>             
+                        <input type="submit" class="btn btn-primary" value="Descargar">
+                    </div> 
+                </div>
+            {!! Form::close() !!}
+
+            
+            {!! Form::open(['route' => 'rh.buildPostulantDocumentation', 'enctype' => 'multipart/form-data']) !!}
+                {!! Form::text('postulant', $postulant->id,['class' => 'form-control', 'hidden']) !!}
+                {!! Form::text('indetermined_contract', "indetermined_contract",['class' => 'form-control', 'hidden']) !!}
+
+                <div class="alert alert-secondary" role="alert">
+                    <div class="d-flex justify-content-between">    
+                        <p class="mt-2">  CONTRATO INDETERMINADO  </p>             
+                        <input type="submit" class="btn btn-primary" value="Descargar">
+                    </div> 
+                </div>
+            {!! Form::close() !!}
+           
+            <br>
             <h6>Convenios</h6>
-            <input type="radio" name="document"  value="confidentiality_agreement"> <label for="cbox2">Convenio de confidencialidad</label>
-            <br>
-            <input type="radio" name="document"  value="no_compete_agreement"> <label for=" cbox2">Convenio de no competencia</label>
-            <br>
+
+            {!! Form::open(['route' => 'rh.buildPostulantDocumentation', 'enctype' => 'multipart/form-data']) !!}
+                {!! Form::text('postulant', $postulant->id,['class' => 'form-control', 'hidden']) !!}
+                {!! Form::text('confidentiality_agreement', "confidentiality_agreement",['class' => 'form-control', 'hidden']) !!}
+
+                <div class="alert alert-secondary" role="alert">
+                    <div class="d-flex justify-content-between">    
+                        <p class="mt-2">  CONVENIO DE CONFIDENCIALIDAD </p>             
+                        <input type="submit" class="btn btn-primary" value="Descargar">
+                    </div> 
+                </div>
+            {!! Form::close() !!}
+
+            {!! Form::open(['route' => 'rh.buildPostulantDocumentation', 'enctype' => 'multipart/form-data']) !!}
+                {!! Form::text('postulant', $postulant->id,['class' => 'form-control', 'hidden']) !!}
+                {!! Form::text('no_compete_agreement', "no_compete_agreement",['class' => 'form-control', 'hidden']) !!}
+
+                <div class="alert alert-secondary" role="alert">
+                    <div class="d-flex justify-content-between">    
+                        <p class="mt-2">  CONVENIO DE NO COMPETENCIA </p>             
+                        <input type="submit" class="btn btn-primary" value="Descargar">
+                    </div> 
+                </div>
+            {!! Form::close() !!}
+
             <br>
             <h6>Constrancias</h6>
-            <input type="radio" name="document"  value="work_condition_update"> <label for="cbox2">Constancia de actualización de condiciones de trabajo</label>
-            <br> <br>
+
+            {!! Form::open(['route' => 'rh.buildPostulantDocumentation', 'enctype' => 'multipart/form-data']) !!}
+                {!! Form::text('postulant', $postulant->id,['class' => 'form-control', 'hidden']) !!}
+                {!! Form::text('work_condition_update', "work_condition_update",['class' => 'form-control', 'hidden']) !!}
+
+                <div class="alert alert-secondary" role="alert">
+                    <div class="d-flex justify-content-between">    
+                        <p class="mt-2">  CONSTANCIA DE ACTUALIZACIÓN DE CONDICIONES DE TRABAJO </p>             
+                        <input type="submit" class="btn btn-primary" value="Descargar">
+                    </div> 
+                </div>
+            {!! Form::close() !!}
+
+            <br> 
             <h6>Cartas</h6>
-            <input type="radio" name="document"  value="letter_for_bank" > <label for="cbox2">Carta para banco</label>
+
+            {!! Form::open(['route' => 'rh.buildPostulantDocumentation', 'enctype' => 'multipart/form-data']) !!}
+                {!! Form::text('postulant', $postulant->id,['class' => 'form-control', 'hidden']) !!}
+                {!! Form::text('letter_for_bank', "letter_for_bank",['class' => 'form-control', 'hidden']) !!}
+
+                <div class="alert alert-secondary" role="alert">
+                    <div class="d-flex justify-content-between">    
+                        <p class="mt-2"> CARTA PARA BANCO </p>             
+                        <input type="submit" class="btn btn-primary" value="Descargar">
+                    </div> 
+                </div>
+            {!! Form::close() !!}
         </div>
         
     </div>
 
-    <br>
-    {!! Form::submit('GENERAR DOCUMENTOS', ['class' => 'btnCreate mt-4']) !!}
-    {!! Form::close() !!}
-
-    <br>
+    <br><br>
 
     @if (!session('message'))
         <div>
@@ -61,7 +132,7 @@
                 method="POST">
                 @csrf
                 @method('post')
-                <button type="submit" style="height:48px" class="btn btn-outline-primary w-100 ">CONVERTIR A EMPLEADO</button>
+                <button type="submit" style="height:48px" class="btn btn-success w-100 ">ASCENDER A EMPLEADO</button>
             </form>
         </div>
     @endif

@@ -35,10 +35,10 @@
                     </div>
                 @else
                 
-                    <div class="alert alert-primary" role="alert">
+                    <div class="alert alert-secondary" role="alert">
                         <div class="d-flex justify-content-between">    
                             <p class="mt-2">  CONTRATO INDETERMINADO  </p>             
-                            <input type="submit" class="btn btn-light" value="Descargar">
+                            <input type="submit" class="btn btn-primary" value="Descargar">
                         </div> 
                     </div>
                                 

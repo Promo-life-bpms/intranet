@@ -517,35 +517,35 @@ class RhController extends Controller
         $postulant_details = PostulantDetails::all()->where('postulant_id',$request->postulant)->last();
         $postulant_beneficiaries = PostulantBeneficiary::all()->where('postulant_details_id',$postulant_details->id)->values('name','porcentage');
 
-        if($request->document == null){
+        /* if($request->document == null){
             return redirect()->back()->with('error', 'No has seleccionado ningun documento a generar');          
-        }
-        if($request->document =='up_personal'){ 
+        } */
+        if($request->has('up_personal')){ 
             $up_document = new UpDocument();
             $up_document->upDocument($postulant, $postulant_details, $postulant_beneficiaries);
         }
 
-        if($request->document == 'determined_contract'){
+        if($request->has('determined_contract')){
             $determined_contract = new DeterminateContract();
             $determined_contract->determinateContract($postulant, $postulant_details);
         }
 
-        if($request->document == 'indetermined_contract'){
+        if($request->has('indetermined_contract')){
             $indeterminate_contract = new IndeterminateContract();
             $indeterminate_contract->indeterminateContract($postulant, $postulant_details,$request->company, $request->determined_contract_duration );
         }
 
-        if($request->document == 'confidentiality_agreement'){
+        if($request->has('confidentiality_agreement')){
             $confidentiality_agreement = new confidentialityAgreement();
             $confidentiality_agreement->confidentialityAgreement($postulant, $postulant_details);
         }
 
-        if($request->document == 'work_condition_update'){
+        if($request->has('work_condition_update')){
             $work_condition_update = new WorkConditionUpdate();
             $work_condition_update->workConditionUpdate($postulant, $postulant_details);
         }
 
-        if($request->document == 'no_compete_agreement'){
+        if($request->has('no_compete_agreement')){
 
             //Promo zale
             if(intval($postulant->company_id) == 3){
@@ -559,7 +559,7 @@ class RhController extends Controller
             $no_compete_agreement->noCompeteAgreement($postulant, $postulant_details);
         }   
 
-        if($request->document == 'letter_for_bank'){
+        if($request->has('letter_for_bank')){
             $letter_for_bank = new LetterForBank();
             $letter_for_bank->letterForBank($postulant,$postulant_details,intval($request->company));
         }   
