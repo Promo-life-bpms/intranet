@@ -30,7 +30,7 @@ class RhController extends Controller
         $start = null;
         $end = null;
 
-        $totalEmpleados = $this->totalempleados();
+        $totalEmpleados = $this->totalempleados($start, $end);
         $nuevosingresos = $this->nuevosingresos($start, $end);
         $bajas = $this->bajas();
        
@@ -39,7 +39,7 @@ class RhController extends Controller
         return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas', 'start', 'end'));
     }
 
-    public function totalempleados()
+    public function totalempleados($start, $end)
     {
         $data = [];
         //$Promolife = CompanyEmployee::all()->where('company_id', 1);
@@ -47,17 +47,73 @@ class RhController extends Controller
         $BhTradeMarket = CompanyEmployee::where('company_id', 2)->count();
         $PromoZale = CompanyEmployee::where('company_id', 3)->count();
         $TradeMarket57 = CompanyEmployee::where('company_id', 4)->count();
+        $totalPLFilter = 0;
+        $totalBHFilter = 0;
+        $totalTM57Filter = 0;
+        $totalPZFilter = 0;
 
-        $total = $Promolife + $BhTradeMarket + $PromoZale + $TradeMarket57;
 
-        $data = (object)[
-            'Promolife' => ($Promolife),
-            'BhTradeMarket' =>($BhTradeMarket),
-            'PromoZale' =>($PromoZale),
-            'TradeMarket57' =>($TradeMarket57),
-            'total' => $total
-        ];
-        return $data;
+        if($start == null && $end == null){
+            $total = $Promolife + $BhTradeMarket + $PromoZale + $TradeMarket57;
+
+            $data = (object)[
+                'Promolife' => ($Promolife),
+                'BhTradeMarket' =>($BhTradeMarket),
+                'PromoZale' =>($PromoZale),
+                'TradeMarket57' =>($TradeMarket57),
+                'total' => $total
+            ];
+            return $data;
+        }else{
+
+            $Promolife = CompanyEmployee::where('company_id', 1)->get();
+            $BhTradeMarket = CompanyEmployee::where('company_id', 2)->get();
+            $PromoZale = CompanyEmployee::where('company_id', 3)->get();
+            $TradeMarket57 = CompanyEmployee::where('company_id', 4)->get();
+
+
+            $format_start =date('Y-m-d', strtotime($start));
+            $format_end =date('Y-m-d', strtotime($end));
+
+            foreach($Promolife as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                    $totalPLFilter = $totalPLFilter + 1;
+                }
+            }
+
+            foreach($BhTradeMarket as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                    $totalBHFilter = $totalBHFilter + 1;
+                }
+            }
+
+            foreach($TradeMarket57 as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                    $totalTM57Filter = $totalTM57Filter + 1;
+                }
+            }
+
+            foreach($PromoZale as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                    $totalPZFilter  = $totalPZFilter  + 1;
+                }
+            }
+
+            $data = (object)[
+                'Promolife' => $totalPLFilter,
+                'BhTradeMarket' =>$totalBHFilter,
+                'PromoZale' =>$totalPZFilter,
+                'TradeMarket57' =>$totalTM57Filter,
+                'total' => $totalPLFilter + $totalBHFilter + $totalPZFilter + $totalTM57Filter
+            ];
+
+
+        }
+        
     }
 
     public function nuevosingresos($start,$end)
@@ -130,7 +186,7 @@ class RhController extends Controller
     {
         $start = $request->start;
         $end= $request->end;
-        $totalEmpleados = $this->totalempleados();
+        $totalEmpleados = $this->totalempleados($start, $end);
         $nuevosingresos = $this->nuevosingresos($start, $end);
         $bajas = $this->bajas();
       
