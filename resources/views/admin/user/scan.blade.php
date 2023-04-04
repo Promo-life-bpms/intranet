@@ -7,7 +7,7 @@
                 <a  href="{{ route('rh.moreInformation', ['id' => $id]) }}">
                     <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
                 </a>
-                <h3 style="margin-left:16px;" class="separator">Documentos guardados</h3> 
+                <h3 style="margin-left:16px;" class="separator">Documentación</h3> 
             </div>
                         
             <div class="d-flex">
@@ -24,7 +24,41 @@
 
         <br>
 
+        
+        <h5>Generar documentos</h5>
+
+        {!! Form::open(['route' => 'rh.createUserDocument', 'enctype' => 'multipart/form-data']) !!}
+            {!! Form::text('user_id',$id,['class' => 'form-control', 'hidden']) !!}
+            <br>
+            @if(count($user_details)  == 0)
+                <div class="alert alert-light" role="alert">
+                    No es posible generar documentación del empleado hasta llenar su <b>Información adicional</b>. 
+                </div>
+            @else
+               
+                <div class="alert alert-primary" role="alert">
+                    <div class="d-flex justify-content-between">    
+                        <p class="mt-2">  CONTRATO INDETERMINADO  </p>             
+                        <input type="submit" class="btn btn-light" value="Descargar">
+                    </div> 
+                </div>
+                               
+            @endif
+       
+        {!! Form::close() !!}
+
+        <br>
+        <br>
+     
+        <h5>Documentos guardados</h5>
+        @if(count($user_documents)  == 0)
+            <div class="alert alert-light" role="alert">
+                    Aún no hay documentos del usuario guardados, puedes subirlos dando clic al botón <b>Agregar documento</b>.
+            </div>               
+        @endif
         <div class ="row row-cols-2 row-cols-lg-4 g-2 g-lg-3" >
+
+       
         @foreach ($user_documents as $document)
             <div class="col">
                 <div class="card card_document">

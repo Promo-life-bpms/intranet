@@ -18,7 +18,7 @@
                  @csrf
                 <button type="submit" class="btn btn-primary"> 
                     <i class="fa fa-file-text me-2" aria-hidden="true"></i>  
-                    Documentos guardados
+                    Documentación
                 </button>
             </form>
         </div>

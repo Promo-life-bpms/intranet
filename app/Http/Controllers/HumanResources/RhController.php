@@ -5,6 +5,8 @@ namespace App\Http\Controllers\HumanResources;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Department;
+use App\Models\Employee;
+use App\Models\EmployeeCompany;
 use App\Models\Postulant;
 use App\Models\PostulantBeneficiary;
 use App\Models\PostulantDetails;
@@ -694,6 +696,18 @@ class RhController extends Controller
 
         return redirect()->back()->with('message', 'Candidato ha sido promovido a empleado satisfactoriamente');
 
+    }
+
+    public function createUserDocument(Request $request)
+    {
+        $user = User::where('id',$request->user_id)->get()->last();
+        $employee = Employee::where('user_id',$user->id)->get()->last();
+        $user_details = UserDetails::where('user_id',$request->user_id)->get()->last();
+        $company = EmployeeCompany::where('employee_id', $employee->id)->get()->last();
+      
+        $indeterminate_contract = new IndeterminateContractUser();
+        $indeterminate_contract->indeterminateContractUser($user, $user_details, $company->company_id);
+        
     }
 
 }
