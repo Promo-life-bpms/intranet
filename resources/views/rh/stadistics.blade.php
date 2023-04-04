@@ -8,6 +8,7 @@ $subheader = 'fs-6';
 $subheader2 = 'fs-5';
 $subcols = 'col-4 p-4';
 $subtext = 'fs-6  m-0';
+$data= 'hola1';
 define('SUB_TEXT','fs-6 my-0 mx-2');
 define('SUB_COLU','col-4 p-2');
 ?>
@@ -17,7 +18,7 @@ define('SUB_COLU','col-4 p-2');
     <div class="card-body p-0">
         <div class ="d-flex flex-row-reverse">    
             <form class="form-delete"
-                    action=""
+                    action="/rh/drop-user"
                     method="GET">
                      @csrf
                     <button style="" type="submit" class="btn btn-info">Generar baja</button>
@@ -25,8 +26,8 @@ define('SUB_COLU','col-4 p-2');
         <div style="margin-left:10px"></div>
     
             <form class="form-delete"
-                    action=""
-                    method="POST">
+                    action="/rh/postulants"
+                    method="GET">
                      @csrf
                     <button style="" type="submit" class="btn btn-danger">Generar Alta</button>
             </form>
@@ -42,21 +43,32 @@ define('SUB_COLU','col-4 p-2');
     </div>
 </div>
 
-<div class="form-group">
-    {!! Form::label('Periodo: ') !!}
-    {!! Form::date(' ') !!}
-    @error('')
-    @enderror
-    {!! Form::label('a') !!}
-    {!! Form::date(' ') !!}
-    @error('')
-    @enderror
-    <button style="" type="submit" class="btn btn-primary btn-sm">Filtrar</button>
-
-</div>
-
-
-
+<form action="/rh/filterstadistics" method="POST">
+    
+    <div class="row">
+        <label>{{ $data }}</label>
+        <div class="col-md-4">
+            
+            <div class="form-group">
+                <label><b>Fecha de inicio: </b></label>
+                <input type="date" id="from_date" name="from_date" value="<?php if(isset($_GET['from_date'])){ echo $_GET['from_date']; } ?>" class="form-control">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label><b> Fecha de termino: </b></label>
+                <input type="date" name="to_date" id="to_date" value="<?php if(isset($_GET['to_date'])){ echo $_GET['to_date']; } ?>" class="form-control">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label><b></b></label> <br>
+              <input type="submit" class="btn btn-primary" value="Filtrar"/>
+            </div>
+        </div>
+    </div>
+    <br>
+</form>
 
 <div class="d-flex flex-row justify-content-end align-items-center mb-5">
             <h3 class="{{ SUB_TEXT }}">Empresa:</h3>   

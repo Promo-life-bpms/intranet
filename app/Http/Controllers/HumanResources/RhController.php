@@ -15,11 +15,13 @@ use App\Models\User;
 use App\Models\UserBeneficiary;
 use App\Models\UserDetails;
 use App\Models\UserDownMotive;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+
 
 class RhController extends Controller
 {
@@ -27,7 +29,9 @@ class RhController extends Controller
     {
         $totalEmpleados = $this->totalempleados();
         $nuevosingresos = $this->nuevosingresos();
-        $bajas=$this->bajas();
+        $bajas = $this->bajas();
+       
+        
         return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas'));
     }
 
@@ -58,16 +62,16 @@ class RhController extends Controller
         $carbon = new \Carbon\Carbon();
         $date = $carbon->now();
         $yearpresent = $date->format('Y');
-        $montpresent = $date->format('m');
+        $monthpresent = $date->format('m');
         $employee = Employee::all();
 
         foreach (Employee::all() as $employee) {
-            if ($employee->date_admission) {
+            if ($employee->date_admission ) {
                 if ($employee->date_admission != null) {
                     $admission = explode('-', $employee->date_admission);
                     $year = $admission[0];
                     $mont=$admission[1];
-                    if ($year == $yearpresent && $mont== $montpresent) {
+                    if ($year == $yearpresent && $mont== $monthpresent) {
                         array_push($data, $employee);
                     }
         
@@ -83,14 +87,14 @@ class RhController extends Controller
         $carbon = new \Carbon\Carbon();
         $date = $carbon->now();
         $yearpresent = $date->format('Y');
-        $montpresent = $date->format('m');
+        $monthpresent = $date->format('m');
         foreach (Employee::all() as $employee) {
             if($employee->user->status ==2){
                 if ($employee->date_admission != null) {
                     $admission = explode('-', $employee->date_admission);
                     $year = $admission[0];
                     $mont = $admission[1];
-                    if ($year == $yearpresent && $mont== $montpresent) {
+                    if ($year == $yearpresent && $mont== $monthpresent) {
                         array_push($data,(object)[
                             'id' => $employee->user->id
                         ]);
@@ -99,6 +103,13 @@ class RhController extends Controller
             }
         }
         return count($data);
+    }
+
+    public function filterstadistics(Request $request)
+    {
+        $data = 'hola';
+        //return view('rh.stadistics', compact('data'));
+        return redirect()->action([RhController::class, 'filterstadistics'])->with('message', 'El filtrado ha sido correcto');
     }
 
     public function postulants()
