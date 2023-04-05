@@ -65,17 +65,19 @@ class RhController extends Controller
 
 
         if($start == null && $end == null){
-            $total = $promolife + $bh_trade_market + $promo_zale + $trade_market57;
+           
 
             $data = (object)[
                 'Promolife' => count($promolife),
                 'BhTradeMarket' => count($bh_trade_market),
                 'PromoZale' => count($promo_zale),
                 'TradeMarket57' => count($trade_market57),
-                'total' => $total
+                'total' =>count($promolife) + count($bh_trade_market) +  count($promo_zale) + count($trade_market57)
             ];
             return $data;
         }else{
+
+  
 
             $format_start =date('Y-m-d', strtotime($start));
             $format_end =date('Y-m-d', strtotime($end));
@@ -148,7 +150,7 @@ class RhController extends Controller
        
         foreach (Employee::all() as $employee) {
             if ($employee->date_admission ) {
-                if ($employee->date_admission != null) {
+                if ($employee->date_admission != null && $employee->user->status == 1) {
                     $admission = explode('-', $employee->date_admission);
                     $year = $admission[0];
                     $mont=$admission[1];
