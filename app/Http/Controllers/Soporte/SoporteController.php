@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 class SoporteController extends Controller
 {
     //
+
+   
     public function index()
     {
 

@@ -16,4 +16,9 @@ class Categoria extends Model
         'slug',
     ];
 
+    
+
+    
+
+
 }

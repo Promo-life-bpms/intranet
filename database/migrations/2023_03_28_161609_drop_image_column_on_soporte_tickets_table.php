@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCategorias extends Migration
+class DropImageColumnOnSoporteTicketsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateCategorias extends Migration
      */
     public function up()
     {
-        Schema::create('soporte_categorias', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('status');
-            $table->string('slug');
-            $table->timestamps();
+    
+        Schema::table('soporte_tickets', function (Blueprint $table) {
+            $table->dropColumn('image');
         });
     }
 
@@ -29,6 +26,6 @@ class CreateCategorias extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categorias');
+        //
     }
 }

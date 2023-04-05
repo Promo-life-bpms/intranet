@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="card-header">
+    {{-- <div class="card-header">
         <h3>Crear un ticket</h3>
     </div>
     <div class="card-body">
@@ -22,6 +22,6 @@
         <div class=" mt-3">
             <input type="submit" class="boton" value="Aceptar"></button>
         </div>
-    </div>
+    </div> --}}
 
 @stop

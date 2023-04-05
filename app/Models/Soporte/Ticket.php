@@ -13,19 +13,20 @@ class Ticket extends Model
     protected $fillable  = [
         'name',
         'category_id',
-        'image',
         'create',
         'data',
+        'user_id',
         'status_id'
     ];
 
-    public function category()
-    {
-        return $this->belongsTo(Categorias::class);
-    }
+     public function category()
+     {
+         return $this->belongsTo(Categoria::class,'category_id');
+     }
+    
     public function status()
     {
-        return $this->belongsTo(Status::class);
+        return $this->belongsTo(Status::class,'status_id');
     }
     public function historial()
     {

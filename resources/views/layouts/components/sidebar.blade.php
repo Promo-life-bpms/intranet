@@ -289,11 +289,29 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item {{ request()->is('soporte') ? 'active' : '' }}">
-                    <a href="{{ route('soporte') }}" class='sidebar-link'>
+                <li class="sidebar-item has-sub {{ request()->is('soporte') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
                         <i class="fa fa-wrench" aria-hidden="true"></i>
                         <span>Soporte</span>
                     </a>
+                     <ul class="submenu ">
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{route('soporte')}}">
+                                <span>Pedir Soporte
+                                </span>
+                            </a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="#">
+                                <span>Admin Soporte</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="#">
+                                <span>Soporte</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
 
