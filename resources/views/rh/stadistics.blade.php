@@ -106,43 +106,47 @@ define('SUB_COLU', 'col-4 p-2');
         </div>        
     </div>
 
-
-
-    <div class="d-flex flex-row my-5">
-        <div class="d-flex flex-column col-4">
-            <h4>Estadísticas de bajas</h4>
-            <div id="bajas">
-                <h6>Bajas por departamento</h6>
-                <canvas id="circle_chart" width="300" height="300"></canvas>
+    <!--   Estadisticas -->
+    <div class="row">
+        <div class="col-sm-4 col-md-4">
+            <div class="d-flex flex-column">
+                <h4>Estadísticas de bajas</h4>
+                <div id="bajas">
+                    <h6>Bajas por departamento</h6>
+                    <canvas id="circle_chart" width="300" height="300"></canvas>
+                </div>
             </div>
         </div>
-        <div class="d-flex flex-column">
+
+        <div class="col-sm-8 col-md-8">
             <h4>Motivo de bajas</h4>
-            <div class="d-flex flex-row flex-wrap overflow-x-scroll">
-                <div id="crecimiento" class="{{ SUB_COLU }}">
+            <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3">
+                <div class="col">
                     <h6>Crecimiento laboral</h6>
-                    <canvas id="laboral_grown" width="300" height="300"></canvas>
-                    
+                    <canvas id="laboral_grown" height="300"></canvas>
                 </div>
-                <div id="clima" class="{{ SUB_COLU }}">
+
+                <div class="col">
                     <h6>Clima laboral</h6>
                     <canvas id="laboral_climate" width="300" height="300"></canvas>
-                    
                 </div>
-                <div id="factores" class="{{ SUB_COLU }}">
+
+                <div class="col">
                     <h3 class=<?php echo $subheader ?>>Factores de riesgo psicosocial</h3>
                     <canvas id="risk_factors" width="300" height="300" style="height: 300px"></canvas>
                 </div>
-                <div id="demograficos" class="{{ SUB_COLU }}">
+
+                <div class="col">
                     <h6>Demográficos</h6>
                     <canvas id="demographics" width="300" height="300"></canvas>
                 </div>
-                <div id="salud" class="{{ SUB_COLU }}">
+
+                <div class="col">
                     <h6>Salud</h6>
                     <canvas id="health" width="300" height="300"></canvas>
-                    
                 </div>
-                <div id="Otro">
+
+                <div class="col">
                     <h6>Otro</h6>
                     <canvas id="other" width="300" height="300"></canvas>
                 </div>
@@ -150,31 +154,22 @@ define('SUB_COLU', 'col-4 p-2');
         </div>
     </div>
 
-    <div class="d-flex flex-row d-flex justify-content-around">
-        <div class="d-flex flex-column col-4">
+    <br>
+
+    <div class="row row-cols-4 row-cols-lg-3 g-2 g-lg-3">
+        <div class="col">
             <h6>Nuevos ingresos por departamento</h6>
-            <div id="">
-                <canvas id="new_users" width="300" height="300"></canvas>
-                
-            </div>
+            <canvas id="new_users" height="300"></canvas>
         </div>
 
-        <div class="d-flex flex-row d-flex justify-content-around">
+        <div class="col"></div>
+
+        <div class="col">
             <h6>Bajas por departamento</h6>
-            <div class="d-flex flex-row flex-wrap overflow-x-scroll">
-                <div id="">
-                    <canvas id="department_down" width="300" height="300"></canvas>
-                </div>
-            </div>
+            <canvas id="department_down" height="300"></canvas>  
         </div>
-
-
-
+ 
     </div>
-
-
-
-
 
 @stop
 
