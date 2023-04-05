@@ -21,7 +21,7 @@ define('SUB_COLU','col-4 p-2');
                     action="/rh/drop-user"
                     method="GET">
                      @csrf
-                    <button style="" type="submit" class="btn btn-info">Generar baja</button>
+                    <button  type="submit" class="btn btn-danger">Generar baja</button>
             </form>
         <div style="margin-left:10px"></div>
     
@@ -29,7 +29,7 @@ define('SUB_COLU','col-4 p-2');
                     action="/rh/postulants"
                     method="GET">
                      @csrf
-                    <button style="" type="submit" class="btn btn-danger">Generar Alta</button>
+                    <button style="" type="submit" class="btn btn-primary   ">Generar Alta</button>
             </form>
         <div style="margin-left:10px"></div>
 

@@ -32,10 +32,19 @@ class RhController extends Controller
 
         $totalEmpleados = $this->totalempleados($start, $end);
         $nuevosingresos = $this->nuevosingresos($start, $end);
-        $bajas = $this->bajas();
+        $bajas = $this->bajas($start, $end);
        
-        
-        
+        return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas', 'start', 'end'));
+    }
+
+    public function filterstadistics(Request $request)
+    {
+        $start = $request->start;
+        $end= $request->end;
+        $totalEmpleados = $this->totalempleados($start, $end);
+        $nuevosingresos = $this->nuevosingresos($start, $end);
+        $bajas = $this->bajas($start, $end);
+      
         return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas', 'start', 'end'));
     }
 
@@ -43,10 +52,12 @@ class RhController extends Controller
     {
         $data = [];
         //$Promolife = CompanyEmployee::all()->where('company_id', 1);
-        $Promolife = CompanyEmployee::where('company_id', 1)->count();
-        $BhTradeMarket = CompanyEmployee::where('company_id', 2)->count();
-        $PromoZale = CompanyEmployee::where('company_id', 3)->count();
-        $TradeMarket57 = CompanyEmployee::where('company_id', 4)->count();
+        $promolife = CompanyEmployee::where('company_id', 1)->get();
+        $bh_trade_market = CompanyEmployee::where('company_id', 2)->get();
+        $promo_zale = CompanyEmployee::where('company_id', 3)->get();
+        $trade_market57 = CompanyEmployee::where('company_id', 4)->get();
+
+
         $totalPLFilter = 0;
         $totalBHFilter = 0;
         $totalTM57Filter = 0;
@@ -54,54 +65,59 @@ class RhController extends Controller
 
 
         if($start == null && $end == null){
-            $total = $Promolife + $BhTradeMarket + $PromoZale + $TradeMarket57;
+            $total = $promolife + $bh_trade_market + $promo_zale + $trade_market57;
 
             $data = (object)[
-                'Promolife' => ($Promolife),
-                'BhTradeMarket' =>($BhTradeMarket),
-                'PromoZale' =>($PromoZale),
-                'TradeMarket57' =>($TradeMarket57),
+                'Promolife' => count($promolife),
+                'BhTradeMarket' => count($bh_trade_market),
+                'PromoZale' => count($promo_zale),
+                'TradeMarket57' => count($trade_market57),
                 'total' => $total
             ];
             return $data;
         }else{
 
-            $Promolife = CompanyEmployee::where('company_id', 1)->get();
-            $BhTradeMarket = CompanyEmployee::where('company_id', 2)->get();
-            $PromoZale = CompanyEmployee::where('company_id', 3)->get();
-            $TradeMarket57 = CompanyEmployee::where('company_id', 4)->get();
-
-
             $format_start =date('Y-m-d', strtotime($start));
             $format_end =date('Y-m-d', strtotime($end));
 
-            foreach($Promolife as $company){
+            foreach($promolife as $company){
                 $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
-                if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
-                    $totalPLFilter = $totalPLFilter + 1;
+                if($user != null){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalPLFilter = $totalPLFilter + 1;
+                    }
                 }
             }
 
-            foreach($BhTradeMarket as $company){
+            foreach($bh_trade_market as $company){
                 $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
-                if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
-                    $totalBHFilter = $totalBHFilter + 1;
+                
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalBHFilter = $totalBHFilter + 1;
+                    }   
                 }
             }
 
-            foreach($TradeMarket57 as $company){
+            foreach($trade_market57 as $company){
                 $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
-                if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
-                    $totalTM57Filter = $totalTM57Filter + 1;
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalTM57Filter = $totalTM57Filter + 1;
+                    }
                 }
             }
 
-            foreach($PromoZale as $company){
+            foreach($promo_zale as $company){
                 $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
-                if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
-                    $totalPZFilter  = $totalPZFilter  + 1;
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalPZFilter  = $totalPZFilter  + 1;
+                    }
                 }
+                
             }
+
 
             $data = (object)[
                 'Promolife' => $totalPLFilter,
@@ -111,6 +127,7 @@ class RhController extends Controller
                 'total' => $totalPLFilter + $totalBHFilter + $totalPZFilter + $totalTM57Filter
             ];
 
+            return $data;
 
         }
         
@@ -128,7 +145,6 @@ class RhController extends Controller
 
         $format_start =date('Y-m-d', strtotime($start));
         $format_end =date('Y-m-d', strtotime($end));
-
        
         foreach (Employee::all() as $employee) {
             if ($employee->date_admission ) {
@@ -158,39 +174,91 @@ class RhController extends Controller
         return count($data);
     }
 
-    public function bajas()
+    public function bajas($start, $end)
     {
         $data=[];
         $carbon = new \Carbon\Carbon();
         $date = $carbon->now();
         $yearpresent = $date->format('Y');
         $monthpresent = $date->format('m');
-        foreach (Employee::all() as $employee) {
-            if($employee->user->status ==2){
-                if ($employee->date_admission != null) {
-                    $admission = explode('-', $employee->date_admission);
-                    $year = $admission[0];
-                    $mont = $admission[1];
-                    if ($year == $yearpresent && $mont== $monthpresent) {
-                        array_push($data,(object)[
-                            'id' => $employee->user->id
-                        ]);
+
+        $promolife = CompanyEmployee::where('company_id', 1)->get();
+        $bh_trade_market = CompanyEmployee::where('company_id', 2)->get();
+        $promo_zale = CompanyEmployee::where('company_id', 3)->get();
+        $trade_market57 = CompanyEmployee::where('company_id', 4)->get();
+
+
+        $totalPLFilter = 0;
+        $totalBHFilter = 0;
+        $totalTM57Filter = 0;
+        $totalPZFilter = 0;
+
+        if($start == null && $end == null){
+            foreach (Employee::all() as $employee) {
+                if($employee->user->status ==2){
+                    if ($employee->date_admission != null) {
+                        $admission = explode('-', $employee->date_admission);
+                        $year = $admission[0];
+                        $mont = $admission[1];
+                        if ($year == $yearpresent && $mont== $monthpresent) {
+                            array_push($data,(object)[
+                                'id' => $employee->user->id
+                            ]);
+                        }
                     }
                 }
             }
-        }
-        return count($data);
-    }
 
-    public function filterstadistics(Request $request)
-    {
-        $start = $request->start;
-        $end= $request->end;
-        $totalEmpleados = $this->totalempleados($start, $end);
-        $nuevosingresos = $this->nuevosingresos($start, $end);
-        $bajas = $this->bajas();
+            return count($data);
+
+        }else{
+
+            $format_start =date('Y-m-d', strtotime($start));
+            $format_end =date('Y-m-d', strtotime($end));
+
+            foreach($promolife as $company){
+                $user = User::where('id', $company->employee_id)->where('status',2)->get()->last();
+                if($user != null){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalPLFilter = $totalPLFilter + 1;
+                    }
+                }
+            }
+
+            foreach($bh_trade_market as $company){
+                $user = User::where('id', $company->employee_id)->where('status',2)->get()->last();
+                
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalBHFilter = $totalBHFilter + 1;
+                    }   
+                }
+            }
+
+            foreach($trade_market57 as $company){
+                $user = User::where('id', $company->employee_id)->where('status',2)->get()->last();
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalTM57Filter = $totalTM57Filter + 1;
+                    }
+                }
+            }
+
+            foreach($promo_zale as $company){
+                $user = User::where('id', $company->employee_id)->where('status',2)->get()->last();
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalPZFilter  = $totalPZFilter  + 1;
+                    }
+                }
+                
+            }
+         
+            return  $totalPLFilter + $totalBHFilter + $totalPZFilter + $totalTM57Filter;
+
+        }
+       
       
-        return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas', 'start', 'end'));
     }
 
     public function postulants()
