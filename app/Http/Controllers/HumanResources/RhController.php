@@ -162,8 +162,10 @@ class RhController extends Controller
                 $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
                 if($user != null){
 
-                    if ($user->employee->date_admission != null && $user->status == 1 ) {
-                        $admission = explode('-', $employee->date_admission);
+                    if ( $user->status == 1 ) {
+
+                        /* $employee = Employee::where() */
+                        $admission = explode('-',$user->employee->date_admission);
                         $year = $admission[0];
                         $mont=$admission[1];
                            
@@ -177,9 +179,9 @@ class RhController extends Controller
             foreach($bh_trade_market as $company){
                 $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
                 if($user != null){
-
-                    if ($user->employee->date_admission != null && $user->status == 1 ) {
-                        $admission = explode('-', $employee->date_admission);
+                    if ( $user->status == 1 ) {
+                        /* $employee = Employee::where() */
+                        $admission = explode('-',$user->employee->date_admission);
                         $year = $admission[0];
                         $mont=$admission[1];
                            
@@ -195,8 +197,10 @@ class RhController extends Controller
                 $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
                 if($user != null){
 
-                    if ($user->employee->date_admission != null && $user->status == 1 ) {
-                        $admission = explode('-', $employee->date_admission);
+                    if ( $user->status == 1 ) {
+
+                        /* $employee = Employee::where() */
+                        $admission = explode('-',$user->employee->date_admission);
                         $year = $admission[0];
                         $mont=$admission[1];
                            
@@ -212,8 +216,9 @@ class RhController extends Controller
                 $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
                 if($user != null){
 
-                    if ($user->employee->date_admission != null && $user->status == 1 ) {
-                        $admission = explode('-', $employee->date_admission);
+                    if ( $user->status == 1 ) {
+                        /* $employee = Employee::where() */
+                        $admission = explode('-',$user->employee->date_admission);
                         $year = $admission[0];
                         $mont=$admission[1];
                            
@@ -224,6 +229,16 @@ class RhController extends Controller
                 }
             }
 
+
+            $data = (object)[
+                'promolife' => $totalPLFilter,
+                'bh_trade_market' =>$totalBHFilter,
+                'promo_zale' =>$totalPZFilter,
+                'trade_market57' =>$totalTM57Filter,
+                'total' => $totalPLFilter + $totalBHFilter + $totalPZFilter + $totalTM57Filter
+            ];
+
+            return $data;
 
 
            /*  foreach (Employee::all() as $employee) {
@@ -294,7 +309,7 @@ class RhController extends Controller
 
         }
         
-        return count($data);
+       
     }
 
     public function bajas($start, $end)
@@ -315,6 +330,7 @@ class RhController extends Controller
         $totalBHFilter = 0;
         $totalTM57Filter = 0;
         $totalPZFilter = 0;
+        $allfilter = 0;
 
         if($start == null && $end == null){
             foreach (Employee::all() as $employee) {
@@ -327,7 +343,11 @@ class RhController extends Controller
                             array_push($data,(object)[
                                 'id' => $employee->user->id
                             ]);
+
+                            $allfilter = $allfilter = 1;
                         }
+
+
                     }
                 }
             }
@@ -337,11 +357,11 @@ class RhController extends Controller
                 'bh_trade_market' => count($bh_trade_market),
                 'promo_zale' => count($promo_zale),
                 'trade_market57' => count($trade_market57),
-                'total' => count($promolife) + count($bh_trade_market) + count($promo_zale) + count($trade_market57)
+                'total' =>  $allfilter,
             ];
             
-
-            return count($data);
+            
+            return $data;
 
         }else{
 

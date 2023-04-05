@@ -25,566 +25,356 @@ define('SUB_COLU', 'col-4 p-2');
 
             <form class="form-delete" action="/rh/postulants" method="GET">
                 @csrf
-                <button type="submit" class="btn btn-primary   ">Generar Alta</button>
+                <button type="submit" class="btn btn-primary">Generar Alta</button>
             </form>
             <div style="margin-left:10px"></div>
 
             <form class="form-delete" action="" method="DELETE">
                 @csrf
-                <button  type="submit" class="btn btn-success">Exportar</button>
+                <button type="submit" class="btn btn-success">Exportar</button>
             </form>
         </div>
     </div>
-</div>
 
-<form class="form-delete" action="{{ route('rh.filterstadistics') }}" method="POST">
-    @csrf
-    @method('post')
+    <form class="form-delete" action="{{ route('rh.filterstadistics') }}" method="POST">
+        @csrf
+        @method('post')
 
-    <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between">
 
-        <div class="d-flex justify-content-start">
+            <div class="d-flex justify-content-start">
+                <div class="form-group me-4">
+                    <label><b>Fecha de inicio: </b></label>
+                    <input type="date" id="start" name="start" value="{{$start}}" class="form-control">
+                </div>
 
-            <div class="form-group me-4">
-                <label><b>Fecha de inicio: </b></label>
-                <input type="date" id="start" name="start" value="{{$start}}" class="form-control">
+                <div class="form-group me-4">
+                    <label><b> Fecha de termino: </b></label>
+                    <input type="date" name="end" id="end" value="{{$end}}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label><b></b></label> <br>
+                    <input type="submit" class="btn btn-primary" value="Filtrar" />
+                </div>
             </div>
 
-            <div class="form-group me-4">
-                <label><b> Fecha de termino: </b></label>
-                <input type="date" name="end" id="end" value="{{$end}}" class="form-control">
+            <div class="d-flex align-items-center">
+                <select class="form-control" name="select" id="company_name">
+                    <option value="todas" selected>Todas las empresas</option>
+                    <option value="promolife">Promo Life</option>
+                    <option value="bhtrademarket">BH Trade Market</option>
+                    <option value="promozale">Promo Zale</option>
+                    <option value="trademarket57">Trade Market 57</option>
+                    <option value="unipromtex">Unipromtex</option>
+                </select>
             </div>
 
-            <div class="form-group">
-                <label><b></b></label> <br>
-                <input type="submit" class="btn btn-primary" value="Filtrar" />
-            </div>
         </div>
+    </form>
 
-        <div class="d-flex align-items-center">
-            <select class="form-control" name="select" id="company_name">
-                <option value="todas" selected>Todas las empresas</option>
-                <option value="promolife">Promo Life</option>
-                <option value="bhtrademarket">BH Trade Market</option>
-                <option value="promozale">Promo Zale</option>
-                <option value="trademarket57">Trade Market 57</option>
-                <option value="unipromtex">Unipromtex</option>
-            </select>
-        </div>
-
-    </div>
-
-
-</form>
-
-
-
-
-<?php
-$style = 'display:flex; flex-direction:column; justify-content:space-between; box-shadow: 0px 1px 10px rgba(0, 0, 0,0.2); margin:10px; padding:15px; height:20px;';
-?>
-
-<div class="row row-cols-1 row-cols-md-0 g-0" style=<?php echo $style ?>>
-    <article id="otros" class="sombra" style=<?php echo $style ?>>
+    <br>
+    
+    <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3" >
+        
         <div class="col">
-            <div class="card h-100">
+            <div class="card card-total">
                 <div class="card-body">
                     <h5 class="card-title">TOTAL EMPLEADOS</h5>
-                    <p class="card-text" style="color:#000080">{{$totalEmpleados->total}}</p>
+                    <p id="total_employee" class="card-text" style="color:#000080">{{$totalEmpleados->total}}</p>
                 </div>
             </div>
         </div>
-    </article>
-
-    <article id="otros" class="sombra" style=<?php echo $style ?>>
+        
         <div class="col">
-            <div class="card h-100">
+            <div class="card card-total ">
                 <div class="card-body">
                     <h5 class="card-title">NUEVOS INGRESOS</h5>
-                    <p class="card-text" style="color:#308446">{{$nuevosingresos->total}}</p>
+                    <p id="total_new_users" class="card-text" style="color:#308446">{{$nuevosingresos->total}} </p>
                 </div>
             </div>
         </div>
-    </article>
 
-    <article id="otros" class="sombra" style=<?php echo $style ?>>
+  
         <div class="col">
-            <div class="card h-100">
+            <div class="card card-total">
                 <div class="card-body">
                     <h5 class="card-title">BAJAS</h5>
-                    <p class="card-text" style="color:#FF0000">{{$bajas->total}}</p>
+                    <p id="total_downs" class="card-text" style="color:#FF0000">{{$bajas->total}} </p>
                 </div>
             </div>
-        </div>
-    </article>
+        </div>        
+    </div>
 
-    <article id="otros" class="sombra" style=<?php echo $style ?>>
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">VACANTES</h5>
-                    <p class="card-text">2</p>
+
+
+    <div class="d-flex flex-row my-5">
+        <div class="d-flex flex-column col-4">
+            <h4>Estadísticas de bajas</h4>
+            <div id="bajas">
+                <h6>Bajas por departamento</h6>
+                <canvas id="circle_chart" width="300" height="300"></canvas>
+            </div>
+        </div>
+        <div class="d-flex flex-column">
+            <h4>Motivo de bajas</h4>
+            <div class="d-flex flex-row flex-wrap overflow-x-scroll">
+                <div id="crecimiento" class="{{ SUB_COLU }}">
+                    <h6>Crecimiento laboral</h6>
+                    <canvas id="laboral_grown" width="300" height="300"></canvas>
+                    
+                </div>
+                <div id="clima" class="{{ SUB_COLU }}">
+                    <h6>Clima laboral</h6>
+                    <canvas id="laboral_climate" width="300" height="300"></canvas>
+                    
+                </div>
+                <div id="factores" class="{{ SUB_COLU }}">
+                    <h3 class=<?php echo $subheader ?>>Factores de riesgo psicosocial</h3>
+                    <canvas id="risk_factors" width="300" height="300" style="height: 300px"></canvas>
+                </div>
+                <div id="demograficos" class="{{ SUB_COLU }}">
+                    <h6>Demográficos</h6>
+                    <canvas id="demographics" width="300" height="300"></canvas>
+                </div>
+                <div id="salud" class="{{ SUB_COLU }}">
+                    <h6>Salud</h6>
+                    <canvas id="health" width="300" height="300"></canvas>
+                    
+                </div>
+                <div id="Otro">
+                    <h6>Otro</h6>
+                    <canvas id="other" width="300" height="300"></canvas>
                 </div>
             </div>
-        </div>
-    </article>
-</div>
-
-
-
-<div class="d-flex flex-row my-5">
-    <div class="d-flex flex-column col-4">
-        <h2 class=<?php echo $subheader2 ?>>Estadísticas de bajas</h2>
-        <div id="bajas">
-            <h3 class=<?php echo $subheader ?>>Bajas por departamento</h3>
-            <canvas id="myChart1" width="300" height="300"></canvas>
-            <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-            <script>
-                var ctx = document.getElementById('myChart1');
-                var myChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Tecnología e innovación', 'Ventas'],
-                        datasets: [{
-                            label: 'Total:',
-                            data: [20, 15],
-                            borderWidth: 1,
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ]
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            </script>
-        </div>
-    </div>
-    <div class="d-flex flex-column">
-        <h2 class=<?php echo $subheader2 ?>>Motivo de bajas</h2>
-        <div class="d-flex flex-row flex-wrap overflow-x-scroll">
-            <div id="crecimiento" class="{{ SUB_COLU }}">
-                <h3 class=<?php echo $subheader ?>>Crecimiento laboral</h3>
-                <canvas id="myChart2" width="300" height="300"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-                <script>
-                    var ctx = document.getElementById('myChart2');
-                    var myChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Sueldo', 'Ascensos', 'Actividades desempeñadas'],
-                            datasets: [{
-                                label: 'Total:',
-                                data: [20, 15, 10, 5, 5, 5],
-                                borderWidth: 1,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ]
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                xAxes: [{
-                                    ticks: {
-                                        fontSize: 5
-                                    }
-                                }]
-                            }
-                        }
-                    });
-                </script>
-            </div>
-            <div id="clima" class="{{ SUB_COLU }}">
-                <h3 class=<?php echo $subheader ?>>Clima laboral</h3>
-                <canvas id="myChart3" width="300" height="300"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-                <script>
-                    var ctx = document.getElementById('myChart3');
-                    var myChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Compañeros', 'Jefe directo', 'Directivos'],
-                            datasets: [{
-                                label: 'Total:',
-                                data: [20, 15, 10, 5, 5, 5],
-                                borderWidth: 1,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ]
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                xAxes: [{
-                                    ticks: {
-                                        fontSize: 5
-                                    }
-                                }]
-                            }
-                        }
-                    });
-                </script>
-            </div>
-            <div id="factores" class="{{ SUB_COLU }}">
-                <h3 class=<?php echo $subheader ?>>Factores de riesgo psicosocial</h3>
-                <canvas id="myChart4" width="300" height="300" style="height: 300px"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-                <script>
-                    var ctx = document.getElementById('myChart4');
-                    var myChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Carga de trabajo', 'Falta de reconocimiento', 'Violencia laboral', 'Jornadas laborales'],
-                            datasets: [{
-                                label: 'Total:',
-                                data: [20, 15, 10, 5, 5, 5],
-                                borderWidth: 1,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ]
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                xAxes: [{
-                                    ticks: {
-                                        fontSize: 4
-                                    }
-                                }]
-                            }
-                        }
-                    });
-                </script>
-            </div>
-            <div id="demograficos" class="{{ SUB_COLU }}">
-                <h3 class=<?php echo $subheader ?>>Demográficos</h3>
-                <canvas id="myChart5" width="300" height="300"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-                <script>
-                    var ctx = document.getElementById('myChart5');
-                    var myChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Distancia', 'Riesgos físicos', 'Actividades personales', 'Actividades escolares'],
-                            datasets: [{
-                                label: 'Total:',
-                                data: [20, 15, 10, 5, 5, 5],
-                                borderWidth: 1,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ]
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                xAxes: [{
-                                    ticks: {
-                                        fontSize: 4
-                                    }
-                                }]
-                            }
-                        }
-                    });
-                </script>
-            </div>
-            <div id="salud" class="{{ SUB_COLU }}">
-                <h3 class=<?php echo $subheader ?>>Salud</h3>
-                <canvas id="myChart6" width="300" height="300"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-                <script>
-                    var ctx = document.getElementById('myChart6');
-                    var myChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Personal', 'Familiar'],
-                            datasets: [{
-                                label: 'Total:',
-                                data: [20, 15, 10, 5, 5, 5],
-                                borderWidth: 1,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ]
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                xAxes: [{
-                                    ticks: {
-                                        fontSize: 5
-                                    }
-                                }]
-                            }
-                        }
-                    });
-                </script>
-            </div>
-            <div id="Otro" class="{{ SUB_COLU }}">
-                <h3 class=<?php echo $subheader ?>>Otro</h3>
-                <canvas id="myChart7" width="300" height="300"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-                <script>
-                    var ctx = document.getElementById('myChart7');
-                    var myChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Sin respuesta'],
-                            datasets: [{
-                                label: 'Total:',
-                                data: [20, 15, 10, 5, 5, 5],
-                                borderWidth: 1,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ]
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                xAxes: [{
-                                    ticks: {
-                                        fontSize: 5
-                                    }
-                                }]
-                            }
-                        }
-                    });
-                </script>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="d-flex flex-row d-flex justify-content-around">
-    <div class="d-flex flex-column col-4">
-        <h2 class=<?php echo $subheader2 ?>>Nuevos ingresos por departamento</h2>
-        <div id="nuevos ingresos">
-            <canvas id="myChart8" width="300" height="300"></canvas>
-            <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-            <script>
-                var ctx = document.getElementById('myChart8');
-                var myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Tecnología e innovación', 'Ventas', 'Administración', 'Recursos Humanos', 'Operaciones', 'Logistica'],
-                        datasets: [{
-                            label: 'Total:',
-                            data: [20, 15, 10, 5, 5, 5],
-                            borderWidth: 1,
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ]
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            xAxes: [{
-                                ticks: {
-                                    fontSize: 5
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
         </div>
     </div>
 
     <div class="d-flex flex-row d-flex justify-content-around">
-        <h2 class=<?php echo $subheader2 ?>>Bajas por departamento</h2>
-        <div class="d-flex flex-row flex-wrap overflow-x-scroll">
-            <div id="bajas">
-                <canvas id="myChart9" width="300" height="300"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-                <script>
-                    var ctx = document.getElementById('myChart9');
-                    var myChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Tecnología e innovación', 'Ventas'],
-                            datasets: [{
-                                label: 'Total:',
-                                data: [20, 15, 10, 5, 5, 5],
-                                borderWidth: 1,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ]
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                xAxes: [{
-                                    ticks: {
-                                        fontSize: 5
-                                    }
-                                }]
-                            }
-                        }
-                    });
-                </script>
+        <div class="d-flex flex-column col-4">
+            <h6>Nuevos ingresos por departamento</h6>
+            <div id="">
+                <canvas id="new_users" width="300" height="300"></canvas>
+                
             </div>
         </div>
+
+        <div class="d-flex flex-row d-flex justify-content-around">
+            <h6>Bajas por departamento</h6>
+            <div class="d-flex flex-row flex-wrap overflow-x-scroll">
+                <div id="">
+                    <canvas id="department_down" width="300" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+
     </div>
-    @stop
 
-    @section ('styles')
+
+
+
+
+@stop
+
+@section ('styles')
     <style>
-        .card {
-            border-radius: 7px;
-            overflow: hidden;
-            background: #fff;
-            cursor: default;
-            transition: all 400 ms ease;
+    
+        .card-total {
+            background-color: #FDFBFB;
+            border: 1px solid;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            padding: 20px 0 20px 0;
         }
 
-        .sombra {
-            height: 20vh;
-            width: 35vh;
-            margin: 13px;
-            border-radius: 6px;
-            box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.4);
-            cursor: default;
-            transform: translateY(-3%);
-        }
-
-        #otros {
-            display: contents;
-        }
-
-        .card .card-text {
-            padding: 10px;
+        .card .card-body h5{
             text-align: center;
-            font-size: 50px;
+            font-size: 28px;
         }
 
-        h5 {
+        .card .card-body p{
             text-align: center;
+            font-size: 36px;
         }
-
-        p {
-            text-align: center;
-        }
+      
     </style>
 
-    @endsection
+@endsection
 
-    @section('scripts')
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+   
+    <script>
+    
+        var circle_chart = document.getElementById('circle_chart');
+        var laboral_grown = document.getElementById('laboral_grown');
+        var laboral_climate = document.getElementById('laboral_climate');
+        var risk_factors = document.getElementById('risk_factors');
+        var demographics = document.getElementById('demographics');
+        var health = document.getElementById('health');
+        var other = document.getElementById('other');
+        var new_users = document.getElementById('new_users');
+        var department_down =  document.getElementById('department_down');
+
+        var circle_chart_labels =  ['Tecnología e innovación', 'Ventas', 'test3', 'test 4', 'test 5'];
+        var circle_chart_data =  [60, 15, 5 ,10 , 10];
+        
+        
+        //Tablas 
+        var settings_chart_colors = ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',]
+        var settings_chart_options = { scales: { xAxes: [{ ticks: { fontSize: 5 }  }] } }
+        
+        //Bajas por departamento
+        new Chart(circle_chart, {
+            type: 'doughnut',
+            data: {
+                labels: circle_chart_labels,
+                    datasets: [{
+                        label: 'Total:',
+                        data: circle_chart_data,
+                        borderWidth: 1,
+                        backgroundColor:settings_chart_colors ,
+                        borderColor: settings_chart_colors,
+                }]
+            },
+        });
+
+        //Crecimiento laboral   
+        new Chart(laboral_grown, {
+            type: 'bar',
+            data: {
+                labels: ['Sueldo', 'Ascensos', 'Actividades desempeñadas'],
+                    datasets: [{
+                        label: 'Total:',
+                        data: [20, 15, 10, 5, 5, 5],
+                        borderWidth: 1,
+                        backgroundColor:settings_chart_colors ,
+                        borderColor:settings_chart_colors,
+                    }]
+                },
+            options: settings_chart_options
+        });
+ 
+        //Clima laboral
+        new Chart(laboral_climate, {
+            type: 'bar',
+            data: {
+                labels: ['Compañeros', 'Jefe directo', 'Directivos'],
+                    datasets: [{
+                        label: 'Total:',
+                        data: [20, 15, 10, 5, 5, 5],
+                        borderWidth: 1,
+                        backgroundColor:settings_chart_colors,
+                        borderColor: settings_chart_colors
+                     }]
+                },
+            options: settings_chart_options
+        });
+
+        //Factores de riesgo psicosocial              
+        new Chart(risk_factors, {
+            type: 'bar',
+            data: {
+                labels: ['Carga de trabajo', 'Falta de reconocimiento', 'Violencia laboral', 'Jornadas laborales'],
+                    datasets: [{
+                        label: 'Total:',
+                        data: [20, 15, 10, 5, 5, 5],
+                        borderWidth: 1,
+                        backgroundColor: settings_chart_colors,
+                        borderColor: settings_chart_colors
+                    }]
+                },
+            options:settings_chart_options
+        });
+
+        //Demograficos          
+        new Chart(demographics, {
+            type: 'bar',
+            data: {
+                labels: ['Distancia', 'Riesgos físicos', 'Actividades personales', 'Actividades escolares'],
+                datasets: [{
+                    label: 'Total:',
+                    data: [20, 15, 10, 5, 5, 5],
+                    borderWidth: 1,
+                    backgroundColor: settings_chart_colors,
+                    borderColor: settings_chart_colors
+                }]
+            },
+            options:settings_chart_options
+        });
+
+        //Salud
+        new Chart(health, {
+            type: 'bar',
+            data: {
+                labels: ['Personal', 'Familiar'],
+                datasets: [{
+                    label: 'Total:',
+                    data: [20, 15, 10, 5, 5, 5],
+                    borderWidth: 1,
+                    backgroundColor: settings_chart_colors,
+                    borderColor: settings_chart_colors
+                }]
+            },
+            options: settings_chart_options
+        });
+
+        //Otro
+        new Chart(other, {
+            type: 'bar',
+            data: {
+                labels: ['Sin respuesta'],
+                datasets: [{
+                    label: 'Total:',
+                    data: [20, 15, 10, 5, 5, 5],
+                    borderWidth: 1,
+                    backgroundColor: settings_chart_colors,
+                    borderColor: settings_chart_colors,
+                }]
+            },
+            options: settings_chart_options
+        });
+
+               
+        //Nuevos Ingresos por departamento     
+        new Chart(new_users, {
+            type: 'bar',
+            data: {
+                labels: ['Tecnología e innovación', 'Ventas', 'Administración', 'Recursos Humanos', 'Operaciones', 'Logistica'],
+                datasets: [{
+                    label: 'Total:',
+                    data: [20, 15, 10, 5, 5, 5],
+                    borderWidth: 1,
+                    backgroundColor: settings_chart_colors,
+                    borderColor: settings_chart_colors
+                }]
+            },
+            options: settings_chart_options
+        });
+
+                   
+        //Bajas por departamento         
+        new Chart(department_down, {
+            type: 'bar',
+            data: {
+                labels: ['Tecnología e innovación', 'Ventas'],
+                datasets: [{
+                    label: 'Total:',
+                    data: [20, 15, 10, 5, 5, 5],
+                    borderWidth: 1,
+                    backgroundColor: settings_chart_colors,
+                    borderColor:settings_chart_colors
+                }]
+            },
+             options: settings_chart_options
+        });
+                   
+            
+    </script>
+    
     <script>
         const postulantStatus = document.getElementById("company_name");
         postulantStatus.addEventListener("change", statusChange);
@@ -592,18 +382,45 @@ $style = 'display:flex; flex-direction:column; justify-content:space-between; bo
         function statusChange(event) {
             const currentValue = event.target.value;
             console.log(currentValue);
-    
-            var companies = {!! json_encode($totalEmpleados) !!};
 
-            if(currentValue == 'promolife'){
+            var employees = {!!json_encode($totalEmpleados) !!};
+            var new_users = {!!json_encode($nuevosingresos) !!};
+            var downs = {!!json_encode($bajas) !!};
 
-    
+            if (currentValue == 'promolife') {
+                console.log("PROMOLIFE");
+                console.log(employees.promolife);
+                document.getElementById('total_employee').innerHTML = employees.promolife;
+                document.getElementById('total_new_users').innerHTML = new_users.promolife;
+                document.getElementById('total_downs').innerHTML = downs.promolife;
+            }
 
+            if (currentValue == 'bhtrademarket') {
+                console.log("BHTRADEMARKET");
+                console.log(employees.bh_trade_market);
+                document.getElementById('total_employee').innerHTML = employees.bh_trade_market;
+                document.getElementById('total_new_users').innerHTML = new_users.bh_trade_market;
+                document.getElementById('total_downs').innerHTML = downs.bh_trade_market;
+            }
 
-            console.log(companies);
+            if (currentValue == 'promozale') {
+                document.getElementById('total_employee').innerHTML = employees.promo_zale;
+                document.getElementById('total_new_users').innerHTML = new_users.promo_zale;
+                document.getElementById('total_downs').innerHTML = downs.promo_zale;
+            }
 
+            if (currentValue == 'trademarket57') {
+                document.getElementById('total_employee').innerHTML = employees.trade_market57;
+                document.getElementById('total_new_users').innerHTML = new_users.trade_market57;
+                document.getElementById('total_downs').innerHTML = downs.trade_market57;
+            }
 
-            
+            if (currentValue == 'todas') {
+                document.getElementById('total_employee').innerHTML = employees.total;
+                document.getElementById('total_new_users').innerHTML = new_users.total;
+                document.getElementById('total_downs').innerHTML = downs.total;
+            }
         }
+       
     </script>
 @stop
