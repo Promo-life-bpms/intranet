@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\HumanResources;
 
 use App\Http\Controllers\Controller;
+use App\Models\EmployeeCompany;
 use App\Models\Company;
+use App\Models\CompanyEmployee;
 use App\Models\Department;
 use App\Models\Employee;
-use App\Models\EmployeeCompany;
 use App\Models\Postulant;
 use App\Models\PostulantBeneficiary;
 use App\Models\PostulantDetails;
@@ -15,17 +16,389 @@ use App\Models\User;
 use App\Models\UserBeneficiary;
 use App\Models\UserDetails;
 use App\Models\UserDownMotive;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
+
 class RhController extends Controller
 {
     public function stadistics()
     {
-        return view('rh.stadistics');
+        $start = null;
+        $end = null;
+
+        $totalEmpleados = $this->totalempleados($start, $end);
+        $nuevosingresos = $this->nuevosingresos($start, $end);
+        $bajas = $this->bajas($start, $end);
+       
+        return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas', 'start', 'end'));
+    }
+
+    public function filterstadistics(Request $request)
+    {
+        $start = $request->start;
+        $end= $request->end;
+        $totalEmpleados = $this->totalempleados($start, $end);
+        $nuevosingresos = $this->nuevosingresos($start, $end);
+        $bajas = $this->bajas($start, $end);
+      
+        return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas', 'start', 'end'));
+    }
+
+    public function totalempleados($start, $end)
+    {
+        $data = [];
+        //$Promolife = CompanyEmployee::all()->where('company_id', 1);
+        $promolife = CompanyEmployee::where('company_id', 1)->get();
+        $bh_trade_market = CompanyEmployee::where('company_id', 2)->get();
+        $promo_zale = CompanyEmployee::where('company_id', 3)->get();
+        $trade_market57 = CompanyEmployee::where('company_id', 4)->get();
+
+
+        $totalPLFilter = 0;
+        $totalBHFilter = 0;
+        $totalTM57Filter = 0;
+        $totalPZFilter = 0;
+
+
+        if($start == null && $end == null){
+           
+
+            $data = (object)[
+                'promolife' => count($promolife),
+                'bh_trade_market' => count($bh_trade_market),
+                'promo_zale' => count($promo_zale),
+                'trade_market57' => count($trade_market57),
+                'total' =>count($promolife) + count($bh_trade_market) +  count($promo_zale) + count($trade_market57)
+            ];
+            return $data;
+        }else{
+
+            $format_start =date('Y-m-d', strtotime($start));
+            $format_end =date('Y-m-d', strtotime($end));
+
+            foreach($promolife as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user != null){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalPLFilter = $totalPLFilter + 1;
+                    }
+                }
+            }
+
+            foreach($bh_trade_market as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalBHFilter = $totalBHFilter + 1;
+                    }   
+                }
+            }
+
+            foreach($trade_market57 as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalTM57Filter = $totalTM57Filter + 1;
+                    }
+                }
+            }
+
+            foreach($promo_zale as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalPZFilter  = $totalPZFilter  + 1;
+                    }
+                }
+                
+            }
+
+
+            $data = (object)[
+                'promolife' => $totalPLFilter,
+                'bh_trade_market' =>$totalBHFilter,
+                'promo_zale' =>$totalPZFilter,
+                'trade_market57' =>$totalTM57Filter,
+                'total' => $totalPLFilter + $totalBHFilter + $totalPZFilter + $totalTM57Filter
+            ];
+
+            return $data;
+
+        }
+        
+    }
+
+    public function nuevosingresos($start,$end)
+    {  
+        $data = [];
+        $carbon = new \Carbon\Carbon();
+        $date = $carbon->now();
+        $yearpresent = $date->format('Y');
+        $monthpresent = $date->format('m');
+        $employee = Employee::all();
+
+        $promolife = CompanyEmployee::where('company_id', 1)->get();
+        $bh_trade_market = CompanyEmployee::where('company_id', 2)->get();
+        $promo_zale = CompanyEmployee::where('company_id', 3)->get();
+        $trade_market57 = CompanyEmployee::where('company_id', 4)->get();
+
+        $totalPLFilter = 0;
+        $totalBHFilter = 0;
+        $totalTM57Filter = 0;
+        $totalPZFilter = 0;
+
+        $format_start =date('Y-m-d', strtotime($start));
+        $format_end =date('Y-m-d', strtotime($end));
+        if($start == null && $end == null){
+
+
+            foreach($promolife as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user != null){
+
+                    if ($user->employee->date_admission != null && $user->status == 1 ) {
+                        $admission = explode('-', $employee->date_admission);
+                        $year = $admission[0];
+                        $mont=$admission[1];
+                           
+                        if ($year == $yearpresent && $mont== $monthpresent) {
+                            $totalPLFilter = $totalPLFilter + 1;
+                        }   
+                    }
+                }
+            }
+
+            foreach($bh_trade_market as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user != null){
+
+                    if ($user->employee->date_admission != null && $user->status == 1 ) {
+                        $admission = explode('-', $employee->date_admission);
+                        $year = $admission[0];
+                        $mont=$admission[1];
+                           
+                        if ($year == $yearpresent && $mont== $monthpresent) {
+                            $totalBHFilter = $totalBHFilter + 1;
+                        }   
+                    }
+                }
+            }
+
+
+            foreach($promo_zale as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user != null){
+
+                    if ($user->employee->date_admission != null && $user->status == 1 ) {
+                        $admission = explode('-', $employee->date_admission);
+                        $year = $admission[0];
+                        $mont=$admission[1];
+                           
+                        if ($year == $yearpresent && $mont== $monthpresent) {
+                            $totalPLFilter = $totalPLFilter + 1;
+                        }   
+                    }
+                }
+            }
+
+
+            foreach($trade_market57 as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user != null){
+
+                    if ($user->employee->date_admission != null && $user->status == 1 ) {
+                        $admission = explode('-', $employee->date_admission);
+                        $year = $admission[0];
+                        $mont=$admission[1];
+                           
+                        if ($year == $yearpresent && $mont== $monthpresent) {
+                            $totalTM57Filter = $totalTM57Filter + 1;
+                        }   
+                    }
+                }
+            }
+
+
+
+           /*  foreach (Employee::all() as $employee) {
+                if ($employee->date_admission ) {
+                    if ($employee->date_admission != null && $employee->user->status == 1) {
+                        $admission = explode('-', $employee->date_admission);
+                        $year = $admission[0];
+                        $mont=$admission[1];
+                       
+                        if ($year == $yearpresent && $mont== $monthpresent) {
+                            array_push($data, $employee);
+                        }   
+                    }
+                }
+            } */
+        }else{
+
+            $format_start =date('Y-m-d', strtotime($start));
+            $format_end =date('Y-m-d', strtotime($end));
+
+            foreach($promolife as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user != null){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalPLFilter = $totalPLFilter + 1;
+                    }
+                }
+            }
+
+            foreach($bh_trade_market as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalBHFilter = $totalBHFilter + 1;
+                    }   
+                }
+            }
+
+            foreach($trade_market57 as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalTM57Filter = $totalTM57Filter + 1;
+                    }
+                }
+            }
+
+            foreach($promo_zale as $company){
+                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalPZFilter  = $totalPZFilter  + 1;
+                    }
+                }
+
+                $data = (object)[
+                    'promolife' => $totalPLFilter,
+                    'bh_trade_market' =>$totalBHFilter,
+                    'promo_zale' =>$totalPZFilter,
+                    'trade_market57' =>$totalTM57Filter,
+                    'total' => $totalPLFilter + $totalBHFilter + $totalPZFilter + $totalTM57Filter
+                ];
+                
+            }
+         
+            return  $data;
+
+        }
+        
+        return count($data);
+    }
+
+    public function bajas($start, $end)
+    {
+        $data=[];
+        $carbon = new \Carbon\Carbon();
+        $date = $carbon->now();
+        $yearpresent = $date->format('Y');
+        $monthpresent = $date->format('m');
+
+        $promolife = CompanyEmployee::where('company_id', 1)->get();
+        $bh_trade_market = CompanyEmployee::where('company_id', 2)->get();
+        $promo_zale = CompanyEmployee::where('company_id', 3)->get();
+        $trade_market57 = CompanyEmployee::where('company_id', 4)->get();
+
+
+        $totalPLFilter = 0;
+        $totalBHFilter = 0;
+        $totalTM57Filter = 0;
+        $totalPZFilter = 0;
+
+        if($start == null && $end == null){
+            foreach (Employee::all() as $employee) {
+                if($employee->user->status ==2){
+                    if ($employee->date_admission != null) {
+                        $admission = explode('-', $employee->date_admission);
+                        $year = $admission[0];
+                        $mont = $admission[1];
+                        if ($year == $yearpresent && $mont== $monthpresent) {
+                            array_push($data,(object)[
+                                'id' => $employee->user->id
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            $data = (object)[
+                'promolife' => count($promolife),
+                'bh_trade_market' => count($bh_trade_market),
+                'promo_zale' => count($promo_zale),
+                'trade_market57' => count($trade_market57),
+                'total' => count($promolife) + count($bh_trade_market) + count($promo_zale) + count($trade_market57)
+            ];
+            
+
+            return count($data);
+
+        }else{
+
+            $format_start =date('Y-m-d', strtotime($start));
+            $format_end =date('Y-m-d', strtotime($end));
+
+            foreach($promolife as $company){
+                $user = User::where('id', $company->employee_id)->where('status',2)->get()->last();
+                if($user != null){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalPLFilter = $totalPLFilter + 1;
+                    }
+                }
+            }
+
+            foreach($bh_trade_market as $company){
+                $user = User::where('id', $company->employee_id)->where('status',2)->get()->last();
+                
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalBHFilter = $totalBHFilter + 1;
+                    }   
+                }
+            }
+
+            foreach($trade_market57 as $company){
+                $user = User::where('id', $company->employee_id)->where('status',2)->get()->last();
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalTM57Filter = $totalTM57Filter + 1;
+                    }
+                }
+            }
+
+            foreach($promo_zale as $company){
+                $user = User::where('id', $company->employee_id)->where('status',2)->get()->last();
+                if($user){
+                    if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                        $totalPZFilter  = $totalPZFilter  + 1;
+                    }
+                }
+
+                $data = (object)[
+                    'promolife' => $totalPLFilter,
+                    'bh_trade_market' =>$totalBHFilter,
+                    'promo_zale' =>$totalPZFilter,
+                    'trade_market57' =>$totalTM57Filter,
+                    'total' => $totalPLFilter + $totalBHFilter + $totalPZFilter + $totalTM57Filter
+                ];
+                
+            }
+         
+            return  $data;
+
+        }
+       
+      
     }
 
     public function postulants()

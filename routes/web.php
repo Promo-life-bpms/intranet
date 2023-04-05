@@ -220,6 +220,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     //Recursos humanos - gestion de empleados
     Route::get('/rh/stadistics', [RhController::class, 'stadistics'])->name('rh.stadistics');
+    Route::post('/rh/filterstadistics', [RhController::class, 'filterstadistics'])->name('rh.filterstadistics');
     Route::get('/rh/postulants', [RhController::class, 'postulants'])->name('rh.postulants');
     Route::get('/rh/drop-user', [RhController::class, 'dropUser'])->name('rh.dropUser');
 
