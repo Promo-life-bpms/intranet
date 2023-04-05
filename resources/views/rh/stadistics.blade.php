@@ -62,7 +62,7 @@ define('SUB_COLU', 'col-4 p-2');
         </div>
 
         <div class="d-flex align-items-center">
-            <select class="form-control" name="select">
+            <select class="form-control" name="select" id="company_name">
                 <option value="todas" selected>Todas las empresas</option>
                 <option value="promolife">Promo Life</option>
                 <option value="bhtrademarket">BH Trade Market</option>
@@ -583,3 +583,27 @@ $style = 'display:flex; flex-direction:column; justify-content:space-between; bo
     </style>
 
     @endsection
+
+    @section('scripts')
+    <script>
+        const postulantStatus = document.getElementById("company_name");
+        postulantStatus.addEventListener("change", statusChange);
+
+        function statusChange(event) {
+            const currentValue = event.target.value;
+            console.log(currentValue);
+    
+            var companies = {!! json_encode($totalEmpleados) !!};
+
+            if(currentValue == 'promolife'){
+
+    
+
+
+            console.log(companies);
+
+
+            
+        }
+    </script>
+@stop
