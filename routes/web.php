@@ -33,6 +33,7 @@ use App\Http\Controllers\HumanResources\UserDetails;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\PruebaController;
 use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Systems\DevicesController;
@@ -248,9 +249,21 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     
 
     //sala recreativa//
-    Route::get('/room/creative/',[BoardroomController::class,'vista'])->name('room.creative');
-    Route::get('/dispo/creative/',[ReservationController::class,'reservation'])->name('dispo.creative');
-    Route::post('/dispo/creative/create/',[ReservationController::class,'store'])->name('dispo.creative.create');
+    //ruta para la disponibilidad//
+    Route::get('/dispo/creative/',[BoardroomController::class,'vista'])->name('dispo.creative');
+    Route::post('/dispo/creative/create/',[BoardroomController::class,'store'])->name('dispo.creative.create');
+
+    //ruta para reservación//
+    Route::get('/reservation/creative/',[ReservationController::class,'index'])->name('reservation.creative');
+    Route::post('/reservation/creative/create/',[ReservationController::class,'store'])->name('reserviton.creative.create');
+    Route::put('/reservation/creative/update/', [ReservationController::class, 'update'])->name('reserviton.creative.update');
+    Route::delete('/reservation/creative/delete/', [ReservationController::class, 'destroy'])->name('reserviton.creative.delete');
+
+
+    //Prueba
+    Route::get('/prueba/vista/',[PruebaController::class,'index'])->name('prueba.vista');
+    Route::post('/prueba/vista/create',[PruebaController::class,'create'])->name('prueba.vista.create');
+
 
 });
 

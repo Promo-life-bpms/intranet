@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        locale:"es",
+        locales:"es",
 
 
         headerToolbar: {
@@ -12,10 +12,13 @@ document.addEventListener('DOMContentLoaded', function() {
             center:'title',
             right:'dayGridMonth,timeGridWeek,listWeek',
         },
-        
-        timeFormat: {
-            agenda: 'h(:mm)tt { - h(:mm)tt}'
-        },
+
+        slotLabelFormat:{
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+            meridiem: 'short',
+      },
 
         dateClick:function(info){
             $("#evento").modal("show");
@@ -24,13 +27,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
     calendar.render();
-
+ 
 
 
     document.getElementById("btnGuardar").addEventListener("click", function(){
         const datos =new FormData(formulario);
         console.log(datos);
-        console.log(formulario.title.value);
+        axios.post(route('reserviton.creative.create'), datos).
+        then((respuesta) =>{
+            $("#evento").modal("hide");
+
+        }
+        ).catch(
+            error=>{
+                if(error.response){
+                    console.log(error.response.data);
+                }
+            }
+        )
 
     });
 });

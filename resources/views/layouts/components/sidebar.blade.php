@@ -321,13 +321,13 @@
                     </a>
                     <ul class="submenu ">
                     <li class="submenu-item ">
-                        <a class="dropdown-item" href="{{ route('room.creative') }}">
-                            <span>Reservación</span>
+                        <a class="dropdown-item" href="{{ route('dispo.creative') }}">
+                            <span>Disponibilidad de la sala</span>
                         </a>
                     </li>
                     <li class="submenu-item ">
-                        <a class="dropdown-item" href="{{ route('dispo.creative') }}">
-                            <span>Disponibilidad de la sala</span>
+                        <a class="dropdown-item" href="{{ route('reservation.creative') }}">
+                            <span>Reservación</span>
                         </a>
                     </li>
                 </ul>

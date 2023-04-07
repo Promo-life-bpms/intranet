@@ -9,23 +9,31 @@ class BoardroomController extends Controller
 {
     public function vista()
     {
-        return view('admin.room.index');
+        return view('admin.room.dispo');
     }
 
     public function create()
     {
-        //
+        
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(Request $request) 
     {
-        //
+        dd($request);
+        $request->validate([
+            'name' => 'required',
+            'location' => 'required',
+            'capacitance' => 'required',
+            'description' => 'required',
+        ]);
+ 
+        $evento = new boardroom();
+        $evento->name=$request->input('name');
+        $evento->location = $request->input('location');
+        $evento->capacitance= $request->input('capacitance');
+        $evento->description=$request->input('description');
+        $evento->save();
+        return redirect()->route([BoardroomController::class, 'vista'])->with('success', 'Evento creado');
     }
 
     /**

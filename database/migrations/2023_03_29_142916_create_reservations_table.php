@@ -15,11 +15,11 @@ class CreateReservationsTable extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->string('date');
-            $table->dateTime('start_time');
-            $table->dateTime('end_time');
-            $table->string('number_of_people');
-            $table->integer('material');
+            $table->date('date');
+            $table->Time('start_time');
+            $table->Time('end_time');
+            $table->integer('number_of_people');
+            $table->string('material');
             $table->integer('chair_loan');
             $table->string('description');
             $table->foreignId('id_usuario')->references('id')->on('users')->onDelete('cascade');
