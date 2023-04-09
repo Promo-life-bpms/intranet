@@ -34,6 +34,19 @@ class RhController extends Controller
         $totalEmpleados = $this->totalempleados($start, $end);
         $nuevosingresos = $this->nuevosingresos($start, $end);
         $bajas = $this->bajas($start, $end);
+
+        $motive =  $this->motiveDown($start, $end);
+
+        $stadistics = [];
+        $circle_chart = [0];
+        $laboral_grown = [0];
+        $laboral_climate = [0];
+        $risk_factors = [0];
+        $demographics = [0];
+        $health = [0];
+        $other = [0];
+        $new_users = [0];
+        $department_down = [0];
        
         return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas', 'start', 'end'));
     }
@@ -419,6 +432,51 @@ class RhController extends Controller
         }
        
       
+    }
+
+    public function motiveDown($start, $end)
+    {
+        $departments = Department::all();
+        $department_data = [];
+
+        $dount_department_data = [];
+        if($start == null && $end == null){
+
+            $users = User::where('status', 2)->get();
+            foreach($users as $user){
+                foreach($departments as $department)
+                if($user->employee->position->department->name == $department->name)
+                array_push($department_data, (object)[
+                    'department' => $department->name,
+                    'user_id' => $user->id,
+                ]);
+              
+            }
+           
+        }
+
+
+        $count_department = 0;
+
+        foreach($departments as $department){
+            
+            foreach($department_data as $find_department){
+                if($find_department->department ==  $department->name){
+                    $count_department = $count_department + 1; 
+                } 
+            }
+
+            array_push($dount_department_data, (object)[
+                'department' => $department->name,
+                'total' => $count_department,
+            ]); 
+            
+            $count_department = 0;
+        }
+        
+
+        dd($dount_department_data);
+
     }
 
     public function postulants()
