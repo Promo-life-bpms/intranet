@@ -314,6 +314,25 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item  has-sub {{ request()->is('team.request') ? 'active' : '' }}">
+                    <a href="{{ route('team.request') }}" class='sidebar-link'>
+                        <i class="fa fa-desktop" aria-hidden="true"></i>
+                        <span>Solicitud de Equipo</span>
+                    </a>
+                    <ul class="submenu ">
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('team.request') }}">
+                                <span>Solicitud</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('team.record') }}">
+                                <span>Historial</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
 
                 {{-- <li class="sidebar-item {{ request()->is('folder') ? 'active' : '' }}">
                     <a href="{{ route('folder') }}" class='sidebar-link'>

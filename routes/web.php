@@ -34,6 +34,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\Systems\DevicesController;
+use App\Http\Controllers\TeamRequest;
 use App\Models\Message;
 use App\Models\RequestCalendar;
 use App\Models\User;
@@ -249,7 +250,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     
     Route::post('/rh/create-more-information/', [UserDetails::class, 'createMoreInformation'])->name('rh.createMoreInformation');
     
-
+    //Equipo de control
+    Route::get('/teamrequest/', [TeamRequest::class, 'index'])->name('team.request');
+    Route::get('/teamrequest1/', [TeamRequest::class, 'index1'])->name('team.record');
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');

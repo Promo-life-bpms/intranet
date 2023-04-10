@@ -205,7 +205,6 @@
     {!! Form::submit('ACTUALIZAR USUARIO', ['class' => 'btnCreate mt-4']) !!}
 </div>
 </div>
-
 {!! Form::close() !!}
 </div>
 @stop
