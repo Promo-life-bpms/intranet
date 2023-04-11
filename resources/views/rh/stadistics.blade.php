@@ -156,7 +156,7 @@ define('SUB_COLU', 'col-4 p-2');
 
     <br>
 
-    <div class="row row-cols-4 row-cols-lg-3 g-2 g-lg-3">
+    <!-- <div class="row row-cols-4 row-cols-lg-3 g-2 g-lg-3">
         <div class="col">
             <h6>Nuevos ingresos por departamento</h6>
             <canvas id="new_users" height="300"></canvas>
@@ -169,7 +169,7 @@ define('SUB_COLU', 'col-4 p-2');
             <canvas id="department_down" height="300"></canvas>  
         </div>
  
-    </div>
+    </div> -->
 
 @stop
 
@@ -213,11 +213,80 @@ define('SUB_COLU', 'col-4 p-2');
         var other = document.getElementById('other');
         var new_users = document.getElementById('new_users');
         var department_down =  document.getElementById('department_down');
+        
+        var department_chart = {!!json_encode($motive) !!};
+     
+        var department_list = [];
+        var laboral_grown_list = [];
+        var laboral_climate_list = [];
+        var risk_factors_list = [];
+        var demographics_list = [];
+        var health_list = [];
+        var other_motive_list = [];
 
-        var circle_chart_labels =  ['Tecnología e innovación', 'Ventas', 'test3', 'test 4', 'test 5'];
-        var circle_chart_data =  [60, 15, 5 ,10 , 10];
-        
-        
+        department_chart[0].down.forEach(element => department_list.push(element.department));
+        department_chart[0].down.forEach(element => laboral_grown_list.push(
+            {
+                label: element.department,
+                data:[element.growth_salary, element.growth_promotion, element.growth_activity],
+                borderWidth: 1,
+                backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
+                borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
+            })
+        );
+
+        department_chart[0].down.forEach(element => laboral_climate_list.push(
+            {
+                label: element.department,
+                data:[element.climate_partnet, element.climate_manager, element.climate_boss],
+                borderWidth: 1,
+                backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
+                borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
+            })
+        );
+
+        department_chart[0].down.forEach(element => risk_factors_list.push(
+            {
+                label: element.department,
+                data:[element.psicosocial_workloads, element.psicosocial_appreciation, element.psicosocial_violence, element.psicosocial_workday],
+                borderWidth: 1,
+                backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
+                borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
+            })
+        );
+
+        department_chart[0].down.forEach(element => demographics_list.push(
+            {
+                label: element.department,
+                data:[element.demographics_distance, element.demographics_physical, element.demographics_personal, element.demographics_school],
+                borderWidth: 1,
+                backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
+                borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
+            })
+        );
+
+        department_chart[0].down.forEach(element => health_list.push(
+            {
+                label: element.department,
+                data:[element.health_personal, element.health_familiar],
+                borderWidth: 1,
+                backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
+                borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
+            })
+        );
+
+        department_chart[0].down.forEach(element => other_motive_list.push(
+            {
+                label: element.department,
+                data:[element.other_motive],
+                borderWidth: 1,
+                backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
+                borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
+            })
+        );
+
+        console.log("DEPARTAMENTOSSSSSSSS");
+        console.log(department_chart[0].down);
         //Tablas 
         var settings_chart_colors = ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',]
         var settings_chart_options = { scales: { xAxes: [{ ticks: { fontSize: 5 }  }] } }
@@ -226,10 +295,10 @@ define('SUB_COLU', 'col-4 p-2');
         new Chart(circle_chart, {
             type: 'doughnut',
             data: {
-                labels: circle_chart_labels,
+            labels: department_list,
                     datasets: [{
                         label: 'Total:',
-                        data: circle_chart_data,
+                        data: department_chart[0].total,
                         borderWidth: 1,
                         backgroundColor:settings_chart_colors ,
                         borderColor: settings_chart_colors,
@@ -237,18 +306,13 @@ define('SUB_COLU', 'col-4 p-2');
             },
         });
 
+     
         //Crecimiento laboral   
         new Chart(laboral_grown, {
             type: 'bar',
             data: {
                 labels: ['Sueldo', 'Ascensos', 'Actividades desempeñadas'],
-                    datasets: [{
-                        label: 'Total:',
-                        data: [20, 15, 10, 5, 5, 5],
-                        borderWidth: 1,
-                        backgroundColor:settings_chart_colors ,
-                        borderColor:settings_chart_colors,
-                    }]
+                datasets:laboral_grown_list
                 },
             options: settings_chart_options
         });
@@ -258,13 +322,7 @@ define('SUB_COLU', 'col-4 p-2');
             type: 'bar',
             data: {
                 labels: ['Compañeros', 'Jefe directo', 'Directivos'],
-                    datasets: [{
-                        label: 'Total:',
-                        data: [20, 15, 10, 5, 5, 5],
-                        borderWidth: 1,
-                        backgroundColor:settings_chart_colors,
-                        borderColor: settings_chart_colors
-                     }]
+                datasets:laboral_climate_list
                 },
             options: settings_chart_options
         });
@@ -274,13 +332,7 @@ define('SUB_COLU', 'col-4 p-2');
             type: 'bar',
             data: {
                 labels: ['Carga de trabajo', 'Falta de reconocimiento', 'Violencia laboral', 'Jornadas laborales'],
-                    datasets: [{
-                        label: 'Total:',
-                        data: [20, 15, 10, 5, 5, 5],
-                        borderWidth: 1,
-                        backgroundColor: settings_chart_colors,
-                        borderColor: settings_chart_colors
-                    }]
+                datasets: risk_factors_list
                 },
             options:settings_chart_options
         });
@@ -290,13 +342,7 @@ define('SUB_COLU', 'col-4 p-2');
             type: 'bar',
             data: {
                 labels: ['Distancia', 'Riesgos físicos', 'Actividades personales', 'Actividades escolares'],
-                datasets: [{
-                    label: 'Total:',
-                    data: [20, 15, 10, 5, 5, 5],
-                    borderWidth: 1,
-                    backgroundColor: settings_chart_colors,
-                    borderColor: settings_chart_colors
-                }]
+                datasets: demographics_list
             },
             options:settings_chart_options
         });
@@ -306,13 +352,7 @@ define('SUB_COLU', 'col-4 p-2');
             type: 'bar',
             data: {
                 labels: ['Personal', 'Familiar'],
-                datasets: [{
-                    label: 'Total:',
-                    data: [20, 15, 10, 5, 5, 5],
-                    borderWidth: 1,
-                    backgroundColor: settings_chart_colors,
-                    borderColor: settings_chart_colors
-                }]
+                datasets: health_list
             },
             options: settings_chart_options
         });
@@ -321,14 +361,8 @@ define('SUB_COLU', 'col-4 p-2');
         new Chart(other, {
             type: 'bar',
             data: {
-                labels: ['Sin respuesta'],
-                datasets: [{
-                    label: 'Total:',
-                    data: [20, 15, 10, 5, 5, 5],
-                    borderWidth: 1,
-                    backgroundColor: settings_chart_colors,
-                    borderColor: settings_chart_colors,
-                }]
+                labels: ['Otro'],
+                datasets: other_motive_list
             },
             options: settings_chart_options
         });
