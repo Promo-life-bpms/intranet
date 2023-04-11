@@ -37,6 +37,7 @@ class EmployeeFeatures extends Migration
             $table->string('area')->nullable();
             $table->string('horary')->nullable();
             $table->date('date_admission')->nullable();
+            $table->date('date_down')->nullable();
             $table->string('card_number')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('infonavit_credit')->nullable();
