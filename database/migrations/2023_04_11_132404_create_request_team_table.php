@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTeamRequestsTable extends Migration
+class CreateRequestTeamTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,11 @@ class CreateTeamRequestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('team_requests', function (Blueprint $table) {
+        Schema::create('request_team', function (Blueprint $table) {
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('category');
+            $table->string('description');
+            $table->string('status');
             $table->id();
             $table->timestamps();
         });
@@ -26,6 +30,6 @@ class CreateTeamRequestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('team_requests');
+        Schema::dropIfExists('request_team');
     }
 }

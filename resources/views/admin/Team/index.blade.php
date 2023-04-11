@@ -8,16 +8,6 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        {!! Form::label('id_user', 'ID del usuario') !!}
-                        {!! Form::text('id_user', null, ['class' => 'form-control', 'placeholder' => 'Ingrese su ID']) !!}
-                        @error('id_user')
-                            <br>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
                         {!! Form::label('category', 'Categoria') !!}
                         {!! Form::text('category', null, ['class' => 'form-control', 'placeholder' => 'Seleccione la categoria']) !!}
                         @error('category')
@@ -26,21 +16,13 @@
                     </div>
                 </div>
 
+                
+
                 <div class="col-md-4">
                     <div class="form-group">
                         {!! Form::label('status', 'Estado') !!}
                         {!! Form::text('status', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el estado']) !!}
                         @error('status')
-                            <br>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        {!! Form::label('id', 'ID') !!}
-                        {!! Form::text('id', null, ['class' => 'form-control', 'placeholder' => 'Ingrese ID']) !!}
-                        @error('id')
                             <br>
                         @enderror
                     </div>
