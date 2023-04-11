@@ -35,7 +35,7 @@
             </div>
             <div class="col">
                 {!! Form::label('date_down', 'Fecha de baja') !!}
-                {!! Form::date('date_down', null, ['class' => 'form-control'  ]) !!}
+                {!! Form::date('date_down', isset($user->userDetails->date_down) ? $user->userDetails->date_down : null , ['class' => 'form-control'  ]) !!}
                 @error('date_down')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
