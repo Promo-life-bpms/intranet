@@ -114,4 +114,10 @@ class User extends Authenticatable
         return $this->hasOne(UserDownMotive::class, 'user_id');
 
     }
+
+    public function userDetails()
+    {
+        return $this->hasOne(UserDetails::class, 'user_id');
+
+    }
 }

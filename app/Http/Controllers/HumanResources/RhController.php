@@ -786,11 +786,11 @@ class RhController extends Controller
 
     public function dropDocumentation($user)
     {
-        $user = User::all()->where('id',$user)->first();
+        $user = User::where('id',$user)->get()->first();
         $companies = Company::all()->pluck('name_company', 'id' );
         $departments = Department::all()->pluck('name','id');
         $user_down_motive = UserDownMotive::all()->where('user_id',$user->id);
-
+      
         return view('rh.drop-documentation', compact('user', 'companies', 'departments', 'user_down_motive'));
     }
     
@@ -803,34 +803,72 @@ class RhController extends Controller
 
     public function buildDownDocumentation(Request $request)
     {
-        $company = "";
-        //Promolife
-        if($request->company_id == 1){
-            $company = "PROMO LIFE, S. DE R.L. DE C.V.";
+        $request->validate([
+            'date_down' => 'required',
+        ]);
+
+        $user = User::where('id',$request->user_id)->get()->last();
+
+        if($user->userDetails == null){
+            $user_details = new UserDetails();
+            $user_details->user_id = $user->id;
+            $user_details->birthdate = $user->employee->birthday_date;
+            $user_details->date_admission = $user->employee->date_admission;
+            $user_details->date_down = $request->date_down;
+            $user_details->save();
+        }else{
+            DB::table('users_details')->where('user_id', $request->user_id)->update([
+                'date_down' => $request->date_down
+            ]);
         }
 
-        //BH tardemarket
-        if($request->company_id == 2){
-            $company = "BH TRADE MARKET, S.A. DE C.V.";
+        if($user->userDownMotive == null){
+            $create_user_motive = new UserDownMotive();
+            $create_user_motive->user_id  = $request->user_id;
+            $create_user_motive->growth_salary  = $request->growth_salary;
+            $create_user_motive->growth_promotion  = $request->growth_promotion;
+            $create_user_motive->growth_activity  = $request->growth_activity;
+            $create_user_motive->climate_partnet  = $request->climate_partnet;
+            $create_user_motive->climate_manager  = $request->climate_manager;
+            $create_user_motive->climate_boss  = $request->climate_boss;
+            $create_user_motive->psicosocial_workloads  = $request->psicosocial_workloads;
+            $create_user_motive->psicosocial_appreciation	  = $request->psicosocial_appreciation	;
+            $create_user_motive->psicosocial_violence  = $request->psicosocial_violence;
+            $create_user_motive->psicosocial_workday  = $request->psicosocial_workday;
+            $create_user_motive->demographics_distance  = $request->demographics_distance;
+            $create_user_motive->demographics_physical  = $request->demographics_physical;
+            $create_user_motive->demographics_personal  = $request->demographics_personal;
+            $create_user_motive->demographics_school  = $request->demographics_school;
+            $create_user_motive->health_personal  = $request->health_personal;
+            $create_user_motive->health_familiar  = $request->health_familiar;
+            $create_user_motive->other_motive  = $request->other_motive;
+                
+            $create_user_motive->save();
+        }else{
+            DB::table('users_down_motive')->where('user_id', intval($request->user_id))->update([
+            'growth_salary'  => $request->growth_salary,
+            'growth_promotion'  => $request->growth_promotion,
+            'growth_activity'  => $request->growth_activity,
+            'climate_partnet'  => $request->climate_partnet,
+            'climate_manager'  => $request->climate_manager,
+            'climate_boss'  => $request->climate_boss,
+            'psicosocial_workloads'  => $request->psicosocial_workloads,
+            'psicosocial_appreciation'   => $request->psicosocial_appreciation,
+            'psicosocial_violence' => $request->psicosocial_violence,
+            'psicosocial_workday'  => $request->psicosocial_workday,
+            'demographics_distance'  => $request->demographics_distance,
+            'demographics_physical'  => $request->demographics_physical,
+            'demographics_personal'  => $request->demographics_personal,
+            'demographics_school'  => $request->demographics_school,
+            'health_personal'  => $request->health_personal,
+            'health_familiar'  => $request->health_familiar,
+            'other_motive'   => $request->other_motive,
+            ]);
+
         }
 
-        //Promo zale
-        if($request->company_id == 3){
-            $company = "PROMO ZALE S.A. DE C.V."; 
-        }
-
-        //Trademarket 57
-        if($request->company_id == 4){
-            $company = "TRADE MARKET 57, S.A. DE C.V."; 
-        } 
-
-        //Unipromtex
-        if($request->company_id == 5){
-            $company = "UNIPROMTEX S.A. DE C.V."; 
-        } 
-
-        $employee_down =new EmployeeDown();
-        $employee_down->employeeDown($request->name, $request->lastname,$company);
+        return redirect()->back()->with('message', 'Información guardada correctamente, ya puedes generar baja del empleado');
+        
     }
 
     public function createMotiveDown(Request $request)
