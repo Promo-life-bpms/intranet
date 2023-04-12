@@ -46,11 +46,18 @@ class RhController extends Controller
     {
         $start = $request->start;
         $end= $request->end;
+
         $totalEmpleados = $this->totalempleados($start, $end);
+        
         $nuevosingresos = $this->nuevosingresos($start, $end);
+
+        
         $bajas = $this->bajas($start, $end);
-      
-        return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas', 'start', 'end'));
+        
+       
+        $motive =  $this->motiveDown($start, $end);
+        
+        return view('rh.stadistics', compact('totalEmpleados', 'nuevosingresos', 'bajas', 'start', 'end', 'motive'));
     }
 
     public function totalempleados($start, $end)
@@ -302,7 +309,8 @@ class RhController extends Controller
         $monthpresent = $date->format('m');
         $format_start =date('Y-m-d', strtotime($start));
         $format_end =date('Y-m-d', strtotime($end));
-    
+        
+      
         foreach($users as $user){
                 
             if($user->employee->companies != null){
@@ -312,7 +320,7 @@ class RhController extends Controller
                     case "Promo Life":
                         //Valores iniciales
                         if($user->userDetails !=null && $start == null && $end == null){
-
+                            
                             $down = explode('-', $user->userDetails->date_down);
                             $year = $down[0];
                             $mont = $down[1];
@@ -322,16 +330,16 @@ class RhController extends Controller
                             }
                         }else{
                             //Fecha filtrada
-                            if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                            if($user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
                                 $totalPLFilter = $totalPLFilter + 1;
                             }
                                 
                         }
                         break;
                     case "BH Trade Market":
-                      
+                    
                         if($user->userDetails !=null && $start == null && $end == null){
-
+                            
                             $down = explode('-', $user->userDetails->date_down);
                             $year = $down[0];
                             $mont = $down[1];
@@ -341,7 +349,7 @@ class RhController extends Controller
                             }
                         }else{
                             //Fecha filtrada
-                            if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                            if($user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
                                 $totalBHFilter = $totalBHFilter + 1;
                             }
                         }
@@ -350,19 +358,19 @@ class RhController extends Controller
                     case "Promo Zale":
                        
                         if($user->userDetails !=null && $start == null && $end == null){
+
                                 $down = explode('-', $user->userDetails->date_down);
-            
                                 $year = $down[0];
                                 $mont = $down[1];
                 
-                                if($user != null && $user->status == 2){
-                                    if($mont == $monthpresent && $year == $yearpresent ){
-                                        $totalPZFilter  = $totalPZFilter  + 1;
-                                    }
+                                if($user != null && $user->status == 2 && $mont == $monthpresent && $year == $yearpresent ){
+                                    $totalPZFilter  = $totalPZFilter  + 1;
                                 }
+                                
                         }else{
+                            
                             //Fecha filtrada
-                            if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                            if($user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
                                 $totalPZFilter  = $totalPZFilter  + 1;
                             }
                         }
@@ -370,7 +378,7 @@ class RhController extends Controller
                         break;
                     case "Trade Market 57":
                     
-                        if($user->userDetails !=null && $user->userDetails !=null){
+                        if($user->userDetails !=null && $start == null && $end == null){
 
                             $down = explode('-', $user->userDetails->date_down);
                             $year = $down[0];
@@ -382,7 +390,7 @@ class RhController extends Controller
                                 
                         }else{
                             //Fecha filtrada
-                            if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                            if($user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
                                 $totalTM57Filter = $totalTM57Filter + 1;
                             }
                         }
@@ -393,7 +401,8 @@ class RhController extends Controller
                  
             } 
         }
-                
+        
+       
         $data = (object)[
             'promolife' => $totalPLFilter,
             'bh_trade_market' =>$totalBHFilter,
@@ -409,324 +418,164 @@ class RhController extends Controller
     {
         $departments = Department::all();
         $users = User::where('status', 2)->get();
-        $department_name = [];
-        $department_total = [];
         $department_data = [];
 
-        $grownd_department_data = [];
-    
-        $count_department = 0;
-
-        
-        $down_department_data = [];
-        $filter_down_department_data = [];
-
-        if($start == null && $end == null){
-           
-            foreach($users as $user){
-
-                foreach($departments as $department){
-                    if($user->employee->position->department->name == $department->name){
-
-                        //Baja por departamento
-                        array_push($department_data, (object)[
-                            'department' => $department->name,
-                            'user_id' => $user->id,
-                        ]);
-
-                        //Crecimiento laboral
-                        $growth_salary = 0;
-                        $growth_promotion = 0;
-                        $growth_activity = 0;
-
-                        
-                        $climate_partnet = 0;
-                        $climate_manager = 0;
-                        $climate_boss= 0;
-
-                        $psicosocial_workloads = 0;
-                        $psicosocial_appreciation = 0;
-                        $psicosocial_violence = 0;
-                        $psicosocial_workday = 0;
-
-                        $demographics_distance = 0;
-                        $demographics_physical = 0;
-                        $demographics_personal = 0;
-                        $demographics_school = 0;
-
-                        $health_personal = 0;
-                        $health_familiar = 0;
-
-                        $other_motive = 0;
-                      
-                        if($user->userDownMotive != null){
-
-                            if($user->userDownMotive->growth_salary == true){
-                                $growth_salary = $growth_salary + 1;
-                            }
-                        
-                            if($user->userDownMotive->growth_promotion == true){
-                                $growth_promotion = $growth_promotion + 1;
-                            }
-
-                            if($user->userDownMotive->growth_activity == true){
-                                $growth_activity = $growth_activity + 1;
-                            }
-
-
-
-                            if($user->userDownMotive->climate_partnet == true){
-                                $climate_partnet = $climate_partnet + 1;
-                            }
-                        
-                            if($user->userDownMotive->climate_manager == true){
-                                $climate_manager = $climate_manager + 1;
-                            }
-
-                            if($user->userDownMotive->climate_boss == true){
-                                $climate_boss = $climate_boss + 1;
-                            }
-
-
-
-                            if($user->userDownMotive->psicosocial_workloads == true){
-                                $psicosocial_workloads = $psicosocial_workloads + 1;
-                            }
-                        
-                            if($user->userDownMotive->psicosocial_appreciation == true){
-                                $psicosocial_appreciation = $psicosocial_appreciation + 1;
-                            }
-
-                            if($user->userDownMotive->psicosocial_violence == true){
-                                $psicosocial_violence = $psicosocial_violence + 1;
-                            }
-
-                            if($user->userDownMotive->psicosocial_workday == true){
-                                $psicosocial_workday = $psicosocial_workday + 1;
-                            }
-
-
-
-
-                            if($user->userDownMotive->demographics_distance == true){
-                                $demographics_distance = $demographics_distance + 1;
-                            }
-                        
-                            if($user->userDownMotive->demographics_physical == true){
-                                $demographics_physical = $demographics_physical + 1;
-                            }
-
-                            if($user->userDownMotive->demographics_personal == true){
-                                $demographics_personal = $demographics_personal + 1;
-                            }
-                            
-                            if($user->userDownMotive->demographics_school == true){
-                                $demographics_school = $demographics_school + 1;
-                            }
-
-
-                            if($user->userDownMotive->health_personal == true){
-                                $health_personal = $health_personal + 1;
-                            }
-                        
-                            if($user->userDownMotive->health_familiar == true){
-                                $health_familiar = $health_familiar + 1;
-                            }
-
-
-                            if($user->userDownMotive->other_motive != null){
-                                $other_motive = $other_motive + 1;
-                            }
-                            
-
-
-                            array_push($grownd_department_data, (object)[
-                                'department' => $department->name,
-                                'growth_salary' => $growth_salary,
-                                'growth_promotion' => $growth_promotion,
-                                'growth_activity' => $growth_activity,
-                                
-                                'climate_partnet' => $climate_partnet,
-                                'climate_manager' => $climate_manager,
-                                'climate_boss' => $climate_boss,
-            
-                                'psicosocial_workloads' => $psicosocial_workloads,
-                                'psicosocial_appreciation' => $psicosocial_appreciation,
-                                'psicosocial_violence' => $psicosocial_violence,
-                                'psicosocial_workday' => $psicosocial_workday,
-            
-                                'demographics_distance' => $demographics_distance,
-                                'demographics_physical' => $demographics_physical,
-                                'demographics_personal' => $demographics_personal,
-                                'demographics_school' => $demographics_school,
-            
-                                'health_personal' => $health_personal,
-                                'health_familiar' => $health_familiar,
-
-                                'other_motive' => $other_motive,
-                            ]);
-                        }           
-                        
-                    }    
-                }
-             
-            }
-        }
-
-        
-        foreach($departments as $department){
-
-            $department_growth_salary = 0;
-            $department_growth_promotion = 0;
-            $department_growth_activity = 0;
-
-            $department_climate_partnet = 0;
-            $department_climate_manager = 0;
-            $department_climate_boss= 0;
-
-            $department_psicosocial_workloads = 0;
-            $department_psicosocial_appreciation = 0;
-            $department_psicosocial_violence = 0;
-            $department_psicosocial_workday = 0;
-
-            $department_demographics_distance = 0;
-            $department_demographics_physical = 0;
-            $department_demographics_personal = 0;
-            $department_demographics_school = 0;
-
-            $department_health_personal = 0;
-            $department_health_familiar = 0;
-
-            $department_other_motive = 0;           
-            
-            //Filtrado  de baja por departamento
-            foreach($department_data as $find_department){
-                if($find_department->department ==  $department->name){
-                    $count_department = $count_department + 1; 
-                } 
-            }
-
-
-            foreach($grownd_department_data  as $grownd_department){
-                //Crecimiento laboral
-                if($grownd_department->department == $department->name){
-
-                    if($grownd_department->growth_salary == 1 ){
-                        $department_growth_salary = $department_growth_salary + 1;
-                    } 
-
-                    if($grownd_department->growth_promotion == 1 ){
-                        $department_growth_promotion = $department_growth_promotion + 1;
-                    }
-
-                    if($grownd_department->growth_activity == 1 ){
-                        $department_growth_activity = $department_growth_activity + 1;
-                    }
-                    
-                    
-                    if($grownd_department->climate_partnet == 1 ){
-                        $department_climate_partnet = $department_climate_partnet + 1;
-                    } 
-
-                    if($grownd_department->climate_manager == 1 ){
-                        $department_climate_manager = $department_climate_manager + 1;
-                    }
-
-                    if($grownd_department->climate_boss == 1 ){
-                        $department_climate_boss = $department_climate_boss + 1;
-                    }
-
-
-                    if($grownd_department->psicosocial_workloads == 1 ){
-                        $department_psicosocial_workloads = $department_psicosocial_workloads + 1;
-                    } 
-
-                    if($grownd_department->psicosocial_appreciation == 1 ){
-                        $department_psicosocial_appreciation = $department_psicosocial_appreciation + 1;
-                    }
-
-                    if($grownd_department->psicosocial_violence == 1 ){
-                        $department_psicosocial_violence = $department_psicosocial_violence + 1;
-                    }
-
-                    if($grownd_department->psicosocial_workday == 1 ){
-                        $department_psicosocial_workday = $department_psicosocial_workday + 1;
-                    }
-
-                    if($grownd_department->demographics_distance == 1 ){
-                        $department_demographics_distance = $department_demographics_distance + 1;
-                    } 
-
-                    if($grownd_department->demographics_physical == 1 ){
-                        $department_demographics_physical = $department_demographics_physical + 1;
-                    }
-
-                    if($grownd_department->demographics_personal == 1 ){
-                        $department_demographics_personal = $department_demographics_personal + 1;
-                    }
-
-                    if($grownd_department->demographics_school == 1 ){
-                        $department_demographics_school = $department_demographics_school + 1;
-                    }
-                    
-                    if($grownd_department->health_personal == 1 ){
-                        $department_health_personal = $department_health_personal + 1;
-                    } 
-
-                    if($grownd_department->health_familiar == 1 ){
-                        $department_health_familiar = $department_health_familiar + 1;
-                    }
-
-                    if($grownd_department->other_motive != null ){
-                        $department_other_motive = $department_other_motive + 1;
-                    }
-                   
-                }
-            }
+        //Fechas
+        $carbon = new \Carbon\Carbon();
+        $date = $carbon->now();
+        $yearpresent = $date->format('Y');
+        $monthpresent = $date->format('m');
  
-            //Filtro de departamentos vacios 
-            if($count_department != 0){
-                array_push($department_name,  $department->name);
-                array_push($department_total,  $count_department);
-                array_push($filter_down_department_data, (object)[
-                    'department' => $department->name,
-                    'growth_salary' => $department_growth_salary,
-                    'growth_promotion' => $department_growth_promotion,
-                    'growth_activity' => $department_growth_activity,
-                
-                    'climate_partnet' => $department_climate_partnet,
-                    'climate_manager' => $department_climate_manager,
-                    'climate_boss' => $department_climate_boss,
+       
+        foreach($departments as $department){
+            
+            //Contadores
+            $total_users = 0; $type = "";  
+            $growth_salary = 0; $growth_promotion = 0; $growth_activity = 0;
+            $climate_partnet = 0; $climate_manager = 0; $climate_boss= 0;
+            $psicosocial_workloads = 0; $psicosocial_appreciation = 0; $psicosocial_violence = 0; $psicosocial_workday = 0;
+            $demographics_distance = 0; $demographics_physical = 0; $demographics_personal = 0; $demographics_school = 0;
+            $health_personal = 0; $health_familiar = 0;
+            $other_motive = 0;
 
-                    'psicosocial_workloads' => $department_psicosocial_workloads,
-                    'psicosocial_appreciation' => $department_psicosocial_appreciation,
-                    'psicosocial_violence' => $department_psicosocial_violence,
-                    'psicosocial_workday' => $department_psicosocial_workday,
-
-                    'demographics_distance' => $department_demographics_distance,
-                    'demographics_physical' => $department_demographics_physical,
-                    'demographics_personal' => $department_demographics_personal,
-                    'demographics_school' => $department_demographics_school,
-
-                    'health_personal' => $department_health_personal,
-                    'health_familiar' => $department_health_familiar,
-
-                    'other_motive' => $department_other_motive
+            foreach($users as $user){
                
+                if($user->employee->position->department->name == $department->name){
+                    $admission = explode('-', $user->userDetails->date_down);
+                    $year = $admission[0];
+                    $mont = $admission[1];
+
+                    if($user->userDownMotive->growth_salary == true){
+                        $growth_salary = $growth_salary + 1;
+                    }
+                    
+                    if($user->userDownMotive->growth_promotion == true){
+                            $growth_promotion = $growth_promotion + 1;
+                    }
+
+                    if($user->userDownMotive->growth_activity == true){
+                        $growth_activity = $growth_activity + 1;
+                    }
+
+                    if($user->userDownMotive->climate_partnet == true){
+                        $climate_partnet = $climate_partnet + 1;
+                    }
+                    
+                    if($user->userDownMotive->climate_manager == true){
+                        $climate_manager = $climate_manager + 1;
+                    }
+
+                    if($user->userDownMotive->climate_boss == true){
+                        $climate_boss = $climate_boss + 1;
+                    }
+
+                    if($user->userDownMotive->psicosocial_workloads == true){
+                        $psicosocial_workloads = $psicosocial_workloads + 1;
+                    }
+                    
+                    if($user->userDownMotive->psicosocial_appreciation == true){
+                        $psicosocial_appreciation = $psicosocial_appreciation + 1;
+                    }
+
+                    if($user->userDownMotive->psicosocial_violence == true){
+                        $psicosocial_violence = $psicosocial_violence + 1;
+                    }
+
+                    if($user->userDownMotive->psicosocial_workday == true){
+                        $psicosocial_workday = $psicosocial_workday + 1;
+                    }
+
+                    if($user->userDownMotive->demographics_distance == true){
+                        $demographics_distance = $demographics_distance + 1;
+                    }
+                    
+                    if($user->userDownMotive->demographics_physical == true){
+                        $demographics_physical = $demographics_physical + 1;
+                    }
+
+                    if($user->userDownMotive->demographics_personal == true){
+                        $demographics_personal = $demographics_personal + 1;
+                    }
+                        
+                    if($user->userDownMotive->demographics_school == true){
+                        $demographics_school = $demographics_school + 1;
+                    }
+
+                    if($user->userDownMotive->health_personal == true){
+                        $health_personal = $health_personal + 1;
+                    }
+                    
+                    if($user->userDownMotive->health_familiar == true){
+                        $health_familiar = $health_familiar + 1;
+                    }
+
+
+                    if($user->userDownMotive->other_motive != null){
+                        $other_motive = $other_motive + 1;
+                    }
+        
+                    if($start == null && $end == null && $year ==$yearpresent && $mont == $monthpresent){
+                        $total_users = $total_users + 1;
+                        $type = "No filtrada";
+                    }elseif($user->userDetails->date_down >= $start && $user->userDetails->date_down <= $end){ 
+                        $total_users = $total_users + 1;
+                        $type = "Filtrada";
+                    }
+                }
+            }
+
+            if($total_users > 0){
+                array_push($department_data, (object)[
+                    'department' => $department->name,
+                    'total' => $total_users,
+                    'type' =>$type,
+                    'growth_salary' => $growth_salary,
+                    'growth_promotion' => $growth_promotion,
+                    'growth_activity' => $growth_activity,
+                    'climate_partnet' => $climate_partnet,
+                    'climate_manager' => $climate_manager,
+                    'climate_boss' => $climate_boss,
+                    'psicosocial_workloads' => $psicosocial_workloads,
+                    'psicosocial_appreciation' => $psicosocial_appreciation,
+                    'psicosocial_violence' => $psicosocial_violence,
+                    'psicosocial_workday' => $psicosocial_workday,
+                    'demographics_distance' => $demographics_distance,
+                    'demographics_physical' => $demographics_physical,
+                    'demographics_personal' => $demographics_personal,
+                    'demographics_school' => $demographics_school,
+                    'health_personal' => $health_personal,
+                    'health_familiar' => $health_familiar,
+                    'other_motive' => $other_motive,
                 ]);
             }
-          
-            $count_department = 0;
-            
         }
 
-        array_push($down_department_data, (object)[ 
-            'department' => $department_name,
-            'total' => $department_total,
-            'down' => $filter_down_department_data
-        ] );
+        if(count($department_data) == 0 ){
+            array_push($department_data, (object)[
+                'department' => 'Sin registros',
+                'total' => 100,
+                'type' =>'Sin datos',
+                'growth_salary' => 0,
+                'growth_promotion' => 0,
+                'growth_activity' => 0,
+                'climate_partnet' => 0,
+                'climate_manager' => 0,
+                'climate_boss' => 0,
+                'psicosocial_workloads' =>0,
+                'psicosocial_appreciation' => 0,
+                'psicosocial_violence' => 0,
+                'psicosocial_workday' => 0,
+                'demographics_distance' => 0,
+                'demographics_physical' => 0,
+                'demographics_personal' => 0,
+                'demographics_school' => 0,
+                'health_personal' => 0,
+                'health_familiar' => 0,
+                'other_motive' => 0,
+            ]);
+        }
 
-        return $down_department_data;
+        return $department_data;
 
     }
 

@@ -25,14 +25,15 @@ define('SUB_COLU', 'col-4 p-2');
 
             <form class="form-delete" action="/rh/postulants" method="GET">
                 @csrf
-                <button type="submit" class="btn btn-primary">Generar Alta</button>
+                <button type="submit" class="btn btn-success">Generar Alta</button>
             </form>
             <div style="margin-left:10px"></div>
-
-            <form class="form-delete" action="" method="DELETE">
+            <form class="form-delete" action="/rh/stadistics" method="GET">
                 @csrf
-                <button type="submit" class="btn btn-success">Exportar</button>
+                <button type="submit" class="btn btn-primary">Borrar filtros</button>
             </form>
+
+            <br>
         </div>
     </div>
 
@@ -57,6 +58,8 @@ define('SUB_COLU', 'col-4 p-2');
                     <label><b></b></label> <br>
                     <input type="submit" class="btn btn-primary" value="Filtrar" />
                 </div>
+                
+               
             </div>
 
             <div class="d-flex align-items-center">
@@ -73,7 +76,7 @@ define('SUB_COLU', 'col-4 p-2');
         </div>
     </form>
 
-    <br>
+   
     
     <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3" >
         
@@ -156,21 +159,6 @@ define('SUB_COLU', 'col-4 p-2');
 
     <br>
 
-    <!-- <div class="row row-cols-4 row-cols-lg-3 g-2 g-lg-3">
-        <div class="col">
-            <h6>Nuevos ingresos por departamento</h6>
-            <canvas id="new_users" height="300"></canvas>
-        </div>
-
-        <div class="col"></div>
-
-        <div class="col">
-            <h6>Bajas por departamento</h6>
-            <canvas id="department_down" height="300"></canvas>  
-        </div>
- 
-    </div> -->
-
 @stop
 
 @section ('styles')
@@ -201,7 +189,6 @@ define('SUB_COLU', 'col-4 p-2');
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 
-   
     <script>
     
         var circle_chart = document.getElementById('circle_chart');
@@ -214,9 +201,10 @@ define('SUB_COLU', 'col-4 p-2');
         var new_users = document.getElementById('new_users');
         var department_down =  document.getElementById('department_down');
         
-        var department_chart = {!!json_encode($motive) !!};
-     
-        var department_list = [];
+        var department_chart = {!! json_encode($motive) !!};
+
+        var department_list_name = [];
+        var department_list_total = [];
         var laboral_grown_list = [];
         var laboral_climate_list = [];
         var risk_factors_list = [];
@@ -224,8 +212,10 @@ define('SUB_COLU', 'col-4 p-2');
         var health_list = [];
         var other_motive_list = [];
 
-        department_chart[0].down.forEach(element => department_list.push(element.department));
-        department_chart[0].down.forEach(element => laboral_grown_list.push(
+        department_chart.forEach(element => department_list_name.push(element.department));
+        department_chart.forEach(element => department_list_total.push(element.total));
+        
+        department_chart.forEach(element => laboral_grown_list.push(
             {
                 label: element.department,
                 data:[element.growth_salary, element.growth_promotion, element.growth_activity],
@@ -233,9 +223,9 @@ define('SUB_COLU', 'col-4 p-2');
                 backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
                 borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',],
             })
-        );
+        ); 
 
-        department_chart[0].down.forEach(element => laboral_climate_list.push(
+        department_chart.forEach(element => laboral_climate_list.push(
             {
                 label: element.department,
                 data:[element.climate_partnet, element.climate_manager, element.climate_boss],
@@ -245,7 +235,7 @@ define('SUB_COLU', 'col-4 p-2');
             })
         );
 
-        department_chart[0].down.forEach(element => risk_factors_list.push(
+        department_chart.forEach(element => risk_factors_list.push(
             {
                 label: element.department,
                 data:[element.psicosocial_workloads, element.psicosocial_appreciation, element.psicosocial_violence, element.psicosocial_workday],
@@ -255,7 +245,7 @@ define('SUB_COLU', 'col-4 p-2');
             })
         );
 
-        department_chart[0].down.forEach(element => demographics_list.push(
+        department_chart.forEach(element => demographics_list.push(
             {
                 label: element.department,
                 data:[element.demographics_distance, element.demographics_physical, element.demographics_personal, element.demographics_school],
@@ -265,7 +255,7 @@ define('SUB_COLU', 'col-4 p-2');
             })
         );
 
-        department_chart[0].down.forEach(element => health_list.push(
+        department_chart.forEach(element => health_list.push(
             {
                 label: element.department,
                 data:[element.health_personal, element.health_familiar],
@@ -275,7 +265,7 @@ define('SUB_COLU', 'col-4 p-2');
             })
         );
 
-        department_chart[0].down.forEach(element => other_motive_list.push(
+        department_chart.forEach(element => other_motive_list.push(
             {
                 label: element.department,
                 data:[element.other_motive],
@@ -285,20 +275,18 @@ define('SUB_COLU', 'col-4 p-2');
             })
         );
 
-        console.log("DEPARTAMENTOSSSSSSSS");
-        console.log(department_chart[0].down);
-        //Tablas 
+        //Estilos de Tablas 
         var settings_chart_colors = ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD',]
         var settings_chart_options = { scales: { xAxes: [{ ticks: { fontSize: 5 }  }] } }
-        
+ 
         //Bajas por departamento
         new Chart(circle_chart, {
             type: 'doughnut',
             data: {
-            labels: department_list,
+            labels: department_list_name,
                     datasets: [{
                         label: 'Total:',
-                        data: department_chart[0].total,
+                        data: department_list_total,
                         borderWidth: 1,
                         backgroundColor:settings_chart_colors ,
                         borderColor: settings_chart_colors,
@@ -306,7 +294,6 @@ define('SUB_COLU', 'col-4 p-2');
             },
         });
 
-     
         //Crecimiento laboral   
         new Chart(laboral_grown, {
             type: 'bar',
@@ -366,7 +353,6 @@ define('SUB_COLU', 'col-4 p-2');
             },
             options: settings_chart_options
         });
-
                
         //Nuevos Ingresos por departamento     
         new Chart(new_users, {
@@ -383,7 +369,6 @@ define('SUB_COLU', 'col-4 p-2');
             },
             options: settings_chart_options
         });
-
                    
         //Bajas por departamento         
         new Chart(department_down, {
@@ -399,8 +384,7 @@ define('SUB_COLU', 'col-4 p-2');
                 }]
             },
              options: settings_chart_options
-        });
-                   
+        });       
             
     </script>
     

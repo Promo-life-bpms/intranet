@@ -74,6 +74,11 @@
                 Para poder dar de baja a este colaborador, debes llenar la <b>fecha de baja</b> descrito en el <b>PASO 1</b>.
             </div>
         @endif
+
+    @else
+        <div class="alert alert-light" role="alert">
+            Para poder dar de baja a este colaborador, debes llenar la <b>fecha de baja</b> descrito en el <b>PASO 1</b>.
+        </div>
     @endif
    
           
