@@ -59,17 +59,18 @@ class ScanDocumentsController extends Controller
     
     public function updateDocuments(Request $request)
     {
-        $request->validate([
-            'documents' => 'required',
-            'description' => 'required',
-            'id'=>'required'
-        ]);
-        $request1 = UserDocumentation::all()->where('id', $request->id)->last();
-        File::delete($request1->resource);
-        
-        $path="";
 
+        if($request->description != '' || $request != null){
+
+        }
+     
+        $document = UserDocumentation::all()->where('id', $request->id)->last();
+        
+        $path=$document->resource;
+        $extension=$document->type;
         if ($request->hasFile('documents')) {
+            File::delete($document->resource);
+
             $filenameWithExt = $request->file('documents')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('documents')->clientExtension();

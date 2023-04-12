@@ -15,6 +15,7 @@ use App\Models\RoleUser;
 use App\Models\User;
 use App\Models\UserBeneficiary;
 use App\Models\UserDetails;
+use App\Models\UserDocumentation;
 use App\Models\UserDownMotive;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -1447,6 +1448,30 @@ class RhController extends Controller
         $indeterminate_contract = new IndeterminateContractUser();
         $indeterminate_contract->indeterminateContractUser($user, $user_details, $company->company_id);
         
+    }
+
+    public function dropUpdateDocumentation($id)
+    {
+        $status = 1;
+
+        $user = User::where('id',$id)->get()->last();
+        $user_documents= UserDocumentation::all()->where('user_id', $id);
+        $user_details = UserDetails::where('user_id',$id)->get();
+
+        $status = $user->status;
+        return view('rh.drop-update-documentation', compact('id','user_documents','user_details','status' ));
+    }
+
+    public function dropUserDetails($id)
+    {
+        $status = 1;
+
+        $user = User::where('id',$id)->get()->last();
+        $user_documents= UserDocumentation::all()->where('user_id', $id);
+        $user_details = UserDetails::where('user_id',$id)->get();
+
+        $status = $user->status;
+        return view('rh.drop-user-details', compact('id','user_documents','user_details','status', 'user'));
     }
 
 }

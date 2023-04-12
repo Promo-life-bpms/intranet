@@ -2,14 +2,35 @@
 
 @section('content')
 <div class="card-header">
-    <div class="d-flex flex-row">
-        <a href="{{ route('rh.dropUser') }}">
-            <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i>
-        </a>
-        <h3 class="separator">Generar baja</h3>
-    </div>
+
+    <div class="d-flex justify-content-between">
+        <div class="d-flex flex-row">
+            <a href="{{ route('rh.dropUser') }}">
+                <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i>
+            </a>
+            <h3 class="separator">Baja de colaborador</h3>
+        </div>
+                        
+        <div>                
+            <form 
+                action="{{ route('rh.dropUpdateDocumentation', ['id' => $user->id]) }}"
+                method="GET">
+                 @csrf
+                <button type="submit" class="btn btn-primary"> 
+                    PASO 2 - Subir documentación
+                </button>
+            </form>
+        </div>
+        </div>
 </div>
 <div class="card-body">
+    <div class="progress" style="height: 25px;">
+        <div class="progress-bar" role="progressbar" style="width: 33%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">  PASO 1 - Fecha y motivos de baja</div>
+        <div class="progress-bar bg-transparent w-33" role="progressbar " style="width: 33%; color:black" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> PASO 2 - Subir documentación</div>
+        <div class="progress-bar bg-transparent w-33" role="progressbar " style="width: 33%; color:black" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> PASO 3 - Baja de colaborador</div>
+    </div>
+    <br>
+    <br>
     @if (session('message'))
     <div class="alert alert-success">
         {{ session('message') }}
