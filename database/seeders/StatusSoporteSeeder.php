@@ -15,19 +15,22 @@ class StatusSoporteSeeder extends Seeder
      */
     public function run()
     {
+         DB::table('soporte_status')->insert([
+             'name'=>'Creado',
+             'slug'=>Str::slug('Creado','-')
+         ]);
+         DB::table('soporte_status')->insert([
+             'name'=>'En proceso',
+             'slug'=>Str::slug('En proceso','-')
+         ]);
+         DB::table('soporte_status')->insert([
+             'name'=>'Resuelto',
+             'slug'=>Str::slug('Resuelto','-')
+         ]);
         DB::table('soporte_status')->insert([
-            'name'=>'Creado',
-            'slug'=>Str::slug('Creado','-')
+            'name'=>'Ticket Cerrado',
+            'slug'=>Str::slug('Ticket Cerrado','-')
         ]);
-        DB::table('soporte_status')->insert([
-            'name'=>'En proceso',
-            'slug'=>Str::slug('En proceso','-')
-        ]);
-        DB::table('soporte_status')->insert([
-            'name'=>'Resuelto',
-            'slug'=>Str::slug('Resuelto','-')
-        ]);
-
         
     }
 }

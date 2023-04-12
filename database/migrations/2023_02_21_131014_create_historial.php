@@ -20,6 +20,8 @@ class CreateHistorial extends Migration
             $table->string('type');
             $table->string('data');
             $table->timestamps();
+           
+
         });
     }
 

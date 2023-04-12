@@ -7,9 +7,6 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use  App\Models\Soporte\Ticket;
 use App\Models\Soporte\Categoria;
-use App\Models\Soporte\Status;
-
-
 
 
 class ListadoTicketsComponent extends Component
@@ -20,7 +17,7 @@ class ListadoTicketsComponent extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $ticket_id, $name, $categoria, $data, $categorias,$actualizar_status;
+    public $ticket_id, $name, $categoria, $data, $categorias,$actualizar_status,$vercategoria;
 
     public function render()
     {
@@ -120,6 +117,7 @@ class ListadoTicketsComponent extends Component
         $this->ticket_id = $ticket->id;
         $this->name = $ticket->name;
         $this->data = $ticket->data;
+        $this->categorias=$ticket->category->name;
         $this->dispatchBrowserEvent('borrar');
         
     }

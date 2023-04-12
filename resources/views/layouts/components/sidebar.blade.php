@@ -302,12 +302,12 @@
                             </a>
                         </li>
                         <li class="submenu-item ">
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{route('admin')}}">
                                 <span>Admin Soporte</span>
                             </a>
                         </li>
                         <li class="submenu-item ">
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{ route('solucion') }}">
                                 <span>Soporte</span>
                             </a>
                         </li>

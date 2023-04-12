@@ -15,10 +15,10 @@ class UsuariosSoporte extends Model
     ];
     public function user()
     {
-        return $this->hasMany(usort::class, 'id_users');
+        return $this->hasMany(user::class, 'id_users');
     }
     public function category()
     {
-        return $this->hasMany(Categorsias::class, 'id_categorias');
+        return $this->hasMany(Categorias::class, 'id_categorias');
     }
 }

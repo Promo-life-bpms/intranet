@@ -18,7 +18,7 @@
                     <tr>
                         <th scope="col">ID</th>
                         <th scope="col">Nombre</th>
-                        <th scope="col">Categoria</th>
+                        <th scope="col">Categoría</th>
                         <th scope="col">Status</th>
                         <th scope="col">Acciones</th>
 
@@ -28,16 +28,19 @@
 
                     @foreach ($tickets as $ticket)
                         <tr>
-                            <th scope="row">#</th>
+                            <th scope="row">{{$ticket->id}}</th>
                             <td>{{ $ticket->name }}</td>
                             <td class="col-2">{{ $ticket->category->name }}</td>
                             <td class="col-2">
                                 @if ($ticket->status->name == 'Resuelto')
                                     {{-- <span class="badge bg-danger">{{ $ticket->status->name }}</span> --}}
                                     <div class="alert-sm alert-success rounded-3" role="alert">{{ $ticket->status->name }}</div>
-                                @else
+                                @elseif ($ticket->status->name == 'Creado' )
                                     {{-- <span class="badge bg-primary">{{ $ticket->status->name }}</span> --}}
-                                    <div class="alert-sm alert-info rounded-3" role="alert">{{ $ticket->status->name }}</div>
+                                    <div class="alert-sm alert-info rounded-3" role="alert"> {{ $ticket->status->name }}</div>
+                                    @elseif ($ticket->status->name == 'En proceso')
+                                    <div class="alert-sm alert-primary rounded-3" role="alert">
+                                        {{ $ticket->status->name }}</div>
                                 @endif
 
                             </td>
@@ -47,7 +50,7 @@
                                     data-bs-target="#ModalVer" wire:click="verTicket({{ $ticket->id }})"><i
                                         class="bi bi-eye"></i></button>
 
-                                @if ($ticket->status->name == 'Creado')
+                                @if ($ticket->status->name == 'Creado' || $ticket->status->name == 'En proceso')
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#ModalEditar" wire:click="editarTicket({{ $ticket->id }})"><i
                                             class="bi bi-pencil"></i></button>
@@ -101,9 +104,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="Problema" class="form-label">Categoria</label>
+                            <label for="Problema" class="form-label">Categoría</label>
                             <div class="input-group mb-3">
-                                <label class="input-group-text" for="inputGroupSelect01">Categoria</label>
+                                <label class="input-group-text" for="inputGroupSelect01">Categoría</label>
                                 <select wire:model="categoria" name="categoria"
                                     class="form-select @error('categoria') is-invalid @enderror"
                                     id="inputGroupSelect01">
@@ -120,7 +123,7 @@
                             </div>
                         </div>
                         <div wire:ignore class="mb-3 text-input-crear">
-                            <label for="descripcion" class="form-label">Descripcion</label>
+                            <label for="descripcion" class="form-label">Descripción</label>
                             <textarea wire:model="data" id="editor" cols="20" rows="3" class="form-control" name="data"></textarea>
                         </div>
                         @error('data')
@@ -167,9 +170,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="Problema" class="form-label">Categoria</label>
+                            <label for="Problema" class="form-label">Categoría</label>
                             <div class="input-group mb-3">
-                                <label class="input-group-text" for="inputGroupSelect01">Categoria</label>
+                                <label class="input-group-text" for="inputGroupSelect01">Categoría</label>
                                 <select wire:model="categoria" name="categoria"
                                     class="form-select @error('categoria') is-invalid @enderror"
                                     id="inputGroupSelect01">
@@ -190,7 +193,7 @@
                         </div>
 
                         <div wire:ignore class="mb-3 text-input-editar">
-                            <label for="descripcion" class="form-label">Descripcion</label>
+                            <label for="descripcion" class="form-label">Descripción</label>
                             <textarea wire:model="data" id="editorEditar" cols="20" rows="3" class="form-control" name="data"></textarea>
                             @error('data')
                                 <span class="invalid-feedback">
@@ -226,9 +229,9 @@
 
                     <p><span class="fw-bold">Problema a resolver :</span> <span>{{ $name }}</span></p>
 
-                    <p><span class="fw-bold">Categoria :</span> <span></span></p>
+                    <p><span class="fw-bold">Categoría :</span> <span>{{$ticket->$categoria}}</span></p>
 
-                    <p><span class="fw-bold">Descripcion :</span></p>
+                    <p><span class="fw-bold">Descripción :</span></p>
 
                     <div class="text-mostrar">
                         <p>{!! $data !!}</p>

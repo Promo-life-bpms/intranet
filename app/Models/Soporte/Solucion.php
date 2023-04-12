@@ -11,8 +11,8 @@ class Solucion extends Model
     public $table = "soporte_solucion";
     protected $fillable =[
         'description',
-        'image',
         'user_id',
+        'ticket_id'
     ];
     public function user()
     {

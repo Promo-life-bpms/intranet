@@ -15,25 +15,15 @@ class SoporteController extends Controller
    
     public function index()
     {
-
         return view('soporte.index');
     }
 
-    public function create()
-    {
-        $categorias = Categoria::all();
-        return view('soporte.create', compact('categorias'));
+    public function solucion(){
+        return view('soporte.solucion');
     }
-    public function store(Request $request)
+
+    public function admin()
     {
-        $id = Auth::user()->id;
-        $request->validate([
-            'categoria' => 'required',
-            'titulo' => 'required',
-            'descripcion' => 'required',
-            'imagen/link' => 'required',
-        ]);
-
-
+        return view('soporte.admin');
     }
 }

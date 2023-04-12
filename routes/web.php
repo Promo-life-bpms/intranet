@@ -30,6 +30,8 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\Soporte\SoporteController;
+use App\Http\Controllers\SoporteSolucionController;
+use App\Http\Livewire\SoporteSolucionComponent;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -211,7 +213,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/', [SoporteController::class, 'index'])->name('soporte');
         Route::get('/create', [SoporteController::class, 'create'])->name('soporte.create');
         Route::get('/store', [SoporteController::class, 'store'])->name('soporte.store');
-    });
+        Route::get('/solucion',[SoporteController::class, 'solucion'])->name('solucion');
+        Route::get('/admin',[SoporteController::class, 'admin'])->name('admin');
+   });
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
