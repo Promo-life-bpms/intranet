@@ -9,7 +9,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         {!! Form::label('category', 'Categoria') !!}
-                        {!! Form::text('category', null, ['class' => 'form-control', 'placeholder' => 'Seleccione la categoria']) !!}
+                        {!! Form::select('category', ['equipo_de_computo' => 'Equipo de Computo', 'mobiliario' => 'Mobiliario', 'equipo_telefonico' => 'Equipo Telefonico', 'otros' => 'Otros'], 'categoria', ['class' => 'form-control','placeholder' => 'Selecciona la categoria']) !!}
                         @error('category')
                             <br>
                         @enderror
