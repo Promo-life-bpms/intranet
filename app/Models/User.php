@@ -108,4 +108,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(RequestCalendar::class, 'users_id')->where('requests_id', null);
     }
+    //Relacionar el usuario para traer los roles
+      public function roles()
+      {
+          return $this->belongsToMany(Role::class, 'role_user','user_id','role_id');
+      }
+
+    
+
 }

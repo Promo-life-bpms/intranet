@@ -2,16 +2,29 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Soporte\Categoria;
 use App\Models\User;
-use App\Models\Soporte\UsuariosSoporte;
 use Livewire\Component;
-use App\Models\Role;
+
+
 
 class SoporteAdminComponent extends Component
 {
+    public $categoria;
+
+
     public function render()
     {
-        return view('livewire.soporte-admin-component');
 
+
+        $this->categoria = Categoria::orderBy('id')->get();
+
+        $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
+            ->join('roles', 'roles.id', '=', 'role_user.role_id')
+            ->where('roles.name', '=', 'systems')
+            ->select('users.*')
+            ->get();
+
+        return view('livewire.soporte-admin-component');
     }
 }
