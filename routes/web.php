@@ -250,9 +250,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     
     Route::post('/rh/create-more-information/', [UserDetails::class, 'createMoreInformation'])->name('rh.createMoreInformation');
     
-    //Equipo de control
+    //Solicitud de equipo   
     Route::get('/teamrequest/', [TeamRequest::class, 'index'])->name('team.request');
     Route::get('/teamrequest1/', [TeamRequest::class, 'index1'])->name('team.record');
+    Route::post('/team/create-teamrequest/', [TeamRequest::class, 'createTeamRequest'])->name('team.createTeamRequest');
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');

@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TeamRequest extends Model
 {
     use HasFactory;
+
+    public $table='request_team';
+
 }
