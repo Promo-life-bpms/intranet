@@ -10,6 +10,7 @@ class TeamRequest extends Controller
     //
 public function index(){
     $user = auth()->user();
+    
     return view('admin.team.index', compact('user'));
 
 }

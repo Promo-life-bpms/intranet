@@ -17,7 +17,7 @@ class CreateRequestTeamTable extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('category');
             $table->string('description');
-            $table->string('status')->nullable()->default('Solicitud enviada');
+            $table->string('status');
             $table->id();
             $table->timestamps();
         });

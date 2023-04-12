@@ -27,6 +27,19 @@
                             </div>
                         </div>
 
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {!! Form::label('status', 'Estado') !!}
+                                {!! Form::text('status',null, ['class' => 'form-control', 'placeholder' => 'Ingrese el estado']) !!}
+                                @error('status')
+                                    <br>
+                                @enderror
+                            </div>
+                        </div>
+
+
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('description', 'Descripción') !!}
