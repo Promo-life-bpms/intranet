@@ -26,7 +26,7 @@
                         <th>{{$dato->category}}</th>
                         <th>{{$dato->description}}</th>
                         <th>{{$dato->status}}</th>
-                        <th>{{$dato->id}}</th> 
+                        <th>{{$dato->id}}</th>
                     </tr>
                     @endforeach
                 </tbody>

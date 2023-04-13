@@ -21,8 +21,6 @@ public function index1(){
             ->orderBy('id')
             ->get();
     return view('admin.team.record')->with('datos', $datos);
-
-    
 }
 
 public function createTeamRequest(Request $request){
