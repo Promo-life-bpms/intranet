@@ -5,13 +5,14 @@
     <div class="card-header">
             <h1 style="font-size:20px">Solicitud de Equipo</h1>
             
-            <div class="card-body">
-                @if (session('message'))
-                    <div class="alert alert-success">
-                        {{ session('message') }}
-                    </div>
-                @endif
+    <div class="card-body">
+        @if (session('success'))
+        <div class="alert alert-success" role="success">
+            {{session('success')}}
+        </div>   
+        @endif
     
+
     <form action="{{route('team.createTeamRequest')}}" method="POST">
 
                 {!! Form::open(['route' => 'team.request', 'enctype' => 'multipart/form-data']) !!}

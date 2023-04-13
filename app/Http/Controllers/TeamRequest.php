@@ -33,7 +33,7 @@ public function createTeamRequest(Request $request){
   $request_team->status = 'Solicitud enviada';
   $request_team->user_id = $user->id;
   $request_team->save();
-  return redirect()->route('team.request');
+  return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!');
 
  
   }
