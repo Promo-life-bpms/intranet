@@ -21,7 +21,7 @@
 
                 <tbody>
                     @foreach ($datos as $dato )
-                    <tr>
+                    <tr>                        
                         <th>{{$dato->user_id}}</th>
                         <th>{{$dato->category}}</th>
                         <th>{{$dato->description}}</th>
