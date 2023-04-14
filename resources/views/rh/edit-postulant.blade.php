@@ -13,7 +13,7 @@
             
             <div>                
                 <form 
-                    action="{{ route('rh.morePostulant', ['postulant_id' => $postulant->id]) }}"
+                    action="{{ route('rh.createMorePostulant', ['postulant_id' => $postulant->id]) }}"
                     method="GET">
                     @csrf
                     <button type="submit" class="btn btn-primary"> 

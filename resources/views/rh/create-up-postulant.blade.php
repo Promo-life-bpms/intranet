@@ -7,7 +7,7 @@
             <a href="{{ route('rh.createPostulantDocumentation', ['postulant_id' => $postulant->id]) }}">
                 <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i>
             </a> 
-            <h3 class="separator ms-2">Kit Legal Firmado</h3>
+            <h3 class="separator ms-2">Alta de Colaborador</h3>
         </div>
                         
         <div>                
@@ -45,11 +45,11 @@
                 <p><small>Plan de Trabajo</small></p>
             </div>
             <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
-                <a href="#step-4" type="button" class="btn btn-default btn-circle" disabled="disabled">5</a>
+                <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">5</a>
                 <p><small>Kit Legal Firmado</small></p>
             </div>
             <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
-                <a href="#step-4" type="button" class="btn btn-default btn-circle  no-selected" disabled="disabled">6</a>
+                <a href="#step-4" type="button" class="btn btn-default btn-circle" disabled="disabled">6</a>
                 <p><small>Alta de Colaborador</small></p>
             </div>
         </div>
@@ -57,7 +57,7 @@
 </div>
 
 <br>
-    <h5>Sube aqui tus documentos firmados</h5>
+    <h5></h5>
     
     
 </div>

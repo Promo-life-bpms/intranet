@@ -9,7 +9,7 @@
             <a href="{{ route('rh.postulants') }}">
                 <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i>
             </a>
-            <h3 style="margin-left:16px;" class="separator">Kit legal de Ingreso</h3>
+            <h3 style="margin-left:16px;" class="separator">Kit Legal de Ingreso</h3>
         </div>
 
         <div>                
@@ -31,25 +31,29 @@
     <div class="container" >
         <div class="stepwizard">
             <div class="stepwizard-row setup-panel">
-                <div class="stepwizard-step col-xs-3" style="width: 20%;">  
+                <div class="stepwizard-step col-xs-3" style="width: 16.6%;">  
                     <a href="#step-1" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">1</a>
                     <p><small>Alta de Candidato</small></p>
                 </div>
-                <div class="stepwizard-step col-xs-3"  style="width: 20%;"> 
+                <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
                     <a href="#step-2" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">2</a>
                     <p><small>Recepción de Documentos</small></p>
                 </div>
-                <div class="stepwizard-step col-xs-3"  style="width: 20%;"> 
+                <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
                     <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
                     <p><small>Kit legal de Ingreso</small></p>
                 </div>
-                <div class="stepwizard-step col-xs-3"  style="width: 20%;"> 
+                <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
                     <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">4</a>
                     <p><small>Plan de Trabajo</small></p>
                 </div>
-                <div class="stepwizard-step col-xs-3"  style="width: 20%;"> 
-                    <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">4</a>
+                <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
+                    <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">5</a>
                     <p><small>Kit Legal Firmado</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
+                    <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">6</a>
+                    <p><small>Alta de Colaborador</small></p>
                 </div>
             </div>
         </div>

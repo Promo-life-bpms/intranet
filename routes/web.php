@@ -239,17 +239,19 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/rh/store-postulant/', [RhController::class, 'storePostulant'])->name('rh.storePostulant');
     Route::post('/rh/store-more-information/', [RhController::class, 'storeMoreInformation'])->name('rh.storeMoreInformation');
     Route::get('/rh/create-workplan/{postulant_id}', [RhController::class, 'createWorkplan'])->name('rh.createWorkplan');
+    Route::get('/rh/create-signed-kit/{postulant_id}', [RhController::class, 'createSignedKit'])->name('rh.createSignedKit');
 
-
+   
     Route::post('/rh/drop-postulant/', [RhController::class, 'dropPostulant'])->name('rh.dropPostulant');
 
     Route::get('/rh/edit-postulant/{postulant_id}', [RhController::class, 'editPostulant'])->name('rh.editPostulant');
     Route::put('/rh/update-postulant/', [RhController::class, 'updatePostulant'])->name('rh.updatePostulant');
     Route::get('/rh/create-postulant-documentation/{postulant_id}', [RhController::class, 'createPostulantDocumentation'])->name('rh.createPostulantDocumentation');
     Route::post('/rh/build-postulant-documentation/', [RhController::class, 'buildPostulantDocumentation'])->name('rh.buildPostulantDocumentation');
-    Route::get('/rh/more-postulant/{postulant_id}', [RhController::class, 'morePostulant'])->name('rh.morePostulant');
+    Route::get('/rh/create-more-postulant/{postulant_id}', [RhController::class, 'createMorePostulant'])->name('rh.createMorePostulant');
+    Route::get('/rh/create-up-postulant/{postulant_id}', [RhController::class, 'createUpPostulant'])->name('rh.createUpPostulant');
 
-   
+    
     Route::post('/rh/create-user-document/', [RhController::class, 'createUserDocument'])->name('rh.createUserDocument');
     Route::get('/rh/drop-update-documentation/{id}', [RhController::class, 'dropUpdateDocumentation'])->name('rh.dropUpdateDocumentation');
     Route::get('/rh/drop-user-details.blade/{id}', [RhController::class, 'dropUserDetails'])->name('rh.dropUserDetails');

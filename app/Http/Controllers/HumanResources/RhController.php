@@ -1314,12 +1314,10 @@ class RhController extends Controller
     }
 
 
-    public function morePostulant($postulant_id)
+    public function createMorePostulant($postulant_id)
     {
         $postulant = Postulant::where('id',$postulant_id)->get()->last();
-        return view('rh.more-postulant', compact('postulant'));
-
-
+        return view('rh.create-more-postulant', compact('postulant'));
     }
 
     public function storeMoreInformation(Request $request)
@@ -1333,6 +1331,18 @@ class RhController extends Controller
     {
         $postulant = Postulant::where('id',$postulant_id)->get()->last();
         return view('rh.create-workplan', compact('postulant'));
+    }
+
+    public function createSignedKit($postulant_id)
+    {
+        $postulant = Postulant::where('id',$postulant_id)->get()->last();
+        return view('rh.create-signed-kit', compact('postulant'));
+    }
+
+    public function createUpPostulant($postulant_id)
+    {
+        $postulant = Postulant::where('id',$postulant_id)->get()->last();
+        return view('rh.create-up-postulant', compact('postulant'));
     }
 }
 
