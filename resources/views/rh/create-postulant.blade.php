@@ -3,7 +3,7 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex flex-row" >
-            <a  href="{{ route('rh.postulants') }}">
+            <a  href="{{ route('rh.morePostulant', ['postulant_id' => $postulant->id]) }}">
                 <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
             </a>
             <h3 style="margin-left:16px;" class="separator">Alta de Candidato</h3> 
@@ -44,7 +44,10 @@
                  <br>
             </div>
         @endif
+       
+
         {!! Form::open(['route' => 'rh.storePostulant', 'enctype' => 'multipart/form-data']) !!}
+        <h5>Información personal</h5>
         <p></p>
         <div class="row form-group">
 
@@ -85,9 +88,9 @@
        
         <div class="row form-group">
             <div class="col-sm">
-                {!! Form::label('vacant', 'Fecha de nacimiento') !!}
-                {!! Form::text('vacant', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-                @error('vacant')
+                {!! Form::label('birthdate', 'Fecha de nacimiento') !!}
+                {!! Form::date('birthdate', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                @error('birthdate')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
                     </small>
@@ -158,18 +161,13 @@
             <div class="col-sm">
                 {!! Form::label('cv', 'Adjuntar CV') !!}
                 {!! Form::file('cv',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-                @error('cv')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
+              
             </div>
 
             <div class="col-sm">
                 {!! Form::label('email', 'Correo electrónico') !!}
                 {!! Form::text('email', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-                @error('phone')
+                @error('email')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
                     </small>

@@ -4,21 +4,20 @@
     <div class="card-header">
 
     <div class="d-flex justify-content-between">
-        <div class="d-flex flex-row">
-            <a  href="{{ route('admin.users.edit', ['user' => $user_id]) }}">
+        <div class="d-flex flex-row" >
+            <a  href="{{ route('rh.editPostulant', ['postulant_id' => $postulant->id]) }}">
                 <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
             </a>
-            <h3 style="margin-left:16px;" class="separator">Información adicional</h3> 
+            <h3 style="margin-left:16px;" class="separator">Recepcion de Documentos</h3> 
         </div>
-        
         <div>                
             <form 
-                action="{{ route('rh.scanDocuments', ['id' => $user_id]) }}"
+                action="{{ route('rh.createPostulantDocumentation', ['postulant_id' => $postulant->id]) }}"
                 method="GET">
                  @csrf
                 <button type="submit" class="btn btn-primary"> 
-                    <i class="fa fa-file-text me-2" aria-hidden="true"></i>  
-                    Documentación
+                    Kit legal de Ingreso
+                    <i class="ms-2 fa fa-arrow-right" aria-hidden="true"></i>
                 </button>
             </form>
         </div>
@@ -26,59 +25,87 @@
         
     </div>
     <div class="card-body">
+
+    <div class="container" >
+        <div class="stepwizard">
+            <div class="stepwizard-row setup-panel">
+                <div class="stepwizard-step col-xs-3" style="width: 20%;">  
+                    <a href="#step-1" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">1</a>
+                    <p><small>Alta de Candidato</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 20%;"> 
+                    <a href="#step-2" type="button" class="btn btn-default btn-circle " disabled="disabled">2</a>
+                    <p><small>Recepción de Documentos</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 20%;"> 
+                    <a href="#step-3" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">3</a>
+                    <p><small>Kit legal de Ingreso</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 20%;"> 
+                    <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">4</a>
+                    <p><small>Plan de Trabajo</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 20%;"> 
+                    <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">4</a>
+                    <p><small>Kit Legal Firmado</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
             @if (session('message'))
             <div class="alert alert-success">
                 {{ session('message') }}
             </div>
         @endif
-        {!! Form::open(['route' => 'rh.createMoreInformation', 'enctype' => 'multipart/form-data']) !!}
+        {!! Form::open(['route' => 'rh.storeMoreInformation', 'enctype' => 'multipart/form-data']) !!}
         
-        <input type="text" name="user_id" value={{$user_id}} hidden>  
+        <input type="text" name="user_id" value={{$postulant->id}} hidden>  
             <br>
             <h5>Información personal</h5>
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('cell_phone', 'Telefono celular') !!}
-                    {!! Form::number('cell_phone', isset($user_details->cell_phone) ? $user_details->cell_phone : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numeor de telefono celular']) !!}
+                    {!! Form::number('cell_phone',null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numeor de telefono celular']) !!}
                 </div>
 
                 <div class="col-sm ">
                     {!! Form::label('home_phone', 'Telefono de casa') !!}
-                    {!! Form::number('home_phone', isset($user_details->home_phone) ? $user_details->home_phone : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono de casa']) !!}
+                    {!! Form::number('home_phone', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono de casa']) !!}
                 </div>
                 
                 <div class="col-sm ">
                     {!! Form::label('birthdate', 'Fecha de nacimiento') !!}
-                    {!! Form::date('birthdate', isset($user_details->birthdate) ? $user_details->birthdate : null, ['class' => 'form-control']) !!}
+                    {!! Form::date('birthdate', null, ['class' => 'form-control']) !!}
                 </div>  
             </div>
 
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('curp', 'CURP') !!}
-                    {!! Form::text('curp', isset($user_details->curp) ? $user_details->curp : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el CURP']) !!}
+                    {!! Form::text('curp', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el CURP']) !!}
                 </div>
 
                 <div class="col-sm ">
                     {!! Form::label('rfc', 'RFC') !!}
-                    {!! Form::text('rfc', isset($user_details->rfc) ? $user_details->rfc : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el RFC']) !!}
+                    {!! Form::text('rfc',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el RFC']) !!}
                 </div>
                 
                 <div class="col-sm ">
                     {!! Form::label('imss_number', 'N° afiliacion IMSS') !!}
-                    {!! Form::text('imss_number', isset($user_details->imss_number) ? $user_details->imss_number : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de afiliacion del IMSS']) !!} 
+                    {!! Form::text('imss_number',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de afiliacion del IMSS']) !!} 
                 </div>  
             </div>
 
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('nacionality', 'Nacionalidad') !!}
-                    {!! Form::text('nacionality', isset($user_details->nacionality) ? $user_details->nacionality : null, ['class' => 'form-control', 'placeholder' => 'Ingrese la nacionalidad']) !!}
+                    {!! Form::text('nacionality', null, ['class' => 'form-control', 'placeholder' => 'Ingrese la nacionalidad']) !!}
                 </div>
 
                 <div class="col-sm ">
                     {!! Form::label('id_credential', 'ID credencial') !!}
-                    {!! Form::text('id_credential', isset($user_details->id_credential) ? $user_details->id_credential : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el ID de la credencial']) !!}
+                    {!! Form::text('id_credential',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el ID de la credencial']) !!}
                 </div>
                 
                 <div class="col-sm ">
@@ -95,12 +122,12 @@
 
                 <div class="col-sm ">
                     {!! Form::label('age', 'Edad') !!}
-                    {!! Form::number('age', isset($user_details->age) ? $user_details->age : null, ['class' => 'form-control', 'placeholder' => 'Ingrese la edad']) !!}
+                    {!! Form::number('age',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese la edad']) !!}
                 </div>
                 
                 <div class="col-sm ">
                     {!! Form::label('date_admission', 'Fecha de ingreso') !!}
-                    {!! Form::date('date_admission', isset($user_details->date_admission) ? $user_details->date_admission : null, ['class' => 'form-control', 'placeholder' => 'Ingrese fecha de ingreso']) !!}
+                    {!! Form::date('date_admission',null, ['class' => 'form-control', 'placeholder' => 'Ingrese fecha de ingreso']) !!}
                 </div>  
             </div>
 
@@ -126,36 +153,36 @@
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('position', 'Puesto') !!}
-                    {!! Form::text('position', isset($user_details->position) ? $user_details->position : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el puesto']) !!}
+                    {!! Form::text('position',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el puesto']) !!}
                 </div>
 
                 <div class="col-sm ">
                     {!! Form::label('position_objetive', 'Objetivo del puesto') !!}
-                    {!! Form::text('position_objetive', isset($user_details->position_objetive) ? $user_details->position_objetive : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el objetivo del puesto']) !!}
+                    {!! Form::text('position_objetive', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el objetivo del puesto']) !!}
                 </div> 
             </div>
 
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('month_salary_gross', 'Salario bruto mensual') !!}
-                    {!! Form::text('month_salary_gross', isset($user_details->month_salary_gross) ? $user_details->month_salary_gross : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario bruto mensual']) !!}
+                    {!! Form::text('month_salary_gross',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario bruto mensual']) !!}
                 </div> 
 
                 <div class="col-sm ">
                     {!! Form::label('month_salary_net', 'Salario neto mensual') !!}
-                    {!! Form::text('month_salary_net', isset($user_details->month_salary_net) ? $user_details->month_salary_net : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario neto mensual']) !!}
+                    {!! Form::text('month_salary_net',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario neto mensual']) !!}
                 </div>
             </div>
 
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('daily_salary', 'Salario diario') !!}
-                    {!! Form::text('daily_salary', isset($user_details->daily_salary) ? $user_details->daily_salary : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario diario']) !!}
+                    {!! Form::text('daily_salary', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario diario']) !!}
                 </div> 
 
                 <div class="col-sm ">
                     {!! Form::label('daily_salary_letter', 'Salario diario en letra') !!}
-                    {!! Form::text('daily_salary_letter', isset($user_details->daily_salary_letter) ? $user_details->daily_salary_letter : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario diario en letra']) !!}
+                    {!! Form::text('daily_salary_letter', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario diario en letra']) !!}
                 </div>
             </div>
             <br>
@@ -165,12 +192,12 @@
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('address', 'Direccion') !!}
-                    {!! Form::text('address', isset($user_details->address) ? $user_details->address : null, ['class' => 'form-control', 'placeholder' => 'Ingrese la direccion']) !!}
+                    {!! Form::text('address',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese la direccion']) !!}
                 </div>
 
                 <div class="col-sm ">
                     {!! Form::label('street', 'Calle') !!}
-                    {!! Form::text('street', isset($user_details->street) ? $user_details->street : null, ['class' => 'form-control', 'placeholder' => 'Ingrese la calle']) !!}
+                    {!! Form::text('street',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese la calle']) !!}
                 </div>
                 
                 <div class="col-sm ">
@@ -182,34 +209,34 @@
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('delegation', 'Delegacion o municipio') !!}
-                    {!! Form::text('delegation',  isset($user_details->delegation) ? $user_details->delegation : null, ['class' => 'form-control', 'placeholder' => 'Ingrese la delegacion o municipio']) !!}
+                    {!! Form::text('delegation',   null, ['class' => 'form-control', 'placeholder' => 'Ingrese la delegacion o municipio']) !!}
                 </div>
 
                 <div class="col-sm ">
                     {!! Form::label('home_references', 'Referencia domicilio') !!}
-                    {!! Form::text('home_references', isset($user_details->home_references) ? $user_details->home_references : null, ['class' => 'form-control', 'placeholder' => 'Ingrese las referencias del domicilio']) !!}
+                    {!! Form::text('home_references',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese las referencias del domicilio']) !!}
                 </div>
                 
                 <div class="col-sm ">
                     {!! Form::label('house_characteristics', 'Caracteristicas de la casa') !!}
-                    {!! Form::text('house_characteristics', isset($user_details->house_characteristics) ? $user_details->house_characteristics : null, ['class' => 'form-control', 'placeholder' => 'Ingrese las caracteristicas de la casa']) !!}
+                    {!! Form::text('house_characteristics', null, ['class' => 'form-control', 'placeholder' => 'Ingrese las caracteristicas de la casa']) !!}
                 </div>  
             </div>
 
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('place_of_birth', 'Lugar de nacimiento') !!}
-                    {!! Form::text('place_of_birth', isset($user_details->place_of_birth) ? $user_details->place_of_birth : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el lugar de nacimiento']) !!}
+                    {!! Form::text('place_of_birth', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el lugar de nacimiento']) !!}
                 </div>
 
                 <div class="col-sm ">
                     {!! Form::label('postal_code', 'CP') !!}
-                    {!! Form::text('postal_code', isset($user_details->postal_code) ? $user_details->postal_code : null, ['class' => 'form-control', 'placeholder' => 'Ingrese la codigo postal']) !!}
+                    {!! Form::text('postal_code',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese la codigo postal']) !!}
                 </div>
                 
                 <div class="col-sm ">
                     {!! Form::label('fiscal_postal_code', 'CP fiscal') !!}
-                    {!! Form::text('fiscal_postal_code', isset($user_details->fiscal_postal_code) ? $user_details->fiscal_postal_code : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el codigo postal fiscal']) !!}
+                    {!! Form::text('fiscal_postal_code', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el codigo postal fiscal']) !!}
                 </div>  
             </div>
             <br>
@@ -220,12 +247,12 @@
             <div class="row form-group">
                 <div class="col-sm ">
                     {!! Form::label('fathers_name', 'Nombre del padre') !!}
-                    {!! Form::text('fathers_name', isset($user_details->fathers_name) ? $user_details->fathers_name : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre completo del padre']) !!}
+                    {!! Form::text('fathers_name', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre completo del padre']) !!}
                 </div>
 
                 <div class="col-sm ">
                 {!! Form::label('mothers_name', 'Nombre de la madre') !!}
-                    {!! Form::text('mothers_name', isset($user_details->mothers_name) ? $user_details->mothers_name : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre completo de la madre']) !!}
+                    {!! Form::text('mothers_name', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre completo de la madre']) !!}
                 </div>
                 
             </div>
@@ -236,12 +263,12 @@
             <div class="row form-group">
                 <div class="col-sm col-md-4">
                     {!! Form::label('bank_name', 'Banco') !!}
-                    {!! Form::text('bank_name', isset($user_details->bank_name) ? $user_details->bank_name : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre del banco']) !!}
+                    {!! Form::text('bank_name',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre del banco']) !!}
                 </div>
 
                 <div class="col-sm col-md-8">
                     {!! Form::label('card_number', 'N° tarjeta/cuenta') !!}
-                    {!! Form::text('card_number', isset($user_details->card_number) ? $user_details->card_number : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de cuenta']) !!}
+                    {!! Form::text('card_number', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de cuenta']) !!}
                 </div>
                 
             </div>
@@ -260,7 +287,7 @@
 
                 <div class="col-sm col-md-8">
                     {!! Form::label('factor_credit_number', 'N° credito factor') !!}
-                    {!! Form::text('factor_credit_number', isset($user_details->factor_credit_number) ? $user_details->factor_credit_number : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de credito factor']) !!}
+                    {!! Form::text('factor_credit_number', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de credito factor']) !!}
                 </div>
                 
             </div>
@@ -273,7 +300,7 @@
 
                 <div class="col-sm col-md-8">
                     {!! Form::label('discount_credit_number', 'N° credito descuento') !!}
-                    {!! Form::text('discount_credit_number', isset($user_details->discount_credit_number) ? $user_details->discount_credit_number : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de credito descuento']) !!}
+                    {!! Form::text('discount_credit_number',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de credito descuento']) !!}
                 </div>
             </div>
 
@@ -287,7 +314,7 @@
 
                 <div class="row g-0 text-center">
                     <div class="col-sm-6 col-md-8">
-                        {!! Form::text('beneficiary1',isset($user_beneficiaries[0]->name) ? $user_beneficiaries[0]->name : null, ['class' => 'form-control', 'placeholder' => 'primer beneficiario']) !!} 
+                        {!! Form::text('beneficiary1', null, ['class' => 'form-control', 'placeholder' => 'primer beneficiario']) !!} 
                     </div>
                     <div class="col-6 col-md-4">
 
@@ -295,7 +322,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">%</span>
                             </div>
-                            {!! Form::text('porcentage1',isset($user_beneficiaries[0]->porcentage) ? $user_beneficiaries[0]->porcentage : null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
+                            {!! Form::text('porcentage1', null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
                         </div>
                     </div>
                 </div>
@@ -305,7 +332,7 @@
                     {!! Form::label('', 'Beneficiario 2 ') !!}
                     <div class="row g-0 text-center">
                         <div class="col-sm-6 col-md-8">
-                            {!! Form::text('beneficiary2',isset($user_beneficiaries[1]->name) ? $user_beneficiaries[1]->name : null, ['class' => 'form-control', 'placeholder' => 'segundo beneficiario']) !!} 
+                            {!! Form::text('beneficiary2', null, ['class' => 'form-control', 'placeholder' => 'segundo beneficiario']) !!} 
                         </div>
                         <div class="col-6 col-md-4">
 
@@ -313,7 +340,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">%</span>
                                 </div>
-                                {!! Form::text('porcentage2',isset($user_beneficiaries[1]->porcentage) ? $user_beneficiaries[1]->porcentage : null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
+                                {!! Form::text('porcentage2', null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
                             </div>
                         </div>
                     </div>
@@ -326,7 +353,7 @@
                     {!! Form::label('', 'Beneficiario 3 ') !!}
                     <div class="row g-0 text-center">
                             <div class="col-sm-6 col-md-8">
-                                {!! Form::text('beneficiary3',isset($user_beneficiaries[2]->name) ? $user_beneficiaries[2]->name : null, ['class' => 'form-control', 'placeholder' => 'tercer beneficiario']) !!} 
+                                {!! Form::text('beneficiary3',null, ['class' => 'form-control', 'placeholder' => 'tercer beneficiario']) !!} 
                             </div>
                             <div class="col-6 col-md-4">
 
@@ -334,7 +361,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">%</span>
                                     </div>
-                                    {!! Form::text('porcentage3',isset($user_beneficiaries[2]->porcentage) ? $user_beneficiaries[2]->porcentage : null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
+                                    {!! Form::text('porcentage3',null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
                                 </div>
                             </div>
                         </div>
@@ -380,6 +407,61 @@
 
         #content:hover~#icon-text{
             display: block;
+        }
+
+        .stepwizard-step p {
+            margin-top: 0px;
+            color:#666;
+        }
+        .stepwizard-row {
+            display: table-row;
+        }
+        .stepwizard {
+            display: table;
+            width: 100%;
+            position: relative;
+        }
+        .btn-default{
+            background-color: #0084C3;
+        }
+
+        .stepwizard-row:before {
+            top: 14px;
+            bottom: 0;
+            position: absolute;
+            content:" ";
+            width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            z-index: 0;
+        }
+        .stepwizard-step {
+            display: table-cell;
+            text-align: center;
+            position: relative;
+        }
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+            color: #fff;
+        }
+
+        .no-selected{
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+            color: #000;
+            background-color: #fff;
+            border-color: #0084C3;
         }
    </style>
 @endsection

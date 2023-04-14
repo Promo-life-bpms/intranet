@@ -18,51 +18,44 @@ class RhModule extends Migration
             $table->id();
             $table->string('name');
             $table->string('lastname');
-            $table->string('mail')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('cv')->nullable();
+            $table->string('vacant');
+            $table->date('birthdate');
+            $table->string('nss');
+            $table->string('curp');
+            $table->string('full_address');
+            $table->string('phone');
+            $table->string('message_phone');
+            $table->string('email');
             $table->string('status');
-            $table->bigInteger('company_id')->nullable();
-            $table->bigInteger('department_id')->nullable();
-            $table->dateTime('interview_date')->nullable();
-            $table->timestamps();
-        });
-
-        Schema::create('postulant_details', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('postulant_id')->references('id')->on('postulant')->onDelete('cascade');
-            $table->string('place_of_birth')->nullable();
-            $table->date('birthdate')->nullable();
+           
             $table->string('fathers_name')->nullable();
             $table->string('mothers_name')->nullable();
             $table->string('civil_status')->nullable();
             $table->integer('age')->nullable();
-            $table->string('address')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('nacionality')->nullable();
+            $table->string('id_credential')->nullable();
+
+            $table->string('place_of_birth')->nullable();
             $table->string('street')->nullable();
             $table->string('colony')->nullable();
             $table->string('delegation')->nullable();
             $table->string('postal_code',10)->nullable();
-            $table->string('cell_phone',20)->nullable();
             $table->string('home_phone',20)->nullable();
-            $table->string('curp',20)->nullable();
-            $table->string('rfc',20)->nullable();
-            $table->string('imss_number')->nullable();
             $table->string('fiscal_postal_code')->nullable();
-            $table->string('position')->nullable();
-            $table->string('area')->nullable();
-            $table->string('horary')->nullable();
+            $table->string('home_references')->nullable();
+            $table->string('house_characteristics')->nullable();
+
+            $table->bigInteger('department_id')->nullable();
             $table->date('date_admission')->nullable();
+
             $table->string('card_number')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('infonavit_credit')->nullable();
             $table->string('factor_credit_number')->nullable();
             $table->string('fonacot_credit')->nullable();
             $table->string('discount_credit_number')->nullable();
-            $table->string('home_references')->nullable();
-            $table->string('house_characteristics')->nullable();
-            $table->string('nacionality')->nullable();
-            $table->string('id_credential')->nullable();
-            $table->string('gender')->nullable();
+           
             $table->string('month_salary_net')->nullable();
             $table->string('month_salary_gross')->nullable();
             $table->string('daily_salary')->nullable();
@@ -70,7 +63,7 @@ class RhModule extends Migration
             $table->string('position_objetive')->nullable();
             $table->string('contract_duration')->nullable();
             $table->timestamps();
-        }); 
+        });
 
         Schema::create('postulant_beneficiary', function (Blueprint $table) {
             $table->id();
@@ -78,7 +71,7 @@ class RhModule extends Migration
             $table->string('phone')->nullable();
             $table->integer('porcentage')->nullable();
             $table->string('position')->nullable();
-            $table->foreignId('postulant_details_id')->references('id')->on('postulant_details')->onDelete('cascade');
+            $table->foreignId('postulant_id')->references('id')->on('postulant')->onDelete('cascade');
             $table->timestamps();
         });
         
@@ -100,7 +93,6 @@ class RhModule extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('postulant_details');
         Schema::dropIfExists('postulant_beneficiary');
         Schema::dropIfExists('postulant_documentation');
         Schema::dropIfExists('postulant'); 

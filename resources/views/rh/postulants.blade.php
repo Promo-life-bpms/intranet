@@ -24,56 +24,45 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
-                        <th scope="col" class="text-center">Información de contacto</th>
-                        <th scope="col" class="text-center">Empresa de interés</th>
-                        <th scope="col">Departamento de interes</th>
-                        <th scope="col">Fecha de entrevista</th>
+                        <th scope="col">Información de contacto</th>
+                        <th scope="col">Vacante</th>
                         <th scope="col">Status</th>
                         <th scope="col">Opciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($postulants_data as $postulant)
+                    @foreach ($postulants as $postulant)
                         <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
-                            <td> <b>{{ $postulant->fullname }}</b></td>
-                            <td class="text-center"> 
-                                {{ $postulant->mail}}
+                            <td>{{ $loop->iteration }}</td>
+                            <td> <b>{{ $postulant->name .' ' . $postulant->lastname }}</b></td>
+                            <td> 
+                                {{ $postulant->email}}
                                 <br>
                                 {{ $postulant->phone}}
                                 <br>
-                                @if ($postulant->cv <> '')
-                                    <a href="{{ asset($postulant->cv) }}" target="_blank">CV</a>
-                                @endif
+                                @foreach ($postulant->postulantDocumentation as $documentation)
+                                    
+                                    @if ($documentation->description == 'cv')
+                                        <a href="{{ asset($documentation->resource) }}" target="_blank"> Ver CV</a>
+                                    @endif
+                                 @endforeach
                             </td>
-                            <td class="text-center">
-                                @if ($postulant->company <> null)
-                                    {{ $postulant->company }}
-                                @endif
-                            </td>
-                            <td>
-                                @if ($postulant->department <> null)
-                                    {{ $postulant->department }}
-                                @endif
-                            </td>
-                            <td>
-                                @if ($postulant->interview_date <> null)
-                                    {{ $postulant->interview_date }}
-                                @endif
+                            <td >
+                                {{ $postulant->vacant }}
                             </td>
                             <td><b>{{ $postulant->status }}</b> </td>
                             <td>
                                 <div class="d-flex w-100 ">
                                     <div>
-                                        <a  href="{{ route('rh.editPostulant', ['postulant' => $postulant->id]) }}"
-                                            type="button" class="btn btn-option">Editar info</a>
+                                        <a  href="{{ route('rh.editPostulant', ['postulant_id' => $postulant->id]) }}"
+                                            type="button" class="btn btn-option">Detalles</a>
                                     </div>
                                 </div>
                                 <div class="d-flex" >
                                     <div>
                                         @if ($postulant->status != 'postulante')
-                                            <a  href="{{ route('rh.createPostulantDocumentation', ['postulant' => $postulant->id]) }}"
-                                            type="button" class="btn btn-option">Generar doc</a>
+                                            <a  href="{{ route('rh.createPostulantDocumentation', ['postulant_id' => $postulant->id]) }}"
+                                            type="button" class="btn btn-danger">No seleccionado</a>
                                         @endif
                                     </div>
                                 </div>

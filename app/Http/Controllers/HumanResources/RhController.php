@@ -11,6 +11,7 @@ use App\Models\Employee;
 use App\Models\Postulant;
 use App\Models\PostulantBeneficiary;
 use App\Models\PostulantDetails;
+use App\Models\PostulantDocumentation;
 use App\Models\RoleUser;
 use App\Models\User;
 use App\Models\UserBeneficiary;
@@ -581,27 +582,10 @@ class RhController extends Controller
 
     public function postulants()
     {  
-        $postulants_data = [];
-        $postulants = Postulant::all()->whereIn('status', ['postulante','candidato']);
-        
-        foreach($postulants as $postulant){
-            $company = Company::all()->where('id', $postulant->company_id)->last();
-            $department = Department::all()->where('id', $postulant->department_id)->last();
-
-            array_push($postulants_data, (object)[
-                'id' => $postulant->id,
-                'fullname' => $postulant->name. " ". $postulant->lastname,
-                'mail' =>  $postulant->mail,
-                'phone' => $postulant->phone,
-                'cv' => $postulant->cv,
-                'status' => $postulant->status,
-                'company'=>$company->name_company,
-                'department' => $department->name,
-                'interview_date' => $postulant->interview_date,
-            ]);
-
-        } 
-        return view('rh.postulants', compact('postulants_data'));  
+        $postulants = Postulant::all()->where('status','<>' , 'no seleccionado');
+         
+       
+        return view('rh.postulants', compact('postulants'));  
     }
 
     public function dropUser()
@@ -625,6 +609,13 @@ class RhController extends Controller
         DB::table('users')->where('id', intval($request->user) )->update(['status' => 2]); 
 
         return redirect()->action([RhController::class, 'dropUser'])->with('message', 'El usuario se ha dado de baja correctamente');
+    }
+
+    public function dropPostulant(Request $request)
+    {
+        DB::table('postulant')->where('id', intval($request->id) )->update(['status' => 'no seleccionado']); 
+
+        return redirect()->action([RhController::class, 'postulants'])->with('message', 'El postulante se borrado satisfactoriamente');
     }
 
     public function buildDownDocumentation(Request $request)
@@ -762,10 +753,29 @@ class RhController extends Controller
         $request->validate([
             'name' => 'required',
             'lastname' => 'required',
-            'status' => 'required',
+            'vacant' => 'required',
+            'birthdate' => 'required',
+            'nss' => 'required',
+            'curp' => 'required',
+            'full_address' => 'required',
+            'phone' => 'required',
+            'message_phone' => 'required',
+            'email' => 'required',
         ]);
-
-        $cv = null;
+       
+        $create_postulant = new Postulant();
+        $create_postulant->name  = $request->name;
+        $create_postulant->lastname  = $request->lastname;
+        $create_postulant->vacant  = $request->vacant;
+        $create_postulant->birthdate  = $request->birthdate;
+        $create_postulant->nss  = $request->nss;
+        $create_postulant->curp  = $request->curp;
+        $create_postulant->full_address  = $request->full_address;
+        $create_postulant->phone  = $request->phone;
+        $create_postulant->message_phone = $request->message_phone;
+        $create_postulant->email = $request->email;
+        $create_postulant->status = 'candidato';
+        $create_postulant->save();  
 
         if ($request->hasFile('cv')) {
             $filenameWithExt = $request->file('cv')->getClientOriginalName();
@@ -773,19 +783,14 @@ class RhController extends Controller
             $extension = $request->file('cv')->clientExtension();
             $fileNameToStore = time(). $filename . '.' . $extension;
             $cv = $request->file('cv')->move('storage/postulant/', $fileNameToStore);
-        }
 
-        $create_postulant = new Postulant();
-        $create_postulant->name  = $request->name;
-        $create_postulant->lastname  = $request->lastname;
-        $create_postulant->mail  = $request->mail;
-        $create_postulant->phone  = $request->phone;
-        $create_postulant->cv  = $cv;
-        $create_postulant->status  = $request->status;
-        $create_postulant->company_id  = $request->company_id;
-        $create_postulant->department_id  = $request->department_id;
-        $create_postulant->interview_date = $request->interview_date;
-        $create_postulant->save();  
+            $create_file = new PostulantDocumentation();
+            $create_file->type = $extension;
+            $create_file->description = 'cv';
+            $create_file->resource = $cv;
+            $create_file->postulant_id = $create_postulant->id;
+            $create_file->save();
+        }
 
         return redirect()->action([RhController::class, 'postulants']);
 
@@ -796,24 +801,9 @@ class RhController extends Controller
         $postulant = Postulant::all()->where('id',$post)->last();
         $companies = Company::all()->pluck('name_company', 'id');
         $departments = Department::all()->pluck('name','id');
-        $postulant_details = PostulantDetails::all()->where('postulant_id',$postulant->id)->last();
-        if($postulant_details == null){
-            $postulant_beneficiaries  = [];
-        }else{
-            $postulant_beneficiaries_data = PostulantBeneficiary::all()->where('postulant_details_id',$postulant_details->id);
-            $postulant_beneficiaries  = [];
-            foreach($postulant_beneficiaries_data as $beneficiary){
-                array_push($postulant_beneficiaries, (object)[
-                    'id' => $beneficiary->id,
-                    'name' => $beneficiary->name,
-                    'phone' =>  $beneficiary->phone,
-                    'porcentage' => $beneficiary->porcentage,
-                    'postulant_details_id' => $beneficiary->postulant_details_id,
-                ]);
-            }
-        }
+        
 
-        return view('rh.edit-postulant', compact('postulant', 'companies', 'departments', 'postulant_details', 'postulant_beneficiaries'));
+        return view('rh.edit-postulant', compact('postulant', 'companies', 'departments'));
     }
     
 
@@ -1323,5 +1313,27 @@ class RhController extends Controller
         return view('rh.drop-user-details', compact('id','user_documents','user_details','status', 'user'));
     }
 
+
+    public function morePostulant($postulant_id)
+    {
+        $postulant = Postulant::where('id',$postulant_id)->get()->last();
+        return view('rh.more-postulant', compact('postulant'));
+
+
+    }
+
+    public function storeMoreInformation(Request $request)
+    {        
+        
+        return redirect()->back()->with('message', 'Informacion de candidato actualizada satisfactoriamente');
+
+    }
+
+    public function createWorkplan($postulant_id)
+    {
+        $postulant = Postulant::where('id',$postulant_id)->get()->last();
+        return view('rh.create-workplan', compact('postulant'));
+    }
 }
+
 
