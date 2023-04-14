@@ -9,52 +9,66 @@
                 </a>
                 <h3 style="margin-left:16px;" class="separator">Documentación</h3> 
             </div>
-            
             <div class="d-flex flex-row">
                 
-                <div class="align-self-center"">
-                        <button type="button" class="btn btn-success m-1" data-bs-toggle="modal"  data-bs-target="#modalAdd"><i class="bi bi-plus-lg"></i>Agregar documento</button>
-                </div>
-            
                 <div class="align-self-center">
                     <form 
                         action="{{ route('rh.dropUserDetails', ['id' => $id]) }}"
                         method="GET">
                         @csrf
                         <button type="submit" class="btn btn-primary"> 
-                            PASO 3 - Baja de colaborador
+                            3 - Baja de Colaborador
                         </button>
                     </form>
-                </div>      
-           
-            </div>
-            
+                </div>     
+            </div> 
         </div>
     </div>
     <div class="card-body">
 
-    <div class="progress" style="height: 25px;">
-        <div class="progress-bar" role="progressbar" style="width: 33%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">  PASO 1 - Fecha y motivos de baja</div>
-        <div class="progress-bar w-33" role="progressbar " style="width: 33%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> PASO 2 - Subir documentación</div>
-        <div class="progress-bar bg-transparent w-33" role="progressbar " style="width: 33%; color:black" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> PASO 3 - Baja de colaborador</div>
+    <div class="container" >
+        <div class="stepwizard">
+            <div class="stepwizard-row setup-panel">
+                <div class="stepwizard-step col-xs-3" style="width: 33%;">  
+                    <a href="{{ route('rh.dropDocumentation', ['user' => $id]) }}" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">1</a>
+                    <p><small>Fecha y Motivos de Baja</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 33%;"> 
+                    <a href="#" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                    <p><small>Documentación</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 33%;"> 
+                    <a href="{{ route('rh.dropUserDetails', ['id' => $id]) }}" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">3</a>
+                    <p><small>Baja de Colaborador</small></p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <br> <br>
+    <br> 
         @if (session('message'))
             <div class="alert alert-success">
                 {{ session('message') }}
             </div>
         @endif      
-     
-        <h5>Documentos guardados</h5>
+    
+        <div class="d-flex justify-content-between">
+            <h5>Documentos guardados</h5>
+            <div class="align-self-center">
+                <button type="button" class="btn btn-success m-1" data-bs-toggle="modal"  data-bs-target="#modalAdd"><i class="bi bi-plus-lg"></i>Agregar documento</button>
+            </div>
+        </div>
+
+        <br>
+   
         @if(count($user_documents)  == 0)
             <div class="alert alert-light" role="alert">
                     Aún no hay documentos del usuario guardados, puedes subirlos dando clic al botón <b>Agregar documento</b>.
             </div>               
         @endif
-        <div class ="row row-cols-2 row-cols-lg-4 g-2 g-lg-3" >
 
-       
+        <br>
+        <div class ="row row-cols-2 row-cols-lg-4 g-2 g-lg-3" >
         @foreach ($user_documents as $document)
             <div class="col">
                 <div class="card card_document">
@@ -208,6 +222,90 @@
             height: 160px;
             object-fit: contain;
         }
+
+        .text-info{
+            display: none;
+        }
+        .fa-info-circle{
+            margin-left: 8px;
+            color: #1A346B;
+        }
+
+        .fa-info-circle:hover {
+            margin-left: 8px;
+            color: #0084C3;
+        }
+      
+        #icon-text {
+            display: none;
+            margin-left: 16px;
+            color: #fff;
+            background-color: #1A346B;
+            padding: 0 12px 0 12px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        #content:hover~#icon-text{
+            display: block;
+        }
+
+        .stepwizard-step p {
+            margin-top: 0px;
+            color:#666;
+        }
+        .stepwizard-row {
+            display: table-row;
+        }
+        .stepwizard {
+            display: table;
+            width: 100%;
+            position: relative;
+        }
+        .btn-default{
+            background-color: #0084C3;
+        }
+
+        .stepwizard-row:before {
+            top: 14px;
+            bottom: 0;
+            position: absolute;
+            content:" ";
+            width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            z-index: 0;
+        }
+        .stepwizard-step {
+            display: table-cell;
+            text-align: center;
+            position: relative;
+        }
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+            color: #fff;
+        }
+
+        .no-selected{
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+            color: #000;
+            background-color: #fff;
+            border-color: #0084C3;
+        }
+
         
     </style>
 @endsection
+

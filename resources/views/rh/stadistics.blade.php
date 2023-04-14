@@ -69,7 +69,6 @@ define('SUB_COLU', 'col-4 p-2');
                     <option value="bhtrademarket">BH Trade Market</option>
                     <option value="promozale">Promo Zale</option>
                     <option value="trademarket57">Trade Market 57</option>
-                    <option value="unipromtex">Unipromtex</option>
                 </select>
             </div>
 

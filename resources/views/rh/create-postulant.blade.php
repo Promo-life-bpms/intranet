@@ -11,38 +11,33 @@
     </div>
     <div class="card-body">
 
-    <div class="progress" style="height: 25px;">
-        <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> Alta de Candidato</div>
-        <div class="progress-bar bg-transparent" role="progressbar " style="width: 25%; color:black" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> Recepción de Documentos</div>
-        <div class="progress-bar bg-transparent" role="progressbar " style="width: 25%; color:black" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> Kit legal de Ingreso</div>
-        <div class="progress-bar bg-transparent" role="progressbar " style="width: 25%; color:black" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> Plan de Trabajo</div>
-        <div class="progress-bar bg-transparent" role="progressbar " style="width: 25%; color:black" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> Kit Legal Firmado</div>
-    </div>
-    <br>
-<div class="container" >
-    <div class="stepwizard">
-        <div class="stepwizard-row setup-panel">
-            <div class="stepwizard-step col-xs-3"> 
-                <a href="#step-1" type="button" class="btn btn-success btn-circle" selected>1</a>
-                <p><small>Shipper</small></p>
-            </div>
-            <div class="stepwizard-step col-xs-3"> 
-                <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
-                <p><small>Destination</small></p>
-            </div>
-            <div class="stepwizard-step col-xs-3"> 
-                <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
-                <p><small>Schedule</small></p>
-            </div>
-            <div class="stepwizard-step col-xs-3"> 
-                <a href="#step-4" type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
-                <p><small>Cargo</small></p>
+    <div class="container" >
+        <div class="stepwizard">
+            <div class="stepwizard-row setup-panel">
+                <div class="stepwizard-step col-xs-3" style="width: 20%;">  
+                    <a href="#step-1" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                    <p><small>Alta de Candidato</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 20%;"> 
+                    <a href="#step-2" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">2</a>
+                    <p><small>Recepción de Documentos</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 20%;"> 
+                    <a href="#step-3" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">3</a>
+                    <p><small>Kit legal de Ingreso</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 20%;"> 
+                    <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">4</a>
+                    <p><small>Plan de Trabajo</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 20%;"> 
+                    <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">4</a>
+                    <p><small>Kit Legal Firmado</small></p>
+                </div>
             </div>
         </div>
     </div>
-</div>
-      
-
+        
         @if (session('message'))
             <div class="alert alert-success">
                 {{ session('message') }}
@@ -226,45 +221,59 @@
         }
 
         .stepwizard-step p {
-    margin-top: 0px;
-    color:#666;
-}
-.stepwizard-row {
-    display: table-row;
-}
-.stepwizard {
-    display: table;
-    width: 100%;
-    position: relative;
-}
-.btn-default{
-    background-color: #0084C3;
-}
+            margin-top: 0px;
+            color:#666;
+        }
+        .stepwizard-row {
+            display: table-row;
+        }
+        .stepwizard {
+            display: table;
+            width: 100%;
+            position: relative;
+        }
+        .btn-default{
+            background-color: #0084C3;
+        }
 
-.stepwizard-row:before {
-    top: 14px;
-    bottom: 0;
-    position: absolute;
-    content:" ";
-    width: 100%;
-    height: 1px;
-    background-color: #ccc;
-    z-index: 0;
-}
-.stepwizard-step {
-    display: table-cell;
-    text-align: center;
-    position: relative;
-}
-.btn-circle {
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    padding: 6px 0;
-    font-size: 12px;
-    line-height: 1.428571429;
-    border-radius: 15px;
-}
+        .stepwizard-row:before {
+            top: 14px;
+            bottom: 0;
+            position: absolute;
+            content:" ";
+            width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            z-index: 0;
+        }
+        .stepwizard-step {
+            display: table-cell;
+            text-align: center;
+            position: relative;
+        }
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+            color: #fff;
+        }
+
+        .no-selected{
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+            color: #000;
+            background-color: #fff;
+            border-color: #0084C3;
+        }
 
    </style>
 @endsection
