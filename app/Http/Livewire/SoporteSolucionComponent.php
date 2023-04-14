@@ -39,6 +39,7 @@ class SoporteSolucionComponent extends Component
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
+        
     }
 
     public function guardarSolucion()

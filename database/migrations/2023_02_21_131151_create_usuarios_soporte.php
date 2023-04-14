@@ -15,13 +15,15 @@ class CreateUsuariosSoporte extends Migration
     {
         Schema::create('soporte_usuarios_soporte', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_users')->references('id')->on('users');
-            $table->foreignId('id_categorias')->references('id')->on('soporte_categorias');
+            // $table->foreignId('id_users')->references('id')->on('users');
+            // $table->foreignId('id_categorias')->references('id')->on('soporte_categorias');
+            $table->foreignId('users_id')->references('id')->on('users');
+            $table->foreignId('categorias_id')->references('id')->on('soporte_categorias');
             $table->timestamps();
         });
     }
 
-    /**
+    /**     
      * Reverse the migrations.
      *
      * @return void

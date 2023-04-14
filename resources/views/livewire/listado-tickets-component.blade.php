@@ -25,20 +25,24 @@
                     </tr>
                 </thead>
                 <tbody>
-
+                    @php
+                        $contador = 1;
+                    @endphp
                     @foreach ($tickets as $ticket)
                         <tr>
-                            <th scope="row">{{$ticket->id}}</th>
+                            <th scope="row">{{$contador }}</th>
                             <td>{{ $ticket->name }}</td>
                             <td class="col-2">{{ $ticket->category->name }}</td>
                             <td class="col-2">
                                 @if ($ticket->status->name == 'Resuelto')
                                     {{-- <span class="badge bg-danger">{{ $ticket->status->name }}</span> --}}
-                                    <div class="alert-sm alert-success rounded-3" role="alert">{{ $ticket->status->name }}</div>
-                                @elseif ($ticket->status->name == 'Creado' )
+                                    <div class="alert-sm alert-success rounded-3" role="alert">
+                                        {{ $ticket->status->name }}</div>
+                                @elseif ($ticket->status->name == 'Creado')
                                     {{-- <span class="badge bg-primary">{{ $ticket->status->name }}</span> --}}
-                                    <div class="alert-sm alert-info rounded-3" role="alert"> {{ $ticket->status->name }}</div>
-                                    @elseif ($ticket->status->name == 'En proceso')
+                                    <div class="alert-sm alert-info rounded-3" role="alert">
+                                        {{ $ticket->status->name }}</div>
+                                @elseif ($ticket->status->name == 'En proceso')
                                     <div class="alert-sm alert-primary rounded-3" role="alert">
                                         {{ $ticket->status->name }}</div>
                                 @endif
@@ -62,6 +66,9 @@
 
                             </td>
                         </tr>
+                        @php
+                            $contador++;
+                        @endphp
                     @endforeach
                 </tbody>
             </table>
@@ -79,7 +86,7 @@
 
     <div wire:ignore.self class="modal fade" id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar ticket</h1>
@@ -111,8 +118,8 @@
                                     class="form-select @error('categoria') is-invalid @enderror"
                                     id="inputGroupSelect01">
                                     <option selected value="">Seleccionar</option>
-                                    @foreach ($categorias as $categoria)
-                                        <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
+                                    @foreach ($categorias as $categoriaa)
+                                        <option value="{{ $categoriaa->id }}">{{ $categoriaa->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('categoria')
@@ -148,7 +155,7 @@
     {{-- Modal editar --}}
     <div wire:ignore.self class="modal fade" id="ModalEditar" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Editar ticktet</h1>
@@ -177,8 +184,8 @@
                                     class="form-select @error('categoria') is-invalid @enderror"
                                     id="inputGroupSelect01">
                                     <option selected>Seleccionar</option>
-                                    @foreach ($categorias as $categoria)
-                                        <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
+                                    @foreach ($categorias as $categoriaa)
+                                        <option value="{{ $categoriaa->id }}">{{ $categoriaa->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('categoria')
@@ -218,7 +225,7 @@
     {{-- Modal ver --}}
     <div wire:ignore.self class="modal fade" id="ModalVer" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Detalles ticket</h1>
@@ -229,7 +236,7 @@
 
                     <p><span class="fw-bold">Problema a resolver :</span> <span>{{ $name }}</span></p>
 
-                    <p><span class="fw-bold">Categoría :</span> <span>{{$ticket->$categoria}}</span></p>
+                    <p><span class="fw-bold">Categoría :</span> <span>{{$categoria}}</span></p>
 
                     <p><span class="fw-bold">Descripción :</span></p>
 
@@ -282,7 +289,7 @@
                 @this.data = texto
                 // Obtener el html que tiene esa etiqueta
             })
-           
+
         });
 
 
@@ -332,10 +339,10 @@
             ClassicEditor.remove(ckEditorVer);
         });
 
-            // const blackTriangles = document.querySelectorAll();
-            // blackTriangles.forEach(item => { item.remove() });
+        // const blackTriangles = document.querySelectorAll();
+        // blackTriangles.forEach(item => { item.remove() });
 
-       
+
 
 
 
@@ -399,3 +406,4 @@
 
 
 </div>
+

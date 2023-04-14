@@ -21,11 +21,13 @@
                     </tr>
                 </thead>
                 <tbody>
-
+                    @php
+                        $contador = 1;
+                    @endphp
 
                     @foreach ($solucion as $tickets)
                         <tr>
-                            <th scope="row">{{ $tickets->id }}</th>
+                            <th scope="row">{{ $contador }}</th>
                             <td>{{ $tickets->name }}</td>
                             <td class="col-2">{{ $tickets->category->name }}</td>
                             <td class="col-2">
@@ -52,6 +54,9 @@
                             </td>
 
                         </tr>
+                        @php
+                            $contador++;
+                        @endphp
                     @endforeach
                 </tbody>
             </table>
@@ -94,8 +99,8 @@
                             <label for="descripcion" class="form-label">Solución</label>
                             <textarea id="editor" wire:model="description" cols="20" rows="3" class="form-control" name="description"></textarea>
                             @error('description')
-                            <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
-                        @enderror
+                                <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
+                            @enderror
 
                         </div>
 
@@ -157,11 +162,10 @@
 
         });
 
-     
 
 
-        function finalizar(id) {
 
+        function finalizar(id) {/
             Swal.fire({
                 title: 'Quieres dar solucion a este ticket?',
                 icon: 'question',
@@ -173,23 +177,13 @@
                 if (result.isConfirmed) {
                     let resultado = @this.enProceso(id)
                     $('#ModalAgregar').modal('show')
-                   /*  Swal.fire({
 
-                        icon: 'success',
-                        title: 'Ticket en proceso',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }) */
                     toastr.success("Ticket en proceso")
                 } else {
-                   
-                    // let status = @this.enProceso(id)==2
-                       $('#ModalAgregar').modal('hide')
-                     return;
-                    
 
+                    $('#ModalAgregar').modal('hide')
+                    return;
                 }
-
             })
 
         }

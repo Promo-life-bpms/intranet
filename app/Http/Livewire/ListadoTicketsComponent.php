@@ -95,7 +95,6 @@ class ListadoTicketsComponent extends Component
          ]);
          
          $this->name = ' ';
-         $this->data = ' ';
          $this->categoria = ' ';
        $this->dispatchBrowserEvent('editar');
     }
@@ -117,9 +116,8 @@ class ListadoTicketsComponent extends Component
         $this->ticket_id = $ticket->id;
         $this->name = $ticket->name;
         $this->data = $ticket->data;
-        $this->categorias=$ticket->category->name;
+        $this->categoria=$ticket->category->name;
         $this->dispatchBrowserEvent('borrar');
-        
     }
     
 }
