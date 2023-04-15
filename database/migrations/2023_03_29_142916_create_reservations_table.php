@@ -15,9 +15,10 @@ class CreateReservationsTable extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->date('date');
-            $table->Time('start_time');
-            $table->Time('end_time');
+            $table->time('start');
+            $table->time('end');
             $table->integer('number_of_people');
             $table->string('material');
             $table->integer('chair_loan');

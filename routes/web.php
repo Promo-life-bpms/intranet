@@ -255,14 +255,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     //ruta para reservación//
     Route::get('/reservation/creative/',[ReservationController::class,'index'])->name('reservation.creative');
+    Route::get('/reservation/view/',[ReservationController::class,'view'])->name('reservation.view');
     Route::post('/reservation/creative/create/',[ReservationController::class,'store'])->name('reserviton.creative.create');
     Route::put('/reservation/creative/update/', [ReservationController::class, 'update'])->name('reserviton.creative.update');
     Route::delete('/reservation/creative/delete/', [ReservationController::class, 'destroy'])->name('reserviton.creative.delete');
 
 
-    //Prueba
-    Route::get('/prueba/vista/',[PruebaController::class,'index'])->name('prueba.vista');
-    Route::post('/prueba/vista/create',[PruebaController::class,'create'])->name('prueba.vista.create');
 
 
 });
