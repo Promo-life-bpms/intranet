@@ -21,13 +21,17 @@
 
                 <tbody>
                     @foreach ($datos as $dato )
-                    <tr>                        
-                        <th>{{$dato->user_id}}</th>
-                        <th>{{$dato->category}}</th>
-                        <th>{{$dato->description}}</th>
-                        <th>{{$dato->status}}</th>
-                        <th>{{$dato->id}}</th>
-                    </tr>
+
+                        @if($dato->user_id === auth()->id())
+                            <input type="hidden" {{$dato->user_id}}>
+                            <tr>
+                                <th>{{$dato->user_id}}</th>             
+                                <th>{{$dato->category}}</th>
+                                <th>{{$dato->description}}</th>
+                                <th>{{$dato->status}}</th>
+                                <th>{{$dato->id}}</th>
+                            </tr>                  
+                        @endif                        
                     @endforeach
                 </tbody>
             </table>
