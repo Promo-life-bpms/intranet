@@ -16,21 +16,25 @@ class EmployeeFeatures extends Migration
         Schema::create('users_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-            
-            $table->string('nss')->nullable();
-            $table->string('curp')->nullable();
-            $table->string('full_address')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('message_phone')->nullable();
-            $table->string('email')->nullable();
+        
+            $table->string('nss');
+            $table->string('curp');
+            $table->string('full_address');
+            $table->string('phone');
+            $table->string('message_phone');
+            $table->string('email');
+            $table->string('status');
            
             $table->string('fathers_name')->nullable();
             $table->string('mothers_name')->nullable();
+
             $table->string('civil_status')->nullable();
             $table->integer('age')->nullable();
             $table->string('gender')->nullable();
             $table->string('nacionality')->nullable();
             $table->string('id_credential')->nullable();
+            $table->string('fiscal_postal_code')->nullable();
+            $table->string('rfc')->nullable();
 
             $table->string('place_of_birth')->nullable();
             $table->string('street')->nullable();
@@ -38,11 +42,10 @@ class EmployeeFeatures extends Migration
             $table->string('delegation')->nullable();
             $table->string('postal_code',10)->nullable();
             $table->string('home_phone',20)->nullable();
-            $table->string('fiscal_postal_code')->nullable();
             $table->string('home_references')->nullable();
             $table->string('house_characteristics')->nullable();
 
-            $table->bigInteger('department_id')->nullable();
+            $table->bigInteger('company_id')->nullable();
             $table->date('date_admission')->nullable();
 
             $table->string('card_number')->nullable();

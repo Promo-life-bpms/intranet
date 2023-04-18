@@ -306,6 +306,8 @@
             <div class="row form-group">
 
                 <div class="col-sm ">
+
+                {{ $departments}}
                     {!! Form::label('date_admission', 'Fecha prevista de ingreso', ['class' => 'required']) !!}
                     {!! Form::date('date_admission', $postulant->date_admission, ['class' => 'form-control', 'placeholder' => 'Ingrese fecha de ingreso']) !!}
                     @error('date_admission')
@@ -377,6 +379,18 @@
 
             <h5>Detalles del Puesto</h5>
             <div class="row form-group">
+                
+                <div class="col-sm ">
+                    {!! Form::label('company_id', 'Fecha prevista de ingreso', ['class' => 'required']) !!}
+                    {!! Form::select('company_id', $companies, $postulant->company_id, ['class' => 'form-control','placeholder' => 'Seleccionar']) !!}
+                    @error('company_id')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>  
+
                 <div class="col-sm ">
                    {!! Form::label('vacant', 'Vacante', ['class' => 'required']) !!}
                    {!! Form::text('vacant', $postulant->vacant, ['class' => 'form-control', 'placeholder' => 'Ingrese el objetivo del puesto']) !!}

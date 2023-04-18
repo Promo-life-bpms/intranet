@@ -1099,7 +1099,8 @@ class RhController extends Controller
     public function createMorePostulant($postulant_id)
     {
         $postulant = Postulant::where('id',$postulant_id)->get()->last();
-        return view('rh.create-more-postulant', compact('postulant'));
+        $companies = Company::all()->pluck('name_company','id');
+        return view('rh.create-more-postulant', compact('postulant','companies'));
     }
 
     public function storeMoreInformation(Request $request)

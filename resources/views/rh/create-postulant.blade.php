@@ -57,7 +57,7 @@
         <div class="row form-group">
 
             <div class="col-sm">
-                {!! Form::label('name', 'Nombre') !!}
+                {!! Form::label('name', 'Nombre', ['class' => 'required']) !!}
                 {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
                 @error('name')
                     <small>
@@ -68,7 +68,7 @@
             </div>
                 
             <div class="col-sm">
-                {!! Form::label('lastname', 'Apellidos') !!}
+                {!! Form::label('lastname', 'Apellidos', ['class' => 'required']) !!}
                 {!! Form::text('lastname', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
                 @error('lastname')
                     <small>
@@ -79,7 +79,7 @@
             </div>
 
             <div class="col-sm">
-                {!! Form::label('vacant', 'Vacante') !!}
+                {!! Form::label('vacant', 'Vacante', ['class' => 'required']) !!}
                 {!! Form::text('vacant', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
                 @error('vacant')
                     <small>
@@ -93,7 +93,7 @@
        
         <div class="row form-group">
             <div class="col-sm">
-                {!! Form::label('birthdate', 'Fecha de nacimiento') !!}
+                {!! Form::label('birthdate', 'Fecha de nacimiento', ['class' => 'required']) !!}
                 {!! Form::date('birthdate', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
                 @error('birthdate')
                     <small>
@@ -104,7 +104,7 @@
             </div> 
 
             <div class="col-sm">
-                {!! Form::label('nss', 'NSS') !!}
+                {!! Form::label('nss', 'NSS', ['class' => 'required']) !!}
                 {!! Form::text('nss', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
                 @error('nss')
                     <small>
@@ -115,7 +115,7 @@
             </div> 
 
             <div class="col-sm">
-                {!! Form::label('curp', 'CURP') !!}
+                {!! Form::label('curp', 'CURP', ['class' => 'required']) !!}
                 {!! Form::text('curp', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
                 @error('curp')
                     <small>
@@ -128,7 +128,7 @@
 
         <div class="row form-group">
             <div class="col-sm">
-                {!! Form::label('full_address', 'Domicilio completo') !!}
+                {!! Form::label('full_address', 'Domicilio completo', ['class' => 'required']) !!}
                 {!! Form::text('full_address', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
                 @error('full_address')
                     <small>
@@ -139,7 +139,7 @@
             </div>
 
             <div class="col-sm">
-                {!! Form::label('phone', 'Celular') !!}
+                {!! Form::label('phone', 'Celular', ['class' => 'required']) !!}
                 {!! Form::text('phone', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
                 @error('phone')
                     <small>
@@ -150,7 +150,7 @@
             </div>
 
             <div class="col-sm">
-                {!! Form::label('message_phone', 'Telefono de recados') !!}
+                {!! Form::label('message_phone', 'Telefono de recados', ['class' => 'required']) !!}
                 {!! Form::text('message_phone', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
                 @error('message_phone')
                     <small>
@@ -170,7 +170,7 @@
             </div>
 
             <div class="col-sm">
-                {!! Form::label('email', 'Correo electrónico') !!}
+                {!! Form::label('email', 'Correo electrónico', ['class' => 'required']) !!}
                 {!! Form::text('email', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
                 @error('email')
                     <small>
@@ -276,6 +276,11 @@
             color: #000;
             background-color: #fff;
             border-color: #0084C3;
+        }
+        
+        .required:after {
+            content:" *";
+            color: red;
         }
 
    </style>
