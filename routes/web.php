@@ -33,6 +33,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
+use App\Http\Controllers\SystemRequest;
 use App\Http\Controllers\Systems\DevicesController;
 use App\Http\Controllers\TeamRequest;
 use App\Models\Message;
@@ -254,6 +255,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/teamrequest/', [TeamRequest::class, 'index'])->name('team.request');
     Route::get('/teamrequest1/', [TeamRequest::class, 'index1'])->name('team.record');
     Route::post('/team/create-teamrequest/', [TeamRequest::class, 'createTeamRequest'])->name('team.createTeamRequest');
+
+    //Estado actual de solicitud rol sistemas
+    Route::get('/Systemsrequest/',[SystemRequest::class, 'systemsrequest'])->name('systems.request');
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');

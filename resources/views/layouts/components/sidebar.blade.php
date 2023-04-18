@@ -84,6 +84,7 @@
                         </ul>
                     </li>
                 @endrole
+
                 @role('rh')
                     <li class="sidebar-title">Gestion y RH</li>
                     <li class="sidebar-item has-sub">
@@ -173,6 +174,44 @@
                         </ul>
                     </li>
                 @endrole('rh')
+                
+                @role('systems')
+                    <li class="sidebar-title">Control y Gestión de Equipo</li>
+                        <li class="sidebar-item has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="fa fa-newspaper-o" aria-hidden="true"></i>
+                                <span>Control</span>
+                            </a>
+
+                            <ul class="submenu ">
+                                <li class="submenu-item ">
+                                    <a class="dropdown-item" href="{{ route('systems.request')}}">
+                                        <span>Estado Actual de Solicitud</span>
+                                    </a>
+                                </li>
+                            </ul>
+                    </li>
+                @endrole('systems')
+                    
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <li class="sidebar-title">Menu</li>
                 <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
                     <a href="{{ route('home') }}" class='sidebar-link'>
