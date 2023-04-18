@@ -49,6 +49,7 @@ class RhModule extends Migration
             $table->string('house_characteristics')->nullable();
 
             $table->bigInteger('company_id')->nullable();
+            $table->bigInteger('department_id')->nullable();
             $table->date('date_admission')->nullable();
 
             $table->string('card_number')->nullable();

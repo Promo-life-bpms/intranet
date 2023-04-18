@@ -12,7 +12,7 @@
             <h3 style="margin-left:16px;" class="separator">Kit Legal de Ingreso</h3>
         </div>
 
-        <div>                
+        <div>      
             <form 
                 action="{{ route('rh.createWorkplan', ['postulant_id' => $postulant->id]) }}"
                 method="GET">
@@ -267,3 +267,13 @@
     </style>
     
 @endsection
+
+@section('scripts')
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function wrongAlert() {
+            Swal.fire('No disponible hasta generar documentos del "Kit Legal de Ingreso"');
+        }
+        
+    </script>
+@stop

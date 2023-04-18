@@ -7,20 +7,20 @@ use PhpOffice\PhpWord\Style\Language;
 
 class WorkConditionUpdate extends Controller
 {
-    public function workConditionUpdate($postulant,$postulant_details)
+    public function workConditionUpdate($postulant)
     {
         $name = strtoupper($postulant->name);
         $lastname = strtoupper($postulant->lastname); 
-        $nacionality = strtoupper($postulant_details->nacionality);  
-        $civil_status = strtoupper($postulant_details->civil_status) ;
-        $domicile = strtoupper($postulant_details->address);
-        $mail = strtoupper($postulant->mail) ;
-        $rfc = strtoupper($postulant_details->rfc);
-        $gender = strtoupper($postulant_details->gender);
-        $position = strtoupper($postulant_details->position);
-        $birthdate = date('d,m,Y', strtotime($postulant_details->birthdate));
-        $date_admission = date('d,m,Y', strtotime($postulant_details->date_admission));
-        $month_salary_net = $postulant_details->month_salary_net; 
+        $nacionality = strtoupper($postulant->nacionality);  
+        $civil_status = strtoupper($postulant->civil_status) ;
+        $domicile = strtoupper($postulant->full_address);
+        $mail = strtoupper($postulant->email) ;
+        $rfc = strtoupper($postulant->rfc);
+        $gender = strtoupper($postulant->gender);
+        $position = strtoupper($postulant->vacant);
+        $birthdate = date('d,m,Y', strtotime($postulant->birthdate));
+        $date_admission = date('d,m,Y', strtotime($postulant->date_admission));
+        $month_salary_net = $postulant->month_salary_net; 
         $horary= "DE L A J DE 8:00 A.M. A 05:00 P.M. Y V DE 8:30 A.M. A 5:00 P.M.";
         $rest_days = "SABADOS Y DOMINGOS";
 

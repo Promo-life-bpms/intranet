@@ -12,14 +12,14 @@ use PhpOffice\PhpWord\Style\Language;
 
 class LetterForBank extends Controller
 {
-    public function letterForBank($postulant,$postulant_details, )
+    public function letterForBank($postulant )
     {
         $social_reason = "";
         $name = strtoupper($postulant->name);
         $lastname = strtoupper($postulant->lastname); 
-        $rfc = strtoupper($postulant_details->rfc);
-        $id_credential = strtoupper($postulant_details->id_credential);
-        $date_admission = date('d/m/Y', strtotime($postulant_details->date_admission));
+        $rfc = strtoupper($postulant->rfc);
+        $id_credential = strtoupper($postulant->id_credential);
+        $date_admission = date('d/m/Y', strtotime($postulant->date_admission));
         $header_img = '';
         $footer_img = '';
         

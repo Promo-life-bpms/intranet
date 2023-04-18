@@ -390,6 +390,17 @@
                 </div>  
 
                 <div class="col-sm ">
+                    {!! Form::label('department_id', 'Área o departamento de vacante', ['class' => 'required']) !!}
+                    {!! Form::select('department_id', $departments, $postulant->department_id, ['class' => 'form-control','placeholder' => 'Seleccionar']) !!}
+                    @error('company_id')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>  
+
+                <div class="col-sm ">
                    {!! Form::label('vacant', 'Vacante', ['class' => 'required']) !!}
                    {!! Form::text('vacant', $postulant->vacant, ['class' => 'form-control', 'placeholder' => 'Ingrese el objetivo del puesto']) !!}
                    @error('vacant')
@@ -398,10 +409,13 @@
                         </small>
                         <br>
                     @enderror
-                </div> 
+                </div>       
 
-               <div class="col-sm ">
-                   {!! Form::label('position_objetive', 'Objetivo del puesto', ['class' => 'required']) !!}
+           </div>
+
+           <div class="row form-group">
+                <div class="col-sm">
+                   {!! Form::label('position_objetive', 'Objetivo del vacante', ['class' => 'required']) !!}
                    {!! Form::text('position_objetive', $postulant->position_objetive, ['class' => 'form-control', 'placeholder' => 'Ingrese el objetivo del puesto']) !!}
                    @error('position_objetive')
                         <small>
@@ -411,8 +425,10 @@
                     @enderror
                 </div> 
 
-           </div>
+                <div class="col-sm"></div>
 
+                <div class="col-sm"></div>
+           </div>
             <br><br>
 
             <h5>Información Bancaria (opcional)</h5>

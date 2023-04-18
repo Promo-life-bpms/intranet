@@ -875,35 +875,30 @@ class RhController extends Controller
     {
         
         $postulant = Postulant::all()->where('id',$request->postulant)->last();
-        $postulant_details = PostulantDetails::all()->where('postulant_id',$request->postulant)->last();
-        $postulant_beneficiaries = PostulantBeneficiary::all()->where('postulant_details_id',$postulant_details->id)->values('name','porcentage');
 
-        /* if($request->document == null){
-            return redirect()->back()->with('error', 'No has seleccionado ningun documento a generar');          
-        } */
         if($request->has('up_personal')){ 
             $up_document = new UpDocument();
-            $up_document->upDocument($postulant, $postulant_details, $postulant_beneficiaries);
+            $up_document->upDocument($postulant);
         }
 
         if($request->has('determined_contract')){
             $determined_contract = new DeterminateContract();
-            $determined_contract->determinateContract($postulant, $postulant_details);
+            $determined_contract->determinateContract($postulant);
         }
 
         if($request->has('indetermined_contract')){
             $indeterminate_contract = new IndeterminateContract();
-            $indeterminate_contract->indeterminateContract($postulant, $postulant_details,$request->company, $request->determined_contract_duration );
+            $indeterminate_contract->indeterminateContract($postulant );
         }
 
         if($request->has('confidentiality_agreement')){
             $confidentiality_agreement = new confidentialityAgreement();
-            $confidentiality_agreement->confidentialityAgreement($postulant, $postulant_details);
+            $confidentiality_agreement->confidentialityAgreement($postulant);
         }
 
         if($request->has('work_condition_update')){
             $work_condition_update = new WorkConditionUpdate();
-            $work_condition_update->workConditionUpdate($postulant, $postulant_details);
+            $work_condition_update->workConditionUpdate($postulant);
         }
 
         if($request->has('no_compete_agreement')){
@@ -917,13 +912,20 @@ class RhController extends Controller
                 return redirect()->back()->with('error', 'Archivo no disponible para la empresa Unipromtex');          
             }
             $no_compete_agreement = new NoCompeteAgreement();
-            $no_compete_agreement->noCompeteAgreement($postulant, $postulant_details);
+            $no_compete_agreement->noCompeteAgreement($postulant);
         }   
 
         if($request->has('letter_for_bank')){
             $letter_for_bank = new LetterForBank();
-            $letter_for_bank->letterForBank($postulant,$postulant_details,intval($request->company));
-        }   
+            $letter_for_bank->letterForBank($postulant);
+        }
+        
+        
+        if($postulant->status == 'recepcion de documentos'){
+            DB::table('postulant')->where('id', intval($request->postulant))->update([ 
+                'status'=>'kit legal de ingreso'
+            ]);
+        }
     }
 
     public function downUsers()
@@ -1100,7 +1102,8 @@ class RhController extends Controller
     {
         $postulant = Postulant::where('id',$postulant_id)->get()->last();
         $companies = Company::all()->pluck('name_company','id');
-        return view('rh.create-more-postulant', compact('postulant','companies'));
+        $departments = Department::all()->pluck('name','id');
+        return view('rh.create-more-postulant', compact('postulant','companies', 'departments'));
     }
 
     public function storeMoreInformation(Request $request)
@@ -1128,6 +1131,7 @@ class RhController extends Controller
             'position_objetive' => 'required',
             'contract_duration' => 'required',
             'company_id' => 'required',
+            'department_id' => 'required',
         ]); 
      
         DB::table('postulant')->where('id', intval($request->postulant_id))->update([
@@ -1163,16 +1167,17 @@ class RhController extends Controller
             'contract_duration' =>  $request->contract_duration,
             'civil_status'=>  $request->civil_status,
             'company_id' =>$request->company_id,
+            'department_id'=>$request->department_id,
         ]);
 
         $postulant = Postulant::where('id', intval($request->postulant_id))->get()->last();
         if($postulant->status == "candidato"){
             
             DB::table('postulant')->where('id', intval($request->postulant_id))->update([ 
-                'status'=>'en recepcion de documentos'
+                'status'=>'recepcion de documentos'
             ]);
         }
-        return redirect()->back()->with('message', 'Informacion de candidato actualizada satisfactoriamente');
+        return redirect()->back()->with('message', 'Informacion de candidato actualizada satisfactoriamente, ya puedes generar el Kit Legal de Ingreso.');
 
     }
 
