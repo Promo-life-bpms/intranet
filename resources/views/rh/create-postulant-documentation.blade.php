@@ -6,7 +6,7 @@
     <div class="d-flex justify-content-between"> 
 
         <div class="d-flex flex-row">
-            <a href="{{ route('rh.postulants') }}">
+            <a href="{{ route('rh.createMorePostulant', ['postulant_id' => $postulant->id]) }}">
                 <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i>
             </a>
             <h3 style="margin-left:16px;" class="separator">Kit Legal de Ingreso</h3>

@@ -1184,7 +1184,8 @@ class RhController extends Controller
     public function createWorkplan($postulant_id)
     {
         $postulant = Postulant::where('id',$postulant_id)->get()->last();
-        return view('rh.create-workplan', compact('postulant'));
+        $postulant_documents = PostulantDocumentation::where('postulant_id',$postulant_id)->where('description','Plan de trabajo')->get();
+        return view('rh.create-workplan', compact('postulant','postulant_documents'));
     }
 
     public function createSignedKit($postulant_id)
@@ -1199,6 +1200,52 @@ class RhController extends Controller
         return view('rh.create-up-postulant', compact('postulant'));
     }
 
+
+    public function storePostulantDocuments(Request $request)
+    {
+
+        if ($request->hasFile('document')) {
+            $filenameWithExt = $request->file('document')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('document')->clientExtension();
+            $fileNameToStore = time(). $filename . '.' . $extension;
+            $path = $request->file('document')->move('storage/postulant/', $fileNameToStore);
+
+            $postulant_document = new PostulantDocumentation(); 
+            $postulant_document->type = $extension;
+            $postulant_document->description = $request->description;
+            $postulant_document->resource = $path;
+            $postulant_document->postulant_id = $request->postulant_id;
+            $postulant_document->save();
+
+            if($request->description == 'Plan de trabajo'){
+                DB::table('postulant')->where('id', intval($request->postulant_id))->update([ 
+                    'status'=>'kit legal firmado'
+                ]);
+            }
+            
+       
+            
+            return redirect()->back()->with('message', 'Documento subido correctamente.');
+
+        }
+    }
+
+    public function deletePostulantDocuments(Request $request)
+    {
+
+        $document = PostulantDocumentation::where('id', $request->document_id)->get()->last();
+
+        File::delete($document->resource);
+        DB::table('postulant_documentation')->where('id', $request->document_id)->delete();
+
+        DB::table('postulant')->where('id', intval($request->postulant_id))->update([ 
+            'status'=>'plan de trabajo'
+        ]);
+       
+        return redirect()->back()->with('message', 'Documento eliminado correctamente.');
+
+    }
    
 }
 

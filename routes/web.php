@@ -240,7 +240,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/rh/store-more-information/', [RhController::class, 'storeMoreInformation'])->name('rh.storeMoreInformation');
     Route::get('/rh/create-workplan/{postulant_id}', [RhController::class, 'createWorkplan'])->name('rh.createWorkplan');
     Route::get('/rh/create-signed-kit/{postulant_id}', [RhController::class, 'createSignedKit'])->name('rh.createSignedKit');
-   
+    Route::post('/rh/store-postulant-documents/', [RhController::class, 'storePostulantDocuments'])->name('rh.storePostulantDocuments');
+    Route::post('/rh/delete-postulant-documents/', [RhController::class, 'deletePostulantDocuments'])->name('rh.deletePostulantDocuments');
+    
     Route::post('/rh/drop-postulant/', [RhController::class, 'dropPostulant'])->name('rh.dropPostulant');
 
     Route::get('/rh/edit-postulant/{postulant_id}', [RhController::class, 'editPostulant'])->name('rh.editPostulant');
