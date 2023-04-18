@@ -3,7 +3,7 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex flex-row" >
-            <a  href="{{ route('rh.createMorePostulant', ['postulant_id' => $postulant->id]) }}">
+            <a  href="{{ route('rh.postulants') }}">
                 <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
             </a>
             <h3 style="margin-left:16px;" class="separator">Alta de Candidato</h3> 

@@ -17,7 +17,8 @@
                         method="GET">
                         @csrf
                         <button type="submit" class="btn btn-primary"> 
-                            3 - Baja de Colaborador
+                            Baja de Colaborador
+                            <i class="ms-2 fa fa-arrow-right" aria-hidden="true"></i>
                         </button>
                     </form>
                 </div>     

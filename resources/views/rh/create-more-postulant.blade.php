@@ -56,231 +56,30 @@
             </div>
         </div>
     </div>
-            @if (session('message'))
-            <div class="alert alert-success">
-                {{ session('message') }}
-            </div>
-        @endif
+    <br>
+    @if (session('message'))
+        <div class="alert alert-success">
+            {{ session('message') }}
+            <br>
+        </div>
+    @endif
+    
+    <br>
+  
         {!! Form::open(['route' => 'rh.storeMoreInformation', 'enctype' => 'multipart/form-data']) !!}
         
-        <input type="text" name="user_id" value={{$postulant->id}} hidden>  
-            <br>
-            <h5>Información personal</h5>
-            <div class="row form-group">
-                <div class="col-sm ">
-                    {!! Form::label('cell_phone', 'Telefono celular') !!}
-                    {!! Form::number('cell_phone',null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numeor de telefono celular']) !!}
-                </div>
-
-                <div class="col-sm ">
-                    {!! Form::label('home_phone', 'Telefono de casa') !!}
-                    {!! Form::number('home_phone', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono de casa']) !!}
-                </div>
-                
-                <div class="col-sm ">
-                    {!! Form::label('birthdate', 'Fecha de nacimiento') !!}
-                    {!! Form::date('birthdate', null, ['class' => 'form-control']) !!}
-                </div>  
+            <input type="text" name="postulant_id" value={{$postulant->id}} hidden>  
+            <div class="alert alert-light" role="alert">
+                Una vez recibidos los documentos, es necesario llenar la siguiente información para la generación de documentos.
             </div>
 
+            <h5>Información Personal</h5>
             <div class="row form-group">
-                <div class="col-sm ">
-                    {!! Form::label('curp', 'CURP') !!}
-                    {!! Form::text('curp', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el CURP']) !!}
-                </div>
 
                 <div class="col-sm ">
-                    {!! Form::label('rfc', 'RFC') !!}
-                    {!! Form::text('rfc',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el RFC']) !!}
-                </div>
-                
-                <div class="col-sm ">
-                    {!! Form::label('imss_number', 'N° afiliacion IMSS') !!}
-                    {!! Form::text('imss_number',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de afiliacion del IMSS']) !!} 
-                </div>  
-            </div>
-
-            <div class="row form-group">
-                <div class="col-sm ">
-                    {!! Form::label('nacionality', 'Nacionalidad') !!}
-                    {!! Form::text('nacionality', null, ['class' => 'form-control', 'placeholder' => 'Ingrese la nacionalidad']) !!}
-                </div>
-
-                <div class="col-sm ">
-                    {!! Form::label('id_credential', 'ID credencial') !!}
-                    {!! Form::text('id_credential',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el ID de la credencial']) !!}
-                </div>
-                
-                <div class="col-sm ">
-                    {!! Form::label('gender', 'Genero') !!}
-                    {!! Form::select('gender',  ['Femenino' => 'Femenino', 'Masculino' => 'Masculino', 'Otro' => 'Otro'], isset($user_details->gender) ? $user_details->gender : null, ['class' => 'form-control', 'placeholder' => 'Seleccione el genero']) !!}
-                </div>  
-            </div>
-
-            <div class="row form-group">
-                <div class="col-sm ">
-                    {!! Form::label('civil_status', 'Estado civil') !!}
-                    {!! Form::select('civil_status', ['soltero' => 'Soltero(a)', 'casado' => 'Casado(a)',  'divorciado' => 'Divorciado(a)', 'viudo' => 'Viudo(a)', 'conviviente' => 'Conviviente' ], isset($user_details->civil_status) ? $user_details->civil_status : null ,['class' => 'form-control', 'placeholder' => 'Ingrese la estado civil']) !!}
-                </div>
-
-                <div class="col-sm ">
-                    {!! Form::label('age', 'Edad') !!}
-                    {!! Form::number('age',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese la edad']) !!}
-                </div>
-                
-                <div class="col-sm ">
-                    {!! Form::label('date_admission', 'Fecha de ingreso') !!}
-                    {!! Form::date('date_admission',null, ['class' => 'form-control', 'placeholder' => 'Ingrese fecha de ingreso']) !!}
-                </div>  
-            </div>
-
-            <div class="row form-group">
-                <div class="col-sm ">
-                    {!! Form::label('contract_duration', 'Duración contrato') !!}
-                    {!! Form::select('contract_duration', ['indefinido' => 'Tiempo indefinido', '1' => '1 Mes',  '2' => '2 Meses', '3' => '3 Meses', '4' => '4 Meses' ,  '5' => '5 Meses' , '6' => '6 Meses' ], isset($user_details->contract_duration) ? $user_details->contract_duration : null ,['class' => 'form-control', 'placeholder' => 'Selecciona duracion']) !!}
-                </div>
-
-                <div class="col-sm ">
-
-                </div>
-                
-                <div class="col-sm ">
-
-                </div>  
-            </div>
-
-            <br>
-
-            <h5>Detalles del puesto</h5>
-
-            <div class="row form-group">
-                <div class="col-sm ">
-                    {!! Form::label('position', 'Puesto') !!}
-                    {!! Form::text('position',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el puesto']) !!}
-                </div>
-
-                <div class="col-sm ">
-                    {!! Form::label('position_objetive', 'Objetivo del puesto') !!}
-                    {!! Form::text('position_objetive', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el objetivo del puesto']) !!}
-                </div> 
-            </div>
-
-            <div class="row form-group">
-                <div class="col-sm ">
-                    {!! Form::label('month_salary_gross', 'Salario bruto mensual') !!}
-                    {!! Form::text('month_salary_gross',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario bruto mensual']) !!}
-                </div> 
-
-                <div class="col-sm ">
-                    {!! Form::label('month_salary_net', 'Salario neto mensual') !!}
-                    {!! Form::text('month_salary_net',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario neto mensual']) !!}
-                </div>
-            </div>
-
-            <div class="row form-group">
-                <div class="col-sm ">
-                    {!! Form::label('daily_salary', 'Salario diario') !!}
-                    {!! Form::text('daily_salary', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario diario']) !!}
-                </div> 
-
-                <div class="col-sm ">
-                    {!! Form::label('daily_salary_letter', 'Salario diario en letra') !!}
-                    {!! Form::text('daily_salary_letter', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario diario en letra']) !!}
-                </div>
-            </div>
-            <br>
-
-            <h5>Ubicación</h5>
-
-            <div class="row form-group">
-                <div class="col-sm ">
-                    {!! Form::label('address', 'Direccion') !!}
-                    {!! Form::text('address',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese la direccion']) !!}
-                </div>
-
-                <div class="col-sm ">
-                    {!! Form::label('street', 'Calle') !!}
-                    {!! Form::text('street',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese la calle']) !!}
-                </div>
-                
-                <div class="col-sm ">
-                    {!! Form::label('colony', 'Colonia') !!}
-                    {!! Form::text('colony', isset($user_details->colony) ? $user_details->colony : null, ['class' => 'form-control', 'placeholder' => 'Ingrese la colonia']) !!}
-                </div>  
-            </div>
-
-            <div class="row form-group">
-                <div class="col-sm ">
-                    {!! Form::label('delegation', 'Delegacion o municipio') !!}
-                    {!! Form::text('delegation',   null, ['class' => 'form-control', 'placeholder' => 'Ingrese la delegacion o municipio']) !!}
-                </div>
-
-                <div class="col-sm ">
-                    {!! Form::label('home_references', 'Referencia domicilio') !!}
-                    {!! Form::text('home_references',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese las referencias del domicilio']) !!}
-                </div>
-                
-                <div class="col-sm ">
-                    {!! Form::label('house_characteristics', 'Caracteristicas de la casa') !!}
-                    {!! Form::text('house_characteristics', null, ['class' => 'form-control', 'placeholder' => 'Ingrese las caracteristicas de la casa']) !!}
-                </div>  
-            </div>
-
-            <div class="row form-group">
-                <div class="col-sm ">
-                    {!! Form::label('place_of_birth', 'Lugar de nacimiento') !!}
-                    {!! Form::text('place_of_birth', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el lugar de nacimiento']) !!}
-                </div>
-
-                <div class="col-sm ">
-                    {!! Form::label('postal_code', 'CP') !!}
-                    {!! Form::text('postal_code',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese la codigo postal']) !!}
-                </div>
-                
-                <div class="col-sm ">
-                    {!! Form::label('fiscal_postal_code', 'CP fiscal') !!}
-                    {!! Form::text('fiscal_postal_code', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el codigo postal fiscal']) !!}
-                </div>  
-            </div>
-            <br>
-
-
-            <h5>Información familiar</h5>
-
-            <div class="row form-group">
-                <div class="col-sm ">
-                    {!! Form::label('fathers_name', 'Nombre del padre') !!}
-                    {!! Form::text('fathers_name', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre completo del padre']) !!}
-                </div>
-
-                <div class="col-sm ">
-                {!! Form::label('mothers_name', 'Nombre de la madre') !!}
-                    {!! Form::text('mothers_name', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre completo de la madre']) !!}
-                </div>
-                
-            </div>
-
-            <br>
-            <h5>Información bancaria</h5>
-        
-            <div class="row form-group">
-                <div class="col-sm col-md-4">
-                    {!! Form::label('bank_name', 'Banco') !!}
-                    {!! Form::text('bank_name',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre del banco']) !!}
-                </div>
-
-                <div class="col-sm col-md-8">
-                    {!! Form::label('card_number', 'N° tarjeta/cuenta') !!}
-                    {!! Form::text('card_number', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de cuenta']) !!}
-                </div>
-                
-            </div>
-
-            <div class="row form-group">
-                <div class="col-sm col-md-4">
-                    {!! Form::label('infonavit_credit', 'Credito infonavit') !!}
-                    {!! Form::select('infonavit_credit', ['si' => 'Si', 'no' => 'No'], isset($user_details->infonavit_credit) ? $user_details->infonavit_credit : null, ['class' => 'form-control','placeholder' => 'Seleccionar']) !!}
-                    @error('name')
+                    {!! Form::label('civil_status', 'Estado civil',  ['class'=>'required']) !!}
+                    {!! Form::select('civil_status', ['soltero' => 'Soltero(a)', 'casado' => 'Casado(a)',  'divorciado' => 'Divorciado(a)', 'viudo' => 'Viudo(a)', 'conviviente' => 'Conviviente' ], $postulant->civil_status ,['class' => 'form-control', 'placeholder' => 'Ingrese la estado civil']) !!}
+                    @error('civil_status')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>
                         </small>
@@ -288,9 +87,337 @@
                     @enderror
                 </div>
 
+                <div class="col-sm ">
+                    {!! Form::label('age', 'Edad', ['class'=>'required']) !!}
+                    {!! Form::number('age', $postulant->age, ['class' => 'form-control', 'placeholder' => 'Ingrese la edad']) !!}
+                    @error('age')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+                <div class="col-sm ">
+                    {!! Form::label('gender', 'Genero',  ['class'=>'required']) !!}
+                    {!! Form::select('gender',  ['Femenino' => 'Femenino', 'Masculino' => 'Masculino', 'Otro' => 'Otro'], $postulant->gender , ['class' => 'form-control', 'placeholder' => 'Seleccione el genero']) !!}
+                    @error('gender')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>  
+                
+            </div>
+
+            <div class="row form-group">
+
+                <div class="col-sm ">
+                    {!! Form::label('nacionality', 'Nacionalidad', ['class'=>'required']) !!}
+                    {!! Form::text('nacionality', $postulant->nacionality, ['class' => 'form-control', 'placeholder' => 'Ingrese la nacionalidad']) !!}
+                    @error('nacionality')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+                <div class="col-sm ">
+                    {!! Form::label('id_credential', 'ID credencial', ['class'=>'required']) !!}
+                    {!! Form::text('id_credential', $postulant->id_credential, ['class' => 'form-control', 'placeholder' => 'Ingrese el ID de la credencial']) !!}
+                    @error('id_credential')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+                <div class="col-sm ">
+                    {!! Form::label('rfc', 'RFC', ['class'=>'required']) !!}
+                    {!! Form::text('rfc', $postulant->rfc, ['class' => 'form-control', 'placeholder' => 'Ingrese el RFC']) !!}
+                    @error('rfc')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+            </div>
+            <div class="row form-group">
+                <div class="col-sm ">
+                    {!! Form::label('fathers_name', 'Nombre del padre') !!}
+                    {!! Form::text('fathers_name', $postulant->fathers_name, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre completo del padre']) !!}
+                    @error('fathers_name')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+                <div class="col-sm ">
+                    {!! Form::label('mothers_name', 'Nombre de la madre') !!}
+                    {!! Form::text('mothers_name', $postulant->mothers_name, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre completo de la madre']) !!}
+                    @error('mothers_name')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+                <div class="col-sm ">
+
+                </div>
+            </div>
+
+            <br><br>
+
+            <h5>Localidad</h5>
+
+            <div class="row form-group">
+
+                <div class="col-sm ">
+                    {!! Form::label('place_of_birth', 'Lugar de nacimiento', ['class'=>'required'] ) !!}
+                    {!! Form::text('place_of_birth', $postulant->place_of_birth, ['class' => 'form-control', 'placeholder' => 'Ingrese el lugar de nacimiento']) !!}
+                    @error('place_of_birth')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+                <div class="col-sm ">
+                    {!! Form::label('street', 'Calle', ['class'=>'required']) !!}
+                    {!! Form::text('street',  $postulant->street, ['class' => 'form-control', 'placeholder' => 'Ingrese la calle']) !!}
+                    @error('street')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+                <div class="col-sm ">
+                    {!! Form::label('colony', 'Colonia', ['class'=>'required']) !!}
+                    {!! Form::text('colony', $postulant->colony, ['class' => 'form-control', 'placeholder' => 'Ingrese la colonia']) !!}
+                    @error('colony')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>  
+  
+            </div>
+
+            <div class="row form-group">
+             
+                <div class="col-sm ">
+                    {!! Form::label('delegation', 'Delegacion o municipio',  ['class'=>'required']) !!}
+                    {!! Form::text('delegation', $postulant->delegation, ['class' => 'form-control', 'placeholder' => 'Ingrese la delegacion o municipio']) !!}
+                    @error('delegation')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+                <div class="col-sm ">
+                    {!! Form::label('postal_code', 'CP', ['class' => 'required']) !!}
+                    {!! Form::text('postal_code', $postulant->postal_code , ['class' => 'form-control', 'placeholder' => 'Ingrese la codigo postal']) !!}
+                    @error('postal_code')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+                <div class="col-sm ">
+                    {!! Form::label('fiscal_postal_code', 'CP fiscal', ['class' => 'required']) !!}
+                    {!! Form::text('fiscal_postal_code', $postulant->fiscal_postal_code, ['class' => 'form-control', 'placeholder' => 'Ingrese el codigo postal fiscal']) !!}
+                    @error('fiscal_postal_code')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div> 
+                
+            </div>
+
+            <div class="row form-group">
+
+                <div class="col-sm ">
+                    {!! Form::label('home_phone', 'Telefono de casa', ['class' => 'required']) !!}
+                    {!! Form::number('home_phone', $postulant->home_phone, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono de casa']) !!}
+                    @error('home_phones')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+                <div class="col-sm ">
+                    {!! Form::label('home_references', 'Referencia domicilio', ['class' => 'required']) !!}
+                    {!! Form::text('home_references', $postulant->home_references, ['class' => 'form-control', 'placeholder' => 'Ingrese las referencias del domicilio']) !!}
+                    @error('home_references')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+                <div class="col-sm ">
+                    {!! Form::label('house_characteristics', 'Caracteristicas de la casa', ['class' => 'required']) !!}
+                    {!! Form::text('house_characteristics', $postulant->house_characteristics, ['class' => 'form-control', 'placeholder' => 'Ingrese las caracteristicas de la casa']) !!}
+                    @error('house_characteristics')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+            </div>
+
+            <br><br>
+
+            <h5>Detalles de Ingreso</h5>
+            <div class="row form-group">
+
+                <div class="col-sm ">
+                    {!! Form::label('date_admission', 'Fecha prevista de ingreso', ['class' => 'required']) !!}
+                    {!! Form::date('date_admission', $postulant->date_admission, ['class' => 'form-control', 'placeholder' => 'Ingrese fecha de ingreso']) !!}
+                    @error('date_admission')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>  
+
+                <div class="col-sm ">
+                    {!! Form::label('contract_duration', 'Duración contrato', ['class' => 'required']) !!}
+                    {!! Form::select('contract_duration', ['indefinido' => 'Tiempo indefinido','3' => '3 Meses'], $postulant->contract_duration,['class' => 'form-control', 'placeholder' => 'Selecciona duracion']) !!}
+                    @error('contract_duration')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+
+                <div class="col-sm ">
+                    {!! Form::label('month_salary_gross', 'Salario bruto mensual', ['class' => 'required']) !!}
+                    {!! Form::text('month_salary_gross', $postulant->month_salary_gross, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario bruto mensual']) !!}
+                    @error('month_salary_gross')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row form-group">
+
+                <div class="col-sm ">
+                    {!! Form::label('month_salary_net', 'Salario neto mensual', ['class' => 'required']) !!}
+                    {!! Form::text('month_salary_net', $postulant->month_salary_net, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario neto mensual']) !!}
+                    @error('month_salary_net')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+                <div class="col-sm ">
+                    {!! Form::label('daily_salary', 'Salario diario', ['class' => 'required']) !!}
+                    {!! Form::text('daily_salary', $postulant->daily_salary, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario diario']) !!}
+                    @error('daily_salary')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div> 
+
+                <div class="col-sm ">
+                    {!! Form::label('daily_salary_letter', 'Salario diario en letra', ['class' => 'required']) !!}
+                    {!! Form::text('daily_salary_letter', $postulant->daily_salary_letter, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario diario en letra']) !!}
+                    @error('daily_salary_letter')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div>
+            </div>
+            <br><br>
+
+            <h5>Detalles del Puesto</h5>
+            <div class="row form-group">
+                <div class="col-sm ">
+                   {!! Form::label('vacant', 'Vacante', ['class' => 'required']) !!}
+                   {!! Form::text('vacant', $postulant->vacant, ['class' => 'form-control', 'placeholder' => 'Ingrese el objetivo del puesto']) !!}
+                   @error('vacant')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div> 
+
+               <div class="col-sm ">
+                   {!! Form::label('position_objetive', 'Objetivo del puesto', ['class' => 'required']) !!}
+                   {!! Form::text('position_objetive', $postulant->position_objetive, ['class' => 'form-control', 'placeholder' => 'Ingrese el objetivo del puesto']) !!}
+                   @error('position_objetive')
+                        <small>
+                            <font color="red"> *Este campo es requerido* </font>
+                        </small>
+                        <br>
+                    @enderror
+                </div> 
+
+           </div>
+
+            <br><br>
+
+            <h5>Información Bancaria (opcional)</h5>
+
+            <div class="row form-group">
+                <div class="col-sm col-md-4">
+                    {!! Form::label('bank_name', 'Banco') !!}
+                    {!! Form::text('bank_name',  $postulant->bank_name, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre del banco']) !!}
+                </div>
+
+                <div class="col-sm col-md-8">
+                    {!! Form::label('card_number', 'N° tarjeta/cuenta') !!}
+                    {!! Form::text('card_number', $postulant->card_number, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de cuenta']) !!}
+                </div>
+                
+            </div>
+
+           
+            <div class="row form-group">
+                <div class="col-sm col-md-4">
+                    {!! Form::label('infonavit_credit', 'Credito infonavit') !!}
+                    {!! Form::select('infonavit_credit', ['si' => 'Si', 'no' => 'No'], $postulant->infonavit_credit, ['class' => 'form-control','placeholder' => 'Seleccionar']) !!}
+                </div>
+
                 <div class="col-sm col-md-8">
                     {!! Form::label('factor_credit_number', 'N° credito factor') !!}
-                    {!! Form::text('factor_credit_number', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de credito factor']) !!}
+                    {!! Form::text('factor_credit_number', $postulant->factor_credit_number, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de credito factor']) !!}
                 </div>
                 
             </div>
@@ -298,82 +425,16 @@
             <div class="row form-group">
                 <div class="col-sm col-md-4">
                     {!! Form::label('fonacot_credit', '¿Crédito fonacot?') !!}
-                    {!! Form::select('fonacot_credit', ['si' => 'Si', 'no' => 'No'], isset($user_details->fonacot_credit) ? $user_details->fonacot_credit : null, ['class' => 'form-control','placeholder' => 'Seleccionar']) !!}
+                    {!! Form::select('fonacot_credit', ['si' => 'Si', 'no' => 'No'], $postulant->fonacot_credit, ['class' => 'form-control','placeholder' => 'Seleccionar']) !!}
                 </div>
 
                 <div class="col-sm col-md-8">
                     {!! Form::label('discount_credit_number', 'N° credito descuento') !!}
-                    {!! Form::text('discount_credit_number',  null, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de credito descuento']) !!}
+                    {!! Form::text('discount_credit_number',  $postulant->discount_credit_number, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de credito descuento']) !!}
                 </div>
             </div>
 
-            <br>
-
-            <h5>Beneficiarios</h5>
-
-            <div class="row form-group">
-                <div class="col-sm">
-                {!! Form::label('beneficiaries', 'Beneficiario 1') !!}
-
-                <div class="row g-0 text-center">
-                    <div class="col-sm-6 col-md-8">
-                        {!! Form::text('beneficiary1', null, ['class' => 'form-control', 'placeholder' => 'primer beneficiario']) !!} 
-                    </div>
-                    <div class="col-6 col-md-4">
-
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">%</span>
-                            </div>
-                            {!! Form::text('porcentage1', null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
-                        </div>
-                    </div>
-                </div>
-                </div>
-
-                <div class="col-sm ">
-                    {!! Form::label('', 'Beneficiario 2 ') !!}
-                    <div class="row g-0 text-center">
-                        <div class="col-sm-6 col-md-8">
-                            {!! Form::text('beneficiary2', null, ['class' => 'form-control', 'placeholder' => 'segundo beneficiario']) !!} 
-                        </div>
-                        <div class="col-6 col-md-4">
-
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">%</span>
-                                </div>
-                                {!! Form::text('porcentage2', null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row form-group">
-
-                <div class="col-sm ">
-                    {!! Form::label('', 'Beneficiario 3 ') !!}
-                    <div class="row g-0 text-center">
-                            <div class="col-sm-6 col-md-8">
-                                {!! Form::text('beneficiary3',null, ['class' => 'form-control', 'placeholder' => 'tercer beneficiario']) !!} 
-                            </div>
-                            <div class="col-6 col-md-4">
-
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">%</span>
-                                    </div>
-                                    {!! Form::text('porcentage3',null, ['class' => 'form-control', 'placeholder' => 'Total']) !!} 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-            <div class="col-sm "> 
-            </div>
-
-        </div>
+            <br><br>
 
         {!! Form::submit('GUARDAR', ['class' => 'btnCreate mt-4']) !!}
     </div>
@@ -465,6 +526,10 @@
             color: #000;
             background-color: #fff;
             border-color: #0084C3;
+        }
+        .required:after {
+            content:" *";
+            color: red;
         }
    </style>
 @endsection

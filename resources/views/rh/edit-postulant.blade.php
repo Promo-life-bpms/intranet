@@ -63,6 +63,7 @@
         <h5>Información personal</h5>
         <p></p>
         <div class="row form-group">
+            {!! Form::text('postulant_id', $postulant->id, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario', 'hidden']) !!}
 
             <div class="col-sm">
                 {!! Form::label('name', 'Nombre') !!}

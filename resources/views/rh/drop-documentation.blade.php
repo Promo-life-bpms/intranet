@@ -16,7 +16,8 @@
                 method="GET">
                  @csrf
                 <button type="submit" class="btn btn-primary"> 
-                    2 - Documentación
+                    Documentación
+                    <i class="ms-2 fa fa-arrow-right" aria-hidden="true"></i>
                 </button>
             </form>
         </div>

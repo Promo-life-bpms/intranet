@@ -30,11 +30,14 @@ class RhModule extends Migration
            
             $table->string('fathers_name')->nullable();
             $table->string('mothers_name')->nullable();
+
             $table->string('civil_status')->nullable();
             $table->integer('age')->nullable();
             $table->string('gender')->nullable();
             $table->string('nacionality')->nullable();
             $table->string('id_credential')->nullable();
+            $table->string('fiscal_postal_code')->nullable();
+            $table->string('rfc')->nullable();
 
             $table->string('place_of_birth')->nullable();
             $table->string('street')->nullable();
@@ -42,7 +45,6 @@ class RhModule extends Migration
             $table->string('delegation')->nullable();
             $table->string('postal_code',10)->nullable();
             $table->string('home_phone',20)->nullable();
-            $table->string('fiscal_postal_code')->nullable();
             $table->string('home_references')->nullable();
             $table->string('house_characteristics')->nullable();
 

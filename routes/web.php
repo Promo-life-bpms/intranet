@@ -240,7 +240,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/rh/store-more-information/', [RhController::class, 'storeMoreInformation'])->name('rh.storeMoreInformation');
     Route::get('/rh/create-workplan/{postulant_id}', [RhController::class, 'createWorkplan'])->name('rh.createWorkplan');
     Route::get('/rh/create-signed-kit/{postulant_id}', [RhController::class, 'createSignedKit'])->name('rh.createSignedKit');
-
    
     Route::post('/rh/drop-postulant/', [RhController::class, 'dropPostulant'])->name('rh.dropPostulant');
 
