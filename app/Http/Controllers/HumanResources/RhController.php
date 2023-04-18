@@ -1127,6 +1127,7 @@ class RhController extends Controller
             'daily_salary_letter' => 'required',
             'position_objetive' => 'required',
             'contract_duration' => 'required',
+            'company_id' => 'required',
         ]); 
      
         DB::table('postulant')->where('id', intval($request->postulant_id))->update([
@@ -1161,6 +1162,7 @@ class RhController extends Controller
             'position_objetive' =>  $request->position_objetive,
             'contract_duration' =>  $request->contract_duration,
             'civil_status'=>  $request->civil_status,
+            'company_id' =>$request->company_id,
         ]);
 
         $postulant = Postulant::where('id', intval($request->postulant_id))->get()->last();
