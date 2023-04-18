@@ -10,7 +10,15 @@
             </a>
             <h3 style="margin-left:16px;" class="separator">Recepción de Documentos</h3> 
         </div>
-        <div>                
+        <div>   
+            @if ($postulant->status == 'candidato')
+           
+                <button type="submit" class="btn btn-secondary" onclick="wrongAlert()"> 
+                    Kit legal de Ingreso
+                    <i class="ms-2 fa fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            
+            @else
             <form 
                 action="{{ route('rh.createPostulantDocumentation', ['postulant_id' => $postulant->id]) }}"
                 method="GET">
@@ -20,6 +28,8 @@
                     <i class="ms-2 fa fa-arrow-right" aria-hidden="true"></i>
                 </button>
             </form>
+            @endif             
+            
         </div>
     </div>
         
@@ -534,4 +544,12 @@
    </style>
 @endsection
 
-
+@section('scripts')
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function wrongAlert() {
+            Swal.fire('No disponible hasta completar "Recepción de Documentos"');
+        }
+        
+    </script>
+@stop
