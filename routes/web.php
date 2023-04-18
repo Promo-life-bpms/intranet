@@ -26,6 +26,7 @@ use App\Http\Controllers\NoWorkingDaysController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FullCalenderController;
 use App\Http\Controllers\HumanResources\RhController;
 
 use App\Http\Controllers\HumanResources\ScanDocumentsController;
@@ -250,20 +251,17 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     //sala recreativa//
     //ruta para la disponibilidad//
-    Route::get('/dispo/creative/',[BoardroomController::class,'vista'])->name('dispo.creative');
-    Route::post('/dispo/creative/create/',[BoardroomController::class,'store'])->name('dispo.creative.create');
+    Route::get('/dispo/creative/',[BoardroomController::class,'vista'])->name('dispo.creative'); //visualizar los dias disponibles y horas
 
     //ruta para reservación//
-    Route::get('/reservation/creative/',[ReservationController::class,'index'])->name('reservation.creative');
-    Route::get('/reservation/view/',[ReservationController::class,'view'])->name('reservation.view');
-    Route::post('/reservation/creative/create/',[ReservationController::class,'store'])->name('reserviton.creative.create');
-    Route::put('/reservation/creative/update/', [ReservationController::class, 'update'])->name('reserviton.creative.update');
+    Route::get('/reservation/creative/',[ReservationController::class,'index'])->name('reservation.creative'); 
+    Route::get('/reservation/view/',[ReservationController::class,'view'])->name('reservation.view');   
+    Route::get('/reservation/view/edit/',[ReservationController::class,'edit'])->name('reservation.view.edit');  
+    Route::post('/reservation/creative/create', [ReservationController::class, 'store'])->name('reserviton.creative.create'); 
+    Route::put('/reservation/creative/', [ReservationController::class, 'update'])->name('reserviton.creative.update');
     Route::delete('/reservation/creative/delete/', [ReservationController::class, 'destroy'])->name('reserviton.creative.delete');
 
-
-
-
-});
+   });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
 Route::get('vacations/sendRemembers/', [VacationsController::class, 'sendRemembers'])->name('admin.vacations.sendRemembers');

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\boardroom;
 use App\Models\Reservation;
 use App\Models\User;
+use Carbon\Carbon;
+use Facade\FlareClient\Stacktrace\File;
 use Illuminate\Http\Request;
 
 class ReservationController extends Controller
@@ -15,7 +17,6 @@ class ReservationController extends Controller
         $user = auth()->user();
         $salas=boardroom::all();
         $eventos = Reservation::all();
-
         return view('admin.room.index', compact('salas', 'user', 'eventos'));
     }
 
@@ -25,7 +26,6 @@ class ReservationController extends Controller
         $user = auth()->user();
         $request->validate([
             'title'=>'required',
-            'date' => 'required',
             'start' => 'required',
             'end' => 'required',
             'number_of_people'=>'required',
@@ -33,52 +33,66 @@ class ReservationController extends Controller
             'chair_loan' => 'required',
             'description' => 'required',
         ]);
+      
+            $carbon = new \Carbon\Carbon();
+            $start = $carbon->now();
+            $start = $start->format("d-m-Y\TH:i");
+            $end = $carbon->now();
+            $end = $end->format("d-m-Y\TH:i");
+            $evento = new Reservation();
+            $evento->title=$request->title;
+            $evento->start = $request->start;
+            $evento->end= $request->end;
+            $evento->number_of_people=$request->number_of_people;
+            $evento->material=$request->material;
+            $evento->chair_loan=$request->chair_loan;
+            $evento->description=$request->description;
+            $evento->id_usuario=$user->id;
+            $evento->id_sala=$request->id_sala;
+            $evento->save();
+            return redirect()->back()->with('message', 'Evento creado');
+        }
 
-        $carbon = new \Carbon\Carbon();
-        $date = $carbon->now();
-        $date = $date->format("d,m,Y");
-        $start = $carbon->now();
-        $start = $start->format("H:i");
-        $end = $carbon->now();
-        $end = $end->format("H:i");
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        $evento = new Reservation();
-        $evento->title=$request->title;
-        $evento->date=$request->date;
-        $evento->start = $request->start;
-        $evento->end= $request->end;
-        $evento->number_of_people=$request->number_of_people;
-        $evento->material=$request->material;
-        $evento->chair_loan=$request->chair_loan;
-        $evento->description=$request->description;
-        $evento->id_usuario=$user->id;
-        $evento->id_sala=$request->id_sala;
-        $evento->save();
-        return redirect()->back()->with('message', 'Evento creado');
-    }
-
-    //////////////////////////////////////////////Función para editar/////////////////////////////////////////////////
-    public function update(Reservation $reservation)
+    public function edit($id)
     {
-        $this->validate(request(), [
-        'date' => 'required',
-        'star_time' => 'required',
-        'end_time' => 'required',
+        // Obtén el evento a editar
+        $eventos = Reservation::find($id);
+        // Retorna la vista del formulario de edición con los datos del evento
+        return view('admin.room.index',compact('id', 'eventos'));
+    }       
+    //////////////////////////////////////////////Función para editar/////////////////////////////////////////////////
+    public function update(Request $request, $id)
+    {
+        $user = auth()->user();
+        $request->validate([
+        'start' => 'required',
+        'end' => 'required',
         'material' => 'required',
         'chair_loan' => 'required',
         'description' => 'required',
+        'id'=>'required'
     ]);
+    
+    $carbon = new \Carbon\Carbon();
+    $start = $carbon->now();
+    $start = $start->format("d-m-Y\TH:i");
+    $end = $carbon->now();
+    $end = $end->format("d-m-Y\TH:i");
 
-    // Actualizar los datos
-    $reservation->date = request('date');
-    $reservation->start_time = request('start_time');
-    $reservation->end_time = request('end_time');
-    $reservation->material = request('material');
-    $reservation->chair_loan = request('chair_loan');
-    $reservation->description = request('description');
+    $reservation =Reservation::find($id);
+    $reservation->title=$request->title;
+    $reservation->start = $request->start;
+    $reservation->end= $request->end;
+    $reservation->number_of_people=$request->number_of_people;
+    $reservation->material=$request->material;
+    $reservation->chair_loan=$request->chair_loan;
+    $reservation->description=$request->description;
+    $reservation->id_usuario=$user->id;
+    $reservation->id_sala=$request->id_sala;
     $reservation->save();
-
-    return redirect()->route([ReservationController::class, 'index'])->with('success', 'Evento actualizado exitosamente!');
+    return redirect()->back()->with('message', 'Evento editado correctamente');
     } 
 
     //////////////////////////////////////////////Metodo eliminar///////////////////////////////////////////////////
@@ -90,17 +104,9 @@ class ReservationController extends Controller
     }
 
     /////////////////////////////////////////////Mostrar eventos////////////////////////////////////////////////////
-    public function view(){
-        $reserva = Reservation::all();
-        $eventosFormateados = [];
-        foreach ($reserva as $reservaciones) {
-            $eventosFormateados[] = [
-                'title' => $reservaciones->title,
-                'start'=>$reservaciones->fecha." ".$reservaciones->start,
-                'end'=>$reservaciones->fecha." ".$reservaciones->end,
-            ];
-        }
-dd($eventosFormateados);
-        return response()->json($eventosFormateados);
+    public function view(Reservation $reservation){
+        $reservation = Reservation::all();
+        return response()->json($reservation);
     }
+   
 }

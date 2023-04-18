@@ -11,7 +11,7 @@ class Reservation extends Model
     public $table='reservations';
     public $timestamps=false;
     
-    protected $fillable=['title','date','start','end', 'number_of_people', 'material','chair_loan','description'];
+    protected $fillable=['title','start','end','number_of_people', 'material','chair_loan','description'];
 
 
     public function users()

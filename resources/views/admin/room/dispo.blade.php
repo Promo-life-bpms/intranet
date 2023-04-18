@@ -2,7 +2,7 @@
 
 @section('content')
             <div class ="container">
-                <h1>disponibilidad de la sala</h1>
+                <h1>Disponibilidad de la sala</h1>
                 <div id="calendar"></div>
             </div>            
 @stop
