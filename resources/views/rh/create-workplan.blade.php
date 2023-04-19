@@ -18,7 +18,7 @@
                 </button>
             @else
                 <form 
-                    action="{{ route('rh.createWorkplan', ['postulant_id' => $postulant->id]) }}"
+                    action="{{ route('rh.createSignedKit', ['postulant_id' => $postulant->id]) }}"
                     method="GET">
                     @csrf
                     <button type="submit" class="btn btn-primary"> 

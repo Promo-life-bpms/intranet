@@ -41,7 +41,6 @@
             </div>
         </div>
     </div>
-
         
         @if (session('message'))
             <div class="alert alert-success">
@@ -49,7 +48,6 @@
                  <br>
             </div>
         @endif
-       
 
         {!! Form::open(['route' => 'rh.storePostulant', 'enctype' => 'multipart/form-data']) !!}
         <h5>Información personal</h5>

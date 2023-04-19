@@ -1246,6 +1246,45 @@ class RhController extends Controller
         return redirect()->back()->with('message', 'Documento eliminado correctamente.');
 
     }
+
+    public function storePostulantKit(Request $request)
+    {
+
+    /*     $request->validate([
+            'contact' => 'required',
+            'confidentiality' => 'required',
+        ]); 
+ */
+        $types = [ 'contact','confidentiality', 'cv', 'birth_certificate','curp', 'ine','nss','domicile','study_centificate','medic_centificate','bank_account','fiscal_centificate'];
+
+        foreach($types as $type){
+            if($request->has($type)){
+                $filenameWithExt = $request->file($type)->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension = $request->file($type)->clientExtension();
+                $fileNameToStore = time(). $filename . '.' . $extension;
+                $path = $request->file($type)->move('storage/postulant/', $fileNameToStore);
+
+                $postulant_documentation  = PostulantDocumentation::where('postulant_id',$request->postulant_id)->where('description',$type)->get()->last(); 
+                if($postulant_documentation  == null){
+                    $postulant_document = new PostulantDocumentation(); 
+                    $postulant_document->type = $extension;
+                    $postulant_document->description = $type;
+                    $postulant_document->resource = $path;
+                    $postulant_document->postulant_id = $request->postulant_id;
+                    $postulant_document->save();
+                }else{
+                    File::delete($postulant_documentation->resource);
+                    DB::table('postulant_documentation')->where('postulant_id', intval($request->postulant_id))->where('description',$type)->update([ 
+                        'resource'=> $path 
+                    ]);
+                }
+                
+            }
+        }
+
+        return redirect()->back()->with('message', 'Documentos guardados correctamente');
+    }
    
 }
 
