@@ -64,102 +64,192 @@
         </div>
     @endif
 
-    <div class="alert alert-light" role="alert">
+  <!--   <div class="alert alert-light" role="alert">
         Sube tus documentos firmados en esta sección, estos pueden ser modificados una vez que el candidato sea dado de alta.
         <br>
         <b>Nota:</b> Si deseas subir un documento en especifico o conjunto de documentos, puedes subirlos y guardarlos, no afectara al resto de documentos subidos.
     </div>
-
-    {!! Form::open(['route' => 'rh.storePostulantKit', 'enctype' => 'multipart/form-data']) !!}
-    <h5>Kit de contratación</h5>
-    <div class="container">
-        <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3 form-group">
-
-            <div class="col-sm">
-                {!! Form::label('contact', 'Contrato') !!}
-                {!! Form::file('contact',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-                @error('contact')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-
-            <div class="col-sm">
-                {!! Form::label('confidentiality', 'Convenio de confidencialidad' ) !!}
-                {!! Form::file('confidentiality',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-                @error('confidentiality')
-                    <small>
-                        <font color="red"> *Este campo es requerido* </font>
-                    </small>
-                    <br>
-                @enderror
-            </div>
-        </div>
+ -->
+ 
+    <div class="alert alert-light" role="alert">
+        Sube aqui tus documentos firmados, tras finalizar podrás dar de <b>Alta al Colaborador</b> en la sistema.<br>
+        <b>Kit Legal: </b> Contrato (requerido), Convenio de confidencialidad (requerido). <br>
+        <b>Documentos Personales: </b>CV, Acta de nacimiento, CURP, INE, NSS, Comprobante de domicilio, Comprobante de estudios, Certificado médico, Cuenta de banco.
     </div>
-
     <br>
-    <h5>Documentos personales</h5>
-    <div class="container">
-        <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3 form-group">
-            {!! Form::text('postulant_id', $postulant->id,['class' => 'form-control', 'hidden']) !!}
 
-            <div class="col-sm">
-                {!! Form::label('cv', 'CV') !!}
-                {!! Form::file('cv',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-            </div>
-
-            <div class="col-sm">
-                {!! Form::label('birth_certificate', 'Acta de nacimiento') !!}
-                {!! Form::file('birth_certificate',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-            </div>
-
-            <div class="col-sm">
-                {!! Form::label('curp', 'CURP') !!}
-                {!! Form::file('curp',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-            </div>
-
-            <div class="col-sm">
-                {!! Form::label('ine', 'INE') !!}
-                {!! Form::file('ine',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-            </div>
-
-            <div class="col-sm">
-                {!! Form::label('nss', 'NSS') !!}
-                {!! Form::file('nss',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-            </div>
-
-            <div class="col-sm">
-                {!! Form::label('domicile', 'Domicilio') !!}
-                {!! Form::file('domicile',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-            </div>
-
-            <div class="col-sm">
-                {!! Form::label('study_centificate', 'Comprobante de estudios') !!}
-                {!! Form::file('study_centificate',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-            </div>
-
-            <div class="col-sm">
-                {!! Form::label('medic_centificate', 'Comprobante médico') !!}
-                {!! Form::file('medic_centificate',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-            </div>
-
-            <div class="col-sm">
-                {!! Form::label('bank_account', 'Cuenta de banco') !!}
-                {!! Form::file('bank_account',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-            </div>
-
-            <div class="col-sm">
-                {!! Form::label('fiscal_centificate', 'Constancia de situacion fiscal') !!}
-                {!! Form::file('fiscal_centificate',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
-            </div>
+    <div class="d-flex justify-content-between">
+        <div class="d-flex flex-row">
+            <h5 style="margin-left:16px;" class="separator">Kit de Contratación</h5> 
+        </div>
+                    
+        <div class="d-flex">
+            <button type="button" class="btn btn-success m-1" data-bs-toggle="modal"  data-bs-target="#modalAdd"><i class="bi bi-plus-lg"></i>Agregar documento</button>
         </div>
     </div>
 
-    {!! Form::submit('GUARDAR', ['class' => 'btnCreate mt-4']) !!}
+  
+    @if (count($kit) == 0  && count($personal) == 0   )
+        <div class="alert alert-light" role="alert">
+            Aún no hay documentos del usuario guardados, puedes subirlos dando clic al botón <b>Agregar documento</b>.
+        </div>    
+    @endif
+            
+    <div class ="row row-cols-2 row-cols-lg-4 g-2 g-lg-3" >   
+        @foreach ($kit as $document)
 
-    {!! Form::close() !!}
+            @if ($document->description == 'contact' || $document->description == 'confidentiality')
+                <div class="col">
+                    <div class="card card_document">
+
+                        @if ($document->type == 'pdf')
+                            <iframe src="{{ asset($document->resource)}}" style="width:100%; height:100%;" frameborder="0"></iframe>
+                        @else
+                            <div style="width: 100%; height: 150px; text-align: center;">
+                            Vista previa no disponible
+                            </div> 
+                        @endif                        
+                        <br>
+                        <p class="card-text">
+                        @switch($document->description)
+                            @case('contact')
+                                CONTRATO
+                                @break
+
+                            @case('confidentiality')
+                                CONVENIO DE CONFIDENCIALIDAD
+                                @break
+                        
+                            @default
+                                
+                        @endswitch
+                        </p>
+                        <a href="{{asset($document->resource)}}" style="width: 100%" target="_blank" class="btn btn-primary btn-sm">Abrir</a><br>
+                        <div class="d-flex w-100" >
+                            <form class="delete-postulant w-100" action="{{ route('rh.deletePostulantDocuments', ['document_id' =>$document->id, 'postulant_id' => $postulant->id]) }}" method="POST">
+                                @csrf
+                                @method('post')
+                                <input type="submit" class="btn btn-danger btn-sm w-100" value="Eliminar archivo">
+                                    
+                                </input>
+                            </form>
+                        </div>                
+                    </div>
+                </div>
+            @endif
+            
+        @endforeach
+    </div>
+
+    
+    <h5>Documentos personales</h5>
+
+    <div class ="row row-cols-2 row-cols-lg-4 g-2 g-lg-3" >   
+        @foreach ($personal as $document)
+        
+            <div class="col">
+                <div class="card card_document">
+                    @if ($document->type == 'pdf')
+                        <iframe src="{{ asset($document->resource)}}" style="width:100%; height:100%;" frameborder="0"></iframe>
+                    @else
+                        Vista previa no disponible
+                    @endif
+                    
+                    <br>
+                    <p class="card-text">
+                    @switch($document->description)
+                     
+                        @case('birth_certificate')
+                            ACTA DE NACIMIENTO
+                            @break
+                 
+
+                        @case('domicile')
+                            COMPROBANTE DE DOMICILIO
+                            @break
+                    
+                    
+                        @case('study_centificate')
+                            CERTIFICADO DE ESTUDIOS
+                            @break
+
+                        @case('medic_centificate')
+                            CERTIFICADO MÉDICO
+                            @break
+                    
+                        @case('bank_account')
+                            CUENTA DE BANCO
+                            @break
+                      
+                        @case('fiscal_centificate')
+                            CONSTANCIA DE SITUACION FISCAL
+                            @break
+                    
+                        @default
+                        {{ strtoupper($document->description)}}
+                    @endswitch
+                    </p>
+                    <a href="{{asset($document->resource)}}" style="width: 100%" target="_blank" class="btn btn-primary btn-sm">Abrir</a><br>
+                    <div class="d-flex w-100" >
+                        <form class="delete-postulant w-100" action="{{ route('rh.deletePostulantDocuments', ['document_id' =>$document->id, 'postulant_id' => $postulant->id]) }}" method="POST">
+                            @csrf
+                            @method('post')
+                            <input type="submit" class="btn btn-danger btn-sm w-100" value="Eliminar archivo">
+                                
+                            </input>
+                        </form>
+                    </div>                
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+
+    <div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalImageLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalImageLabel">Seleccione el archivo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {!! Form::open(['route' => 'rh.storePostulantDocuments', 'enctype' => 'multipart/form-data']) !!}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-2 form-group">
+                                {!! Form::text('postulant_id', $postulant->id,['class' => 'form-control', 'hidden']) !!}
+                                <b>Documento</b>
+                                {!! Form::select('description', [ 'contact' => 'Contrato','confidentiality' => 'Convenio de confidencialidad', 'cv' => 'CV', 'birth_certificate' => 'Acta de Nacimiento','curp' => 'CURP', 'ine' => 'INE','nss' => 'NSS','domicile' => 'Domicilio','study_centificate' => 'Comprobante de estudios','medic_centificate' => 'Certificado médico','bank_account' => 'Cuenta de banco','fiscal_centificate' => 'Constancia de situacion fiscal'],null,['class' => 'form-control']) !!}
+                                <br>
+                                
+                            </div>
+
+                            <div class="mb-2 form-group">
+                                <b>Plan de Trabajo</b>
+                                {!! Form::file('document', ['class' => 'form-control','id'=>'input-file']) !!}
+                                @error('document')
+                                <small>
+                                    <font color="red">*Este campo es requerido*</font>
+                                </small>
+                                <br>
+                                @enderror
+                            </div>
+
+                            <br>
+                            <iframe src="" style="width:100%; height:100%;" frameborder="0" id="frame-file"></iframe>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    {!! Form::submit('Aceptar', ['class' => 'btn btn-primary']) !!}
+                </div>
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
     
 </div>
 @stop
@@ -274,11 +364,70 @@
         background-color: #fff;
         border-color: #0084C3;
     }
+    .card_document{
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            border: 1px solid #000;
+            display: flex;
+            align-items: center;
+            padding: 24px;   
+        }
 
-    .required:after {
-        content:" *";
-        color: red;
+    .card_document>img{
+        width: 160px;
+        height: 160px;
+        object-fit: contain;
     }
 
+    .modal-body{
+        height: 580px;
+    }
 </style>
+@endsection
+
+@section('scripts')
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
+    <script>
+        $('.delete-postulant').submit(function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡El registro se eliminará permanentemente!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '¡Si, eliminar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                
+                if (result.isConfirmed) {
+                    console.log('yaaaaaaaaa');
+                    this.submit();
+                }
+            })
+        });
+
+        function wrongAlert() {
+            Swal.fire('No disponible hasta subir documento de "Plan de trabajo"');
+        }
+    </script>
+
+    <script>
+        var inputFile = document.getElementById('input-file');
+        var frameFile = document.getElementById('frame-file');
+        inputFile.onchange = event => {
+        const file = inputFile.files
+        const [resource] = inputFile.files
+        var extension = file[0].name.substr(file.length - 4);
+            if (extension == 'pdf') {
+                console.log('Es PDF')
+                frameFile.src = URL.createObjectURL(resource)
+            }
+            console.log(file[0].name)
+            
+        }
+
+        
+    </script>
 @endsection

@@ -148,7 +148,7 @@
                         <div class="col">
                             <div class="mb-2 form-group">
                                 {!! Form::text('postulant_id', $postulant->id,['class' => 'form-control', 'hidden']) !!}
-                                {!! Form::text('description', 'Plan de trabajo',['class' => 'form-control','hidden']) !!}
+                                {!! Form::text('description', 'plan de trabajo',['class' => 'form-control','hidden']) !!}
                                 <b>Plan de Trabajo</b>
                             </div>
 

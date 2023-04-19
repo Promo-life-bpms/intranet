@@ -1190,8 +1190,23 @@ class RhController extends Controller
 
     public function createSignedKit($postulant_id)
     {
+        
+        $kit = [];
+        $personal = [];
+
         $postulant = Postulant::where('id',$postulant_id)->get()->last();
-        return view('rh.create-signed-kit', compact('postulant'));
+        $postulant_documents = PostulantDocumentation::where('postulant_id',$postulant_id)->get();
+
+        foreach($postulant_documents as $document){
+            if($document->description == 'contact' || $document->description == 'confidentiality'){
+                array_push($kit, $document);
+            }else{
+                array_push($personal, $document);
+            }
+           
+        }
+        
+        return view('rh.create-signed-kit', compact('postulant','kit','personal'));
     }
 
     public function createUpPostulant($postulant_id)
@@ -1203,7 +1218,6 @@ class RhController extends Controller
 
     public function storePostulantDocuments(Request $request)
     {
-
         if ($request->hasFile('document')) {
             $filenameWithExt = $request->file('document')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
@@ -1217,14 +1231,12 @@ class RhController extends Controller
             $postulant_document->resource = $path;
             $postulant_document->postulant_id = $request->postulant_id;
             $postulant_document->save();
-
-            if($request->description == 'Plan de trabajo'){
+            
+            if($request->description == 'plan de trabajo' ){
                 DB::table('postulant')->where('id', intval($request->postulant_id))->update([ 
                     'status'=>'kit legal firmado'
                 ]);
             }
-            
-       
             
             return redirect()->back()->with('message', 'Documento subido correctamente.');
 
@@ -1233,15 +1245,19 @@ class RhController extends Controller
 
     public function deletePostulantDocuments(Request $request)
     {
-
+ 
         $document = PostulantDocumentation::where('id', $request->document_id)->get()->last();
 
         File::delete($document->resource);
         DB::table('postulant_documentation')->where('id', $request->document_id)->delete();
 
-        DB::table('postulant')->where('id', intval($request->postulant_id))->update([ 
-            'status'=>'plan de trabajo'
-        ]);
+        $work_plan = PostulantDocumentation::where('description','plan de trabajo')->where('postulant_id',$request->postulant_id)->get();
+
+         if(count($work_plan) == 0){
+            DB::table('postulant')->where('id', intval($request->postulant_id))->update([ 
+                'status'=>'plan de trabajo'
+            ]);
+        }
        
         return redirect()->back()->with('message', 'Documento eliminado correctamente.');
 
@@ -1265,21 +1281,19 @@ class RhController extends Controller
                 $fileNameToStore = time(). $filename . '.' . $extension;
                 $path = $request->file($type)->move('storage/postulant/', $fileNameToStore);
 
-                $postulant_documentation  = PostulantDocumentation::where('postulant_id',$request->postulant_id)->where('description',$type)->get()->last(); 
-                if($postulant_documentation  == null){
-                    $postulant_document = new PostulantDocumentation(); 
-                    $postulant_document->type = $extension;
-                    $postulant_document->description = $type;
-                    $postulant_document->resource = $path;
-                    $postulant_document->postulant_id = $request->postulant_id;
-                    $postulant_document->save();
-                }else{
-                    File::delete($postulant_documentation->resource);
-                    DB::table('postulant_documentation')->where('postulant_id', intval($request->postulant_id))->where('description',$type)->update([ 
-                        'resource'=> $path 
+            
+                $postulant_document = new PostulantDocumentation(); 
+                $postulant_document->type = $extension;
+                $postulant_document->description = $type;
+                $postulant_document->resource = $path;
+                $postulant_document->postulant_id = $request->postulant_id;
+                $postulant_document->save();
+              
+                if($request->description == 'plan de trabajo'){
+                    DB::table('postulant')->where('id', intval($request->postulant_id))->update([ 
+                        'status'=>'kit legal firmado'
                     ]);
                 }
-                
             }
         }
 
