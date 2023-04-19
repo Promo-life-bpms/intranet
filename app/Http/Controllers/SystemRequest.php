@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,4 +16,6 @@ class SystemRequest extends Controller
             ->get();
             return view('systems.systemRequest')->with('systems_request', $systems_request);
     }
-}
+    }
+
+

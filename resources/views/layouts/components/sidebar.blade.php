@@ -186,7 +186,7 @@
                             <ul class="submenu ">
                                 <li class="submenu-item ">
                                     <a class="dropdown-item" href="{{ route('systems.request')}}">
-                                        <span>Estado Actual de Solicitud</span>
+                                        <span>Solicitudes</span>
                                     </a>
                                 </li>
                             </ul>

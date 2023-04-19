@@ -10,6 +10,7 @@
             <table class="table table-striped" id="table-directory">
                 <thead>
                     <tr>
+                        <th scope="col" style="text-align: center">Nombre</th>
                         <th scope="col" style="text-align: center">Categoria</th>
                         <th scope="col" style="text-align: center">Descripción</th>
                         <th scope="col" style="text-align: center">Estado</th>
@@ -22,6 +23,7 @@
                 <tbody>
                     @foreach ($systems_request as $systems )
                     <tr>
+                        <td></td>
                         <td>{{$systems->category}}</td>
                         <td>{{$systems->description}}</td>
                         <td style="text-align: center">{{$systems->status}}</td>
@@ -40,7 +42,7 @@
 
     <style>
         table {
-        font-size: 79.5%;
+        font-size: 74.7%;
         }
     </style>
 @endsection
