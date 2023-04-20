@@ -244,6 +244,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/rh/delete-postulant-documents/', [RhController::class, 'deletePostulantDocuments'])->name('rh.deletePostulantDocuments');
     Route::post('/rh/store-postulant-kit/', [RhController::class, 'storePostulantKit'])->name('rh.storePostulantKit');
     Route::post('/rh/store-up-postulant/', [RhController::class, 'storeUpPostulant'])->name('rh.storeUpPostulant');
+    Route::post('/rh/delete-postulant/', [RhController::class, 'deletePostulant'])->name('rh.deletePostulant');
 
     Route::post('/rh/drop-postulant/', [RhController::class, 'dropPostulant'])->name('rh.dropPostulant');
 

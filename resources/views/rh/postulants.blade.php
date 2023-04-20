@@ -59,12 +59,13 @@
                                     </div>
                                 </div>
                                 <div class="d-flex" >
-                                    <div>
-                                        @if ($postulant->status != 'postulante')
-                                            <a  href="{{ route('rh.createPostulantDocumentation', ['postulant_id' => $postulant->id]) }}"
-                                            type="button" class="btn btn-danger">No seleccionado</a>
-                                        @endif
-                                    </div>
+                                    <form class="form-delete"
+                                        action="{{ route('rh.deletePostulant', ['postulant_id' => $postulant->id]) }}"
+                                        method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                            class="btn btn-danger btn-block mt-1">No seleccionado</button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -79,6 +80,28 @@
 @section('scripts')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
+    <script>
+        $('.form-delete').submit(function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡El registro se eliminará permanentemente!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '¡Si, eliminar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            })
+        });
+    </script>
+    
+    
     <script>
         $(document).ready(function() {
             $('#table-directory').DataTable({

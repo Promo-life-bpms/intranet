@@ -186,6 +186,21 @@
     </div>
 
     {!! Form::close() !!}
+
+    
+    @if ($postulant->status == 'colaborador')
+        <br>
+        <div>
+            <form 
+                action="{{ route('admin.users.index') }}"
+                method="GET">
+                @csrf
+                <button  style="width:100%; height:50px;" type="submit" class="btn btn-success"> 
+                    VER LISTA DE USUARIOS
+                </button>
+            </form>
+        </div>
+    @endif
     
 </div>
 @stop

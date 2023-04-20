@@ -583,7 +583,7 @@ class RhController extends Controller
 
     public function postulants()
     {  
-        $postulants = Postulant::all()->where('status','<>' , 'no seleccionado');
+        $postulants = Postulant::all()->where('status','<>' , 'no seleccionado')->where('status','<>' , 'colaborador');
          
        
         return view('rh.postulants', compact('postulants'));  
@@ -1251,7 +1251,7 @@ class RhController extends Controller
             
             if($request->description == 'plan de trabajo' ){
                 DB::table('postulant')->where('id', intval($request->postulant_id))->update([ 
-                    'status'=>'kit legal firmado'
+                    'status'=>'plan de trabajo'
                 ]);
             }
             
@@ -1272,7 +1272,7 @@ class RhController extends Controller
 
          if(count($work_plan) == 0){
             DB::table('postulant')->where('id', intval($request->postulant_id))->update([ 
-                'status'=>'plan de trabajo'
+                'status'=>'kit legal de ingreso'
             ]);
         }
        
@@ -1444,7 +1444,16 @@ class RhController extends Controller
         return redirect()->back()->with('message', 'Ahora el candidato es colaborador, puedes visualizar su información en la sección de Empleados');
 
     }
-   
+   public function deletePostulant(Request $request)
+   {
+        DB::table('postulant')->where('id', intval($request->postulant_id))->update([ 
+            'status'=>'no seleccionado'
+        ]);
+
+        return redirect()->back()->with('message', 'Candidato eliminado satisfactoriamente');
+
+   }
+
 }
 
 

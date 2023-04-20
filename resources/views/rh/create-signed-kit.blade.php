@@ -423,11 +423,10 @@
             if (extension == 'pdf') {
                 console.log('Es PDF')
                 frameFile.src = URL.createObjectURL(resource)
+            }else{
+                frameFile.src = ''
             }
-            console.log(file[0].name)
-            
         }
-
         
     </script>
 @endsection

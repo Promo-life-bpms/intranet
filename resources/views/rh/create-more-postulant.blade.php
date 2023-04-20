@@ -75,20 +75,19 @@
     @endif
     
     <br>
-  
         {!! Form::open(['route' => 'rh.storeMoreInformation', 'enctype' => 'multipart/form-data']) !!}
         
             <input type="text" name="postulant_id" value={{$postulant->id}} hidden>  
             <div class="alert alert-light" role="alert">
-                Una vez recibidos los documentos, es necesario llenar la siguiente información para la generación de documentos.
+                Una vez recibidos los documentos, es necesario llenar la siguiente información para la generación del <b>Kit Legal de Ingreso</b>.
             </div>
-
-            <h5>Información Personal</h5>
+            <br>
+            <h5>Información Adicional</h5>
             <div class="row form-group">
 
                 <div class="col-sm ">
                     {!! Form::label('civil_status', 'Estado civil',  ['class'=>'required']) !!}
-                    {!! Form::select('civil_status', ['soltero' => 'Soltero(a)', 'casado' => 'Casado(a)',  'divorciado' => 'Divorciado(a)', 'viudo' => 'Viudo(a)', 'conviviente' => 'Conviviente' ], $postulant->civil_status ,['class' => 'form-control', 'placeholder' => 'Ingrese la estado civil']) !!}
+                    {!! Form::select('civil_status', ['soltero' => 'Soltero(a)', 'casado' => 'Casado(a)',  'divorciado' => 'Divorciado(a)', 'viudo' => 'Viudo(a)', 'conviviente' => 'Conviviente' ], $postulant->civil_status ,['class' => 'form-control', 'placeholder' => 'Seleccione el estado civil']) !!}
                     @error('civil_status')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>

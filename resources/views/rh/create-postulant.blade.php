@@ -67,7 +67,7 @@
                 
             <div class="col-sm">
                 {!! Form::label('lastname', 'Apellidos', ['class' => 'required']) !!}
-                {!! Form::text('lastname', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
+                {!! Form::text('lastname', null, ['class' => 'form-control', 'placeholder' => 'Ingrese los apellidos']) !!}
                 @error('lastname')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -78,7 +78,7 @@
 
             <div class="col-sm">
                 {!! Form::label('vacant', 'Vacante', ['class' => 'required']) !!}
-                {!! Form::text('vacant', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::text('vacant', null, ['class' => 'form-control','placeholder' => 'Ingrese la vacante']) !!}
                 @error('vacant')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -92,7 +92,7 @@
         <div class="row form-group">
             <div class="col-sm">
                 {!! Form::label('birthdate', 'Fecha de nacimiento', ['class' => 'required']) !!}
-                {!! Form::date('birthdate', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::date('birthdate', null, ['class' => 'form-control','placeholder' => 'Ingresa la fecha de nacimiento']) !!}
                 @error('birthdate')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -103,7 +103,7 @@
 
             <div class="col-sm">
                 {!! Form::label('nss', 'NSS', ['class' => 'required']) !!}
-                {!! Form::text('nss', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::text('nss', null, ['class' => 'form-control','placeholder' => 'Ingresa el NSS']) !!}
                 @error('nss')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -114,7 +114,7 @@
 
             <div class="col-sm">
                 {!! Form::label('curp', 'CURP', ['class' => 'required']) !!}
-                {!! Form::text('curp', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::text('curp', null, ['class' => 'form-control','placeholder' => 'Ingrese el CURP']) !!}
                 @error('curp')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -127,7 +127,7 @@
         <div class="row form-group">
             <div class="col-sm">
                 {!! Form::label('full_address', 'Domicilio completo', ['class' => 'required']) !!}
-                {!! Form::text('full_address', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::text('full_address', null, ['class' => 'form-control','placeholder' => 'Ingrese la dirección completa']) !!}
                 @error('full_address')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -138,7 +138,7 @@
 
             <div class="col-sm">
                 {!! Form::label('phone', 'Celular', ['class' => 'required']) !!}
-                {!! Form::text('phone', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::text('phone', null, ['class' => 'form-control','placeholder' => 'Ingrese el numero de telefono celular']) !!}
                 @error('phone')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -149,7 +149,7 @@
 
             <div class="col-sm">
                 {!! Form::label('message_phone', 'Telefono de recados', ['class' => 'required']) !!}
-                {!! Form::text('message_phone', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::text('message_phone', null, ['class' => 'form-control','placeholder' => 'Ingrese el numero de recados']) !!}
                 @error('message_phone')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -163,13 +163,13 @@
         <div class="row form-group">
             <div class="col-sm">
                 {!! Form::label('cv', 'Adjuntar CV') !!}
-                {!! Form::file('cv',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::file('cv',  ['class' => 'form-control','placeholder' => 'Adjunta el CV']) !!}
               
             </div>
 
             <div class="col-sm">
                 {!! Form::label('email', 'Correo electrónico', ['class' => 'required']) !!}
-                {!! Form::text('email', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::text('email', null, ['class' => 'form-control','placeholder' => 'Ingresa el correo electrónico']) !!}
                 @error('email')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>

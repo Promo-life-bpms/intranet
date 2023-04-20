@@ -11,12 +11,7 @@
         </div>
                         
         <div>             
-            @if($postulant->status == 'plan de trabajo')
-                <button type="submit" class="btn btn-secondary" onclick="wrongAlert()"> 
-                    Kit legal firmado
-                    <i class="fa fa-arrow-right" aria-hidden="true" ></i> 
-                </button>
-            @else
+            @if($postulant->status == 'plan de trabajo' || $postulant->status == 'kit legal firmado')
                 <form 
                     action="{{ route('rh.createSignedKit', ['postulant_id' => $postulant->id]) }}"
                     method="GET">
@@ -26,6 +21,11 @@
                         <i class="fa fa-arrow-right" aria-hidden="true"></i> 
                     </button>
                 </form>
+            @else
+                <button type="submit" class="btn btn-secondary" onclick="wrongAlert()"> 
+                    Kit legal firmado
+                    <i class="fa fa-arrow-right" aria-hidden="true" ></i> 
+                </button>
             @endif
             
         </div>
@@ -66,15 +66,12 @@
 
 <br>
 
-
     @if (session('message'))
         <div class="alert alert-success">
             {{ session('message') }}
         </div>
     @endif
     <br>
-    
-    
     
     <div class="d-flex justify-content-between">
         <div class="d-flex flex-row">
@@ -90,7 +87,7 @@
 
     @if (count($postulant_documents) == 0)
         <div class="alert alert-light" role="alert">
-            Aún no hay documentos del usuario guardados, puedes subirlos dando clic al botón <b>Agregar documento</b>.
+            Aún no hay documentos del plan de trabajo subidos, puedes añadirlos dando clic al botón <b>Agregar documento</b>.
         </div>    
     @endif
             
@@ -98,23 +95,24 @@
         @foreach ($postulant_documents as $document)
             <div class="col">
                 <div class="card card_document">
-                    @switch($document)
-                    @case($document->type=='docx' ||$document->type=='doc' )
-                    <img src="{{asset('img/Word.png')}}">
-                    @break;
+
+                    @if ($document->type == 'pdf')
+                        <iframe src="{{ asset($document->resource)}}" style="width:100%; height:100%;" frameborder="0"></iframe>
+                    @else
+                        @switch($document->type)
+                        @case('docx' || 'doc' )
+                        <img src="{{asset('img/Word.png')}}">
+                        @break;
+                        @case('xlsx')
+                        <img src="{{asset('img/RExcel.png')}}">
+                        @break;
+                        @default
+                        <img src="{{asset('img/Documentos.png')}}">
+                        @break;
+                        @endswitch
+                    @endif
                     
-                    @case($document->type=='xlsx')
-                    <img src="{{asset('img/RExcel.png')}}">
-                    @break;
-
-                    @case ($document->type=='pdf')
-                    <img src="{{asset('img/pdf.png')}}">
-                    @break;
-
-                    @default
-                    <img src="{{asset('img/Documentos.png')}}">
-                    @break;
-                    @endswitch
+                    <br>
                     <p class="card-text">{{$document->description}}</p>
                     <a href="{{asset($document->resource)}}" style="width: 100%" target="_blank" class="btn btn-primary btn-sm">Abrir</a><br>
                     <div class="d-flex w-100" >
@@ -129,9 +127,6 @@
                 </div>
 
             </div>
-                    
-            
-            
         @endforeach
     </div>
 
@@ -143,6 +138,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 {!! Form::open(['route' => 'rh.storePostulantDocuments', 'enctype' => 'multipart/form-data']) !!}
+                @csrf
                 <div class="modal-body">
                     <div class="row">
                         <div class="col">
@@ -153,7 +149,7 @@
                             </div>
 
                             <div class="mb-2 form-group">
-                                {!! Form::file('document', ['class' => 'form-control']) !!}
+                                {!! Form::file('document', ['class' => 'form-control', 'id'=>'input-file']) !!}
                                 @error('document')
                                 <small>
                                     <font color="red">*Este campo es requerido*</font>
@@ -161,6 +157,13 @@
                                 <br>
                                 @enderror
                             </div>
+
+                            <br>
+                            <div class="document-file" style="height:320px;">
+                                <iframe src="" style="width:100%; height:100%;" frameborder="0" id="frame-file"></iframe>
+
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -295,11 +298,11 @@
             padding: 24px;   
         }
 
-        .card_document>img{
-            width: 160px;
-            height: 160px;
-            object-fit: contain;
-        }
+    .card_document>img{
+        width: 160px;
+        height: 160px;
+        object-fit: contain;
+    }
 </style>
 @endsection
 
@@ -330,5 +333,23 @@
         function wrongAlert() {
             Swal.fire('No disponible hasta subir documento de "Plan de trabajo"');
         }
+    </script>
+
+    <script>
+        var inputFile = document.getElementById('input-file');
+        var frameFile = document.getElementById('frame-file');
+        inputFile.onchange = event => {
+        const file = inputFile.files
+        const [resource] = inputFile.files
+        var extension = file[0].name.substr(file.length - 4);
+            if (extension == 'pdf') {
+                console.log('Es PDF')
+                frameFile.src = URL.createObjectURL(resource)
+            }else{
+                frameFile.src = ''
+            }
+            
+        }
+        
     </script>
 @endsection
