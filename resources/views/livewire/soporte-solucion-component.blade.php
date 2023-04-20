@@ -4,9 +4,6 @@
             <h3>Soporte solución</h3>
         </div>
     </div>
-
-
-
     <div class="card-body">
 
         <div class="table-responsive">
@@ -21,13 +18,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                        $contador = 1;
-                    @endphp
-
+                   
                     @foreach ($solucion as $tickets)
                         <tr>
-                            <th scope="row">{{ $contador }}</th>
+                            <th scope="row">{{$loop->iteration }}</th>
                             <td>{{ $tickets->name }}</td>
                             <td class="col-2">{{ $tickets->category->name }}</td>
                             <td class="col-2">
@@ -54,9 +48,7 @@
                             </td>
 
                         </tr>
-                        @php
-                            $contador++;
-                        @endphp
+                      
                     @endforeach
                 </tbody>
             </table>
@@ -69,7 +61,7 @@
 
 
 
-
+    {{-- Modal solucion agregar --}}
     <div wire:ignore.self class="modal fade" id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable  modal-lg">
@@ -165,27 +157,29 @@
 
 
 
-        function finalizar(id) {/
-            Swal.fire({
-                title: 'Quieres dar solucion a este ticket?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Si'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let resultado = @this.enProceso(id)
-                    $('#ModalAgregar').modal('show')
+        function finalizar(id) {
+             Swal.fire({
+                 title: 'Quieres dar solucion a este ticket?',
+                 icon: 'question',
+                 showCancelButton: true,
+                 confirmButtonColor: '#3085d6',
+                 cancelButtonColor: '#d33',
+                 confirmButtonText: 'Si'
+             }).then((result) => {
 
-                    toastr.success("Ticket en proceso")
-                } else {
+                 if (result.isConfirmed) {
+                     let resultado = @this.enProceso(id)
+                     $('#ModalAgregar').modal('show')
 
-                    $('#ModalAgregar').modal('hide')
-                    return;
-                }
-            })
+                     toastr.success("Ticket en proceso")
+                 } else {
 
-        }
+                     $('#ModalAgregar').modal('hide')
+                     return;
+                 }
+             })
+
+            
+    }
     </script>
 </div>

@@ -25,12 +25,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                        $contador = 1;
-                    @endphp
+
                     @foreach ($tickets as $ticket)
                         <tr>
-                            <th scope="row">{{$contador }}</th>
+                            <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $ticket->name }}</td>
                             <td class="col-2">{{ $ticket->category->name }}</td>
                             <td class="col-2">
@@ -66,9 +64,6 @@
 
                             </td>
                         </tr>
-                        @php
-                            $contador++;
-                        @endphp
                     @endforeach
                 </tbody>
             </table>
@@ -102,7 +97,7 @@
                             <label for="Problema" class="form-label">Problema a resolver</label>
                             <input type="text"
                                 class="form-control input-lg @error('name') is-invalid @enderror "placeholder="ingresa el problema a resolver"
-                                name="name" wire:model="name">
+                                name="name" wire:model="name" value="{{ old('name') }}">
                             @error('name')
                                 <span class="invalid-feedback">
                                     <strong>{{ $message }}</strong>
@@ -168,7 +163,7 @@
                         <div class="mb-3">
                             <label for="Problema" class="form-label">Problema a resolver</label>
                             <input type="text" class="form-control input-lg @error('name') is-invalid @enderror "
-                                placeholder="ingresa el problema a resolver" name="name" wire:model="name">
+                                placeholder="ingresa el problema a resolver" name="name" wire:model="name" value="{{old('name')}}">
                             @error('name')
                                 <span class="invalid-feedback">
                                     <strong>{{ $message }}</strong>
@@ -183,7 +178,7 @@
                                 <select wire:model="categoria" name="categoria"
                                     class="form-select @error('categoria') is-invalid @enderror"
                                     id="inputGroupSelect01">
-                                    <option selected>Seleccionar</option>
+                                    <option value="" selected>Seleccionar</option>
                                     @foreach ($categorias as $categoriaa)
                                         <option value="{{ $categoriaa->id }}">{{ $categoriaa->name }}</option>
                                     @endforeach
@@ -236,13 +231,18 @@
 
                     <p><span class="fw-bold">Problema a resolver :</span> <span>{{ $name }}</span></p>
 
-                    <p><span class="fw-bold">Categoría :</span> <span>{{$categoria}}</span></p>
+                    <p><span class="fw-bold">Categoría :</span> <span>{{ $categoria }}</span></p>
 
                     <p><span class="fw-bold">Descripción :</span></p>
 
                     <div class="text-mostrar">
                         <p>{!! $data !!}</p>
                     </div>
+                 <hr>
+                 <p><span class="fw-bold">Solucion :</span></p>
+
+                 
+                 
 
 
                 </div>
@@ -257,7 +257,9 @@
     <script>
         let ckEditorCreate, ckEditorEdit, ckEditorVer;
         ClassicEditor
-            .create(document.querySelector('#editor'))
+            .create(document.querySelector('#editor'),{
+                removePlugins:['Link', 'CKFinder']
+            })
             .then(newEditor => {
                 ckEditorCreate = newEditor;
 
@@ -339,11 +341,7 @@
             ClassicEditor.remove(ckEditorVer);
         });
 
-        // const blackTriangles = document.querySelectorAll();
-        // blackTriangles.forEach(item => { item.remove() });
-
-
-
+     
 
 
         window.addEventListener('ticket_success', () => {
@@ -406,4 +404,3 @@
 
 
 </div>
-

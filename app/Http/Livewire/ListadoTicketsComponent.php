@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use  App\Models\Soporte\Ticket;
 use App\Models\Soporte\Categoria;
+use App\Models\Soporte\Solucion;
 
 
 class ListadoTicketsComponent extends Component
@@ -17,16 +18,16 @@ class ListadoTicketsComponent extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $ticket_id, $name, $categoria, $data, $categorias,$actualizar_status,$vercategoria;
+    public $ticket_id, $name, $categoria, $data, $categorias,$actualizar_status,$solucion;
 
     public function render()
     {
 
-      
         $this->categorias = Categoria::where('status', true)->get();
         return view('livewire.listado-tickets-component', [
 
-            'tickets' => Ticket::orderBy('id')->paginate(15)
+            'tickets' => Ticket::where('user_id',auth()->id())->orderBy('id')->paginate(15)
+                
         ]);
     }
 

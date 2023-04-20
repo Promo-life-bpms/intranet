@@ -301,16 +301,19 @@
                                 </span>
                             </a>
                         </li>
+                        @role('systems')
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{route('admin')}}">
                                 <span>Admin Soporte</span>
                             </a>
                         </li>
+                        
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('solucion') }}">
-                                <span>Soporte</span>
+                                <span>Soporte Solucion</span>
                             </a>
                         </li>
+                        @endrole
                     </ul>
                 </li>
 

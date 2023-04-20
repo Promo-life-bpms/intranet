@@ -36,4 +36,9 @@ class Ticket extends Model
     {
         return $this->hasMany(Mensajes::class);
     }
+
+    public function solution()
+    {
+        return $this->hasMany(Solucion::class);
+    }
 }

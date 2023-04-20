@@ -18,4 +18,10 @@ class Solucion extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+     public function solution()
+     {
+         return $this->belongsTo(Tikect::class,'ticket_id');
+     }
+
 }

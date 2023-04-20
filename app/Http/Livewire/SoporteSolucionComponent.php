@@ -2,10 +2,15 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Soporte\Categoria;
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Soporte\Ticket;
 use App\Models\Soporte\Solucion;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Soporte\UsuariosSoporte;
+
 
 
 
@@ -18,9 +23,11 @@ class SoporteSolucionComponent extends Component
     public function render()
     {
 
+        $categories=  auth()->user()->asignacionCategoria->pluck(["id"]);
 
         return view('livewire.soporte-solucion-component', [
-            'solucion' => Ticket::orderBy('id')->paginate('15')
+            
+            'solucion' => Ticket::whereIn('category_id',$categories)->paginate('15')
         ]);
     }
 
@@ -39,7 +46,6 @@ class SoporteSolucionComponent extends Component
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
-        
     }
 
     public function guardarSolucion()
@@ -59,12 +65,10 @@ class SoporteSolucionComponent extends Component
 
         Solucion::create([
             'description' => $this->description,
-            'user_id' =>auth()->user()->id,
-            'ticket_id' =>$this->ticket_id
+            'user_id' => auth()->user()->id,
+            'ticket_id' => $this->ticket_id
         ]);
 
         $this->dispatchBrowserEvent('ticket_solucion');
     }
-
-    
 }

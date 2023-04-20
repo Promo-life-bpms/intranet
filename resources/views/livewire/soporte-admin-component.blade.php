@@ -20,23 +20,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                        $contador = 1;
-                    @endphp
+                
                     @foreach ($users as $usuario)
                         <tr>
-                            <th scope="row">{{ $contador }}</th>
+                            <th scope="row">{{$loop->iteration }}</th>
                             <td>{{ $usuario->name }}</td>
-                            <td class="col-2">{{$usuario->categoria}}</td>
+                            <td class="col-2">
+                                @foreach ($usuario->asignacionCategoria as $categoria)
+                                    {{ $categoria->name }}
+                                @endforeach
+                            </td>
                             <td class="col-2"><button type="button" class="btn btn-primary btn-sm"
                                     data-bs-toggle="modal" data-bs-target="#ModalAsignacion"><i
                                         class="bi bi-pencil-fill" wire:click="verAsignacion({{ $usuario->id }})">Editar
                                         asignación</i>
                             </td>
                         </tr>
-                        @php
-                            $contador++;
-                        @endphp
+                      
                     @endforeach
                 </tbody>
             </table>
@@ -57,14 +57,28 @@
 
                     <div class="modal-body">
                         <div class=" input-group mb-3">
+
                             @foreach ($categorias as $categoria)
-                                <!--Crear un foreach para comprobar si la categoria esta relacionada con el usuario-->
+                                @php
+                                    $check = false;
+                                @endphp
+                                @if ($user)
+                                
+                                    @foreach ($user->asignacionCategoria as $userCategory)
+                                        @if ($categoria->id == $userCategory->id)
+                                            @php
+                                                $check = true;
+                                                break;
+                                            @endphp
+                                        @endif
 
-
+                                    @endforeach
+                                @endif
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" value="{{ $categoria->id }}"
-                                        id="flexCheckIndeterminate" wire:click='asignacion({{ $categoria->id }})'>
-                                    <label class="form-check-label" for="{{$categoria->name}}">
+                                        id="flexCheckIndeterminate" wire:click='asignacion({{ $categoria->id }})'
+                                        {{ $check ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="{{ $categoria->name }}">
                                         {{ $categoria->name }}
                                     </label>
                                 </div>
@@ -78,14 +92,14 @@
             </div>
         </div>
     </div>
-    
-    <script>
 
-            window.addEventListener('asignacion_correcta',()=>{
-                toastr.success('categoria asignada correctamente')
-                
-            })
-        
+    <script>     
+
+        window.addEventListener('asignacion_correcta', () => {
+            
+            toastr.success('categoria asignada correctamente')
+
+        })
     </script>
 
 </div>

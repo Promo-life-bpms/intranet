@@ -213,8 +213,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/', [SoporteController::class, 'index'])->name('soporte');
         Route::get('/create', [SoporteController::class, 'create'])->name('soporte.create');
         Route::get('/store', [SoporteController::class, 'store'])->name('soporte.store');
-        Route::get('/solucion',[SoporteController::class, 'solucion'])->name('solucion');
-        Route::get('/admin',[SoporteController::class, 'admin'])->name('admin');
+        Route::get('/solucion',[SoporteController::class, 'solucion'])->middleware('role:systems')->name('solucion');
+        Route::get('/admin',[SoporteController::class, 'admin'])->middleware('role:systems')->name('admin');
    });
 });
 
