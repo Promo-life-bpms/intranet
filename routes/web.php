@@ -259,7 +259,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/reservation/view/edit/',[ReservationController::class,'edit'])->name('reservation.view.edit');  
     Route::post('/reservation/creative/create', [ReservationController::class, 'store'])->name('reserviton.creative.create'); 
     Route::put('/reservation/creative/', [ReservationController::class, 'update'])->name('reserviton.creative.update');
-    Route::delete('/reservation/creative/delete/', [ReservationController::class, 'destroy'])->name('reserviton.creative.delete');
+    Route::post('/reservation/creative/delete/', [ReservationController::class, 'destroy'])->name('reserviton.creative.delete');
 
    });
 

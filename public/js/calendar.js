@@ -22,25 +22,31 @@ document.addEventListener('DOMContentLoaded', function() {
             meridiem: 'short',
         },
 
-        dateClick:function(info){
-            $("#evento").modal("show");
-        },
+        ////NOS ABRE EL MODAL PARA REGISTRAR///
 
-        eventClick: function(info) {
-            alert('Event: ' + info.event.title + info.event.start + info.event.end);
-            info.el.style.borderColor = 'green';
+        dateClick:function(info){
+          $("#evento").modal("show");
+          
         },
         
         eventClick: function(info) {
-            $('#Editar').modal('show'); // abre el modal
-            $('.modal-body').html(info.event.extendedProps.title); // agrega la información del calendario
+          $('#Editar'+info.event.id).modal('show'); // abre el modal
+          ///IMPORTANTE AQUI TENEMOS UN MODAL CONECTADO CON LA VISTA PARA PODER TRAER LA INFORMACÓN POR ID SE LE DEBE POONER "info.event.id"//
         },
+
+        ////NOS DIRA CUANTOS EVENTOS PODEMOS APILAR EN LA VISTA PRINCIPAL DEL CALENDARIO////
+        dayMaxEventRows: true,
+        views: {
+          timeGrid: {
+            dayMaxEventRows: 3
+          }
+  },
 
         initialView: 'dayGridMonth',
         selectable: true,
         events:'/reservation/view/', 
-    });
-
-    calendar.render();
+        //eventColor:
+      });
+      calendar.render();
 
 });

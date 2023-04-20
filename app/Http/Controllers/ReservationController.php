@@ -6,8 +6,8 @@ use App\Models\boardroom;
 use App\Models\Reservation;
 use App\Models\User;
 use Carbon\Carbon;
-use Facade\FlareClient\Stacktrace\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReservationController extends Controller
 {
@@ -23,6 +23,15 @@ class ReservationController extends Controller
     /////////////////////////////////////////////Función crear evento///////////////////////////////////////////////
     public function store(Request $request) 
     {
+        $start = $request->input('start');
+        $end = $request->input('end');
+        $id_sala = $request->input('id_sala');
+        
+    
+        $evento_existente = Reservation::where('start', $start)->where('id_sala', $id_sala)->first();
+        if ($evento_existente) {
+            return redirect()->back()->withErrors(['fecha_hora' => 'Ya existe un evento en esta fecha y hora']);
+        }else{
         $user = auth()->user();
         $request->validate([
             'title'=>'required',
@@ -52,57 +61,58 @@ class ReservationController extends Controller
             $evento->save();
             return redirect()->back()->with('message', 'Evento creado');
         }
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public function edit($id)
-    {
-        // Obtén el evento a editar
-        $eventos = Reservation::find($id);
-        // Retorna la vista del formulario de edición con los datos del evento
-        return view('admin.room.index',compact('id', 'eventos'));
-    }       
     //////////////////////////////////////////////Función para editar/////////////////////////////////////////////////
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $user = auth()->user();
-        $request->validate([
-        'start' => 'required',
-        'end' => 'required',
-        'material' => 'required',
-        'chair_loan' => 'required',
-        'description' => 'required',
-        'id'=>'required'
-    ]);
-    
-    $carbon = new \Carbon\Carbon();
-    $start = $carbon->now();
-    $start = $start->format("d-m-Y\TH:i");
-    $end = $carbon->now();
-    $end = $end->format("d-m-Y\TH:i");
 
-    $reservation =Reservation::find($id);
-    $reservation->title=$request->title;
-    $reservation->start = $request->start;
-    $reservation->end= $request->end;
-    $reservation->number_of_people=$request->number_of_people;
-    $reservation->material=$request->material;
-    $reservation->chair_loan=$request->chair_loan;
-    $reservation->description=$request->description;
-    $reservation->id_usuario=$user->id;
-    $reservation->id_sala=$request->id_sala;
-    $reservation->save();
-    return redirect()->back()->with('message', 'Evento editado correctamente');
-    } 
+        /*$eventos=Reservation::all()->pluck('id');
+        dd($eventos);
+        if ($request->eventos == auth()->user()->id) {
+            return redirect()->back()->with('error', 'No tienes permiso para editar este evento');
+        
+        }else{
+           */
+            //$prueba=Reservation::all()->where('id', $request->id_evento);
+            //dd($prueba);
+            $request->validate([
+                'title'=>'required',
+                'start' => 'required',
+                'end' => 'required',
+                'number_of_people'=>'required',
+                'material' => 'required',
+                'chair_loan' => 'required',
+                'description' => 'required',
+                'id_sala'=>'required'
+            ]);
+            
+            $carbon = new \Carbon\Carbon();
+            $start = $carbon->now();
+            $start = $start->format("d-m-Y\TH:i");
+            $end = $carbon->now();
+            $end = $end->format("d-m-Y\TH:i");
+
+            
+
+            
+            DB::table('reservations')->where('id', $request->id_evento)->update(['title'=>$request->title,'start'=>$request->start,
+            'end'=>$request->end,'number_of_people'=>$request->number_of_people,'material'=>$request->material, 
+            'chair_loan' =>$request->chair_loan, 'description' =>$request->description,'id_sala' =>$request->id_sala]);
+
+            return redirect()->back()->with('message', 'Evento editado correctamente');
+        }
+    //} 
 
     //////////////////////////////////////////////Metodo eliminar///////////////////////////////////////////////////
-    public function destroy(Reservation $reservation)
+    public function destroy(Request $request)
     {
-    
-    $reservation->delete();
-    return redirect()->route([ReservationController::class, 'index'])->with('success', 'Evento eliminado exitosamente!');
-    }
 
+        DB::table('reservations')->where('id', $request->id_evento)->delete();
+        return redirect()->back()->with('message', 'Evento eliminado');  
+    }
     /////////////////////////////////////////////Mostrar eventos////////////////////////////////////////////////////
     public function view(Reservation $reservation){
         $reservation = Reservation::all();

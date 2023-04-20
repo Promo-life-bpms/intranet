@@ -6,7 +6,6 @@
                 <div id="calendar"></div>
             </div>
 
-            <!-- Modal -->
             <div class="modal fade" id="evento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -22,7 +21,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        {!! Form::text('id:usuario', $user->id,['class'=>'form-control', 'hidden']) !!}
+                                        {!! Form::text('id_usuario', $user->name,['class'=>'form-control', 'hidden']) !!}
                                         {!!Form::label('title ', 'Título:')!!}
                                         {!!Form::text('title', null,['class'=>'form-control', 'placeholder'=>'Ingresa un titulo'])!!}
                                         @error('title')
@@ -125,23 +124,22 @@
 
 
             @foreach ($eventos as $evento)
-            <div class="modal fade" id="Editar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            {!! Form::open(['route' => 'reserviton.creative.update', 'enctype' => 'multipart/form-data', 'method'=>'PUT']) !!}
+            @csrf
+            <div class="modal fade" id="Editar{{$evento->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="exampleModalLabel">Editar evento</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-
+                        
                         <div class="modal-body">
-                            {!! Form::open(['route' => 'reserviton.creative.update', 'enctype' => 'multipart/form-data', 'method'=>'PUT']) !!}
-                            @csrf
-                            {{method_field('PUT')}}
-
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        {!! Form::text('id:usuario', $user->id,['class'=>'form-control']) !!}
+                                        {!! Form::text('id_evento', $evento->id,['class'=>'form-control', 'hidden']) !!}
+                                        {!! Form::text('id_usuario', $user->id,['class'=>'form-control','hidden']) !!}
                                         {!!Form::label('title ', 'Título:')!!}
                                         {!!Form::text('title', $evento->title,['class'=>'form-control', 'placeholder'=>'Ingresa un titulo'])!!}
                                         @error('title')
@@ -227,22 +225,49 @@
                                         @error('description')
                                         <br>
                                         @enderror
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            
+                            @if(auth()->user()->id==$evento->id_usuario)
                             <div class="modal-footer">
-                                {!! Form::submit('Guardar', ['class' => 'btn btn-success']) !!}
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Elimiar</button>
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                                {!! Form::submit('Editar', ['class' => 'btn btn-warning']) !!}
+                                <form action="{{ route('reserviton.creative.delete', ['id_evento' =>$evento->id]) }}" method="post"></form>
+                                <form class="form-delete m-2 mt-0"  action="{{ route('reserviton.creative.delete')}}" method="post">
+                                    {!! Form::text('id_evento', $evento->id,['class'=>'form-control', 'hidden']) !!}
+                                    @csrf
+                                    <input class="btn btn-danger" type="submit" value="Eliminar" />
+                                </form>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             </div>
-                            {!! Form::close() !!}
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
+            {!! Form::close() !!}
             @endforeach
+            @stop
 
-@stop
-
+@section('scripts')
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
+    <script>
+        $('.form-delete').submit(function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡El registro se eliminará permanentemente!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '¡Si, eliminar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            })
+        });
+    </script>
+@endsection
