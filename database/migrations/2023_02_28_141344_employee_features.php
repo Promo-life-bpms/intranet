@@ -17,14 +17,14 @@ class EmployeeFeatures extends Migration
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
         
-            $table->string('nss');
-            $table->string('curp');
-            $table->string('full_address');
-            $table->string('phone');
-            $table->string('message_phone');
-            $table->string('email');
-            $table->string('status');
-           
+            $table->string('nss')->nullable();;
+            $table->string('curp')->nullable();;
+            $table->string('full_address')->nullable();;
+            $table->string('phone')->nullable();;
+            $table->string('message_phone')->nullable();;
+            $table->string('email')->nullable();;
+            $table->string('status')->nullable();;
+
             $table->string('fathers_name')->nullable();
             $table->string('mothers_name')->nullable();
 
@@ -47,6 +47,7 @@ class EmployeeFeatures extends Migration
 
             $table->bigInteger('company_id')->nullable();
             $table->date('date_admission')->nullable();
+            $table->date('date_down')->nullable();
 
             $table->string('card_number')->nullable();
             $table->string('bank_name')->nullable();

@@ -291,12 +291,12 @@
         border-color: #0084C3;
     }
     .card_document{
-            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-            border: 1px solid #000;
-            display: flex;
-            align-items: center;
-            padding: 24px;   
-        }
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        border: 1px solid #000;
+        display: flex;
+        align-items: center;
+        padding: 24px;   
+    }
 
     .card_document>img{
         width: 160px;

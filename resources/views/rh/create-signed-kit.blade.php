@@ -152,7 +152,17 @@
                     @if ($document->type == 'pdf')
                         <iframe src="{{ asset($document->resource)}}" style="width:100%; height:100%;" frameborder="0"></iframe>
                     @else
-                        Vista previa no disponible
+                        @switch($document->type)
+                        @case('docx' || 'doc' )
+                        <img src="{{asset('img/Word.png')}}">
+                        @break;
+                        @case('xlsx')
+                        <img src="{{asset('img/RExcel.png')}}">
+                        @break;
+                        @default
+                        <img src="{{asset('img/Documentos.png')}}">
+                        @break;
+                        @endswitch
                     @endif
                     
                     <br>

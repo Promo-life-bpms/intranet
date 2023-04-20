@@ -630,7 +630,6 @@ class RhController extends Controller
         if($user->userDetails == null){
             $user_details = new UserDetails();
             $user_details->user_id = $user->id;
-            $user_details->birthdate = $user->employee->birthday_date;
             $user_details->date_admission = $user->employee->date_admission;
             $user_details->date_down = $request->date_down;
             $user_details->save();

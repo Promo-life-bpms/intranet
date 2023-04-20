@@ -47,7 +47,13 @@
     <div class="alert alert-success">
         {{ session('message') }}
     </div>
+    <br>
     @endif
+
+    <div class="alert alert-light" role="alert">
+        Ingresa la <b>fecha de baja</b> y marca los <b> motivos de baja</b>.
+    </div>
+
     <div class="container">
 
         <h5>Fecha de baja</h5>
@@ -56,18 +62,18 @@
       
         <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3">
             
-            <div class="col">
+            <div class="col form-group">
                 {!! Form::text('user_id', $user->id,['class' => 'form-control', 'hidden']) !!}
 
                 {!! Form::label('name', 'Nombre') !!}
                 {!! Form::text('name', $user->name,['class' => 'form-control', 'readonly']) !!}
             </div>
-            <div class="col">
+            <div class="col form-group">
                 {!! Form::label('lastname', 'Apellidos') !!}
                 {!! Form::text('lastname', $user->lastname,['class' => 'form-control', 'readonly' ]) !!}
             </div>
-            <div class="col">
-                {!! Form::label('date_down', 'Fecha de baja') !!}
+            <div class="col form-group">
+                {!! Form::label('date_down', 'Fecha de baja',['class'=>'required']) !!}
                 {!! Form::date('date_down', isset($user->userDetails->date_down) ? $user->userDetails->date_down : null , ['class' => 'form-control'  ]) !!}
                 @error('date_down')
                     <small>
@@ -290,6 +296,10 @@
             color: #000;
             background-color: #fff;
             border-color: #0084C3;
+        }
+        .required:after {
+            content:" *";
+            color: red;
         }
 
    </style>

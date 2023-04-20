@@ -316,9 +316,9 @@
         border-color: #0084C3;
     }
     .required:after {
-            content:" *";
-            color: red;
-        }
+        content:" *";
+        color: red;
+    }
 </style>
 @endsection
 
