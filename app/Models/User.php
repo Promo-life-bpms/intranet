@@ -108,4 +108,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(RequestCalendar::class, 'users_id')->where('requests_id', null);
     }
+
+    public function requests()
+    {
+        return $this->hasMany(Request::class);
+    }
+    
 }

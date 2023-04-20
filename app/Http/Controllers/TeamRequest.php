@@ -15,11 +15,13 @@ public function index(){
 
 }
 
-public function index1(){
-    $datos = DB::table('request_team')
+public function index1()
+{
+    $datos = ModelsTeamRequest::all();
+    /*$datos = DB::table('request_team')
             ->select('request_team.*')
             ->orderBy('id')
-            ->get();
+            ->get();*/
     return view('admin.team.record')->with('datos', $datos);
 }
 

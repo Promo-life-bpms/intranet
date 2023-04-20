@@ -23,7 +23,7 @@
                 <tbody>
                     @foreach ($systems_request as $systems )
                     <tr>
-                        <td></td>
+                        <td>{{$systems->user->name.' '. $systems->user->lastname}}</td>
                         <td>{{$systems->category}}</td>
                         <td>{{$systems->description}}</td>
                         <td style="text-align: center">{{$systems->status}}</td>
@@ -42,7 +42,7 @@
 
     <style>
         table {
-        font-size: 74.7%;
+        font-size: 65.9%;
         }
     </style>
 @endsection
