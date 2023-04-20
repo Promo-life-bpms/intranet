@@ -42,7 +42,7 @@
 
     <style>
         table {
-        font-size: 65.9%;
+        font-size: 66.1%;
         }
     </style>
 @endsection
