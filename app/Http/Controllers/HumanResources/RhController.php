@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\CompanyEmployee;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\Position;
 use App\Models\Postulant;
 use App\Models\PostulantBeneficiary;
 use App\Models\PostulantDetails;
@@ -1212,7 +1213,23 @@ class RhController extends Controller
     public function createUpPostulant($postulant_id)
     {
         $postulant = Postulant::where('id',$postulant_id)->get()->last();
-        return view('rh.create-up-postulant', compact('postulant'));
+        $companies = Company::all()->pluck('name_company','id');
+        $employees = Employee::all();
+        $departments  = Department::pluck('name', 'id')->toArray();
+        $positions  = Position::pluck('name', 'id')->toArray();
+        $manager = User::all()->pluck('name', 'id');
+
+        $dep = Department::find($postulant->department_id);
+        $positions = Position::all()->where("department_id", $postulant->department_id)->pluck("name", "id");
+        $data = $dep->positions;
+        $users = [];
+        foreach ($data as $dat) {
+            foreach ($dat->getEmployees as $emp) {
+                $users["{$emp->user->id}"] = $emp->user->name;
+            }
+        }
+
+        return view('rh.create-up-postulant', compact('postulant','companies','employees','departments','positions','manager','users'));
     }
 
 
@@ -1298,6 +1315,134 @@ class RhController extends Controller
         }
 
         return redirect()->back()->with('message', 'Documentos guardados correctamente');
+    }
+
+    public function storeUpPostulant(Request $request)
+    {
+
+        $request->validate([
+            'name' => 'required',
+            'lastname' => 'required',
+            'date_admission' => 'required',
+            'email' => 'required',
+            'birthdate' => 'required',
+            'company_id' => 'required',
+            'department_id' => 'required',
+            'jefe_directo_id' => 'required',
+            'vacant' => 'required',
+        ]); 
+
+        DB::table('postulant')->where('id',$request->postulant_id)->update([
+            'name' => $request->name,
+            'lastname' => $request->lastname,
+            'date_admission' => $request->date_admission,
+            'email'=>$request->email,
+            'birthdate'=>$request->birthdate,
+            'company_id'=>$request->company_id,
+            'department_id'=>$request->department_id,
+            'vacant' => $request->company_id,
+            'status' => 'colaborador'
+        ]);
+
+        $postulant = Postulant::where('id',$request->postulant_id)->get()->last();
+
+        $pass = Str::random(8);
+        $user = new User();
+        $user->name = $postulant->name;
+        $user->image = null;
+        $user->lastname = $postulant->lastname;
+        $user->email = $postulant->email;
+        $user->password = Hash::make($pass);
+        $user->save();
+
+        $positions = Position::where('name',$request->vacant)->get()->last();
+
+        if($positions==null){
+            $create_position = new Position();
+            $create_position->name = $request->vacant;
+            $create_position->department_id = $request->department_id;
+            $create_position->save();
+
+            $position_id = $create_position->id;
+        }else{
+            
+            $position_id = $positions->id;
+        }        
+
+        $user->employee->birthday_date = $postulant->birthdate;
+        $user->employee->date_admission = $postulant->date_admission;
+        $user->employee->status = 1;
+        $user->employee->jefe_directo_id = $request->jefe_directo_id;
+        $user->employee->position_id = $position_id;
+        $user->employee->save();
+
+        $role = new RoleUser();
+        $role->role_id = 5;
+        $role->user_id = $user->id;
+        $role->user_type = 'App\Models\User';
+        $role->save();
+
+        $user_details = new UserDetails();
+        $user_details->user_id = $user->id;
+        $user_details->nss = $postulant->nss;
+        $user_details->curp = $postulant->curp;
+        $user_details->full_address = $postulant->full_address;
+        $user_details->phone = $postulant->phone;
+        $user_details->message_phone = $postulant->message_phone;
+        $user_details->email = $postulant->email;
+        $user_details->status = $postulant->status;
+        $user_details->fathers_name = $postulant->fathers_name;
+        $user_details->mothers_name = $postulant->mothers_name;
+        $user_details->civil_status = $postulant->civil_status;
+        $user_details->age = $postulant->age;
+        $user_details->gender = $postulant->gender;
+        $user_details->nacionality = $postulant->nacionality;
+        $user_details->id_credential = $postulant->id_credential;
+        $user_details->fiscal_postal_code = $postulant->fiscal_postal_code;
+        $user_details->rfc = $postulant->rfc;
+        $user_details->place_of_birth = $postulant->place_of_birth;
+        $user_details->street = $postulant->street;
+        $user_details->colony = $postulant->colony;
+        $user_details->delegation = $postulant->delegation;
+        $user_details->postal_code = $postulant->postal_code;
+        $user_details->home_phone = $postulant->home_phone;
+        $user_details->home_references = $postulant->home_references;
+        $user_details->house_characteristics = $postulant->house_characteristics;
+        $user_details->company_id = $postulant->company_id;
+        $user_details->date_admission = $postulant->date_admission;
+        $user_details->card_number = $postulant->card_number;
+        $user_details->bank_name = $postulant->bank_name;
+        $user_details->infonavit_credit = $postulant->infonavit_credit;
+        $user_details->factor_credit_number = $postulant->factor_credit_number;
+        $user_details->fonacot_credit = $postulant->fonacot_credit;
+        $user_details->discount_credit_number = $postulant->discount_credit_number;
+        $user_details->month_salary_net = $postulant->month_salary_net;
+        $user_details->month_salary_gross = $postulant->month_salary_gross;
+        $user_details->daily_salary = $postulant->daily_salary;
+        $user_details->daily_salary_letter = $postulant->daily_salary_letter;
+        $user_details->position_objetive = $postulant->position_objetive;
+        $user_details->contract_duration = $postulant->contract_duration;
+        $user_details->save();
+
+        $postulant_documents = PostulantDocumentation::where('postulant_id',$request->postulant_id)->get();
+        foreach($postulant_documents as $document){
+
+            $create_user_document = new UserDocumentation();
+            $create_user_document->type = $document->type;
+            $create_user_document->description = $document->description;
+            $create_user_document->resource = $document->resource;
+            $create_user_document->user_id = $user->id;
+            $create_user_document->save();
+
+        }
+
+        $create_company_user = new EmployeeCompany();
+        $create_company_user->employee_id = $user->id;
+        $create_company_user->company_id = $request->company_id;
+        $create_company_user->save(); 
+
+        return redirect()->back()->with('message', 'Ahora el candidato es colaborador, puedes visualizar su información en la sección de Empleados');
+
     }
    
 }

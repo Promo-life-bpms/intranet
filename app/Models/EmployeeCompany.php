@@ -9,4 +9,5 @@ class EmployeeCompany extends Model
 {
     use HasFactory;
     public $table = "company_employee";
+    public $timestamps = false;
 }

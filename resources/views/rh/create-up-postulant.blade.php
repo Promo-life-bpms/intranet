@@ -4,22 +4,14 @@
 <div class="card-header">
     <div class="d-flex justify-content-between">
         <div class="d-flex flex-row">
-            <a href="{{ route('rh.createPostulantDocumentation', ['postulant_id' => $postulant->id]) }}">
+            <a href="{{ route('rh.createSignedKit', ['postulant_id' => $postulant->id]) }}">
                 <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i>
             </a> 
             <h3 class="separator ms-2">Alta de Colaborador</h3>
         </div>
                         
         <div>                
-            <form 
-                action="{{ route('rh.createUpPostulant', ['postulant_id' => $postulant->id]) }}"
-                method="GET">
-                 @csrf
-                <button type="submit" class="btn btn-primary"> 
-                    Alta de Colaborador
-                    <i class="fa fa-arrow-right" aria-hidden="true"></i> 
-                </button>
-            </form>
+            
         </div>
     </div>
 </div>
@@ -56,9 +48,144 @@
     </div>
 </div>
 
-<br>
-    <h5></h5>
-    
+    @if (session('message'))
+        <div class="alert alert-success">
+            {{ session('message') }}
+            <br>
+        </div>
+    @endif
+    <br>
+    <div class="alert alert-light" role="alert">
+        Estás a un paso de dar de alta al colaborador en el sistema, confirma la información y rellena los campos faltantes (*).
+    </div>
+    <br>
+    <h5>Información de Ingreso</h5>
+    <br>
+    {!! Form::open(['route' => 'rh.storeUpPostulant', 'enctype' => 'multipart/form-data']) !!}
+
+    <div class="row form-group">
+
+            {!! Form::text('postulant_id', $postulant->id, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario', 'hidden']) !!}
+
+            <div class="col-sm">
+                {!! Form::label('name', 'Nombre') !!}
+                {!! Form::text('name', $postulant->name, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
+                @error('name')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+                
+            <div class="col-sm">
+                {!! Form::label('lastname', 'Apellidos') !!}
+                {!! Form::text('lastname', $postulant->lastname, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
+                @error('lastname')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+
+            <div class="col-sm ">
+                {!! Form::label('date_admission', 'Fecha de ingreso') !!}
+                {!! Form::date('date_admission', $postulant->date_admission, ['class' => 'form-control', 'placeholder' => 'Ingrese fecha de ingreso']) !!}
+                @error('date_admission')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>  
+        </div>
+
+       
+        <div class="row form-group">
+            <div class="col-sm">
+                {!! Form::label('email', 'Correo electrónico') !!}
+                {!! Form::text('email', $postulant->email, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                @error('email')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+
+            <div class="col-sm">
+                {!! Form::label('birthdate', 'Fecha de nacimiento') !!}
+                {!! Form::date('birthdate', $postulant->birthdate, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                @error('birthdate')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div> 
+            <div class="col-sm"> </div> 
+            
+        </div>
+        
+        <div class="row form-group">
+            <div class="col-sm">
+                {!! Form::label('company_id', 'Empresa') !!}
+                {!! Form::select('company_id',$companies , $postulant->company_id, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                @error('company_id')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+
+            <div class="col-sm">
+                {!! Form::label('department_id', 'Departamento') !!}
+                {!! Form::select('department_id', $departments, $postulant->department_id, ['class' => 'form-control','placeholder' => 'Selecciona Departamento']) !!}
+                @error('department_id')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+
+            <div class="col-sm">
+                {!! Form::label('jefe_directo_id', 'Jefe Directo', ['class' => 'required']) !!}
+                {!! Form::select('jefe_directo_id', $users, null, ['class' => 'form-control','placeholder' => 'Selecciona jefe directo ']) !!}
+                @error('jefe_directo_id')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>   
+        </div>
+        
+        <div class="row form-group">
+            <div class="col-sm">
+                {!! Form::label('vacant', 'Vacante') !!}
+                {!! Form::text('vacant', $postulant->vacant, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                @error('vacant')
+                    <small>
+                        <font color="red"> *Este campo es requerido* </font>
+                    </small>
+                    <br>
+                @enderror
+            </div>
+            <div class="col-sm"></div>
+            <div class="col-sm"></div>
+
+        </div>
+        
+        @if ($postulant->status != 'colaborador')
+            {!! Form::submit('CREAR ALTA DE COLABORADOR', ['class' => 'btnCreate mt-4']) !!}
+        @endif
+  
+    </div>
+
+    {!! Form::close() !!}
     
 </div>
 @stop
@@ -173,6 +300,68 @@
         background-color: #fff;
         border-color: #0084C3;
     }
-
+    .required:after {
+            content:" *";
+            color: red;
+        }
 </style>
 @endsection
+
+
+@section('scripts')
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery('select[name="department_id"]').on('change', function() {
+                var id = jQuery(this).val();
+                if (id) {
+                    jQuery.ajax({
+                        url: '/dropdownlist/getPosition/' + id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            console.log(data);
+                            jQuery('select[name="position"]').empty();
+                            jQuery.each(data.positions, function(key, value) {
+                                $('select[name="position"]').append('<option value="' +
+                                    key + '">' + value + '</option>');
+                            });
+                            jQuery('select[name="jefe_directo_id"]').empty();
+                            jQuery.each(data.users, function(key, value) {
+                                $('select[name="jefe_directo_id"]').append(
+                                    '<option value="' + key + '">' + value +
+                                    '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('select[name="position"]').empty();
+                }
+            });
+        });
+    </script>
+    {{-- <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery('select[name="position"]').on('change', function() {
+                var id = jQuery(this).val();
+                if (id) {
+                    jQuery.ajax({
+                        url: '/user/getManager/' + id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            jQuery('select[name="jefe_directo_id"]').empty();
+                            jQuery.each(data, function(key, value) {
+                                $('select[name="jefe_directo_id"]').append(
+                                    '<option value="' + key + '">' + value +
+                                    '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('select[name="employee_id"]').empty();
+                }
+            });
+        });
+    </script> --}}
+@stop

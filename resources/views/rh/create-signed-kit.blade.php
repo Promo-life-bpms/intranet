@@ -74,7 +74,7 @@
     <div class="alert alert-light" role="alert">
         Sube aqui tus documentos firmados, tras finalizar podrás dar de <b>Alta al Colaborador</b> en la sistema.<br>
         <b>Kit Legal: </b> Contrato (requerido), Convenio de confidencialidad (requerido). <br>
-        <b>Documentos Personales: </b>CV, Acta de nacimiento, CURP, INE, NSS, Comprobante de domicilio, Comprobante de estudios, Certificado médico, Cuenta de banco.
+        <b>Documentos Personales: </b>CV, Acta de nacimiento, CURP, INE, NSS, Comprobante de domicilio, Comprobante de estudios, Certificado médico, Cuenta de banco, Constancia de situación fiscal.
     </div>
     <br>
 
