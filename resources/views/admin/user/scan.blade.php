@@ -62,22 +62,39 @@
         @foreach ($user_documents as $document)
             <div class="col">
                 <div class="card card_document">
-                    @if ($document->type == 'pdf')
-                        <iframe src="{{ asset($document->resource)}}" style="width:100%; height:100%;" frameborder="0"></iframe>
-                    @else
-                        @switch($document->type)
-                        @case('docx' || 'doc' )
-                        <img src="{{asset('img/Word.png')}}">
+                    
+                    @switch($document->type)
+                        @case('pdf' )
+                        <iframe src="{{ asset($document->resource)}}" style="width:100%; height:150px;" frameborder="0"></iframe>
+                        @break;
+                        @case('png' )
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{ asset($document->resource)}}">
+                        @break;
+                        @case('jpg' )
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{ asset($document->resource)}}">
+                        @break;
+                        @case('jpeg' )
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{ asset($document->resource)}}">
+                        @break;
+                        @case('docx')
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{asset('img/Word.png')}}">
+                        @break;
+                        @case('doc')
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{asset('img/Word.png')}}">
                         @break;
                         @case('xlsx')
-                        <img src="{{asset('img/RExcel.png')}}">
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{asset('img/RExcel.png')}}">
+                        @break;
+                        @case('xls')
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{asset('img/RExcel.png')}}">
                         @break;
                         @default
-                        <img src="{{asset('img/Documentos.png')}}">
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{asset('img/Documentos.png')}}">
                         @break;
-                        @endswitch
-                    @endif
-                    <p class="card-text">{{$document->description}}</p>
+                    @endswitch
+                    <br>
+                    
+                    <p class="card-text">{{ strtoupper($document->description) }}</p>
                     <a href="{{asset($document->resource)}}" style="width: 100%" target="_blank" class="btn btn-primary btn-sm">Abrir</a><br>
                     <div class="d-grid gap-2 d-md-block" >
                         <form class="form-delete m-2 mt-0" action="{{ route('rh.deleteDocuments', ['document_id' =>$document->id]) }}" method="POST">
@@ -104,7 +121,7 @@
                                 <div class="col">
                                     <div class="mb-2 form-group">                                    
                                         {!! Form::text('id', $document->id,['class'=>'form-control', 'hidden']) !!}
-                                        <p>Descripción del archivo</p>
+                                        {!! Form::label('id', 'Descripción') !!}
                                         {!! Form::text('description', $document->description, ['class' => 'form-control']) !!}
                                         @error('description')
                                         <small>
@@ -114,6 +131,7 @@
                                         @enderror
                                     </div>
                                     <div class="mb-2 form-group">
+                                    {!! Form::label('id', 'Archivo') !!}
                                         {!! Form::file('documents', ['class' => 'form-control']) !!}
                                         @error('documents')
                                         <small>
@@ -160,7 +178,7 @@
                             <br>
 
                             <div class="mb-2 form-group">
-                                {!! Form::label('documents_text', 'Descripción', ['class'=>'required']) !!}
+                                {!! Form::label('documents_text', 'Archivo', ['class'=>'required']) !!}
                                 {!! Form::file('documents', ['class' => 'form-control', 'id' => 'input-file']) !!}
                                 @error('documents')
                                 <small>
@@ -221,10 +239,10 @@
         const file = inputFile.files
         const [resource] = inputFile.files
         var extension = file[0].name.substr(file.length - 4);
-            if (extension == 'pdf') {
-                console.log('Es PDF')
+            if (extension == 'pdf' || extension == 'png' || extension == 'jpg' || extension == 'peg') {
                 frameFile.src = URL.createObjectURL(resource)
-            }else{
+            }
+            else{
                 frameFile.src = ''
             }
             

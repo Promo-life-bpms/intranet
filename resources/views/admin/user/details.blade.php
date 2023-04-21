@@ -11,7 +11,7 @@
             </div>
                         
             <div class="d-flex">
-                <button type="button" class="btn btn-success m-1" data-bs-toggle="modal"  data-bs-target="#modalAdd"><i class="bi bi-plus-lg"></i>Agregar documento</button>
+               
             </div>
         </div>
     </div>
@@ -25,7 +25,7 @@
     @endif
     
     <div class="alert alert-light" role="alert">
-        Ingresa la información adicional del colaborador, puedes omitir los campos si no cuentas con dicha información.
+        Ingresa la información adicional del colaborador, puedes omitir los campos si no cuentas con dicha información y agregarlos después.
     </div>
 
         {!! Form::open(['route' => 'admin.user.updateUserDetails', 'enctype' => 'multipart/form-data']) !!}
@@ -108,7 +108,6 @@
 
             <div class="row form-group">
                 
-
                 <div class="col-sm ">
                     {!! Form::label('mothers_name', 'Nombre de la madre') !!}
                     {!! Form::text('mothers_name', isset($user_details->mothers_name) ? $user_details->mothers_name : null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre completo de la madre']) !!}
@@ -142,8 +141,6 @@
                     {!! Form::label('street', 'Calle', ['class'=>'required']) !!}
                     {!! Form::text('street', isset($user_details->street) ? $user_details->street : null, ['class' => 'form-control', 'placeholder' => 'Ingrese la calle']) !!}
                 </div>
-
-               
   
             </div>
 

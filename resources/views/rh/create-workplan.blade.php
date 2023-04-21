@@ -96,21 +96,29 @@
             <div class="col">
                 <div class="card card_document">
 
-                    @if ($document->type == 'pdf')
-                        <iframe src="{{ asset($document->resource)}}" style="width:100%; height:100%;" frameborder="0"></iframe>
-                    @else
-                        @switch($document->type)
-                        @case('docx' || 'doc' )
-                        <img src="{{asset('img/Word.png')}}">
+                    @switch($document->type)
+                        @case('pdf' )
+                        <iframe src="{{ asset($document->resource)}}" style="width:100%; height:150px;" frameborder="0"></iframe>
+                        @break;
+                        @case('png' )
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{ asset($document->resource)}}">
+                        @break;
+                        @case('docx')
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{asset('img/Word.png')}}">
+                        @break;
+                        @case('doc')
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{asset('img/Word.png')}}">
                         @break;
                         @case('xlsx')
-                        <img src="{{asset('img/RExcel.png')}}">
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{asset('img/RExcel.png')}}">
+                        @break;
+                        @case('xls')
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{asset('img/RExcel.png')}}">
                         @break;
                         @default
-                        <img src="{{asset('img/Documentos.png')}}">
+                        <img style="width:100%; height:150px; object-fit:contain;" src="{{asset('img/Documentos.png')}}">
                         @break;
-                        @endswitch
-                    @endif
+                    @endswitch
                     
                     <br>
                     <p class="card-text">{{$document->description}}</p>
