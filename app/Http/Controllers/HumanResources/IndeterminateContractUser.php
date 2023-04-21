@@ -16,7 +16,7 @@ class IndeterminateContractUser extends Controller
         $lastname = strtoupper($user->lastname); 
         $nacionality = strtoupper($user_details->nacionality);  
         $civil_status = strtoupper($user_details->civil_status) ;
-        $domicile = strtoupper($user_details->address) ;
+        $domicile = strtoupper($user_details->full_address) ;
         $age = $user_details->age;
         $curp = strtoupper($user_details->curp);
         $position = strtoupper($user_details->position);

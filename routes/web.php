@@ -74,6 +74,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('exportUsuarios/', [UserController::class, 'exportUsuarios'])->name('user.exportUsuarios');
         Route::get('sendAccess/', [UserController::class, 'sendAccess'])->name('user.sendAccess');
         Route::get('sendAccess/{user}', [UserController::class, 'sendAccessPerUser'])->name('user.sendAccessUnit');
+        Route::get('user-details/{user_id}', [UserController::class, 'userDetails'])->name('user.userDetails');
+        Route::post('update-user-details/', [UserController::class, 'updateUserDetails'])->name('user.updateUserDetails');
+
     });
 
     // Inicio

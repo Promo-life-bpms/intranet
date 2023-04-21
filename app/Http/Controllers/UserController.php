@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\HumanResources\UserDetails;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\Employee;
@@ -9,12 +10,16 @@ use App\Models\Position;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Manager;
+use App\Models\UserDetails as ModelsUserDetails;
 use App\Notifications\RegisteredUser;
 use Cache;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManagerStatic as Image;
 
@@ -444,5 +449,110 @@ class UserController extends Controller
         ];
         $user->notify(new RegisteredUser($dataNotification));
         return redirect()->back();
+    }
+
+    public function userDetails($id)
+    {
+
+        $user = User::find($id);
+        $user_details = ModelsUserDetails::where('user_id',$id)->get()->last();
+        $companies = Company::all()->pluck('name_company', 'id');
+        $departments = Department::all()->pluck('name','id');
+
+        $get_birthdate = $user->employee->birthday_date;
+        $carbon =  $carbon = new \Carbon\Carbon();
+        $date = $carbon->now();
+
+        $today = $date->format('Y-m-d');
+        $birthday = $get_birthdate ->format('Y-m-d');
+
+        $age = date_diff(date_create($birthday), date_create($today))->y;
+
+        return view('admin.user.details', compact('user_details', 'companies', 'departments', 'age', 'user'));
+    }
+
+    public function updateUserDetails(Request $request)
+    {
+
+        $user_details = ModelsUserDetails::where('user_id',$request->user_id)->get()->last();
+
+        if($user_details == null){
+            $create_user_details = new ModelsUserDetails();
+            $create_user_details->user_id = $request->user_id;
+            $create_user_details->civil_status = $request->civil_status;
+            $create_user_details->age = $request->age;
+            $create_user_details->gender = $request->gender;
+            $create_user_details->nacionality = $request->nacionality;
+            $create_user_details->id_credential = $request->id_credential;
+            $create_user_details->rfc = $request->rfc;
+            $create_user_details->nss = $request->nss;
+            $create_user_details->curp = $request->curp;
+            $create_user_details->phone = $request->phone;
+            $create_user_details->message_phone = $request->message_phone;
+            $create_user_details->email = $request->email;
+            $create_user_details->fathers_name = $request->fathers_name;
+            $create_user_details->mothers_name = $request->mothers_name;
+            $create_user_details->full_address = $request->full_address;
+            $create_user_details->place_of_birth = $request->place_of_birth;
+            $create_user_details->street = $request->street;
+            $create_user_details->colony = $request->colony;
+            $create_user_details->delegation = $request->delegation;
+            $create_user_details->postal_code = $request->postal_code;
+            $create_user_details->fiscal_postal_code = $request->fiscal_postal_code;
+            $create_user_details->home_phone = $request->home_phone;
+            $create_user_details->home_references = $request->home_references;
+            $create_user_details->house_characteristics = $request->house_characteristics;
+            $create_user_details->contract_duration = $request->contract_duration;
+            $create_user_details->month_salary_gross = $request->month_salary_gross;
+            $create_user_details->month_salary_net = $request->month_salary_net;
+            $create_user_details->daily_salary = $request->daily_salary;
+            $create_user_details->daily_salary_letter = $request->daily_salary_letter;
+            $create_user_details->bank_name = $request->bank_name;
+            $create_user_details->card_number = $request->card_number;
+            $create_user_details->infonavit_credit = $request->infonavit_credit;
+            $create_user_details->factor_credit_number = $request->factor_credit_number;
+            $create_user_details->fonacot_credit = $request->fonacot_credit;
+            $create_user_details->discount_credit_number = $request->discount_credit_number;
+            $create_user_details->save();
+        }else{
+            DB::table('users_details')->where('user_id',$request->user_id)->update([
+                'civil_status' => $request->civil_status,
+                'age' => $request->age,
+                'gender' => $request->gender,
+                'nacionality' => $request->nacionality,
+                'id_credential' => $request->id_credential,
+                'rfc' => $request->rfc,
+                'nss' => $request->nss,
+                'curp' => $request->curp,
+                'phone' => $request->phone,
+                'message_phone' => $request->message_phone,
+                'email' => $request->email,
+                'fathers_name' => $request->fathers_name,
+                'mothers_name' => $request->mothers_name,
+                'full_address' => $request->full_address,
+                'place_of_birth' => $request->place_of_birth,
+                'street' => $request->street,
+                'colony' => $request->colony,
+                'delegation' => $request->delegation,
+                'postal_code' => $request->postal_code,
+                'fiscal_postal_code' => $request->fiscal_postal_code,
+                'home_phone' => $request->home_phone,
+                'home_references' => $request->home_references,
+                'house_characteristics' => $request->house_characteristics,
+                'contract_duration' => $request->contract_duration,
+                'month_salary_gross' => $request->month_salary_gross,
+                'month_salary_net' => $request->month_salary_net,
+                'daily_salary' => $request->daily_salary,
+                'daily_salary_letter' => $request->daily_salary_letter,
+                'bank_name' => $request->bank_name,
+                'card_number' => $request->card_number,
+                'infonavit_credit' => $request->infonavit_credit,
+                'factor_credit_number' => $request->factor_credit_number,
+                'fonacot_credit' => $request->fonacot_credit,
+                'discount_credit_number' => $request->discount_credit_number,
+            ]);
+        }
+
+        return redirect()->back()->with('message', 'Información actualizada correctamente');
     }
 }
