@@ -61,7 +61,6 @@
 
 
 
-    {{-- Modal solucion agregar --}}
     <div wire:ignore.self class="modal fade" id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable  modal-lg">
@@ -86,6 +85,14 @@
 
                         <hr>
                         <p><span class="fw-bold">Historial</span></p>
+                        <hr>
+                        <p><span class="fw-bold">Mensajes :</span></span></p>
+                        @if ($mensaje)
+                        @foreach ($mensaje->mensajes as $mensajes)
+                            {!!$mensajes->message!!}
+                        @endforeach
+                            
+                        @endif
                         <hr>
                         <div wire:ignore class="mb-3 text-input-crear">
                             <label for="descripcion" class="form-label">Solución</label>

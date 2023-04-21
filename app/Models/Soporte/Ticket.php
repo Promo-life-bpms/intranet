@@ -28,17 +28,19 @@ class Ticket extends Model
     {
         return $this->belongsTo(Status::class,'status_id');
     }
-    public function historial()
-    {
-        return $this->hasMany(Historial::class);
-    }
-    public function mensajes()
-    {
-        return $this->hasMany(Mensajes::class);
-    }
+    // public function historial()
+    // {
+    //     return $this->hasMany(Historial::class);
+    // }
+     public function mensajes()
+     {
+         return $this->hasMany(Mensaje::class,'ticket_id');
+     }
 
     public function solution()
     {
-        return $this->hasMany(Solucion::class);
+        return $this->hasMany(Solucion::class,'ticket_id');
     }
+
+   
 }

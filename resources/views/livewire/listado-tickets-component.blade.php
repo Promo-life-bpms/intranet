@@ -163,7 +163,8 @@
                         <div class="mb-3">
                             <label for="Problema" class="form-label">Problema a resolver</label>
                             <input type="text" class="form-control input-lg @error('name') is-invalid @enderror "
-                                placeholder="ingresa el problema a resolver" name="name" wire:model="name" value="{{old('name')}}">
+                                placeholder="ingresa el problema a resolver" name="name" wire:model="name"
+                                value="{{ old('name') }}">
                             @error('name')
                                 <span class="invalid-feedback">
                                     <strong>{{ $message }}</strong>
@@ -220,7 +221,7 @@
     {{-- Modal ver --}}
     <div wire:ignore.self class="modal fade" id="ModalVer" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Detalles ticket</h1>
@@ -238,16 +239,32 @@
                     <div class="text-mostrar">
                         <p>{!! $data !!}</p>
                     </div>
-                 <hr>
-                 <p><span class="fw-bold">Solucion :</span></p>
-
-                 
-                 
-
-
+                    <hr>
+                    <p><span class="fw-bold">Solucion :</span></p>
+                    @if ($ticket_solucion)
+                        @foreach ($ticket_solucion->solution as $solucion)
+                            {!! $solucion->description !!}
+                        @endforeach
+                    @endif
+                    <hr>
+                    {{-- Editor Mensaje --}}
+                    <div wire:ignore class="mb-3 text-input-mensaje">
+                        <label for="descripcion" class="form-label">Enviar mensaje</label></label>
+                        <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
+                        @error('message')
+                            <span class="invalid-feedback">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-success"
+                        wire:click="enviarMensaje">Guardar</button>
+                    <div wire:loading.flex wire:target="enviarMensaje">
+                        Guardando
+                    </div>
                 </div>
             </div>
         </div>
@@ -255,10 +272,10 @@
 
 
     <script>
-        let ckEditorCreate, ckEditorEdit, ckEditorVer;
+        let ckEditorCreate, ckEditorEdit, ckEditorMensaje;
         ClassicEditor
-            .create(document.querySelector('#editor'),{
-                removePlugins:['Link', 'CKFinder']
+            .create(document.querySelector('#editor'), {
+                removePlugins: ['Link', 'CKFinder']
             })
             .then(newEditor => {
                 ckEditorCreate = newEditor;
@@ -284,12 +301,22 @@
             //Escuchar el evento key?
             editorUpdate.addEventListener('keyup', () => {
                 let texto = editorUpdate.innerHTML;
+                //let texto = editorUpdate.getData();
                 console.log(texto);
                 // Funcion que se ejecute en el evento key_up
                 //Obtener el elemento .ck-editor en una variable
 
                 @this.data = texto
                 // Obtener el html que tiene esa etiqueta
+            })
+            const editorMessage = document.querySelector('.text-input-mensaje .ck-editor__editable');
+            //Escuchar el evento key?
+            editorMessage.addEventListener('keyup', () => {
+                let texto = editorMessage.innerHTML;
+              
+
+                @this.mensaje = texto
+                
             })
 
         });
@@ -311,20 +338,23 @@
             });
 
 
-
         ClassicEditor
-            .create(document.querySelector('#editorVer'), {
-                removePlugins: ['Heading', 'Link', 'CKFinder', 'Insert Media'],
-            })
+            .create(document.querySelector('#editorMensaje'), {
 
+            })
             .then(newEditor => {
-                ckEditorVer = newEditor;
-                ckEditorVer.enableReadOnlyMode("editorVer");
+                ckEditorEdit = newEditor;
+
 
             })
             .catch(error => {
                 console.error(error);
             });
+
+
+
+
+
 
 
 
@@ -341,7 +371,7 @@
             ClassicEditor.remove(ckEditorVer);
         });
 
-     
+
 
 
         window.addEventListener('ticket_success', () => {
@@ -373,6 +403,20 @@
 
         });
 
+        window.addEventListener('Mensaje', () => {
+            Swal.fire({
+
+                icon: 'success',
+                title: 'Mensaje enviado correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+            $('#ModalMensaje').modal('hide')
+            ckEditorMensaje.setData("");
+
+
+        });
 
 
         function finalizar(id) {

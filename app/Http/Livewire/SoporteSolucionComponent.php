@@ -18,7 +18,7 @@ use App\Models\Soporte\UsuariosSoporte;
 class SoporteSolucionComponent extends Component
 {
     use WithPagination;
-    public $ticket_id, $name, $categoria, $data, $categorias, $description;
+    public $ticket_id, $name, $categoria, $data, $categorias, $description,$mensaje;
 
     public function render()
     {
@@ -42,10 +42,14 @@ class SoporteSolucionComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
+        //dd($this->mensaje=$ticket->mensajes);
+        $this->mensaje=$ticket;
         $this->ticket_id = $ticket->id;
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
+
+
     }
 
     public function guardarSolucion()

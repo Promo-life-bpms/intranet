@@ -7,7 +7,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use  App\Models\Soporte\Ticket;
 use App\Models\Soporte\Categoria;
-use App\Models\Soporte\Solucion;
+use App\Models\Soporte\Mensaje;
 
 
 class ListadoTicketsComponent extends Component
@@ -18,7 +18,7 @@ class ListadoTicketsComponent extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $ticket_id, $name, $categoria, $data, $categorias,$actualizar_status,$solucion;
+    public $ticket_id, $name, $categoria, $data, $categorias,$actualizar_status,$ticket_solucion,$mensaje;
 
     public function render()
     {
@@ -114,11 +114,28 @@ class ListadoTicketsComponent extends Component
     public function verTicket($id)
     {   
         $ticket = Ticket::find($id);
+        $this->ticket_solucion=$ticket;
         $this->ticket_id = $ticket->id;
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria=$ticket->category->name;
         $this->dispatchBrowserEvent('borrar');
+
+
     }
     
+    public function enviarMensaje(){
+
+
+
+
+        Mensaje::create([
+            'ticket_id' => $this->ticket_id,
+            'message' =>$this->mensaje,
+            'user_id'=>auth()->user()->id
+        ]);
+
+        $this->dispatchBrowserEvent('Mensaje');
+    }
+  
 }
