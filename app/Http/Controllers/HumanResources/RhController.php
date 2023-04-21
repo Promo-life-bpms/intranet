@@ -892,7 +892,7 @@ class RhController extends Controller
         }
 
         if($request->has('confidentiality_agreement')){
-            $confidentiality_agreement = new confidentialityAgreement();
+            $confidentiality_agreement = new ConfidentialityAgreement();
             $confidentiality_agreement->confidentialityAgreement($postulant);
         }
 
