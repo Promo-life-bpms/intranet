@@ -45,7 +45,7 @@ class LetterForBank extends Controller
             $social_reason = "PROMO LIFE, S. DE R.L. DE C.V.";
             $footerText = "La empresa PROMO LIFE, S DE RL DE CV con domicilio ubicado en SAN ANDRES ATOTO #155, PISO 1 LOCAL B, CP.53550, COL.UNIDAD SAN ESTEBAN, NAUCALPAN DE JUAREZ, ESTADO DE MEXICO    ";
 
-            $header_img = public_path('img\pl_header.png');
+            $header_img = public_path('img/pl_header.png');
 
             $headerImageStyle = array(
                 'positioning' => 'absolute',
