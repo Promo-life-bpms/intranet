@@ -1,78 +1,47 @@
 @extends('layouts.app')
 
 @section('content')
-    @if ($message = Session::get('success'))
-        <div class="alert alert-success">
-            <p>{{ $message }}</p>
-        </div>
-    @endif
     <div class="card-header">
-        <div class="d-flex justify-content-between">
-            <h3>Lista de usuarios</h3>
-            <div>
-                <a href="{{ route('admin.user.exportUsuarios') }}" type="button" class="btn btn-info">Descargar Informacion de
-                    los Usuarios</a>
-                <a href="{{ route('admin.users.create') }}" type="button" class="btn btn-success">Agregar</a>
-            </div>
-        </div>
+        <h3>Gestión de dispositivos</h3>
     </div>
     <div class="card-body">
+
+    <div class="d-flex flex-row mb-3">
+    <div class="card"><h5>Equipos totales</h5> </div>
+    <div class="card"><h5>Equipos en uso</h5> </div>
+    <div class="card"><h5>Equipos en mantenimiento</h5></div>
+    <div class="card"><h5>Equipos disponibles</h5> </div>
+    </div>
         <div class="table-responsive">
             <table class="table table-striped" id="table-directory">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Nombre y correo</th>
-                        <th scope="col" class="text-center">Fecha de Ingreso</th>
-                        <th scope="col" class="text-center">Cumpleaños</th>
-                        <th scope="col">Jefe Directo</th>
-                        <th scope="col">Rol</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col" class="text-center">Departamento</th>
+                        <th scope="col" class="text-center">Puesto</th>
+                        <th scope="col">Equipo y dispositivos</th>
                         <th scope="col">Opciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $user)
+                    @foreach ($users_data as $user)
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
-                            <td><b>{{ $user->name . ' ' . $user->lastname }} </b><br> {{ $user->email }}</td>
-                            <td class="text-center">{{ $user->employee->date_admission->format('d-m-Y') }}</td>
-                            <td class="text-center">{{ $user->employee->birthday_date->format('d-m-Y') }}</td>
+                            <td><b>{{ $user->fullname}}</td>
+                            <td class="text-center">{{ $user->department }}</td>
+                            <td class="text-center">{{ $user->position }}</td>
+                            <td class="text-center"><b>{{ count($user->devices)}}</b> </td>
                             <td>
-                                @if ($user->employee->jefeDirecto)
-                                    {{ $user->employee->jefeDirecto->user->name }}
-                                @endif
-                            </td>
-                            <td>
-                                @if ($user->roles)
-                                    {{ $user->roles[0]->display_name }}
-                                @endif
-                            </td>
-                            <td>
-                                <div class="d-flex">
+                                <div class="d-flex" style="width:140px">
 
                                     <div>
-                                        <a href="{{ route('admin.users.edit', ['user' => $user->id]) }}"
-                                            type="button" class="btn btn-warning">Editar</a>
+                                        <a style="" href="{{ route('admin.users.edit', ['user' => $user->id]) }}"
+                                            type="button" class="btn btn-primary">Ver detalles</a>
                                     </div>
-                                    <div>
-                                        <form class="form-delete"
-                                            action="{{ route('admin.users.destroy', ['user' => $user->id]) }}"
-                                            method="POST">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="submit" class="btn btn-danger">Borrar</button>
-                                        </form>
-                                    </div>
+                                    
                                 </div>
-                                <div class="w-100">
-                                    <form class="form-reset"
-                                        action="{{ route('admin.user.sendAccessUnit', ['user' => $user->id]) }}"
-                                        method="GET">
-                                        @csrf
-                                        <button style="" type="submit"
-                                            class="btn btn-primary btn-block mt-1">Acceso</button>
-                                    </form>
-                                </div>
+                               
                             </td>
                         </tr>
                     @endforeach
@@ -83,6 +52,11 @@
 @stop
 
 @section('styles')
+
+    <style>
+        
+
+    </style>
 
     <style>
         table.dataTable {
@@ -488,45 +462,6 @@
 @section('scripts')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
-
-    <script>
-        $('.form-delete').submit(function(e) {
-            e.preventDefault();
-
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡El registro se eliminará permanentemente!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, eliminar!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.submit();
-                }
-            })
-        });
-        $('.form-reset').submit(function(e) {
-            e.preventDefault();
-
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡Se reseteara la contraseña y se enviara un email con sus datos!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, resetar acesso!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.submit();
-                }
-            })
-        });
-    </script>
 
     <script>
         $(document).ready(function() {
