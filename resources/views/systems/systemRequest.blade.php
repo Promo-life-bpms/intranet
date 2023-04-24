@@ -30,7 +30,7 @@
                         <td style="text-align: center">{{$systems->id}}</td>
                         <td style="text-align: center">{{$systems->updated_at}}</td> 
                         <td>
-                            <button  sttype="button" class="btn btn-primary" style="font-size: 11px">Ver Más</button>
+                        <a type="button" class="btn btn-primary"  href="{{ route('systems.more')}}">Ver Más</a>
                         </td>
                     </tr>
                     @endforeach
@@ -44,6 +44,11 @@
         table {
         font-size: 66.1%;
         }
+
+        .btn{
+            font-size: 10px;
+        }
     </style>
 @endsection
+
             

@@ -17,10 +17,7 @@ class SystemRequest extends Controller
             ->orderBy('id')
             ->get();*/
             return view('systems.systemRequest')->with('systems_request', $systems_request);
-
-           
-    }
-    
+        }
     }
 
 
