@@ -332,7 +332,7 @@ class RhController extends Controller
                             }
                         }else{
                             //Fecha filtrada
-                            if($user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
+                            if($user->userDetails !=null && $user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
                                 $totalPLFilter = $totalPLFilter + 1;
                             }
                                 
@@ -351,7 +351,7 @@ class RhController extends Controller
                             }
                         }else{
                             //Fecha filtrada
-                            if($user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
+                            if($user->userDetails !=null && $user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
                                 $totalBHFilter = $totalBHFilter + 1;
                             }
                         }
@@ -372,7 +372,7 @@ class RhController extends Controller
                         }else{
                             
                             //Fecha filtrada
-                            if($user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
+                            if($user->userDetails !=null && $user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
                                 $totalPZFilter  = $totalPZFilter  + 1;
                             }
                         }
@@ -392,7 +392,7 @@ class RhController extends Controller
                                 
                         }else{
                             //Fecha filtrada
-                            if($user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
+                            if($user->userDetails !=null && $user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
                                 $totalTM57Filter = $totalTM57Filter + 1;
                             }
                         }
@@ -442,7 +442,7 @@ class RhController extends Controller
 
             foreach($users as $user){
                
-                if($user->employee->position->department->name == $department->name){
+                if($user->userDetails !=null && $user->employee->position->department->name == $department->name){
                     $admission = explode('-', $user->userDetails->date_down);
                     $year = $admission[0];
                     $mont = $admission[1];
