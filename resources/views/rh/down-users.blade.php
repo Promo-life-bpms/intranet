@@ -8,7 +8,13 @@
     @endif
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Lista de usuarios dados de baja</h3>
+        <div class="d-flex flex-row">
+            <a href="{{ route('rh.dropUser') }}">
+                <i class="fa fa-arrow-left fa-2x arrouw-back me-2" aria-hidden="true"></i>
+            </a> 
+            <h3 class="separator ms-2">Lista de usuarios dados de baja</h3>
+        </div>
+        
             
         </div>
     </div>
@@ -32,7 +38,7 @@
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td><b>{{ $user->name . ' ' . $user->lastname }} </b><br> {{ $user->email }}</td>
                             <td class="text-center">{{ $user->employee->date_admission->format('Y-m-d') }}</td>
-                            <td class="text-center">{{ $user->userDetails->date_down }}</td>
+                            <td class="text-center">{{ isset($user->userDetails->date_down)? $user->userDetails->date_down: ''   }}</td>
                             <td>
                                 @if ($user->roles)
                                     {{ $user->roles[0]->display_name }}

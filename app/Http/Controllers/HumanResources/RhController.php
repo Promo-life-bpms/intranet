@@ -300,7 +300,7 @@ class RhController extends Controller
         $data=[];
         $carbon = new \Carbon\Carbon();
         $date = $carbon->now();
-        $users = User::where('status',2)->get();
+        $users = User::where('status',0)->get();
 
         $totalPLFilter = 0;
         $totalBHFilter = 0;
@@ -327,12 +327,12 @@ class RhController extends Controller
                             $year = $down[0];
                             $mont = $down[1];
                     
-                            if($user != null && $user->status == 2 && $mont == $monthpresent && $year == $yearpresent ){
+                            if($user != null && $user->status == 0 && $mont == $monthpresent && $year == $yearpresent ){
                                 $totalPLFilter = $totalPLFilter + 1;
                             }
                         }else{
                             //Fecha filtrada
-                            if($user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
+                            if($user->userDetails !=null && $user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
                                 $totalPLFilter = $totalPLFilter + 1;
                             }
                                 
@@ -346,12 +346,12 @@ class RhController extends Controller
                             $year = $down[0];
                             $mont = $down[1];
                 
-                            if($user != null && $user->status == 2 && $mont == $monthpresent && $year == $yearpresent ){
+                            if($user != null && $user->status == 0 && $mont == $monthpresent && $year == $yearpresent ){
                                 $totalBHFilter = $totalBHFilter + 1;
                             }
                         }else{
                             //Fecha filtrada
-                            if($user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
+                            if($user->userDetails !=null && $user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
                                 $totalBHFilter = $totalBHFilter + 1;
                             }
                         }
@@ -365,14 +365,14 @@ class RhController extends Controller
                                 $year = $down[0];
                                 $mont = $down[1];
                 
-                                if($user != null && $user->status == 2 && $mont == $monthpresent && $year == $yearpresent ){
+                                if($user != null && $user->status == 0 && $mont == $monthpresent && $year == $yearpresent ){
                                     $totalPZFilter  = $totalPZFilter  + 1;
                                 }
                                 
                         }else{
                             
                             //Fecha filtrada
-                            if($user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
+                            if($user->userDetails !=null && $user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
                                 $totalPZFilter  = $totalPZFilter  + 1;
                             }
                         }
@@ -386,13 +386,13 @@ class RhController extends Controller
                             $year = $down[0];
                             $mont = $down[1];
                    
-                            if($user != null && $user->status == 2 && $mont == $monthpresent && $year == $yearpresent ){
+                            if($user != null && $user->status == 0 && $mont == $monthpresent && $year == $yearpresent ){
                                 $totalTM57Filter = $totalTM57Filter + 1;
                             }
                                 
                         }else{
                             //Fecha filtrada
-                            if($user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
+                            if($user->userDetails !=null && $user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
                                 $totalTM57Filter = $totalTM57Filter + 1;
                             }
                         }
@@ -419,7 +419,7 @@ class RhController extends Controller
     public function motiveDown($start, $end)
     {
         $departments = Department::all();
-        $users = User::where('status', 2)->get();
+        $users = User::where('status', 0)->get();
         $department_data = [];
 
         //Fechas
@@ -442,7 +442,7 @@ class RhController extends Controller
 
             foreach($users as $user){
                
-                if($user->employee->position->department->name == $department->name){
+                if($user->userDetails !=null && $user->employee->position->department->name == $department->name){
                     $admission = explode('-', $user->userDetails->date_down);
                     $year = $admission[0];
                     $mont = $admission[1];
@@ -607,7 +607,7 @@ class RhController extends Controller
     
     public function dropDeleteUser(Request $request)
     {
-        DB::table('users')->where('id', intval($request->user) )->update(['status' => 2]); 
+        DB::table('users')->where('id', intval($request->user) )->update(['status' => 0]); 
 
         return redirect()->action([RhController::class, 'dropUser'])->with('message', 'El usuario se ha dado de baja correctamente');
     }
@@ -681,8 +681,13 @@ class RhController extends Controller
             'health_familiar'  => $request->health_familiar,
             'other_motive'   => $request->other_motive,
             ]);
-
         }
+
+        $new_mail = time() . 'disable.'. $user->email;
+
+        DB::table('users')->where('id', intval($request->user_id))->update([
+            'email' => $new_mail
+        ]);
 
         return redirect()->back()->with('message', 'Información guardada correctamente, ya puedes generar baja del empleado');
         
@@ -750,6 +755,7 @@ class RhController extends Controller
 
     public function storePostulant(Request $request)
     {
+
         $request->validate([
             'name' => 'required',
             'lastname' => 'required',
@@ -762,7 +768,19 @@ class RhController extends Controller
             'message_phone' => 'required',
             'email' => 'required',
         ]);
-       
+
+        //Validar correo
+        $verify_postulant_email = Postulant::where('email',$request->email)->count();
+        $verify_user_email = User::where('email',$request->email)->count();
+
+        if( $verify_postulant_email != 0){
+            return redirect()->back()->with('email_error', 'Existe un candidato registrado con este correo, verifica la informacion y agregala nuevamente');
+        }
+        
+        if( $verify_user_email != 0){
+            return redirect()->back()->with('email_error', 'Existe un usuario de la intranet registrado con este correo, verifica la informacion y agregala nuevamente');
+        }
+ 
         $create_postulant = new Postulant();
         $create_postulant->name  = $request->name;
         $create_postulant->lastname  = $request->lastname;
@@ -822,6 +840,19 @@ class RhController extends Controller
             'email' => 'required',
         ]); 
 
+        //Validar correo
+        $verify_postulant_email = Postulant::where('email',$request->email)->get();
+        $verify_user_email = User::where('email',$request->email)->count();
+
+        foreach($verify_postulant_email as $postulant){
+            if($postulant->id != $request->postulant_id){
+                return redirect()->back()->with('email_error', 'Existe un candidato registrado con este correo, verifica la informacion y agregala nuevamente');
+            }
+        }
+
+        if( $verify_user_email != 0){
+            return redirect()->back()->with('email_error', 'Existe un usuario de la intranet registrado con este correo, verifica la informacion y agregala nuevamente');
+        }
 
         if ($request->hasFile('cv')) {
             $find_postulant = PostulantDocumentation::where('postulant_id', $request->postulant_id)->get()->last();
@@ -930,7 +961,7 @@ class RhController extends Controller
 
     public function downUsers()
     {
-        $users = User::all()->where('status',2);
+        $users = User::all()->where('status',0);
         return view('rh.down-users', compact('users'));  
     }
 

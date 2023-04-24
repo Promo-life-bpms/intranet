@@ -49,6 +49,13 @@
             </div>
         @endif
 
+        @if (session('email_error'))
+            <div class="alert alert-danger">
+                {{ session('email_error') }}
+                 <br>
+            </div>
+        @endif
+
         {!! Form::open(['route' => 'rh.storePostulant', 'enctype' => 'multipart/form-data']) !!}
         <h5>Información personal</h5>
         <p></p>

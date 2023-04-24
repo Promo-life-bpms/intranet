@@ -62,6 +62,14 @@
                 {{ session('message') }}
             </div>
         @endif
+
+        @if (session('email_error'))
+            <div class="alert alert-danger">
+                {{ session('email_error') }}
+                 <br>
+            </div>
+        @endif
+        
         {!! Form::model($postulant, ['route' => ['rh.updatePostulant', $postulant], 'method' => 'put','enctype' => 'multipart/form-data']) !!}
 
         <h5>Información Personal</h5>
