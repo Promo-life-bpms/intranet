@@ -300,7 +300,7 @@ class RhController extends Controller
         $data=[];
         $carbon = new \Carbon\Carbon();
         $date = $carbon->now();
-        $users = User::where('status',2)->get();
+        $users = User::where('status',0)->get();
 
         $totalPLFilter = 0;
         $totalBHFilter = 0;
@@ -327,7 +327,7 @@ class RhController extends Controller
                             $year = $down[0];
                             $mont = $down[1];
                     
-                            if($user != null && $user->status == 2 && $mont == $monthpresent && $year == $yearpresent ){
+                            if($user != null && $user->status == 0 && $mont == $monthpresent && $year == $yearpresent ){
                                 $totalPLFilter = $totalPLFilter + 1;
                             }
                         }else{
@@ -346,7 +346,7 @@ class RhController extends Controller
                             $year = $down[0];
                             $mont = $down[1];
                 
-                            if($user != null && $user->status == 2 && $mont == $monthpresent && $year == $yearpresent ){
+                            if($user != null && $user->status == 0 && $mont == $monthpresent && $year == $yearpresent ){
                                 $totalBHFilter = $totalBHFilter + 1;
                             }
                         }else{
@@ -365,7 +365,7 @@ class RhController extends Controller
                                 $year = $down[0];
                                 $mont = $down[1];
                 
-                                if($user != null && $user->status == 2 && $mont == $monthpresent && $year == $yearpresent ){
+                                if($user != null && $user->status == 0 && $mont == $monthpresent && $year == $yearpresent ){
                                     $totalPZFilter  = $totalPZFilter  + 1;
                                 }
                                 
@@ -386,7 +386,7 @@ class RhController extends Controller
                             $year = $down[0];
                             $mont = $down[1];
                    
-                            if($user != null && $user->status == 2 && $mont == $monthpresent && $year == $yearpresent ){
+                            if($user != null && $user->status == 0 && $mont == $monthpresent && $year == $yearpresent ){
                                 $totalTM57Filter = $totalTM57Filter + 1;
                             }
                                 
@@ -419,7 +419,7 @@ class RhController extends Controller
     public function motiveDown($start, $end)
     {
         $departments = Department::all();
-        $users = User::where('status', 2)->get();
+        $users = User::where('status', 0)->get();
         $department_data = [];
 
         //Fechas
@@ -607,7 +607,7 @@ class RhController extends Controller
     
     public function dropDeleteUser(Request $request)
     {
-        DB::table('users')->where('id', intval($request->user) )->update(['status' => 2]); 
+        DB::table('users')->where('id', intval($request->user) )->update(['status' => 0]); 
 
         return redirect()->action([RhController::class, 'dropUser'])->with('message', 'El usuario se ha dado de baja correctamente');
     }
@@ -762,7 +762,7 @@ class RhController extends Controller
             'message_phone' => 'required',
             'email' => 'required',
         ]);
-       
+
         $create_postulant = new Postulant();
         $create_postulant->name  = $request->name;
         $create_postulant->lastname  = $request->lastname;
@@ -930,7 +930,7 @@ class RhController extends Controller
 
     public function downUsers()
     {
-        $users = User::all()->where('status',2);
+        $users = User::all()->where('status',0);
         return view('rh.down-users', compact('users'));  
     }
 

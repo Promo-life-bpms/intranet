@@ -19,6 +19,14 @@
       
         <div>      
             <div class="d-flex justify-content-evenly">
+            @if($user->status == '0')
+            <a  href="{{ route('rh.dropDocumentation', ['user' => $user->id]) }}"
+                type="button" class="btn btn-primary">
+                <i class="fa fa-calendar me-2" aria-hidden="true"></i>
+                Fecha y motivos de baja</a>
+            @endif
+            <div class="separator" style="width: 10px;" ></div>     
+  
             <form 
                 action="{{ route('rh.scanDocuments',['id' => $user->id]) }}"
                 method="GET">

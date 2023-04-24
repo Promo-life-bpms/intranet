@@ -4,9 +4,15 @@
 <div class="card-header">
     <div class="d-flex justify-content-between">
         <div class="d-flex flex-row">
-            <a href="{{ route('rh.dropUser') }}">
-                <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i>
-            </a> 
+            @if($user->status == 0)
+                <a href="{{ route('admin.users.edit', ['user' => $user->id]) }}">
+                    <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
+                </a> 
+            @else
+                <a href="{{ route('rh.dropUser') }}">
+                    <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i>
+                </a>
+            @endif
             <h3 class="separator ms-2">Fecha y Motivos de Baja</h3>
         </div>
                         
@@ -24,36 +30,52 @@
     </div>
 </div>
 <div class="card-body">
-    <div class="container" >
-        <div class="stepwizard">
-            <div class="stepwizard-row setup-panel">
-                <div class="stepwizard-step col-xs-3" style="width: 33%;">  
-                    <a href="#" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
-                    <p><small>Fecha y Motivos de Baja</small></p>
-                </div>
-                <div class="stepwizard-step col-xs-3"  style="width: 33%;"> 
-                    <a href="{{ route('rh.dropUpdateDocumentation', ['id' => $user->id]) }}" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">2</a>
-                    <p><small>Documentación</small></p>
-                </div>
-                <div class="stepwizard-step col-xs-3"  style="width: 33%;"> 
-                    <a href="{{ route('rh.dropUserDetails', ['id' =>$user->id]) }}" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">3</a>
-                    <p><small>Baja de Colaborador</small></p>
+    @if($user->status == '0')
+        <div class="alert alert-light" role="alert">
+            Ingresa la <b>fecha de baja</b> y el <b>motivo de baja</b> (en caso de contar con el).
+        </div>
+
+        @if (session('message'))
+            <div class="alert alert-success">
+                Información actualizada correctamente.
+            </div>
+            <br>
+        @endif
+    @else
+        <div class="container" >
+            <div class="stepwizard">
+                <div class="stepwizard-row setup-panel">
+                    <div class="stepwizard-step col-xs-3" style="width: 33%;">  
+                        <a href="#" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                        <p><small>Fecha y Motivos de Baja</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3"  style="width: 33%;"> 
+                        <a href="{{ route('rh.dropUpdateDocumentation', ['id' => $user->id]) }}" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">2</a>
+                        <p><small>Documentación</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3"  style="width: 33%;"> 
+                        <a href="{{ route('rh.dropUserDetails', ['id' =>$user->id]) }}" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">3</a>
+                        <p><small>Baja de Colaborador</small></p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <br>
-    @if (session('message'))
-    <div class="alert alert-success">
-        {{ session('message') }}
-    </div>
-    <br>
+
+        <br>
+        @if (session('message'))
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
+            <br>
+        @endif
+
+        <div class="alert alert-light" role="alert">
+            Ingresa la <b>fecha de baja</b> y marca los <b> motivos de baja</b>.
+        </div>
+
     @endif
-
-    <div class="alert alert-light" role="alert">
-        Ingresa la <b>fecha de baja</b> y marca los <b> motivos de baja</b>.
-    </div>
-
+    
+    
     <div class="container">
 
         <h5>Fecha de baja</h5>
