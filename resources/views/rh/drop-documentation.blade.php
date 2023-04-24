@@ -16,16 +16,18 @@
             <h3 class="separator ms-2">Fecha y Motivos de Baja</h3>
         </div>
                         
-        <div>                
-            <form 
-                action="{{ route('rh.dropUpdateDocumentation', ['id' => $user->id]) }}"
-                method="GET">
-                 @csrf
-                <button type="submit" class="btn btn-primary"> 
-                    Documentación
-                    <i class="ms-2 fa fa-arrow-right" aria-hidden="true"></i>
-                </button>
-            </form>
+        <div>      
+            @if($user->status != 0)
+                <form 
+                    action="{{ route('rh.dropUpdateDocumentation', ['id' => $user->id]) }}"
+                    method="GET">
+                    @csrf
+                    <button type="submit" class="btn btn-primary"> 
+                        Documentación
+                        <i class="ms-2 fa fa-arrow-right" aria-hidden="true"></i>
+                    </button>
+                </form>
+            @endif
         </div>
     </div>
 </div>
