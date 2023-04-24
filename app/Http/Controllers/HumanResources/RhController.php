@@ -681,8 +681,13 @@ class RhController extends Controller
             'health_familiar'  => $request->health_familiar,
             'other_motive'   => $request->other_motive,
             ]);
-
         }
+
+        $new_mail = time() . 'disable.'. $user->email;
+
+        DB::table('users')->where('id', intval($request->user_id))->update([
+            'email' => $new_mail
+        ]);
 
         return redirect()->back()->with('message', 'Información guardada correctamente, ya puedes generar baja del empleado');
         
@@ -750,6 +755,7 @@ class RhController extends Controller
 
     public function storePostulant(Request $request)
     {
+
         $request->validate([
             'name' => 'required',
             'lastname' => 'required',
@@ -763,6 +769,18 @@ class RhController extends Controller
             'email' => 'required',
         ]);
 
+        //Validar correo
+        $verify_postulant_email = Postulant::where('email',$request->email)->count();
+        $verify_user_email = User::where('email',$request->email)->count();
+
+        if( $verify_postulant_email != 0){
+            return redirect()->back()->with('email_error', 'Existe un candidato registrado con este correo, verifica la informacion y agregala nuevamente');
+        }
+        
+        if( $verify_user_email != 0){
+            return redirect()->back()->with('email_error', 'Existe un usuario de la intranet registrado con este correo, verifica la informacion y agregala nuevamente');
+        }
+ 
         $create_postulant = new Postulant();
         $create_postulant->name  = $request->name;
         $create_postulant->lastname  = $request->lastname;
@@ -822,6 +840,19 @@ class RhController extends Controller
             'email' => 'required',
         ]); 
 
+        //Validar correo
+        $verify_postulant_email = Postulant::where('email',$request->email)->get();
+        $verify_user_email = User::where('email',$request->email)->count();
+
+        foreach($verify_postulant_email as $postulant){
+            if($postulant->id != $request->postulant_id){
+                return redirect()->back()->with('email_error', 'Existe un candidato registrado con este correo, verifica la informacion y agregala nuevamente');
+            }
+        }
+
+        if( $verify_user_email != 0){
+            return redirect()->back()->with('email_error', 'Existe un usuario de la intranet registrado con este correo, verifica la informacion y agregala nuevamente');
+        }
 
         if ($request->hasFile('cv')) {
             $find_postulant = PostulantDocumentation::where('postulant_id', $request->postulant_id)->get()->last();
