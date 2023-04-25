@@ -7,7 +7,14 @@ document.addEventListener('DOMContentLoaded', function() {
         hiddenDays: [ 0, 6 ],
         slotMinTime:"08:00:00",
         slotMaxTime: "19:00:00",
-        eventColor: '#378006',
+        eventColor: '#6EB5FF',
+
+        /*eventColor: function(info){
+          info.event.id + '#6EB5FF'
+
+        },*/
+      
+
 
         headerToolbar: {
             left:'prev,next today',
@@ -28,6 +35,10 @@ document.addEventListener('DOMContentLoaded', function() {
           $("#evento").modal("show");
           
         },
+         dayClick: function(info) {
+            // Llenar automáticamente el campo de fecha en el formulario
+            document.getElementById('end').value = info.dateStr;
+        },
         
         eventClick: function(info) {
           $('#Editar'+info.event.id).modal('show'); // abre el modal
@@ -40,12 +51,14 @@ document.addEventListener('DOMContentLoaded', function() {
           timeGrid: {
             dayMaxEventRows: 3
           }
-  },
-
+        },
+        
         initialView: 'dayGridMonth',
         selectable: true,
-        events:'/reservation/view/', 
-        //eventColor:
+        events:'/reservation/view/',
+
+        
+      
       });
       calendar.render();
 

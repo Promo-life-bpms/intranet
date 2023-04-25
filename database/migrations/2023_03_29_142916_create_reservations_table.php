@@ -26,6 +26,8 @@ class CreateReservationsTable extends Migration
             $table->foreignId('id_sala')->references('id')->on('boardrooms')->onDelete('cascade');
         });
     }
+    
+
 
     /**
      * Reverse the migrations.

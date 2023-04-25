@@ -233,7 +233,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     
     Route::get('/rh/scan-documents/{id}', [ScanDocumentsController::class, 'scanDocuments'])->name('rh.scanDocuments');
-    Route::put('/rh/update-documents/', [ScanDocumentsController::class, 'updateDocuments'])->name('rh.updateDocuments');
+    Route::post('/rh/update-documents/', [ScanDocumentsController::class, 'updateDocuments'])->name('rh.updateDocuments');
     Route::delete('/rh/drop-delete-document', [ScanDocumentsController::class, 'deleteDocuments'])->name('rh.deleteDocuments');
     Route::post('/rh/store-documents/', [ScanDocumentsController::class, 'storeDocuments'])->name('rh.storeDocuments');
     Route::get('/rh/create-postulant/', [RhController::class, 'createPostulant'])->name('rh.createPostulant');
@@ -252,10 +252,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     //sala recreativa//
     //ruta para la disponibilidad//
     Route::get('/dispo/creative/',[BoardroomController::class,'vista'])->name('dispo.creative'); //visualizar los dias disponibles y horas
-
+    Route::get('/dispo/view/',[BoardroomController::class,'view'])->name('dispo.view');  
+    Route::get('/dispo/nombre/',[BoardroomController::class,'mostrarNombre'])->name('dispo.nombre');//parar mostrar información de una llave foranea  
     //ruta para reservación//
     Route::get('/reservation/creative/',[ReservationController::class,'index'])->name('reservation.creative'); 
     Route::get('/reservation/view/',[ReservationController::class,'view'])->name('reservation.view');   
+    Route::get('/reservation/nom/',[ReservationController::class,'mostrarNombre'])->name('reservation.nom');   
     Route::get('/reservation/view/edit/',[ReservationController::class,'edit'])->name('reservation.view.edit');  
     Route::post('/reservation/creative/create', [ReservationController::class, 'store'])->name('reserviton.creative.create'); 
     Route::put('/reservation/creative/', [ReservationController::class, 'update'])->name('reserviton.creative.update');

@@ -16,11 +16,11 @@ class Reservation extends Model
 
     public function users()
     {
-        return $this->hasOne(User::class, 'id_usuario');
+        return $this->belongsTo(User::class, 'id_usuario');
     }
 
     public function boordroms()
     {
-        return $this->hasOne(boardroom::class,'id_sala');
+        return $this->belongsTo(boardroom::class,'id_sala');
     }
 }

@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+        @if (session('message'))
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
+        @endif
             <div class ="container">
                 <h1>Reservación de la sala recreativa</h1>
                 <div id="calendar"></div>
@@ -14,10 +19,9 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
+                        {!! Form::open(['route' => 'reserviton.creative.create', 'enctype' => 'multipart/form-data', 'method'=>'POST']) !!}
+                        @csrf
                         <div class="modal-body">
-                            {!! Form::open(['route' => 'reserviton.creative.create', 'enctype' => 'multipart/form-data', 'method'=>'POST']) !!}
-                            @csrf
-
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -37,7 +41,7 @@
                                         {!! Form::label('id_sala', 'Nombre de la sala:') !!}
                                         <select name="id_sala" class="form-control">
                                             <option value="" disabled selected>Seleccione una sala...</option>
-                                            @foreach ($salas as $sala)
+                                            @foreach ($salitas as $sala)
                                             <option value="{{ $sala->id }}">{{ $sala->name }}</option>
                                             @endforeach
                                         </select>
@@ -98,7 +102,7 @@
                                     </div>
                                 </div>
                             </div>
-
+                           
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -111,6 +115,7 @@
                                     </div>
                                 </div>
                             </div>
+                        
                             
                             <div class="modal-footer">
                                 {!! Form::submit('Guardar', ['class' => 'btn btn-success']) !!}
@@ -122,10 +127,12 @@
                 </div>
             </div>
 
-
+            
             @foreach ($eventos as $evento)
             {!! Form::open(['route' => 'reserviton.creative.update', 'enctype' => 'multipart/form-data', 'method'=>'PUT']) !!}
             @csrf
+            @if(auth()->user()->id==$evento->id_usuario)
+        
             <div class="modal fade" id="Editar{{$evento->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -153,16 +160,11 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         {!! Form::label('id_sala', 'Nombre de la sala:') !!}
-                                        <select name="id_sala" class="form-control">
-                                            <option value="$evento->id_sala" disabled selected>Seleccione una sala...</option>
-                                            @foreach ($salas as $sala)
-                                            <option value="{{ $sala->id }}">{{ $sala->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        {!!Form::select('id_sala', $boardroom, $evento->boordroms->id, ['class'=>'form-control'] )!!}
                                     </div>
                                 </div>
                             </div>
-
+                            
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -244,6 +246,7 @@
                     </div>
                 </div>
             </div>
+            @endif
             {!! Form::close() !!}
             @endforeach
             @stop

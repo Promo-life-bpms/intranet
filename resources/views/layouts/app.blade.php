@@ -45,6 +45,7 @@
     <script src="{{ asset('js/app10.js') }}"></script>
     <script src="{{ asset('assets/js/mazer.js') }}"></script>
     <script src="{{ asset('js/calendar.js') }}"></script>
+    <script src="{{ asset('js/calendario.js') }}"></script>
 
 
     @yield('scripts')

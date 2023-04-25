@@ -15,28 +15,32 @@ class ReservationController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $salas=boardroom::all();
+        $salitas=boardroom::all();
+        $salas=Reservation::with('boordroms')->get();
+        $boardroom=boardroom::all()->pluck('name', 'id');
         $eventos = Reservation::all();
-        return view('admin.room.index', compact('salas', 'user', 'eventos'));
+        return view('admin.room.index', compact('salitas', 'user', 'eventos', 'boardroom'));
     }
-
     /////////////////////////////////////////////Función crear evento///////////////////////////////////////////////
     public function store(Request $request) 
     {
         $start = $request->input('start');
         $end = $request->input('end');
         $id_sala = $request->input('id_sala');
-        
-    
+  
         $evento_existente = Reservation::where('start', $start)->where('id_sala', $id_sala)->first();
         if ($evento_existente) {
-            return redirect()->back()->withErrors(['fecha_hora' => 'Ya existe un evento en esta fecha y hora']);
-        }else{
+            return back()->with('message', "Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha. ¡Gracias!");
+
+        }elseif($end < $start){
+            return back()->with('message',"La hora de inicio no debe ser más grande que la hora de fin de tu reservación.");
+        }
+        else{
         $user = auth()->user();
         $request->validate([
             'title'=>'required',
             'start' => 'required',
-            'end' => 'required',
+            'end' => 'required|after:start',
             'number_of_people'=>'required',
             'material' => 'required',
             'chair_loan' => 'required',
@@ -59,25 +63,25 @@ class ReservationController extends Controller
             $evento->id_usuario=$user->id;
             $evento->id_sala=$request->id_sala;
             $evento->save();
-            return redirect()->back()->with('message', 'Evento creado');
+            return redirect()->back()->with('message', "Reservacón creada correctamente");
         }
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     //////////////////////////////////////////////Función para editar/////////////////////////////////////////////////
     public function update(Request $request)
     {
+        $start = $request->input('start');
+        $end = $request->input('end');
+        $id_sala = $request->input('id_sala');
+  
+        $evento_existente = Reservation::where('start', $start)->where('id_sala', $id_sala)->first();
+        if ($evento_existente) {
+            return back()->with('message',"Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha. ¡Gracias!");
 
-        /*$eventos=Reservation::all()->pluck('id');
-        dd($eventos);
-        if ($request->eventos == auth()->user()->id) {
-            return redirect()->back()->with('error', 'No tienes permiso para editar este evento');
-        
-        }else{
-           */
-            //$prueba=Reservation::all()->where('id', $request->id_evento);
-            //dd($prueba);
+        }elseif($end < $start){
+            return back()->with('message',"La hora de inicio no debe ser más grande que la hora de fin de tu reservación.");
+        }
+        else{
+
             $request->validate([
                 'title'=>'required',
                 'start' => 'required',
@@ -86,7 +90,6 @@ class ReservationController extends Controller
                 'material' => 'required',
                 'chair_loan' => 'required',
                 'description' => 'required',
-                'id_sala'=>'required'
             ]);
             
             $carbon = new \Carbon\Carbon();
@@ -95,17 +98,14 @@ class ReservationController extends Controller
             $end = $carbon->now();
             $end = $end->format("d-m-Y\TH:i");
 
-            
-
-            
             DB::table('reservations')->where('id', $request->id_evento)->update(['title'=>$request->title,'start'=>$request->start,
             'end'=>$request->end,'number_of_people'=>$request->number_of_people,'material'=>$request->material, 
             'chair_loan' =>$request->chair_loan, 'description' =>$request->description,'id_sala' =>$request->id_sala]);
 
             return redirect()->back()->with('message', 'Evento editado correctamente');
         }
-    //} 
-
+    }
+    
     //////////////////////////////////////////////Metodo eliminar///////////////////////////////////////////////////
     public function destroy(Request $request)
     {
