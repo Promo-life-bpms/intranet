@@ -259,7 +259,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     //Estado actual de solicitud rol sistemas
     Route::get('/Systemsrequest/',[SystemRequest::class, 'systemsrequest'])->name('systems.request');
-    Route::get('/Seemore/', [seeMore::class, 'seeMore'])->name('systems.more');
+    
+    //Cambio de estado de solicitud
+    Route::get('/Seemore/{id}', [SeeMore::class, 'show'])->name('systems.show');
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');

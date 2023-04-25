@@ -30,7 +30,7 @@
                         <td style="text-align: center">{{$systems->id}}</td>
                         <td style="text-align: center">{{$systems->updated_at}}</td> 
                         <td>
-                        <a type="button" class="btn btn-primary"  href="{{ route('systems.more')}}">Ver Más</a>
+                        <a type="button" class="btn btn-primary"  href="{{ route('systems.show', $systems->id)}}">Ver Más</a>
                         </td>
                     </tr>
                     @endforeach
