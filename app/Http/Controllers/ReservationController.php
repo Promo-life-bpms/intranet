@@ -30,10 +30,10 @@ class ReservationController extends Controller
   
         $evento_existente = Reservation::where('start', $start)->where('id_sala', $id_sala)->first();
         if ($evento_existente) {
-            return back()->with('message', "Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha. ¡Gracias!");
+            return back()->with('message1', "Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha.");
 
         }elseif($end < $start){
-            return back()->with('message',"La hora de inicio no debe ser más grande que la hora de fin de tu reservación.");
+            return back()->with('message1',"La hora de inicio debe ser previa que la hora del fin de la reservacón.");
         }
         else{
         $user = auth()->user();
@@ -63,7 +63,7 @@ class ReservationController extends Controller
             $evento->id_usuario=$user->id;
             $evento->id_sala=$request->id_sala;
             $evento->save();
-            return redirect()->back()->with('message', "Reservacón creada correctamente");
+            return redirect()->back()->with('message', "Reservacón creada correctamente.");
         }
     }
     //////////////////////////////////////////////Función para editar/////////////////////////////////////////////////
@@ -75,10 +75,10 @@ class ReservationController extends Controller
   
         $evento_existente = Reservation::where('start', $start)->where('id_sala', $id_sala)->first();
         if ($evento_existente) {
-            return back()->with('message',"Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha. ¡Gracias!");
+            return back()->with('message1',"Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha.");
 
         }elseif($end < $start){
-            return back()->with('message',"La hora de inicio no debe ser más grande que la hora de fin de tu reservación.");
+            return back()->with('message1',"La hora de inicio debe ser previa que la hora del fin de la reservacón.");
         }
         else{
 
@@ -102,7 +102,7 @@ class ReservationController extends Controller
             'end'=>$request->end,'number_of_people'=>$request->number_of_people,'material'=>$request->material, 
             'chair_loan' =>$request->chair_loan, 'description' =>$request->description,'id_sala' =>$request->id_sala]);
 
-            return redirect()->back()->with('message', 'Evento editado correctamente');
+            return redirect()->back()->with('message2', 'Evento editado correctamente.');
         }
     }
     
@@ -111,7 +111,7 @@ class ReservationController extends Controller
     {
 
         DB::table('reservations')->where('id', $request->id_evento)->delete();
-        return redirect()->back()->with('message', 'Evento eliminado');  
+        return redirect()->back()->with('message1', 'Evento eliminado.');  
     }
     /////////////////////////////////////////////Mostrar eventos////////////////////////////////////////////////////
     public function view(Reservation $reservation){

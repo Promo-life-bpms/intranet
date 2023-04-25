@@ -5,6 +5,14 @@
             <div class="alert alert-success">
                 {{ session('message') }}
             </div>
+            @elseif (session('message1'))
+            <div class="alert alert-danger">
+                {{ session('message1') }}
+            </div>
+            @elseif (session('message2'))
+            <div class="alert alert-warning">
+                {{ session('message2') }}
+            </div>
         @endif
             <div class ="container">
                 <h1>Reservación de la sala recreativa</h1>
@@ -61,7 +69,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        {!! Form::label('end', 'Final') !!}
+                                        {!! Form::label('end', 'Final:') !!}
                                         <input type="datetime-local" id="meeting-time" name="end" class="form-control">
                                     </div>
                                 </div>
@@ -132,7 +140,6 @@
             {!! Form::open(['route' => 'reserviton.creative.update', 'enctype' => 'multipart/form-data', 'method'=>'PUT']) !!}
             @csrf
             @if(auth()->user()->id==$evento->id_usuario)
-        
             <div class="modal fade" id="Editar{{$evento->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -232,14 +239,14 @@
                             </div>
                             @if(auth()->user()->id==$evento->id_usuario)
                             <div class="modal-footer">
-                                {!! Form::submit('Editar', ['class' => 'btn btn-warning']) !!}
+                                {!! Form::submit('Modificar', ['class' => 'btn3 btn-warning']) !!}
                                 <form action="{{ route('reserviton.creative.delete', ['id_evento' =>$evento->id]) }}" method="post"></form>
                                 <form class="form-delete m-2 mt-0"  action="{{ route('reserviton.creative.delete')}}" method="post">
                                     {!! Form::text('id_evento', $evento->id,['class'=>'form-control', 'hidden']) !!}
                                     @csrf
-                                    <input class="btn btn-danger" type="submit" value="Eliminar" />
+                                    <input class="btn1 btn-danger" type="submit" value="Eliminar" />
                                 </form>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn2 btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             </div>
                             @endif
                         </div>
@@ -273,4 +280,35 @@
             })
         });
     </script>
+@endsection
+
+@section ('styles')
+    <style>
+        .btn1{
+            margin-top: 12px;    
+            border: 10px;
+            width: 100px;
+            padding: 10px 10px;
+            text-align: center;
+            border-radius: 10px;
+        }
+        .btn2{
+            margin-top: 8px; 
+            border: 10px;
+            width: 100px;
+            padding: 10px 10px;
+            text-align: center;  
+            border-radius: 10px; 
+          
+        }
+        .btn3{
+            margin-top: 8px;
+            border: 10px;
+            width: 100px;
+            padding: 10px 10px;
+            text-align: center;  
+            border-radius: 10px; 
+            color: #ffffff;  
+        }
+    </style>
 @endsection

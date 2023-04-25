@@ -9,13 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
         slotMaxTime: "19:00:00",
         eventColor: '#6EB5FF',
 
-        /*eventColor: function(info){
-          info.event.id + '#6EB5FF'
-
-        },*/
-      
-
-
         headerToolbar: {
             left:'prev,next today',
             center:'title',
@@ -37,7 +30,8 @@ document.addEventListener('DOMContentLoaded', function() {
         },
          dayClick: function(info) {
             // Llenar automáticamente el campo de fecha en el formulario
-            document.getElementById('end').value = info.dateStr;
+            document.getElementById('start').value = info.event.dateStr;
+            document.getElementById('end').value = info.event.dateStr;
         },
         
         eventClick: function(info) {
