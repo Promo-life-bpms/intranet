@@ -21,7 +21,7 @@
 
                     @foreach ($solucion as $tickets)
                         <tr>
-                            <th scope="row">{{$loop->iteration }}</th>
+                            <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $tickets->name }}</td>
                             <td class="col-2">{{ $tickets->category->name }}</td>
                             <td class="col-2">
@@ -41,14 +41,13 @@
                             </td>
                             <td>
 
-                                <button onclick="atender({{ $tickets->id }})" type="button"
+                                <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})" type="button"
                                     class="btn btn-success btn-sm " wire:click="verTicket({{ $tickets->id }})"><i
                                         class="bi bi-eye"></i></button>
 
                             </td>
 
                         </tr>
-
                     @endforeach
                 </tbody>
             </table>
@@ -66,12 +65,23 @@
         <div class="modal-dialog modal-dialog-scrollable  modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Solución Tickets</h1>
+                    {{-- <h1 class="modal-title fs-5" id="exampleModalLabel">Solución Tickets</h1> --}}
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation" wire:ignore>
+                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                                type="button" role="tab" aria-controls="home" aria-selected="true">Ticket</button>
+                        </li>
+                        <li class="nav-item" role="presentation" wire:ignore>
+                            <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial"
+                                type="button" role="tab" aria-controls="historial"
+                                aria-selected="false">Historial</button>
+                        </li>
+                    </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
-                    <form>
+                    {{-- <form>
                         @csrf
                         <p><span class="fw-bold">Problema a resolver :</span> <span>{{ $name }}</span></p>
 
@@ -79,49 +89,87 @@
 
                         <p><span class="fw-bold">Descripción:</span></p>
 
-                        <div class="d-flex justify-content-center">
+                        <div>
                             <p>{!! $data !!}</p>
                         </div>
 
                         <hr>
                         <p><span class="fw-bold">Mensajes :</span></span></p>
                         @if ($mensaje)
-                        @foreach ($mensaje->mensajes as $mensajes)
-                             <span>{!!$mensajes->message!!}{{$mensaje->created_at}}</span>
-                        @endforeach
-
+                            @foreach ($mensaje->mensajes as $mensajes)
+                                <span>{!! $mensajes->message !!}</span>
+                            @endforeach
                         @endif
                         <hr>
                         <div wire:ignore class="mb-3 text-input-crear">
-                            <label for="descripcion" class="form-label">Solución</label>
-                            <textarea id="editor" wire:model="description" cols="20" rows="3" class="form-control" name="description"></textarea>
-                            @error('description')
-                                <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
-                            @enderror
-
+                            <label for="descripcion" class="form-label fw-bold">Solución</label>
+                            <textarea id="editor"cols="20" rows="3" class="form-control" name="description"></textarea>
                         </div>
+                        @error('description')
+                            <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
+                        @enderror
+                    </form> --}}
 
-                    </form>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"
+                            wire:ignore.self>
+                            <form>
+                                @csrf
+                                <p><span class="fw-bold">Problema a resolver :</span> <span>{{ $name }}</span>
+                                </p>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-success" wire:click="guardarSolucion">Guardar</button>
-                    <div wire:loading.flex wire:target="guardarSolucion">
-                        Guardando
+                                <p><span class="fw-bold">Categoría :</span> <span>{{ $categoria }}</span></p>
+
+                                <p><span class="fw-bold">Descripción:</span></p>
+
+                                <div>
+                                    <p>{!! $data !!}</p>
+                                </div>
+
+                                <hr>
+                                <p><span class="fw-bold">Mensajes :</span></span></p>
+                                @if ($mensaje)
+                                    @foreach ($mensaje->mensajes as $mensajes)
+                                        <span>{!! $mensajes->message !!}</span>
+                                    @endforeach
+                                @endif
+                                <hr>
+                                <div wire:ignore class="mb-3 text-input-crear">
+                                    <label for="descripcion" class="form-label fw-bold">Solución</label>
+                                    <textarea id="editor"cols="20" rows="3" class="form-control" name="description"></textarea>
+                                </div>
+                                @error('description')
+                                    <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
+                                @enderror
+                            </form>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-success" wire:click="guardarSolucion">Enviar</button>
+                                <div wire:loading.flex wire:target="guardarSolucion">
+                                    Enviando
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
+                            wire:ignore.self>Historial
+                        </div>
                     </div>
+
                 </div>
+
             </div>
         </div>
     </div>
 
 
     <script>
-        let ckEditorCreate, ckEditorEdit, ckEditorVer;
+        let ckEditorSolucion;
         ClassicEditor
-            .create(document.querySelector('#editor'))
+            .create(document.querySelector('#editor'), {
+                removePlugins: ['Heading']
+            })
             .then(newEditor => {
-                ckEditorCreate = newEditor;
+                ckEditorSolucion = newEditor;
 
 
             })
@@ -132,17 +180,12 @@
             const editor = document.querySelector('.text-input-crear .ck-editor__editable');
             //Escuchar el evento key?
             editor.addEventListener('keyup', () => {
-                let texto = ckEditorCreate.getData();
-                console.log(texto);
-                // Funcion que se ejecute en el evento key_up
-                //Obtener el elemento .ck-editor en una variable
-
+                let texto = ckEditorSolucion.getData();
                 @this.description = texto
                 // Obtener el html que tiene esa etiqueta
             })
 
         })
-
 
 
         window.addEventListener('ticket_solucion', () => {
@@ -155,31 +198,33 @@
 
             $('#ModalAgregar').modal('hide')
 
-            ckEditorCreate.setData("");
+            ckEditorSolucion.setData("");
 
         });
 
-        function atender(id) {
-             Swal.fire({
-                 title: 'Quieres dar solucion a este ticket?',
-                 icon: 'question',
-                 showCancelButton: true,
-                 confirmButtonColor: '#3085d6',
-                 cancelButtonColor: '#d33',
-                 confirmButtonText: 'Si'
-             }).then((result) => {
+        function atender(id, status_id) {
 
-                 if (result.isConfirmed) {
-                     let resultado = @this.enProceso(id)
-                     $('#ModalAgregar').modal('show')
+            if (status_id == 2) {
+                $('#ModalAgregar').modal('show')
+            } else {
+                Swal.fire({
+                    title: 'Quieres dar solucion a este ticket?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si'
+                }).then((result) => {
 
-                     toastr.success("Ticket en proceso")
-                 } else {
+                    if (result.isConfirmed) {
+                        let resultado = @this.enProceso(id)
+                        $('#ModalAgregar').modal('show')
 
-                     $('#ModalAgregar').modal('hide')
-                     return;
-                 }
-             })
-    }
+                        toastr.success("Ticket en proceso")
+                    }
+                })
+            }
+
+        }
     </script>
 </div>

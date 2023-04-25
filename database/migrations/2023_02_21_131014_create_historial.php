@@ -15,13 +15,11 @@ class CreateHistorial extends Migration
     {
         Schema::create('soporte_historial', function (Blueprint $table) {
             $table->id();
-            $table->string('ticket_id');
-            $table->string('date');
+            $table->foreignId('ticket_id')->references('id')->on('soporte_tickets');
+            $table->foreignId('user_id')->references('id')->on('users');
             $table->string('type');
             $table->string('data');
             $table->timestamps();
-           
-
         });
     }
 

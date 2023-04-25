@@ -197,7 +197,7 @@
                         </div>
 
                         <div wire:ignore class="mb-3 text-input-editar">
-                            <label for="descripcion" class="form-label">Descripción</label>
+                            <label for="descripcion" class="form-label fw-bold">Descripción</label>
                             <textarea wire:model="data" id="editorEditar" cols="20" rows="3" class="form-control" name="data"></textarea>
                             @error('data')
                                 <span class="invalid-feedback">
@@ -225,9 +225,6 @@
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    {{-- <h1 class="modal-title fs-5" id="exampleModalLabel">Detalles ticket</h1>
-                    </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> --}}
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation" wire:ignore>
                             <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
@@ -240,6 +237,7 @@
                                 aria-selected="false">Historial</button>
                         </li>
                     </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
 
@@ -265,29 +263,34 @@
                             <hr>
                             {{-- Editor Mensaje --}}
                             <div wire:ignore class="mb-3 text-input-mensaje">
-                                <label for="descripcion" class="form-label">Enviar mensaje</label></label>
-                                <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
+                                <label for="descripcion" class="form-label fw-bold">Enviar mensaje</label></label>
+                                <textarea wire:ignore id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
                                 @error('message')
                                     <span class="invalid-feedback">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                            </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                                    <button type="button" class="btn btn-success" wire:click="enviarMensaje">Guardar</button>
+                                    <div wire:loading.flex wire:target="enviarMensaje">
+                                      Enviando
+                                    </div>
+                                </div>
                         </div>
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
-                            wire:ignore.self>Historial
+                            wire:ignore.self>
+                            @if($ticket_solucion)
+                                @foreach($ticket_solucion->historial as $cambio)
+                                  @if($cambio=== )
+                                    <div class="alert alert-primary" role="alert">
+                                        Status : {{$cambio->type}} {{$cambio->created_at}}
+                                       </div>
+
+                                @endforeach
+                            @endif
                         </div>
-                    </div>
-
-
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-success" wire:click="enviarMensaje">Guardar</button>
-                    <div wire:loading.flex wire:target="enviarMensaje">
-                        Guardando
                     </div>
                 </div>
             </div>
@@ -311,34 +314,26 @@
             });
         document.addEventListener("DOMContentLoaded", () => {
             const editor = document.querySelector('.text-input-crear .ck-editor__editable');
-            //Escuchar el evento key?
+
             editor.addEventListener('keyup', () => {
                 let texto = ckEditorCreate.getData();
-                console.log(texto);
-                // Funcion que se ejecute en el evento key_up
-                //Obtener el elemento .ck-editor en una variable
-
                 @this.data = texto
-                // Obtener el html que tiene esa etiqueta
+
             })
             const editorUpdate = document.querySelector('.text-input-editar .ck-editor__editable');
-            //Escuchar el evento key?
+
             editorUpdate.addEventListener('keyup', () => {
                 let texto = editorUpdate.innerHTML;
-                //let texto = editorUpdate.getData();
+
                 console.log(texto);
-                // Funcion que se ejecute en el evento key_up
-                //Obtener el elemento .ck-editor en una variable
+
 
                 @this.data = texto
-                // Obtener el html que tiene esa etiqueta
+
             })
             const editorMessage = document.querySelector('.text-input-mensaje .ck-editor__editable');
-            //Escuchar el evento key?
             editorMessage.addEventListener('keyup', () => {
-                let texto = editorMessage.innerHTML;
-
-
+                let texto = editorMessage.getData();
                 @this.mensaje = texto
 
             })
@@ -350,7 +345,7 @@
 
         ClassicEditor
             .create(document.querySelector('#editorEditar'), {
-
+                removePlugins:['Heading']
             })
             .then(newEditor => {
                 ckEditorEdit = newEditor;
@@ -364,10 +359,10 @@
 
         ClassicEditor
             .create(document.querySelector('#editorMensaje'), {
-
+                // removePlugins:['Heading']
             })
             .then(newEditor => {
-                ckEditorEdit = newEditor;
+                ckEditorMensaje = newEditor;
 
 
             })
@@ -435,8 +430,7 @@
                 showConfirmButton: false,
                 timer: 1500
             })
-
-            $('#ModalMensaje').modal('hide')
+            $('#Modalver').modal('hide');
             ckEditorMensaje.setData("");
 
 

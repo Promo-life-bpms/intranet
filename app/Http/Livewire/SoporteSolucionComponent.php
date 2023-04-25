@@ -18,13 +18,12 @@ use App\Models\Soporte\UsuariosSoporte;
 class SoporteSolucionComponent extends Component
 {
     use WithPagination;
-    public $ticket_id, $name, $categoria, $data, $categorias, $description,$mensaje;
+    public $ticket_id, $name, $categoria, $data, $categorias, $description,$mensaje,$status;
 
     public function render()
     {
 
         $categories=  auth()->user()->asignacionCategoria->pluck(["id"]);
-
         return view('livewire.soporte-solucion-component', [
 
             'solucion' => Ticket::whereIn('category_id',$categories)->paginate('15')
@@ -49,6 +48,8 @@ class SoporteSolucionComponent extends Component
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
+
+
     }
 
     public function guardarSolucion()
