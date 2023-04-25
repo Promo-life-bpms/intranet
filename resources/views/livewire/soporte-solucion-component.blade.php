@@ -18,7 +18,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                   
+
                     @foreach ($solucion as $tickets)
                         <tr>
                             <th scope="row">{{$loop->iteration }}</th>
@@ -41,14 +41,14 @@
                             </td>
                             <td>
 
-                                <button onclick="finalizar({{ $tickets->id }})" type="button"
+                                <button onclick="atender({{ $tickets->id }})" type="button"
                                     class="btn btn-success btn-sm " wire:click="verTicket({{ $tickets->id }})"><i
                                         class="bi bi-eye"></i></button>
 
                             </td>
 
                         </tr>
-                      
+
                     @endforeach
                 </tbody>
             </table>
@@ -79,19 +79,17 @@
 
                         <p><span class="fw-bold">Descripción:</span></p>
 
-                        <div class="text-mostrar">
+                        <div class="d-flex justify-content-center">
                             <p>{!! $data !!}</p>
                         </div>
 
                         <hr>
-                        <p><span class="fw-bold">Historial</span></p>
-                        <hr>
                         <p><span class="fw-bold">Mensajes :</span></span></p>
                         @if ($mensaje)
                         @foreach ($mensaje->mensajes as $mensajes)
-                            {!!$mensajes->message!!}
+                             <span>{!!$mensajes->message!!}{{$mensaje->created_at}}</span>
                         @endforeach
-                            
+
                         @endif
                         <hr>
                         <div wire:ignore class="mb-3 text-input-crear">
@@ -161,10 +159,7 @@
 
         });
 
-
-
-
-        function finalizar(id) {
+        function atender(id) {
              Swal.fire({
                  title: 'Quieres dar solucion a este ticket?',
                  icon: 'question',
@@ -185,8 +180,6 @@
                      return;
                  }
              })
-
-            
     }
     </script>
 </div>

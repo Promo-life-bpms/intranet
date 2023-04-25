@@ -87,7 +87,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     // Permisos y Vacaciones
 
-    // Aniversarios y cumpleaños
+    // Aniversarios y cumpleaños0
     Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
 

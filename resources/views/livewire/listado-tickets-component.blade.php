@@ -133,6 +133,7 @@
                         @enderror
                     </form>
 
+
                 </div>
 
 
@@ -224,44 +225,67 @@
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Detalles ticket</h1>
+                    {{-- <h1 class="modal-title fs-5" id="exampleModalLabel">Detalles ticket</h1>
                     </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> --}}
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation" wire:ignore>
+                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                                data-bs-target="#home" type="button" role="tab" aria-controls="home"
+                                aria-selected="true">Detalles en ticket</button>
+                        </li>
+                        <li class="nav-item" role="presentation" wire:ignore>
+                            <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial"
+                                type="button" role="tab" aria-controls="historial"
+                                aria-selected="false">Historial</button>
+                        </li>
+                    </ul>
                 </div>
                 <div class="modal-body">
 
-                    <p><span class="fw-bold">Problema a resolver :</span> <span>{{ $name }}</span></p>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                            aria-labelledby="home-tab" wire:ignore.self>
+                            <p><span class="fw-bold">Problema a resolver :</span> <span>{{ $name }}</span></p>
 
-                    <p><span class="fw-bold">Categoría :</span> <span>{{ $categoria }}</span></p>
+                            <p><span class="fw-bold">Categoría :</span> <span>{{ $categoria }}</span></p>
 
-                    <p><span class="fw-bold">Descripción :</span></p>
+                            <p><span class="fw-bold">Descripción :</span></p>
 
-                    <div class="text-mostrar">
-                        <p>{!! $data !!}</p>
+                            <div class="text-mostrar">
+                                <p>{!! $data !!}</p>
+                            </div>
+                            <hr>
+                            <p><span class="fw-bold">Solución:</span></p>
+                            @if ($ticket_solucion)
+                                @foreach ($ticket_solucion->solution as $solucion)
+                                    {!! $solucion->description !!}
+                                @endforeach
+                            @endif
+                            <hr>
+                            {{-- Editor Mensaje --}}
+                            <div wire:ignore class="mb-3 text-input-mensaje">
+                                <label for="descripcion" class="form-label">Enviar mensaje</label></label>
+                                <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
+                                @error('message')
+                                    <span class="invalid-feedback">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
+                            wire:ignore.self>Historial
+                        </div>
                     </div>
-                    <hr>
-                    <p><span class="fw-bold">Solucion :</span></p>
-                    @if ($ticket_solucion)
-                        @foreach ($ticket_solucion->solution as $solucion)
-                            {!! $solucion->description !!}
-                        @endforeach
-                    @endif
-                    <hr>
-                    {{-- Editor Mensaje --}}
-                    <div wire:ignore class="mb-3 text-input-mensaje">
-                        <label for="descripcion" class="form-label">Enviar mensaje</label></label>
-                        <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
-                        @error('message')
-                            <span class="invalid-feedback">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
+
+
+
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-success"
-                        wire:click="enviarMensaje">Guardar</button>
+                    <button type="button" class="btn btn-success" wire:click="enviarMensaje">Guardar</button>
                     <div wire:loading.flex wire:target="enviarMensaje">
                         Guardando
                     </div>
@@ -313,10 +337,10 @@
             //Escuchar el evento key?
             editorMessage.addEventListener('keyup', () => {
                 let texto = editorMessage.innerHTML;
-              
+
 
                 @this.mensaje = texto
-                
+
             })
 
         });

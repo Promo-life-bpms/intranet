@@ -26,30 +26,29 @@ class SoporteSolucionComponent extends Component
         $categories=  auth()->user()->asignacionCategoria->pluck(["id"]);
 
         return view('livewire.soporte-solucion-component', [
-            
+
             'solucion' => Ticket::whereIn('category_id',$categories)->paginate('15')
         ]);
     }
 
     public function enProceso($id)
     {
+
         $actualizar_status = Ticket::find($id);
         $actualizar_status->update([
             'status_id' => 2
         ]);
+
     }
 
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
-        //dd($this->mensaje=$ticket->mensajes);
         $this->mensaje=$ticket;
         $this->ticket_id = $ticket->id;
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
-
-
     }
 
     public function guardarSolucion()
