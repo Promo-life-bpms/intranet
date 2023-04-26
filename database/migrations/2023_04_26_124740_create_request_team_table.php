@@ -19,6 +19,7 @@ class CreateRequestTeamTable extends Migration
             $table->string('description');
             $table->string('status');
             $table->id();
+            $table->string('comments')->nullable();
             $table->timestamps();
         });
     }

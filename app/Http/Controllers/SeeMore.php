@@ -13,4 +13,5 @@ class SeeMore extends Controller
         /*dd($user);*/
         return view('systems.show', compact('user'));
     }
+    
 }
