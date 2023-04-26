@@ -134,9 +134,9 @@
                                     @endforeach
                                 @endif
                                 <hr>
-                                <div wire:ignore class="mb-3 text-input-crear">
+                                <div wire:ignore class="mb-3 text-input-mensaje">
                                     <label for="descripcion" class="form-label fw-bold">Solución</label>
-                                    <textarea id="editor"cols="20" rows="3" class="form-control" name="description"></textarea>
+                                    <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="description"></textarea>
                                 </div>
                                 @error('description')
                                     <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
@@ -151,7 +151,38 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
-                            wire:ignore.self>Historial
+                            wire:ignore.self>
+                            @if ($historial)
+                                @foreach ($historial->historial as $cambio)
+                                @if ($cambio->type == 'creado')
+                                <div class="alert-sm alert-primary alert-dismissible text-center rounded-3" role="alert">
+                                   <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                </div>
+                                {!! $cambio->data !!}
+                                @elseif ($cambio->type == 'edito')
+                                <div class="alert-sm alert-warning alert-dismissible text-center rounded-3" role="alert">
+                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                 </div>
+                                 {!! $cambio->data !!}
+                                 @elseif ($cambio->type == 'Mensaje')
+                                 <div class="alert-sm alert-info alert-dismissible text-center rounded-3" role="alert">
+                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                 </div>
+                                 {!! $cambio->data !!}
+                                 @elseif ($cambio->type == 'status')
+                                 <div class="alert-sm alert-success alert-dismissible text-center rounded-3" role="alert">
+                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                 </div>
+                                 {!! $cambio->data !!}
+                                 @elseif ($cambio->type == 'solucion')
+                                 <div class="alert-sm alert-dark alert-dismissible text-center rounded-3" role="alert">
+                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                 </div>
+                                 {!! $cambio->data !!}
+                                @endif
+                                @endforeach
+                                
+                            @endif
                         </div>
                     </div>
 
@@ -165,19 +196,15 @@
     <script>
         let ckEditorSolucion;
         ClassicEditor
-            .create(document.querySelector('#editor'), {
-                removePlugins: ['Heading']
-            })
+            .create(document.querySelector('#editorMensaje'))
             .then(newEditor => {
                 ckEditorSolucion = newEditor;
-
-
             })
             .catch(error => {
                 console.error(error);
             });
         document.addEventListener("DOMContentLoaded", () => {
-            const editor = document.querySelector('.text-input-crear .ck-editor__editable');
+            const editor = document.querySelector('.text-input-mensaje .ck-editor__editable');
             //Escuchar el evento key?
             editor.addEventListener('keyup', () => {
                 let texto = ckEditorSolucion.getData();
@@ -204,7 +231,7 @@
 
         function atender(id, status_id) {
 
-            if (status_id == 2) {
+            if (status_id == 2 || status_id == 3) {
                 $('#ModalAgregar').modal('show')
             } else {
                 Swal.fire({

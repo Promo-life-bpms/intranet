@@ -18,7 +18,7 @@ class CreateHistorial extends Migration
             $table->foreignId('ticket_id')->references('id')->on('soporte_tickets');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->string('type');
-            $table->string('data');
+            $table->mediumText('data');
             $table->timestamps();
         });
     }

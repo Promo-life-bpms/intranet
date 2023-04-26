@@ -58,13 +58,13 @@ class ListadoTicketsComponent extends Component
             ]
         );
 
-
+            //Historial de creado
         Historial::create(
             [
               'ticket_id'=>$ticket->id,
                'user_id'=>auth()->user()->id,
                'type'=>'creado',
-               'data'=>'problema'
+               'data'=>$ticket->data
 
             ]
             );
@@ -84,16 +84,6 @@ class ListadoTicketsComponent extends Component
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->id;
-
-        Historial::create(
-
-            [
-                'ticket_id'=>$ticket->id,
-                'user_id'=>auth()->user()->id,
-                'type'=>'edito',
-                'data'=>'algo'
-            ]
-            );
 
         $this->dispatchBrowserEvent('mostrar_data');
     }
@@ -121,7 +111,14 @@ class ListadoTicketsComponent extends Component
              'category_id' => $this->categoria,
          ]);
 
-         $this->name = ' ';
+         Historial::create([
+            'ticket_id'=>$ticketEditar->id,
+            'user_id'=>auth()->user()->id,
+            'type'=>'edito',
+            'data'=>$ticketEditar->data
+         ]);
+
+         $this->name = '';
          $this->categoria = ' ';
        $this->dispatchBrowserEvent('editar');
     }
@@ -129,12 +126,23 @@ class ListadoTicketsComponent extends Component
     public function finalizarTicket($id)
     {
         $actualizar_status=Ticket::find($id);
+       
         $actualizar_status->update(
             [
 
                'status_id' => 3
             ]
             );
+
+            Historial::create(
+
+                [
+                    'ticket_id'=>$actualizar_status->id,
+                    'user_id'=>auth()->user()->id,
+                    'type'=>'status',
+                    'data'=>$actualizar_status->status->name
+                ]
+                );
     }
 
     public function verTicket($id)
@@ -146,10 +154,6 @@ class ListadoTicketsComponent extends Component
         $this->data = $ticket->data;
         $this->categoria=$ticket->category->name;
 
-
-
-
-
         $this->dispatchBrowserEvent('borrar');
 
 
@@ -157,14 +161,22 @@ class ListadoTicketsComponent extends Component
 
     public function enviarMensaje(){
 
-
-
-
-        Mensaje::create([
+         Mensaje::create([
             'ticket_id' => $this->ticket_id,
             'message' =>$this->mensaje,
             'user_id'=>auth()->user()->id
         ]);
+    
+
+        Historial::create(
+
+            [
+                'ticket_id'=>$this->ticket_id,
+                'user_id'=>auth()->user()->id,
+                'type'=>'Mensaje',
+                'data'=>$this->mensaje
+            ]
+            );
 
         $this->dispatchBrowserEvent('Mensaje');
     }

@@ -232,8 +232,8 @@
                                 aria-selected="true">Detalles en ticket</button>
                         </li>
                         <li class="nav-item" role="presentation" wire:ignore>
-                            <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial"
-                                type="button" role="tab" aria-controls="historial"
+                            <button class="nav-link" id="historial-tab" data-bs-toggle="tab"
+                                data-bs-target="#historial" type="button" role="tab" aria-controls="historial"
                                 aria-selected="false">Historial</button>
                         </li>
                     </ul>
@@ -270,24 +270,46 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-success"
+                                    wire:click="enviarMensaje">Enviar</button>
+                                <div wire:loading.flex wire:target="enviarMensaje">
+                                    Enviando
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                                    <button type="button" class="btn btn-success" wire:click="enviarMensaje">Guardar</button>
-                                    <div wire:loading.flex wire:target="enviarMensaje">
-                                      Enviando
-                                    </div>
-                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
                             wire:ignore.self>
-                            @if($ticket_solucion)
-                                @foreach($ticket_solucion->historial as $cambio)
-                                  @if($cambio=== )
-                                    <div class="alert alert-primary" role="alert">
-                                        Status : {{$cambio->type}} {{$cambio->created_at}}
-                                       </div>
-
+                            @if ($ticket_solucion)
+                                @foreach ($ticket_solucion->historial as $cambio)
+                                   @if ($cambio->type == 'creado')
+                                    <div class="alert-sm alert-primary alert-dismissible text-center rounded-3" role="alert">
+                                       <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                    </div>
+                                    {!! $cambio->data !!}
+                                    @elseif ($cambio->type == 'edito')
+                                    <div class="alert-sm alert-warning alert-dismissible text-center rounded-3" role="alert">
+                                        <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                     </div>
+                                     {!! $cambio->data !!}
+                                     @elseif ($cambio->type == 'Mensaje')
+                                     <div class="alert-sm alert-info alert-dismissible text-center rounded-3" role="alert">
+                                        <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                     </div>
+                                     {!! $cambio->data !!}
+                                     @elseif ($cambio->type == 'status')
+                                     <div class="alert-sm alert-success alert-dismissible text-center rounded-3" role="alert">
+                                        <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                     </div>
+                                     {!! $cambio->data !!}
+                                     @elseif ($cambio->type == 'solucion')
+                                     <div class="alert-sm alert-dark alert-dismissible text-center rounded-3" role="alert">
+                                        <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                     </div>
+                                     {!! $cambio->data !!}
+                                    @endif
                                 @endforeach
                             @endif
                         </div>
@@ -319,33 +341,26 @@
                 let texto = ckEditorCreate.getData();
                 @this.data = texto
 
-            })
+            });
             const editorUpdate = document.querySelector('.text-input-editar .ck-editor__editable');
 
             editorUpdate.addEventListener('keyup', () => {
                 let texto = editorUpdate.innerHTML;
-
                 console.log(texto);
-
-
                 @this.data = texto
 
-            })
+            });
             const editorMessage = document.querySelector('.text-input-mensaje .ck-editor__editable');
             editorMessage.addEventListener('keyup', () => {
-                let texto = editorMessage.getData();
+                let texto = editorMessage.innerHTML;
                 @this.mensaje = texto
-
-            })
-
+            });
         });
-
-
 
 
         ClassicEditor
             .create(document.querySelector('#editorEditar'), {
-                removePlugins:['Heading']
+                removePlugins: ['Heading']
             })
             .then(newEditor => {
                 ckEditorEdit = newEditor;
@@ -358,9 +373,7 @@
 
 
         ClassicEditor
-            .create(document.querySelector('#editorMensaje'), {
-                // removePlugins:['Heading']
-            })
+            .create(document.querySelector('#editorMensaje'))
             .then(newEditor => {
                 ckEditorMensaje = newEditor;
 
@@ -369,12 +382,6 @@
             .catch(error => {
                 console.error(error);
             });
-
-
-
-
-
-
 
 
         document.addEventListener("mostrar_data", () => {
