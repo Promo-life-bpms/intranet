@@ -770,7 +770,7 @@ class RhController extends Controller
         ]);
 
         //Validar correo
-        $verify_postulant_email = Postulant::where('email',$request->email)->count();
+        $verify_postulant_email = Postulant::where('email',$request->email)->where('status','<>','no seleccionado' )->count();
         $verify_user_email = User::where('email',$request->email)->count();
 
         if( $verify_postulant_email != 0){
@@ -1156,7 +1156,6 @@ class RhController extends Controller
             'home_references' => 'required',
             'house_characteristics' => 'required',
             'month_salary_net' => 'required',
-            'month_salary_gross' => 'required',
             'daily_salary' => 'required',
             'daily_salary_letter' => 'required',
             'position_objetive' => 'required',
