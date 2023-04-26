@@ -252,7 +252,8 @@ class UserController extends Controller
         $user->employee->companies()->attach($request->companies);
         // $user->employee->positions()->attach($request->position);
 
-        return redirect()->action([UserController::class, 'index']);
+        return redirect()->back()->with('message', 'Información actualizada correctamente');
+
     }
 
     /**

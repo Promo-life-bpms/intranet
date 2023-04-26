@@ -2,20 +2,19 @@
 
 @section('content')
     <div class="card-header">
-        <h3 class="separator">Generar alta</h3> 
+        <div class="d-flex flex-row">
+            <a href="{{ route('rh.postulants') }}">
+                <i class="fa fa-arrow-left fa-2x arrouw-back me-2" aria-hidden="true"></i>
+            </a> 
+            <h3 class="separator">Candidatos no seleccionados</h3> 
+        </div>
+        
     </div>
     <div class="card-body">
     <div class="d-flex flex-row justify-content-between add-container" >
-        <h6>Lista de candidatos disponibles</h6>
+        <h6>Lista de candidatos no seleccionados</h6>
         <div>
-        <a class="btn btn-danger me-2" href="{{ route('rh.noSelectedPostulant') }}">
-            <i class="fa fa-users me-2" aria-hidden="true"></i>
-            Candidatos no seleccionados
-        </a>
-        <a class="btn btn-success" href="{{ route('rh.createPostulant') }}">
-            <i style="margin-right:8px" class="fa fa-plus" aria-hidden="true"></i>
-            Agregar nuevo
-        </a>
+        
         </div>
         
     </div>
@@ -65,13 +64,13 @@
                                             type="button" class="btn btn-option">Detalles</a>
                                     </div>
                                 </div>
-                                <div class="d-flex" >
+                                <div class="d-flex  w-100" >
                                     <form class="form-delete"
-                                        action="{{ route('rh.deletePostulant', ['postulant_id' => $postulant->id]) }}"
+                                        action="{{ route('rh.deleteDefinitivePostulant', ['postulant_id' => $postulant->id]) }}"
                                         method="POST">
                                         @csrf
-                                        <button type="submit"
-                                            class="btn btn-danger btn-block mt-1">No seleccionado</button>
+                                        <button type="submit" style="width:145px;"
+                                            class="btn btn-danger btn-block mt-1">Borrar</button>
                                     </form>
                                 </div>
                             </td>
@@ -80,7 +79,6 @@
                 </tbody>
             </table>
         </div>
-   
     </div>
 @stop
 
@@ -107,7 +105,6 @@
             })
         });
     </script>
-    
     
     <script>
         $(document).ready(function() {
@@ -335,7 +332,6 @@
     </script>
 
 @endsection
-
 
 @section('styles')
 

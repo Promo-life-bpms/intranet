@@ -5,56 +5,69 @@
 
         <div class="d-flex justify-content-between">
             <div class="d-flex flex-row" >
-                <a  href="{{ route('rh.postulants') }}">
-                    <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
-                </a>
-                <h3 style="margin-left:16px;" class="separator">Alta de Candidato </h3> 
+
+                @if($postulant->status == 'no seleccionado')
+                    <a  href="{{ route('rh.noSelectedPostulant') }}">
+                        <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
+                    </a>
+                    <h3 style="margin-left:16px;" class="separator">Detalles de Candidato </h3> 
+                @else
+                    <a  href="{{ route('rh.postulants') }}">
+                        <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
+                    </a>
+                    <h3 style="margin-left:16px;" class="separator">Alta de Candidato </h3> 
+                @endif
+                
             </div>
             
-            <div>                
-                <form 
-                    action="{{ route('rh.createMorePostulant', ['postulant_id' => $postulant->id]) }}"
-                    method="GET">
-                    @csrf
-                    <button type="submit" class="btn btn-primary"> 
-                        Recepcion de Documentos
-                        <i class="ms-2 fa fa-arrow-right" aria-hidden="true"></i>
-                    </button>
-                </form>
+            <div>  
+                @if($postulant->status != 'no seleccionado')  
+                    <form 
+                        action="{{ route('rh.createMorePostulant', ['postulant_id' => $postulant->id]) }}"
+                        method="GET">
+                        @csrf
+                        <button type="submit" class="btn btn-primary"> 
+                            Recepcion de Documentos
+                            <i class="ms-2 fa fa-arrow-right" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                @endif  
             </div>
         </div>
     <div class="card-body">
 
-    <div class="container" >
-        <div class="stepwizard">
-            <div class="stepwizard-row setup-panel">
-                <div class="stepwizard-step col-xs-3" style="width: 16.6%;">  
-                    <a href="#step-1" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
-                    <p><small>Alta de Candidato</small></p>
-                </div>
-                <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
-                    <a href="#step-2" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">2</a>
-                    <p><small>Recepción de Documentos</small></p>
-                </div>
-                <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
-                    <a href="#step-3" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">3</a>
-                    <p><small>Kit legal de Ingreso</small></p>
-                </div>
-                <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
-                    <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">4</a>
-                    <p><small>Plan de Trabajo</small></p>
-                </div>
-                <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
-                    <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">5</a>
-                    <p><small>Kit Legal Firmado</small></p>
-                </div>
-                <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
-                    <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">6</a>
-                    <p><small>Alta de Colaborador</small></p>
+    @if($postulant->status != 'no seleccionado')
+        <div class="container" >
+            <div class="stepwizard">
+                <div class="stepwizard-row setup-panel">
+                    <div class="stepwizard-step col-xs-3" style="width: 16.6%;">  
+                        <a href="#step-1" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                        <p><small>Alta de Candidato</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
+                        <a href="#step-2" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">2</a>
+                        <p><small>Recepción de Documentos</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
+                        <a href="#step-3" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">3</a>
+                        <p><small>Kit legal de Ingreso</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
+                        <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">4</a>
+                        <p><small>Plan de Trabajo</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
+                        <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">5</a>
+                        <p><small>Kit Legal Firmado</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3"  style="width: 16.6%;"> 
+                        <a href="#step-4" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">6</a>
+                        <p><small>Alta de Colaborador</small></p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endif
 
     <br>
         @if (session('message'))

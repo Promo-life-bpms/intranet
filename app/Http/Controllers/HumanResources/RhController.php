@@ -840,20 +840,24 @@ class RhController extends Controller
             'email' => 'required',
         ]); 
 
-        //Validar correo
-        $verify_postulant_email = Postulant::where('email',$request->email)->get();
-        $verify_user_email = User::where('email',$request->email)->count();
+        $postulant_status = Postulant::where('id',$request->postulant_id)->get()->last();
+        if($postulant_status !=null && $postulant_status->status != 'no seleccionado'){
+            //Validar correo
+            $verify_postulant_email = Postulant::where('email',$request->email)->get();
+            $verify_user_email = User::where('email',$request->email)->count();
 
-        foreach($verify_postulant_email as $postulant){
-            if($postulant->id != $request->postulant_id){
-                return redirect()->back()->with('email_error', 'Existe un candidato registrado con este correo, verifica la informacion y agregala nuevamente');
+            foreach($verify_postulant_email as $postulant){
+                if($postulant->id != $request->postulant_id){
+                    return redirect()->back()->with('email_error', 'Existe un candidato registrado con este correo, verifica la informacion y agregala nuevamente');
+                }
             }
-        }
 
-        if( $verify_user_email != 0){
-            return redirect()->back()->with('email_error', 'Existe un usuario de la intranet registrado con este correo, verifica la informacion y agregala nuevamente');
-        }
+            if( $verify_user_email != 0){
+                return redirect()->back()->with('email_error', 'Existe un usuario de la intranet registrado con este correo, verifica la informacion y agregala nuevamente');
+            }
 
+        }
+        
         if ($request->hasFile('cv')) {
             $find_postulant = PostulantDocumentation::where('postulant_id', $request->postulant_id)->get()->last();
             
@@ -1478,6 +1482,30 @@ class RhController extends Controller
         DB::table('postulant')->where('id', intval($request->postulant_id))->update([ 
             'status'=>'no seleccionado'
         ]);
+
+        return redirect()->back()->with('message', 'Candidato eliminado satisfactoriamente');
+
+   }
+
+   public function noSelectedPostulant(Request $request)
+   {
+        $postulants = Postulant::all()->where('status', 'no seleccionado');
+
+        return view('rh.no-selected-postulant', compact('postulants'));
+   }
+
+   public function deleteDefinitivePostulant(Request $request)
+   {
+        $postulant_documents = PostulantDocumentation::where('postulant_id', $request->postulant_id)->get();
+
+        if(count($postulant_documents) > 0){
+            foreach($postulant_documents as $document){
+                File::delete($document->resource);
+            }
+        }
+
+        DB::table('postulant_documentation')->where('postulant_id',$request->postulant_id)->delete();
+        DB::table('postulant')->where('id',$request->postulant_id)->delete();
 
         return redirect()->back()->with('message', 'Candidato eliminado satisfactoriamente');
 
