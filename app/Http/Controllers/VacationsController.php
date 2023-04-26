@@ -131,110 +131,102 @@ class VacationsController extends Controller
         return Excel::download(new VacationsExport, 'vacaciones.xlsx');
     }
 
-    public function updateVacations()
+    public function updateInformationVacations()
     {
-        // Obtener a todos los usuarios
         $users = User::where('status', 1)->get();
-        // Calcular, en base a su fecha de ingreso, los dias disponibles del periodo actual y del anterior
         foreach ($users as $user) {
             if (!$user->hasRole('becario') && !$user->hasRole('boss')) {
                 $date = Carbon::parse($user->employee->date_admission);
-                $now = $this->time;
-                // Años laborando
-                $yearsWork = $date->diffInYears($now);
-
-                // Dias laborando en el transcurso de este año
-                $daysItsYear = $date->diffInDays($this->time);
-                if ($yearsWork <= 0) {
-                    // Calcular los dias en base a su primer año
-                    $daysPerYearCurrent = VacationPerYear::find(1);
-                    $diasDispobibles = round(($daysItsYear * $daysPerYearCurrent->days) / 365, 2);
-                    $dataVacations =  $user->vacationsAvailables()->where('period', 1)->first();
-                    if ($dataVacations) {
-                        $dataVacations->days_availables =  $diasDispobibles;
-                        $dataVacations->dv =  floor($diasDispobibles) - $dataVacations->days_enjoyed;
-                        $dataVacations->cutoff_date = $date->addYears(2);
-                        $dataVacations->save();
-                    } else {
-                        $user->vacationsAvailables()->firstOrCreate([
-                            'period' => 1,
-                            'cutoff_date' => $date->addYears(2),
-                            'days_availables' => $diasDispobibles,
-                            'dv' => floor($diasDispobibles),
+                $antiguedad = Carbon::parse($date)->diffInYears($this->time);
+                for ($i = 0; $i <= $antiguedad; $i++) {
+                    // Obtener Vacaciones
+                    $fecha_inicio = Carbon::parse($user->employee->date_admission)->addYears($i);
+                    $fecha_fin = $fecha_inicio->copy()->addYear();
+                    // dd([$fecha_inicio, $fecha_fin]);
+                    $estado = $this->obtenerEstadoVacaciones($fecha_fin, $fecha_inicio);
+                    $periodo_actual =  $i == $antiguedad;
+                    $dias_vacaciones = $this->obtenerDiasVacaciones($i, $fecha_fin, $periodo_actual);
+                    $dataVacation = Vacations::where('users_id', $user->id)->where('date_end',  $fecha_fin)->first();
+                    if ($dataVacation) {
+                        $dataVacation->update([
+                            'users_id' => $user->id,
+                            'date_end' => $fecha_fin,
+                            'period' => $estado,
+                            'dv' => floor($dias_vacaciones) - $dataVacation->days_enjoyed,
+                            'days_enjoyed' => $dataVacation->days_enjoyed,
+                            'days_availables' => $dias_vacaciones,
+                            'date_start' => $fecha_inicio,
+                            'date_end' => $fecha_fin,
                         ]);
-                    }
-                } else if ($yearsWork > 0) {
-                    // Revisar los dias que le tocan por año y sumar los que no han expirado, obtener el periodo actual
-                    $daysPerYearCurrent = VacationPerYear::where('year', $yearsWork + 1)->first();
-                    $lastPeriodYear = (string)((int)$date->format('Y') + $yearsWork);
-                    $lastPeriodCurrent = Carbon::parse($lastPeriodYear . '-' . (string) $date->format('m-d'));
-                    $daysItsYear = $lastPeriodCurrent->diffInDays($this->time);
-                    $diasDispobibles = round(($daysItsYear * $daysPerYearCurrent->days) / 365, 2);
-                    $dataVacations =  $user->vacationsAvailables()->where('period', 1)->first();
-                    if ($dataVacations) {
-                        $dataVacations->days_availables =  $diasDispobibles;
-                        $dataVacations->dv =  floor($diasDispobibles) - $dataVacations->days_enjoyed;
-                        $dataVacations->cutoff_date =  $lastPeriodCurrent->addYears(2);
-                        $dataVacations->save();
                     } else {
-                        $user->vacationsAvailables()->firstOrCreate([
-                            'period' => 1,
-                            'cutoff_date' => $lastPeriodCurrent->addYears(2),
-                            'days_availables' => $diasDispobibles,
-                            'dv' => floor($diasDispobibles),
+                        Vacations::create([
+                            'users_id' => $user->id,
+                            'date_end' => $fecha_fin,
+                            'period' => $estado,
+                            'dv' => 0,
+                            'days_enjoyed' => $periodo_actual ? 0 : $dias_vacaciones,
+                            'days_availables' => $dias_vacaciones,
+                            'date_start' => $fecha_inicio,
+                            'date_end' => $fecha_fin,
                         ]);
-                    }
-                    if ($yearsWork >= 1) {
-                        $daysPerYearCurrent = VacationPerYear::where('year', (int)$yearsWork)->first();
-                        $diasDispobibles = $daysPerYearCurrent->days;
-                        $lastPeriodYear = (string)((int)$date->format('Y') + $yearsWork - 1);
-                        $lastPeriod = Carbon::parse($lastPeriodYear . '-' . (string) $date->format('m-d'));
-                        $dataVacations =  $user->vacationsAvailables()->where('period', 2)->first();
-                        if ($dataVacations) {
-                            $dataVacations->days_availables =  $diasDispobibles;
-                            $dataVacations->cutoff_date =  $lastPeriod->addYears(2);
-                            $dataVacations->dv =  floor($diasDispobibles) - $dataVacations->days_enjoyed;
-                            if ($lastPeriod->isAfter(Carbon::parse('2024-01-01'))) {
-                                $dataVacations->save();
-                            }
-                        } else {
-                            $user->vacationsAvailables()->firstOrCreate([
-                                'period' => 2,
-                                'cutoff_date' => $lastPeriod->addYears(2),
-                                'days_availables' => $diasDispobibles,
-                                'dv' => floor($diasDispobibles),
-                            ]);
-                        }
                     }
                 }
-                echo '<br>';
             }
         }
     }
-    public function updateExpiration()
+
+    public function obtenerEstadoVacaciones($fecha_fin, $fecha_inicio)
     {
-        $users = User::where('status', 1)->get();
-        // Calcular, en base a su fecha de ingreso, los dias disponibles del periodo actual y del anterior
-        foreach ($users as $user) {
-            $dataVacations = $user->vacationsAvailables()->where('period', '<>', 3)->get();
-            foreach ($dataVacations as $vacation) {
-                $cutoff_date = Carbon::parse($vacation->cutoff_date);
-                $daysDiference = $cutoff_date->diffInDays($this->time, false);
-                if ($daysDiference > 0 && $vacation->period == "2") {
-                    $vacation->period = '3';
-                    $vacation->save();
-                } else if ($daysDiference > -365 && $vacation->period == "1") {
-                    $vacation->period = '2';
-                    $vacation->save();
-                } else {
-                    print_r($daysDiference);
-                    echo 'Sin cambios';
-                }
-                echo '<br>';
-            }
-            echo '<br>';
+        $un_anos_despues = $fecha_fin->copy()->addYears(1);
+        $fecha_actual = $this->time;
+
+        if ($fecha_actual->between($fecha_inicio, $fecha_fin)) {
+            return 1;
+        } elseif ($fecha_actual->between($fecha_fin, $un_anos_despues)) {
+            return 2;
+        } else {
+            return 3;
         }
-        $this->updateVacations();
+    }
+
+    function obtenerDiasVacaciones($antiguedad, $fecha_fin, $actual = false)
+    {
+        if ($fecha_fin->isBefore(Carbon::parse('2023-01-01'))) {
+            $daysPerYear = [
+                6, 6, 8, 10, 12, 14, 14, 14, 14, 14, 16, 16, 16, 16, 16, 18, 18, 18, 18, 18
+            ];
+            return $daysPerYear[$antiguedad + 1];
+        } else {
+            $daysPerYearCurrent = VacationPerYear::where('year', $antiguedad + 1)->first();
+            if ($actual) {
+
+                $daysItsYear = ($fecha_fin->copy()->subYear())->diffInDays($this->time);
+                $daysPerYearCurrent = round(($daysItsYear * $daysPerYearCurrent->days) / 365, 2);
+                return $daysPerYearCurrent;
+            }
+            return $daysPerYearCurrent->days;
+        }
+
+        // Lógica para calcular el número de días de vacaciones según la antigüedad del empleado.
+        // Devuelve el número de días correspondientes.
+    }
+
+    public function obtenerInformacionDeLosUsuarios()
+    {
+        $str = '';
+        foreach (Vacations::all() as $vacation) {
+            $str .= "('" .
+                $vacation->period . "','" .
+                $vacation->days_availables . "','" .
+                $vacation->dv . "','" .
+                $vacation->days_enjoyed . "','" .
+                Carbon::parse($vacation->cutoff_date)->subYears(2)->format('Y-m-d') . "','" .
+                Carbon::parse($vacation->cutoff_date)->subYear()->format('Y-m-d') . "','" .
+                $vacation->cutoff_date . "','" .
+                $vacation->users_id
+                . "'),";
+        }
+        return $str;
     }
 
     public function sendRemembers()
@@ -249,8 +241,8 @@ class VacationsController extends Controller
                     if (count($dataVacations) == 1) {
                         $dataVacation = $dataVacations[0];
                         if ($dataVacation->dv > 0) {
-                            $dateExpiration =   new \Carbon\Carbon($dataVacation->cutoff_date);
-                            $dateNow = now();
+                            $dateExpiration = Carbon::parse($dataVacation->date_end)->addYear();
+                            $dateNow = $this->time;
                             $diff = $dateNow->diffInDays($dateExpiration);
                             $diffInMonths = $dateNow->diffInMonths($dateExpiration);
                             if ($diff <= 65) {
