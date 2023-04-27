@@ -24,9 +24,9 @@
                         @if($dato->user_id === auth()->id())
                             <input type="hidden" {{$dato->user_id}}>
                             <tr>          
-                                <th>{{$dato->category}}</th>
-                                <th>{{$dato->description}}</th>
-                                <th>{{$dato->status}}</th>
+                                <th style="text-align: center">{{$dato->category}}</th>
+                                <th style="text-align: center">{{$dato->description}}</th>
+                                <th style="text-align: center">{{$dato->status}}</th>
                                 <th style="text-align: center">{{$dato->id}}</th>
                             </tr>
                         @endif 

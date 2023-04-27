@@ -261,8 +261,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/Systemsrequest/',[SystemRequest::class, 'systemsrequest'])->name('systems.request');
     
     //Cambio de estado de solicitud
-    Route::get('/Seemore/{id}', [SeeMore::class, 'show'])->name('systems.show');
-    /*Route::post('/store', [SeeMore::class, 'store'])->name('systems.store');*/
+    Route::get('/systems/show/{id}', [SeeMore::class, 'show'])->name('systems.show');
+    Route::post('/systems/store/', [SeeMore::class, 'update'])->name('systems.store');
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');

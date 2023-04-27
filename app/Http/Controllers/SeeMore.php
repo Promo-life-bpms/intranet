@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\SeeMore as ModelsSeeMore;
+use Dotenv\Validator;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SeeMore extends Controller
 {
@@ -14,14 +17,14 @@ class SeeMore extends Controller
         return view('systems.show', compact('users'));
     }
     
-    public function store(Request $request)
-    {
-        /*$user = auth()->user();
-        dd($request);
-        $see_more = new ModelsSeeMore();
-        $see_more->status = $request->status;
-        $see_more->comments = $request->comments;
-        $see_more->save();
-        return redirect()->route('systems.show')->with('success', '¡Solicitud Aceptada Exitosamente!');*/
+    public function update(Request $request)
+    {   
+        DB::table('request_team')->where('id', intval($request->id))->update([
+            'status' => $request->status,
+            'comments' => $request->comments,
+        ]); 
+
+        return redirect()->back()->with('success', '¡Solicitud Actualizada Exitosamente!');
     }
+
 }

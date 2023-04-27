@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\SeeMore;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -113,5 +114,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Request::class);
     }
-    
+       
+    public function seemores()
+    {
+        return $this->hasMany(SeeMore::class, 'comments');
+    }
 }

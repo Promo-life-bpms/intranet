@@ -31,14 +31,14 @@
                 Estado de solicitud: {{$users->status}}<br>
                 Id de solicitud: {{$users->id}} <br>
                 Fecha y hora de solicitud: {{$users->updated_at}} <br>
-                Comentarios: <br>
+                Comentarios: {{$users->comments}}<br>
             </p>
                 
-            <form action="" method="POST">
+            <form action="{{route('systems.store')}}" method="POST">
                 @csrf
+                <input type="text" value="{{$users->id}}" name="id" hidden>
                         <div class="button-container">
-                            <textarea name="comments" id="comment"></textarea>   
-                        
+                            <textarea name="comments" id="comment"></textarea>
                                 <div class="col-md-4">
                                         <div class="form-group">
                                             <div>
@@ -49,6 +49,11 @@
                                 <div class="col-md-6">
                                         <div class="form-group">
                                                 {!! Form::select('status', ['Aceptar'=> 'Aceptar', 'Rechazar'=> 'Rechazar'], 'Estado', ['class' => 'form-control','placeholder' => 'Seleccione el estado']) !!}
+                                                @error('status')
+                                                <small>
+                                                    <font color="red"> *Este campo es requerido* </font>
+                                                </small> 
+                                                @enderror
                                         </div>
                                 </div>
                         </div>
