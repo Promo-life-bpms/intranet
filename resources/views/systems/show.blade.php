@@ -9,6 +9,13 @@
                     <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i>
                 </a>
                 <h1  style="margin-left:16px; font-size:25px" class="separator">Detalles del Usuario</h1> 
+
+                <div class="card-body">
+                    @if (session('success'))
+                    <div class="alert alert-success" role="success">
+                        {{session('success')}}
+                    </div>   
+                    @endif
             </div>
         </div>
     </div>
@@ -17,18 +24,17 @@
     <div class="imagen-centrada">
     <img src="{{asset('img/profileChat.png')}}" alt="imagen" class="avatar">
     </div>
-        <h5 class="title mt-3">{{$user->user->name.' '. $user->user->lastname}}</h5>
+        <h5 class="title mt-3">{{$users->user->name.' '. $users->user->lastname}}</h5>
             <p class="description">
-                Categoría: {{$user->category}} <br>
-                Descripción: {{$user->description}}<br>
-                Estado de solicitud: {{$user->status}}<br>
-                Id de solicitud: {{$user->id}} <br>
-                Fecha y hora de solicitud: {{$user->updated_at}} <br>
+                Categoría: {{$users->category}} <br>
+                Descripción: {{$users->description}}<br>
+                Estado de solicitud: {{$users->status}}<br>
+                Id de solicitud: {{$users->id}} <br>
+                Fecha y hora de solicitud: {{$users->updated_at}} <br>
                 Comentarios: <br>
             </p>
                 
             <form action="" method="POST">
-
                 @csrf
                         <div class="button-container">
                             <textarea name="comments" id="comment"></textarea>   
@@ -47,7 +53,8 @@
                                 </div>
                         </div>
                         {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
-            </form>       
+            </form> 
+                        {!! Form::close()!!}
 </div>
         
 <style>
