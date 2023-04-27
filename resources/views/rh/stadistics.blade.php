@@ -17,7 +17,7 @@ define('SUB_COLU', 'col-4 p-2');
     <h1 class="fs-3">Altas y bajas</h1>
     <div class="card-body p-0">
         <div class="d-flex flex-row-reverse">
-            <form class="form-delete" action="/rh/drop-user" method="GET">
+            <!-- <form class="form-delete" action="/rh/drop-user" method="GET">
                 @csrf
                 <button type="submit" class="btn btn-danger">Generar baja</button>
             </form>
@@ -26,11 +26,24 @@ define('SUB_COLU', 'col-4 p-2');
             <form class="form-delete" action="/rh/postulants" method="GET">
                 @csrf
                 <button type="submit" class="btn btn-success">Generar Alta</button>
+            </form> -->
+            
+            <div style="margin-left:10px"></div>
+            <form class="form-submit" action="/rh/create-stadistic-report/" method="POST">
+                @csrf 
+                <input type="text" value="{{$start}}" name='start' hidden> 
+                <input type="text" value="{{$end}}" name='end' hidden> 
+                <button type="submit" class="btn btn-success">
+                    <i class="fa fa-download me-2" aria-hidden="true"></i>
+                    Exportar estadísticas
+                </button>
             </form>
             <div style="margin-left:10px"></div>
             <form class="form-delete" action="/rh/stadistics" method="GET">
                 @csrf
-                <button type="submit" class="btn btn-primary">Borrar filtros</button>
+                <button type="submit" class="btn btn-primary">
+                <i class="fa fa-eraser me-2" aria-hidden="true"></i>
+                Borrar filtros</button>
             </form>
 
             <br>

@@ -259,6 +259,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/rh/create-up-postulant/{postulant_id}', [RhController::class, 'createUpPostulant'])->name('rh.createUpPostulant');
     Route::get('/rh/no-selected-postulant/', [RhController::class, 'noSelectedPostulant'])->name('rh.noSelectedPostulant');
     Route::post('/rh/delete-definitive-postulant/', [RhController::class, 'deleteDefinitivePostulant'])->name('rh.deleteDefinitivePostulant');
+    Route::post('/rh/create-stadistic-report/', [RhController::class, 'createStadisticReport'])->name('rh.createStadisticReport');
 
     
     Route::post('/rh/create-user-document/', [RhController::class, 'createUserDocument'])->name('rh.createUserDocument');
