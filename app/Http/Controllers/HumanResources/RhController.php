@@ -67,10 +67,13 @@ class RhController extends Controller
     {
         $data = [];
         //$Promolife = CompanyEmployee::all()->where('company_id', 1);
-        $promolife = CompanyEmployee::where('company_id', 1)->get();
+         $promolife = CompanyEmployee::where('company_id', 1)->get();
         $bh_trade_market = CompanyEmployee::where('company_id', 2)->get();
         $promo_zale = CompanyEmployee::where('company_id', 3)->get();
-        $trade_market57 = CompanyEmployee::where('company_id', 4)->get();
+        $trade_market57 = CompanyEmployee::where('company_id', 4)->get(); 
+
+   
+
 
        
         $totalPLFilter = 0;
@@ -81,6 +84,8 @@ class RhController extends Controller
         $role = Role::where('name','becario')->get()->last();
 
         if($start == null && $end == null){
+
+            $users = User::all();
            
             foreach($promolife as $company){
                 $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();   
@@ -135,6 +140,19 @@ class RhController extends Controller
 
             $format_start =date('Y-m-d', strtotime($start));
             $format_end =date('Y-m-d', strtotime($end));
+            $employees = Employee::where('date_admission','>=' ,$format_start)->get();
+            
+            foreach($employees as $employee){
+
+                dd($employee->companies[0]->name_company);
+                $is_becario = RoleUser::where('user_id',$employee->user->id)->where('role_id', $role->id)->count();
+
+                if( $is_becario ==0){
+                    $totalPLFilter = $totalPLFilter + 1;
+                }
+            }
+
+            
 
             foreach($promolife as $company){
                 $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();   
