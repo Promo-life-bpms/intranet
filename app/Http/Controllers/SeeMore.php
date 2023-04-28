@@ -12,13 +12,17 @@ class SeeMore extends Controller
 {
     public function show($id)
     {
-        $users = ModelsSeeMore::find($id);
+        $see_more = ModelsSeeMore::find($id);
         /*dd($user);*/
-        return view('systems.show', compact('users'));
+        return view('systems.show', compact('see_more'));
     }
     
     public function update(Request $request)
     {   
+        $request->validate([
+            'status' => 'required',
+        ]);
+        
         DB::table('request_team')->where('id', intval($request->id))->update([
             'status' => $request->status,
             'comments' => $request->comments,

@@ -24,19 +24,19 @@
     <div class="imagen-centrada">
     <img src="{{asset('img/profileChat.png')}}" alt="imagen" class="avatar">
     </div>
-        <h5 class="title mt-3">{{$users->user->name.' '. $users->user->lastname}}</h5>
+        <h5 class="title mt-3">{{$see_more->user->name.' '. $see_more->user->lastname}}</h5>
             <p class="description">
-                Categoría: {{$users->category}} <br>
-                Descripción: {{$users->description}}<br>
-                Estado de solicitud: {{$users->status}}<br>
-                Id de solicitud: {{$users->id}} <br>
-                Fecha y hora de solicitud: {{$users->updated_at}} <br>
-                Comentarios: {{$users->comments}}<br>
+                Categoría: {{$see_more->category}} <br>
+                Descripción: {{$see_more->description}}<br>
+                Estado de solicitud: {{$see_more->status}}<br>
+                Id de solicitud: {{$see_more->id}} <br>
+                Fecha y hora de solicitud: {{$see_more->updated_at}} <br>
+                Comentarios: {{$see_more->comments}}<br>
             </p>
                 
             <form action="{{route('systems.store')}}" method="POST">
                 @csrf
-                <input type="text" value="{{$users->id}}" name="id" hidden>
+                <input type="text" value="{{$see_more->id}}" name="id" hidden>
                         <div class="button-container">
                             <textarea name="comments" id="comment"></textarea>
                                 <div class="col-md-4">
@@ -48,7 +48,7 @@
 
                                 <div class="col-md-6">
                                         <div class="form-group">
-                                                {!! Form::select('status', ['Aceptar'=> 'Aceptar', 'Rechazar'=> 'Rechazar'], 'Estado', ['class' => 'form-control','placeholder' => 'Seleccione el estado']) !!}
+                                                {!! Form::select('status', ['Aceptado'=> 'Aceptado', 'Rechazado'=> 'Rechazado'], 'Estado', ['class' => 'form-control','placeholder' => 'Seleccione el estado']) !!}
                                                 @error('status')
                                                 <small>
                                                     <font color="red"> *Este campo es requerido* </font>

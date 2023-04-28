@@ -23,9 +23,9 @@
                 <tbody>
                     @foreach ($systems_request as $systems )
                     <tr>
-                        <td>{{$systems->user->name.' '. $systems->user->lastname}}</td>
-                        <td>{{$systems->category}}</td>
-                        <td>{{$systems->description}}</td>
+                        <td style="text-align: center">{{$systems->user->name.' '. $systems->user->lastname}}</td>
+                        <td style="text-align: center">{{$systems->category}}</td>
+                        <td style="text-align: center">{{$systems->description}}</td>
                         <td style="text-align: center">{{$systems->status}}</td>
                         <td style="text-align: center">{{$systems->id}}</td>
                         <td style="text-align: center">{{$systems->updated_at}}</td> 
