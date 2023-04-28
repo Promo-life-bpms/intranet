@@ -20,15 +20,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                
+
                     @foreach ($users as $usuario)
                         <tr>
                             <th scope="row">{{$loop->iteration }}</th>
                             <td>{{ $usuario->name }}</td>
                             <td class="col-2">
+                                @if ($categoria->count())
                                 @foreach ($usuario->asignacionCategoria as $categoria)
-                                    {{ $categoria->name }}
+
+                                 {{ $categoria->name }}
+
                                 @endforeach
+                                @else
+                                <p>No tiene cateogrias asignadas</p>
+                                @endif
                             </td>
                             <td class="col-2"><button type="button" class="btn btn-primary btn-sm"
                                     data-bs-toggle="modal" data-bs-target="#ModalAsignacion"><i
@@ -36,7 +42,7 @@
                                         asignación</i>
                             </td>
                         </tr>
-                      
+
                     @endforeach
                 </tbody>
             </table>
@@ -63,7 +69,7 @@
                                     $check = false;
                                 @endphp
                                 @if ($user)
-                                
+
                                     @foreach ($user->asignacionCategoria as $userCategory)
                                         @if ($categoria->id == $userCategory->id)
                                             @php
@@ -93,10 +99,10 @@
         </div>
     </div>
 
-    <script>     
+    <script>
 
         window.addEventListener('asignacion_correcta', () => {
-            
+
             toastr.success('categoria asignada correctamente')
 
         })

@@ -20,7 +20,7 @@ class SoporteSolucionComponent extends Component
 {
     use WithPagination;
     public $ticket_id, $name, $categoria, $data, $categorias, $description,$mensaje,$status,$historial;
-
+    protected $paginationTheme = 'bootstrap';
     public function render()
     {
 

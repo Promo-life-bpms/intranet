@@ -27,7 +27,7 @@
                             <td class="col-2">
 
                                 @if ($tickets->status->name == 'Resuelto')
-                                    {{-- <span class="badge bg-danger">{{ $ticket->status->name }}</span> --}}
+                                    
                                     <div class="alert-sm alert-success rounded-3" role="alert">
                                         {{ $tickets->status->name }}</div>
                                 @elseif ($tickets->status->name == 'Creado')
@@ -65,7 +65,7 @@
         <div class="modal-dialog modal-dialog-scrollable  modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    {{-- <h1 class="modal-title fs-5" id="exampleModalLabel">Solución Tickets</h1> --}}
+
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation" wire:ignore>
                             <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
@@ -81,34 +81,7 @@
                 </div>
 
                 <div class="modal-body">
-                    {{-- <form>
-                        @csrf
-                        <p><span class="fw-bold">Problema a resolver :</span> <span>{{ $name }}</span></p>
 
-                        <p><span class="fw-bold">Categoría :</span> <span>{{ $categoria }}</span></p>
-
-                        <p><span class="fw-bold">Descripción:</span></p>
-
-                        <div>
-                            <p>{!! $data !!}</p>
-                        </div>
-
-                        <hr>
-                        <p><span class="fw-bold">Mensajes :</span></span></p>
-                        @if ($mensaje)
-                            @foreach ($mensaje->mensajes as $mensajes)
-                                <span>{!! $mensajes->message !!}</span>
-                            @endforeach
-                        @endif
-                        <hr>
-                        <div wire:ignore class="mb-3 text-input-crear">
-                            <label for="descripcion" class="form-label fw-bold">Solución</label>
-                            <textarea id="editor"cols="20" rows="3" class="form-control" name="description"></textarea>
-                        </div>
-                        @error('description')
-                            <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
-                        @enderror
-                    </form> --}}
 
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"
@@ -156,32 +129,32 @@
                                 @foreach ($historial->historial as $cambio)
                                 @if ($cambio->type == 'creado')
                                 <div class="alert-sm alert-primary alert-dismissible text-center rounded-3" role="alert">
-                                   <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                   <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
                                 </div>
                                 {!! $cambio->data !!}
                                 @elseif ($cambio->type == 'edito')
                                 <div class="alert-sm alert-warning alert-dismissible text-center rounded-3" role="alert">
-                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
                                  </div>
                                  {!! $cambio->data !!}
                                  @elseif ($cambio->type == 'Mensaje')
                                  <div class="alert-sm alert-info alert-dismissible text-center rounded-3" role="alert">
-                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
                                  </div>
                                  {!! $cambio->data !!}
                                  @elseif ($cambio->type == 'status')
                                  <div class="alert-sm alert-success alert-dismissible text-center rounded-3" role="alert">
-                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
                                  </div>
                                  {!! $cambio->data !!}
                                  @elseif ($cambio->type == 'solucion')
                                  <div class="alert-sm alert-dark alert-dismissible text-center rounded-3" role="alert">
-                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p> 
+                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
                                  </div>
                                  {!! $cambio->data !!}
                                 @endif
                                 @endforeach
-                                
+
                             @endif
                         </div>
                     </div>
@@ -227,6 +200,17 @@
 
             ckEditorSolucion.setData("");
 
+        });
+
+        window.addEventListener('cargar',()=>{
+            ClassicEditor
+            .create(document.querySelector('#editorMensaje'))
+            .then(newEditor => {
+                ckEditorSolucion = newEditor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
         });
 
         function atender(id, status_id) {
