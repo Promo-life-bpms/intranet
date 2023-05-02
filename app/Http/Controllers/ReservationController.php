@@ -24,18 +24,20 @@ class ReservationController extends Controller
     /////////////////////////////////////////////Función crear evento///////////////////////////////////////////////
     public function store(Request $request) 
     {
-        $start = $request->input('start');
-        $end = $request->input('end');
-        $id_sala = $request->input('id_sala');
-  
-        $evento_existente = Reservation::where('start', $start)->where('id_sala', $id_sala)->first();
-        if ($evento_existente) {
-            return back()->with('message1', "Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha.");
+        
+        $eventos=Reservation::where('id_sala', $request->id_sala)->get();
+        $start = $request->start;
+        $end = $request->end;
 
-        }elseif($end < $start){
+        foreach($eventos as $evento)
+
+        if($evento->start <= $start && $evento->end >= $end){
+        return back()->with('message1', "Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha.");
+        }
+       
+        elseif($end < $start){
             return back()->with('message1',"La hora de inicio debe ser previa que la hora del fin de la reservacón.");
         }
-        else{
         $user = auth()->user();
         $request->validate([
             'title'=>'required',
@@ -65,46 +67,96 @@ class ReservationController extends Controller
             $evento->save();
             return redirect()->back()->with('message', "Reservacón creada correctamente.");
         }
-    }
+    
     //////////////////////////////////////////////Función para editar/////////////////////////////////////////////////
     public function update(Request $request)
     {
-        $start = $request->input('start');
-        $end = $request->input('end');
-        $id_sala = $request->input('id_sala');
-  
-        $evento_existente = Reservation::where('start', $start)->where('id_sala', $id_sala)->first();
-        if ($evento_existente) {
-            return back()->with('message1',"Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha.");
+        $request->validate([
+            'title'=>'required',
+            'start' => 'required',
+            'end' => 'required',
+            'number_of_people'=>'required',
+            'material' => 'required',
+            'chair_loan' => 'required',
+            'description' => 'required',
+        ]);
 
-        }elseif($end < $start){
+        $eventos=Reservation::where('id_sala', $request->id_sala)->get();
+        //dd($eventos);
+        //$personas=boardroom::where('capacitance', $request->capacitance)->get();
+        $start=  date("d-m-Y H:i:s", strtotime($request->start));
+        $end=  date("d-m-Y H:i:s", strtotime($request->end));
+
+        if($end < $start){
             return back()->with('message1',"La hora de inicio debe ser previa que la hora del fin de la reservacón.");
         }
-        else{
+         
+        foreach($eventos as $evento){
+            /*if($evento -> start >= $start || $evento->end <= $end){
+                return back()->with('message1', "Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha.");
+            }*/
 
-            $request->validate([
-                'title'=>'required',
-                'start' => 'required',
-                'end' => 'required',
-                'number_of_people'=>'required',
-                'material' => 'required',
-                'chair_loan' => 'required',
-                'description' => 'required',
-            ]);
+          /*  if($end >= $evento->end || $start <= $evento->end){
+                return back()->with('message1', "Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha.");
+            }*/
+
+           /* if($start < $evento->start && $end <= $evento-> start){
+                return back()->with('message1', "prueba.");
+
+                if($end < $evento->start){
+                    $carbon = new \Carbon\Carbon();
+                    $start = $carbon->now();
+                    $start = $start->format("d-m-Y H:i:s");
+                    $end = $carbon->now();
+                    $end = $end->format("d-m-Y H:i:s");
+                    
+                    DB::table('reservations')->where('id', $request->id_evento)->update(['title'=>$request->title,'start'=>$request->start,
+                    'end'=>$request->end,'number_of_people'=>$request->number_of_people,'material'=>$request->material, 
+                    'chair_loan' =>$request->chair_loan, 'description' =>$request->description,'id_sala' =>$request->id_sala]);
+                
+                return redirect()->back()->with('message2', 'Evento editado correctamente.');
+            }
+            else{
+            return back()->with('message1', "Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha.");
+            }
+           /* if($start <= $evento->end){
+                return back()->with('message1', "Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha.");
+            } 
+               
+            }
+            return back()->with('message1', "Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha.");*/
             
+            
+            if($start < $evento->start || $end <= $evento->start){
+                return back()->with('message1', "FILTRO DOS");
+                  
+
+            }
+
+            if($start <= $evento->start || $end >= $evento->end){
+                return back()->with('message1', "uno");
+
+            }
+           /* if($start >= $evento->end || $end <= $evento->end){
+                return back()->with('message1', "FILTRO");
+            }*/
+            
+            else{
             $carbon = new \Carbon\Carbon();
             $start = $carbon->now();
-            $start = $start->format("d-m-Y\TH:i");
+            $start = $start->format("d-m-Y H:i:s");
             $end = $carbon->now();
-            $end = $end->format("d-m-Y\TH:i");
-
+            $end = $end->format("d-m-Y H:i:s");
+            
             DB::table('reservations')->where('id', $request->id_evento)->update(['title'=>$request->title,'start'=>$request->start,
             'end'=>$request->end,'number_of_people'=>$request->number_of_people,'material'=>$request->material, 
             'chair_loan' =>$request->chair_loan, 'description' =>$request->description,'id_sala' =>$request->id_sala]);
-
-            return redirect()->back()->with('message2', 'Evento editado correctamente.');
-        }
+        
+        return redirect()->back()->with('message2', 'Evento editado correctamente.');
     }
+}
+}
+    
     
     //////////////////////////////////////////////Metodo eliminar///////////////////////////////////////////////////
     public function destroy(Request $request)

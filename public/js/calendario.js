@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hiddenDays: [ 0, 6 ],
         slotMinTime:"08:00:00",
         slotMaxTime: "19:00:00",
-        eventColor: '#08B106',
+        eventColor: '#9999FF',
       
 
 
