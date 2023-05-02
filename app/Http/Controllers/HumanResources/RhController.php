@@ -165,14 +165,8 @@ class RhController extends Controller
     public function nuevosingresos($start,$end)
     {  
         $data = [];
-        $carbon = new \Carbon\Carbon();
-        $date = $carbon->now();
-        $yearpresent = $date->format('Y');
-        $monthpresent = $date->format('m');
-
 
         $users = User::all();
-
         $role = Role::where('name','becario')->get()->last();
 
         $totalPLFilter = 0;
@@ -195,7 +189,7 @@ class RhController extends Controller
                                 $totalPLFilter = $totalPLFilter + 1;
                             }else{
                                 //Fecha filtrada
-                                if($user->employee->date_admission >= $format_start  ){
+                                if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
                                     $totalPLFilter = $totalPLFilter + 1;
                                 }
                                     
@@ -206,13 +200,10 @@ class RhController extends Controller
                         $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->count();
                         if($is_becario == 0){
                             if($start == null && $end == null){
-                                if($is_becario == 0){
-                                    $totalBHFilter = $totalBHFilter + 1;
-                                }
-                                
+                                $totalBHFilter = $totalBHFilter + 1;
                             }else{
                                 //Fecha filtrada
-                                if($user->employee->date_admission >= $format_start){
+                                if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end){
                                     $totalBHFilter = $totalBHFilter + 1;
                                 }
                             }
@@ -222,12 +213,10 @@ class RhController extends Controller
                         $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->count();                        
                         if($is_becario == 0){
                             if( $start == null && $end == null){
-                                if($is_becario == 0){
-                                    $totalPZFilter  = $totalPZFilter  + 1;
-                                }
+                                $totalPZFilter  = $totalPZFilter  + 1;
                             }else{
                                 //Fecha filtrada
-                                if($user->employee->date_admission >= $format_start){
+                                if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end){
                                     $totalPZFilter  = $totalPZFilter  + 1;
                                 }
                             }
@@ -237,12 +226,10 @@ class RhController extends Controller
                         $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->count();
                         if($is_becario == 0){
                             if( $start == null && $end == null){   
-                                if($is_becario == 0){
-                                    $totalTM57Filter = $totalTM57Filter + 1;
-                                }      
+                                $totalTM57Filter = $totalTM57Filter + 1;    
                             }else{
                                 //Fecha filtrada
-                                if($user->employee->date_admission >= $format_start ){
+                                if($user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end){
                                     $totalTM57Filter = $totalTM57Filter + 1;
                                 }
                             }
@@ -265,14 +252,12 @@ class RhController extends Controller
 
         return $data;
 
-        
     }
 
     public function bajas($start, $end)
     {
         $data=[];
-        $carbon = new \Carbon\Carbon();
-        $date = $carbon->now();
+    
         $users = User::where('status',0)->get();
 
         $totalPLFilter = 0;
@@ -364,13 +349,6 @@ class RhController extends Controller
         $users = User::where('status', 0)->get();
         $department_data = [];
 
-        //Fechas
-        $carbon = new \Carbon\Carbon();
-        $date = $carbon->now();
-        $yearpresent = $date->format('Y');
-        $monthpresent = $date->format('m');
- 
-       
         foreach($departments as $department){
             
             //Contadores
@@ -458,10 +436,10 @@ class RhController extends Controller
                         $other_motive = $other_motive + 1;
                     }
         
-                    if($start == null && $end == null && $year ==$yearpresent && $mont == $monthpresent){
+                    if($start == null && $end == null){
                         $total_users = $total_users + 1;
                         $type = "No filtrada";
-                    }elseif($user->userDetails->date_down >= $start && $user->userDetails->date_down <= $end){ 
+                    }elseif($user->userDetails != null && $user->userDetails->date_down >= $start && $user->userDetails->date_down <= $end){ 
                         $total_users = $total_users + 1;
                         $type = "Filtrada";
                     }
@@ -1461,160 +1439,143 @@ class RhController extends Controller
         $promolife_users = [];
         $bhtrade_users = [];
         $promozale_users= [];
-        $tradenarket57_users = [];
+        $trademarket57_users = [];
 
         $down_promolife_users = [];
         $down_bhtrade_users = [];
         $down_promozale_users= [];
-        $down_tradenarket57_users = [];
+        $down_trademarket57_users = [];
 
-        $promolife = CompanyEmployee::where('company_id', 1)->get();
-        $bh_trade_market = CompanyEmployee::where('company_id', 2)->get();
-        $promo_zale = CompanyEmployee::where('company_id', 3)->get();
-        $trade_market57 = CompanyEmployee::where('company_id', 4)->get();
+        $users = User::all();
+       
         $role = Role::where('name','becario')->get()->last();
 
-        if($start == null && $end == null){
-            foreach($promolife as $company){
+        $format_start =date('Y-m-d', strtotime($start));
+        $format_end =date('Y-m-d', strtotime($end));
+        
+        foreach($users as $user){
 
-                $user = User::where('id', $company->employee_id)->get()->last();   
-                if($user != null && $user->status == 1){
-                    $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->get()->count();
-                    if($is_becario ==0){
-                        array_push($promolife_users, $user);
-                    }
-                }elseif($user != null && $user->status == 0){
-                    $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->get()->count();
-                    if($is_becario ==0){
-                        array_push($down_promolife_users, $user);
-                    }
-                }                
-            }
+            if($user->employee->companies != null){
+                switch($user->employee->companies->last()->name_company){
+                    case "Promo Life":
+                        //Valores iniciales
+                        $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->count();
+                        if($is_becario == 0){
+                            if($start == null && $end == null){
 
-            foreach($bh_trade_market as $company){
-                $user = User::where('id', $company->employee_id)->get()->last();
-                if($user != null && $user->status == 1){
-                    $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->get()->count();
-                    if($is_becario ==0){
-                        array_push($bhtrade_users, $user);
-                    }
-                }elseif($user != null && $user->status == 0){
-                    $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->get()->count();
-                    if($is_becario ==0){
-                        array_push($down_bhtrade_users, $user);
-                    }
-                } 
-            }
+                                if($user->status == 1){
+                                    array_push($promolife_users, $user);
+                                }elseif($user->status == 0){
+                                    array_push($down_promolife_users, $user);
+                                }
+                               
+                            }else{
 
-            foreach($trade_market57 as $company){
-                $user = User::where('id', $company->employee_id)->get()->last();
-                if($user != null && $user->status == 1){
-                    $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->get()->count();
-                    if($is_becario ==0){
-                        array_push($tradenarket57_users, $user);
-                    }
-                }elseif($user != null && $user->status == 0){
-                    $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->get()->count();
-                    if($is_becario ==0){
-                        array_push($down_tradenarket57_users, $user);
-                    }
+                                //Fecha filtrada
+                                //Alta
+                                if($user->status == 1 && $user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                                    array_push($promolife_users, $user);
+                                }
+                                //Baja
+                                if($user->status == 0 && $user->userDetails != null  && $user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
+                                    array_push($down_promolife_users, $user);
+                                }
+                            }
+                        }
+                        break;
+                    case "BH Trade Market":
+                        $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->count();
+                        if($is_becario == 0){
+                            if($start == null && $end == null){
+                                
+                                if($user->status == 1){
+                                    array_push($bhtrade_users, $user);
+                                }elseif($user->status == 0){
+                                    array_push($down_bhtrade_users, $user);
+                                }
+
+                            }else{
+                                //Fecha filtrada
+                                //Alta
+                                if($user->status == 1 && $user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                                    array_push($bhtrade_users, $user);
+                                }
+                                //Baja
+                                if($user->status == 0 && $user->userDetails != null  && $user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
+                                    array_push($down_bhtrade_users, $user);
+                                }
+                            }
+                        }
+                        break;
+                    case "Promo Zale":
+                        $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->count();                        
+                        if($is_becario == 0){
+                            if( $start == null && $end == null){
+                                
+                                if($user->status == 1){
+                                    array_push($promozale_users, $user);
+                                }elseif($user->status == 0){
+                                    array_push($down_promozale_users, $user);
+                                }
+
+                            }else{
+                                //Fecha filtrada
+                                //Alta
+                                if($user->status == 1 && $user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                                    array_push($promozale_users, $user);
+                                }
+                                //Baja
+                                if($user->status == 0 && $user->userDetails != null  && $user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
+                                    array_push($down_promozale_users, $user);
+                                }
+                            }
+                        }
+                        break;
+                    case "Trade Market 57":
+                        $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->count();
+                        if($is_becario == 0){
+                            if( $start == null && $end == null){   
+                                
+                                if($user->status == 1){
+                                    array_push($trademarket57_users, $user);
+                                }elseif($user->status == 0){
+                                    array_push($down_trademarket57_users, $user);
+                                }
+                                  
+                            }else{
+                                //Fecha filtrada
+                                //Alta
+                                if($user->status == 1 && $user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
+                                    array_push($trademarket57_users, $user);
+                                }
+                                //Baja
+                                if($user->status == 0 && $user->userDetails != null  && $user->userDetails->date_down >= $format_start && $user->userDetails->date_down <= $format_end ){
+                                    array_push($down_trademarket57_users, $user);
+                                }
+
+                            }
+                        }
+                        
+                    break;
                 }
             }
-
-            foreach($promo_zale as $company){
-                $user = User::where('id', $company->employee_id)->get()->last();
-                if($user != null && $user->status == 1){
-                    $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->get()->count();
-                    if($is_becario == 0){
-                        array_push($promozale_users, $user);
-                    }
-                }elseif($user != null && $user->status == 0){
-                    $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->get()->count();
-                    if($is_becario ==0){
-                        array_push($down_promozale_users, $user);
-                    }
-                }   
-            }  
-
-            $stadistic_report = new StadisticReport();
-            $stadistic_report->stadisticReport(
-                $promolife_users,
-                $bhtrade_users,
-                $promozale_users,
-                $tradenarket57_users, 
-                $down_promolife_users,
-                $down_bhtrade_users,
-                $down_promozale_users,
-                $down_tradenarket57_users
-            );
-
-        }else{
-
-            $format_start =date('Y-m-d', strtotime($start));
-            $format_end =date('Y-m-d', strtotime($end));
-
-            foreach($promolife as $company){
-                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();   
-               
-                if($user != null){
-                    $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->count();
-
-                    if( $is_becario ==0 && $user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
-                        array_push($promolife_users, $user);
-                    }
-                }
-            }
-
-            foreach($bh_trade_market as $company){
-                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
-                
-                if($user != null){
-                    $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->count();
-
-                    if($is_becario ==0 && $user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
-                        array_push($bhtrade_users, $user);
-                    }   
-                }
-            }
-
-            foreach($trade_market57 as $company){
-                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
-                
-                if($user != null  ){
-                    $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->count();
-
-                    if($is_becario ==0 && $user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
-                        array_push($tradenarket57_users, $user);
-                    }
-                }
-            }
-
-            foreach($promo_zale as $company){
-                $user = User::where('id', $company->employee_id)->where('status',1)->get()->last();
-           
-                if($user != null  ){
-                    $is_becario = RoleUser::where('user_id',$user->id)->where('role_id', $role->id)->count();
-
-                    if($is_becario ==0 && $user->employee->date_admission >= $format_start && $user->employee->date_admission <= $format_end ){
-                        array_push($promozale_users, $user);
-                    }
-                }   
-            }
-
-            $stadistic_report = new StadisticReport();
-            $stadistic_report->stadisticReport(
-                $promolife_users,
-                $bhtrade_users,
-                $promozale_users,
-                $tradenarket57_users, 
-                $down_promolife_users,
-                $down_bhtrade_users,
-                $down_promozale_users,
-                $down_tradenarket57_users
-            );
-
         }
-   }
+
+
+        $stadistic_report = new StadisticReport();
+        $stadistic_report->stadisticReport(
+            $promolife_users,
+            $bhtrade_users,
+            $promozale_users,
+            $trademarket57_users, 
+            $down_promolife_users,
+            $down_bhtrade_users,
+            $down_promozale_users,
+            $down_trademarket57_users
+        );
+
+    }
+   
 
 }
 

@@ -120,7 +120,13 @@ define('SUB_COLU', 'col-4 p-2');
             </div>
         </div>        
     </div>
-
+    @if ($end != null)
+    <div class="alert alert-light" role="alert">
+        En caso de no mostrar el total de bajas correctamente, verifica que los usuarios dados de baja tengan una fecha de baja registrada, esta puede encontrarse en el apartado: <b>
+            <a href="{{ route('rh.downUsers') }}" style="color:black;"> Ver usuarios dados de baja</a></b>
+    </div>
+    @endif
+    
     <!--   Estadisticas -->
     <div class="row">
         <div class="col-sm-4 col-md-4">
