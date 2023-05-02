@@ -19,7 +19,7 @@
             </div>
         </div>
     </div>
-    
+
 <!--body-->
     <div class="imagen-centrada">
     <img src="{{asset('img/profileChat.png')}}" alt="imagen" class="avatar">
@@ -35,10 +35,13 @@
             </p>
                 
             <form action="{{route('systems.store')}}" method="POST">
+
+                {!! Form::open(['route' => 'systems.store', 'enctype' => 'multipart/form-data']) !!}
                 @csrf
                 <input type="text" value="{{$see_more->id}}" name="id" hidden>
                         <div class="button-container">
                             <textarea name="comments" id="comment"></textarea>
+
                                 <div class="col-md-4">
                                         <div class="form-group">
                                             <div>
@@ -48,7 +51,7 @@
 
                                 <div class="col-md-6">
                                         <div class="form-group">
-                                                {!! Form::select('status', ['Aceptado'=> 'Aceptado', 'Rechazado'=> 'Rechazado'], 'Estado', ['class' => 'form-control','placeholder' => 'Seleccione el estado']) !!}
+                                                {!! Form::select('status', ['Aceptado'=> 'Aceptado', 'Rechazado'=> 'Rechazado', 'Pendiente'=> 'Pendiente'], 'Estado', ['class' => 'form-control','placeholder' => 'Seleccione el estado']) !!}
                                                 @error('status')
                                                 <small>
                                                     <font color="red"> *Este campo es requerido* </font>
@@ -58,8 +61,9 @@
                                 </div>
                         </div>
                         {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
-            </form> 
-                        {!! Form::close()!!}
+                        
+                {!! Form::close()!!}
+            </form>
 </div>
         
 <style>

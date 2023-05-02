@@ -26,7 +26,19 @@
                         <td style="text-align: center">{{$systems->user->name.' '. $systems->user->lastname}}</td>
                         <td style="text-align: center">{{$systems->category}}</td>
                         <td style="text-align: center">{{$systems->description}}</td>
-                        <td style="text-align: center">{{$systems->status}}</td>
+
+                        <td>
+                            @if ($systems->status == 'Aceptado')
+                                <span class="badge bg-success">{{$systems->status}}</span>
+                                @elseif($systems->status == 'Rechazado')
+                                <span class="badge bg-danger">{{ $systems->status }}</span>
+                                @elseif($systems->status == 'Pendiente')
+                                <span class="badge bg-warning text-dark">{{ $systems->status }}</span>
+                                @elseif($systems->status == 'Solicitud enviada')
+                                <span class="badge bg-info text-dark">{{ $systems->status }}</span>
+                            @endif
+                        </td>
+                        
                         <td style="text-align: center">{{$systems->id}}</td>
                         <td style="text-align: center">{{$systems->updated_at}}</td> 
                         <td>
