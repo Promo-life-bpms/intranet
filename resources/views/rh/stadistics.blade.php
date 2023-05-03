@@ -29,7 +29,8 @@ define('SUB_COLU', 'col-4 p-2');
             </form> -->
             
             <div style="margin-left:10px"></div>
-            <form class="form-submit" action="/rh/create-stadistic-report/" method="POST">
+            <form class="form-submit" action="{{ route('rh.createStadisticReport') }}" enctype="multipart/form-data" method="POST">
+                @method('POST')
                 @csrf 
                 <input type="text" value="{{$start}}" name='start' hidden> 
                 <input type="text" value="{{$end}}" name='end' hidden> 
