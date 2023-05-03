@@ -27,15 +27,21 @@ public function index1()
 
 public function createTeamRequest(Request $request){
 /*dd($request);*/
+
+    $request->validate([
+    'category' => 'required',
+    'description' => 'required'
+    ]);
+
     $user = auth()->user();
-  $request_team = new ModelsTeamRequest();
-  $request_team->user_id = $request->user_id;
-  $request_team->category = $request->category;
-  $request_team->description = $request->description;
-  $request_team->status = 'Solicitud enviada';
-  $request_team->user_id = $user->id;
-  $request_team->save();
-  return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!');
+    $request_team = new ModelsTeamRequest();
+    $request_team->user_id = $request->user_id;
+    $request_team->category = $request->category;
+    $request_team->description = $request->description;
+    $request_team->status = 'Solicitud enviada';
+    $request_team->user_id = $user->id;
+    $request_team->save();
+    return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!');
 
  
   }

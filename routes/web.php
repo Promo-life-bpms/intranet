@@ -34,6 +34,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\seeMore;
+use App\Http\Controllers\SeeMoreTeam;
 use App\Http\Controllers\SystemRequest;
 use App\Http\Controllers\Systems\DevicesController;
 use App\Http\Controllers\TeamRequest;
@@ -256,6 +257,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/teamrequest/', [TeamRequest::class, 'index'])->name('team.request');
     Route::get('/teamrequest1/', [TeamRequest::class, 'index1'])->name('team.record');
     Route::post('/team/create-teamrequest/', [TeamRequest::class, 'createTeamRequest'])->name('team.createTeamRequest');
+    
 
     //Estado actual de solicitud rol sistemas
     Route::get('/Systemsrequest/',[SystemRequest::class, 'systemsrequest'])->name('systems.request');
@@ -263,6 +265,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     //Cambio de estado de solicitud
     Route::get('/systems/show/{id}', [SeeMore::class, 'show'])->name('systems.show');
     Route::post('/systems/store/', [SeeMore::class, 'update'])->name('systems.store');
+
+    //Agregado adicional en historial de usuarios
+
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');

@@ -23,7 +23,9 @@
                                 {!! Form::label('category', 'Categoria') !!}
                                 {!! Form::select('category', ['Equipo de Computo' => 'Equipo de Computo', 'Mobiliario' => 'Mobiliario', 'Equipo Telefonico' => 'Equipo Telefonico', 'Otros' => 'Otros'], 'categoria', ['class' => 'form-control','placeholder' => 'Selecciona la categoria']) !!}
                                 @error('category')
-                                    <br>
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small> 
                                 @enderror
                             </div>
                         </div>
@@ -33,7 +35,9 @@
                                 {!! Form::label('description', 'Descripción') !!}
                                 {!! Form::textarea('description', null, ['class' => 'form-control', 'placeholder' => 'Ingrese una descripción']) !!}
                                 @error('description')
-                                    <br>
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>    
                                 @enderror
                             </div>
                         </div>

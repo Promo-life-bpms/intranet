@@ -11,10 +11,11 @@
             <table class="table table-striped" id="table-directory">
                 <thead>
                     <tr>
-                        <td scope="col" style="text-align: center">Categoria</td>
-                        <td scope="col" style="text-align: center">Descripción</td>
-                        <td scope="col" style="text-align: center">Estado</td>
-                        <td scope="col" style="text-align: center">ID de Solicitud</td>
+                        <th scope="col" style="text-align: center">Categoria</th>
+                        <th scope="col" style="text-align: center">Descripción</th>
+                        <th scope="col" style="text-align: center">Estado</th>
+                        <th scope="col" style="text-align: center">ID de Solicitud</th>
+                        <th scope="col" style="text-align: center">Opciones</th>
                     </tr>
                 </thead>
 
@@ -27,19 +28,23 @@
                                 <td style="text-align: center">{{$dato->category}}</td>
                                 <td style="text-align: center">{{$dato->description}}</td>
 
-                                    <td>
-                                        @if ($dato->status == 'Aceptado')
-                                            <span class="badge bg-success">{{$dato->status}}</span>
-                                            @elseif($dato->status == 'Rechazado')
-                                            <span class="badge bg-danger">{{ $dato->status }}</span>
-                                            @elseif($dato->status == 'Pendiente')
-                                            <span class="badge bg-warning text-dark">{{ $dato->status }}</span>
-                                            @elseif($dato->status == 'Solicitud enviada')
-                                            <span class="badge bg-info text-dark">{{ $dato->status }}</span>
-                                        @endif
-                                    </td>
+                                <td>
+                                    @if ($dato->status == 'Aceptado')
+                                        <span class="badge bg-success">{{$dato->status}}</span>
+                                         @elseif($dato->status == 'Rechazado')
+                                        <span class="badge bg-danger">{{ $dato->status }}</span>
+                                        @elseif($dato->status == 'Pendiente')
+                                        <span class="badge bg-warning text-dark">{{ $dato->status }}</span>
+                                        @elseif($dato->status == 'Solicitud enviada')
+                                        <span class="badge bg-info text-dark">{{ $dato->status }}</span>
+                                    @endif
+                                </td>
 
                                 <td style="text-align: center">{{$dato->id}}</td>
+
+                                <td>
+                                    <a type="button" class="btn btn-primary"  href="">Ver Más</a>
+                                </td>
                             </tr>
                         @endif 
                     @endforeach
@@ -48,4 +53,15 @@
         </div>
     </div>
 </div>
+
+<style>
+    table {
+    font-size: 66.1%;
+    }
+
+    .btn {
+    font-size: 10px;
+    }
+
+</style>
 @endsection
