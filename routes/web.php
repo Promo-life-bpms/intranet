@@ -33,6 +33,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
+use App\Http\Controllers\SeeDetails;
 use App\Http\Controllers\seeMore;
 use App\Http\Controllers\SeeMoreTeam;
 use App\Http\Controllers\SystemRequest;
@@ -267,7 +268,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/systems/store/', [SeeMore::class, 'update'])->name('systems.store');
 
     //Agregado adicional en historial de usuarios
-
+    Route::get('/team/details/{id}', [SeeDetails::class, 'details'])->name('admin.Team.details');
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');

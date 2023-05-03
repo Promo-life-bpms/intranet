@@ -43,7 +43,7 @@
                                 <td style="text-align: center">{{$dato->id}}</td>
 
                                 <td>
-                                    <a type="button" class="btn btn-primary"  href="">Ver Más</a>
+                                    <a type="button" class="btn btn-primary"  href="{{ route('admin.Team.details', $dato->id)}}">Ver Más</a>
                                 </td>
                             </tr>
                         @endif 
