@@ -30,20 +30,40 @@
 
                                 <td>
                                     @if ($dato->status == 'Aceptado')
+                                    <div class="d-flex justify-content-center">
                                         <span class="badge bg-success">{{$dato->status}}</span>
-                                         @elseif($dato->status == 'Rechazado')
+                                    </div>
+
+                                    
+                                        @elseif($dato->status == 'Rechazado')
+                                    <div class="d-flex justify-content-center">
                                         <span class="badge bg-danger">{{ $dato->status }}</span>
+                                    </div>
+
                                         @elseif($dato->status == 'Pendiente')
+                                    <div class="d-flex justify-content-center">
                                         <span class="badge bg-warning text-dark">{{ $dato->status }}</span>
+                                    </div>
+
                                         @elseif($dato->status == 'Solicitud enviada')
+                                    <div class="d-flex justify-content-center">
                                         <span class="badge bg-info text-dark">{{ $dato->status }}</span>
+                                    </div>
                                     @endif
                                 </td>
 
                                 <td style="text-align: center">{{$dato->id}}</td>
 
                                 <td>
-                                    <a type="button" class="btn btn-primary"  href="{{ route('admin.Team.details', $dato->id)}}">Ver Más</a>
+                                    @if ($dato->status == 'Aceptado')
+                                        <div class="d-flex justify-content-center">
+                                            <a type="button" class="btn btn-primary"  href="{{ route('admin.Team.details', $dato->id)}}">Ver Más</a>
+                                        </div>
+                                    @else
+                                        <div class="d-flex justify-content-center">
+                                            <a type="button" class="btn btn-primary{{ $dato->status == 'Pendiente' ? ' disabled' : '' }}"  href="{{ route('admin.Team.details', $dato->id)}}" onclick="{{ $dato->status == 'Pendiente' ? 'return false;' : '' }}">Ver Más</a>
+                                        </div>
+                                    @endif
                                 </td>
                             </tr>
                         @endif 

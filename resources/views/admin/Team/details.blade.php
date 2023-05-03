@@ -8,7 +8,7 @@
                 <a  href="{{ route('team.record')}}">
                     <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i>
                 </a>
-                <h1  style="margin-left:16px; font-size:25px" class="separator">Detalles del Usuario</h1>
+                <h1  style="margin-left:16px; font-size:25px" class="separator">Mis Detalles</h1>
             </div>
         </div>
     </div>

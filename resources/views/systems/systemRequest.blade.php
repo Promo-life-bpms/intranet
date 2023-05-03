@@ -29,13 +29,24 @@
 
                         <td>
                             @if ($systems->status == 'Aceptado')
-                                <span class="badge bg-success">{{$systems->status}}</span>
+                                <div class="d-flex justify-content-center">
+                                    <span class="badge bg-success">{{$systems->status}}</span>
+                                </div>
+
                                 @elseif($systems->status == 'Rechazado')
-                                <span class="badge bg-danger">{{ $systems->status }}</span>
+                                <div class="d-flex justify-content-center">
+                                    <span class="badge bg-danger">{{ $systems->status }}</span>
+                                </div>
+
                                 @elseif($systems->status == 'Pendiente')
-                                <span class="badge bg-warning text-dark">{{ $systems->status }}</span>
+                                <div class="d-flex justify-content-center">
+                                    <span class="badge bg-warning text-dark">{{ $systems->status }}</span>
+                                </div>
+
                                 @elseif($systems->status == 'Solicitud enviada')
-                                <span class="badge bg-info text-dark">{{ $systems->status }}</span>
+                                <div class="d-flex justify-content-center">
+                                    <span class="badge bg-info text-dark">{{ $systems->status }}</span>
+                                </div>
                             @endif
                         </td>
                         
