@@ -14,18 +14,7 @@ class UsuariosSoporte extends Model
         'users_id',
         'categorias_id',
     ];
-    // public function user()
-    // {
-    //     return $this->hasMany(user::class, 'id_users');
-    // }
-    // public function category()
-    // {
-    //     return $this->hasMany(Categorias::class, 'id_categorias');
-    // }
 
-    public function asignacion()
-    {
-        return $this-> belongsToMany(User::class,'id_user');
-    }
-    
+
+
 }

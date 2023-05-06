@@ -33,11 +33,11 @@
                             <td class="col-2">{{ $ticket->category->name }}</td>
                             <td class="col-2">
                                 @if ($ticket->status->name == 'Resuelto')
-                                    {{-- <span class="badge bg-danger">{{ $ticket->status->name }}</span> --}}
+                                   
                                     <div class="alert-sm alert-success rounded-3" role="alert">
                                         {{ $ticket->status->name }}</div>
                                 @elseif ($ticket->status->name == 'Creado')
-                                    {{-- <span class="badge bg-primary">{{ $ticket->status->name }}</span> --}}
+
                                     <div class="alert-sm alert-info rounded-3" role="alert">
                                         {{ $ticket->status->name }}</div>
                                 @elseif ($ticket->status->name == 'En proceso')
@@ -381,7 +381,7 @@
             })
             .catch(error => {
                 console.error(error);
-            });
+            });x
 
 
         document.addEventListener("mostrar_data", () => {

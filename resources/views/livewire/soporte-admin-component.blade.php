@@ -23,18 +23,12 @@
 
                     @foreach ($users as $usuario)
                         <tr>
-                            <th scope="row">{{$loop->iteration }}</th>
+                            <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $usuario->name }}</td>
                             <td class="col-2">
-                                @if ($categoria->count())
                                 @foreach ($usuario->asignacionCategoria as $categoria)
-
-                                 {{ $categoria->name }}
-
+                                    {{ $categoria->name }}
                                 @endforeach
-                                @else
-                                <p>No tiene cateogrias asignadas</p>
-                                @endif
                             </td>
                             <td class="col-2"><button type="button" class="btn btn-primary btn-sm"
                                     data-bs-toggle="modal" data-bs-target="#ModalAsignacion"><i
@@ -42,13 +36,11 @@
                                         asignación</i>
                             </td>
                         </tr>
-
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
-
     {{-- Modal asignacion --}}
     <div wire:ignore.self class="modal fade" id="ModalAsignacion" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -69,7 +61,6 @@
                                     $check = false;
                                 @endphp
                                 @if ($user)
-
                                     @foreach ($user->asignacionCategoria as $userCategory)
                                         @if ($categoria->id == $userCategory->id)
                                             @php
@@ -77,7 +68,6 @@
                                                 break;
                                             @endphp
                                         @endif
-
                                     @endforeach
                                 @endif
                                 <div class="form-check form-check-inline">
@@ -100,7 +90,6 @@
     </div>
 
     <script>
-
         window.addEventListener('asignacion_correcta', () => {
 
             toastr.success('categoria asignada correctamente')

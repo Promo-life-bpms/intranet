@@ -9,6 +9,7 @@ Usuario : {{ $data['email'] }}
 
 Problema : {{ $data['name_ticket'] }}
 
+
 {{$data['tiempo']}}
 
 @endcomponent

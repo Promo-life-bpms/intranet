@@ -23,7 +23,6 @@ class SoporteSolucionComponent extends Component
     protected $paginationTheme = 'bootstrap';
     public function render()
     {
-
         $categories=  auth()->user()->asignacionCategoria->pluck(["id"]);
         return view('livewire.soporte-solucion-component', [
 
@@ -57,18 +56,14 @@ class SoporteSolucionComponent extends Component
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
-
     }
 
     public function guardarSolucion()
     {
-
         if ($this->description == trim('<p><br data-cke-filler="true"></p>')) {
             $this->addError('description', 'La descripcion es obligatoria');
             return;
         }
-
-
         $this->validate(
             [
                 'description' => 'required'

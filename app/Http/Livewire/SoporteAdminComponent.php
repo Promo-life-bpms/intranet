@@ -18,15 +18,15 @@ class SoporteAdminComponent extends Component
 
 
         $this->categorias = Categoria::orderBy('id')->get();
-        
+
 
         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
             ->where('roles.name', '=', 'systems')
             ->select('users.*')
             ->get();
-            return   view('livewire.soporte-admin-component',compact('users'));       
-           
+            return   view('livewire.soporte-admin-component',compact('users'));
+
     }
 
 
@@ -34,7 +34,7 @@ class SoporteAdminComponent extends Component
     {
         $usuario = User::find($id);
         $this->usuario_id = $usuario->id;
-        $this->name = $usuario->name;  
+        $this->name = $usuario->name;
         $this->user=$usuario;
 
     }
@@ -46,4 +46,6 @@ class SoporteAdminComponent extends Component
         $usuario->asignacionCategoria()->toggle([$categorias]);
         $this->dispatchBrowserEvent('asignacion_correcta');
     }
+
+    
 }

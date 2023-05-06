@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Livewire;;
+namespace App\Http\Livewire;
 
+use App\Models\User;
 use Livewire\WithPagination;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -9,9 +10,8 @@ use  App\Models\Soporte\Ticket;
 use App\Models\Soporte\Categoria;
 use App\Models\Soporte\Mensaje;
 use App\Models\Soporte\Historial;
-use App\Models\User;
 use App\Notifications\SoporteNotification;
-
+use App\Notifications\StatuSoporteFinalizadoNotification;
 
 class ListadoTicketsComponent extends Component
 {
@@ -34,6 +34,8 @@ class ListadoTicketsComponent extends Component
         ]);
     }
 
+
+
     public function guardar()
     {
         if ($this->data == trim('<p><br data-cke-filler="true"></p>')) {
@@ -48,8 +50,34 @@ class ListadoTicketsComponent extends Component
                 'data' => 'required',
                 'categoria' => 'required'
             ]
-
         );
+
+        //encuentra la categoria del ticket
+        $category = Categoria::find((int) $this->categoria);
+        //encuentrar a los usuarios relacionados con la categoria del ticket
+        $usuarios =  $category->usuarios;
+
+
+        // dd($usuarios);
+
+        //  $ticket_usuario = Ticket::whereIn('user_id',$category);
+
+        // $tickets = $category->tickets()->whereIn('user_id', $category->usuarios->pluck('id'))->get();
+
+
+        foreach ($usuarios as $usuario) {
+            //aqui contamos los tickets del usuario
+            $usuario->ticketsusuario->count();
+
+            dd( $usuario->ticketsusuario->count());
+
+        }
+
+
+
+
+
+
 
         $ticket = Ticket::create(
             [
@@ -60,6 +88,8 @@ class ListadoTicketsComponent extends Component
                 'status_id' => 1
             ]
         );
+
+
 
         //Historial de creado
         Historial::create(
@@ -73,22 +103,19 @@ class ListadoTicketsComponent extends Component
         );
 
 
-        //traer el usuario relacionado con el usuario
-        //Aqui traemos los datos que necesitamos para la notificacion.
         $Notificacion =
             [
                 'name' => auth()->user()->name,
-                'email'=>auth()->user()->email,
-                'name_ticket'=>$ticket->name,
+                'email' => auth()->user()->email,
+                'name_ticket' => $ticket->name,
                 'data' => $ticket->data,
-                'tiempo'=>$ticket->created_at
+                'tiempo' => $ticket->created_at
             ];
 
-            auth()->user()->notify(new SoporteNotification($Notificacion));
+        $usuarios->notify(new SoporteNotification($Notificacion));
 
         $this->name = '';
         $this->categoria = '';
-
         $this->dispatchBrowserEvent('ticket_success');
     }
 
@@ -149,6 +176,8 @@ class ListadoTicketsComponent extends Component
             ]
         );
 
+
+
         Historial::create(
 
             [
@@ -158,6 +187,18 @@ class ListadoTicketsComponent extends Component
                 'data' => $actualizar_status->status->name
             ]
         );
+
+
+        $NotificacionStatus =
+            [
+                'name' => auth()->user()->name,
+                'email' => auth()->user()->email,
+                'name_ticket' => $actualizar_status->name,
+                'status' => $actualizar_status->status->name
+
+            ];
+
+        // auth()->user()->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
     }
 
     public function verTicket($id)
@@ -168,8 +209,6 @@ class ListadoTicketsComponent extends Component
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
-
-        $this->dispatchBrowserEvent('cargar');
     }
 
     public function enviarMensaje()
@@ -194,6 +233,4 @@ class ListadoTicketsComponent extends Component
 
         $this->dispatchBrowserEvent('Mensaje');
     }
-    
-
 }

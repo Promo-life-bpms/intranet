@@ -14,11 +14,13 @@ class Solucion extends Model
         'user_id',
         'ticket_id'
     ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    
     //  public function solution()
     //  {
     //      return $this->belongsTo(Ticket::class,'ticket_id');

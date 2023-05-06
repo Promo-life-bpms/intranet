@@ -2,13 +2,12 @@
 
 namespace App\Notifications;
 
-use App\Models\Soporte\Ticket;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class SoporteNotification extends Notification
+class StatuSoporteFinalizadoNotification extends Notification
 {
     use Queueable;
 
@@ -17,14 +16,12 @@ class SoporteNotification extends Notification
      *
      * @return void
      */
-    public $data;
 
+     public $data;
     public function __construct($data)
     {
-        $this->data=$data;
+        $this->data = $data;
     }
-
-
 
     /**
      * Get the notification's delivery channels.
@@ -46,9 +43,9 @@ class SoporteNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->markdown('mail.soporte.soporteMail',["data"=>$this->data])
-                    ->subject('Ticket de soporte recibido')
-                    ->from('correo@gmail.com');
+            ->markdown('mail.soporte.soporteMailStatus', ["data" => $this->data])
+            ->subject('Ticket de soporte recibido')
+            ->from('correo@gmail.com');
     }
 
     /**
@@ -61,8 +58,8 @@ class SoporteNotification extends Notification
     {
         return [
             'data'=>$this->data,
-            'type'=>'ticket creado',
-            'message'=>'Ticket'
+            'type'=>'ticket finalizado',
+            'message'=>'El ticket se ha finalizado'
         ];
     }
 }

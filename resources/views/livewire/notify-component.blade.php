@@ -61,6 +61,15 @@
                                     <p class="my-0">{{ $notification->data['emisor_name'] }}</p>
                                 @break
 
+                                @case('App\Notifications\StatuSoporteFinalizadoNotification')
+                                
+                                    <p class="my-0">EL ticket ha finalizado</p>
+                                @break
+
+                                @case('App\Notifications\SoporteNotification')
+                                    <p class="my-0">Haz recibido un ticket</p>
+                                @break
+
                                 @default
                             @endswitch
                         </div>
