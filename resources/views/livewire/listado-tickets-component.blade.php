@@ -33,7 +33,7 @@
                             <td class="col-2">{{ $ticket->category->name }}</td>
                             <td class="col-2">
                                 @if ($ticket->status->name == 'Resuelto')
-                                   
+
                                     <div class="alert-sm alert-success rounded-3" role="alert">
                                         {{ $ticket->status->name }}</div>
                                 @elseif ($ticket->status->name == 'Creado')
@@ -381,15 +381,13 @@
             })
             .catch(error => {
                 console.error(error);
-            });x
+            });
 
 
         document.addEventListener("mostrar_data", () => {
 
             ckEditorEdit.setData(@this.data);
             ckEditorVer.setData(@this.data);
-
-
         });
 
         document.addEventListener("mostrar_mensaje", () => {

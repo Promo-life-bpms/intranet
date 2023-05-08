@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models\Soporte;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -46,4 +47,6 @@ class Ticket extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+
 }

@@ -58,24 +58,10 @@ class ListadoTicketsComponent extends Component
         $usuarios =  $category->usuarios;
 
 
-        // dd($usuarios);
-
-        //  $ticket_usuario = Ticket::whereIn('user_id',$category);
+        // $user_ticket=Ticket::whereIn('category_id',$usuarios);
+        // dd($user_ticket);
 
         // $tickets = $category->tickets()->whereIn('user_id', $category->usuarios->pluck('id'))->get();
-
-
-        foreach ($usuarios as $usuario) {
-            //aqui contamos los tickets del usuario
-            $usuario->ticketsusuario->count();
-
-            dd( $usuario->ticketsusuario->count());
-
-        }
-
-
-
-
 
 
 
@@ -112,7 +98,16 @@ class ListadoTicketsComponent extends Component
                 'tiempo' => $ticket->created_at
             ];
 
-        $usuarios->notify(new SoporteNotification($Notificacion));
+
+        //arreglo para enviar la notificacion al usuario de la categoria
+        foreach ($usuarios as $usuario) {
+            //aqui contamos los tickets del usuario
+            // $conteo=$usuario->ticketsAsignados()->whereIn('status_id', [1, 2])->count();
+            // dd($conteo);
+            $usuario->notify(new SoporteNotification($Notificacion));
+        }
+
+
 
         $this->name = '';
         $this->categoria = '';
@@ -168,7 +163,8 @@ class ListadoTicketsComponent extends Component
     public function finalizarTicket($id)
     {
         $actualizar_status = Ticket::find($id);
-
+        $category = Categoria::find($actualizar_status->category_id);
+        $usuarios = $category->usuarios;
         $actualizar_status->update(
             [
 
@@ -198,7 +194,10 @@ class ListadoTicketsComponent extends Component
 
             ];
 
-        // auth()->user()->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
+        //for each para enviar notificacion de status a los usuarios relacionados
+        foreach ($usuarios as $usuarios) {
+             $usuarios->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
+        }
     }
 
     public function verTicket($id)

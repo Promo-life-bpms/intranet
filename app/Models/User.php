@@ -125,9 +125,9 @@ class User extends Authenticatable
     }
 
     //para traer los tickets relacionados con el usuario
-    public function ticketsusuario()
+    public function tickets()
     {
-        return $this->hasMany(Ticket::class, 'user_id');
+        return $this->hasMany(Ticket::class,'user_id');
     }
 
 }

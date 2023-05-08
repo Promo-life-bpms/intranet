@@ -62,12 +62,15 @@
                                 @break
 
                                 @case('App\Notifications\StatuSoporteFinalizadoNotification')
-                                
-                                    <p class="my-0">EL ticket ha finalizado</p>
+                                    <b>{{ $notification->data['data']['name'] }}</b>
+                                    <p class="my-0">Ha Finalizado el ticket : {{$notification->data['data']['name_ticket']}}</p>
+                                    <p class="my-0">Status : {{$notification->data['data']['status']}}</p>
                                 @break
 
                                 @case('App\Notifications\SoporteNotification')
-                                    <p class="my-0">Haz recibido un ticket</p>
+                                    <b>{{ $notification->data['data']['name'] }}</b>
+                                    <p class="my-0">Te ha enviado un ticket</p>
+                                    <p class="my-0">{{$notification->data['data']['name_ticket']}}</p>
                                 @break
 
                                 @default

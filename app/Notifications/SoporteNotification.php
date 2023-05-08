@@ -61,7 +61,7 @@ class SoporteNotification extends Notification
     {
         return [
             'data'=>$this->data,
-            'type'=>'ticket creado',
+            'type'=>'ticket',
             'message'=>'Ticket'
         ];
     }

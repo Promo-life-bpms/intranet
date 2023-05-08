@@ -27,7 +27,7 @@
                             <td class="col-2">
 
                                 @if ($tickets->status->name == 'Resuelto')
-                                    
+
                                     <div class="alert-sm alert-success rounded-3" role="alert">
                                         {{ $tickets->status->name }}</div>
                                 @elseif ($tickets->status->name == 'Creado')
@@ -237,5 +237,7 @@
             }
 
         }
+
+
     </script>
 </div>
