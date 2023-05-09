@@ -6,8 +6,10 @@ use App\Models\boardroom;
 use App\Models\Reservation;
 use App\Models\User;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\Return_;
 
 class ReservationController extends Controller
 {
@@ -24,18 +26,6 @@ class ReservationController extends Controller
     /////////////////////////////////////////////Función crear evento///////////////////////////////////////////////
     public function store(Request $request)
     {
-
-        /*$eventos = Reservation::where('id_sala', $request->id_sala)->get();
-        $start = $request->start;
-        $end = $request->end;*/
-
-        /*foreach ($eventos as $evento)
-
-            if ($evento->start <= $start && $evento->end >= $end) {
-                return back()->with('message1', "Ya existe un evento en esta fecha y hora. Por favor elige otra sala u otra hora y fecha.");
-            } elseif ($end < $start) {
-                return back()->with('message1', "La hora de inicio debe ser previa que la hora del fin de la reservacón.");
-            }*/
         $user = auth()->user();
         $request->validate([
             'title' => 'required',
@@ -47,44 +37,55 @@ class ReservationController extends Controller
             'description' => 'required',
         ]);
 
-        $start =  date("d-m-Y H:i:s", strtotime($request->start));
-        $end =  date("d-m-Y H:i:s", strtotime($request->end));
         $fecha_inicio =  $request->start;
         $fecha_termino =  $request->end;
-        
-        $eventos = Reservation::whereDate('start', Carbon::parse($fecha_inicio)->format('Y-m-d'))
+
+        $EventosDelDia = Reservation::whereDate('start', Carbon::parse($fecha_inicio)->format('Y-m-d'))
             ->whereDate('end', Carbon::parse($fecha_termino)->format('Y-m-d'))
             ->where('id_sala', $request->id_sala)->get();
-            //return($eventos);
-        
-        
-        $fecha_actual = Carbon::now()->format('d/m/Y H:i:s');
-        //dd($fecha_actual);
+        //return ($EventosDelDia);
 
-        $inicio = Reservation::where('start', '<=', $fecha_termino)
-            ->where('start', '>=',  $fecha_inicio)
-            ->where('id_sala', $request->id_sala)
-            ->get();
-            //return($inicio);
-        $DELANTE = Reservation::where('end', '>=', $fecha_inicio)
-            ->where('end', '>', $fecha_inicio)
-            ->where('id_sala', $request->id_sala)
-            ->get();
+        $eventosRefactorizados = [];
+        foreach ($EventosDelDia as $item) {
+            $componentes = [
+                'id' => $item['id'],
+                'start' => strtotime($item['start']) * 1000,
+                'end' => strtotime($item['end']) * 1000,
+                'id_sala' => $item['id_sala']
+            ];
+            //array_push($eventosRefactorizados, $componentes);
+            $eventosRefactorizados[] = $componentes;
+        }
+        //dd($eventosRefactorizados);
+        $inicio = $request->start; // Fecha de inicio del form
+        $fechastart = Carbon::parse($inicio);
+        $fechaInicio = strtotime($fechastart->format('Y-m-d H:i:s')) * 1000;
 
+        $final = $request->end; //fecha de fin del form
+        $fechaend = Carbon::parse($final);
+        $fechaFinal = strtotime($fechaend->format('Y-m-d H:i:s')) * 1000;
 
-        //dd($inicio->toArray(), $DELANTE->toArray());
-        
-            if ($end < $start) {
-                return back()->with('message1', "La hora de inicio debe ser previa que la hora del fin de la reservacón.");
+        foreach ($eventosRefactorizados as $evento) {
+
+            if ($fechaInicio >= $evento['start'] && $fechaInicio <= $evento['end']) {
+                // Si esta dentro del el rango
+                return redirect()->back()->with('message1', "Si esta dentro del rango 1.");
+
             }
-            if($eventos != $fecha_actual){
-                if (!$inicio->count() == 0 || !$DELANTE->count() == 0) {
-                $carbon = new \Carbon\Carbon();
-                $start = $carbon->now();
-                $start = $start->format("Y-m-d H:i:s");
-                $end = $carbon->now();
-                $end = $end->format("Y-m-d H:i:s");
-                $evento = new Reservation();
+            if($fechaFinal >= $evento['start']){
+                return redirect()->back()->with('message1', "Si esta dentro del rango 2.");
+
+            }else{
+                // NO esta, avanza a la siguiente validacion
+            }
+
+
+            //dd($fechaInicio . " | " . $fechaFinal);
+            //dd($nuevo['start'], $fechaInicio, $nuevo['end'], $fechaFinal);
+
+            //if ($nuevo['start'] <= $fechaInicio || $nuevo['start'] < $fechaFinal) {
+                //dd('14');
+                /*$evento = new Reservation();
                 $evento->title = $request->title;
                 $evento->start = $request->start;
                 $evento->end = $request->end;
@@ -95,13 +96,13 @@ class ReservationController extends Controller
                 $evento->id_usuario = $user->id;
                 $evento->id_sala = $request->id_sala;
                 $evento->save();
-                return redirect()->back()->with('message', "Reservación creada correctamente.");
-            }else {
-                return back()->with('message1', "Error.");
-            }
+                return redirect()->back()->with('message', "Reservación creada correctamente.");*/
+           // } /*else {
+                //return back()->with('message1', "Error.");
+            //}*/
         }
     }
-        
+          
     
     //////////////////////////////////////////////Función para editar/////////////////////////////////////////////////
     public function update(Request $request)
@@ -115,9 +116,10 @@ class ReservationController extends Controller
             'chair_loan' => 'required',
             'description' => 'required',
         ]);
+        $inicio = strtotime($request->start) * 1000;
 
-        $start =  date("d-m-Y H:i:s", strtotime($request->start));
-        $end =  date("d-m-Y H:i:s", strtotime($request->end));
+        $fin =  strtotime($request->end) * 1000;
+        //dd($inicio." | ".$fin);
 
         //como traer eventos de un afecha a una fecha///
         //separar
@@ -126,22 +128,35 @@ class ReservationController extends Controller
         $eventos = Reservation::whereDate('start', Carbon::parse($fecha_inicio)->format('Y-m-d'))
             ->whereDate('end', Carbon::parse($fecha_termino)->format('Y-m-d'))
             ->where('id_sala', $request->id_sala)->get();
-            return($eventos);
+        //dd($start, $end, $eventos->toArray());
 
-        $fin = Reservation::where('start', '<=', $request->end)
+        $filtro = [];
+        foreach ($eventos as $item) {
+
+            $componentes = [
+                'id' => $item['id'],
+                'start' => strtotime($item['start']) * 1000,
+                'end' => strtotime($item['end']) * 1000,
+                'id_sala' => $item['id_sala']
+            ];
+            $filtro[] = $componentes;
+        }
+        dd($filtro);
+
+        $ATRAS = Reservation::where('start', '<=', $request->end)
             ->where('start', '<',  $request->start)
             ->where('id_sala', $request->id_sala)
             ->get();
-            //dd($fin);
+        //dd($fin);
 
         $DELANTE = Reservation::where('end', '>=', $request->start)
             ->where('id_sala', $request->id_sala)
             ->get();
 
-        //dd(count($fin) . "  |  " . count($DELANTE));
+        //dd($ATRAS->toArray(), $DELANTE->toArray());
 
 
-        if ($fin->count() == 1) {
+        if (!$ATRAS->count() == 0) {
 
             DB::table('reservations')->where('id', $request->id_evento)->update([
                 'title' => $request->title, 'start' => $request->start,
