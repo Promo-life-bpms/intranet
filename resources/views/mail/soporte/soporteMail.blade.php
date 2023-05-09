@@ -1,14 +1,13 @@
 
 {{-- Aqui se envia el correo del ticket --}}
 @component('mail::message')
-# ¡Buen día, {{ $data['name'] }}!
+# ¡Buen día!
 
 ## Haz recibido un ticket
 
-Usuario : {{ $data['email'] }}
+**Usuario** : {{ $data['name'] }}
 
-Problema : {{ $data['name_ticket'] }}
-
+**Problema** : {{ $data['name_ticket'] }}
 
 {{$data['tiempo']}}
 

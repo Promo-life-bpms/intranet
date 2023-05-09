@@ -11,10 +11,8 @@ use App\Models\Soporte\Solucion;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Soporte\UsuariosSoporte;
 use App\Models\Soporte\Historial;
-
-
-
-
+use App\Notifications\SolucionSoporteNotification;
+use App\Notifications\StatusEnProcesoSoporteNotification;
 
 class SoporteSolucionComponent extends Component
 {
@@ -34,6 +32,9 @@ class SoporteSolucionComponent extends Component
     {
 
         $actualizar_status = Ticket::find($id);
+        $usuarios=$actualizar_status->user;
+        // dd($actualizar_status->user);
+
         $actualizar_status->update([
             'status_id' => 2
         ]);
@@ -44,6 +45,14 @@ class SoporteSolucionComponent extends Component
             'type'=>'status',
             'data'=>$actualizar_status->status->name
         ]);
+        //CHECAR NOTIFICACION EN PROCESO
+        $notificacionEnProceso=[
+            'name'=>auth()->user()->name,
+            'name_ticket'=>$actualizar_status->name,
+            'status'=>$actualizar_status->status
+        ];
+
+        $usuarios->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
 
     }
 
@@ -60,6 +69,9 @@ class SoporteSolucionComponent extends Component
 
     public function guardarSolucion()
     {
+
+        $ticket=Ticket::find($this->ticket_id);
+        $usuario=$ticket->user;
         if ($this->description == trim('<p><br data-cke-filler="true"></p>')) {
             $this->addError('description', 'La descripcion es obligatoria');
             return;
@@ -82,6 +94,14 @@ class SoporteSolucionComponent extends Component
             'type'=>'solucion',
             'data'=>$this->description
         ]);
+
+
+        $solucionNotification=[
+            'name'=>auth()->user()->name,
+            'name_ticket'=>$ticket->name,
+        ];
+
+        $usuario->notify(new SolucionSoporteNotification($solucionNotification));
 
         $this->dispatchBrowserEvent('ticket_solucion');
     }

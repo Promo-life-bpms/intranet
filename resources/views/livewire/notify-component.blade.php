@@ -63,14 +63,40 @@
 
                                 @case('App\Notifications\StatuSoporteFinalizadoNotification')
                                     <b>{{ $notification->data['data']['name'] }}</b>
-                                    <p class="my-0">Ha Finalizado el ticket : {{$notification->data['data']['name_ticket']}}</p>
-                                    <p class="my-0">Status : {{$notification->data['data']['status']}}</p>
+                                    <p class="my-0">Ha Finalizado el ticket :
+                                        {{ $notification->data['data']['name_ticket'] }}</p>
+                                    <p class="my-0">Status : {{ $notification->data['data']['status'] }}</p>
                                 @break
 
                                 @case('App\Notifications\SoporteNotification')
                                     <b>{{ $notification->data['data']['name'] }}</b>
                                     <p class="my-0">Te ha enviado un ticket</p>
-                                    <p class="my-0">{{$notification->data['data']['name_ticket']}}</p>
+                                    <p class="my-0">{{ $notification->data['data']['name_ticket'] }}</p>
+                                @break
+
+                                @case('App\Notifications\StatusEnProcesoSoporteNotification')
+                                    <b>{{ $notification->data['data']['name'] }}</b>
+                                    <p class="my-0">Esta revisando tu ticket:{{ $notification->data['data']['name_ticket'] }}
+                                    </p>
+                                    <p class="my-0">Status : {{ $notification->data['data']['status'] }}</p>
+                                @break
+
+                                @case('App\Notifications\EditarTicketNotification')
+                                    <b>{{ $notification->data['data']['name'] }}</b>
+                                    <p class="my-0">Ha editado el ticket :{{ $notification->data['data']['name_ticket'] }}
+                                    </p>
+                                @break
+
+                                @case('App\Notifications\MessageSoporteNotification')
+                                    <b>{{ $notification->data['data']['name'] }}</b>
+                                    <p class="my-0">Te ha enviado un mensaje en el ticket: </p>
+                                    <p>{{ $notification->data['data']['name_ticket'] }}</p>
+                                @break
+
+                                @case('App\Notifications\SolucionSoporteNotification')
+                                    <b>{{ $notification->data['data']['name'] }}</b>
+                                    <p class="my-0">Te ha enviado un mensaje en el ticket: </p>
+                                    <p>{{ $notification->data['data']['name_ticket'] }}</p>
                                 @break
 
                                 @default

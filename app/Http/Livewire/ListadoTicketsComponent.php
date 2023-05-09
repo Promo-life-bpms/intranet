@@ -10,8 +10,10 @@ use  App\Models\Soporte\Ticket;
 use App\Models\Soporte\Categoria;
 use App\Models\Soporte\Mensaje;
 use App\Models\Soporte\Historial;
+use App\Notifications\EditarTicketNotification;
 use App\Notifications\SoporteNotification;
 use App\Notifications\StatuSoporteFinalizadoNotification;
+use App\Notifications\MessageSoporteNotification;
 
 class ListadoTicketsComponent extends Component
 {
@@ -42,7 +44,6 @@ class ListadoTicketsComponent extends Component
             $this->addError('data', 'La descripcion es obligatoria');
             return;
         }
-
 
         $this->validate(
             [
@@ -95,15 +96,13 @@ class ListadoTicketsComponent extends Component
                 'email' => auth()->user()->email,
                 'name_ticket' => $ticket->name,
                 'data' => $ticket->data,
-                'tiempo' => $ticket->created_at
+                'tiempo' => $ticket->created_at,
             ];
 
 
         //arreglo para enviar la notificacion al usuario de la categoria
         foreach ($usuarios as $usuario) {
-            //aqui contamos los tickets del usuario
-            // $conteo=$usuario->ticketsAsignados()->whereIn('status_id', [1, 2])->count();
-            // dd($conteo);
+
             $usuario->notify(new SoporteNotification($Notificacion));
         }
 
@@ -133,6 +132,11 @@ class ListadoTicketsComponent extends Component
             return;
         }
 
+        //dd($ticketEditar->category_id);
+        $category = Categoria::find($ticketEditar->category_id);
+        $usuarios = $category->usuarios;
+
+
         $this->validate(
             [
                 'name' => 'required',
@@ -154,6 +158,15 @@ class ListadoTicketsComponent extends Component
             'type' => 'edito',
             'data' => $ticketEditar->data
         ]);
+
+        $notificacionEditar = [
+            'name' => auth()->user()->name,
+            'name_ticket' => $ticketEditar->name,
+        ];
+
+        foreach($usuarios  as $usuario){
+            $usuario->notify(new EditarTicketNotification($notificacionEditar));
+        }
 
         $this->name = '';
         $this->categoria = ' ';
@@ -192,11 +205,12 @@ class ListadoTicketsComponent extends Component
                 'name_ticket' => $actualizar_status->name,
                 'status' => $actualizar_status->status->name
 
+
             ];
 
         //for each para enviar notificacion de status a los usuarios relacionados
         foreach ($usuarios as $usuarios) {
-             $usuarios->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
+            $usuarios->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
         }
     }
 
@@ -213,6 +227,9 @@ class ListadoTicketsComponent extends Component
     public function enviarMensaje()
     {
 
+        $ticket=Ticket::find($this->ticket_id);
+        $category=Categoria::find($ticket->category_id);
+        $usuarios=$category->usuarios;
         Mensaje::create([
             'ticket_id' => $this->ticket_id,
             'message' => $this->mensaje,
@@ -229,6 +246,15 @@ class ListadoTicketsComponent extends Component
                 'data' => $this->mensaje
             ]
         );
+        //CHECAR NOTIFICACION MENSAJE QUE NO FUNCIONA
+        $notificationMessage=[
+            'name' => auth()->user()->name,
+            'name_ticket'=>$ticket->name
+        ];
+
+        foreach($usuarios as $usuario){
+            $usuario->notify(new MessageSoporteNotification($notificationMessage));
+        }
 
         $this->dispatchBrowserEvent('Mensaje');
     }
