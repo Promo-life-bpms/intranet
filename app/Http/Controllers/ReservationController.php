@@ -26,11 +26,105 @@ class ReservationController extends Controller
     /////////////////////////////////////////////Función crear evento///////////////////////////////////////////////
     public function store(Request $request)
     {
+        //AUTENTIFICAR AL USUARIO//
         $user = auth()->user();
+
+        //OBTENER LA INFORMACIÓN DEL FORM//
         $request->validate([
             'title' => 'required',
             'start' => 'required',
-            'end' => 'required|after:start',
+            'end' => 'required',
+            'number_of_people' => 'required',
+            'material' => 'required',
+            'chair_loan' => 'required',
+            'description' => 'required',
+        ]);
+
+        //VARIBLES PARA NO CONFUNDIRSE//
+        $fecha_inicio =  $request->start;
+        $fecha_termino =  $request->end;
+
+        //OBTENEMOS LOS EVENTOS DEL DÍA//
+        $EventosDelDia = Reservation::whereDate('start', Carbon::parse($fecha_inicio)->format('Y-m-d'))
+            ->whereDate('end', Carbon::parse($fecha_termino)->format('Y-m-d'))
+            ->where('id_sala', $request->id_sala)->get();
+        //return ($EventosDelDia);
+
+        //OBTENEMOS UN NUEVO ARREGLO DE LOS EVENTOS YA CREADOS PARA PODER CONVERTIR LAS HORAS A MILISEGUNDOS//
+        $eventosRefactorizados = [];
+        foreach ($EventosDelDia as $item) {
+            $componentes = [
+                'id' => $item['id'],
+                'start' => strtotime($item['start']) * 1000,
+                'end' => strtotime($item['end']) * 1000,
+                'id_sala' => $item['id_sala']
+            ];
+            //array_push($eventosRefactorizados, $componentes); es otra forma de traer el arreglo nuevo
+            $eventosRefactorizados[] = $componentes;
+        }
+        //dd($eventosRefactorizados);
+
+        //FORMATEAMOS LAS HORAS PARA PODERLAS CONVERTIR A MILISEGUNDOS//
+        $inicio = $request->start; // Fecha de inicio del form
+        $fechastart = Carbon::parse($inicio);
+        $fechaInicio = strtotime($fechastart->format('Y-m-d H:i:s')) * 1000;
+
+        $final = $request->end; //fecha de fin del form
+        $fechaend = Carbon::parse($final);
+        $fechaFinal = strtotime($fechaend->format('Y-m-d H:i:s')) * 1000;
+
+        
+        if($fecha_termino < $fecha_inicio){
+            return redirect()->back()->with('message1', "Una reservación no puede finalizar antes que la hora de inicio.");
+        }
+
+        //CONDICIONES QUE DEBE PASAR ANRTES DE EDITAR AL EVENTO// 
+        //EL PRIMER FOREACH ES PARA SABER QUE NO TOME TIEMPO DE EVENTOS YA CREADOS//
+        foreach ($eventosRefactorizados as $evento) {
+            if ($fechaInicio >= $evento['start']-1 && $fechaInicio <= $evento['end']-1) {
+                // Si esta dentro del rango
+                return redirect()->back()->with('message1', "Ya existe un evento dentro de la hora elegida.");
+            }
+            if($fechaFinal >= $evento['start']+1 && $fechaFinal <= $evento['end']+1){
+                return redirect()->back()->with('message1', "Ya existe un evento dentro de la hora elegida.");
+            }
+        }
+
+        //EL SEGUNDO FOREACH ES PARA SABER QUE NO SOBRE PASE TIEMPO DE EVENTOS YA CREADOS//
+        foreach($eventosRefactorizados as $evento){
+            if ($fechaInicio <= $evento['start'] && $fechaFinal >= $evento['end']) {
+                // Si esta dentro del el rango
+                return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados.");
+            }
+            if ($fechaInicio >= $evento['start'] && $fechaFinal <= $evento['end']){
+                return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados");
+            }
+        }
+
+        //UNA VEZ QUE YA PASO LAS VALIDACIÓNES CREA EL EVENETO//
+        $evento = new Reservation();
+        $evento->title = $request->title;
+        $evento->start = $request->start;
+        $evento->end = $request->end;
+        $evento->number_of_people = $request->number_of_people;
+        $evento->material = $request->material;
+        $evento->chair_loan = $request->chair_loan;
+        $evento->description = $request->description;
+        $evento->id_usuario = $user->id;
+        $evento->id_sala = $request->id_sala;
+        $evento->save();
+        return redirect()->back()->with('message', "Reservación creada correctamente.");
+    }
+          
+    
+    //////////////////////////////////////////////Función para editar/////////////////////////////////////////////////
+    public function update(Request $request)
+    {
+        //INFORMACIÓN QUE DEBE VALIDAR QUE SE ENCUENTRE//
+        $request->validate([
+            'title' => 'required',
+            'start' => 'required',
+            'end' => 'required',
             'number_of_people' => 'required',
             'material' => 'required',
             'chair_loan' => 'required',
@@ -40,11 +134,13 @@ class ReservationController extends Controller
         $fecha_inicio =  $request->start;
         $fecha_termino =  $request->end;
 
+        //OBTENEMOS LOS EVENTOS DEL DÍA//
         $EventosDelDia = Reservation::whereDate('start', Carbon::parse($fecha_inicio)->format('Y-m-d'))
             ->whereDate('end', Carbon::parse($fecha_termino)->format('Y-m-d'))
             ->where('id_sala', $request->id_sala)->get();
-        //return ($EventosDelDia);
+        //dd($start, $end, $eventos->toArray());
 
+        //OBTENEMOS UN NUEVO ARREGLO DE LOS EVENTOS YA CREADOS PARA PODER CONVERTIR LAS HORAS A MILISEGUNDOS//
         $eventosRefactorizados = [];
         foreach ($EventosDelDia as $item) {
             $componentes = [
@@ -57,117 +153,50 @@ class ReservationController extends Controller
             $eventosRefactorizados[] = $componentes;
         }
         //dd($eventosRefactorizados);
+
+        //FORMATEAMOS LAS HORAS PARA PODERLAS CONVERTIR A MILISEGUNDOS//
         $inicio = $request->start; // Fecha de inicio del form
         $fechastart = Carbon::parse($inicio);
         $fechaInicio = strtotime($fechastart->format('Y-m-d H:i:s')) * 1000;
 
         $final = $request->end; //fecha de fin del form
         $fechaend = Carbon::parse($final);
-        $fechaFinal = strtotime($fechaend->format('Y-m-d H:i:s')) * 1000;
+        $fechaFinal = strtotime($fechaend->format('Y-m-d H:i:s')) * 1000;   
+        
+        if($fecha_termino < $fecha_inicio){
+            return redirect()->back()->with('message1', "Una reservación no puede finalizar antes que la hora de inicio.");
+        }
 
+        //CONDICIONES QUE DEBE PASAR ANRTES DE EDITAR AL EVENTO// 
+        //EL PRIMER FOREACH ES PARA SABER QUE NO TOME TIEMPO DE EVENTOS YA CREADOS//
         foreach ($eventosRefactorizados as $evento) {
 
-            if ($fechaInicio >= $evento['start'] && $fechaInicio <= $evento['end']) {
+            if ($fechaInicio >= $evento['start']-1 && $fechaInicio <= $evento['end']-1) {
+                return redirect()->back()->with('message1', "Ya existe un evento dentro de la hora elegida.");
+            }
+            if($fechaFinal >= $evento['start']+1 && $fechaFinal <= $evento['end']-1){
+                return redirect()->back()->with('message1', "Ya existe un evento dentro de la hora elegida.");
+            }
+        }
+        //EL SEGUNDO FOREACH ES PARA SABER QUE NO SOBRE PASE TIEMPO DE EVENTOS YA CREADOS//
+        foreach($eventosRefactorizados as $evento){
+            if ($fechaInicio <= $evento['start'] && $fechaFinal >= $evento['end']) {
                 // Si esta dentro del el rango
-                return redirect()->back()->with('message1', "Si esta dentro del rango 1.");
-
+                return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados.");
             }
-            if($fechaFinal >= $evento['start']){
-                return redirect()->back()->with('message1', "Si esta dentro del rango 2.");
-
-            }else{
-                // NO esta, avanza a la siguiente validacion
+            if ($fechaInicio >= $evento['start'] && $fechaFinal <= $evento['end']){
+                return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados");
             }
-
-
-            //dd($fechaInicio . " | " . $fechaFinal);
-            //dd($nuevo['start'], $fechaInicio, $nuevo['end'], $fechaFinal);
-
-            //if ($nuevo['start'] <= $fechaInicio || $nuevo['start'] < $fechaFinal) {
-                //dd('14');
-                /*$evento = new Reservation();
-                $evento->title = $request->title;
-                $evento->start = $request->start;
-                $evento->end = $request->end;
-                $evento->number_of_people = $request->number_of_people;
-                $evento->material = $request->material;
-                $evento->chair_loan = $request->chair_loan;
-                $evento->description = $request->description;
-                $evento->id_usuario = $user->id;
-                $evento->id_sala = $request->id_sala;
-                $evento->save();
-                return redirect()->back()->with('message', "Reservación creada correctamente.");*/
-           // } /*else {
-                //return back()->with('message1', "Error.");
-            //}*/
         }
-    }
-          
-    
-    //////////////////////////////////////////////Función para editar/////////////////////////////////////////////////
-    public function update(Request $request)
-    {
-        $request->validate([
-            'title' => 'required',
-            'start' => 'required',
-            'end' => 'required',
-            'number_of_people' => 'required',
-            'material' => 'required',
-            'chair_loan' => 'required',
-            'description' => 'required',
-        ]);
-        $inicio = strtotime($request->start) * 1000;
 
-        $fin =  strtotime($request->end) * 1000;
-        //dd($inicio." | ".$fin);
-
-        //como traer eventos de un afecha a una fecha///
-        //separar
-        $fecha_inicio =  $request->start;
-        $fecha_termino =  $request->end;
-        $eventos = Reservation::whereDate('start', Carbon::parse($fecha_inicio)->format('Y-m-d'))
-            ->whereDate('end', Carbon::parse($fecha_termino)->format('Y-m-d'))
-            ->where('id_sala', $request->id_sala)->get();
-        //dd($start, $end, $eventos->toArray());
-
-        $filtro = [];
-        foreach ($eventos as $item) {
-
-            $componentes = [
-                'id' => $item['id'],
-                'start' => strtotime($item['start']) * 1000,
-                'end' => strtotime($item['end']) * 1000,
-                'id_sala' => $item['id_sala']
-            ];
-            $filtro[] = $componentes;
-        }
-        dd($filtro);
-
-        $ATRAS = Reservation::where('start', '<=', $request->end)
-            ->where('start', '<',  $request->start)
-            ->where('id_sala', $request->id_sala)
-            ->get();
-        //dd($fin);
-
-        $DELANTE = Reservation::where('end', '>=', $request->start)
-            ->where('id_sala', $request->id_sala)
-            ->get();
-
-        //dd($ATRAS->toArray(), $DELANTE->toArray());
-
-
-        if (!$ATRAS->count() == 0) {
-
-            DB::table('reservations')->where('id', $request->id_evento)->update([
-                'title' => $request->title, 'start' => $request->start,
-                'end' => $request->end, 'number_of_people' => $request->number_of_people, 'material' => $request->material,
-                'chair_loan' => $request->chair_loan, 'description' => $request->description, 'id_sala' => $request->id_sala
+        DB::table('reservations')->where('id', $request->id_evento)->update([
+            'title' => $request->title, 'start' => $request->start,
+            'end' => $request->end, 'number_of_people' => $request->number_of_people, 'material' => $request->material,
+            'chair_loan' => $request->chair_loan, 'description' => $request->description, 'id_sala' => $request->id_sala
             ]);
-            return back()->with('message2', "Evento editado correctamente.");
-        } else {
-            return back()->with('message1', "Error.");
-        }
+            return redirect()->back()->with('message2', "Evento editado correctamente.");
     }
+
     //////////////////////////////////////////////Metodo eliminar///////////////////////////////////////////////////
     public function destroy(Request $request)
     {
