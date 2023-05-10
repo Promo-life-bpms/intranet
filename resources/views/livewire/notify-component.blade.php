@@ -74,13 +74,6 @@
                                     <p class="my-0">{{ $notification->data['data']['name_ticket'] }}</p>
                                 @break
 
-                                @case('App\Notifications\StatusEnProcesoSoporteNotification')
-                                    <b>{{ $notification->data['data']['name'] }}</b>
-                                    <p class="my-0">Esta revisando tu ticket:{{ $notification->data['data']['name_ticket'] }}
-                                    </p>
-                                    <p class="my-0">Status : {{ $notification->data['data']['status'] }}</p>
-                                @break
-
                                 @case('App\Notifications\EditarTicketNotification')
                                     <b>{{ $notification->data['data']['name'] }}</b>
                                     <p class="my-0">Ha editado el ticket :{{ $notification->data['data']['name_ticket'] }}
@@ -95,8 +88,15 @@
 
                                 @case('App\Notifications\SolucionSoporteNotification')
                                     <b>{{ $notification->data['data']['name'] }}</b>
-                                    <p class="my-0">Te ha enviado un mensaje en el ticket: </p>
+                                    <p class="my-0">Te ha enviado la solución en el ticket: </p>
                                     <p>{{ $notification->data['data']['name_ticket'] }}</p>
+                                @break
+
+                                @case('App\Notifications\StatusEnProcesoSoporteNotification')
+                                    <b>{{ $notification->data['data']['name'] }}</b>
+                                    <p class="my-0">Ha revisado tu ticket :</p>
+                                    <p class="my-0">{{ $notification->data['data']['name_ticket'] }}</p>
+                                    {{-- <p class="my-0">Estatus : {{ $notification->data['data']['status'] }}</p> --}}
                                 @break
 
                                 @default

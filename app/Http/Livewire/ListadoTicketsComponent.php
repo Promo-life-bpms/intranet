@@ -246,7 +246,7 @@ class ListadoTicketsComponent extends Component
                 'data' => $this->mensaje
             ]
         );
-        //CHECAR NOTIFICACION MENSAJE QUE NO FUNCIONA
+        
         $notificationMessage=[
             'name' => auth()->user()->name,
             'name_ticket'=>$ticket->name

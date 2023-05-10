@@ -32,8 +32,8 @@ class SoporteSolucionComponent extends Component
     {
 
         $actualizar_status = Ticket::find($id);
-        $usuarios=$actualizar_status->user;
-        // dd($actualizar_status->user);
+        $user_ticktet=Ticket::find($id);
+        $user=$user_ticktet->user;
 
         $actualizar_status->update([
             'status_id' => 2
@@ -45,14 +45,14 @@ class SoporteSolucionComponent extends Component
             'type'=>'status',
             'data'=>$actualizar_status->status->name
         ]);
-        //CHECAR NOTIFICACION EN PROCESO
+       
         $notificacionEnProceso=[
             'name'=>auth()->user()->name,
             'name_ticket'=>$actualizar_status->name,
-            'status'=>$actualizar_status->status
+            'status'=>$actualizar_status->status->name
         ];
 
-        $usuarios->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
+         $user->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
 
     }
 
