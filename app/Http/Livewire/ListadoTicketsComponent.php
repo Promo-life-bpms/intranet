@@ -23,7 +23,8 @@ class ListadoTicketsComponent extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje;
+    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje,$editorInstance;
+
 
     public function render()
     {
@@ -216,12 +217,19 @@ class ListadoTicketsComponent extends Component
 
     public function verTicket($id)
     {
+
+
+
+
         $ticket = Ticket::find($id);
         $this->ticket_solucion = $ticket;
         $this->ticket_id = $ticket->id;
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
+        // $this->dispatchBrowserEvent('cargar');
+
+
     }
 
     public function enviarMensaje()
@@ -246,7 +254,7 @@ class ListadoTicketsComponent extends Component
                 'data' => $this->mensaje
             ]
         );
-        
+
         $notificationMessage=[
             'name' => auth()->user()->name,
             'name_ticket'=>$ticket->name

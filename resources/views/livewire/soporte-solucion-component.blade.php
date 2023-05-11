@@ -27,7 +27,6 @@
                             <td class="col-2">
 
                                 @if ($tickets->status->name == 'Resuelto')
-
                                     <div class="alert-sm alert-success rounded-3" role="alert">
                                         {{ $tickets->status->name }}</div>
                                 @elseif ($tickets->status->name == 'Creado')
@@ -107,55 +106,145 @@
                                     @endforeach
                                 @endif
                                 <hr>
+                                {{-- @if ($status)
+                                    @if ($status->status_id == 3)
+                                        <div wire:ignore class="mb-3 text-input-mensaje" hidden>
+                                            <label for="descripcion" class="form-label fw-bold">Solución</label>
+                                            <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="description" hidden></textarea>
+                                        </div>
+                                    @else
+                                        <div wire:ignore class="mb-3 text-input-mensaje">
+                                            <label for="descripcion" class="form-label fw-bold">Solución</label>
+                                            <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="description"></textarea>
+                                        </div>
+                                    @endif
+
+                                @endif --}}
                                 <div wire:ignore class="mb-3 text-input-mensaje">
                                     <label for="descripcion" class="form-label fw-bold">Solución</label>
                                     <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="description"></textarea>
                                 </div>
+
+
                                 @error('description')
                                     <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
                                 @enderror
                             </form>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-success" wire:click="guardarSolucion">Enviar</button>
-                                <div wire:loading.flex wire:target="guardarSolucion">
-                                    Enviando
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
-                            wire:ignore.self>
-                            @if ($historial)
-                                @foreach ($historial->historial as $cambio)
-                                @if ($cambio->type == 'creado')
-                                <div class="alert-sm alert-primary alert-dismissible text-center rounded-3" role="alert">
-                                   <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
-                                </div>
-                                {!! $cambio->data !!}
-                                @elseif ($cambio->type == 'edito')
-                                <div class="alert-sm alert-warning alert-dismissible text-center rounded-3" role="alert">
-                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
-                                 </div>
-                                 {!! $cambio->data !!}
-                                 @elseif ($cambio->type == 'Mensaje')
-                                 <div class="alert-sm alert-info alert-dismissible text-center rounded-3" role="alert">
-                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
-                                 </div>
-                                 {!! $cambio->data !!}
-                                 @elseif ($cambio->type == 'status')
-                                 <div class="alert-sm alert-success alert-dismissible text-center rounded-3" role="alert">
-                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
-                                 </div>
-                                 {!! $cambio->data !!}
-                                 @elseif ($cambio->type == 'solucion')
-                                 <div class="alert-sm alert-dark alert-dismissible text-center rounded-3" role="alert">
-                                    <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
-                                 </div>
-                                 {!! $cambio->data !!}
+                            @if ($status)
+                                @if ($status->status_id == 3)
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger"
+                                            data-bs-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-success" wire:click="guardarSolucion"
+                                            hidden>Enviar</button>
+                                        <div wire:loading.flex wire:target="guardarSolucion">
+                                            Enviando
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger"
+                                            data-bs-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-success"
+                                            wire:click="guardarSolucion">Enviar</button>
+                                        <div wire:loading.flex wire:target="guardarSolucion">
+                                            Enviando
+                                        </div>
+                                    </div>
                                 @endif
-                                @endforeach
 
                             @endif
+
+                        </div>
+
+                        <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
+                            wire:ignore.self>
+                            {{-- @if ($historial)
+                                @foreach ($historial->historial as $cambio)
+                                    @if ($cambio->type == 'creado')
+                                        <div class="alert-sm alert-primary alert-dismissible text-center rounded-3"
+                                            role="alert">
+                                            <p class="">Status : {{ $cambio->type }}
+                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                        </div>
+                                        {!! $cambio->data !!}
+                                    @elseif ($cambio->type == 'edito')
+                                        <div class="alert-sm alert-warning alert-dismissible text-center rounded-3"
+                                            role="alert">
+                                            <p class="">Status : {{ $cambio->type }}
+                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                        </div>
+                                        {!! $cambio->data !!}
+                                    @elseif ($cambio->type == 'Mensaje')
+                                        <div class="alert-sm alert-info alert-dismissible text-center rounded-3"
+                                            role="alert">
+                                            <p class="">Status : {{ $cambio->type }}
+                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                        </div>
+                                        {!! $cambio->data !!}
+                                    @elseif ($cambio->type == 'status')
+                                        <div class="alert-sm alert-success alert-dismissible text-center rounded-3"
+                                            role="alert">
+                                            <p class="">Status : {{ $cambio->type }}
+                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                        </div>
+                                        {!! $cambio->data !!}
+                                    @elseif ($cambio->type == 'solucion')
+                                        <div class="alert-sm alert-dark alert-dismissible text-center rounded-3"
+                                            role="alert">
+                                            <p class="">Status : {{ $cambio->type }}
+                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                        </div>
+                                        {!! $cambio->data !!}
+                                    @endif
+                                @endforeach
+
+                            @endif --}}
+                            @if ($historial)
+                            <table class="table table-bordered table-hover">
+                                <tbody>
+                                    @foreach ($historial->historial as $cambio)
+                                        <tr>
+                                            <td>
+                                                @if ($cambio->type == 'creado')
+                                                    <div class="alert-sm alert-primary alert-dismissible text-center rounded-3"
+                                                        role="alert">
+                                                        <p class="">Status: {{ $cambio->type }}
+                                                            {{ $cambio->created_at->diffForHumans() }}</p>
+                                                    </div>
+                                                @elseif ($cambio->type == 'edito')
+                                                    <div class="alert-sm alert-warning alert-dismissible text-center rounded-3"
+                                                        role="alert">
+                                                        <p class="">Status: {{ $cambio->type }}
+                                                            {{ $cambio->created_at->diffForHumans() }}</p>
+                                                    </div>
+                                                @elseif ($cambio->type == 'Mensaje')
+                                                    <div class="alert-sm alert-info alert-dismissible text-center rounded-3"
+                                                        role="alert">
+                                                        <p class="">Status: {{ $cambio->type }}
+                                                            {{ $cambio->created_at->diffForHumans() }}</p>
+                                                    </div>
+                                                @elseif ($cambio->type == 'status')
+                                                    <div class="alert-sm alert-success alert-dismissible text-center rounded-3"
+                                                        role="alert">
+                                                        <p class="">Status: {{ $cambio->type }}
+                                                            {{ $cambio->created_at->diffForHumans() }}</p>
+                                                    </div>
+                                                @elseif ($cambio->type == 'solucion')
+                                                    <div class="alert-sm alert-dark alert-dismissible text-center rounded-3"
+                                                        role="alert">
+                                                        <p class="">Status: {{ $cambio->type }}
+                                                            {{ $cambio->created_at->diffForHumans() }}</p>
+                                                    </div>
+                                                @endif
+                                                {!! $cambio->data !!}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @endif
+
                         </div>
                     </div>
 
@@ -185,6 +274,7 @@
                 // Obtener el html que tiene esa etiqueta
             })
 
+
         })
 
 
@@ -202,21 +292,22 @@
 
         });
 
-        window.addEventListener('cargar',()=>{
+        window.addEventListener('cargar', () => {
             ClassicEditor
-            .create(document.querySelector('#editorMensaje'))
-            .then(newEditor => {
-                ckEditorSolucion = newEditor;
-            })
-            .catch(error => {
-                console.error(error);
-            });
+                .create(document.querySelector('#editorMensaje'))
+                .then(newEditor => {
+                    ckEditorSolucion = newEditor;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         });
 
         function atender(id, status_id) {
-
+            // const textarea = document.getElementById('editorMensaje');
             if (status_id == 2 || status_id == 3) {
                 $('#ModalAgregar').modal('show')
+               
             } else {
                 Swal.fire({
                     title: 'Quieres dar solucion a este ticket?',
@@ -236,8 +327,38 @@
                 })
             }
 
+            // if (status_id == 2) {
+            //     $('#ModalAgregar').modal('show')
+
+
+            // } else {
+            //     if (status_id == 3) {
+            //         $('#ModalAgregar').modal('show')
+            //         ckEditorSolucion.destroy();
+            //         textarea.style.display = 'none';
+            //     } else {
+            //         Swal.fire({
+            //             title: 'Quieres dar solucion a este ticket?',
+            //             icon: 'question',
+            //             showCancelButton: true,
+            //             confirmButtonColor: '#3085d6',
+            //             cancelButtonColor: '#d33',
+            //             confirmButtonText: 'Si'
+            //         }).then((result) => {
+
+            //             if (result.isConfirmed) {
+            //                 let resultado = @this.enProceso(id)
+            //                 $('#ModalAgregar').modal('show')
+
+            //                 toastr.success("Ticket en proceso")
+            //             }
+            //         })
+            //     }
+
+            // }
+
+
+
         }
-
-
     </script>
 </div>

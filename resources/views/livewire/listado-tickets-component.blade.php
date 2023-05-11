@@ -33,11 +33,9 @@
                             <td class="col-2">{{ $ticket->category->name }}</td>
                             <td class="col-2">
                                 @if ($ticket->status->name == 'Resuelto')
-
                                     <div class="alert-sm alert-success rounded-3" role="alert">
                                         {{ $ticket->status->name }}</div>
                                 @elseif ($ticket->status->name == 'Creado')
-
                                     <div class="alert-sm alert-info rounded-3" role="alert">
                                         {{ $ticket->status->name }}</div>
                                 @elseif ($ticket->status->name == 'En proceso')
@@ -263,8 +261,8 @@
                             <hr>
                             {{-- Editor Mensaje --}}
                             <div wire:ignore class="mb-3 text-input-mensaje">
-                                <label for="descripcion" class="form-label fw-bold">Enviar mensaje</label></label>
-                                <textarea wire:ignore id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
+                                <label class="form-label fw-bold">Enviar mensaje</label></label>
+                                <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
                                 @error('message')
                                     <span class="invalid-feedback">
                                         <strong>{{ $message }}</strong>
@@ -282,35 +280,89 @@
                         </div>
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
                             wire:ignore.self>
-                            @if ($ticket_solucion)
+                            {{-- @if ($ticket_solucion)
                                 @foreach ($ticket_solucion->historial as $cambio)
-                                   @if ($cambio->type == 'creado')
-                                    <div class="alert-sm alert-primary alert-dismissible text-center rounded-3" role="alert">
-                                       <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
-                                    </div>
-                                    {!! $cambio->data !!}
+                                    @if ($cambio->type == 'creado')
+                                        <div class="alert-sm alert-primary alert-dismissible text-center rounded-3"
+                                            role="alert">
+                                            <p class="">Status : {{ $cambio->type }}
+                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                        </div>
+                                        {!! $cambio->data !!}
                                     @elseif ($cambio->type == 'edito')
-                                    <div class="alert-sm alert-warning alert-dismissible text-center rounded-3" role="alert">
-                                        <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
-                                     </div>
-                                     {!! $cambio->data !!}
-                                     @elseif ($cambio->type == 'Mensaje')
-                                     <div class="alert-sm alert-info alert-dismissible text-center rounded-3" role="alert">
-                                        <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
-                                     </div>
-                                     {!! $cambio->data !!}
-                                     @elseif ($cambio->type == 'status')
-                                     <div class="alert-sm alert-success alert-dismissible text-center rounded-3" role="alert">
-                                        <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
-                                     </div>
-                                     {!! $cambio->data !!}
-                                     @elseif ($cambio->type == 'solucion')
-                                     <div class="alert-sm alert-dark alert-dismissible text-center rounded-3" role="alert">
-                                        <p class="">Status : {{ $cambio->type }} {{ $cambio->created_at->diffForHumans() }}</p>
-                                     </div>
-                                     {!! $cambio->data !!}
+                                        <div class="alert-sm alert-warning alert-dismissible text-center rounded-3"
+                                            role="alert">
+                                            <p class="">Status : {{ $cambio->type }}
+                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                        </div>
+                                        {!! $cambio->data !!}
+                                    @elseif ($cambio->type == 'Mensaje')
+                                        <div class="alert-sm alert-info alert-dismissible text-center rounded-3"
+                                            role="alert">
+                                            <p class="">Status : {{ $cambio->type }}
+                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                        </div>
+                                        {!! $cambio->data !!}
+                                    @elseif ($cambio->type == 'status')
+                                        <div class="alert-sm alert-success alert-dismissible text-center rounded-3"
+                                            role="alert">
+                                            <p class="">Status : {{ $cambio->type }}
+                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                        </div>
+                                        {!! $cambio->data !!}
+                                    @elseif ($cambio->type == 'solucion')
+                                        <div class="alert-sm alert-dark alert-dismissible text-center rounded-3"
+                                            role="alert">
+                                            <p class="">Status : {{ $cambio->type }}
+                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                        </div>
+                                        {!! $cambio->data !!}
                                     @endif
                                 @endforeach
+                            @endif --}}
+                            @if ($ticket_solucion)
+                                <table class="table table-bordered table-hover">
+                                    <tbody>
+                                        @foreach ($ticket_solucion->historial as $cambio)
+                                            <tr>
+                                                <td>
+                                                    @if ($cambio->type == 'creado')
+                                                        <div class="alert-sm alert-primary alert-dismissible text-center rounded-3"
+                                                            role="alert">
+                                                            <p class="">Status: {{ $cambio->type }}
+                                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                                        </div>
+                                                    @elseif ($cambio->type == 'edito')
+                                                        <div class="alert-sm alert-warning alert-dismissible text-center rounded-3"
+                                                            role="alert">
+                                                            <p class="">Status: {{ $cambio->type }}
+                                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                                        </div>
+                                                    @elseif ($cambio->type == 'Mensaje')
+                                                        <div class="alert-sm alert-info alert-dismissible text-center rounded-3"
+                                                            role="alert">
+                                                            <p class="">Status: {{ $cambio->type }}
+                                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                                        </div>
+                                                    @elseif ($cambio->type == 'status')
+                                                        <div class="alert-sm alert-success alert-dismissible text-center rounded-3"
+                                                            role="alert">
+                                                            <p class="">Status: {{ $cambio->type }}
+                                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                                        </div>
+                                                    @elseif ($cambio->type == 'solucion')
+                                                        <div class="alert-sm alert-dark alert-dismissible text-center rounded-3"
+                                                            role="alert">
+                                                            <p class="">Status: {{ $cambio->type }}
+                                                                {{ $cambio->created_at->diffForHumans() }}</p>
+                                                        </div>
+                                                    @endif
+                                                    {!! $cambio->data !!}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             @endif
                         </div>
                     </div>
@@ -323,9 +375,7 @@
     <script>
         let ckEditorCreate, ckEditorEdit, ckEditorMensaje;
         ClassicEditor
-            .create(document.querySelector('#editor'), {
-                removePlugins: ['Link', 'CKFinder']
-            })
+            .create(document.querySelector('#editor'))
             .then(newEditor => {
                 ckEditorCreate = newEditor;
 
@@ -334,6 +384,7 @@
             .catch(error => {
                 console.error(error);
             });
+
         document.addEventListener("DOMContentLoaded", () => {
             const editor = document.querySelector('.text-input-crear .ck-editor__editable');
 
@@ -355,13 +406,13 @@
                 let texto = editorMessage.innerHTML;
                 @this.mensaje = texto
             });
+
+   
         });
 
 
         ClassicEditor
-            .create(document.querySelector('#editorEditar'), {
-                removePlugins: ['Heading']
-            })
+            .create(document.querySelector('#editorEditar'))
             .then(newEditor => {
                 ckEditorEdit = newEditor;
 
@@ -387,14 +438,28 @@
         document.addEventListener("mostrar_data", () => {
 
             ckEditorEdit.setData(@this.data);
-            ckEditorVer.setData(@this.data);
+            // ckEditorVer.setData(@this.data);
         });
 
         document.addEventListener("mostrar_mensaje", () => {
             ClassicEditor
-            .create(document.querySelector('#editorMensaje'))
+                .create(document.querySelector('#editorMensaje'))
 
         })
+
+        // document.addEventListener('cargar', () => {
+        //     ClassicEditor
+        //         .create(document.querySelector('#editorMensaje'))
+        //         .then(newEditor => {
+        //             ckEditorMensaje = newEditor;
+
+
+        //         })
+        //         .catch(error => {
+        //             console.error(error);
+        //         })
+
+        // })
 
         window.addEventListener('ticket_success', () => {
             Swal.fire({
