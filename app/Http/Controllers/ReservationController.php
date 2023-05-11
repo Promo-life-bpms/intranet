@@ -59,7 +59,7 @@ class ReservationController extends Controller
                 'end' => strtotime($item['end']) * 1000,
                 'id_sala' => $item['id_sala']
             ];
-            //array_push($eventosRefactorizados, $componentes); es otra forma de traer el arreglo nuevo
+            //array_push($eventosRefactorizados, $componentes); otra forma de traer el arreglo nuevo
             $eventosRefactorizados[] = $componentes;
         }
         //dd($eventosRefactorizados);
@@ -72,8 +72,13 @@ class ReservationController extends Controller
         $final = $request->end; //fecha de fin del form
         $fechaend = Carbon::parse($final);
         $fechaFinal = strtotime($fechaend->format('Y-m-d H:i:s')) * 1000;
+        $fechaActual = now()->format('Y-m-d H:i:s');
+        //dd($fechaActual);
 
-        
+        if ($fecha_inicio <= $fechaActual) {
+            return redirect()->back()->with('message1', 'No se puede crear una reservación en un día pasado.');  
+        }
+
         if($fecha_termino < $fecha_inicio){
             return redirect()->back()->with('message1', "Una reservación no puede finalizar antes que la hora de inicio.");
         }
@@ -161,8 +166,13 @@ class ReservationController extends Controller
 
         $final = $request->end; //fecha de fin del form
         $fechaend = Carbon::parse($final);
-        $fechaFinal = strtotime($fechaend->format('Y-m-d H:i:s')) * 1000;   
+        $fechaFinal = strtotime($fechaend->format('Y-m-d H:i:s')) * 1000;
+        $fechaActual = now()->format('Y-m-d H:i:s');   
         
+        if ($fecha_inicio <= $fechaActual) {
+            return redirect()->back()->with('message1', 'No se puede crear una reservación en un día pasado.');  
+        }
+
         if($fecha_termino < $fecha_inicio){
             return redirect()->back()->with('message1', "Una reservación no puede finalizar antes que la hora de inicio.");
         }

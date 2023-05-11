@@ -42,10 +42,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
         ////NOS ABRE EL MODAL PARA REGISTRAR///
         dateClick: function(info) {
+          //Obtenemos la fecha actual//
           var actual = new Date();
-          //var fechaforma = actual.toISOString().slice(0, 10);
-          //console.log(actual);
-          if(info.date >= actual){
+          //Formateamos le fecha//
+          var año = actual.getFullYear();
+          var mes = ('0' + (actual.getMonth() + 1)).slice(-2); // Los meses van de 0 a 11
+          var dia = ('0' + actual.getDate()).slice(-2);
+          //Unimos el formato//
+          var fechaFormateada = año + '-' + mes + '-' + dia;
+
+          //Formateamos le fecha de info.date//
+          var date = info.date;
+          //Formateamos le fecha//
+          var añod = date.getFullYear();
+          var mesd = ('0' + (date.getMonth() + 1)).slice(-2); // Los meses van de 0 a 11
+          var diad = ('0' + date.getDate()).slice(-2);
+          //Unimos el formato//
+          var infodateFormateada = añod + '-' + mesd + '-' + diad;
+
+          if(infodateFormateada >= fechaFormateada){
             info.dayEl.style.backgroundColor = '#9DD6AD';
             $("#evento").modal("show");
             //document.getElementById("start").innerHTML= info.dateStr;
