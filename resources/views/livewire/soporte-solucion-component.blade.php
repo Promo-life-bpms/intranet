@@ -5,7 +5,6 @@
         </div>
     </div>
     <div class="card-body">
-
         <div class="table-responsive">
             <table class="table text-center">
                 <thead>
@@ -18,7 +17,6 @@
                     </tr>
                 </thead>
                 <tbody>
-
                     @foreach ($solucion as $tickets)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
@@ -36,16 +34,12 @@
                                     <div class="alert-sm alert-primary rounded-3" role="alert">
                                         {{ $tickets->status->name }}</div>
                                 @endif
-
                             </td>
                             <td>
-
                                 <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})" type="button"
                                     class="btn btn-success btn-sm " wire:click="verTicket({{ $tickets->id }})"><i
                                         class="bi bi-eye"></i></button>
-
                             </td>
-
                         </tr>
                     @endforeach
                 </tbody>
@@ -53,12 +47,8 @@
             <div class="d-flex justify-content-center">
                 {{ $solucion->links() }}
             </div>
-
         </div>
     </div>
-
-
-
     <div wire:ignore.self class="modal fade" id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable  modal-lg">
@@ -135,11 +125,6 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger"
                                             data-bs-dismiss="modal">Cerrar</button>
-                                        <button type="button" class="btn btn-success" wire:click="guardarSolucion"
-                                            hidden>Enviar</button>
-                                        <div wire:loading.flex wire:target="guardarSolucion">
-                                            Enviando
-                                        </div>
                                     </div>
                                 @else
                                     <div class="modal-footer">
@@ -271,7 +256,7 @@
             editor.addEventListener('keyup', () => {
                 let texto = ckEditorSolucion.getData();
                 @this.description = texto
-                // Obtener el html que tiene esa etiqueta
+
             })
 
 
@@ -307,7 +292,7 @@
             // const textarea = document.getElementById('editorMensaje');
             if (status_id == 2 || status_id == 3) {
                 $('#ModalAgregar').modal('show')
-               
+
             } else {
                 Swal.fire({
                     title: 'Quieres dar solucion a este ticket?',
@@ -327,35 +312,6 @@
                 })
             }
 
-            // if (status_id == 2) {
-            //     $('#ModalAgregar').modal('show')
-
-
-            // } else {
-            //     if (status_id == 3) {
-            //         $('#ModalAgregar').modal('show')
-            //         ckEditorSolucion.destroy();
-            //         textarea.style.display = 'none';
-            //     } else {
-            //         Swal.fire({
-            //             title: 'Quieres dar solucion a este ticket?',
-            //             icon: 'question',
-            //             showCancelButton: true,
-            //             confirmButtonColor: '#3085d6',
-            //             cancelButtonColor: '#d33',
-            //             confirmButtonText: 'Si'
-            //         }).then((result) => {
-
-            //             if (result.isConfirmed) {
-            //                 let resultado = @this.enProceso(id)
-            //                 $('#ModalAgregar').modal('show')
-
-            //                 toastr.success("Ticket en proceso")
-            //             }
-            //         })
-            //     }
-
-            // }
 
 
 

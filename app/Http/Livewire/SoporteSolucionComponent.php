@@ -7,6 +7,7 @@ use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Soporte\Ticket;
+use App\Models\Soporte\Mensaje;
 use App\Models\Soporte\Solucion;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Soporte\UsuariosSoporte;
@@ -45,7 +46,7 @@ class SoporteSolucionComponent extends Component
             'type'=>'status',
             'data'=>$actualizar_status->status->name
         ]);
-       
+
         $notificacionEnProceso=[
             'name'=>auth()->user()->name,
             'name_ticket'=>$actualizar_status->name,
@@ -96,14 +97,12 @@ class SoporteSolucionComponent extends Component
             'data'=>$this->description
         ]);
 
-
         $solucionNotification=[
             'name'=>auth()->user()->name,
             'name_ticket'=>$ticket->name,
         ];
 
         $usuario->notify(new SolucionSoporteNotification($solucionNotification));
-
         $this->dispatchBrowserEvent('ticket_solucion');
     }
 }

@@ -262,7 +262,8 @@
                             {{-- Editor Mensaje --}}
                             <div wire:ignore class="mb-3 text-input-mensaje">
                                 <label class="form-label fw-bold">Enviar mensaje</label></label>
-                                <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
+                                <textarea wire:model.defer="message" id="editorMensaje" cols="20" rows="3" class="form-control"
+                                    name="message"></textarea>
                                 @error('message')
                                     <span class="invalid-feedback">
                                         <strong>{{ $message }}</strong>
@@ -270,56 +271,25 @@
                                 @enderror
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-success"
-                                    wire:click="enviarMensaje">Enviar</button>
-                                <div wire:loading.flex wire:target="enviarMensaje">
-                                    Enviando
-                                </div>
+                                @if ($ticket_solucion)
+                                    @if ($ticket_solucion->status_id == 3)
+                                        <button type="button" class="btn btn-danger"
+                                            data-bs-dismiss="modal">Cerrar</button>
+                                    @else
+                                        <button type="button" class="btn btn-danger"
+                                            data-bs-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-success"
+                                            wire:click="enviarMensaje">Enviar</button>
+                                        <div wire:loading.flex wire:target="enviarMensaje">
+                                            Enviando
+                                        </div>
+                                    @endif
+                                @endif
                             </div>
                         </div>
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
                             wire:ignore.self>
-                            {{-- @if ($ticket_solucion)
-                                @foreach ($ticket_solucion->historial as $cambio)
-                                    @if ($cambio->type == 'creado')
-                                        <div class="alert-sm alert-primary alert-dismissible text-center rounded-3"
-                                            role="alert">
-                                            <p class="">Status : {{ $cambio->type }}
-                                                {{ $cambio->created_at->diffForHumans() }}</p>
-                                        </div>
-                                        {!! $cambio->data !!}
-                                    @elseif ($cambio->type == 'edito')
-                                        <div class="alert-sm alert-warning alert-dismissible text-center rounded-3"
-                                            role="alert">
-                                            <p class="">Status : {{ $cambio->type }}
-                                                {{ $cambio->created_at->diffForHumans() }}</p>
-                                        </div>
-                                        {!! $cambio->data !!}
-                                    @elseif ($cambio->type == 'Mensaje')
-                                        <div class="alert-sm alert-info alert-dismissible text-center rounded-3"
-                                            role="alert">
-                                            <p class="">Status : {{ $cambio->type }}
-                                                {{ $cambio->created_at->diffForHumans() }}</p>
-                                        </div>
-                                        {!! $cambio->data !!}
-                                    @elseif ($cambio->type == 'status')
-                                        <div class="alert-sm alert-success alert-dismissible text-center rounded-3"
-                                            role="alert">
-                                            <p class="">Status : {{ $cambio->type }}
-                                                {{ $cambio->created_at->diffForHumans() }}</p>
-                                        </div>
-                                        {!! $cambio->data !!}
-                                    @elseif ($cambio->type == 'solucion')
-                                        <div class="alert-sm alert-dark alert-dismissible text-center rounded-3"
-                                            role="alert">
-                                            <p class="">Status : {{ $cambio->type }}
-                                                {{ $cambio->created_at->diffForHumans() }}</p>
-                                        </div>
-                                        {!! $cambio->data !!}
-                                    @endif
-                                @endforeach
-                            @endif --}}
+
                             @if ($ticket_solucion)
                                 <table class="table table-bordered table-hover">
                                     <tbody>
@@ -396,18 +366,18 @@
             const editorUpdate = document.querySelector('.text-input-editar .ck-editor__editable');
 
             editorUpdate.addEventListener('keyup', () => {
-                let texto = editorUpdate.innerHTML;
+                let texto = ckEditorEdit.getData();
                 console.log(texto);
                 @this.data = texto
 
             });
             const editorMessage = document.querySelector('.text-input-mensaje .ck-editor__editable');
             editorMessage.addEventListener('keyup', () => {
-                let texto = editorMessage.innerHTML;
+                let texto = ckEditorMensaje.getData();
                 @this.mensaje = texto
             });
 
-   
+
         });
 
 
@@ -434,32 +404,70 @@
                 console.error(error);
             });
 
+        // ClassicEditor
+        //     .create(document.querySelector('#editorMensaje'))
+        //     .then(newEditor => {
+        //         let ckEditorMensaje = newEditor;
 
-        document.addEventListener("mostrar_data", () => {
+        //         window.addEventListener('cargar', () => {
+        //             if (ckEditorMensaje) {
+        //                 ckEditorMensaje.destroy(); // Destruye la instancia anterior si existe
+        //             }
+
+        //             ClassicEditor
+        //                 .create(document.querySelector('#editorMensaje'))
+        //                 .then(newEditor => {
+        //                     ckEditorMensaje = newEditor;
+        //                 })
+        //                 .catch(error => {
+        //                     console.error(error);
+        //                 });
+        //         });
+        //     })
+        //     .catch(error => {
+        //         console.error(error);
+        //     });
+
+        window.addEventListener("mostrar_data", () => {
 
             ckEditorEdit.setData(@this.data);
             // ckEditorVer.setData(@this.data);
         });
 
-        document.addEventListener("mostrar_mensaje", () => {
-            ClassicEditor
-                .create(document.querySelector('#editorMensaje'))
-
-        })
-
-        // document.addEventListener('cargar', () => {
+        // window.addEventListener("mostrar_mensaje", () => {
         //     ClassicEditor
         //         .create(document.querySelector('#editorMensaje'))
-        //         .then(newEditor => {
-        //             ckEditorMensaje = newEditor;
-
-
-        //         })
-        //         .catch(error => {
-        //             console.error(error);
-        //         })
 
         // })
+
+            //Evento para cargar el editor de nuevo pero no envia la data del mensaje
+        window.addEventListener('cargar', () => {
+            if (ckEditorMensaje) {
+                ckEditorMensaje.destroy();
+            }
+
+            ClassicEditor
+                .create(document.querySelector('#editorMensaje'))
+                .then(newEditor => {
+                    ckEditorMensaje = newEditor;
+                    // let texto = ckEditorMensaje.getData();
+                    // @this.mensaje = texto;
+                    // let texto = ckEditorMensaje.getData();
+                    // @this.mensaje = texto
+
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            // document.addEvenListener("DOMContentLoaded", () => {
+            // //     const editorMessage = document.querySelector('.text-input-mensaje .ck-editor__editable');
+            // //     editorMessage.addEventListener('keyup', () => {
+            // //         let texto = ckEditorMensaje.getData();
+            // //         @this.mensaje = texto
+            // //     });
+            // // })
+        })
 
         window.addEventListener('ticket_success', () => {
             Swal.fire({
@@ -498,11 +506,12 @@
                 showConfirmButton: false,
                 timer: 1500
             })
-            $('#Modalver').modal('hide');
+            $('#ModalVer').modal('hide');
             ckEditorMensaje.setData("");
 
 
         });
+
 
 
         function finalizar(id) {

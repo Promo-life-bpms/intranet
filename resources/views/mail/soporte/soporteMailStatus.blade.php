@@ -11,5 +11,4 @@ con el problema : {{ $data['name_ticket'] }}
 Ha sido : **{{ $data['status'] }}**.
 
 
-
 @endcomponent

@@ -23,7 +23,7 @@ class ListadoTicketsComponent extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje,$editorInstance;
+    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $editorInstance;
 
 
     public function render()
@@ -49,7 +49,7 @@ class ListadoTicketsComponent extends Component
         $this->validate(
             [
                 'name' => 'required',
-                'data' => 'required',
+                'data' => 'required|max:100000',
                 'categoria' => 'required'
             ]
         );
@@ -123,6 +123,7 @@ class ListadoTicketsComponent extends Component
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->id;
         $this->dispatchBrowserEvent('mostrar_data');
+
     }
 
     public function guardarEditar($id)
@@ -165,7 +166,7 @@ class ListadoTicketsComponent extends Component
             'name_ticket' => $ticketEditar->name,
         ];
 
-        foreach($usuarios  as $usuario){
+        foreach ($usuarios  as $usuario) {
             $usuario->notify(new EditarTicketNotification($notificacionEditar));
         }
 
@@ -219,15 +220,13 @@ class ListadoTicketsComponent extends Component
     {
 
 
-
-
         $ticket = Ticket::find($id);
         $this->ticket_solucion = $ticket;
         $this->ticket_id = $ticket->id;
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
-        // $this->dispatchBrowserEvent('cargar');
+         $this->dispatchBrowserEvent('cargar');
 
 
     }
@@ -235,9 +234,9 @@ class ListadoTicketsComponent extends Component
     public function enviarMensaje()
     {
 
-        $ticket=Ticket::find($this->ticket_id);
-        $category=Categoria::find($ticket->category_id);
-        $usuarios=$category->usuarios;
+        $ticket = Ticket::find($this->ticket_id);
+        $category = Categoria::find($ticket->category_id);
+        $usuarios = $category->usuarios;
         Mensaje::create([
             'ticket_id' => $this->ticket_id,
             'message' => $this->mensaje,
@@ -255,12 +254,12 @@ class ListadoTicketsComponent extends Component
             ]
         );
 
-        $notificationMessage=[
+        $notificationMessage = [
             'name' => auth()->user()->name,
-            'name_ticket'=>$ticket->name
+            'name_ticket' => $ticket->name
         ];
 
-        foreach($usuarios as $usuario){
+        foreach ($usuarios as $usuario) {
             $usuario->notify(new MessageSoporteNotification($notificationMessage));
         }
 
