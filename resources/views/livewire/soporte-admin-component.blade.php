@@ -26,9 +26,14 @@
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $usuario->name }}</td>
                             <td class="col-2">
-                                @foreach ($usuario->asignacionCategoria as $categoria)
-                                    {{ $categoria->name }}
-                                @endforeach
+                                @if ($usuario->asignacionCategoria->count())
+                                    @foreach ($usuario->asignacionCategoria as $categoria)
+                                        {{ $categoria->name }}
+                                    @endforeach
+                                @else
+                                    <p class="text-bold">No tiene categorias asignadas</p>
+                                @endif
+
                             </td>
                             <td class="col-2"><button type="button" class="btn btn-primary btn-sm"
                                     data-bs-toggle="modal" data-bs-target="#ModalAsignacion"><i
@@ -92,9 +97,10 @@
     <script>
         window.addEventListener('asignacion_correcta', () => {
 
-            toastr.success('categoria asignada correctamente')
 
-        })
+        toastr.success('Categoría asignada correctamente');
+        
+          })
     </script>
 
 </div>

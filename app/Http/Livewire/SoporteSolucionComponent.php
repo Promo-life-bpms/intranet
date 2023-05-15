@@ -29,6 +29,7 @@ class SoporteSolucionComponent extends Component
         ]);
     }
 
+
     public function enProceso($id)
     {
 
@@ -60,6 +61,7 @@ class SoporteSolucionComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
+        $message= Mensaje::find($this->ticket_id);
         $this->status=$ticket;
         $this->historial=$ticket;
         $this->mensaje=$ticket;
@@ -67,6 +69,7 @@ class SoporteSolucionComponent extends Component
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
+        $this->dispatchBrowserEvent('cargar');
     }
 
     public function guardarSolucion()

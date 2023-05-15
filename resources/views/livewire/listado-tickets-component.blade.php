@@ -262,8 +262,7 @@
                             {{-- Editor Mensaje --}}
                             <div wire:ignore class="mb-3 text-input-mensaje">
                                 <label class="form-label fw-bold">Enviar mensaje</label></label>
-                                <textarea wire:model.defer="message" id="editorMensaje" cols="20" rows="3" class="form-control"
-                                    name="message"></textarea>
+                                <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
                                 @error('message')
                                     <span class="invalid-feedback">
                                         <strong>{{ $message }}</strong>
@@ -348,8 +347,6 @@
             .create(document.querySelector('#editor'))
             .then(newEditor => {
                 ckEditorCreate = newEditor;
-
-
             })
             .catch(error => {
                 console.error(error);
@@ -359,7 +356,9 @@
             const editor = document.querySelector('.text-input-crear .ck-editor__editable');
 
             editor.addEventListener('keyup', () => {
+                
                 let texto = ckEditorCreate.getData();
+                console.log(texto);
                 @this.data = texto
 
             });
@@ -374,9 +373,9 @@
             const editorMessage = document.querySelector('.text-input-mensaje .ck-editor__editable');
             editorMessage.addEventListener('keyup', () => {
                 let texto = ckEditorMensaje.getData();
+                console.log(texto);
                 @this.mensaje = texto
             });
-
 
         });
 
@@ -404,29 +403,7 @@
                 console.error(error);
             });
 
-        // ClassicEditor
-        //     .create(document.querySelector('#editorMensaje'))
-        //     .then(newEditor => {
-        //         let ckEditorMensaje = newEditor;
 
-        //         window.addEventListener('cargar', () => {
-        //             if (ckEditorMensaje) {
-        //                 ckEditorMensaje.destroy(); // Destruye la instancia anterior si existe
-        //             }
-
-        //             ClassicEditor
-        //                 .create(document.querySelector('#editorMensaje'))
-        //                 .then(newEditor => {
-        //                     ckEditorMensaje = newEditor;
-        //                 })
-        //                 .catch(error => {
-        //                     console.error(error);
-        //                 });
-        //         });
-        //     })
-        //     .catch(error => {
-        //         console.error(error);
-        //     });
 
         window.addEventListener("mostrar_data", () => {
 
@@ -434,39 +411,30 @@
             // ckEditorVer.setData(@this.data);
         });
 
-        // window.addEventListener("mostrar_mensaje", () => {
-        //     ClassicEditor
-        //         .create(document.querySelector('#editorMensaje'))
 
-        // })
-
-            //Evento para cargar el editor de nuevo pero no envia la data del mensaje
+     //   Evento para cargar el editor de nuevo pero no envia la data del mensaje
         window.addEventListener('cargar', () => {
             if (ckEditorMensaje) {
                 ckEditorMensaje.destroy();
+
+                ClassicEditor
+                    .create(document.querySelector('#editorMensaje'))
+                    .then(newEditor => {
+                        ckEditorMensaje = newEditor;
+                        const editorMessage = document.querySelector('.text-input-mensaje .ck-editor__editable');
+                        editorMessage.addEventListener('keyup', () => {
+                          
+                            let texto = ckEditorMensaje.getData();
+                                    console.log(texto);
+                            @this.mensaje = texto
+                        });
+
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
             }
 
-            ClassicEditor
-                .create(document.querySelector('#editorMensaje'))
-                .then(newEditor => {
-                    ckEditorMensaje = newEditor;
-                    // let texto = ckEditorMensaje.getData();
-                    // @this.mensaje = texto;
-                    // let texto = ckEditorMensaje.getData();
-                    // @this.mensaje = texto
-
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-
-            // document.addEvenListener("DOMContentLoaded", () => {
-            // //     const editorMessage = document.querySelector('.text-input-mensaje .ck-editor__editable');
-            // //     editorMessage.addEventListener('keyup', () => {
-            // //         let texto = ckEditorMensaje.getData();
-            // //         @this.mensaje = texto
-            // //     });
-            // // })
         })
 
         window.addEventListener('ticket_success', () => {
@@ -482,7 +450,6 @@
             ckEditorCreate.setData("");
 
         });
-
         window.addEventListener('editar', () => {
             Swal.fire({
 
@@ -497,7 +464,6 @@
 
 
         });
-
         window.addEventListener('Mensaje', () => {
             Swal.fire({
 
@@ -511,8 +477,6 @@
 
 
         });
-
-
 
         function finalizar(id) {
 

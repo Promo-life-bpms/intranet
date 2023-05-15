@@ -45,6 +45,8 @@ class SoporteAdminComponent extends Component
         $usuario = User::find($this->usuario_id);
         $usuario->asignacionCategoria()->toggle([$categorias]);
         $this->dispatchBrowserEvent('asignacion_correcta');
+
+        
     }
 
     
