@@ -108,4 +108,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(RequestCalendar::class, 'users_id')->where('requests_id', null);
     }
+
+    public function userDownMotive()
+    {
+        return $this->hasOne(UserDownMotive::class, 'user_id');
+
+    }
+
+    public function userDetails()
+    {
+        return $this->hasOne(UserDetails::class, 'user_id');
+
+    }
 }

@@ -4,76 +4,84 @@
 
         <div class="d-flex justify-content-between">
             <div class="d-flex flex-row">
-                <a  href="{{ route('admin.users.edit', ['user' => $id]) }}">
+                <a  href="{{ route('rh.dropDocumentation', ['user' => $id]) }}">
                     <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
                 </a>
                 <h3 style="margin-left:16px;" class="separator">Documentación</h3> 
             </div>
-                        
-            <div class="d-flex">
-                <button type="button" class="btn btn-success m-1" data-bs-toggle="modal"  data-bs-target="#modalAdd"><i class="bi bi-plus-lg"></i>Agregar documento</button>
-            </div>
+            <div class="d-flex flex-row">
+                
+                <div class="align-self-center">
+                    <form 
+                        action="{{ route('rh.dropUserDetails', ['id' => $id]) }}"
+                        method="GET">
+                        @csrf
+                        <button type="submit" class="btn btn-primary"> 
+                            Baja de Colaborador
+                            <i class="ms-2 fa fa-arrow-right" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                </div>     
+            </div> 
         </div>
     </div>
     <div class="card-body">
+
+    <div class="container" >
+        <div class="stepwizard">
+            <div class="stepwizard-row setup-panel">
+                <div class="stepwizard-step col-xs-3" style="width: 33%;">  
+                    <a href="{{ route('rh.dropDocumentation', ['user' => $id]) }}" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">1</a>
+                    <p><small>Fecha y Motivos de Baja</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 33%;"> 
+                    <a href="#" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                    <p><small>Documentación</small></p>
+                </div>
+                <div class="stepwizard-step col-xs-3"  style="width: 33%;"> 
+                    <a href="{{ route('rh.dropUserDetails', ['id' => $id]) }}" type="button" class="btn btn-default btn-circle no-selected" disabled="disabled">3</a>
+                    <p><small>Baja de Colaborador</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-light" role="alert">
+        En caso de no contar con la documentación necesaria al momento de realizar la baja del colaborador, puedes agregarlos despues en la sección de <b> Usuarios dados de baja .</b>
+    </div>
+
+    <br> 
         @if (session('message'))
             <div class="alert alert-success">
                 {{ session('message') }}
             </div>
-        @endif
+        @endif      
+    
+        <div class="d-flex justify-content-between">
+            <h5>Documentos guardados</h5>
+            <div class="align-self-center">
+                <button type="button" class="btn btn-success m-1" data-bs-toggle="modal"  data-bs-target="#modalAdd"><i class="bi bi-plus-lg"></i>Agregar documento</button>
+            </div>
+        </div>
 
         <br>
-        @if($status == 1)
-        <h5>Generar documentos</h5>
-
-            {!! Form::open(['route' => 'rh.createUserDocument', 'enctype' => 'multipart/form-data']) !!}
-                {!! Form::text('user_id',$id,['class' => 'form-control', 'hidden']) !!}
-                <br>
-                @if(count($user_details)  == 0)
-                    <div class="alert alert-light" role="alert">
-                        No es posible generar documentación del empleado hasta llenar su <b>Información adicional</b>. 
-                    </div>
-                @else
-                
-                    <div class="alert alert-secondary" role="alert">
-                        <div class="d-flex justify-content-between">    
-                            <p class="mt-2">  CONTRATO INDETERMINADO  </p>             
-                            <input type="submit" class="btn btn-primary" value="Descargar">
-                        </div> 
-                    </div>
-                                
-                @endif
-
-            {!! Form::close() !!}
-
-            <br>
-            <br>
-        @endif
-        
-        <h5>Documentos guardados</h5>
+   
         @if(count($user_documents)  == 0)
             <div class="alert alert-light" role="alert">
                     Aún no hay documentos del usuario guardados, puedes subirlos dando clic al botón <b>Agregar documento</b>.
             </div>               
         @endif
-        <div class ="row row-cols-2 row-cols-lg-4 g-2 g-lg-3" >
 
-       
+        <br>
+        <div class ="row row-cols-2 row-cols-lg-4 g-2 g-lg-3" >
         @foreach ($user_documents as $document)
             <div class="col">
                 <div class="card card_document">
-                    
                     @switch($document->type)
                         @case('pdf' )
                         <iframe src="{{ asset($document->resource)}}" style="width:100%; height:150px;" frameborder="0"></iframe>
                         @break;
                         @case('png' )
-                        <img style="width:100%; height:150px; object-fit:contain;" src="{{ asset($document->resource)}}">
-                        @break;
-                        @case('jpg' )
-                        <img style="width:100%; height:150px; object-fit:contain;" src="{{ asset($document->resource)}}">
-                        @break;
-                        @case('jpeg' )
                         <img style="width:100%; height:150px; object-fit:contain;" src="{{ asset($document->resource)}}">
                         @break;
                         @case('docx')
@@ -93,8 +101,8 @@
                         @break;
                     @endswitch
                     <br>
-                    
-                    <p class="card-text">{{ strtoupper($document->description) }}</p>
+
+                    <p class="card-text">{{$document->description}}</p>
                     <a href="{{asset($document->resource)}}" style="width: 100%" target="_blank" class="btn btn-primary btn-sm">Abrir</a><br>
                     <div class="d-grid gap-2 d-md-block" >
                         <form class="form-delete m-2 mt-0" action="{{ route('rh.deleteDocuments', ['document_id' =>$document->id]) }}" method="POST">
@@ -105,6 +113,7 @@
                         </form>
                     </div>                
                 </div>
+
             </div>
                     
             
@@ -115,29 +124,22 @@
                             <h5 class="modal-title" id="modalEdit">Seleccione el archivo</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        {!! Form::open(['route' => 'rh.updateDocuments', 'enctype' => 'multipart/form-data', 'method'=>'POST']) !!}
+                        {!! Form::open(['route' => 'rh.updateDocuments', 'enctype' => 'multipart/form-data', 'method'=>'put']) !!}
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col">
                                     <div class="mb-2 form-group">                                    
                                         {!! Form::text('id', $document->id,['class'=>'form-control', 'hidden']) !!}
-                                        {!! Form::label('id', 'Descripción') !!}
+                                        {!! Form::label('name', 'Nombre del archivo') !!}
+
                                         {!! Form::text('description', $document->description, ['class' => 'form-control']) !!}
-                                        @error('description')
-                                        <small>
-                                            <font color="red">*Este campo es requerido*</font>
-                                        </small>
-                                        <br>
-                                        @enderror
+                                        
                                     </div>
                                     <div class="mb-2 form-group">
-                                    {!! Form::label('id', 'Archivo') !!}
+                                        {!! Form::label('name', 'Actualizar archivo (opcional)') !!}
+
                                         {!! Form::file('documents', ['class' => 'form-control']) !!}
-                                        @error('documents')
-                                        <small>
-                                            <font color="red">*Este campo es requerido*</font>
-                                        </small>
-                                        @enderror
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -166,36 +168,23 @@
                         <div class="col">
                             <div class="mb-2 form-group">
                                 {!! Form::text('user_id', $id,['class' => 'form-control', 'hidden']) !!}
-                                {!! Form::label('description_text', 'Descripción', ['class'=>'required']) !!}
+                                {!! Form::label('description', 'Descripción', ['class' => 'required']) !!}
                                 {!! Form::text('description', null,['class' => 'form-control']) !!}
-                                @error('description')
-                                <small>
-                                    <font color="red">*Este campo es requerido*</font>
-                                </small>
-                                <br>
-                                @enderror
+                              
                             </div>
                             <br>
-
                             <div class="mb-2 form-group">
-                                {!! Form::label('documents_text', 'Archivo', ['class'=>'required']) !!}
-                                {!! Form::file('documents', ['class' => 'form-control', 'id' => 'input-file']) !!}
-                                @error('documents')
-                                <small>
-                                    <font color="red">*Este campo es requerido*</font>
-                                </small>
-                                <br>
-                                @enderror
+                                {!! Form::label('documents', 'Documento', ['class' => 'required']) !!}
+                                {!! Form::file('documents', ['class' => 'form-control','id'=>'input-file']) !!}
+                             
                             </div>
-                            <br>
                             <div class="document-file" style="height:320px;">
-                                <iframe src="" style="width:100%; height:100%;" frameborder="0" id="frame-file"></iframe>
+                                <iframe style="width:100%; height:100%;" frameborder="0" id="frame-file"></iframe>
                             </div>
-                        </div>
+                        </div>  
                     </div>
                 </div>
-                <br>
-                
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     {!! Form::submit('Aceptar', ['class' => 'btn btn-primary']) !!}
@@ -204,7 +193,7 @@
             </div>
         </div>
     </div>
-
+    <br>
 </div>    
 
 @stop
@@ -231,7 +220,6 @@
             })
         });
     </script>
-
     <script>
         var inputFile = document.getElementById('input-file');
         var frameFile = document.getElementById('frame-file');
@@ -239,10 +227,10 @@
         const file = inputFile.files
         const [resource] = inputFile.files
         var extension = file[0].name.substr(file.length - 4);
-            if (extension == 'pdf' || extension == 'png' || extension == 'jpg' || extension == 'peg') {
+            if (extension == 'pdf') {
+                console.log('Es PDF')
                 frameFile.src = URL.createObjectURL(resource)
-            }
-            else{
+            }else{
                 frameFile.src = ''
             }
             
@@ -263,12 +251,97 @@
 
         .card_document>img{
             width: 160px;
-            height: 320px;
+            height: 160px;
             object-fit: contain;
+        }
+
+        .text-info{
+            display: none;
+        }
+        .fa-info-circle{
+            margin-left: 8px;
+            color: #1A346B;
+        }
+
+        .fa-info-circle:hover {
+            margin-left: 8px;
+            color: #0084C3;
+        }
+      
+        #icon-text {
+            display: none;
+            margin-left: 16px;
+            color: #fff;
+            background-color: #1A346B;
+            padding: 0 12px 0 12px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        #content:hover~#icon-text{
+            display: block;
+        }
+
+        .stepwizard-step p {
+            margin-top: 0px;
+            color:#666;
+        }
+        .stepwizard-row {
+            display: table-row;
+        }
+        .stepwizard {
+            display: table;
+            width: 100%;
+            position: relative;
+        }
+        .btn-default{
+            background-color: #0084C3;
+        }
+
+        .stepwizard-row:before {
+            top: 14px;
+            bottom: 0;
+            position: absolute;
+            content:" ";
+            width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            z-index: 0;
+        }
+        .stepwizard-step {
+            display: table-cell;
+            text-align: center;
+            position: relative;
+        }
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+            color: #fff;
+        }
+
+        .no-selected{
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+            color: #000;
+            background-color: #fff;
+            border-color: #0084C3;
         }
         .required:after {
             content:" *";
             color: red;
         }
+
+        
     </style>
 @endsection
+

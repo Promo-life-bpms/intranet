@@ -10,7 +10,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class UpDocument extends Controller
 {
-    public function UpDocument($postulant, $postulant_details, $postulant_beneficiaries, $company_id )
+    public function UpDocument($postulant)
     {
         $departmet = Department::all()->where('id',$postulant->department_id)->last();
         $company_name = '';
@@ -29,71 +29,49 @@ class UpDocument extends Controller
         $porcentage_postulant_beneficiary3 = "";
 
          //Promolife
-         if($company_id == 1){
+         if($postulant->company_id == 1){
             $company_name = "PROMO LIFE, S. DE R.L. DE C.V.";
             $horary = 'DE L A J DE 8:00 AM A 5:00 PM Y V DE 8:30 AM A 5:00 PM';
         }
 
         //BH tardemarket
-        if($company_id == 2){
+        if($postulant->company_id == 2){
             $company_name = "BH TRADE MARKET, S.A. DE C.V.";
             $horary = 'DE L A J DE 8:00 A.M. A 5:00 P.M. Y V DE 8:30 A.M. A 5:00 P.M.';
         }
 
         //Promo zale
-        if($company_id == 3){
+        if($postulant->company_id == 3){
             $company_name = "PROMO ZALE S.A. DE C.V."; 
             $horary = 'DE L A J DE 8:00 A.M. A 5:00 P.M. Y V DE 8:30 A.M. A 5:00 P.M.';
         }
 
         //Trademarket 57
-        if($company_id== 4){
+        if($postulant->company_id== 4){
             $company_name = "TRADE MARKET 57, S.A. DE C.V."; 
             $horary = 'DE L A J DE 8:00 A.M. A 5:00 P.M. Y V DE 8:30 A.M. A 5:00 P.M.';
         } 
 
         //Unipromtex
-        if($company_id== 5){
+        if($postulant->company_id== 5){
             $company_name = "UNIPROMTEX S.A. DE C.V."; 
             $horary = 'DE L A V DE 9:00 A.M. A 6:00 P.M. Y S DE 9 A.M. A 2:00 P.M.';
         } 
         
-        if($postulant_details->infonavit_credit == "si"){
+        if($postulant->infonavit_credit == "si"){
             $postulant_has_infonavit = "*"; 
         }else{
             $postulant_no_has_infonavit = "*";
         }
 
-        if($postulant_details->fonacot_credit == "si"){
+        if($postulant->fonacot_credit == "si"){
             $postulant_has_fonacot = "*";
         }else{
             $postulant_no_has_fonacot = "*";
         }
 
        
-        if($postulant_beneficiaries<>null){
-            if(count($postulant_beneficiaries)==1){
-                $name_postulant_beneficiary1 = $postulant_beneficiaries[0]->name;
-                $porcentage_postulant_beneficiary1 = $postulant_beneficiaries[0]->porcentage;
-            }
-    
-            if(count($postulant_beneficiaries)==2){
-                $name_postulant_beneficiary1 = $postulant_beneficiaries[0]->name;
-                $porcentage_postulant_beneficiary1 = $postulant_beneficiaries[0]->porcentage;
-                $name_postulant_beneficiary2 = $postulant_beneficiaries[1]->name;
-                $porcentage_postulant_beneficiary2 = $postulant_beneficiaries[1]->porcentage;
-            }
-    
-            if(count($postulant_beneficiaries)==3){
-                $name_postulant_beneficiary1 = $postulant_beneficiaries[0]->name;
-                $porcentage_postulant_beneficiary1 = $postulant_beneficiaries[0]->porcentage;
-                $name_postulant_beneficiary2 = $postulant_beneficiaries[1]->name;
-                $porcentage_postulant_beneficiary2 = $postulant_beneficiaries[1]->porcentage;
-                $name_postulant_beneficiary3 = $postulant_beneficiaries[2]->name;
-                $porcentage_postulant_beneficiary3 = $postulant_beneficiaries[2]->porcentage;
-            }
-        }        
-
+        
         //Personal de alta
         $spreadsheet = new Spreadsheet();
 
@@ -239,53 +217,53 @@ class UpDocument extends Controller
         $sheet->setCellValue('A6', 'NOMBRE:'); 
         $sheet->setCellValue('B6', strtoupper($postulant->name .' '. $postulant->lastname));
         $sheet->setCellValue('A8', 'LUGAR DE NACIMIENTO:');
-        $sheet->setCellValue('B8', strtoupper($postulant_details->place_of_birth));
+        $sheet->setCellValue('B8', strtoupper($postulant->place_of_birth));
         $sheet->setCellValue('A10', 'FECHA DE NACIMIENTO:');
-        $sheet->setCellValue('B10', date('d-m-Y', strtotime($postulant_details->birthdate))); 
+        $sheet->setCellValue('B10', date('d-m-Y', strtotime($postulant->birthdate))); 
         $sheet->setCellValue('A12', 'NOMBRE DEL PADRE:');
-        $sheet->setCellValue('B12', strtoupper($postulant_details->fathers_name));
+        $sheet->setCellValue('B12', strtoupper($postulant->fathers_name));
         $sheet->setCellValue('A14', 'NOMBRE DE LA MADRE:');
-        $sheet->setCellValue('B14', strtoupper($postulant_details->mothers_name));
+        $sheet->setCellValue('B14', strtoupper($postulant->mothers_name));
         $sheet->setCellValue('A16', 'ESTADO CIVIL:');
-        $sheet->setCellValue('B16', strtoupper($postulant_details->civil_status));
+        $sheet->setCellValue('B16', strtoupper($postulant->civil_status));
         $sheet->setCellValue('E16', 'EDAD:');
-        $sheet->setCellValue('F16', strtoupper($postulant_details->age));
+        $sheet->setCellValue('F16', strtoupper($postulant->age));
         $sheet->setCellValue('A18', 'DIRECCION:');
-        $sheet->setCellValue('B18', strtoupper($postulant_details->address));
+        $sheet->setCellValue('B18', strtoupper($postulant->full_address));
         $sheet->setCellValue('A19', 'CALLE:');
-        $sheet->setCellValue('B19', strtoupper($postulant_details->street));
+        $sheet->setCellValue('B19', strtoupper($postulant->street));
         $sheet->setCellValue('A21', 'COLONIA:');
-        $sheet->setCellValue('B21', strtoupper($postulant_details->colony));
+        $sheet->setCellValue('B21', strtoupper($postulant->colony));
         $sheet->setCellValue('A23', 'DELEGACION O MUNICIPIO:');
-        $sheet->setCellValue('B23', strtoupper($postulant_details->delegation));
+        $sheet->setCellValue('B23', strtoupper($postulant->delegation));
         $sheet->setCellValue('C23', 'C.P.:');
-        $sheet->setCellValue('D23', strtoupper($postulant_details->postal_code));
+        $sheet->setCellValue('D23', strtoupper($postulant->postal_code));
         $sheet->setCellValue('A25', 'TELEFONO:');
-        $sheet->setCellValue('B25', strtoupper('CEL: '.$postulant_details->cell_phone));
+        $sheet->setCellValue('B25', strtoupper('CEL: '.$postulant->cell_phone));
         $sheet->setCellValue('C25', 'CASA:');
-        $sheet->setCellValue('D25', strtoupper(strval($postulant_details->home_phone)));
+        $sheet->setCellValue('D25', strtoupper(strval($postulant->home_phone)));
         $sheet->setCellValue('A27', 'CURP:');
-        $sheet->setCellValue('B27', strtoupper($postulant_details->curp));
+        $sheet->setCellValue('B27', strtoupper($postulant->curp));
         $sheet->setCellValue('C27', 'R.F.C.:');
-        $sheet->setCellValue('D27', strtoupper($postulant_details->rfc));
+        $sheet->setCellValue('D27', strtoupper($postulant->rfc));
         $sheet->setCellValue('A29', 'NO. AFILIACION IMSS:');
-        $sheet->setCellValue('B29', strtoupper($postulant_details->imss_number));
+        $sheet->setCellValue('B29', strtoupper($postulant->nss));
         $sheet->setCellValue('C29', 'C.P. FISCAL:');
-        $sheet->setCellValue('D29', strtoupper($postulant_details->fiscal_postal_code));
+        $sheet->setCellValue('D29', strtoupper($postulant->fiscal_postal_code));
         $sheet->setCellValue('A31', 'PUESTO:');
-        $sheet->setCellValue('B31', strtoupper($postulant_details->position));
+        $sheet->setCellValue('B31', strtoupper($postulant->vacant));
         $sheet->setCellValue('C31', 'AREA:');
-        $sheet->setCellValue('D31', strtoupper($departmet->name));
+        $sheet->setCellValue('D31', strtoupper($postulant->name));
         $sheet->setCellValue('A33', 'SUELDO:');
-        $sheet->setCellValue('B33', strtoupper($postulant_details->month_salary_net));
+        $sheet->setCellValue('B33', strtoupper($postulant->month_salary_net));
         $sheet->setCellValue('C33', 'HORARIO:');
         $sheet->setCellValue('D33', strtoupper($horary));
         $sheet->setCellValue('A35', 'FECHA DE INGRESO:');
-        $sheet->setCellValue('B35', date('d/m/Y', strtotime($postulant_details->date_admission)));
+        $sheet->setCellValue('B35', date('d/m/Y', strtotime($postulant->date_admission)));
         $sheet->setCellValue('A37', 'NO. TARJETA / NO. CUENTA:');
-        $sheet->setCellValue('B37', strtoupper($postulant_details->card_number));
+        $sheet->setCellValue('B37', strtoupper($postulant->card_number));
         $sheet->setCellValue('C37', 'BANCO:');
-        $sheet->setCellValue('D37', strtoupper($postulant_details->bank_name));
+        $sheet->setCellValue('D37', strtoupper($postulant->bank_name));
         $sheet->setCellValue('A39', 'BENEFICIARIOS:');
         $sheet->setCellValue('B39', strtoupper($name_postulant_beneficiary1));
         $sheet->setCellValue('B40', strtoupper($name_postulant_beneficiary2));
@@ -298,16 +276,16 @@ class UpDocument extends Controller
         $sheet->setCellValue('F41', strtoupper($porcentage_postulant_beneficiary3));
         $sheet->setCellValue('A43', 'CREDITO INFONAVIT:');
         $sheet->setCellValue('B43', 'SI ( '. $postulant_has_infonavit .' )   NO ( ' . $postulant_no_has_infonavit . '  )   No. CREDITO FACTOR:');
-        $sheet->setCellValue('E43', strtoupper($postulant_details->factor_credit_number));
+        $sheet->setCellValue('E43', strtoupper($postulant->factor_credit_number));
         $sheet->setCellValue('A45', 'CREDITO FONACOT:');
         $sheet->setCellValue('B45', 'SI ( '. $postulant_has_fonacot .' )   NO ( ' . $postulant_no_has_fonacot . ' )   No. CREDITO DESCUENTO:');
-        $sheet->setCellValue('E45', strtoupper($postulant_details->discount_credit_number));
+        $sheet->setCellValue('E45', strtoupper($postulant->discount_credit_number));
         $sheet->setCellValue('A47', 'REFERENCIAS DOMICILIO:');
-        $sheet->setCellValue('B47', strtoupper($postulant_details->home_references));
+        $sheet->setCellValue('B47', strtoupper($postulant->home_references));
         $sheet->setCellValue('A49', 'CARACTERISTICAS DE CASA:');
-        $sheet->setCellValue('B49', strtoupper($postulant_details->house_characteristics));
+        $sheet->setCellValue('B49', strtoupper($postulant->house_characteristics));
         $sheet->setCellValue('A50', 'CORREO ELECTRONICO:');
-        $sheet->setCellValue('B50', strtoupper($postulant->mail));
+        $sheet->setCellValue('B50', strtoupper($postulant->email));
         $sheet->setCellValue('C54', 'SD');
         $sheet->setCellValue('C55', 'SBC');
         $sheet->setCellValue('A56', 'OBSERVACIONES');

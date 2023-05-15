@@ -8,12 +8,14 @@
     @endif
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Lista de usuarios</h3>
-            <div>
-                <a href="{{ route('admin.user.exportUsuarios') }}" type="button" class="btn btn-info">Descargar Informacion de
-                    los Usuarios</a>
-                <a href="{{ route('admin.users.create') }}" type="button" class="btn btn-success">Agregar</a>
-            </div>
+        <div class="d-flex flex-row">
+            <a href="{{ route('rh.dropUser') }}">
+                <i class="fa fa-arrow-left fa-2x arrouw-back me-2" aria-hidden="true"></i>
+            </a> 
+            <h3 class="separator ms-2">Lista de usuarios dados de baja</h3>
+        </div>
+        
+            
         </div>
     </div>
     <div class="card-body">
@@ -24,8 +26,8 @@
                         <th scope="col">#</th>
                         <th scope="col">Nombre y correo</th>
                         <th scope="col" class="text-center">Fecha de Ingreso</th>
-                        <th scope="col" class="text-center">Cumpleaños</th>
-                        <th scope="col">Jefe Directo</th>
+                        <th scope="col" class="text-center">Fecha de Salida</th>
+                       
                         <th scope="col">Rol</th>
                         <th scope="col">Opciones</th>
                     </tr>
@@ -35,42 +37,26 @@
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td><b>{{ $user->name . ' ' . $user->lastname }} </b><br> {{ $user->email }}</td>
-                            <td class="text-center">{{ $user->employee->date_admission->format('d-m-Y') }}</td>
-                            <td class="text-center">{{ $user->employee->birthday_date->format('d-m-Y') }}</td>
-                            <td>
-                                @if ($user->employee->jefeDirecto)
-                                    {{ $user->employee->jefeDirecto->user->name }}
-                                @endif
-                            </td>
+                            <td class="text-center">{{ $user->employee->date_admission->format('Y-m-d') }}</td>
+                            <td class="text-center">{{ isset($user->userDetails->date_down)? $user->userDetails->date_down: ''   }}</td>
                             <td>
                                 @if ($user->roles)
                                     {{ $user->roles[0]->display_name }}
                                 @endif
                             </td>
                             <td>
-                                <div class="d-flex">
-
-                                    <div>
-                                        <a href="{{ route('admin.users.edit', ['user' => $user->id]) }}"
-                                            type="button" class="btn btn-warning">Editar</a>
-                                    </div>
-                                    <div>
-                                        <form class="form-delete"
-                                            action="{{ route('admin.users.destroy', ['user' => $user->id]) }}"
-                                            method="POST">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="submit" class="btn btn-danger">Borrar</button>
-                                        </form>
-                                    </div>
+                                <div class="w-100">                                   
+                                    <a style="width:100%" href="{{ route('admin.users.edit', ['user' => $user->id]) }}"
+                                            type="button" class="btn btn-primary">Ver detalles</a>     
                                 </div>
+                               
                                 <div class="w-100">
                                     <form class="form-reset"
-                                        action="{{ route('admin.user.sendAccessUnit', ['user' => $user->id]) }}"
-                                        method="GET">
+                                        action="{{ route('rh.upUsers', ['user_id' => $user->id]) }}"
+                                        method="POST">
                                         @csrf
-                                        <button style="" type="submit"
-                                            class="btn btn-primary btn-block mt-1">Acceso</button>
+                                        <button  type="submit"
+                                            class="btn btn-success btn-block mt-1">Restaurar a empleado</button>
                                     </form>
                                 </div>
                             </td>
@@ -490,35 +476,17 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
 
     <script>
-        $('.form-delete').submit(function(e) {
-            e.preventDefault();
-
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡El registro se eliminará permanentemente!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, eliminar!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.submit();
-                }
-            })
-        });
         $('.form-reset').submit(function(e) {
             e.preventDefault();
 
             Swal.fire({
                 title: '¿Estás seguro?',
-                text: "¡Se reseteara la contraseña y se enviara un email con sus datos!",
+                text: "Este usuario será restaurado como empleado",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, resetar acesso!',
+                confirmButtonText: '¡Si, restaurar!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {

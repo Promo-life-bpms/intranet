@@ -6,11 +6,18 @@
     </div>
     <div class="card-body">
     <div class="d-flex flex-row justify-content-between add-container" >
-        <h6>Lista de postulantes disponibles</h6>
+        <h6>Lista de candidatos disponibles</h6>
+        <div>
+        <a class="btn btn-danger me-2" href="{{ route('rh.noSelectedPostulant') }}">
+            <i class="fa fa-users me-2" aria-hidden="true"></i>
+            Candidatos no seleccionados
+        </a>
         <a class="btn btn-success" href="{{ route('rh.createPostulant') }}">
             <i style="margin-right:8px" class="fa fa-plus" aria-hidden="true"></i>
             Agregar nuevo
         </a>
+        </div>
+        
     </div>
     @if (session('message'))
         <div class="alert alert-success">
@@ -24,56 +31,48 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
-                        <th scope="col" class="text-center">Información de contacto</th>
-                        <th scope="col" class="text-center">Empresa de interés</th>
-                        <th scope="col">Departamento de interes</th>
-                        <th scope="col">Fecha de entrevista</th>
+                        <th scope="col">Información de contacto</th>
+                        <th scope="col">Vacante</th>
                         <th scope="col">Status</th>
                         <th scope="col">Opciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($postulants_data as $postulant)
+                    @foreach ($postulants as $postulant)
                         <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
-                            <td> <b>{{ $postulant->fullname }}</b></td>
-                            <td class="text-center"> 
-                                {{ $postulant->mail}}
+                            <td>{{ $loop->iteration }}</td>
+                            <td> <b>{{ $postulant->name .' ' . $postulant->lastname }}</b></td>
+                            <td> 
+                                {{ $postulant->email}}
                                 <br>
                                 {{ $postulant->phone}}
                                 <br>
-                                @if ($postulant->cv <> '')
-                                    <a href="{{ asset($postulant->cv) }}" target="_blank">CV</a>
-                                @endif
+                                @foreach ($postulant->postulantDocumentation as $documentation)
+                                    
+                                    @if ($documentation->description == 'cv')
+                                        <a href="{{ asset($documentation->resource) }}" target="_blank"> Ver CV</a>
+                                    @endif
+                                 @endforeach
                             </td>
-                            <td class="text-center">
-                                @if ($postulant->company <> null)
-                                    {{ $postulant->company }}
-                                @endif
-                            </td>
-                            <td>
-                                @if ($postulant->department <> null)
-                                    {{ $postulant->department }}
-                                @endif
-                            </td>
-                            <td>
-                                @if ($postulant->interview_date <> null)
-                                    {{ $postulant->interview_date }}
-                                @endif
+                            <td >
+                                {{ $postulant->vacant }}
                             </td>
                             <td><b>{{ $postulant->status }}</b> </td>
                             <td>
                                 <div class="d-flex w-100 ">
                                     <div>
-                                        <a  href="{{ route('rh.editPostulant', ['postulant' => $postulant->id]) }}"
-                                            type="button" class="btn btn-option">Editar info</a>
+                                        <a  href="{{ route('rh.editPostulant', ['postulant_id' => $postulant->id]) }}"
+                                            type="button" class="btn btn-option">Detalles</a>
                                     </div>
                                 </div>
                                 <div class="d-flex" >
-                                    <div>
-                                        <a  href="{{ route('rh.createPostulantDocumentation', ['postulant' => $postulant->id]) }}"
-                                            type="button" class="btn btn-option">Generar doc</a>
-                                    </div>
+                                    <form class="form-delete"
+                                        action="{{ route('rh.deletePostulant', ['postulant_id' => $postulant->id]) }}"
+                                        method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                            class="btn btn-danger btn-block mt-1">No seleccionado</button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -88,6 +87,28 @@
 @section('scripts')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
+    <script>
+        $('.form-delete').submit(function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡El registro se eliminará permanentemente!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '¡Si, eliminar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            })
+        });
+    </script>
+    
+    
     <script>
         $(document).ready(function() {
             $('#table-directory').DataTable({

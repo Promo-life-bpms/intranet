@@ -12,17 +12,16 @@ use PhpOffice\PhpWord\Style\Language;
 
 class LetterForBank extends Controller
 {
-    public function letterForBank($postulant,$postulant_details, $company_id)
+    public function letterForBank($postulant )
     {
         $social_reason = "";
         $name = strtoupper($postulant->name);
         $lastname = strtoupper($postulant->lastname); 
-        $rfc = strtoupper($postulant_details->rfc);
-        $id_credential = strtoupper($postulant_details->id_credential);
-        $date_admission = date('d/m/Y', strtotime($postulant_details->date_admission));
+        $rfc = strtoupper($postulant->rfc);
+        $id_credential = strtoupper($postulant->id_credential);
+        $date_admission = date('d/m/Y', strtotime($postulant->date_admission));
         $header_img = '';
         $footer_img = '';
-
         
         //Sections nad config 
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
@@ -42,11 +41,11 @@ class LetterForBank extends Controller
         $sectionStyle->setMarginBottom(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));
 
          //Promolife
-         if($company_id == 1){
+         if($postulant->company_id == 1){
             $social_reason = "PROMO LIFE, S. DE R.L. DE C.V.";
             $footerText = "La empresa PROMO LIFE, S DE RL DE CV con domicilio ubicado en SAN ANDRES ATOTO #155, PISO 1 LOCAL B, CP.53550, COL.UNIDAD SAN ESTEBAN, NAUCALPAN DE JUAREZ, ESTADO DE MEXICO    ";
 
-            $header_img = public_path('img\pl_header.png');
+            $header_img = public_path('img/pl_header.png');
 
             $headerImageStyle = array(
                 'positioning' => 'absolute',
@@ -62,7 +61,7 @@ class LetterForBank extends Controller
         }
 
         //BH tardemarket
-        if($company_id == 2){
+        if($postulant->company_id == 2){
             $social_reason = "BH TRADE MARKET, S.A. DE C.V.";
             $footerText = "LA EMPRESA BH TRADE MARKET S.A. DE C.V.  con domicilio ubicado en SAN ANDRES ATOTO #155, PISO 1 LOCAL A, CP.53550, COL.UNIDAD SAN ESTEBAN, NAUCALPAN DE JUAREZ, ESTADO DE MEXICO. 52909100";
             
@@ -90,13 +89,11 @@ class LetterForBank extends Controller
             );
 
             $header->addImage($header_img, $headerImageStyle);
-            $footer->addImage($footer_img, $footerImageStyle );
-    
-            
+            $footer->addImage($footer_img, $footerImageStyle ); 
         }
 
         //Promo zale
-        if($company_id == 3){
+        if($postulant->company_id == 3){
             $social_reason = "PROMO ZALE S.A. DE C.V."; 
             $footerText = "La empresa PROMO ZALE SA DE CV con domicilio ubicado en SAN ANDRES ATOTO #155, PISO 1 LOCAL E, CP.53550, COL.UNIDAD SAN ESTEBAN, NAUCALPAN DE JUAREZ, ESTADO DE MEXICO    ";
 
@@ -125,12 +122,10 @@ class LetterForBank extends Controller
 
             $header->addImage($header_img, $headerImageStyle);
             $footer->addImage($footer_img, $footerImageStyle );
-
-
         }
 
         //Trademarket 57
-        if($company_id== 4){
+        if($postulant->company_id== 4){
             $social_reason = "TRADE MARKET 57, S.A. DE C.V."; 
             $footerText = "LA EMPRESA TRADE MARKET 57 S.A. DE C.V.  con domicilio ubicado en SAN ANDRES ATOTO #155, PLANTA BAJA, CP.53550, COL.UNIDAD SAN ESTEBAN, NAUCALPAN DE JUAREZ, ESTADO DE MEXICO";
 
@@ -162,7 +157,7 @@ class LetterForBank extends Controller
         } 
 
         //Unipromtex
-        if($company_id== 5){
+        if($postulant->company_id== 5){
             $social_reason = "UNIPROMTEX S.A. DE C.V."; 
             $footerText = "UNIPROMTEX, S.A. DE C.V. con domicilio ubicado en, CIELITO LINDO 18B, COL. PARQUE INDUSTRIAL IZCALLI, NEZAHUALCÓYOTL, ESTADO DE MÉXICO, C.P. 57810.";
         
@@ -179,7 +174,6 @@ class LetterForBank extends Controller
             );
 
             $header->addImage($header_img, $headerImageStyle);
-        
         } 
 
         //Font styles
@@ -191,11 +185,6 @@ class LetterForBank extends Controller
                 'align' => 'both',
                 'lineHeight' => 1.0
             )
-        );
-        
-        $rightText =  array(
-            'align' => 'right',
-            'lineHeight' => 1.0
         );
 
         $footerStyleText =  array(
@@ -219,7 +208,6 @@ class LetterForBank extends Controller
             'lineHeight' => 1.0,
             'bold' => true,
         );
-
       
         $center = array(
             'align'=> 'center'
@@ -231,10 +219,6 @@ class LetterForBank extends Controller
             'align'=> 'right',
         );
         
-      
-        
-
-
         $section->addText('');
         $section->addText('');
         $section->addText('');
@@ -279,7 +263,6 @@ class LetterForBank extends Controller
             <w:br/>TEL (55)62690017',
             $bodyCenterBoldStyle, $center
         );
-
         
         $section->addText('');
         $section->addText('');

@@ -78,6 +78,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('exportUsuarios/', [UserController::class, 'exportUsuarios'])->name('user.exportUsuarios');
         Route::get('sendAccess/', [UserController::class, 'sendAccess'])->name('user.sendAccess');
         Route::get('sendAccess/{user}', [UserController::class, 'sendAccessPerUser'])->name('user.sendAccessUnit');
+        Route::get('user-details/{user_id}', [UserController::class, 'userDetails'])->name('user.userDetails');
+        Route::post('update-user-details/', [UserController::class, 'updateUserDetails'])->name('user.updateUserDetails');
+
     });
 
     // Inicio
@@ -223,6 +226,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     //Recursos humanos - gestion de empleados
     Route::get('/rh/stadistics', [RhController::class, 'stadistics'])->name('rh.stadistics');
+    Route::post('/rh/filterstadistics', [RhController::class, 'filterstadistics'])->name('rh.filterstadistics');
     Route::get('/rh/postulants', [RhController::class, 'postulants'])->name('rh.postulants');
     Route::get('/rh/drop-user', [RhController::class, 'dropUser'])->name('rh.dropUser');
 
@@ -230,23 +234,46 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::delete('/rh/drop-delete-user', [RhController::class, 'dropDeleteUser'])->name('rh.dropDeleteUser');
     Route::post('/rh/build-down-documentation/', [RhController::class, 'buildDownDocumentation'])->name('rh.buildDownDocumentation');
     Route::post('/rh/create-motive-down/', [RhController::class, 'createMotiveDown'])->name('rh.createMotiveDown');
+    Route::get('/rh/down-users/', [RhController::class, 'downUsers'])->name('rh.downUsers');
+    Route::post('/rh/up-users/', [RhController::class, 'upUsers'])->name('rh.upUsers');
 
-    
     Route::get('/rh/scan-documents/{id}', [ScanDocumentsController::class, 'scanDocuments'])->name('rh.scanDocuments');
     Route::post('/rh/update-documents/', [ScanDocumentsController::class, 'updateDocuments'])->name('rh.updateDocuments');
     Route::delete('/rh/drop-delete-document', [ScanDocumentsController::class, 'deleteDocuments'])->name('rh.deleteDocuments');
     Route::post('/rh/store-documents/', [ScanDocumentsController::class, 'storeDocuments'])->name('rh.storeDocuments');
     Route::get('/rh/create-postulant/', [RhController::class, 'createPostulant'])->name('rh.createPostulant');
     Route::post('/rh/store-postulant/', [RhController::class, 'storePostulant'])->name('rh.storePostulant');
-    Route::get('/rh/edit-postulant/{postulant}', [RhController::class, 'editPostulant'])->name('rh.editPostulant');
+    Route::post('/rh/store-more-information/', [RhController::class, 'storeMoreInformation'])->name('rh.storeMoreInformation');
+    Route::get('/rh/create-workplan/{postulant_id}', [RhController::class, 'createWorkplan'])->name('rh.createWorkplan');
+    Route::get('/rh/create-signed-kit/{postulant_id}', [RhController::class, 'createSignedKit'])->name('rh.createSignedKit');
+    Route::post('/rh/store-postulant-documents/', [RhController::class, 'storePostulantDocuments'])->name('rh.storePostulantDocuments');
+    Route::post('/rh/delete-postulant-documents/', [RhController::class, 'deletePostulantDocuments'])->name('rh.deletePostulantDocuments');
+    Route::post('/rh/store-postulant-kit/', [RhController::class, 'storePostulantKit'])->name('rh.storePostulantKit');
+    Route::post('/rh/store-up-postulant/', [RhController::class, 'storeUpPostulant'])->name('rh.storeUpPostulant');
+    Route::post('/rh/delete-postulant/', [RhController::class, 'deletePostulant'])->name('rh.deletePostulant');
+
+    Route::post('/rh/drop-postulant/', [RhController::class, 'dropPostulant'])->name('rh.dropPostulant');
+
+    Route::get('/rh/edit-postulant/{postulant_id}', [RhController::class, 'editPostulant'])->name('rh.editPostulant');
     Route::put('/rh/update-postulant/', [RhController::class, 'updatePostulant'])->name('rh.updatePostulant');
-    Route::get('/rh/create-postulant-documentation/{postulant}', [RhController::class, 'createPostulantDocumentation'])->name('rh.createPostulantDocumentation');
+    Route::get('/rh/create-postulant-documentation/{postulant_id}', [RhController::class, 'createPostulantDocumentation'])->name('rh.createPostulantDocumentation');
     Route::post('/rh/build-postulant-documentation/', [RhController::class, 'buildPostulantDocumentation'])->name('rh.buildPostulantDocumentation');
+    Route::get('/rh/create-more-postulant/{postulant_id}', [RhController::class, 'createMorePostulant'])->name('rh.createMorePostulant');
+    Route::get('/rh/create-up-postulant/{postulant_id}', [RhController::class, 'createUpPostulant'])->name('rh.createUpPostulant');
+    Route::get('/rh/no-selected-postulant/', [RhController::class, 'noSelectedPostulant'])->name('rh.noSelectedPostulant');
+    Route::post('/rh/delete-definitive-postulant/', [RhController::class, 'deleteDefinitivePostulant'])->name('rh.deleteDefinitivePostulant');
+    Route::post('/rh/create-stadistic-report/', [RhController::class, 'createStadisticReport'])->name('rh.createStadisticReport');
+
+    
+    Route::post('/rh/create-user-document/', [RhController::class, 'createUserDocument'])->name('rh.createUserDocument');
+    Route::get('/rh/drop-update-documentation/{id}', [RhController::class, 'dropUpdateDocumentation'])->name('rh.dropUpdateDocumentation');
+    Route::get('/rh/drop-user-details.blade/{id}', [RhController::class, 'dropUserDetails'])->name('rh.dropUserDetails');
+
+    Route::post('/rh/convert-to-employee/', [RhController::class, 'convertToEmployee'])->name('rh.convertToEmployee');
     
 
     Route::get('/rh/more-information/{id}', [UserDetails::class, 'moreInformation'])->name('rh.moreInformation');
-
-    Route::post('/rh/create-more-information/', [UserDetails::class, 'createMoreInformation'])->name('rh.createMoreInformation');
+    
     
 
     //sala recreativa//

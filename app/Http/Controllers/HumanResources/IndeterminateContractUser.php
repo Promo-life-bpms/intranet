@@ -6,24 +6,24 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use PhpOffice\PhpWord\Style\Language;
 
-class IndeterminateContract extends Controller
+class IndeterminateContractUser extends Controller
 {
-    public function indeterminateContract($postulant )
+    public function indeterminateContractUser($user, $user_details, $company_id)
     {
         $company = "";
         $employer = "";
-        $name = strtoupper($postulant->name);
-        $lastname = strtoupper($postulant->lastname); 
-        $nacionality = strtoupper($postulant->nacionality);  
-        $civil_status = strtoupper($postulant->civil_status) ;
-        $domicile = strtoupper($postulant->full_address) ;
-        $age = $postulant->age;
-        $curp = strtoupper($postulant->curp);
-        $position = strtoupper($postulant->position);
-        $position_objetive =  strtoupper($postulant->position_objetive);
-        $next_sign_date = date('d,m,Y',strtotime('+3 months', strtotime($postulant->date_admission)));
-        $daily_salary = strtoupper($postulant->daily_salary); 
-        $daily_salary_letter = strtoupper($postulant->daily_salary_letter); 
+        $name = strtoupper($user->name);
+        $lastname = strtoupper($user->lastname); 
+        $nacionality = strtoupper($user_details->nacionality);  
+        $civil_status = strtoupper($user_details->civil_status) ;
+        $domicile = strtoupper($user_details->full_address) ;
+        $age = $user_details->age;
+        $curp = strtoupper($user_details->curp);
+        $position = strtoupper($user_details->position);
+        $position_objetive =  strtoupper($user_details->position_objetive);
+        $next_sign_date = date('d,m,Y',strtotime('+3 months', strtotime($user_details->date_admission)));
+        $daily_salary = strtoupper($user_details->daily_salary); 
+        $daily_salary_letter = strtoupper($user_details->daily_salary_letter); 
      
        
         
@@ -108,7 +108,7 @@ class IndeterminateContract extends Controller
         $sectionStyle->setMarginBottom(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(2.5));       
 
         //Promolife
-        if($postulant->company_id == 1){
+        if($company_id == 1){
             $company = "PROMO LIFE, S. DE R.L. DE C.V.";
             $employer = "C. RAÚL TORRES MÁRQUEZ";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE PROMO LIFE, S. DE R.L. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. RAUL TORRES MARQUEZ, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -122,7 +122,7 @@ class IndeterminateContract extends Controller
         }
 
         //BH tardemarket
-        if($postulant->company_id == 2){
+        if($company_id == 2){
             $company = "BH TRADE MARKET, S.A. DE C.V.";
             $employer = "C. DAVID LEVY HANO";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE BH TRADE MARKET, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL B COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -135,7 +135,7 @@ class IndeterminateContract extends Controller
         }
 
         //Promo zale
-        if($postulant->company_id == 3){
+        if($company_id == 3){
             $company = "PROMO ZALE S.A. DE C.V."; 
             $employer = "C. DANIEL LEVY HANO";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE PROMO ZALE, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DANIEL LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PISO 1 LOCAL E COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -147,7 +147,7 @@ class IndeterminateContract extends Controller
         }
 
         //Trademarket 57
-        if($postulant->company_id== 4){
+        if($company_id== 4){
             $company = "TRADE MARKET 57, S.A. DE C.V."; 
             $employer = "C. MÓNICA REYES RESENDIZ";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO INDETERMINADO</b> QUE CELEBRAN POR UNA PARTE TRADE MARKET 57, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. MÓNICA REYES RESENDIZ, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN SAN ANDRES ATOTO No. 155 PLANTA BAJA, COL. UNIDAD SAN ESTEBAN NAUCALPAN DE JUAREZ ESTADO DE MEXICO, C.P. 53550, A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -159,7 +159,7 @@ class IndeterminateContract extends Controller
         } 
 
         //Unipromtex
-        if($postulant->company_id== 5){
+        if($company_id== 5){
             $company = "UNIPROMTEX S.A. DE C.V."; 
             $employer = "DAVID LEVY HANO";
             $section1 = "<p>CONTRATO INDIVIDUAL DE TRABAJO POR <b>TIEMPO DETERMINADO</b> QUE CELEBRAN POR UNA PARTE UNIPROMTEX, S.A. DE C.V., REPRESENTADA EN ESTE ACTO POR EL C. DAVID LEVY HANO, EN SU CARÁCTER DE REPRESENTANTE LEGAL Y CON DOMICILIO EN C. CIELITO LINDO 18 B, PARQUE INDUSTRIAL IZCALLI, NEZAHUALCOYOTL ESTADO DE MÉXICO. C.P. 57810 A QUIEN EN EL CURSO DEL PRESENTE CONTRATO SE LE DENOMINA “LA EMPRESA” Y POR LA OTRA:</p>";
@@ -270,7 +270,7 @@ class IndeterminateContract extends Controller
         $listItemRun->addText('A OBSERVAR LAS DISPOSICIONES QUE SOBRE HORARIOS DE TRABAJO EXISTAN.',[]);
 
         //Unipromtex
-        if($postulant->company_id== 5){
+        if($company_id== 5){
             $listItemRun = $section->addListItemRun(1, $multilevelListStyleName,[]);
             $listItemRun->addText('LA JORNADA DE TRABAJO SERA DE LUNES A VIERNES DE 9:00 A.M. A 6 P.M. HRS., Y LOS DÍAS SABADOS DE 9:00 A.M. A 2 P.M. HRS. DEBIENDO CUBRIR LAS 48 HORAS A LA SEMANA.',[]);
         }else{
