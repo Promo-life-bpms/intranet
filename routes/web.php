@@ -213,12 +213,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/', [SoporteController::class, 'index'])->name('soporte');
         Route::get('/create', [SoporteController::class, 'create'])->name('soporte.create');
         Route::get('/store', [SoporteController::class, 'store'])->name('soporte.store');
-        Route::get('/solucion',[SoporteController::class, 'solucion'])->middleware('role:systems')->name('solucion');
-        Route::get('/admin',[SoporteController::class, 'admin'])->middleware('role:systems')->name('admin');
-   });
+        Route::get('/solucion', [SoporteController::class, 'solucion'])->middleware('role:systems')->name('solucion');
+        Route::get('/admin', [SoporteController::class, 'admin'])->middleware('role:systems')->name('admin');
+        // Route::post('ckeditor/upload', [SoporteController::class,'upload'])->name('ckeditor.upload');
+        // Route::post('ckeditor/upload', [SoporteController::class,'store'])->name('ckeditor.store');
+
+        Route::post('editor/image_upload',[SoporteController::class,'upload'])->name('upload');
+    });
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
 Route::get('vacations/sendRemembers/', [VacationsController::class, 'sendRemembers'])->name('admin.vacations.sendRemembers');
 Route::get('request/alertRequesPendients/', [RequestController::class, 'alertPendient']);
-

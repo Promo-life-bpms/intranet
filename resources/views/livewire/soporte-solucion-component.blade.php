@@ -75,7 +75,7 @@
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"
                             wire:ignore.self>
-                            <form>
+                            <form method="POST">
                                 @csrf
                                 <p><span class="fw-bold">Problema a resolver :</span> <span>{{ $name }}</span>
                                 </p>
@@ -95,7 +95,7 @@
                                         <span>{!! $mensajes->message !!}</span>
                                     @endforeach
 
-                                 
+
                                 @endif
                                 <hr>
                                 {{-- @if ($status)
@@ -233,45 +233,60 @@
                             @endif --}}
 
                             @if ($historial)
-    <div class="card">
-        <div class="card-header">
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered table-hover">
-                <tbody>
-                    @foreach ($historial->historial as $cambio)
-                        <tr>
-                            <td>
-                                @if ($cambio->type == 'creado')
-                                    <div class="alert alert-primary">
-                                        <p class="mb-0"><strong>Status:</strong> {{ $cambio->type }} ({{ $cambio->created_at->diffForHumans() }})</p>
+                                <div class="card">
+                                    <div class="card-header">
                                     </div>
-                                @elseif ($cambio->type == 'edito')
-                                    <div class="alert alert-warning">
-                                        <p class="mb-0"><strong>Status:</strong> {{ $cambio->type }} ({{ $cambio->created_at->diffForHumans() }})</p>
+                                    <div class="card-body">
+                                        <table class="table table-bordered table-hover">
+                                            <tbody>
+                                                @foreach ($historial->historial as $cambio)
+                                                    <tr>
+                                                        <td>
+                                                            @if ($cambio->type == 'creado')
+                                                                <div class="alert alert-primary">
+                                                                    <p class="mb-0"><strong>Status:</strong>
+                                                                        {{ $cambio->type }}
+                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                    </p>
+                                                                </div>
+                                                            @elseif ($cambio->type == 'edito')
+                                                                <div class="alert alert-warning">
+                                                                    <p class="mb-0"><strong>Status:</strong>
+                                                                        {{ $cambio->type }}
+                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                    </p>
+                                                                </div>
+                                                            @elseif ($cambio->type == 'Mensaje')
+                                                                <div class="alert alert-info">
+                                                                    <p class="mb-0"><strong>Status:</strong>
+                                                                        {{ $cambio->type }}
+                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                    </p>
+                                                                </div>
+                                                            @elseif ($cambio->type == 'status')
+                                                                <div class="alert alert-success">
+                                                                    <p class="mb-0"><strong>Status:</strong>
+                                                                        {{ $cambio->type }}
+                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                    </p>
+                                                                </div>
+                                                            @elseif ($cambio->type == 'solucion')
+                                                                <div class="alert alert-dark">
+                                                                    <p class="mb-0"><strong>Status:</strong>
+                                                                        {{ $cambio->type }}
+                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                    </p>
+                                                                </div>
+                                                            @endif
+                                                            {!! $cambio->data !!}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                     </div>
-                                @elseif ($cambio->type == 'Mensaje')
-                                    <div class="alert alert-info">
-                                        <p class="mb-0"><strong>Status:</strong> {{ $cambio->type }} ({{ $cambio->created_at->diffForHumans() }})</p>
-                                    </div>
-                                @elseif ($cambio->type == 'status')
-                                    <div class="alert alert-success">
-                                        <p class="mb-0"><strong>Status:</strong> {{ $cambio->type }} ({{ $cambio->created_at->diffForHumans() }})</p>
-                                    </div>
-                                @elseif ($cambio->type == 'solucion')
-                                    <div class="alert alert-dark">
-                                        <p class="mb-0"><strong>Status:</strong> {{ $cambio->type }} ({{ $cambio->created_at->diffForHumans() }})</p>
-                                    </div>
-                                @endif
-                                {!! $cambio->data !!}
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-@endif
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -285,7 +300,9 @@
     <script>
         let ckEditorSolucion;
         ClassicEditor
-            .create(document.querySelector('#editorMensaje'))
+            .create(document.querySelector('#editorMensaje'),{
+                extraPlugins: [MyCustomUploadAdapterPlugin],
+            })
             .then(newEditor => {
                 ckEditorSolucion = newEditor;
             })
@@ -303,6 +320,74 @@
 
 
         })
+        class MyUploadAdapter {
+            constructor(loader) {
+                this.loader = loader;
+            }
+
+            upload() {
+                return this.loader.file
+                    .then(file => new Promise((resolve, reject) => {
+                        this._initRequest();
+                        this._initListeners(resolve, reject, file);
+                        this._sendRequest(file);
+                    }));
+            }
+
+            abort() {
+                if (this.xhr) {
+                    this.xhr.abort();
+                }
+            }
+
+            _initRequest() {
+                const xhr = this.xhr = new XMLHttpRequest();
+
+                xhr.open('POST', "{{ route('upload', ['_token' => csrf_token()]) }}", true);
+                xhr.responseType = 'json';
+            }
+
+            _initListeners(resolve, reject, file) {
+                const xhr = this.xhr;
+                const loader = this.loader;
+                const genericErrorText = `Couldn't upload file: ${ file.name }.`;
+
+                xhr.addEventListener('error', () => reject(genericErrorText));
+                xhr.addEventListener('abort', () => reject());
+                xhr.addEventListener('load', () => {
+                    const response = xhr.response;
+
+                    if (!response || response.error) {
+                        return reject(response && response.error ? response.error.message : genericErrorText);
+                    }
+
+                    resolve(response);
+                });
+
+                if (xhr.upload) {
+                    xhr.upload.addEventListener('progress', evt => {
+                        if (evt.lengthComputable) {
+                            loader.uploadTotal = evt.total;
+                            loader.uploaded = evt.loaded;
+                        }
+                    });
+                }
+            }
+
+            _sendRequest(file) {
+                const data = new FormData();
+
+                data.append('upload', file);
+
+                this.xhr.send(data);
+            }
+        }
+
+        function MyCustomUploadAdapterPlugin(editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new MyUploadAdapter(loader);
+            };
+        }
 
 
         window.addEventListener('ticket_solucion', () => {
@@ -324,7 +409,12 @@
             if (ckEditorSolucion) {
                 ckEditorSolucion.destroy();
                 ClassicEditor
-                    .create(document.querySelector('#editorMensaje'))
+                    .create(document.querySelector('#editorMensaje'), {
+                        // ckfinder:{
+                        //     uploadUrl:"{{ route('soporte.store', ['_token' => csrf_token()]) }}"
+                        // }
+                        extraPlugins: [MyCustomUploadAdapterPlugin],
+                    })
                     .then(newEditor => {
                         ckEditorSolucion = newEditor;
                         const editor = document.querySelector('.text-input-mensaje .ck-editor__editable');
@@ -345,9 +435,10 @@
         });
 
         function atender(id, status_id) {
-            // const textarea = document.getElementById('editorMensaje');
+
             if (status_id == 2 || status_id == 3) {
                 $('#ModalAgregar').modal('show')
+
 
             } else {
                 Swal.fire({
@@ -367,10 +458,21 @@
                     }
                 })
             }
+            // if(status_id == 2){
+            //     $('#ModalAgregar').modal('show')
+            //     if(status_id == 3 && ckEditorSolucion)
+            //     $('#ModalAgregr').modal.('show')
+            //     ckEditorSolucion.destroy();
+            //     ClassicEditor
+            //         .create(document.querySelector('#editorMensaje'),{
+            //             readOnly:true
+            //         })
 
+            //         .catch(error => {
+            //             console.error(error);
+            //         }); 
 
-
-
+            // }   
         }
     </script>
 </div>
