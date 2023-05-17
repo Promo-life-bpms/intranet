@@ -55,7 +55,7 @@
 </div>
     <div class="card-body">
         @if (session('message'))
-            <div class="alert alert-danger">
+            <div class="alert alert-success">
                 {{ session('message') }}
             </div>
 

@@ -327,14 +327,9 @@
                 </div>
 
                 <div class="col-sm ">
-                    {!! Form::label('month_salary_gross', 'Salario bruto mensual', ['class' => 'required']) !!}
+                    {!! Form::label('month_salary_gross', 'Salario bruto mensual') !!}
                     {!! Form::text('month_salary_gross', $postulant->month_salary_gross, ['class' => 'form-control', 'placeholder' => 'Ingrese el salario bruto mensual']) !!}
-                    @error('month_salary_gross')
-                        <small>
-                            <font color="red"> *Este campo es requerido* </font>
-                        </small>
-                        <br>
-                    @enderror
+                    
                 </div>
             </div>
 
