@@ -48,11 +48,11 @@ class SoporteController extends Controller
             $request->file('upload')->storeAs('public/uploads/thumbnail', $filenametostore);
 
             //Resize image here
-            $thumbnailpath = public_path('storage/uploads/thumbnail/' . $filenametostore);
-            $img = Image::make($thumbnailpath)->resize(500, 150, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $img->save($thumbnailpath);
+            // $thumbnailpath = public_path('storage/uploads/thumbnail/' . $filenametostore);
+            // $img = Image::make($thumbnailpath)->resize(500, 150, function ($constraint) {
+            //     $constraint->aspectRatio();
+            // });
+            // $img->save($thumbnailpath);
 
             echo json_encode([
                 'default' => asset('storage/uploads/' . $filenametostore),
