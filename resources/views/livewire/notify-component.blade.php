@@ -70,7 +70,7 @@
 
                                 @case('App\Notifications\SoporteNotification')
                                     <b>{{ $notification->data['data']['name'] }}</b>
-                                    <p class="my-0">Te ha enviado un ticket</p>
+                                    <p class="my-0">Te ha enviado un ticket :</p>
                                     <p class="my-0">{{ $notification->data['data']['name_ticket'] }}</p>
                                 @break
 

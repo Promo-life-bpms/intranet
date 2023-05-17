@@ -10,7 +10,7 @@
 **Problema** : {{ $data['name_ticket'] }}
 
 {{$data['tiempo']}}
-@component('mail::button', ['url' => 'https://intranet.promolife.lat/soporte/solucion', 'color' => 'blue'])
+@component('mail::button', ['url' => 'http://intranet.test/soporte/solucion', 'color' => 'blue'])
     Ver Ticket
 @endcomponent
 @endcomponent

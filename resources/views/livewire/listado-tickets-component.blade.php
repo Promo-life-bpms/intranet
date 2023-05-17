@@ -92,7 +92,7 @@
                     <form enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label for="Problema" class="form-label">Problema a resolver</label>
+                            <label for="Problema" class="form-label fs-4">Problema a resolver</label>
                             <input type="text"
                                 class="form-control input-lg @error('name') is-invalid @enderror "placeholder="ingresa el problema a resolver"
                                 name="name" wire:model="name" value="{{ old('name') }}">
@@ -104,9 +104,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="Problema" class="form-label">Categoría</label>
+                            <label for="Problema" class="form-label fs-4">Categoría</label>
                             <div class="input-group mb-3">
-                                <label class="input-group-text" for="inputGroupSelect01">Categoría</label>
+                                <label class="input-group-text " for="inputGroupSelect01">Categoría</label>
                                 <select wire:model="categoria" name="categoria"
                                     class="form-select @error('categoria') is-invalid @enderror"
                                     id="inputGroupSelect01">
@@ -123,17 +123,14 @@
                             </div>
                         </div>
                         <div wire:ignore class="mb-3 text-input-crear">
-                            <label for="descripcion" class="form-label">Descripción</label>
+                            <label for="descripcion" class="form-label fs-4">Descripción</label>
                             <textarea wire:model="data" id="editor" cols="20" rows="3" class="form-control" name="data"></textarea>
                         </div>
                         @error('data')
                             <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
                         @enderror
                     </form>
-
-
                 </div>
-
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
@@ -160,7 +157,7 @@
                     <form enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label for="Problema" class="form-label">Problema a resolver</label>
+                            <label for="Problema" class="form-label fs-4">Problema a resolver</label>
                             <input type="text" class="form-control input-lg @error('name') is-invalid @enderror "
                                 placeholder="ingresa el problema a resolver" name="name" wire:model="name"
                                 value="{{ old('name') }}">
@@ -172,7 +169,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="Problema" class="form-label">Categoría</label>
+                            <label for="Problema" class="form-label fs-4">Categoría</label>
                             <div class="input-group mb-3">
                                 <label class="input-group-text" for="inputGroupSelect01">Categoría</label>
                                 <select wire:model="categoria" name="categoria"
@@ -195,7 +192,7 @@
                         </div>
 
                         <div wire:ignore class="mb-3 text-input-editar">
-                            <label for="descripcion" class="form-label fw-bold">Descripción</label>
+                            <label for="descripcion" class="form-label fs-4">Descripción</label>
                             <textarea wire:model="data" id="editorEditar" cols="20" rows="3" class="form-control" name="data"></textarea>
                             @error('data')
                                 <span class="invalid-feedback">
@@ -242,17 +239,17 @@
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                             aria-labelledby="home-tab" wire:ignore.self>
-                            <p><span class="fw-bold">Problema a resolver :</span> <span>{{ $name }}</span></p>
+                            <p><span class="fw-bold fs-4">Problema a resolver :</span> <span class="fs-4">{{ $name }}</span></p>
 
-                            <p><span class="fw-bold">Categoría :</span> <span>{{ $categoria }}</span></p>
+                            <p><span class="fw-bold fs-4">Categoría :</span> <span class="fs-4">{{ $categoria }}</span></p>
 
-                            <p><span class="fw-bold">Descripción :</span></p>
+                            <p><span class="fw-bold fs-4">Descripción :</span></p>
 
                             <div class="text-mostrar">
                                 <p>{!! $data !!}</p>
                             </div>
                             <hr>
-                            <p><span class="fw-bold">Solución:</span></p>
+                            <p><span class="fw-bold fs-4">Solución:</span></p>
                             @if ($ticket_solucion)
                                 @foreach ($ticket_solucion->solution as $solucion)
                                     {!! $solucion->description !!}
@@ -260,14 +257,17 @@
                             @endif
                             <hr>
                             {{-- Editor Mensaje --}}
-                            <div wire:ignore class="mb-3 text-input-mensaje">
-                                <label class="form-label fw-bold">Enviar mensaje</label></label>
-                                <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
-                                @error('message')
-                                    <span class="invalid-feedback">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+
+                            <div>
+                                <div wire:ignore class="mb-3 text-input-mensaje">
+                                    <label class="form-label fw-bold fs-4">Enviar mensaje</label></label>
+                                    <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
+                                    @error('message')
+                                        <span class="invalid-feedback">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 @if ($ticket_solucion)
@@ -289,49 +289,62 @@
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
                             wire:ignore.self>
 
+                           
+
                             @if ($ticket_solucion)
-                                <table class="table table-bordered table-hover">
-                                    <tbody>
-                                        @foreach ($ticket_solucion->historial as $cambio)
-                                            <tr>
-                                                <td>
-                                                    @if ($cambio->type == 'creado')
-                                                        <div class="alert-sm alert-primary alert-dismissible text-center rounded-3"
-                                                            role="alert">
-                                                            <p class="">Status: {{ $cambio->type }}
-                                                                {{ $cambio->created_at->diffForHumans() }}</p>
-                                                        </div>
-                                                    @elseif ($cambio->type == 'edito')
-                                                        <div class="alert-sm alert-warning alert-dismissible text-center rounded-3"
-                                                            role="alert">
-                                                            <p class="">Status: {{ $cambio->type }}
-                                                                {{ $cambio->created_at->diffForHumans() }}</p>
-                                                        </div>
-                                                    @elseif ($cambio->type == 'Mensaje')
-                                                        <div class="alert-sm alert-info alert-dismissible text-center rounded-3"
-                                                            role="alert">
-                                                            <p class="">Status: {{ $cambio->type }}
-                                                                {{ $cambio->created_at->diffForHumans() }}</p>
-                                                        </div>
-                                                    @elseif ($cambio->type == 'status')
-                                                        <div class="alert-sm alert-success alert-dismissible text-center rounded-3"
-                                                            role="alert">
-                                                            <p class="">Status: {{ $cambio->type }}
-                                                                {{ $cambio->created_at->diffForHumans() }}</p>
-                                                        </div>
-                                                    @elseif ($cambio->type == 'solucion')
-                                                        <div class="alert-sm alert-dark alert-dismissible text-center rounded-3"
-                                                            role="alert">
-                                                            <p class="">Status: {{ $cambio->type }}
-                                                                {{ $cambio->created_at->diffForHumans() }}</p>
-                                                        </div>
-                                                    @endif
-                                                    {!! $cambio->data !!}
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                <div class="card">
+                                    <div class="card-header">
+                                    </div>
+                                    <div class="card-body">
+                                        <table class="table table-bordered table-hover">
+                                            <tbody>
+                                                @foreach ($ticket_solucion->historial as $cambio)
+                                                    <tr>
+                                                        <td>
+                                                            @if ($cambio->type == 'creado')
+                                                                <div class="alert alert-primary">
+                                                                    <p class="mb-0"><strong>Status:</strong>
+                                                                        {{ $cambio->type }}
+                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                    </p>
+                                                                </div>
+                                                            @elseif ($cambio->type == 'edito')
+                                                                <div class="alert alert-warning">
+                                                                    <p class="mb-0"><strong>Status:</strong>
+                                                                        {{ $cambio->type }}
+                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                    </p>
+                                                                </div>
+                                                            @elseif ($cambio->type == 'Mensaje')
+                                                                <div class="alert alert-info">
+                                                                    <p class="mb-0"><strong>Status:</strong>
+                                                                        {{ $cambio->type }}
+                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                    </p>
+                                                                </div>
+                                                            @elseif ($cambio->type == 'status')
+                                                                <div class="alert alert-success">
+                                                                    <p class="mb-0"><strong>Status:</strong>
+                                                                        {{ $cambio->type }}
+                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                    </p>
+                                                                </div>
+                                                            @elseif ($cambio->type == 'solucion')
+                                                                <div class="alert alert-dark">
+                                                                    <p class="mb-0"><strong>Status:</strong>
+                                                                        {{ $cambio->type }}
+                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                    </p>
+                                                                </div>
+                                                            @endif
+                                                            {!! $cambio->data !!}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             @endif
                         </div>
                     </div>
@@ -344,11 +357,12 @@
     <script>
         let ckEditorCreate, ckEditorEdit, ckEditorMensaje;
         ClassicEditor
-            .create(document.querySelector('#editor'),{
-                extraPlugins:[MyCustomUploadAdapterPlugin],
+            .create(document.querySelector('#editor'), {
+                extraPlugins: [MyCustomUploadAdapterPlugin],
             })
             .then(newEditor => {
                 ckEditorCreate = newEditor;
+
             })
             .catch(error => {
                 console.error(error);
@@ -358,7 +372,7 @@
             const editor = document.querySelector('.text-input-crear .ck-editor__editable');
 
             editor.addEventListener('keyup', () => {
-                
+
                 let texto = ckEditorCreate.getData();
                 console.log(texto);
                 @this.data = texto
@@ -454,8 +468,8 @@
 
 
         ClassicEditor
-            .create(document.querySelector('#editorEditar'),{
-                extraPlugins:[MyCustomUploadAdapterPlugin],
+            .create(document.querySelector('#editorEditar'), {
+                extraPlugins: [MyCustomUploadAdapterPlugin],
             })
             .then(newEditor => {
                 ckEditorEdit = newEditor;
@@ -468,8 +482,8 @@
 
 
         ClassicEditor
-            .create(document.querySelector('#editorMensaje'),{
-                extraPlugins:[MyCustomUploadAdapterPlugin],
+            .create(document.querySelector('#editorMensaje'), {
+                extraPlugins: [MyCustomUploadAdapterPlugin],
             })
             .then(newEditor => {
                 ckEditorMensaje = newEditor;
@@ -485,26 +499,27 @@
         window.addEventListener("mostrar_data", () => {
 
             ckEditorEdit.setData(@this.data);
-            // ckEditorVer.setData(@this.data);
+
         });
 
 
-     //   Evento para cargar el editor de nuevo pero no envia la data del mensaje
+        //   Evento para cargar el editor de nuevo pero no envia la data del mensaje
         window.addEventListener('cargar', () => {
             if (ckEditorMensaje) {
                 ckEditorMensaje.destroy();
 
                 ClassicEditor
-                    .create(document.querySelector('#editorMensaje'),{
-                        extraPlugins:[MyCustomUploadAdapterPlugin],
+                    .create(document.querySelector('#editorMensaje'), {
+                        extraPlugins: [MyCustomUploadAdapterPlugin],
                     })
                     .then(newEditor => {
                         ckEditorMensaje = newEditor;
-                        const editorMessage = document.querySelector('.text-input-mensaje .ck-editor__editable');
+                        const editorMessage = document.querySelector(
+                        '.text-input-mensaje .ck-editor__editable');
                         editorMessage.addEventListener('keyup', () => {
-                          
+
                             let texto = ckEditorMensaje.getData();
-                                    console.log(texto);
+                            console.log(texto);
                             @this.mensaje = texto
                         });
 

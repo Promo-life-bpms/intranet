@@ -18,7 +18,7 @@ use App\Notifications\StatusEnProcesoSoporteNotification;
 class SoporteSolucionComponent extends Component
 {
     use WithPagination;
-    public $ticket_id, $name, $categoria, $data, $categorias, $description,$mensaje,$status,$historial;
+    public $ticket_id, $name, $categoria, $data, $categorias, $description,$mensaje,$status,$historial,$usuario;
     protected $paginationTheme = 'bootstrap';
     public function render()
     {
@@ -62,6 +62,8 @@ class SoporteSolucionComponent extends Component
     {
         $ticket = Ticket::find($id);
         $message= Mensaje::find($this->ticket_id);
+        // dd($message->usuarios);
+        $this->usuario=$message;
         $this->status=$ticket;
         $this->historial=$ticket;
         $this->mensaje=$ticket;
