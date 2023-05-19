@@ -8,8 +8,6 @@
         </div>
     </div>
 
-
-
     <div class="card-body">
 
         <div class="table-responsive">
@@ -87,12 +85,10 @@
                 </div>
 
                 <div class="modal-body">
-
-
                     <form enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label for="Problema" class="form-label fs-4">Problema a resolver</label>
+                            <label for="Problema" class="form-label">Problema a resolver</label>
                             <input type="text"
                                 class="form-control input-lg @error('name') is-invalid @enderror "placeholder="ingresa el problema a resolver"
                                 name="name" wire:model="name" value="{{ old('name') }}">
@@ -104,7 +100,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="Problema" class="form-label fs-4">Categoría</label>
+                            <label for="Problema" class="form-label ">Categoría</label>
                             <div class="input-group mb-3">
                                 <label class="input-group-text " for="inputGroupSelect01">Categoría</label>
                                 <select wire:model="categoria" name="categoria"
@@ -123,7 +119,7 @@
                             </div>
                         </div>
                         <div wire:ignore class="mb-3 text-input-crear">
-                            <label for="descripcion" class="form-label fs-4">Descripción</label>
+                            <label for="descripcion" class="form-label">Descripción</label>
                             <textarea wire:model="data" id="editor" cols="20" rows="3" class="form-control" name="data"></textarea>
                         </div>
                         @error('data')
@@ -157,7 +153,7 @@
                     <form enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label for="Problema" class="form-label fs-4">Problema a resolver</label>
+                            <label for="Problema" class="form-label ">Problema a resolver</label>
                             <input type="text" class="form-control input-lg @error('name') is-invalid @enderror "
                                 placeholder="ingresa el problema a resolver" name="name" wire:model="name"
                                 value="{{ old('name') }}">
@@ -169,7 +165,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="Problema" class="form-label fs-4">Categoría</label>
+                            <label for="Problema" class="form-label">Categoría</label>
                             <div class="input-group mb-3">
                                 <label class="input-group-text" for="inputGroupSelect01">Categoría</label>
                                 <select wire:model="categoria" name="categoria"
@@ -192,7 +188,7 @@
                         </div>
 
                         <div wire:ignore class="mb-3 text-input-editar">
-                            <label for="descripcion" class="form-label fs-4">Descripción</label>
+                            <label for="descripcion" class="form-label">Descripción</label>
                             <textarea wire:model="data" id="editorEditar" cols="20" rows="3" class="form-control" name="data"></textarea>
                             @error('data')
                                 <span class="invalid-feedback">
@@ -239,17 +235,19 @@
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                             aria-labelledby="home-tab" wire:ignore.self>
-                            <p><span class="fw-bold fs-4">Problema a resolver :</span> <span class="fs-4">{{ $name }}</span></p>
+                            <p><span class="fw-bold ">Problema a resolver :</span> <span
+                                    class="">{{ $name }}</span></p>
 
-                            <p><span class="fw-bold fs-4">Categoría :</span> <span class="fs-4">{{ $categoria }}</span></p>
+                            <p><span class="fw-bold">Categoría :</span> <span
+                                    class="Psop">{{ $categoria }}</span></p>
 
-                            <p><span class="fw-bold fs-4">Descripción :</span></p>
+                            <p><span class="fw-bold">Descripción :</span></p>
 
                             <div class="text-mostrar">
                                 <p>{!! $data !!}</p>
                             </div>
                             <hr>
-                            <p><span class="fw-bold fs-4">Solución:</span></p>
+                            <p><span class="fw-bold ">Solución:</span></p>
                             @if ($ticket_solucion)
                                 @foreach ($ticket_solucion->solution as $solucion)
                                     {!! $solucion->description !!}
@@ -257,18 +255,17 @@
                             @endif
                             <hr>
                             {{-- Editor Mensaje --}}
-
-                            <div>
-                                <div wire:ignore class="mb-3 text-input-mensaje">
-                                    <label class="form-label fw-bold fs-4">Enviar mensaje</label></label>
-                                    <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
-                                    @error('message')
-                                        <span class="invalid-feedback">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
+                                    <div>
+                                        <div wire:ignore class="mb-3 text-input-mensaje">
+                                            <label class="form-label fw-bold">Enviar mensaje</label></label>
+                                            <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
+                                            @error('message')
+                                                <span class="invalid-feedback">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
                             <div class="modal-footer">
                                 @if ($ticket_solucion)
                                     @if ($ticket_solucion->status_id == 3)
@@ -289,9 +286,9 @@
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
                             wire:ignore.self>
 
-                           
 
-                            @if ($ticket_solucion)
+                            
+                            {{-- @if ($ticket_solucion)
                                 <div class="card">
                                     <div class="card-header">
                                     </div>
@@ -346,54 +343,38 @@
                                     </div>
                                 </div>
                             @endif
+                               --}}
+                               
+
+                                
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-
     <script>
         let ckEditorCreate, ckEditorEdit, ckEditorMensaje;
+
         ClassicEditor
             .create(document.querySelector('#editor'), {
+                removePlugins: ['MediaEmbed'],
                 extraPlugins: [MyCustomUploadAdapterPlugin],
             })
             .then(newEditor => {
                 ckEditorCreate = newEditor;
 
+                // Escucha el evento 'change'
+                ckEditorCreate.model.document.on('change', () => {
+                    const content = ckEditorCreate.getData();
+                    @this.data = content
+                    console.log(content); // Imprime el contenido actualizado en la consola
+                });
             })
             .catch(error => {
                 console.error(error);
             });
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const editor = document.querySelector('.text-input-crear .ck-editor__editable');
-
-            editor.addEventListener('keyup', () => {
-
-                let texto = ckEditorCreate.getData();
-                console.log(texto);
-                @this.data = texto
-
-            });
-            const editorUpdate = document.querySelector('.text-input-editar .ck-editor__editable');
-
-            editorUpdate.addEventListener('keyup', () => {
-                let texto = ckEditorEdit.getData();
-                console.log(texto);
-                @this.data = texto
-
-            });
-            const editorMessage = document.querySelector('.text-input-mensaje .ck-editor__editable');
-            editorMessage.addEventListener('keyup', () => {
-                let texto = ckEditorMensaje.getData();
-                console.log(texto);
-                @this.mensaje = texto
-            });
-
-        });
 
         class MyUploadAdapter {
             constructor(loader) {
@@ -451,9 +432,7 @@
 
             _sendRequest(file) {
                 const data = new FormData();
-
                 data.append('upload', file);
-
                 this.xhr.send(data);
             }
         }
@@ -464,16 +443,19 @@
             };
         }
 
-
-
-
         ClassicEditor
             .create(document.querySelector('#editorEditar'), {
+                removePlugins: ['MediaEmbed'],
                 extraPlugins: [MyCustomUploadAdapterPlugin],
             })
             .then(newEditor => {
                 ckEditorEdit = newEditor;
-
+                // Escucha el evento 'change'
+                ckEditorEdit.model.document.on('change', () => {
+                    const content = ckEditorEdit.getData();
+                    @this.data = content
+                    console.log(content);
+                });
 
             })
             .catch(error => {
@@ -483,7 +465,7 @@
 
         ClassicEditor
             .create(document.querySelector('#editorMensaje'), {
-                extraPlugins: [MyCustomUploadAdapterPlugin],
+                // extraPlugins: [MyCustomUploadAdapterPlugin],
             })
             .then(newEditor => {
                 ckEditorMensaje = newEditor;
@@ -494,33 +476,27 @@
                 console.error(error);
             });
 
-
-
         window.addEventListener("mostrar_data", () => {
-
             ckEditorEdit.setData(@this.data);
 
         });
 
-
-        //   Evento para cargar el editor de nuevo pero no envia la data del mensaje
         window.addEventListener('cargar', () => {
             if (ckEditorMensaje) {
                 ckEditorMensaje.destroy();
 
                 ClassicEditor
                     .create(document.querySelector('#editorMensaje'), {
+                        removePlugins: ['MediaEmbed'],
                         extraPlugins: [MyCustomUploadAdapterPlugin],
                     })
                     .then(newEditor => {
                         ckEditorMensaje = newEditor;
-                        const editorMessage = document.querySelector(
-                        '.text-input-mensaje .ck-editor__editable');
-                        editorMessage.addEventListener('keyup', () => {
 
-                            let texto = ckEditorMensaje.getData();
-                            console.log(texto);
-                            @this.mensaje = texto
+                        ckEditorMensaje.model.document.on('change', () => {
+                            const content = ckEditorMensaje.getData();
+                            @this.mensaje = content
+                            console.log(content);
                         });
 
                     })
@@ -573,7 +549,6 @@
         });
 
         function finalizar(id) {
-
             Swal.fire({
                 title: 'Quieres finalizar el ticket?',
                 icon: 'question',
@@ -596,8 +571,6 @@
             })
 
         }
+    
     </script>
-
-
-
 </div>

@@ -13,7 +13,7 @@ class SoporteController extends Controller
 {
     //
 
-   
+
     public function index()
     {
         return view('soporte.index');
@@ -56,8 +56,10 @@ class SoporteController extends Controller
 
             echo json_encode([
                 'default' => asset('storage/uploads/' . $filenametostore),
-                '500' => asset('storage/uploads/thumbnail/' . $filenametostore)
+                // '500' => asset('storage/uploads/thumbnail/' . $filenametostore)
             ]);
         }
     }
+
+
 }

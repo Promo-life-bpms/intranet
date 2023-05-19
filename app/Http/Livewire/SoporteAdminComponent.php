@@ -5,8 +5,6 @@ namespace App\Http\Livewire;
 use App\Models\Soporte\Categoria;
 use App\Models\User;
 use Livewire\Component;
-use PhpOffice\PhpSpreadsheet\Calculation\Category;
-use App\Models\Soporte\Ticket;
 
 class SoporteAdminComponent extends Component
 {
@@ -46,8 +44,8 @@ class SoporteAdminComponent extends Component
         $usuario->asignacionCategoria()->toggle([$categorias]);
         $this->dispatchBrowserEvent('asignacion_correcta');
 
-        
+
     }
 
-    
+
 }

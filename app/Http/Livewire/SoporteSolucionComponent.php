@@ -2,15 +2,12 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\Soporte\Categoria;
-use App\Models\User;
+
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Soporte\Ticket;
 use App\Models\Soporte\Mensaje;
 use App\Models\Soporte\Solucion;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Soporte\UsuariosSoporte;
 use App\Models\Soporte\Historial;
 use App\Notifications\SolucionSoporteNotification;
 use App\Notifications\StatusEnProcesoSoporteNotification;
@@ -62,7 +59,6 @@ class SoporteSolucionComponent extends Component
     {
         $ticket = Ticket::find($id);
         $message= Mensaje::find($this->ticket_id);
-        // dd($message->usuarios);
         $this->usuario=$message;
         $this->status=$ticket;
         $this->historial=$ticket;

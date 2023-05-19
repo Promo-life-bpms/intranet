@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\User;
+
 use Livewire\WithPagination;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -58,14 +58,6 @@ class ListadoTicketsComponent extends Component
         $category = Categoria::find((int) $this->categoria);
         //encuentrar a los usuarios relacionados con la categoria del ticket
         $usuarios =  $category->usuarios;
-
-
-        // $user_ticket=Ticket::whereIn('category_id',$usuarios);
-        // dd($user_ticket);
-
-        // $tickets = $category->tickets()->whereIn('user_id', $category->usuarios->pluck('id'))->get();
-
-
 
         $ticket = Ticket::create(
             [

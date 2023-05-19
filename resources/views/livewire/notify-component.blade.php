@@ -76,8 +76,8 @@
 
                                 @case('App\Notifications\EditarTicketNotification')
                                     <b>{{ $notification->data['data']['name'] }}</b>
-                                    <p class="my-0">Ha editado el ticket :{{ $notification->data['data']['name_ticket'] }}
-                                    </p>
+                                    <p class="my-0">Ha editado el ticket :</p>
+                                    <p class="my-0">{{ $notification->data['data']['name_ticket'] }}</p>
                                 @break
 
                                 @case('App\Notifications\MessageSoporteNotification')

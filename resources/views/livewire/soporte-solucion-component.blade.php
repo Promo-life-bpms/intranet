@@ -49,7 +49,7 @@
             </div>
         </div>
     </div>
-    <div wire:ignore.self class="modal fade"  id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
+    <div wire:ignore.self class="modal fade" id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable  modal-lg">
             <div class="modal-content">
@@ -77,28 +77,30 @@
                             wire:ignore.self>
                             <form method="POST">
                                 @csrf
-                                <p><span class="fw-bold fs-4">Problema a resolver :</span> <span class="fs-4">{{ $name }}</span>
+                                <p><span class="fw-bold ">Problema a resolver :</span> <span
+                                        class="">{{ $name }}</span>
                                 </p>
 
-                                <p><span class="fw-bold fs-4">Categoría :</span> <span class="fs-4">{{ $categoria }}</span></p>
+                                <p><span class="fw-bold ">Categoría :</span> <span
+                                        class="">{{ $categoria }}</span></p>
 
-                                <p><span class="fw-bold fs-4 ">Descripción:</span></p>
+                                <p><span class="fw-bold  ">Descripción:</span></p>
 
-                                <div >
+                                <div>
                                     <p>{!! $data !!}</p>
                                 </div>
 
                                 <hr>
-                                <p><span class="fw-bold fs-4">Mensajes :</span></span></p>
+                                <p><span class="fw-bold">Mensajes :</span></span></p>
                                 @if ($mensaje)
                                     @foreach ($mensaje->mensajes as $mensajes)
-                                        <span >{!! $mensajes->message !!}</span>
+                                        <span>{!! $mensajes->message !!}</span>
                                     @endforeach
-h
                                 @endif
                                 <hr>
+                                
                                 <div wire:ignore class="mb-3 text-input-mensaje">
-                                    <label for="descripcion" class="form-label fw-bold fs-4">Solución</label>
+                                    <label for="descripcion" class="form-label fw-bold">Solución</label>
                                     <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="description"></textarea>
                                 </div>
 
@@ -202,26 +204,25 @@ h
         let ckEditorSolucion, ckeEditorDisable;
         ClassicEditor
             .create(document.querySelector('#editorMensaje'), {
+                removePlugins: ['MediaEmbed'],
                 extraPlugins: [MyCustomUploadAdapterPlugin],
             })
             .then(newEditor => {
                 ckEditorSolucion = newEditor;
+                // Escucha el evento 'change'
+                //para subir las imagenes y la data del ckeditor
+                ckEditorSolucion.model.document.on('change', () => {
+                    const content = ckEditorSolucion.getData();
+                    @this.description = content
+                    console.log(content); // Imprime el contenido actualizado en la consola
+                });
+
             })
             .catch(error => {
                 console.error(error);
             });
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const editor = document.querySelector('.text-input-mensaje .ck-editor__editable');
-            //Escuchar el evento key?
-            editor.addEventListener('keyup', () => {
-                let texto = ckEditorSolucion.getData();
-                @this.description = texto
 
-            })
-
-
-        })
         class MyUploadAdapter {
             constructor(loader) {
                 this.loader = loader;
@@ -312,64 +313,31 @@ h
                 ckEditorSolucion.destroy();
                 ClassicEditor
                     .create(document.querySelector('#editorMensaje'), {
-                        // ckfinder:{
-                        //     uploadUrl:"{{ route('soporte.store', ['_token' => csrf_token()]) }}"
-                        // }
+                        removePlugins: ['MediaEmbed'],
                         extraPlugins: [MyCustomUploadAdapterPlugin],
                     })
                     .then(newEditor => {
                         ckEditorSolucion = newEditor;
-                        const editor = document.querySelector('.text-input-mensaje .ck-editor__editable');
-                        //Escuchar el evento key?
-                        editor.addEventListener('keyup', () => {
-                            let texto = ckEditorSolucion.getData();
-                            console.log(texto);
-                            @this.description = texto
-
-                        })
+                        // Escucha el evento 'change'
+                        //para subir las imagenes y la data del ckeditor
+                        ckEditorSolucion.model.document.on('change', () => {
+                            const content = ckEditorSolucion.getData();
+                            @this.description = content
+                            console.log(content); // Imprime el contenido actualizado en la consola
+                        });
                     })
                     .catch(error => {
                         console.error(error);
                     });
-
-
-
             }
-
         });
-
-        // function atender(id, status_id) {
-        //     if (status_id == 2)
-        //         $('#ModalAgregar').modal('show');
-        //     if (status_id == 3)
-        //      document.getElementById('editorMensaje').style.visibility  = 'hidden';
-        //         $('#ModalAgregar').modal('show');
-
-        //     if (status_id == 1)
-        //         Swal.fire({
-        //             title: 'Quieres dar solucion a este ticket?',
-        //             icon: 'question',
-        //             showCancelButton: true,
-        //             confirmButtonColor: '#3085d6',
-        //             cancelButtonColor: '#d33',
-        //             confirmButtonText: 'Si'
-        //         }).then((result) => {
-
-        //             if (result.isConfirmed) {
-        //                 let resultado = @this.enProceso(id)
-        //                 $('#ModalAgregar').modal('show')
-
-        //                 toastr.success("Ticket en proceso")
-        //             }
-        //         })
-        // }
 
 
         function atender(id, status_id) {
 
             if (status_id == 2 || status_id == 3) {
                 $('#ModalAgregar').modal('show')
-
+                ckEditorSolucion.enableReadOnlyMode( 'editorMensaje' )
 
             } else {
                 Swal.fire({
