@@ -157,6 +157,7 @@ class VacationsController extends Controller
                             'days_availables' => $dias_vacaciones,
                             'date_start' => $fecha_inicio,
                             'date_end' => $fecha_fin,
+                            'cutoff_date' => $fecha_fin->addYear(),
                         ]);
                     } else {
                         Vacations::create([
@@ -168,6 +169,7 @@ class VacationsController extends Controller
                             'days_availables' => $dias_vacaciones,
                             'date_start' => $fecha_inicio,
                             'date_end' => $fecha_fin,
+                            'cutoff_date' => $fecha_fin->addYear(),
                         ]);
                     }
                 }

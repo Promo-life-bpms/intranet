@@ -136,19 +136,27 @@
                                                         <table class="table table-bordered table-hover">
                                                             <thead>
                                                                 <tr>
+                                                                    <th colspan="3"></th>
+                                                                    <th colspan="3" class="text-center">Dias</th>
+                                                                    <th colspan="3"></th>
+                                                                </tr>
+                                                                <tr>
                                                                     <th scope="col">#</th>
                                                                     <th scope="col" class="text-center">Año</th>
+                                                                    <th scope="col" class="text-center">Periodo</th>
+
+                                                                    <th scope="col" class="text-center">
+                                                                        Correspondientes</th>
                                                                     <th scope="col" class="text-center">Disfrutados
                                                                     </th>
-                                                                    {{-- <th scope="col" class="text-center">Disponibles
-                                                                    </th> --}}
-                                                                    <th scope="col" class="text-center"
-                                                                        colspan="2">Periodos de
-                                                                        Vacaciones</th>
+                                                                    <th scope="col" class="text-center">Restantes
+                                                                    </th>
+
+
                                                                     <th scope="col" class="text-center">Vencimiento
                                                                     </th>
                                                                     <th scope="col" class="text-center">Editar</th>
-                                                                    <th scope="col" class="text-center">Periodo</th>
+                                                                    <th scope="col" class="text-center">Estado</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -172,6 +180,12 @@
                                                                             {{ $date_start->format('Y') }}
                                                                         </td>
                                                                         <td class="text-center">
+                                                                            {{ $date_start->format('d-m-Y') }}
+                                                                            al
+                                                                            {{ $date_end->format('d-m-Y') }}</td>
+                                                                        <td class="text-center">
+                                                                            {{ $vacation->days_availables }}</td>
+                                                                        <td class="text-center">
                                                                             <p
                                                                                 class="{{ $vacation->days_enjoyed <= $vacation->days_availables ? 'text-success' : 'text-danger' }} m-0 font-bold">
                                                                                 {{ $vacation->days_enjoyed }}
@@ -179,14 +193,10 @@
                                                                         </td>
                                                                         {{-- <td class="text-center">{{ $vacation->dv }}</td> --}}
                                                                         <td class="text-center">
-                                                                            {{ $vacation->dv }} |
-                                                                            {{ $vacation->days_availables }}</td>
+                                                                            {{ $vacation->dv }}</td>
+
                                                                         <td class="text-center">
-                                                                            {{ $date_start->format('d/m/Y') }}
-                                                                            al
-                                                                            {{ $date_end->format('d/m/Y') }}
-                                                                        <td class="text-center">
-                                                                            {{ $cutoff_date->format('d/m/Y') }}
+                                                                            {{ $cutoff_date->format('d-m-Y') }}
                                                                         </td>
                                                                         <td style="width: 150px" class="text-center">
                                                                             <div class="d-flex">
