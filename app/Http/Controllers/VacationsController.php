@@ -150,26 +150,24 @@ class VacationsController extends Controller
                     if ($dataVacation) {
                         $dataVacation->update([
                             'users_id' => $user->id,
-                            'date_end' => $fecha_fin,
                             'period' => $estado,
                             'dv' => floor($dias_vacaciones) - $dataVacation->days_enjoyed,
                             'days_enjoyed' => $dataVacation->days_enjoyed,
                             'days_availables' => $dias_vacaciones,
                             'date_start' => $fecha_inicio,
                             'date_end' => $fecha_fin,
-                            'cutoff_date' => $fecha_fin->addYear(),
+                            'cutoff_date' => $fecha_fin->copy()->addYear(),
                         ]);
                     } else {
                         Vacations::create([
                             'users_id' => $user->id,
-                            'date_end' => $fecha_fin,
                             'period' => $estado,
                             'dv' => 0,
                             'days_enjoyed' => $periodo_actual ? 0 : $dias_vacaciones,
                             'days_availables' => $dias_vacaciones,
                             'date_start' => $fecha_inicio,
                             'date_end' => $fecha_fin,
-                            'cutoff_date' => $fecha_fin->addYear(),
+                            'cutoff_date' => $fecha_fin->copy()->addYear(),
                         ]);
                     }
                 }
@@ -210,6 +208,7 @@ class VacationsController extends Controller
         }
 
         // Lógica para calcular el número de días de vacaciones según la antigüedad del empleado.
+        // Valida, tambien, si entra la ley actual, o anterior
         // Devuelve el número de días correspondientes.
     }
 
@@ -218,6 +217,7 @@ class VacationsController extends Controller
         $str = '';
         foreach (Vacations::all() as $vacation) {
             $str .= "('" .
+                $vacation->id . "','" .
                 $vacation->period . "','" .
                 $vacation->days_availables . "','" .
                 $vacation->dv . "','" .
@@ -225,7 +225,9 @@ class VacationsController extends Controller
                 Carbon::parse($vacation->cutoff_date)->subYears(2)->format('Y-m-d') . "','" .
                 Carbon::parse($vacation->cutoff_date)->subYear()->format('Y-m-d') . "','" .
                 $vacation->cutoff_date . "','" .
-                $vacation->users_id
+                $vacation->users_id . "','" .
+                $vacation->created_at . "','" .
+                $vacation->updated_at
                 . "'),";
         }
         return $str;

@@ -15,10 +15,13 @@
     <div class="table-responsive">
         <table class="table table-striped" id="table-directory">
             <thead>
-                <tr>
+                <tr class="text-center">
                     <th>Nombre</th>
                     <th>Ingreso</th>
+                    <th>Dias Totales</th>
+                    <th>Dias Disfrutados</th>
                     <th>Dias Disponibles</th>
+                    <th>Respetar Vacaciones Vencidas</th>
                     <th>Ver Detalle</th>
                 </tr>
             </thead>
@@ -27,7 +30,7 @@
                 @foreach ($users as $user)
                     @if ($user->status == 1)
                         @if (!$user->hasRole('becario'))
-                            <tr>
+                            <tr class="text-center">
                                 <td>
                                     {{ $user->name }} {{ $user->lastname }}
                                 </td>
@@ -35,7 +38,20 @@
                                     {{ $user->employee->date_admission->format('d/m/Y') }}
                                 </td>
                                 <td>
-                                    {{ $user->vacationsAvailables()->where('period', '<>', 3)->sum('dv') }}</b>
+                                    {{ $user->vacationsComplete()->sum('days_availables') }}</b>
+                                </td>
+                                <td>
+                                    {{ $user->vacationsComplete()->sum('days_enjoyed') }}</b>
+                                </td>
+                                <td>
+                                    {{ $user->employee->take_expired_vacation ? $user->vacationsComplete()->sum('dv') : $user->vacationsAvailables()->sum('dv') }}</b>
+                                </td>
+                                <td>
+                                    <div>
+                                        <input {{ $user->employee->take_expired_vacation ? 'checked' : '' }}
+                                            type="checkbox" class="form-check-input" id="exampleCheck1"
+                                            wire:click="changeStatusVacations({{ $user->id }})">
+                                    </div>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -55,10 +71,10 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
-                                                <div class="modal-body text-left">
+                                                <div class="modal-body">
                                                     <div>
                                                         <div class="d-flex justify-content-between">
-                                                            <div>
+                                                            <div class="text-left">
                                                                 <p class="m-0"><strong>Empresa:</strong>
                                                                     {{ $user->employee->companies[0]->name_company }}
                                                                 </p>
@@ -100,36 +116,6 @@
                                                                     @endif
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div>
-                                                            <p class="m-0"><strong>Dias irregulares en periodos
-                                                                    expirados:</strong>
-                                                                @if ($user->vacationsComplete()->where('period', '=', 3)->sum('dv') < 0)
-                                                                    {{ $user->vacationsComplete()->where('period', '=', 3)->sum('dv') }}
-                                                                    dias excedidos y seran descontados de los periodos
-                                                                    vigentes.
-                                                                @elseif ($user->vacationsComplete()->where('period', '=', 3)->sum('dv') > 0)
-                                                                    {{ $user->vacationsComplete()->where('period', '=', 3)->sum('dv') }}
-                                                                    dias expirados que no seran contemplados en los
-                                                                    periodos vigentes.
-                                                                @else
-                                                                    {{ $user->vacationsComplete()->where('period', '=', 3)->sum('dv') }}.
-                                                                    No tiene dias expirados o vacaciones tomadas en
-                                                                    exceso.
-                                                                @endif
-                                                            </p class="m-0">
-                                                            <p class="m-0"><strong>Dias Actuales:</strong>
-                                                                {{ $user->vacationsComplete()->where('period', '=', 1)->sum('days_availables') }}
-                                                            </p>
-                                                            <p class="m-0"><strong>Dias Totales:</strong>
-                                                                {{ $user->vacationsAvailables()->sum('dv') +
-                                                                    ($user->vacationsComplete()->where('period', '=', 3)->sum('dv') < 0
-                                                                        ? $user->vacationsComplete()->where('period', '=', 3)->sum('dv')
-                                                                        : 0) }}
-                                                            </p>
-                                                        </div>
-                                                        <div>
-
                                                         </div>
                                                     </div>
                                                     <div style="overflow: auto; max-height: 500px">
@@ -187,7 +173,7 @@
                                                                             {{ $vacation->days_availables }}</td>
                                                                         <td class="text-center">
                                                                             <p
-                                                                                class="{{ $vacation->days_enjoyed <= $vacation->days_availables ? 'text-success' : 'text-danger' }} m-0 font-bold">
+                                                                                class="{{ $vacation->days_enjoyed <= $vacation->days_availables ? '' : 'text-danger' }} m-0 font-bold">
                                                                                 {{ $vacation->days_enjoyed }}
                                                                             </p>
                                                                         </td>
@@ -235,12 +221,13 @@
                                                                 <tr>
                                                                     <td></td>
                                                                     <td></td>
-                                                                    <td class="text-center">{{ $totalDisfrutados }}
-                                                                        <br> Dias Tomados
-                                                                    </td>
+                                                                    <td></td>
                                                                     {{-- <td></td> --}}
                                                                     <td class="text-center">{{ $totalCalculados }} <br>
                                                                         Dias Cumplidos</td>
+                                                                        <td class="text-center">{{ $totalDisfrutados }}
+                                                                            <br> Dias Disfrutados
+                                                                        </td>
                                                                     <td class="text-center">
                                                                         {{ $totalCalculados - $totalDisfrutados }} <br>
                                                                         Dias Restantes</td>

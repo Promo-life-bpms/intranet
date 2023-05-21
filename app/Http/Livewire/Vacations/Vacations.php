@@ -56,4 +56,11 @@ class Vacations extends Component
             session()->flash('message', 'Actualizacion Correcta.');
         }
     }
+
+    public function changeStatusVacations($id)
+    {
+        $user = User::find($id);
+        $user->employee->take_expired_vacation = !$user->employee->take_expired_vacation;
+        $user->employee->save();
+    }
 }

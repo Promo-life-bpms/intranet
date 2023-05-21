@@ -47,25 +47,31 @@ class ListRequestRH extends Component
 
     public function autorizar(Request $request)
     {
+        if ($request->human_resources_status !== "Pendiente") {
+            return 3;
+        }
         $request->human_resources_status = "Aprobada";
         if ($request->type_request == "Solicitar vacaciones") {
             $user = Employee::find($request->employee_id)->user;
             $totalDiasSolicitados = count($request->requestdays);
-            $totalDiasDisponibles = $user->vacationsAvailables()->orderBy('period', 'DESC')->sum('dv');
+            $totalDiasDisponibles = $user->employee->take_expired_vacation
+                ? $user->vacationsComplete()->orderBy('period', 'DESC')->sum('dv')
+                : $user->vacationsAvailables()->orderBy('period', 'DESC')->sum('dv');
             if ((int) $totalDiasDisponibles >= $totalDiasSolicitados) {
-                foreach ($user->vacationsAvailables()->orderBy('period', 'DESC')->get() as $dataVacation) {
-                    if ($dataVacation->dv <= $totalDiasSolicitados && $totalDiasSolicitados == count($request->requestdays)) {
-                        if ($dataVacation->dv > 0) {
-                            $dataVacation->days_enjoyed = (int) $dataVacation->days_availables;
-                            $totalDiasSolicitados = (int)$totalDiasSolicitados - (int) $dataVacation->dv;
-                            $dataVacation->dv = 0;
-                            $dataVacation->save();
-                        }
-                    } else {
-                        $dataVacation->days_enjoyed = $dataVacation->days_enjoyed + $totalDiasSolicitados;
-                        $dataVacation->dv = $dataVacation->dv - $totalDiasSolicitados;
+                $dataToUpdate = $user->employee->take_expired_vacation
+                    ? $user->vacationsComplete()->orderBy('period', 'DESC')->get()
+                    : $user->vacationsAvailables()->orderBy('period', 'DESC')->get();
+                foreach ($dataToUpdate as $dataVacation) {
+                    if ($dataVacation->dv >= $totalDiasSolicitados) {
+                        $dataVacation->dv -= $totalDiasSolicitados;
+                        $dataVacation->days_enjoyed = floor($dataVacation->days_availables) - $dataVacation->dv;
                         $dataVacation->save();
                         break;
+                    } else {
+                        $totalDiasSolicitados -= $dataVacation->dv;
+                        $dataVacation->dv = 0;
+                        $dataVacation->days_enjoyed = floor($dataVacation->days_availables) - $dataVacation->dv;
+                        $dataVacation->save();
                     }
                 }
             } else {
@@ -82,6 +88,9 @@ class ListRequestRH extends Component
 
     public function rechazar(Request $request)
     {
+        if ($request->human_resources_status !== "Pendiente") {
+            return 3;
+        }
         $request->human_resources_status = "Rechazada";
         $requestCalendar = $request->requestdays;
         foreach ($requestCalendar as $calendar) {
@@ -100,10 +109,5 @@ class ListRequestRH extends Component
         event(new RHResponseRequestEvent($request->type_request, $request->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $request->human_resources_status));
         $userReceiver->notify(new RHResponseRequestNotification($request->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $request->human_resources_status));
         return 1;
-    }
-
-    public function auth($id)
-    {
-        $this->dispatchBrowserEvent('swal', ['id' => $id]);
     }
 }

@@ -145,7 +145,7 @@
                                                 </p>
                                                 <br>
                                                 @if ($request->human_resources_status == 'Pendiente')
-                                                    <button class="btn btn-info" wire:click="auth({{ $request }})"
+                                                    <button class="btn btn-info" onclick="auth({{ $request->id }})"
                                                         data-bs-dismiss="modal">Aceptar - Rechazar
                                                     </button>
                                                 @endif
@@ -280,8 +280,7 @@
                                                 </p>
                                                 <br>
                                                 @if ($request->human_resources_status == 'Pendiente' && $request->direct_manager_status == 'Aprobada')
-                                                    <button class="btn btn-info"
-                                                        wire:click="auth({{ $request }})"
+                                                    <button class="btn btn-info" onclick="auth({{ $request->id }})"
                                                         data-bs-dismiss="modal">Aceptar - Rechazar
                                                     </button>
                                                 @endif
@@ -297,7 +296,7 @@
         </div>
     </div>
     <script>
-        window.addEventListener('swal', event => {
+        function auth(id) {
             Swal.fire({
                 title: '¿Deseas responder a esta solicitud?',
                 showDenyButton: true,
@@ -308,7 +307,7 @@
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                    let respuesta = @this.autorizar(event.detail.id)
+                    let respuesta = @this.autorizar(id)
                     respuesta
                         .then((response) => {
                             console.log(response);
@@ -325,7 +324,7 @@
                             Swal.fire('¡Error al autorizar!', '', 'error')
                         });
                 } else if (result.isDenied) {
-                    let respuesta = @this.rechazar(event.detail.id)
+                    let respuesta = @this.rechazar(id)
                     respuesta
                         .then((response) => {
                             console.log(response);
@@ -338,6 +337,6 @@
                         });
                 }
             })
-        })
+        }
     </script>
 </div>
