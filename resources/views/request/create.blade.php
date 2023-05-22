@@ -51,7 +51,13 @@
                             <p class="mt-2" style="font-size: 20px">Días de vacaciones disponibles: <b
                                     id="diasDisponiblesEl">
                                     {{ $vacations }} </b> </p>
-                            <p class="mb-0">Actualmente: </p>
+                            <p class="mb-2"><b>Actualmente:</b> </p>
+                            @if (auth()->user()->employee->take_expired_vacation)
+                                <p class="m-0 text-danger">Tienes <b>
+                                        {{ auth()->user()->vacationsComplete()->where('period', 3)->sum('dv') }} </b> días
+                                    disponibles que debes tomar lo mas pronto posible.</p>
+                            @endif
+                            <br>
                             @foreach ($dataVacations as $item)
                                 @if ($item->dv > 0)
                                     @php
@@ -61,7 +67,7 @@
                                     <p class="m-0">Tienes <b>{{ $item->dv }} </b> días disponibles
                                         {!! $item->period == 1
                                             ? 'de tu periodo actual y estos dias vencen el <b>' . $fecha . '</b>.'
-                                            : 'que vencen el <b>' . $fecha . '</b>.' !!}
+                                            : 'de tu periodo anterior que vencen el <b>' . $fecha . '</b>.' !!}
                                     </p>
                                 @endif
                             @endforeach

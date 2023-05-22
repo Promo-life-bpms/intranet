@@ -83,9 +83,8 @@ class RequestController extends Controller
         // Obtener dias no laborables
         $noworkingdays = NoWorkingDays::orderBy('day')->get();
         // Obtener dias de vacaciones
-        $vacations = auth()->user()->vacationsAvailables->where('period', '<>', 3)->sum('dv');
-        $dataVacations  = auth()->user()->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'DESC')->get();
-
+        $vacations = auth()->user()->employee->take_expired_vacation ? auth()->user()->vacationsComplete()->sum('dv') : auth()->user()->vacationsAvailables()->sum('dv');
+        $dataVacations  = auth()->user()->vacationsAvailables()->orderBy('period', 'DESC')->get();
         if ($vacations == null) {
             $vacations = 0;
         }

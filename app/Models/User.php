@@ -85,6 +85,11 @@ class User extends Authenticatable
         return $this->hasMany(Vacations::class, 'users_id')->where('period', '<>', 3);
     }
 
+    public function vacationsComplete()
+    {
+        return $this->hasMany(Vacations::class, 'users_id');
+    }
+
     public function directory()
     {
         return $this->hasMany(Directory::class, 'user_id');

@@ -10,6 +10,7 @@ class Employee extends Model
     use HasFactory;
 
     protected $fillable = [
+        'take_expired_vacation',
         'birthday_date',
         'date_admission',
         'status',
