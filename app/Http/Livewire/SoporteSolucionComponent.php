@@ -74,6 +74,7 @@ class SoporteSolucionComponent extends Component
     {
 
         $ticket=Ticket::find($this->ticket_id);
+
         $usuario=$ticket->user;
         if ($this->description == trim('<p><br data-cke-filler="true"></p>')) {
             $this->addError('description', 'La descripcion es obligatoria');
@@ -84,6 +85,11 @@ class SoporteSolucionComponent extends Component
                 'description' => 'required'
             ]
         );
+
+        $ticket->update([
+            'status_id'=> 3
+        ]);
+
 
             Solucion::create([
             'description' => $this->description,

@@ -57,7 +57,9 @@ class ListadoTicketsComponent extends Component
         //encuentra la categoria del ticket
         $category = Categoria::find((int) $this->categoria);
         //encuentrar a los usuarios relacionados con la categoria del ticket
+
         $usuarios =  $category->usuarios;
+
 
         $ticket = Ticket::create(
             [
@@ -175,7 +177,7 @@ class ListadoTicketsComponent extends Component
         $actualizar_status->update(
             [
 
-                'status_id' => 3
+                'status_id' => 4
             ]
         );
 
@@ -235,6 +237,10 @@ class ListadoTicketsComponent extends Component
             'user_id' => auth()->user()->id
         ]);
 
+        //si el usuario envia un mensaje al de soporte se cambia el status a proceso
+        $ticket->update([
+            'status_id' => 2
+        ]);
 
         Historial::create(
 

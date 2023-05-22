@@ -63,7 +63,7 @@
 
                                 @case('App\Notifications\StatuSoporteFinalizadoNotification')
                                     <b>{{ $notification->data['data']['name'] }}</b>
-                                    <p class="my-0">Ha Finalizado el ticket :
+                                    <p class="my-0">Finalizo el ticket :
                                         {{ $notification->data['data']['name_ticket'] }}</p>
                                     <p class="my-0">Status : {{ $notification->data['data']['status'] }}</p>
                                 @break
@@ -76,13 +76,13 @@
 
                                 @case('App\Notifications\EditarTicketNotification')
                                     <b>{{ $notification->data['data']['name'] }}</b>
-                                    <p class="my-0">Ha editado el ticket :</p>
+                                    <p class="my-0">Edito el ticket :</p>
                                     <p class="my-0">{{ $notification->data['data']['name_ticket'] }}</p>
                                 @break
 
                                 @case('App\Notifications\MessageSoporteNotification')
                                     <b>{{ $notification->data['data']['name'] }}</b>
-                                    <p class="my-0">Te ha enviado un mensaje en el ticket: </p>
+                                    <p class="my-0">Envío un mensaje: </p>
                                     <p>{{ $notification->data['data']['name_ticket'] }}</p>
                                 @break
 
@@ -94,7 +94,7 @@
 
                                 @case('App\Notifications\StatusEnProcesoSoporteNotification')
                                     <b>{{ $notification->data['data']['name'] }}</b>
-                                    <p class="my-0">Ha revisado tu ticket :</p>
+                                    <p class="my-0">Vio tu Ticket :</p>
                                     <p class="my-0">{{ $notification->data['data']['name_ticket'] }}</p>
                                     {{-- <p class="my-0">Estatus : {{ $notification->data['data']['status'] }}</p> --}}
                                 @break

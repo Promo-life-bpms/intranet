@@ -1,6 +1,7 @@
 
 {{-- Aqui se envia el correo del ticket --}}
 @component('mail::message')
+{{-- se agrega el nombre de quien recibe el mail --}}
 # ¡Buen día!
 
 ## Haz recibido un ticket
@@ -9,7 +10,7 @@
 
 **Problema** : {{ $data['name_ticket'] }}
 
-{{$data['tiempo']}}
+**Fecha**{{$data['tiempo']}}
 @component('mail::button', ['url' => 'http://intranet.test/soporte/solucion', 'color' => 'blue'])
     Ver Ticket
 @endcomponent

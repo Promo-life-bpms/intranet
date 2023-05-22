@@ -39,6 +39,9 @@
                                 @elseif ($ticket->status->name == 'En proceso')
                                     <div class="alert-sm alert-primary rounded-3" role="alert">
                                         {{ $ticket->status->name }}</div>
+                                @elseif ($ticket->status->name == 'Ticket Cerrado')
+                                    <div class="alert-sm alert-warning rounded-3" role="alert">
+                                        {{ $ticket->status->name }}</div>
                                 @endif
 
                             </td>
@@ -48,7 +51,7 @@
                                     data-bs-target="#ModalVer" wire:click="verTicket({{ $ticket->id }})"><i
                                         class="bi bi-eye"></i></button>
 
-                                @if ($ticket->status->name == 'Creado' || $ticket->status->name == 'En proceso')
+                                @if ($ticket->status->name == 'Creado' || $ticket->status->name == 'En proceso' || $ticket->status->name == 'Resuelto')
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#ModalEditar" wire:click="editarTicket({{ $ticket->id }})"><i
                                             class="bi bi-pencil"></i></button>
@@ -211,7 +214,7 @@
     </div>
 
     {{-- Modal ver --}}
-    <div wire:ignore.self class="modal fade" id="ModalVer" tabindex="-1" aria-labelledby="exampleModalLabel"
+    <div wire:ignore.self class="modal fade " id="ModalVer" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
@@ -254,21 +257,26 @@
                                 @endforeach
                             @endif
                             <hr>
+
                             {{-- Editor Mensaje --}}
-                                    <div>
-                                        <div wire:ignore class="mb-3 text-input-mensaje">
-                                            <label class="form-label fw-bold">Enviar mensaje</label></label>
-                                            <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
-                                            @error('message')
-                                                <span class="invalid-feedback">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
+                            {{-- @if ($ticket_solucion) --}}
+                                <div >
+                                    <div wire:ignore class="mb-3 text-input-mensaje">
+                                        <label class="form-label fw-bold">Enviar mensaje</label>
+                                        <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
+                                        @error('message')
+                                            <span class="invalid-feedback">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
+                                </div>
+                            {{-- @endif --}}
+
+
                             <div class="modal-footer">
                                 @if ($ticket_solucion)
-                                    @if ($ticket_solucion->status_id == 3)
+                                    @if ($ticket_solucion->status_id == 4)
                                         <button type="button" class="btn btn-danger"
                                             data-bs-dismiss="modal">Cerrar</button>
                                     @else
@@ -285,10 +293,7 @@
                         </div>
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
                             wire:ignore.self>
-
-
-                            
-                            {{-- @if ($ticket_solucion)
+                            @if ($ticket_solucion)
                                 <div class="card">
                                     <div class="card-header">
                                     </div>
@@ -300,22 +305,19 @@
                                                         <td>
                                                             @if ($cambio->type == 'creado')
                                                                 <div class="alert alert-primary">
-                                                                    <p class="mb-0"><strong>Status:</strong>
-                                                                        {{ $cambio->type }}
+                                                                    <p class="mb-0"><strong>Creado</strong>
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
                                                             @elseif ($cambio->type == 'edito')
                                                                 <div class="alert alert-warning">
-                                                                    <p class="mb-0"><strong>Status:</strong>
-                                                                        {{ $cambio->type }}
+                                                                    <p class="mb-0"><strong>Edito</strong>
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
                                                             @elseif ($cambio->type == 'Mensaje')
                                                                 <div class="alert alert-info">
-                                                                    <p class="mb-0"><strong>Status:</strong>
-                                                                        {{ $cambio->type }}
+                                                                    <p class="mb-0"><strong>Mensaje</strong>
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
@@ -328,8 +330,7 @@
                                                                 </div>
                                                             @elseif ($cambio->type == 'solucion')
                                                                 <div class="alert alert-dark">
-                                                                    <p class="mb-0"><strong>Status:</strong>
-                                                                        {{ $cambio->type }}
+                                                                    <p class="mb-0"><strong>Solucion</strong>
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
@@ -343,10 +344,7 @@
                                     </div>
                                 </div>
                             @endif
-                               --}}
-                               
 
-                                
                         </div>
                     </div>
                 </div>
@@ -571,6 +569,5 @@
             })
 
         }
-    
     </script>
 </div>
