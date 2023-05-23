@@ -126,18 +126,9 @@
                                 @enderror
                             </div>
                         </div>
+                    
 
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::label('', 'Gerente de área: ') !!}
-                                {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese a gerente de área']) !!}
-                                @error('')
-                                <small>
-                                    <font color="red"> *Este campo es requerido* </font>
-                                </small> 
-                                @enderror
-                            </div>
-                        </div>
+            <p style="margin-bottom:20px;"></p> 
 
                 <h2 style="font-size: 20px;">Asignación de Equipo de Cómputo y Telefonía</h2>
 
@@ -224,6 +215,8 @@
                                 @enderror
                             </div>
                         </div>
+            
+            <p style="margin-bottom:20px;"></p> 
                 
                 <h2 style="font-size: 20px;">Cuenta(s) de Correo(s) Requerida(s)</h2>
 
@@ -241,8 +234,8 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::label('', 'Firma: ') !!}
-                                {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el correo']) !!}
+                                {!! Form::label('', 'Firma: Número(s) de Contacto Telefónico ') !!}
+                                {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el número de contacto telefónico']) !!}
                                 @error('')
                                 <small>
                                     <font color="red"> *Este campo es requerido* </font>
