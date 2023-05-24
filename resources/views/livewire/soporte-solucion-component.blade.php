@@ -114,7 +114,7 @@
                                 @enderror
                             </form>
                             @if ($status)
-                                @if ($status->status_id == 3)
+                                @if ($status->status_id == 4)
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger"
                                             data-bs-dismiss="modal">Cerrar</button>
@@ -182,7 +182,16 @@
                                                             @elseif ($cambio->type == 'solucion')
                                                                 <div class="alert-sm rounded-3 alert-dark">
                                                                     <p class="mb-0"><strong><i
-                                                                                class="bi bi-file-earmark-check-fill">{{ $cambio->type }}</i></strong>
+                                                                                class="bi bi-check2-all">Ticket
+                                                                                Cerrado</i></strong>
+                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                    </p>
+                                                                </div>
+                                                            @elseif ($cambio->type == 'status_finished')
+                                                                <div class="alert-sm rounded-3 alert-dark">
+                                                                    <p class="mb-0"><strong><i
+                                                                                class="bi bi-check2-all">Ticket
+                                                                                Cerrado</i></strong>
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
@@ -199,8 +208,8 @@
                         </div>
 
 
-                        <div class="tab-pane fade show active" id="mensaje" role="tabpanel"
-                            aria-labelledby="mensaje-tab" wire:ignore.self>
+                        <div class="tab-pane fade" id="mensaje" role="tabpanel" aria-labelledby="mensaje-tab"
+                            wire:ignore.self>
                             <p><span class="fw-bold">Mensajes :</span></span></p>
                             @if ($mensaje)
                                 @foreach ($mensaje->mensajes as $mensajes)
@@ -214,11 +223,20 @@
                                 <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="description"></textarea>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-success" wire:click="mensaje">Enviar</button>
-                                <div wire:loading.flex wire:target="mensaje">
-                                    Enviando
-                                </div>
+                                @if ($status)
+                                    @if ($status->status_id == 4)
+                                        <button type="button" class="btn btn-danger"
+                                            data-bs-dismiss="modal">Cerrar</button>
+                                    @else
+                                        <button type="button" class="btn btn-danger"
+                                            data-bs-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-success"
+                                            wire:click="mensaje">Enviar</button>
+                                        <div wire:loading.flex wire:target="mensaje">
+                                            Enviando
+                                        </div>
+                                    @endif
+                                @endif
                             </div>
                         </div>
                     </div>
