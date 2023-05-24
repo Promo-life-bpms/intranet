@@ -23,7 +23,7 @@ class ListadoTicketsComponent extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $editorInstance;
+    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $editorInstance,$mensajes,$user;
 
 
     public function render()
@@ -117,7 +117,6 @@ class ListadoTicketsComponent extends Component
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->id;
         $this->dispatchBrowserEvent('mostrar_data');
-
     }
 
     public function guardarEditar($id)
@@ -188,7 +187,7 @@ class ListadoTicketsComponent extends Component
             [
                 'ticket_id' => $actualizar_status->id,
                 'user_id' => auth()->user()->id,
-                'type' => 'status',
+                'type' => 'status_finished',
                 'data' => $actualizar_status->status->name
             ]
         );
@@ -212,17 +211,17 @@ class ListadoTicketsComponent extends Component
 
     public function verTicket($id)
     {
-
-
         $ticket = Ticket::find($id);
+        $message = Mensaje::find($this->ticket_id);
+        // dd( $this->mensajes=$ticket->mensajes);
+        $this->user=$message;
+        $this->mensajes=$ticket;
         $this->ticket_solucion = $ticket;
         $this->ticket_id = $ticket->id;
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
-         $this->dispatchBrowserEvent('cargar');
-
-
+        $this->dispatchBrowserEvent('cargar');
     }
 
     public function enviarMensaje()
@@ -231,16 +230,35 @@ class ListadoTicketsComponent extends Component
         $ticket = Ticket::find($this->ticket_id);
         $category = Categoria::find($ticket->category_id);
         $usuarios = $category->usuarios;
-        Mensaje::create([
-            'ticket_id' => $this->ticket_id,
-            'message' => $this->mensaje,
-            'user_id' => auth()->user()->id
-        ]);
+        // Mensaje::create([
+        //     'ticket_id' => $this->ticket_id,
+        //     'message' => $this->mensaje,
+        //     'user_id' => auth()->user()->id
+        // ]);
 
         //si el usuario envia un mensaje al de soporte se cambia el status a proceso
-        $ticket->update([
-            'status_id' => 2
-        ]);
+
+        if ($ticket->status_id == 1) {
+            Mensaje::create([
+                'ticket_id' => $this->ticket_id,
+                'message' => $this->mensaje,
+                'user_id' => auth()->user()->id
+            ]);
+        } else {
+
+            Mensaje::create([
+                'ticket_id' => $this->ticket_id,
+                'message' => $this->mensaje,
+                'user_id' => auth()->user()->id
+            ]);
+            $ticket->update([
+                'status_id' => 2
+            ]);
+        }
+
+        // $ticket->update([
+        //     'status_id' => 2
+        // ]);
 
         Historial::create(
 

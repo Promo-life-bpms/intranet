@@ -230,6 +230,11 @@
                                 data-bs-target="#historial" type="button" role="tab" aria-controls="historial"
                                 aria-selected="false">Historial</button>
                         </li>
+                        <li class="nav-item" role="presentation" wire:ignore>
+                            <button class="nav-link" id="mensaje-tab" data-bs-toggle="tab" data-bs-target="#mensaje"
+                                type="button" role="tab" aria-controls="historial"
+                                aria-selected="false">Mensajes</button>
+                        </li>
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -256,26 +261,26 @@
                                     {!! $solucion->description !!}
                                 @endforeach
                             @endif
-                            <hr>
+                            
 
                             {{-- Editor Mensaje --}}
                             {{-- @if ($ticket_solucion) --}}
-                                <div >
-                                    <div wire:ignore class="mb-3 text-input-mensaje">
-                                        <label class="form-label fw-bold">Enviar mensaje</label>
-                                        <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
-                                        @error('message')
-                                            <span class="invalid-feedback">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
+                            {{-- <div>
+                                <div wire:ignore class="mb-3 text-input-mensaje">
+                                    <label class="form-label fw-bold">Enviar mensaje</label>
+                                    <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
+                                    @error('message')
+                                        <span class="invalid-feedback">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
+                            </div> --}}
                             {{-- @endif --}}
 
 
                             <div class="modal-footer">
-                                @if ($ticket_solucion)
+                                {{-- @if ($ticket_solucion)
                                     @if ($ticket_solucion->status_id == 4)
                                         <button type="button" class="btn btn-danger"
                                             data-bs-dismiss="modal">Cerrar</button>
@@ -288,7 +293,8 @@
                                             Enviando
                                         </div>
                                     @endif
-                                @endif
+                                @endif --}}
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
@@ -304,33 +310,44 @@
                                                     <tr>
                                                         <td>
                                                             @if ($cambio->type == 'creado')
-                                                                <div class="alert alert-primary">
-                                                                    <p class="mb-0"><strong>Creado</strong>
+                                                                <div class="alert-sm rounded-3 alert-primary">
+                                                                    <p class="mb-0"><strong><i
+                                                                                class="bi bi-check-circle-fill">{{ $cambio->type }}</i></strong>
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
                                                             @elseif ($cambio->type == 'edito')
-                                                                <div class="alert alert-warning">
-                                                                    <p class="mb-0"><strong>Edito</strong>
+                                                                <div class="alert-sm rounded-3 alert-warning">
+                                                                    <p class="mb-0"><strong><i
+                                                                                class="bi bi-pencil-square">{{ $cambio->type }}</i></strong>
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
                                                             @elseif ($cambio->type == 'Mensaje')
-                                                                <div class="alert alert-info">
-                                                                    <p class="mb-0"><strong>Mensaje</strong>
-                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                <div class="alert-sm rounded-3 alert-info">
+                                                                    <p class="mb-0"><strong><strong><i
+                                                                                    class="bi bi-envelope">{{ $cambio->type }}</i></strong>
+                                                                            ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
                                                             @elseif ($cambio->type == 'status')
-                                                                <div class="alert alert-success">
-                                                                    <p class="mb-0"><strong>Status:</strong>
-                                                                        {{ $cambio->type }}
+                                                                <div class="alert-sm rounded-3 alert-success">
+                                                                    <p class="mb-0"><strong><i
+                                                                                class="bi bi-eye"></i></strong>
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
                                                             @elseif ($cambio->type == 'solucion')
-                                                                <div class="alert alert-dark">
-                                                                    <p class="mb-0"><strong>Solucion</strong>
+                                                                <div class="alert-sm rounded-3 alert-dark">
+                                                                    <p class="mb-0"><strong><i
+                                                                                class="bi bi-file-earmark-check-fill">{{ $cambio->type }}</i></strong>
+                                                                        ({{ $cambio->created_at->diffForHumans() }})
+                                                                    </p>
+                                                                </div>
+                                                            @elseif ($cambio->type == 'status_finished')
+                                                                <div class="alert-sm rounded-3 alert-dark">
+                                                                    <p class="mb-0"><strong><i
+                                                                                class="bi bi-check2-all">{{ $cambio->type }}</i></strong>
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
@@ -345,6 +362,37 @@
                                 </div>
                             @endif
 
+                        </div>
+
+                        <div class="tab-pane fade show active" id="mensaje" role="tabpanel"
+                            aria-labelledby="mensaje-tab" wire:ignore.self>
+                            <p><span class="fw-bold">Mensajes :</span></span></p>
+                            @if ($mensajes)
+                                @foreach ($mensajes->mensajes as $mensaje)
+                                    <span>{!! $mensaje->message !!}</span>
+                                    <span class="fw-bold">{{ $mensaje->created_at->diffForHumans() }}</span>
+                                @endforeach
+                            @endif
+                            <hr>
+                            <div>
+                                <div wire:ignore class="mb-3 text-input-mensaje">
+                                    <label class="form-label fw-bold">Enviar mensaje</label>
+                                    <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
+                                    @error('message')
+                                        <span class="invalid-feedback">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-success"
+                                    wire:click="enviarMensaje">Enviar</button>
+                                <div wire:loading.flex wire:target="enviarMensaje">
+                                    Enviando
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

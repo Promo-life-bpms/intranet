@@ -33,6 +33,9 @@
                                 @elseif ($tickets->status->name == 'En proceso')
                                     <div class="alert-sm alert-primary rounded-3" role="alert">
                                         {{ $tickets->status->name }}</div>
+                                @elseif ($tickets->status->name == 'Ticket Cerrado')
+                                    <div class="alert-sm alert-warning rounded-3" role="alert">
+                                        {{ $tickets->status->name }}</div>
                                 @endif
                             </td>
                             <td>
@@ -65,13 +68,16 @@
                                 type="button" role="tab" aria-controls="historial"
                                 aria-selected="false">Historial</button>
                         </li>
+                        <li class="nav-item" role="presentation" wire:ignore>
+                            <button class="nav-link" id="mensaje-tab" data-bs-toggle="tab" data-bs-target="#mensaje"
+                                type="button" role="tab" aria-controls="historial"
+                                aria-selected="false">Mensajes</button>
+                        </li>
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
-
-
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"
                             wire:ignore.self>
@@ -91,17 +97,15 @@
                                 </div>
 
                                 <hr>
-                                <p><span class="fw-bold">Mensajes :</span></span></p>
+                                {{-- <p><span class="fw-bold">Mensajes :</span></span></p>
                                 @if ($mensaje)
                                     @foreach ($mensaje->mensajes as $mensajes)
                                         <span>{!! $mensajes->message !!}</span>
                                     @endforeach
-                                @endif
-                                <hr>
-                                
+                                @endif --}}
                                 <div wire:ignore class="mb-3 text-input-mensaje">
                                     <label for="descripcion" class="form-label fw-bold">Solución</label>
-                                    <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="description"></textarea>
+                                    <textarea id="editorSolucion"cols="20" rows="3" class="form-control" name="description"></textarea>
                                 </div>
 
 
@@ -133,8 +137,6 @@
 
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
                             wire:ignore.self>
-
-
                             @if ($historial)
                                 <div class="card">
                                     <div class="card-header">
@@ -146,37 +148,41 @@
                                                     <tr>
                                                         <td>
                                                             @if ($cambio->type == 'creado')
-                                                                <div class="alert alert-primary">
-                                                                    <p class="mb-0"><strong>Status:</strong>
-                                                                        {{ $cambio->type }}
+                                                                <div class="alert-sm rounded-3 alert-primary">
+                                                                    <p class="mb-0"><strong><i
+                                                                                class="bi bi-check-circle-fill">{{ $cambio->type }}</i></strong>
+
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
                                                             @elseif ($cambio->type == 'edito')
-                                                                <div class="alert alert-warning">
-                                                                    <p class="mb-0"><strong>Status:</strong>
-                                                                        {{ $cambio->type }}
+                                                                <div class="alert-sm rounded-3 alert-warning">
+                                                                    <p class="mb-0"><strong><i
+                                                                                class="bi bi-pencil-square">{{ $cambio->type }}</i></strong>
+
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
                                                             @elseif ($cambio->type == 'Mensaje')
-                                                                <div class="alert alert-info">
-                                                                    <p class="mb-0"><strong>Status:</strong>
-                                                                        {{ $cambio->type }}
+                                                                <div class="alert-sm rounded-3 alert-info">
+                                                                    <p class="mb-0"><strong><i
+                                                                                class="bi bi-envelope">{{ $cambio->type }}</i></strong>
+
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
                                                             @elseif ($cambio->type == 'status')
-                                                                <div class="alert alert-success">
-                                                                    <p class="mb-0"><strong>Status:</strong>
-                                                                        {{ $cambio->type }}
+                                                                <div class="alert-sm alert-success">
+                                                                    <p class="mb-0"><strong><i
+                                                                                class="bi bi-eye"></i></strong>
+                                                                        {{-- {{ $cambio->type }} --}}
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
                                                             @elseif ($cambio->type == 'solucion')
-                                                                <div class="alert alert-dark">
-                                                                    <p class="mb-0"><strong>Status:</strong>
-                                                                        {{ $cambio->type }}
+                                                                <div class="alert-sm rounded-3 alert-dark">
+                                                                    <p class="mb-0"><strong><i
+                                                                                class="bi bi-file-earmark-check-fill">{{ $cambio->type }}</i></strong>
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
@@ -191,173 +197,260 @@
                                 </div>
                             @endif
                         </div>
+
+
+                        <div class="tab-pane fade show active" id="mensaje" role="tabpanel"
+                            aria-labelledby="mensaje-tab" wire:ignore.self>
+                            <p><span class="fw-bold">Mensajes :</span></span></p>
+                            @if ($mensaje)
+                                @foreach ($mensaje->mensajes as $mensajes)
+                                    <span>{!! $mensajes->message !!}</span>
+                                    <span class="fw-bold">{{ $mensajes->created_at->diffForHumans() }}</span>
+                                @endforeach
+                            @endif
+                            <hr>
+                            <div wire:ignore class="mb-3 text-input-mensaje">
+                                <label for="descripcion" class="form-label fw-bold">Mensaje</label>
+                                <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="description"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-success" wire:click="mensaje">Enviar</button>
+                                <div wire:loading.flex wire:target="mensaje">
+                                    Enviando
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
-    </div>
 
 
-    <script>
-        let ckEditorSolucion, ckeEditorDisable;
-        ClassicEditor
-            .create(document.querySelector('#editorMensaje'), {
-                removePlugins: ['MediaEmbed'],
-                extraPlugins: [MyCustomUploadAdapterPlugin],
-            })
-            .then(newEditor => {
-                ckEditorSolucion = newEditor;
-                // Escucha el evento 'change'
-                //para subir las imagenes y la data del ckeditor
-                ckEditorSolucion.model.document.on('change', () => {
-                    const content = ckEditorSolucion.getData();
-                    @this.description = content
-                    console.log(content); // Imprime el contenido actualizado en la consola
+        <script>
+            let ckEditorSolucion, ckeEditorMensaje;
+
+            //editor solucion
+            ClassicEditor
+                .create(document.querySelector('#editorSolucion'), {
+                    removePlugins: ['MediaEmbed'],
+                    extraPlugins: [MyCustomUploadAdapterPlugin],
+                })
+                .then(newEditor => {
+                    ckEditorSolucion = newEditor;
+                    // Escucha el evento 'change'
+                    //para subir las imagenes y la data del ckeditor
+                    ckEditorSolucion.model.document.on('change', () => {
+                        const content = ckEditorSolucion.getData();
+                        @this.description = content
+                        console.log(content); // Imprime el contenido actualizado en la consola
+                    });
+
+                })
+                .catch(error => {
+                    console.error(error);
                 });
 
-            })
-            .catch(error => {
-                console.error(error);
+
+            //editor mensaje
+            ClassicEditor
+                .create(document.querySelector('#editorMensaje'), {
+                    removePlugins: ['MediaEmbed'],
+                    extraPlugins: [MyCustomUploadAdapterPlugin],
+                })
+                .then(newEditor => {
+                    ckeEditorMensaje = newEditor;
+                    // Escucha el evento 'change'
+                    //para subir las imagenes y la data del ckeditor
+                    ckeEditorMensaje.model.document.on('change', () => {
+                        const content = ckeEditorMensaje.getData();
+                        @this.description = content
+                        console.log(content); // Imprime el contenido actualizado en la consola
+                    });
+
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+
+            class MyUploadAdapter {
+                constructor(loader) {
+                    this.loader = loader;
+                }
+
+                upload() {
+                    return this.loader.file
+                        .then(file => new Promise((resolve, reject) => {
+                            this._initRequest();
+                            this._initListeners(resolve, reject, file);
+                            this._sendRequest(file);
+                        }));
+                }
+
+                abort() {
+                    if (this.xhr) {
+                        this.xhr.abort();
+                    }
+                }
+
+                _initRequest() {
+                    const xhr = this.xhr = new XMLHttpRequest();
+
+                    xhr.open('POST', "{{ route('upload', ['_token' => csrf_token()]) }}", true);
+                    xhr.responseType = 'json';
+                }
+
+                _initListeners(resolve, reject, file) {
+                    const xhr = this.xhr;
+                    const loader = this.loader;
+                    const genericErrorText = `Couldn't upload file: ${ file.name }.`;
+
+                    xhr.addEventListener('error', () => reject(genericErrorText));
+                    xhr.addEventListener('abort', () => reject());
+                    xhr.addEventListener('load', () => {
+                        const response = xhr.response;
+
+                        if (!response || response.error) {
+                            return reject(response && response.error ? response.error.message : genericErrorText);
+                        }
+
+                        resolve(response);
+                    });
+
+                    if (xhr.upload) {
+                        xhr.upload.addEventListener('progress', evt => {
+                            if (evt.lengthComputable) {
+                                loader.uploadTotal = evt.total;
+                                loader.uploaded = evt.loaded;
+                            }
+                        });
+                    }
+                }
+
+                _sendRequest(file) {
+                    const data = new FormData();
+
+                    data.append('upload', file);
+
+                    this.xhr.send(data);
+                }
+            }
+
+            function MyCustomUploadAdapterPlugin(editor) {
+                editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                    return new MyUploadAdapter(loader);
+                };
+            }
+
+
+            window.addEventListener('ticket_solucion', () => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Solución enviada correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
+                $('#ModalAgregar').modal('hide')
+
+                ckEditorSolucion.setData("");
+
+            });
+
+            window.addEventListener('message', () => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'mensaje enviado correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
+                $('#ModalAgregar').modal('hide')
+
+                ckeEditorMensaje.setData("");
+
             });
 
 
-        class MyUploadAdapter {
-            constructor(loader) {
-                this.loader = loader;
-            }
 
-            upload() {
-                return this.loader.file
-                    .then(file => new Promise((resolve, reject) => {
-                        this._initRequest();
-                        this._initListeners(resolve, reject, file);
-                        this._sendRequest(file);
-                    }));
-            }
+            window.addEventListener('cargar', () => {
 
-            abort() {
-                if (this.xhr) {
-                    this.xhr.abort();
-                }
-            }
-
-            _initRequest() {
-                const xhr = this.xhr = new XMLHttpRequest();
-
-                xhr.open('POST', "{{ route('upload', ['_token' => csrf_token()]) }}", true);
-                xhr.responseType = 'json';
-            }
-
-            _initListeners(resolve, reject, file) {
-                const xhr = this.xhr;
-                const loader = this.loader;
-                const genericErrorText = `Couldn't upload file: ${ file.name }.`;
-
-                xhr.addEventListener('error', () => reject(genericErrorText));
-                xhr.addEventListener('abort', () => reject());
-                xhr.addEventListener('load', () => {
-                    const response = xhr.response;
-
-                    if (!response || response.error) {
-                        return reject(response && response.error ? response.error.message : genericErrorText);
-                    }
-
-                    resolve(response);
-                });
-
-                if (xhr.upload) {
-                    xhr.upload.addEventListener('progress', evt => {
-                        if (evt.lengthComputable) {
-                            loader.uploadTotal = evt.total;
-                            loader.uploaded = evt.loaded;
-                        }
-                    });
-                }
-            }
-
-            _sendRequest(file) {
-                const data = new FormData();
-
-                data.append('upload', file);
-
-                this.xhr.send(data);
-            }
-        }
-
-        function MyCustomUploadAdapterPlugin(editor) {
-            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-                return new MyUploadAdapter(loader);
-            };
-        }
-
-
-        window.addEventListener('ticket_solucion', () => {
-            Swal.fire({
-                icon: 'success',
-                title: 'Solución enviada correctamente',
-                showConfirmButton: false,
-                timer: 1500
-            })
-
-            $('#ModalAgregar').modal('hide')
-
-            ckEditorSolucion.setData("");
-
-        });
-
-        window.addEventListener('cargar', () => {
-
-            if (ckEditorSolucion) {
-                ckEditorSolucion.destroy();
-                ClassicEditor
-                    .create(document.querySelector('#editorMensaje'), {
-                        removePlugins: ['MediaEmbed'],
-                        extraPlugins: [MyCustomUploadAdapterPlugin],
-                    })
-                    .then(newEditor => {
-                        ckEditorSolucion = newEditor;
-                        // Escucha el evento 'change'
-                        //para subir las imagenes y la data del ckeditor
-                        ckEditorSolucion.model.document.on('change', () => {
-                            const content = ckEditorSolucion.getData();
-                            @this.description = content
-                            console.log(content); // Imprime el contenido actualizado en la consola
+                if (ckEditorSolucion) {
+                    ckEditorSolucion.destroy();
+                    ClassicEditor
+                        .create(document.querySelector('#editorSolucion'), {
+                            removePlugins: ['MediaEmbed'],
+                            extraPlugins: [MyCustomUploadAdapterPlugin],
+                        })
+                        .then(newEditor => {
+                            ckEditorSolucion = newEditor;
+                            // Escucha el evento 'change'
+                            //para subir las imagenes y la data del ckeditor
+                            ckEditorSolucion.model.document.on('change', () => {
+                                const content = ckEditorSolucion.getData();
+                                @this.description = content
+                                console.log(content); // Imprime el contenido actualizado en la consola
+                            });
+                        })
+                        .catch(error => {
+                            console.error(error);
                         });
+                }
+            });
+
+            window.addEventListener('cargar', () => {
+
+                if (ckeEditorMensaje) {
+                    ckeEditorMensaje.destroy();
+                    ClassicEditor
+                        .create(document.querySelector('#editorMensaje'), {
+                            removePlugins: ['MediaEmbed'],
+                            extraPlugins: [MyCustomUploadAdapterPlugin],
+                        })
+                        .then(newEditor => {
+                            ckeEditorMensaje = newEditor;
+                            // Escucha el evento 'change'
+                            //para subir las imagenes y la data del ckeditor
+                            ckeEditorMensaje.model.document.on('change', () => {
+                                const content = ckeEditorMensaje.getData();
+                                @this.mensajes = content
+                                console.log(content); // Imprime el contenido actualizado en la consola
+                            });
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                }
+            });
+
+
+
+            function atender(id, status_id) {
+
+                if (status_id == 2 || status_id == 3 || status_id == 4) {
+                    $('#ModalAgregar').modal('show')
+                    // ckEditorSolucion.enableReadOnlyMode( 'editorMensaje' )
+
+                } else {
+                    Swal.fire({
+                        title: 'Quieres dar solucion a este ticket?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si'
+                    }).then((result) => {
+
+                        if (result.isConfirmed) {
+                            let resultado = @this.enProceso(id)
+                            $('#ModalAgregar').modal('show')
+
+                            toastr.success("Ticket en proceso")
+                        }
                     })
-                    .catch(error => {
-                        console.error(error);
-                    });
+                }
+
             }
-        });
-
-
-        function atender(id, status_id) {
-
-            if (status_id == 2 || status_id == 3) {
-                $('#ModalAgregar').modal('show')
-                ckEditorSolucion.enableReadOnlyMode( 'editorMensaje' )
-
-            } else {
-                Swal.fire({
-                    title: 'Quieres dar solucion a este ticket?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Si'
-                }).then((result) => {
-
-                    if (result.isConfirmed) {
-                        let resultado = @this.enProceso(id)
-                        $('#ModalAgregar').modal('show')
-
-                        toastr.success("Ticket en proceso")
-                    }
-                })
-            }
-
-        }
-    </script>
-</div>
+        </script>
+    </div>
