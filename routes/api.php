@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\ApiController;
+use App\Http\Controllers\FirebaseNotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/getUsers', [ApiController::class, 'getUsers']);
@@ -52,3 +53,6 @@ Route::post('/postCreateRequest', [APIController::class, 'postCreateRequest'])->
 
 Route::post('/postManagerRequest', [APIController::class, 'postManagerRequest'])->name('api.postManagerRequest');
 Route::post('/postRhRequest', [APIController::class, 'postRhRequest'])->name('api.postRhRequest');
+
+Route::post('/firebase/publication', [FirebaseNotificationController::class, 'publication'])->name('api.firebase.publication');
+
