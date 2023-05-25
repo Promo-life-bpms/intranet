@@ -174,7 +174,7 @@
                                                             @elseif ($cambio->type == 'status')
                                                                 <div class="alert-sm alert-success">
                                                                     <p class="mb-0"><strong><i
-                                                                                class="bi bi-eye"></i></strong>
+                                                                                class="bi bi-eye">Visto</i></strong>
                                                                         {{-- {{ $cambio->type }} --}}
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>

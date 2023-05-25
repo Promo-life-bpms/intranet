@@ -333,7 +333,7 @@
                                                             @elseif ($cambio->type == 'status')
                                                                 <div class="alert-sm rounded-3 alert-success">
                                                                     <p class="mb-0"><strong><i
-                                                                                class="bi bi-eye"></i></strong>
+                                                                                class="bi bi-eye">Visto</i></strong>
                                                                         ({{ $cambio->created_at->diffForHumans() }})
                                                                     </p>
                                                                 </div>
@@ -367,17 +367,26 @@
 
                         <div class="tab-pane fade" id="mensaje" role="tabpanel" aria-labelledby="mensaje-tab"
                             wire:ignore.self>
-                            <p><span class="fw-bold">Mensajes :</span></span></p>
+                            <p><span class="fw-bold">Mensajes </span></span></p>
                             @if ($mensajes)
                                 @foreach ($mensajes->mensajes as $mensaje)
-                                    <span>{!! $mensaje->message !!}</span>
-                                    <span class="fw-bold">{{ $mensaje->created_at->diffForHumans() }}</span>
+                                     <div class="d-flex flex-row justify-content-end mb-2 pt-1">
+                                        <span class="p-2 mb-2 bg-info rounded-3 text-dark">{!! $mensaje->message !!}
+                                            {{ $mensaje->created_at->diffForHumans() }}
+                                        </span>
+                                        {{-- <span class="fw-bold">{{ $mensaje->created_at->diffForHumans() }}</span>    --}}
+                                     </div>                                                                       
+                                    {{-- <div class="d-flex flex-row justify-content-end mb-4 pt-1">
+                                        <div>
+                                          <p>{!! $mensaje->message !!}</p>
+                                        </div>
+                                      </div> --}}
                                 @endforeach
                             @endif
                             <hr>
                             <div>
                                 <div wire:ignore class="mb-3 text-input-mensaje">
-                                    <label class="form-label fw-bold">Enviar mensaje</label>
+                                    {{-- <label class="form-label fw-bold">Enviar mensaje</label> --}}
                                     <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
                                     @error('message')
                                         <span class="invalid-feedback">

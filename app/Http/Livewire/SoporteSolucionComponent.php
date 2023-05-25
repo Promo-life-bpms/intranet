@@ -59,7 +59,7 @@ class SoporteSolucionComponent extends Component
     {
         $ticket = Ticket::find($id);
         $message = Mensaje::find($this->ticket_id);
-
+        
         $this->usuario = $message;
         $this->status = $ticket;
         $this->historial = $ticket;

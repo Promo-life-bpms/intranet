@@ -212,8 +212,7 @@ class ListadoTicketsComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
-        $message = Mensaje::find($this->ticket_id);
-        // dd( $this->mensajes=$ticket->mensajes);
+        $message = Mensaje::find($id);
         $this->user=$message;
         $this->mensajes=$ticket;
         $this->ticket_solucion = $ticket;
