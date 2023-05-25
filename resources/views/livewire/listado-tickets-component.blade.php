@@ -371,7 +371,7 @@
                             @if ($mensajes)
                                 @foreach ($mensajes->mensajes as $mensaje)
                                      <div class="d-flex flex-row justify-content-end mb-2 pt-1">
-                                        <span class="p-2 mb-2 bg-info rounded-3 text-dark">{!! $mensaje->message !!}
+                                        <span class="p-2  bg-info rounded-3 text-dark"><span>Yo :</span>{!! $mensaje->message !!}
                                             {{ $mensaje->created_at->diffForHumans() }}
                                         </span>
                                         {{-- <span class="fw-bold">{{ $mensaje->created_at->diffForHumans() }}</span>    --}}
