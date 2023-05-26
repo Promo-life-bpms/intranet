@@ -7,6 +7,7 @@ use App\Events\ManagerResponseRequestEvent;
 use App\Events\MessageSent;
 use App\Events\RHResponseRequestEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FirebaseNotificationController;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -676,7 +677,10 @@ class ApiController extends Controller
                 $media->resource = $request->photo;
                 $media->type_file = "photo";
                 $media->save();
-            }
+            } 
+            $user = User::where('id',$user_id)->get()->last();
+            $publication_notification = new FirebaseNotificationController();
+            $publication_notification->publication($user->name, $contPublication);
 
             return $token;
         }
