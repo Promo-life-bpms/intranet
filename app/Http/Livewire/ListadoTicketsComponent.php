@@ -23,7 +23,7 @@ class ListadoTicketsComponent extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $editorInstance,$mensajes,$user;
+    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje,$mensajes,$user;
 
 
     public function render()
@@ -92,8 +92,9 @@ class ListadoTicketsComponent extends Component
                 'name_ticket' => $ticket->name,
                 'data' => $ticket->data,
                 'tiempo' => $ticket->created_at,
+                'categoria'=>$category->name,
+                'username'=>$usuarios['0']->name
             ];
-
 
         //arreglo para enviar la notificacion al usuario de la categoria
         foreach ($usuarios as $usuario) {
@@ -198,7 +199,8 @@ class ListadoTicketsComponent extends Component
                 'name' => auth()->user()->name,
                 'email' => auth()->user()->email,
                 'name_ticket' => $actualizar_status->name,
-                'status' => $actualizar_status->status->name
+                'status' => $actualizar_status->status->name,
+                'username'=>$usuarios['0']->name
 
 
             ];
@@ -213,6 +215,7 @@ class ListadoTicketsComponent extends Component
     {
         $ticket = Ticket::find($id);
         $message = Mensaje::find($id);
+        // dd($message->usuarios);
         $this->user=$message;
         $this->mensajes=$ticket;
         $this->ticket_solucion = $ticket;
@@ -228,6 +231,7 @@ class ListadoTicketsComponent extends Component
 
         $ticket = Ticket::find($this->ticket_id);
         $category = Categoria::find($ticket->category_id);
+
         $usuarios = $category->usuarios;
         // Mensaje::create([
         //     'ticket_id' => $this->ticket_id,

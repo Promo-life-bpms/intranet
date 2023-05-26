@@ -1,7 +1,7 @@
 
 {{-- Aqui se envia el correo del ticket --}}
 @component('mail::message')
-# ¡Buen día!
+# ¡Buen día {{$data['username']}}!
 
 ## El ticket del usuario
  {{ $data['name'] }}

@@ -137,98 +137,240 @@
 
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
                             wire:ignore.self>
+                           
                             @if ($historial)
-                                <div class="card">
-                                    <div class="card-header">
-                                    </div>
-                                    <div class="card-body">
-                                        <table class="table table-bordered table-hover">
-                                            <tbody>
-                                                @foreach ($historial->historial as $cambio)
-                                                    <tr>
-                                                        <td>
-                                                            @if ($cambio->type == 'creado')
-                                                                <div class="alert-sm rounded-3 alert-primary">
-                                                                    <p class="mb-0"><strong><i
-                                                                                class="bi bi-check-circle-fill">{{ $cambio->type }}</i></strong>
+                                @foreach ($historial->historial as $cambio)
+                                    @if ($cambio->type == 'creado')
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                    <div class="row h-50">
+                                                        <div class="col">&nbsp;</div>
+                                                        <div class="col ">&nbsp;</div>
+                                                    </div>
+                                                    <h5 class="m-2">
+                                                        <span class=" rounded-circle bg-light "><i
+                                                                class="bi bi-check-circle-fill"></i></span>
+                                                    </h5>
+                                                    <div class="row h-50">
+                                                        <div class="col border-end">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="col">
+                                                            &nbsp;
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col py-2">
+                                                    <div class="card ">
 
-                                                                        ({{ $cambio->created_at->diffForHumans() }})
-                                                                    </p>
-                                                                </div>
-                                                            @elseif ($cambio->type == 'edito')
-                                                                <div class="alert-sm rounded-3 alert-warning">
-                                                                    <p class="mb-0"><strong><i
-                                                                                class="bi bi-pencil-square">{{ $cambio->type }}</i></strong>
+                                                        <div class="card-body rounded-3  shadow " id="historial">
+                                                            <div class="float-end text-dark">
+                                                                ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                            <h4 class="card-title  text-green">{{ $cambio->type }}</h4>
+                                                            <p class="card-text text-muted">{!! $cambio->data !!}</p>
 
-                                                                        ({{ $cambio->created_at->diffForHumans() }})
-                                                                    </p>
-                                                                </div>
-                                                            @elseif ($cambio->type == 'Mensaje')
-                                                                <div class="alert-sm rounded-3 alert-info">
-                                                                    <p class="mb-0"><strong><i
-                                                                                class="bi bi-envelope">{{ $cambio->type }}</i></strong>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif ($cambio->type == 'edito')
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                <div class="row h-50">
+                                                    <div class="col">&nbsp;</div>
+                                                    <div class="col ">&nbsp;</div>
+                                                </div>
+                                                <h5 class="m-2">
+                                                    <span class=" rounded-circle bg-light "><i
+                                                        class="bi bi-pencil-square"></i></span>
+                                                </h5>
+                                                <div class="row h-50">
+                                                    <div class="col border-end">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="col">
+                                                        &nbsp;
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col py-2">
+                                                <div class="card">
 
-                                                                        ({{ $cambio->created_at->diffForHumans() }})
-                                                                    </p>
-                                                                </div>
-                                                            @elseif ($cambio->type == 'status')
-                                                                <div class="alert-sm alert-success">
-                                                                    <p class="mb-0"><strong><i
-                                                                                class="bi bi-eye">Visto</i></strong>
-                                                                        {{-- {{ $cambio->type }} --}}
-                                                                        ({{ $cambio->created_at->diffForHumans() }})
-                                                                    </p>
-                                                                </div>
-                                                            @elseif ($cambio->type == 'solucion')
-                                                                <div class="alert-sm rounded-3 alert-dark">
-                                                                    <p class="mb-0"><strong><i
-                                                                                class="bi bi-check2-all">Ticket
-                                                                                Cerrado</i></strong>
-                                                                        ({{ $cambio->created_at->diffForHumans() }})
-                                                                    </p>
-                                                                </div>
-                                                            @elseif ($cambio->type == 'status_finished')
-                                                                <div class="alert-sm rounded-3 alert-dark">
-                                                                    <p class="mb-0"><strong><i
-                                                                                class="bi bi-check2-all">Ticket
-                                                                                Cerrado</i></strong>
-                                                                        ({{ $cambio->created_at->diffForHumans() }})
-                                                                    </p>
-                                                                </div>
-                                                            @endif
-                                                            {!! $cambio->data !!}
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                                                    <div class="card-body rounded-3  shadow " id="historial">
+                                                        <div class="float-end text-dark">
+                                                            ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                        <h4 class="card-title text-green">{{ $cambio->type }}</h4>
+                                                        <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                                 
+                                    @elseif ($cambio->type == 'Mensaje')
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                <div class="row h-50">
+                                                    <div class="col">&nbsp;</div>
+                                                    <div class="col ">&nbsp;</div>
+                                                </div>
+                                                <h5 class="m-2">
+                                                    <span class=" rounded-circle bg-light "><i
+                                                        class="bi bi-envelope"></i></span>
+                                                </h5>
+                                                <div class="row h-50">
+                                                    <div class="col border-end">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="col">
+                                                        &nbsp;
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col py-2">
+                                                <div class="card">
+
+                                                    <div class="card-body rounded-3  shadow " id="historial">
+                                                        <div class="float-end text-dark">
+                                                            ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                        <h4 class="card-title text-green">{{ $cambio->type }}</h4>
+                                                        <p class="card-text text-dark">{!! $cambio->data !!}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    @elseif ($cambio->type == 'status')
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                <div class="row h-50">
+                                                    <div class="col">&nbsp;</div>
+                                                    <div class="col ">&nbsp;</div>
+                                                </div>
+                                                <h5 class="m-2">
+                                                    <span class=" rounded-circle bg-light "><i
+                                                        class="bi bi-eye"></i></span>
+                                                </h5>
+                                                <div class="row h-50">
+                                                    <div class="col border-end">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="col">
+                                                        &nbsp;
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col py-2">
+                                                <div class="card">
+
+                                                    <div class="card-body rounded  shadow ">
+                                                        <div class="float-end text-dark">
+                                                            ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                        <h4 class="card-title text-green">Visto</h4>
+                                                        <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    @elseif ($cambio->type == 'solucion')
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                <div class="row h-50">
+                                                    <div class="col">&nbsp;</div>
+                                                    <div class="col ">&nbsp;</div>
+                                                </div>
+                                                <h5 class="m-2">
+                                                    <span class=" rounded-circle bg-light "><i
+                                                        class="bi bi-check2-all">
+                                                        </i></span>
+                                                </h5>
+                                                <div class="row h-50">
+                                                    <div class="col border-end">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="col">
+                                                        &nbsp;
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col py-2">
+                                                <div class="card">
+
+                                                    <div class="card-body shadow">
+                                                        <div class="float-end text-dark">
+                                                            ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                        <h4 class="card-title text-green">{{ $cambio->type }}</h4>
+                                                        <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    @elseif ($cambio->type == 'status_finished')
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                <div class="row h-50">
+                                                    <div class="col">&nbsp;</div>
+                                                    <div class="col ">&nbsp;</div>
+                                                </div>
+                                                <h5 class="m-2">
+                                                    <span class=" rounded-circle bg-light "><i
+                                                        class="bi bi-check2-all">
+                                                    </i></span>
+                                                </h5>
+                                                <div class="row h-50">
+                                                    <div class="col border-end">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="col">
+                                                        &nbsp;
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col py-2">
+                                                <div class="card">
+                                                    <div class="card-body  shadow ">
+                                                        <div class="float-end text-dark">
+                                                            ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                        <h4 class="card-title text-green">Ticket Cerrado</h4>
+                                                        <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
+
+                                    @endif
+                                @endforeach
                             @endif
+
                         </div>
 
 
                         <div class="tab-pane fade" id="mensaje" role="tabpanel" aria-labelledby="mensaje-tab"
                             wire:ignore.self>
-                            <p><span class="fw-bold">Mensajes :</span></span></p>
+                            {{-- <p><span class="fw-bold">Mensajes :</span></span></p> --}}
                             @if ($mensaje)
                                 @foreach ($mensaje->mensajes as $mensajes)
                                     @if ($mensajes->user_id == auth()->user()->id)
-                                        @if ($usuario)
-                                            <div class="d-flex flex-row justify-content-end mb-2 pt-1">
-                                                <span class="p-2 shadow bg-light text-dark rounded-3"><span>{!! $mensajes->message !!}</span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
-                                                <i class="bi bi-person-circle"></i>
-                                            </div>
-                                        @endif
+                                        <div class="d-flex flex-row justify-content-end mb-2 pt-1">
+                                            <span class="p-2 shadow bg-light text-dark rounded-3"><span>{!! $mensajes->message !!}</span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
+                                            <i class="bi bi-person-circle"></i>
+                                        </div>
                                     @else
-                                        @if ($usuario)
-                                            <div class="d-flex flex-row justify-content-start">
-                                                <i class="bi bi-person-circle"></i>
-                                                <span class="p-2 shadow bg-ligth rounded-3 text-dark"><span>{!! $mensajes->message !!}
-                                                    </span>
-                                                    <span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
-                                            </div>
-                                        @endif
+                                        <div class="d-flex flex-row justify-content-start">
+                                            <i class="bi bi-person-circle"></i>
+                                            <span class="p-2 shadow bg-ligth rounded-3 text-dark"><span>{!! $mensajes->message !!}
+                                                </span>
+                                                <span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
+                                        </div>
                                     @endif
                                 @endforeach
                             @endif
