@@ -213,13 +213,28 @@
                             <p><span class="fw-bold">Mensajes :</span></span></p>
                             @if ($mensaje)
                                 @foreach ($mensaje->mensajes as $mensajes)
-                                    <span>{!! $mensajes->message !!}</span>
-                                    <span class="fw-bold">{{ $mensajes->created_at->diffForHumans() }}</span>
+                                    @if ($mensajes->user_id == auth()->user()->id)
+                                        @if ($usuario)
+                                            <div class="d-flex flex-row justify-content-end mb-2 pt-1">
+                                                <span class="p-2 shadow bg-light text-dark rounded-3"><span>{!! $mensajes->message !!}</span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
+                                                <i class="bi bi-person-circle"></i>
+                                            </div>
+                                        @endif
+                                    @else
+                                        @if ($usuario)
+                                            <div class="d-flex flex-row justify-content-start">
+                                                <i class="bi bi-person-circle"></i>
+                                                <span class="p-2 shadow bg-ligth rounded-3 text-dark"><span>{!! $mensajes->message !!}
+                                                    </span>
+                                                    <span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
+                                            </div>
+                                        @endif
+                                    @endif
                                 @endforeach
                             @endif
                             <hr>
                             <div wire:ignore class="mb-3 text-input-mensaje">
-                                <label for="descripcion" class="form-label fw-bold">Mensaje</label>
+                                {{-- <label for="descripcion" class="form-label fw-bold">Mensaje</label> --}}
                                 <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="description"></textarea>
                             </div>
                             <div class="modal-footer">

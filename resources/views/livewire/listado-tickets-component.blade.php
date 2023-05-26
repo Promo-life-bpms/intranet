@@ -370,17 +370,28 @@
                             <p><span class="fw-bold">Mensajes </span></span></p>
                             @if ($mensajes)
                                 @foreach ($mensajes->mensajes as $mensaje)
-                                     <div class="d-flex flex-row justify-content-end mb-2 pt-1">
-                                        <span class="p-2  bg-info rounded-3 text-dark"><span>Yo :</span>{!! $mensaje->message !!}
-                                            {{ $mensaje->created_at->diffForHumans() }}
-                                        </span>
-                                        {{-- <span class="fw-bold">{{ $mensaje->created_at->diffForHumans() }}</span>    --}}
-                                     </div>                                                                       
-                                    {{-- <div class="d-flex flex-row justify-content-end mb-4 pt-1">
+                                    @if ($mensaje->user_id == auth()->user()->id)
+                                        <div class="d-flex flex-row justify-content-end mb-2 pt-1">
+                                            <span class="p-2 shadow bg-ligth rounded-3 text-dark"><span>
+                                                </span>{!! $mensaje->message !!}</span>
+                                                
+                                            <i class="bi bi-person-circle"></i>
+                                            {{-- <span class="fw-bold">{{ $mensaje->created_at->diffForHumans() }}</span>    --}}
+                                        </div>
+                                        {{-- <div class="d-flex flex-row justify-content-end mb-4 pt-1">
                                         <div>
                                           <p>{!! $mensaje->message !!}</p>
                                         </div>
                                       </div> --}}
+                                    @else
+                                        <div class="d-flex flex-row justify-content-start">
+                                            <i class="bi bi-person-circle"></i>
+                                            <span
+                                                class="p-2 shadow bg-ligth rounded-3 text-dark">{!! $mensaje->message !!}</span>
+                                            {{-- {{ $mensaje->created_at->diffForHumans() }} --}}
+                                            {{-- <span class="fw-bold">{{ $mensaje->created_at->diffForHumans() }}</span>    --}}
+                                        </div>
+                                    @endif
                                 @endforeach
                             @endif
                             <hr>
