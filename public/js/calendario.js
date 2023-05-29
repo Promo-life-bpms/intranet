@@ -29,6 +29,13 @@ document.addEventListener('DOMContentLoaded', function() {
             dayMaxEventRows: 3
           }
         },
+
+        buttonText: {
+          today: 'Hoy', // Traducción del botón "Today"
+          dayGridMonth: 'Mes',
+          timeGridWeek:'Semana',
+          listWeek: 'Lista'
+        },
         
 
         initialView: 'dayGridMonth',

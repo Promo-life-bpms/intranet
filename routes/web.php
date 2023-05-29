@@ -275,7 +275,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/rh/more-information/{id}', [UserDetails::class, 'moreInformation'])->name('rh.moreInformation');
     
     
-
     //sala recreativa//
     //ruta para la disponibilidad//
     Route::get('/dispo/creative/',[BoardroomController::class,'vista'])->name('dispo.creative'); //visualizar los dias disponibles y horas

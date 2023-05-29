@@ -18,7 +18,7 @@ class CreateReservationsTable extends Migration
             $table->string('title');
             $table->dateTime('start');
             $table->dateTime('end');
-            $table->integer('number_of_people');
+            $table->string('guest');
             $table->string('material');
             $table->integer('chair_loan');
             $table->string('description');

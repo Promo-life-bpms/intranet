@@ -74,31 +74,55 @@
                                     </div>
                                 </div>
                             </div>
-                        
+                
                             <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        {!!Form::label('number_of_people', 'Personas:')!!}
-                                        {!!Form::number('number_of_people', null,['class'=>'form-control', 'placeholder'=>'Ingresa  el númerode personas'])!!}
-                                        @error('number_of_people')
-                                        <br>
-                                        @enderror
+                                <div class="col-xl-12">
+                                    <div class="form-row">
+                                        <div class="col-sm-6 ">
+                                            <div class="form-group">
+                                                
+                                                {!! Form::label('guest', 'Selecciona a los invitados:') !!}
+                                                {!!Form::text('guest', null,['class'=>'form-control','id'=>'search-input', 'placeholder'=>'Buscar usuario'])!!}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>      
-                                     
+                                <div class="col-xl-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Apellido</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="table-body">
+                                                @foreach($personas as $persona)
+                                                <tr>
+                                                    <td><input type="checkbox" name="guest[]" value="{{ $persona->email}}"> {{$persona->name}}</td>
+                                                    <td>{{$persona->lastname}}</td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                    
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         {!!Form::label('material', 'Material:')!!}
-                                        {!!Form::text('material', null,['class'=>'form-control', 'placeholder'=>'Nombre del material que se utilizará'])!!}
-                                        @error('material')
                                         <br>
-                                        @enderror
+                                        {{ Form::checkbox('material[]', 'Sillas', false) }}
+                                        {{ Form::label('material[]', 'Sillas') }}
+                                        <br>
+                                        {{ Form::checkbox('material[]', 'Proyector', false) }}
+                                        {{ Form::label('material[]', 'Proyector')}}
                                     </div>
                                 </div>
                             </div>
-                                    
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -110,7 +134,17 @@
                                     </div>
                                 </div>
                             </div>
-                           
+
+                            <div class="dropdown">
+                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Crear reservación
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Sí</a></li>
+                                    <li><a class="dropdown-item" href="#">No</a></li>
+                                </ul>
+                            </div>
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -123,8 +157,7 @@
                                     </div>
                                 </div>
                             </div>
-                        
-                            
+
                             <div class="modal-footer">
                                 {!! Form::submit('Guardar', ['class' => 'btn btn-success']) !!}
                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
@@ -189,27 +222,50 @@
                                     </div>
                                 </div>
                             </div>
-
+ 
                             <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        {!!Form::label('number_of_people', 'Personas:')!!}
-                                        {!!Form::number('number_of_people',$evento->number_of_people,['class'=>'form-control', 'placeholder'=>'Ingresa  el númerode personas'])!!}
-                                        @error('number_of_people')
-                                        <br>
-                                         @enderror
+                                <div class="col-xl-12">
+                                    <div class="form-row">
+                                        <div class="col-sm-6 ">
+                                            <div class="form-group">
+                                                {!! Form::label('guest', 'Selecciona a los invitados:') !!}
+                                                {!!Form::text('guest', null,['class'=>'form-control','id'=>'search-input', 'placeholder'=>'Buscar usuario'])!!}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>      
-                                     
+                                <div class="col-xl-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Apellido</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="table-body">
+                                                @foreach($personas as $persona)
+                                                <tr>
+                                                    <td><input type="checkbox" name="guest[]" value="{{ $persona->email}}"> {{$persona->name}}</td>
+                                                    <td>{{$persona->lastname}}</td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         {!!Form::label('material', 'Material:')!!}
-                                        {!!Form::text('material',$evento->material,['class'=>'form-control', 'placeholder'=>'Nombre del matwrial que se utilizará'])!!}
-                                        @error('material')
                                         <br>
-                                        @enderror
+                                        {{ Form::checkbox('material[]','Sillas', false) }}
+                                        {{ Form::label('material[]', 'Sillas') }}
+                                        <br>
+                                        {{ Form::checkbox('material[]','Proyector', false) }}
+                                        {{ Form::label('material[]', 'Proyector')}}
                                     </div>
                                 </div>
                             </div>
@@ -261,6 +317,8 @@
 @section('scripts')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
         $('.form-delete').submit(function(e) {
             e.preventDefault();
@@ -280,6 +338,29 @@
             })
         });
     </script>
+    
+    <script>
+        $(document).ready(function() {
+            $('#search-input').on('keyup', function() {
+                var searchText = $(this).val().toLowerCase();
+                $('#table-body tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+                });
+            });
+        });
+    </script>
+    
+    <script>
+        $(document).ready(function() {
+            $('#search').on('keyup', function() {
+                var searchText = $(this).val().toLowerCase();
+                $('#table tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+                });
+            });
+        });
+    </script>
+
 @endsection
 
 @section ('styles')

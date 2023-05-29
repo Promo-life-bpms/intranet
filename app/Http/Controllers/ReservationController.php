@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\boardroom;
+use App\Models\Department;
+use App\Models\Postulant;
 use App\Models\Reservation;
 use App\Models\User;
 use Carbon\Carbon;
@@ -14,14 +16,15 @@ use PhpParser\Node\Stmt\Return_;
 class ReservationController extends Controller
 {
     /////////////////////////////////////////////////////Mostrar vista//////////////////////////////////////////////
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
         $salitas = boardroom::all();
-        $salas = Reservation::with('boordroms')->get();
+        $personas= User::all();
+        //take(5)->get();
         $boardroom = boardroom::all()->pluck('name', 'id');
         $eventos = Reservation::all();
-        return view('admin.room.index', compact('salitas', 'user', 'eventos', 'boardroom'));
+        return view('admin.room.index', compact('salitas', 'user', 'eventos', 'boardroom', 'personas'));
     }
     /////////////////////////////////////////////Función crear evento///////////////////////////////////////////////
     public function store(Request $request)
@@ -34,11 +37,14 @@ class ReservationController extends Controller
             'title' => 'required',
             'start' => 'required',
             'end' => 'required',
-            'number_of_people' => 'required',
+            'guest' => 'required',
             'material' => 'required',
-            'chair_loan' => 'required',
             'description' => 'required',
         ]);
+
+        $seleccionarMaterial= $request->material;
+        $mate= implode(','.' ',$seleccionarMaterial);
+        //dd($mate);
 
         //VARIBLES PARA NO CONFUNDIRSE//
         $fecha_inicio =  $request->start;
@@ -102,18 +108,26 @@ class ReservationController extends Controller
                 return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados.");
             }
             if ($fechaInicio >= $evento['start'] && $fechaFinal <= $evento['end']){
-                return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados");
+                return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados.");
             }
         }
 
+        $elegirUsuarios = $request->guest;
+        $guest= implode(','.' ',$elegirUsuarios);
+        //dd($conversion);
+        $seleccionarMaterial= $request->material;
+        $mate= implode(','.' ',$seleccionarMaterial);
+        //dd($mate);
+
         //UNA VEZ QUE YA PASO LAS VALIDACIÓNES CREA EL EVENETO//
+
         $evento = new Reservation();
         $evento->title = $request->title;
         $evento->start = $request->start;
         $evento->end = $request->end;
-        $evento->number_of_people = $request->number_of_people;
-        $evento->material = $request->material;
-        $evento->chair_loan = $request->chair_loan;
+        $evento->guest = $guest;
+        $evento->material = $mate;
+        $evento->chair_loan= $request->chair_loan;
         $evento->description = $request->description;
         $evento->id_usuario = $user->id;
         $evento->id_sala = $request->id_sala;
@@ -130,9 +144,8 @@ class ReservationController extends Controller
             'title' => 'required',
             'start' => 'required',
             'end' => 'required',
-            'number_of_people' => 'required',
+            'guest' => 'required',
             'material' => 'required',
-            'chair_loan' => 'required',
             'description' => 'required',
         ]);
 
@@ -199,9 +212,16 @@ class ReservationController extends Controller
             }
         }
 
+        
+        $selectedUsers = $request->guest;
+        $conversion= implode(','.' ',$selectedUsers);
+
+        $seleccionarMaterial= $request->material;
+        $mate= implode(','.' ',$seleccionarMaterial);
+
         DB::table('reservations')->where('id', $request->id_evento)->update([
             'title' => $request->title, 'start' => $request->start,
-            'end' => $request->end, 'number_of_people' => $request->number_of_people, 'material' => $request->material,
+            'end' => $request->end, 'guest' => $conversion, 'material' => $mate,
             'chair_loan' => $request->chair_loan, 'description' => $request->description, 'id_sala' => $request->id_sala
             ]);
             return redirect()->back()->with('message2', "Evento editado correctamente.");
