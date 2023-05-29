@@ -517,7 +517,7 @@
 
                         <div class="tab-pane fade" id="mensaje" role="tabpanel" aria-labelledby="mensaje-tab"
                             wire:ignore.self>
-                            {{-- <p><span class="fw-bold">Mensajes </span></span></p> --}}
+                           
                             @if ($mensajes)
                                 @foreach ($mensajes->mensajes as $mensaje)
                                     @if ($mensaje->user_id == auth()->user()->id)
@@ -525,7 +525,7 @@
                                             <span class="p-2 shadow bg-ligth rounded-3  text-dark"><span class="text-left fw-bold">{{auth()->user()->name}}</span><span>{!! $mensaje->message !!}
                                                 </span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
                                             <i class="bi bi-person-circle"></i>
-                                            {{-- <span class="fw-bold">{{ $mensaje->created_at->diffForHumans() }}</span>    --}}
+                                          
                                         </div>
                                      
                                     @else
@@ -533,8 +533,6 @@
                                             <div class="d-flex flex-row justify-content-start">
                                                 <i class="bi bi-person-circle"></i>
                                                 <span class="p-2 shadow bg-ligth rounded-3 text-dark"><span class="fw-bold">{{$mensaje->usuarios->name}}</span>{!! $mensaje->message !!} <span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span></span>
-                                                {{-- {{ $mensaje->created_at->diffForHumans() }} --}}
-                                                {{-- <span class="fw-bold">{{ $mensaje->created_at->diffForHumans() }}</span>    --}}
                                             </div>
                                     
                                     @endif
@@ -543,7 +541,7 @@
                             <hr>
                             <div>
                                 <div wire:ignore class="mb-3 text-input-mensaje">
-                                    {{-- <label class="form-label fw-bold">Enviar mensaje</label> --}}
+                                   
                                     <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
                                     @error('message')
                                         <span class="invalid-feedback">

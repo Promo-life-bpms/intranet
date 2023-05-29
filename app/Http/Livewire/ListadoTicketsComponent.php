@@ -215,7 +215,6 @@ class ListadoTicketsComponent extends Component
     {
         $ticket = Ticket::find($id);
         $message = Mensaje::find($id);
-        // dd($message->usuarios);
         $this->user=$message;
         $this->mensajes=$ticket;
         $this->ticket_solucion = $ticket;

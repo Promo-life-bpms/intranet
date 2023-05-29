@@ -58,7 +58,7 @@ class SoporteSolucionComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
-        $message = Mensaje::find($this->ticket_id);
+        $message = Mensaje::find($id);
         $this->usuario = $message;
         $this->status = $ticket;
         $this->historial = $ticket;

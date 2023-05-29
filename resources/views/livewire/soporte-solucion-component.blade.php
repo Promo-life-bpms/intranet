@@ -230,17 +230,30 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @if ($cambio->user_id == auth()->user()->id)
                                             <div class="col py-2">
                                                 <div class="card">
-
                                                     <div class="card-body rounded-3  shadow " id="historial">
                                                         <div class="float-end text-dark">
                                                             ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                        <h4 class="card-title text-green">{{ $cambio->type }}</h4>
+                                                        <h4 class="card-title text-green">{{ $cambio->type }} de {{auth()->user()->name}}</h4>
                                                         <p class="card-text text-dark">{!! $cambio->data !!}</p>
                                                     </div>
                                                 </div>
                                             </div>
+                                            @elseif ($mensaje)  
+                                            <div class="col py-2">
+                                                <div class="card">
+                                                    <div class="card-body rounded-3  shadow " id="historial">
+                                                        <div class="float-end text-dark">
+                                                            ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                        <h4 class="card-title text-green">{{ $cambio->type }} de {{$mensaje->usuarios}}</h4>
+                                                        <p class="card-text text-dark">{!! $cambio->data !!}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endif
+                                            
                                         </div>
                                     </div> 
                                     @elseif ($cambio->type == 'status')
@@ -356,18 +369,17 @@
 
                         <div class="tab-pane fade" id="mensaje" role="tabpanel" aria-labelledby="mensaje-tab"
                             wire:ignore.self>
-                            {{-- <p><span class="fw-bold">Mensajes :</span></span></p> --}}
                             @if ($mensaje)
                                 @foreach ($mensaje->mensajes as $mensajes)
                                     @if ($mensajes->user_id == auth()->user()->id)
                                         <div class="d-flex flex-row justify-content-end mb-2 pt-1">
-                                            <span class="p-2 shadow bg-light text-dark rounded-3"><span>{!! $mensajes->message !!}</span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
+                                            <span class="p-2 shadow bg-light text-dark rounded-3"><span class="fw-bold"> {{auth()->user()->name}}</span><span>{!! $mensajes->message !!}</span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
                                             <i class="bi bi-person-circle"></i>
                                         </div>
                                     @else
                                         <div class="d-flex flex-row justify-content-start">
                                             <i class="bi bi-person-circle"></i>
-                                            <span class="p-2 shadow bg-ligth rounded-3 text-dark"><span>{!! $mensajes->message !!}
+                                            <span class="p-2 shadow bg-ligth rounded-3 text-dark"><span class="fw-bold">{{$mensajes->usuarios->name}}</span><span>{!! $mensajes->message !!}
                                                 </span>
                                                 <span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
                                         </div>
@@ -376,7 +388,7 @@
                             @endif
                             <hr>
                             <div wire:ignore class="mb-3 text-input-mensaje">
-                                {{-- <label for="descripcion" class="form-label fw-bold">Mensaje</label> --}}
+                               
                                 <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="description"></textarea>
                             </div>
                             <div class="modal-footer">
