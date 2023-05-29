@@ -58,8 +58,7 @@ class SoporteSolucionComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
-        $message = Mensaje::find($id);
-        $this->usuario = $message;
+        $this->usuario = $ticket->user;
         $this->status = $ticket;
         $this->historial = $ticket;
         $this->mensaje = $ticket;
@@ -115,7 +114,10 @@ class SoporteSolucionComponent extends Component
     //enviar mensaje en soporte solucion
     public function mensaje()
     {
-
+        if ($this->mensajes == trim('<p><br data-cke-filler="true"></p>')) {
+            $this->addError('message', 'La descripcion es obligatoria');
+            return;
+        }
         $ticket = Ticket::find($this->ticket_id);
         $usuario = $ticket->user;
 

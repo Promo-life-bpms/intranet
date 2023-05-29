@@ -8,6 +8,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use  App\Models\Soporte\Ticket;
 use App\Models\Soporte\Categoria;
+use App\Models\Soporte\Solucion;
 use App\Models\Soporte\Mensaje;
 use App\Models\Soporte\Historial;
 use App\Notifications\EditarTicketNotification;
@@ -71,8 +72,6 @@ class ListadoTicketsComponent extends Component
             ]
         );
 
-
-
         //Historial de creado
         Historial::create(
             [
@@ -128,9 +127,10 @@ class ListadoTicketsComponent extends Component
             return;
         }
 
-        //dd($ticketEditar->category_id);
+        
         $category = Categoria::find($ticketEditar->category_id);
         $usuarios = $category->usuarios;
+      
 
 
         $this->validate(
@@ -215,7 +215,9 @@ class ListadoTicketsComponent extends Component
     {
         $ticket = Ticket::find($id);
         $message = Mensaje::find($id);
-        $this->user=$message;
+        $usuario=Solucion::find($ticket);
+        dd($usuario[0]->solucion);
+        $this->user=$message->usuarios;
         $this->mensajes=$ticket;
         $this->ticket_solucion = $ticket;
         $this->ticket_id = $ticket->id;
@@ -227,18 +229,16 @@ class ListadoTicketsComponent extends Component
 
     public function enviarMensaje()
     {
+        //validacion de mensaje
+        if ($this->mensaje == trim('<p><br data-cke-filler="true"></p>')) {
+            $this->addError('message', 'El Mensaje  es obligatorio');
+            return;
+        }
 
         $ticket = Ticket::find($this->ticket_id);
         $category = Categoria::find($ticket->category_id);
 
         $usuarios = $category->usuarios;
-        // Mensaje::create([
-        //     'ticket_id' => $this->ticket_id,
-        //     'message' => $this->mensaje,
-        //     'user_id' => auth()->user()->id
-        // ]);
-
-        //si el usuario envia un mensaje al de soporte se cambia el status a proceso
 
         if ($ticket->status_id == 1) {
             Mensaje::create([
@@ -258,10 +258,7 @@ class ListadoTicketsComponent extends Component
             ]);
         }
 
-        // $ticket->update([
-        //     'status_id' => 2
-        // ]);
-
+       
         Historial::create(
 
             [

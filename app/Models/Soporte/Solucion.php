@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models\Soporte;
-
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +15,7 @@ class Solucion extends Model
         'ticket_id'
     ];
 
-    public function user()
+    public function solucion()
     {
         return $this->belongsTo(User::class, 'user_id');
     }

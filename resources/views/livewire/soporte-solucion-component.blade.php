@@ -97,12 +97,6 @@
                                 </div>
 
                                 <hr>
-                                {{-- <p><span class="fw-bold">Mensajes :</span></span></p>
-                                @if ($mensaje)
-                                    @foreach ($mensaje->mensajes as $mensajes)
-                                        <span>{!! $mensajes->message !!}</span>
-                                    @endforeach
-                                @endif --}}
                                 <div wire:ignore class="mb-3 text-input-mensaje">
                                     <label for="descripcion" class="form-label fw-bold">Solución</label>
                                     <textarea id="editorSolucion"cols="20" rows="3" class="form-control" name="description"></textarea>
@@ -137,7 +131,7 @@
 
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
                             wire:ignore.self>
-                           
+
                             @if ($historial)
                                 @foreach ($historial->historial as $cambio)
                                     @if ($cambio->type == 'creado')
@@ -208,7 +202,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>                                 
+                                    </div>
                                     @elseif ($cambio->type == 'Mensaje')
                                     <div class="container">
                                         <div class="row">
@@ -241,21 +235,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            @elseif ($mensaje)  
+                                            @else
                                             <div class="col py-2">
                                                 <div class="card">
                                                     <div class="card-body rounded-3  shadow " id="historial">
                                                         <div class="float-end text-dark">
                                                             ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                        <h4 class="card-title text-green">{{ $cambio->type }} de {{$mensaje->usuarios}}</h4>
+                                                        <h4 class="card-title text-green">{{ $cambio->type }} de {{$usuario->name}} </h4>
                                                         <p class="card-text text-dark">{!! $cambio->data !!}</p>
                                                     </div>
                                                 </div>
                                             </div>
                                             @endif
-                                            
+
                                         </div>
-                                    </div> 
+                                    </div>
                                     @elseif ($cambio->type == 'status')
                                     <div class="container">
                                         <div class="row">
@@ -289,7 +283,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div> 
+                                    </div>
                                     @elseif ($cambio->type == 'solucion')
                                     <div class="container">
                                         <div class="row">
@@ -324,7 +318,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div> 
+                                    </div>
                                     @elseif ($cambio->type == 'status_finished')
                                     <div class="container">
                                         <div class="row">
@@ -358,22 +352,20 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div> 
+                                    </div>
 
                                     @endif
                                 @endforeach
                             @endif
 
                         </div>
-
-
                         <div class="tab-pane fade" id="mensaje" role="tabpanel" aria-labelledby="mensaje-tab"
                             wire:ignore.self>
                             @if ($mensaje)
                                 @foreach ($mensaje->mensajes as $mensajes)
                                     @if ($mensajes->user_id == auth()->user()->id)
-                                        <div class="d-flex flex-row justify-content-end mb-2 pt-1">
-                                            <span class="p-2 shadow bg-light text-dark rounded-3"><span class="fw-bold"> {{auth()->user()->name}}</span><span>{!! $mensajes->message !!}</span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
+                                        <div class="d-flex flex-row justify-content-end mb-3 pt-3">
+                                            <span class=" p-2 shadow bg-light text-dark rounded-3"><span>{!! $mensajes->message !!}</span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
                                             <i class="bi bi-person-circle"></i>
                                         </div>
                                     @else
@@ -388,8 +380,12 @@
                             @endif
                             <hr>
                             <div wire:ignore class="mb-3 text-input-mensaje">
-                               
-                                <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="description"></textarea>
+                                <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="message"></textarea>
+                                @error('message')
+                                <span class="invalid-feedback">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                             </div>
                             <div class="modal-footer">
                                 @if ($status)

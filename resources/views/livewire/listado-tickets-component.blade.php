@@ -7,9 +7,7 @@
             </button>
         </div>
     </div>
-
     <div class="card-body">
-
         <div class="table-responsive">
             <table class="table text-center">
                 <thead>
@@ -19,11 +17,9 @@
                         <th scope="col">Categoría</th>
                         <th scope="col">Status</th>
                         <th scope="col">Acciones</th>
-
                     </tr>
                 </thead>
                 <tbody>
-
                     @foreach ($tickets as $ticket)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
@@ -50,7 +46,6 @@
                                 <button type="button" class="btn btn-success btn-sm " data-bs-toggle="modal"
                                     data-bs-target="#ModalVer" wire:click="verTicket({{ $ticket->id }})"><i
                                         class="bi bi-eye"></i></button>
-
                                 @if ($ticket->status->name == 'Creado' || $ticket->status->name == 'En proceso' || $ticket->status->name == 'Resuelto')
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#ModalEditar" wire:click="editarTicket({{ $ticket->id }})"><i
@@ -60,7 +55,6 @@
                                         onclick="finalizar({{ $ticket->id }})"><i
                                             class="bi bi-check-square"></i></button>
                                 @endif
-
                             </td>
                         </tr>
                     @endforeach
@@ -69,15 +63,10 @@
             <div class="d-flex justify-content-center">
                 {{ $tickets->links() }}
             </div>
-
         </div>
     </div>
 
-
-
-
     <!-- Modal Agregar-->
-
     <div wire:ignore.self class="modal fade" id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg">
@@ -86,7 +75,6 @@
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar ticket</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <form enctype="multipart/form-data">
                         @csrf
@@ -101,7 +89,6 @@
                                 </span>
                             @enderror
                         </div>
-
                         <div class="mb-3">
                             <label for="Problema" class="form-label ">Categoría</label>
                             <div class="input-group mb-3">
@@ -109,7 +96,7 @@
                                 <select wire:model="categoria" name="categoria"
                                     class="form-select @error('categoria') is-invalid @enderror"
                                     id="inputGroupSelect01">
-                                    <option selected value="">Seleccionar</option>
+                                    <option value="" selected >Seleccionar</option>
                                     @foreach ($categorias as $categoriaa)
                                         <option value="{{ $categoriaa->id }}">{{ $categoriaa->name }}</option>
                                     @endforeach
@@ -130,7 +117,6 @@
                         @enderror
                     </form>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-success" wire:click='guardar'>Guardar</button>
@@ -141,7 +127,6 @@
             </div>
         </div>
     </div>
-
     {{-- Modal editar --}}
     <div wire:ignore.self class="modal fade" id="ModalEditar" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -184,10 +169,7 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-
                             </div>
-
-
                         </div>
 
                         <div wire:ignore class="mb-3 text-input-editar">
@@ -212,7 +194,6 @@
             </div>
         </div>
     </div>
-
     {{-- Modal ver --}}
     <div wire:ignore.self class="modal fade " id="ModalVer" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -261,45 +242,14 @@
                                     {!! $solucion->description !!}
                                 @endforeach
                             @endif
-
-
-                            {{-- Editor Mensaje --}}
-                            {{-- @if ($ticket_solucion) --}}
-                            {{-- <div>
-                                <div wire:ignore class="mb-3 text-input-mensaje">
-                                    <label class="form-label fw-bold">Enviar mensaje</label>
-                                    <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
-                                    @error('message')
-                                        <span class="invalid-feedback">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div> --}}
-                            {{-- @endif --}}
-
-
                             <div class="modal-footer">
-                                {{-- @if ($ticket_solucion)
-                                    @if ($ticket_solucion->status_id == 4)
-                                        <button type="button" class="btn btn-danger"
-                                            data-bs-dismiss="modal">Cerrar</button>
-                                    @else
-                                        <button type="button" class="btn btn-danger"
-                                            data-bs-dismiss="modal">Cerrar</button>
-                                        <button type="button" class="btn btn-success"
-                                            wire:click="enviarMensaje">Enviar</button>
-                                        <div wire:loading.flex wire:target="enviarMensaje">
-                                            Enviando
-                                        </div>
-                                    @endif
-                                @endif --}}
+
                                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
                             wire:ignore.self>
-                         
+
                             @if ($ticket_solucion)
                             @foreach ($ticket_solucion->historial as $cambio)
                                 @if ($cambio->type == 'creado')
@@ -370,7 +320,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>                                 
+                                </div>
                                 @elseif ($cambio->type == 'Mensaje')
                                 <div class="container">
                                     <div class="row">
@@ -392,19 +342,31 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        @if ($cambio->user_id == auth()->user()->id)
                                         <div class="col py-2">
                                             <div class="card">
-
                                                 <div class="card-body rounded-3  shadow " id="historial">
                                                     <div class="float-end text-dark">
                                                         ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                    <h4 class="card-title text-green">{{ $cambio->type }}</h4>
+                                                    <h4 class="card-title text-green">{{ $cambio->type }} de {{auth()->user()->name}}</h4>
                                                     <p class="card-text text-dark">{!! $cambio->data !!}</p>
                                                 </div>
                                             </div>
                                         </div>
+                                        @else
+                                        <div class="col py-2">
+                                            <div class="card">
+                                                <div class="card-body rounded-3  shadow " id="historial">
+                                                    <div class="float-end text-dark">
+                                                        ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                    <h4 class="card-title text-green">{{ $cambio->type }} de Soporte</h4>
+                                                    <p class="card-text text-dark">{!! $cambio->data !!}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
-                                </div> 
+                                </div>
                                 @elseif ($cambio->type == 'status')
                                 <div class="container">
                                     <div class="row">
@@ -438,7 +400,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 @elseif ($cambio->type == 'solucion')
                                 <div class="container">
                                     <div class="row">
@@ -473,7 +435,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 @elseif ($cambio->type == 'status_finished')
                                 <div class="container">
                                     <div class="row">
@@ -507,42 +469,34 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
 
                                 @endif
                             @endforeach
                         @endif
-
                         </div>
-
                         <div class="tab-pane fade" id="mensaje" role="tabpanel" aria-labelledby="mensaje-tab"
                             wire:ignore.self>
-                           
                             @if ($mensajes)
                                 @foreach ($mensajes->mensajes as $mensaje)
                                     @if ($mensaje->user_id == auth()->user()->id)
-                                        <div class="d-flex flex-row justify-content-end mb-2  pt-1">
-                                            <span class="p-2 shadow bg-ligth rounded-3  text-dark"><span class="text-left fw-bold">{{auth()->user()->name}}</span><span>{!! $mensaje->message !!}
+                                        <div class="d-flex flex-row justify-content-end mb-3  pt-3">
+                                            <span class="p-2 shadow bg-ligth rounded-3  text-dark"><span class="mb-3 pt-3">{!! $mensaje->message !!}
                                                 </span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
                                             <i class="bi bi-person-circle"></i>
-                                          
                                         </div>
-                                     
                                     @else
-                                        
                                             <div class="d-flex flex-row justify-content-start">
                                                 <i class="bi bi-person-circle"></i>
-                                                <span class="p-2 shadow bg-ligth rounded-3 text-dark"><span class="fw-bold">{{$mensaje->usuarios->name}}</span>{!! $mensaje->message !!} <span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span></span>
+                                                <span class="p-1 shadow bg-ligth rounded-3 text-dark"><span class="fw-bold">{{$mensaje->usuarios->name}}</span>{!! $mensaje->message !!} <span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span></span>
                                             </div>
-                                    
                                     @endif
                                 @endforeach
                             @endif
                             <hr>
                             <div>
                                 <div wire:ignore class="mb-3 text-input-mensaje">
-                                   
-                                    <textarea id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
+                                    <textarea wire:model="message" id="editorMensaje" cols="20" rows="3" class="form-control" name="message"></textarea>
                                     @error('message')
                                         <span class="invalid-feedback">
                                             <strong>{{ $message }}</strong>
@@ -574,7 +528,6 @@
     </div>
     <script>
         let ckEditorCreate, ckEditorEdit, ckEditorMensaje;
-
         ClassicEditor
             .create(document.querySelector('#editor'), {
                 removePlugins: ['MediaEmbed'],
@@ -593,13 +546,10 @@
             .catch(error => {
                 console.error(error);
             });
-
-
         class MyUploadAdapter {
             constructor(loader) {
                 this.loader = loader;
             }
-
             upload() {
                 return this.loader.file
                     .then(file => new Promise((resolve, reject) => {
@@ -608,20 +558,17 @@
                         this._sendRequest(file);
                     }));
             }
-
             abort() {
                 if (this.xhr) {
                     this.xhr.abort();
                 }
             }
-
             _initRequest() {
                 const xhr = this.xhr = new XMLHttpRequest();
 
                 xhr.open('POST', "{{ route('upload', ['_token' => csrf_token()]) }}", true);
                 xhr.responseType = 'json';
             }
-
             _initListeners(resolve, reject, file) {
                 const xhr = this.xhr;
                 const loader = this.loader;
@@ -635,10 +582,8 @@
                     if (!response || response.error) {
                         return reject(response && response.error ? response.error.message : genericErrorText);
                     }
-
                     resolve(response);
                 });
-
                 if (xhr.upload) {
                     xhr.upload.addEventListener('progress', evt => {
                         if (evt.lengthComputable) {
@@ -648,7 +593,6 @@
                     });
                 }
             }
-
             _sendRequest(file) {
                 const data = new FormData();
                 data.append('upload', file);
