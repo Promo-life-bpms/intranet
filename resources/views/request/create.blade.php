@@ -54,7 +54,11 @@
                             <p class="mb-2"><b>Actualmente:</b> </p>
                             @if (auth()->user()->employee->take_expired_vacation)
                                 <p class="m-0 text-danger">Tienes <b>
-                                        {{ auth()->user()->vacationsComplete()->where('period', 3)->sum('dv') }} </b> días
+                                        {{ auth()->user()->vacationsComplete()->sum('dv') -
+                                            (auth()->user()->vacationsComplete()->where('period', '<', 3)->sum('dv') > 0
+                                                ? auth()->user()->vacationsComplete()->where('period', '<', 3)->sum('dv')
+                                                : 0) }}
+                                    </b> días
                                     disponibles que debes tomar lo mas pronto posible.</p>
                             @endif
                             <br>
