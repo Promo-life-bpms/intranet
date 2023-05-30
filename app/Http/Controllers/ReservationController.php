@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\boardroom;
+use App\Models\Company;
 use App\Models\Department;
+use App\Models\Employee;
+use App\Models\Position;
 use App\Models\Postulant;
 use App\Models\Reservation;
 use App\Models\User;
@@ -21,10 +24,11 @@ class ReservationController extends Controller
         $user = auth()->user();
         $salitas = boardroom::all();
         $personas= User::all();
-        //take(5)->get();
         $boardroom = boardroom::all()->pluck('name', 'id');
+        $materiales=Reservation::all()->pluck('material', 'id');
+        //dd($materiales);
         $eventos = Reservation::all();
-        return view('admin.room.index', compact('salitas', 'user', 'eventos', 'boardroom', 'personas'));
+        return view('admin.room.index', compact('user','salitas','personas','boardroom','materiales','eventos'));
     }
     /////////////////////////////////////////////Función crear evento///////////////////////////////////////////////
     public function store(Request $request)
@@ -37,14 +41,8 @@ class ReservationController extends Controller
             'title' => 'required',
             'start' => 'required',
             'end' => 'required',
-            'guest' => 'required',
-            'material' => 'required',
             'description' => 'required',
         ]);
-
-        $seleccionarMaterial= $request->material;
-        $mate= implode(','.' ',$seleccionarMaterial);
-        //dd($mate);
 
         //VARIBLES PARA NO CONFUNDIRSE//
         $fecha_inicio =  $request->start;
@@ -112,15 +110,17 @@ class ReservationController extends Controller
             }
         }
 
+        //Traemos la información en forma de arreglo//
         $elegirUsuarios = $request->guest;
+        //Convertimos la información en cadena//
         $guest= implode(','.' ',$elegirUsuarios);
-        //dd($conversion);
+    
+        //Traemos la información en forma de arreglo//
         $seleccionarMaterial= $request->material;
+        //Convertimos la información en cadena//
         $mate= implode(','.' ',$seleccionarMaterial);
-        //dd($mate);
 
         //UNA VEZ QUE YA PASO LAS VALIDACIÓNES CREA EL EVENETO//
-
         $evento = new Reservation();
         $evento->title = $request->title;
         $evento->start = $request->start;
@@ -148,6 +148,11 @@ class ReservationController extends Controller
             'material' => 'required',
             'description' => 'required',
         ]);
+
+        $selectedUsers = $request->guest;
+        $conversion= implode(','.' ',$selectedUsers);
+        $protections = explode(',', $conversion);
+        //dd($protections);
 
         $fecha_inicio =  $request->start;
         $fecha_termino =  $request->end;
@@ -215,7 +220,6 @@ class ReservationController extends Controller
         
         $selectedUsers = $request->guest;
         $conversion= implode(','.' ',$selectedUsers);
-
         $seleccionarMaterial= $request->material;
         $mate= implode(','.' ',$seleccionarMaterial);
 

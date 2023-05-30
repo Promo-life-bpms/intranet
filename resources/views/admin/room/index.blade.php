@@ -74,7 +74,7 @@
                                     </div>
                                 </div>
                             </div>
-                
+
                             <div class="row">
                                 <div class="col-xl-12">
                                     <div class="form-row">
@@ -92,15 +92,13 @@
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th>Nombre</th>
-                                                    <th>Apellido</th>
+                                                    <th>Invitados</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="table-body">
                                                 @foreach($personas as $persona)
                                                 <tr>
-                                                    <td><input type="checkbox" name="guest[]" value="{{ $persona->email}}"> {{$persona->name}}</td>
-                                                    <td>{{$persona->lastname}}</td>
+                                                    <td><input type="checkbox" name="guest[]" value="{{ $persona->email}}"> {{$persona->name.' '.$persona->lastname}}</td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -134,15 +132,21 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="dropdown">
-                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Crear reservación
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Sí</a></li>
-                                    <li><a class="dropdown-item" href="#">No</a></li>
-                                </ul>
+                            
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="dropdown">
+                                            <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Crear reservación
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#">Sí</a></li>
+                                                <li><a class="dropdown-item" href="#">No</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="row">
@@ -157,7 +161,7 @@
                                     </div>
                                 </div>
                             </div>
-
+                            
                             <div class="modal-footer">
                                 {!! Form::submit('Guardar', ['class' => 'btn btn-success']) !!}
                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
@@ -229,25 +233,24 @@
                                         <div class="col-sm-6 ">
                                             <div class="form-group">
                                                 {!! Form::label('guest', 'Selecciona a los invitados:') !!}
-                                                {!!Form::text('guest', null,['class'=>'form-control','id'=>'search-input', 'placeholder'=>'Buscar usuario'])!!}
+                                                {!!Form::text('guest', null,['class'=>'form-control','id'=>'search-edit', 'placeholder'=>'Buscar usuario'])!!}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="col-xl-12">
                                     <div class="table-responsive">
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr>
                                                     <th>Nombre</th>
-                                                    <th>Apellido</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="table-body">
                                                 @foreach($personas as $persona)
                                                 <tr>
-                                                    <td><input type="checkbox" name="guest[]" value="{{ $persona->email}}"> {{$persona->name}}</td>
-                                                    <td>{{$persona->lastname}}</td>
+                                                    <td><input type="checkbox" name="guest[]" value="{{$persona->email}}"> {{$persona->name.' '.$persona->lastname}}</td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -261,15 +264,15 @@
                                     <div class="form-group">
                                         {!!Form::label('material', 'Material:')!!}
                                         <br>
-                                        {{ Form::checkbox('material[]','Sillas', false) }}
+                                        {{ Form::checkbox('material[]','Sillas', true) }}
                                         {{ Form::label('material[]', 'Sillas') }}
                                         <br>
-                                        {{ Form::checkbox('material[]','Proyector', false) }}
+                                        {{ Form::checkbox('material[]','Proyector', true) }}
                                         {{ Form::label('material[]', 'Proyector')}}
                                     </div>
                                 </div>
                             </div>
-                                    
+                           
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -293,6 +296,23 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="dropdown">
+                                            <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="true">
+                                                Crear reservación
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#">Sí</a></li>
+                                                <li><a class="dropdown-item" href="#">No</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             @if(auth()->user()->id==$evento->id_usuario)
                             <div class="modal-footer">
                                 {!! Form::submit('Modificar', ['class' => 'btn3 btn-warning']) !!}
@@ -352,9 +372,9 @@
     
     <script>
         $(document).ready(function() {
-            $('#search').on('keyup', function() {
+            $('#search-edit').on('keyup', function() {
                 var searchText = $(this).val().toLowerCase();
-                $('#table tr').filter(function() {
+                $('#table-body tr').filter(function() {
                     $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
                 });
             });
