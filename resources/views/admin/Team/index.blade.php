@@ -363,7 +363,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'ODOO: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el ODOO']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el odoo']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -459,7 +459,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Perfil de Trabajo en ODOO: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el perfil de trabajo en ODOO']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el perfil de trabajo en odoo']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
