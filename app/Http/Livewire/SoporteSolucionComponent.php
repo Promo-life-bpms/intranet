@@ -18,6 +18,9 @@ class SoporteSolucionComponent extends Component
     use WithPagination;
     public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes;
     protected $paginationTheme = 'bootstrap';
+    protected $rules=[
+        'message'=>'required'
+    ];
     public function render()
     {
         $categories =  auth()->user()->asignacionCategoria->pluck(["id"]);
@@ -114,16 +117,22 @@ class SoporteSolucionComponent extends Component
     //enviar mensaje en soporte solucion
     public function mensaje()
     {
-        if ($this->mensajes == trim('<p><br data-cke-filler="true"></p>')) {
-            $this->addError('message', 'La descripcion es obligatoria');
-            return;
-        }
         $ticket = Ticket::find($this->ticket_id);
         $usuario = $ticket->user;
 
+        if ($this->mensajes == trim('<p><br data-cke-filler="true"></p>')) {
+            $this->addError('mensaje', 'La descripcion es obligatoria');
+            return;
+        }
+
+        $this->validate([
+            'mensajes' => 'required'
+        ]);
+
+        
         Mensaje::create([
             'ticket_id' => $this->ticket_id,
-            'message' => $this->mensajes,
+            'mensaje' => $this->mensajes,
             'user_id' => auth()->user()->id
         ]);
 
@@ -132,7 +141,7 @@ class SoporteSolucionComponent extends Component
             'user_id' => auth()->user()->id,
             'type' => 'Mensaje',
             'data' => $this->mensajes
-        ]);
+        ]); 
 
         $messageNotification = [
             'name' => auth()->user()->name,

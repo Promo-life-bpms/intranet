@@ -16,7 +16,7 @@ class CreateMensajesTable extends Migration
         Schema::create('soporte_mensajes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ticket_id')->references('id')->on('soporte_tickets');
-            $table->mediumText('message');
+            $table->mediumText('mensaje');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
             

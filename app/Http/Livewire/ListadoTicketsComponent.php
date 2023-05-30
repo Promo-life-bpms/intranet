@@ -26,6 +26,9 @@ class ListadoTicketsComponent extends Component
 
     public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje,$mensajes,$user;
 
+    protected $rules=[
+        'message'=>'required'
+    ];
 
     public function render()
     {
@@ -101,13 +104,10 @@ class ListadoTicketsComponent extends Component
             $usuario->notify(new SoporteNotification($Notificacion));
         }
 
-
-
         $this->name = '';
         $this->categoria = '';
         $this->dispatchBrowserEvent('ticket_success');
     }
-
 
     public function editarTicket($id)
     {
@@ -122,26 +122,20 @@ class ListadoTicketsComponent extends Component
     public function guardarEditar($id)
     {
         $ticketEditar = Ticket::find($id);
+        $category = Categoria::find($ticketEditar->category_id);
         if ($this->data == trim('<p><br data-cke-filler="true"></p>')) {
             $this->addError('data', 'La descripcion es obligatoria');
             return;
         }
-
-        
-        $category = Categoria::find($ticketEditar->category_id);
-        $usuarios = $category->usuarios;
       
-
-
         $this->validate(
-            [
+            [   
                 'name' => 'required',
                 'data' => 'required',
                 'categoria' => 'required'
             ]
 
         );
-
         $ticketEditar->update([
             'name' => $this->name,
             'data' => $this->data,
@@ -160,6 +154,7 @@ class ListadoTicketsComponent extends Component
             'name_ticket' => $ticketEditar->name,
         ];
 
+        $usuarios = $category->usuarios;
         foreach ($usuarios  as $usuario) {
             $usuario->notify(new EditarTicketNotification($notificacionEditar));
         }
@@ -180,9 +175,6 @@ class ListadoTicketsComponent extends Component
                 'status_id' => 4
             ]
         );
-
-
-
         Historial::create(
 
             [
@@ -192,8 +184,6 @@ class ListadoTicketsComponent extends Component
                 'data' => $actualizar_status->status->name
             ]
         );
-
-
         $NotificacionStatus =
             [
                 'name' => auth()->user()->name,
@@ -216,8 +206,6 @@ class ListadoTicketsComponent extends Component
         $ticket = Ticket::find($id);
         $message = Mensaje::find($id);
         $usuario=Solucion::find($ticket);
-        dd($usuario[0]->solucion);
-        $this->user=$message->usuarios;
         $this->mensajes=$ticket;
         $this->ticket_solucion = $ticket;
         $this->ticket_id = $ticket->id;
@@ -229,36 +217,15 @@ class ListadoTicketsComponent extends Component
 
     public function enviarMensaje()
     {
-        //validacion de mensaje
-        if ($this->mensaje == trim('<p><br data-cke-filler="true"></p>')) {
-            $this->addError('message', 'El Mensaje  es obligatorio');
-            return;
-        }
-
+        
         $ticket = Ticket::find($this->ticket_id);
         $category = Categoria::find($ticket->category_id);
+      
+        $this->validate([
+            'mensaje' => 'required'
+        ]);
 
-        $usuarios = $category->usuarios;
-
-        if ($ticket->status_id == 1) {
-            Mensaje::create([
-                'ticket_id' => $this->ticket_id,
-                'message' => $this->mensaje,
-                'user_id' => auth()->user()->id
-            ]);
-        } else {
-
-            Mensaje::create([
-                'ticket_id' => $this->ticket_id,
-                'message' => $this->mensaje,
-                'user_id' => auth()->user()->id
-            ]);
-            $ticket->update([
-                'status_id' => 2
-            ]);
-        }
-
-       
+          
         Historial::create(
 
             [
@@ -269,11 +236,30 @@ class ListadoTicketsComponent extends Component
             ]
         );
 
+        if ($ticket->status_id == 1) {
+            Mensaje::create([
+                'ticket_id' => $this->ticket_id,
+                'mensaje' => $this->mensaje,
+                'user_id' => auth()->user()->id
+            ]);
+        } else {
+
+            Mensaje::create([
+                'ticket_id' => $this->ticket_id,
+                'mensaje' => $this->mensaje,
+                'user_id' => auth()->user()->id
+            ]);
+            $ticket->update([
+                'status_id' => 2
+            ]);
+        }
+
         $notificationMessage = [
             'name' => auth()->user()->name,
             'name_ticket' => $ticket->name
         ];
 
+        $usuarios = $category->usuarios;
         foreach ($usuarios as $usuario) {
             $usuario->notify(new MessageSoporteNotification($notificationMessage));
         }

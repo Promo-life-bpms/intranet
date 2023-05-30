@@ -160,8 +160,10 @@
 
                                                         <div class="card-body rounded-3  shadow " id="historial">
                                                             <div class="float-end text-dark">
-                                                                ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                            <h4 class="card-title  text-green">{{ $cambio->type }}</h4>
+                                                                ({{ $cambio->created_at->diffForHumans() }})
+                                                            </div>
+                                                            <h4 class="card-title  text-green">{{ $cambio->type }}
+                                                            </h4>
                                                             <p class="card-text text-muted">{!! $cambio->data !!}</p>
 
                                                         </div>
@@ -170,190 +172,193 @@
                                             </div>
                                         </div>
                                     @elseif ($cambio->type == 'edito')
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
-                                                <div class="row h-50">
-                                                    <div class="col">&nbsp;</div>
-                                                    <div class="col ">&nbsp;</div>
-                                                </div>
-                                                <h5 class="m-2">
-                                                    <span class=" rounded-circle bg-light "><i
-                                                        class="bi bi-pencil-square"></i></span>
-                                                </h5>
-                                                <div class="row h-50">
-                                                    <div class="col border-end">
-                                                        &nbsp;
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                    <div class="row h-50">
+                                                        <div class="col">&nbsp;</div>
+                                                        <div class="col ">&nbsp;</div>
                                                     </div>
-                                                    <div class="col">
-                                                        &nbsp;
+                                                    <h5 class="m-2">
+                                                        <span class=" rounded-circle bg-light "><i
+                                                                class="bi bi-pencil-square"></i></span>
+                                                    </h5>
+                                                    <div class="row h-50">
+                                                        <div class="col border-end">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="col">
+                                                            &nbsp;
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col py-2">
-                                                <div class="card">
+                                                <div class="col py-2">
+                                                    <div class="card">
 
-                                                    <div class="card-body rounded-3  shadow " id="historial">
-                                                        <div class="float-end text-dark">
-                                                            ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                        <h4 class="card-title text-green">{{ $cambio->type }}</h4>
-                                                        <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                        <div class="card-body rounded-3  shadow " id="historial">
+                                                            <div class="float-end text-dark">
+                                                                ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                            <h4 class="card-title text-green">{{ $cambio->type }}</h4>
+                                                            <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                     @elseif ($cambio->type == 'Mensaje')
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
-                                                <div class="row h-50">
-                                                    <div class="col">&nbsp;</div>
-                                                    <div class="col ">&nbsp;</div>
-                                                </div>
-                                                <h5 class="m-2">
-                                                    <span class=" rounded-circle bg-light "><i
-                                                        class="bi bi-envelope"></i></span>
-                                                </h5>
-                                                <div class="row h-50">
-                                                    <div class="col border-end">
-                                                        &nbsp;
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                    <div class="row h-50">
+                                                        <div class="col">&nbsp;</div>
+                                                        <div class="col ">&nbsp;</div>
                                                     </div>
-                                                    <div class="col">
-                                                        &nbsp;
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            @if ($cambio->user_id == auth()->user()->id)
-                                            <div class="col py-2">
-                                                <div class="card">
-                                                    <div class="card-body rounded-3  shadow " id="historial">
-                                                        <div class="float-end text-dark">
-                                                            ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                        <h4 class="card-title text-green">{{ $cambio->type }} de {{auth()->user()->name}}</h4>
-                                                        <p class="card-text text-dark">{!! $cambio->data !!}</p>
+                                                    <h5 class="m-2">
+                                                        <span class=" rounded-circle bg-light "><i
+                                                                class="bi bi-envelope"></i></span>
+                                                    </h5>
+                                                    <div class="row h-50">
+                                                        <div class="col border-end">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="col">
+                                                            &nbsp;
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            @else
-                                            <div class="col py-2">
-                                                <div class="card">
-                                                    <div class="card-body rounded-3  shadow " id="historial">
-                                                        <div class="float-end text-dark">
-                                                            ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                        <h4 class="card-title text-green">{{ $cambio->type }} de {{$usuario->name}} </h4>
-                                                        <p class="card-text text-dark">{!! $cambio->data !!}</p>
+                                                @if ($cambio->user_id == auth()->user()->id)
+                                                    <div class="col py-2">
+                                                        <div class="card">
+                                                            <div class="card-body rounded-3  shadow " id="historial">
+                                                                <div class="float-end text-dark">
+                                                                    ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                                <h4 class="card-title text-green">{{ $cambio->type }}
+                                                                    de {{ auth()->user()->name }}</h4>
+                                                                <p class="card-text text-dark">{!! $cambio->data !!}
+                                                                </p>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            @endif
+                                                @else
+                                                    <div class="col py-2">
+                                                        <div class="card">
+                                                            <div class="card-body rounded-3  shadow " id="historial">
+                                                                <div class="float-end text-dark">
+                                                                    ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                                <h4 class="card-title text-green">{{ $cambio->type }}
+                                                                    de {{ $usuario->name }} </h4>
+                                                                <p class="card-text text-dark">{!! $cambio->data !!}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
 
+                                            </div>
                                         </div>
-                                    </div>
                                     @elseif ($cambio->type == 'status')
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
-                                                <div class="row h-50">
-                                                    <div class="col">&nbsp;</div>
-                                                    <div class="col ">&nbsp;</div>
-                                                </div>
-                                                <h5 class="m-2">
-                                                    <span class=" rounded-circle bg-light "><i
-                                                        class="bi bi-eye"></i></span>
-                                                </h5>
-                                                <div class="row h-50">
-                                                    <div class="col border-end">
-                                                        &nbsp;
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                    <div class="row h-50">
+                                                        <div class="col">&nbsp;</div>
+                                                        <div class="col ">&nbsp;</div>
                                                     </div>
-                                                    <div class="col">
-                                                        &nbsp;
+                                                    <h5 class="m-2">
+                                                        <span class=" rounded-circle bg-light "><i
+                                                                class="bi bi-eye"></i></span>
+                                                    </h5>
+                                                    <div class="row h-50">
+                                                        <div class="col border-end">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="col">
+                                                            &nbsp;
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col py-2">
-                                                <div class="card">
+                                                <div class="col py-2">
+                                                    <div class="card">
 
-                                                    <div class="card-body rounded  shadow ">
-                                                        <div class="float-end text-dark">
-                                                            ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                        <h4 class="card-title text-green">Visto</h4>
-                                                        <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                        <div class="card-body rounded  shadow ">
+                                                            <div class="float-end text-dark">
+                                                                ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                            <h4 class="card-title text-green">Visto</h4>
+                                                            <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                     @elseif ($cambio->type == 'solucion')
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
-                                                <div class="row h-50">
-                                                    <div class="col">&nbsp;</div>
-                                                    <div class="col ">&nbsp;</div>
-                                                </div>
-                                                <h5 class="m-2">
-                                                    <span class=" rounded-circle bg-light "><i
-                                                        class="bi bi-check2-all">
-                                                        </i></span>
-                                                </h5>
-                                                <div class="row h-50">
-                                                    <div class="col border-end">
-                                                        &nbsp;
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                    <div class="row h-50">
+                                                        <div class="col">&nbsp;</div>
+                                                        <div class="col ">&nbsp;</div>
                                                     </div>
-                                                    <div class="col">
-                                                        &nbsp;
+                                                    <h5 class="m-2">
+                                                        <span class=" rounded-circle bg-light "><i
+                                                                class="bi bi-check2-all">
+                                                            </i></span>
+                                                    </h5>
+                                                    <div class="row h-50">
+                                                        <div class="col border-end">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="col">
+                                                            &nbsp;
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col py-2">
-                                                <div class="card">
+                                                <div class="col py-2">
+                                                    <div class="card">
 
-                                                    <div class="card-body shadow">
-                                                        <div class="float-end text-dark">
-                                                            ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                        <h4 class="card-title text-green">{{ $cambio->type }}</h4>
-                                                        <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                        <div class="card-body shadow">
+                                                            <div class="float-end text-dark">
+                                                                ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                            <h4 class="card-title text-green">{{ $cambio->type }}</h4>
+                                                            <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                     @elseif ($cambio->type == 'status_finished')
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
-                                                <div class="row h-50">
-                                                    <div class="col">&nbsp;</div>
-                                                    <div class="col ">&nbsp;</div>
-                                                </div>
-                                                <h5 class="m-2">
-                                                    <span class=" rounded-circle bg-light "><i
-                                                        class="bi bi-check2-all">
-                                                    </i></span>
-                                                </h5>
-                                                <div class="row h-50">
-                                                    <div class="col border-end">
-                                                        &nbsp;
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                    <div class="row h-50">
+                                                        <div class="col">&nbsp;</div>
+                                                        <div class="col ">&nbsp;</div>
                                                     </div>
-                                                    <div class="col">
-                                                        &nbsp;
+                                                    <h5 class="m-2">
+                                                        <span class=" rounded-circle bg-light "><i
+                                                                class="bi bi-check2-all">
+                                                            </i></span>
+                                                    </h5>
+                                                    <div class="row h-50">
+                                                        <div class="col border-end">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="col">
+                                                            &nbsp;
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col py-2">
-                                                <div class="card">
-                                                    <div class="card-body  shadow ">
-                                                        <div class="float-end text-dark">
-                                                            ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                        <h4 class="card-title text-green">Ticket Cerrado</h4>
-                                                        <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                <div class="col py-2">
+                                                    <div class="card">
+                                                        <div class="card-body  shadow ">
+                                                            <div class="float-end text-dark">
+                                                                ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                            <h4 class="card-title text-green">Ticket Cerrado</h4>
+                                                            <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-
                                     @endif
                                 @endforeach
                             @endif
@@ -365,13 +370,15 @@
                                 @foreach ($mensaje->mensajes as $mensajes)
                                     @if ($mensajes->user_id == auth()->user()->id)
                                         <div class="d-flex flex-row justify-content-end mb-3 pt-3">
-                                            <span class=" p-2 shadow bg-light text-dark rounded-3"><span>{!! $mensajes->message !!}</span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
+                                            <span
+                                                class=" p-2 shadow bg-light text-dark rounded-3"><span>{!! $mensajes->mensaje !!}</span><span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
                                             <i class="bi bi-person-circle"></i>
                                         </div>
                                     @else
                                         <div class="d-flex flex-row justify-content-start">
                                             <i class="bi bi-person-circle"></i>
-                                            <span class="p-2 shadow bg-ligth rounded-3 text-dark"><span class="fw-bold">{{$mensajes->usuarios->name}}</span><span>{!! $mensajes->message !!}
+                                            <span class="p-2 shadow bg-ligth rounded-3 text-dark"><span
+                                                    class="fw-bold">{{ $mensajes->usuarios->name }}</span><span>{!! $mensajes->mensaje !!}
                                                 </span>
                                                 <span>{{ $mensajes->created_at->diffForHumans() }}</span></span>
                                         </div>
@@ -380,13 +387,13 @@
                             @endif
                             <hr>
                             <div wire:ignore class="mb-3 text-input-mensaje">
-                                <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="message"></textarea>
-                                @error('message')
-                                <span class="invalid-feedback">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
+                                <textarea id="editorMensaje"cols="20" rows="3" class="form-control" name="mensaje"></textarea>
                             </div>
+                            @error('mensajes')
+                                <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
+                            @enderror
+
+
                             <div class="modal-footer">
                                 @if ($status)
                                     @if ($status->status_id == 4)
@@ -438,18 +445,18 @@
             //editor mensaje
             ClassicEditor
                 .create(document.querySelector('#editorMensaje'), {
-                    removePlugins: ['MediaEmbed'],
-                    extraPlugins: [MyCustomUploadAdapterPlugin],
+                    // removePlugins: ['MediaEmbed'],
+                    // extraPlugins: [MyCustomUploadAdapterPlugin],
                 })
                 .then(newEditor => {
                     ckeEditorMensaje = newEditor;
                     // Escucha el evento 'change'
                     //para subir las imagenes y la data del ckeditor
-                    ckeEditorMensaje.model.document.on('change', () => {
-                        const content = ckeEditorMensaje.getData();
-                        @this.description = content
-                        console.log(content); // Imprime el contenido actualizado en la consola
-                    });
+                    // ckeEditorMensaje.model.document.on('change', () => {
+                    //     const content = ckeEditorMensaje.getData();
+                    //     @this.mensajes = content
+                    //     console.log(content); // Imprime el contenido actualizado en la consola
+                    // });
 
                 })
                 .catch(error => {

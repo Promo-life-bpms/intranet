@@ -11,7 +11,7 @@ class Mensaje extends Model
     public $table = "soporte_mensajes";
     protected $fillable = [
         'ticket_id',
-        'message',
+        'mensaje',
         'user_id',
     ];
 
