@@ -99,7 +99,9 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
         $user = User::where('id', $user_id)->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv');
+        $vacations = $user[0]->employee->take_expired_vacation
+            ? DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv')
+            : DB::table('vacations_availables')->where('users_id', $user_id)->sum('dv');
         $user_roles = DB::table('role_user')->where("user_id", $user_id)->get("role_id");
         $roles = [];
 
@@ -396,10 +398,10 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
         $request = ModelsRequest::all()->where('employee_id', $user_id);
-        $user = User::where('id',$user_id)->get();
+        $user = User::where('id', $user_id)->get();
         $vacations = $user[0]->employee->take_expired_vacation
-        ? DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv')
-        : DB::table('vacations_availables')->where('users_id', $user_id)->sum('dv');
+            ? DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv')
+            : DB::table('vacations_availables')->where('users_id', $user_id)->sum('dv');
 
         $data = [];
         $start = "";
