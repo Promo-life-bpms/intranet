@@ -36,7 +36,6 @@ class FirebaseNotificationController extends Controller
             ]
         );
         
-        var_dump(json_decode($response->getBody()->getContents()));
     }
 
     public function communique($title_message,$message)
@@ -72,7 +71,6 @@ class FirebaseNotificationController extends Controller
             ]
         );
         
-        var_dump(json_decode($response->getBody()->getContents()));
     }
 
     public function createRequest($applicant_id)
@@ -168,7 +166,6 @@ class FirebaseNotificationController extends Controller
 
         }
           
-        var_dump(json_decode($response->getBody()->getContents()));
     }
 
     public function sendApprovedRequest($user_id)
@@ -199,8 +196,6 @@ class FirebaseNotificationController extends Controller
             ]
         );
 
-          
-        var_dump(json_decode($response->getBody()->getContents()));
     }
 
 
@@ -232,7 +227,6 @@ class FirebaseNotificationController extends Controller
             ]
         );
 
-        var_dump(json_decode($response->getBody()->getContents()));
     }
 
 
@@ -296,4 +290,127 @@ class FirebaseNotificationController extends Controller
 
     }
 
+    public function globalNotification($title, $message)
+    {
+        //Notificacion del que crea la solicitud
+        $title = strval($title);
+        $body = strval($message);
+        $topic = '/topics/GLOBAL' ;
+        $client = new Client(['verify' => false]);
+
+        $body = [
+            'to' => $topic,
+                'notification' => [
+                    'title'=> $title,
+                    'body'=> $body,
+                ],
+        ];
+
+        $response = $client->request(
+            'POST',
+            'https://fcm.googleapis.com/fcm/send',
+                [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                ],
+                'body' => json_encode($body),
+            ]
+        );
+        
+    }
+
+    public function birthdayNotification($name)
+    {
+        //Notificacion del que crea la solicitud
+        $title = 'Cumpleaños';
+        $body = 'Hoy es el cumpleaños de  '. $name  ;
+        $topic = '/topics/GLOBAL' ;
+        $client = new Client(['verify' => false]);
+
+        $body = [
+            'to' => $topic,
+                'notification' => [
+                    'title'=> $title,
+                    'body'=> $body,
+                ],
+        ];
+
+        $response = $client->request(
+            'POST',
+            'https://fcm.googleapis.com/fcm/send',
+                [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                ],
+                'body' => json_encode($body),
+            ]
+        );
+        
+    }
+
+    public function birthdaySpecificNotification($user_id, $name)
+    {
+        //Notificacion del que crea la solicitud
+        $title = '¡Feliz cumpleaños!';
+        $body = 'Felicidades '. $name .' te deseamos un excelente día!' ;
+        $topic = '/topics'. '/'.strval($user_id);
+        $client = new Client(['verify' => false]);
+
+        $body = [
+            'to' => $topic,
+                'notification' => [
+                    'title'=> $title,
+                    'body'=> $body,
+                ],
+        ];
+
+        $response = $client->request(
+            'POST',
+            'https://fcm.googleapis.com/fcm/send',
+                [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                ],
+                'body' => json_encode($body),
+            ]
+        );
+        
+    }
+
+    public function birthdaySpecificNotificationPost(Request $request)
+    {
+
+        //Notificacion del que crea la solicitud
+        $title = '¡Feliz cumpleaños!';
+        $body = 'Felicidades '. $request->name .' te deseamos un excelente día!' ;
+        $topic = '/topics'. '/'.strval($request->user_id);
+        $client = new Client(['verify' => false]);
+
+        $body = [
+            'to' => $topic,
+                'notification' => [
+                    'title'=> $title,
+                    'body'=> $body,
+                ],
+        ];
+
+        $response = $client->request(
+            'POST',
+            'https://fcm.googleapis.com/fcm/send',
+                [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                ],
+                'body' => json_encode($body),
+            ]
+        );
+
+        return back()->with('message', 'Felicitacion enviada correctamente');
+
+        
+    }
 }

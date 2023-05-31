@@ -56,3 +56,4 @@ Route::post('/postRhRequest', [APIController::class, 'postRhRequest'])->name('ap
 
 Route::post('/firebase/publication', [FirebaseNotificationController::class, 'publication'])->name('api.firebase.publication');
 
+Route::post('/firebase/birthday-notification', [FirebaseNotificationController::class, 'publication'])->name('api.firebase.birthday');
