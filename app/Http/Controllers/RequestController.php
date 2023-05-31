@@ -152,13 +152,15 @@ class RequestController extends Controller
         $user->daysSelected()->update(['requests_id' => $req->id]);
 
         // Enviar notificacion
+        $communique_notification = new FirebaseNotificationController();
+        $communique_notification->createRequest(strval($user->id));
+        $communique_notification->sendToManager(strval($req->direct_manager_id));
+
+
         $userReceiver = Employee::find($req->direct_manager_id)->user;
         event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
         $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
-
-        $communique_notification = new FirebaseNotificationController();
-        $communique_notification->createRequest(strval($user->id),strval($req->direct_manager_id));
-        
+ 
         return redirect()->action([RequestController::class, 'index']);
     }
 

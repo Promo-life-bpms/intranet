@@ -75,7 +75,7 @@ class FirebaseNotificationController extends Controller
         var_dump(json_decode($response->getBody()->getContents()));
     }
 
-    public function createRequest($applicant_id, $manager_id)
+    public function createRequest($applicant_id)
     {
         //Notificacion del que crea la solicitud
         $title = 'Solicitud enviada';
@@ -103,33 +103,36 @@ class FirebaseNotificationController extends Controller
             ]
         );
 
-        //Notificacion para el jefe directo
-        $title_manager = 'Solicitud enviada';
-        $body_manager = '¡Tu solicitud ha sido enviada, le notificaremos a tu jefe directo para su aprobación!. ' ;
-        $topic_manager = '/topics'.'/'.$manager_id;
-        $client_manager = new Client(['verify' => false]);
+    }
 
-        $body_manager = [
-            'to' => $topic_manager,
-                'notification' => [
-                    'title'=> $title_manager,
-                    'body'=> $body_manager,
-                ],
-        ];
-        
-        $response = $client_manager->request(
-            'POST',
-            'https://fcm.googleapis.com/fcm/send',
-                [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
-                ],
-                'body' => json_encode($body_manager),
-            ]
-        );
-  
-        var_dump(json_decode($response->getBody()->getContents()));
+    public function sendToManager($manager_id)
+    {
+         //Notificacion para el jefe directo
+         $title_manager = 'Nueva solicitud';
+         $body_manager = '¡Haz recibido una nueva solicitud de un colaborador!' ;
+         $topic_manager = '/topics'.'/'.$manager_id;
+         $client_manager = new Client(['verify' => false]);
+ 
+         $body_manager = [
+             'to' => $topic_manager,
+                 'notification' => [
+                     'title'=> $title_manager,
+                     'body'=> $body_manager,
+                 ],
+         ];
+         
+         $response = $client_manager->request(
+             'POST',
+             'https://fcm.googleapis.com/fcm/send',
+                 [
+                 'headers' => [
+                     'Content-Type' => 'application/json',
+                     'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                 ],
+                 'body' => json_encode($body_manager),
+             ]
+         );
+   
     }
 
     public function sendToRh()
