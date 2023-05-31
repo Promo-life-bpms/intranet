@@ -67,8 +67,8 @@
     </div>
 
     <!-- Modal Agregar-->
-    <div wire:ignore.self class="modal fade" id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div wire:ignore.self data class="modal fade" id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -129,7 +129,7 @@
     </div>
     {{-- Modal editar --}}
     <div wire:ignore.self class="modal fade" id="ModalEditar" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+        aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -175,12 +175,11 @@
                         <div wire:ignore class="mb-3 text-input-editar">
                             <label for="descripcion" class="form-label">Descripción</label>
                             <textarea wire:model="data" id="editorEditar" cols="20" rows="3" class="form-control" name="data"></textarea>
-                            @error('data')
-                                <span class="invalid-feedback">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
+
                         </div>
+                        @error('data')
+                            <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
+                        @enderror
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -196,7 +195,7 @@
     </div>
     {{-- Modal ver --}}
     <div wire:ignore.self class="modal fade " id="ModalVer" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+        aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -362,9 +361,10 @@
                                                         <div class="card">
                                                             <div class="card-body rounded-3  shadow " id="historial">
                                                                 <div class="float-end text-dark">
-                                                                    ({{ $cambio->created_at->diffForHumans() }})</div>  
-                                                                                                                    {{-- {{$user->name}} --}}
-                                                                <h4 class="card-title text-green">{{ $cambio->type }} de Soporte</h4>
+                                                                    ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                                {{-- {{$user->name}} --}}
+                                                                <h4 class="card-title text-green">{{ $cambio->type }}
+                                                                    de Soporte</h4>
                                                                 <p class="card-text text-dark">{!! $cambio->data !!}
                                                                 </p>
                                                             </div>
@@ -504,12 +504,13 @@
                             <hr>
                             <div>
                                 <div wire:ignore class="mb-3 text-input-mensaje">
-                                    <textarea wire:model="mensaje" id="editorMensaje" cols="20" rows="3" class="form-control" name="mensaje"></textarea>
-                                  
+                                    <textarea wire:model="mensaje" id="editorMensaje" cols="20" rows="3" class="form-control"
+                                        name="mensaje"></textarea>
+
                                 </div>
                                 @error('mensaje')
-                                <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
-                            @enderror
+                                    <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
+                                @enderror
                             </div>
                             <div class="modal-footer">
                                 @if ($ticket_solucion)
@@ -542,12 +543,10 @@
             })
             .then(newEditor => {
                 ckEditorCreate = newEditor;
-
-                // Escucha el evento 'change'
                 ckEditorCreate.model.document.on('change', () => {
                     const content = ckEditorCreate.getData();
                     @this.data = content
-                    console.log(content); // Imprime el contenido actualizado en la consola
+                    console.log(content);
                 });
             })
             .catch(error => {
@@ -712,11 +711,21 @@
                 showConfirmButton: false,
                 timer: 1500
             })
-            $('#ModalVer').modal('hide');
+            // $('#ModalVer').modal('hide');
             ckEditorMensaje.setData("");
 
 
         });
+
+        window.addEventListener('category_empty', () => {
+            Swal.fire({
+
+                icon: 'erro',
+                title: 'La categoria no tiene un usuario asignado',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        })
 
         function finalizar(id) {
             Swal.fire({

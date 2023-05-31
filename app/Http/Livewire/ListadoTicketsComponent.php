@@ -26,10 +26,6 @@ class ListadoTicketsComponent extends Component
 
     public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje,$mensajes,$user;
 
-    protected $rules=[
-        'message'=>'required'
-    ];
-
     public function render()
     {
 
@@ -41,8 +37,6 @@ class ListadoTicketsComponent extends Component
         ]);
     }
 
-
-
     public function guardar()
     {
         if ($this->data == trim('<p><br data-cke-filler="true"></p>')) {
@@ -53,7 +47,7 @@ class ListadoTicketsComponent extends Component
         $this->validate(
             [
                 'name' => 'required',
-                'data' => 'required|max:100000',
+                'data' => 'required|max:10000000',
                 'categoria' => 'required'
             ]
         );
@@ -63,7 +57,6 @@ class ListadoTicketsComponent extends Component
         //encuentrar a los usuarios relacionados con la categoria del ticket
 
         $usuarios =  $category->usuarios;
-
 
         $ticket = Ticket::create(
             [
@@ -85,7 +78,6 @@ class ListadoTicketsComponent extends Component
 
             ]
         );
-
 
         $Notificacion =
             [
@@ -127,11 +119,11 @@ class ListadoTicketsComponent extends Component
             $this->addError('data', 'La descripcion es obligatoria');
             return;
         }
-      
+
         $this->validate(
-            [   
+            [
                 'name' => 'required',
-                'data' => 'required',
+                'data' => 'required|max:10000000',
                 'categoria' => 'required'
             ]
 
@@ -205,7 +197,8 @@ class ListadoTicketsComponent extends Component
     {
         $ticket = Ticket::find($id);
         $message = Mensaje::find($id);
-        $usuario=Solucion::find($ticket);
+        // $usuario=Solucion::find($ticket);
+        // $this->user=$usuario[0]->solucion;
         $this->mensajes=$ticket;
         $this->ticket_solucion = $ticket;
         $this->ticket_id = $ticket->id;
@@ -217,15 +210,15 @@ class ListadoTicketsComponent extends Component
 
     public function enviarMensaje()
     {
-        
+
         $ticket = Ticket::find($this->ticket_id);
         $category = Categoria::find($ticket->category_id);
-      
+
         $this->validate([
-            'mensaje' => 'required'
+            'mensaje' => 'required|max:10000000'
         ]);
 
-          
+
         Historial::create(
 
             [

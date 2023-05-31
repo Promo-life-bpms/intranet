@@ -48,7 +48,7 @@
     </div>
     {{-- Modal asignacion --}}
     <div wire:ignore.self class="modal fade" id="ModalAsignacion" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+        aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog ">
             <div class="modal-content">
                 <div class="modal-header">
@@ -77,8 +77,8 @@
                                 @endif
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" value="{{ $categoria->id }}"
-                                        id="flexCheckIndeterminate" wire:click='asignacion({{ $categoria->id }})'
-                                        {{ $check ? 'checked' : '' }}>
+                                        id="flexCheckIndeterminate" onclick="showToast(this)"
+                                        wire:click='asignacion({{ $categoria->id }})' {{ $check ? 'checked' : '' }}>
                                     <label class="form-check-label" for="{{ $categoria->name }}">
                                         {{ $categoria->name }}
                                     </label>
@@ -95,12 +95,40 @@
     </div>
 
     <script>
-        window.addEventListener('asignacion_correcta', () => {
+        // window.addEventListener('asignacion_correcta', () => {
 
 
-        toastr.success('Categoría asignada correctamente');
-        
-          })
+        // toastr.success('Categoría asignada correctamente');
+
+        //   })
+        function showToast(checkbox) {
+            if (checkbox.checked) {
+                showToastMessage('green', 'Categoria Asignada');
+            } else {
+                showToastMessage('red', 'Se quito la categoria');
+            }
+        }
+
+        function showToastMessage(color, message) {
+
+            var toast = document.createElement('div');
+            toast.style.backgroundColor = color;
+            toast.style.color = 'white';
+            toast.style.padding = '10px';
+            toast.style.position = 'fixed';
+            toast.style.top = '20px';
+            toast.style.right = '20px';
+            toast.style.borderRadius = '5px';
+            toast.innerText = message;
+
+            
+            document.body.appendChild(toast);
+
+
+            setTimeout(function() {
+                toast.remove();
+            }, 3000);
+        }
     </script>
 
 </div>

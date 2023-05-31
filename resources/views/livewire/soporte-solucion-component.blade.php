@@ -53,7 +53,7 @@
         </div>
     </div>
     <div wire:ignore.self class="modal fade" id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+        aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-scrollable  modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -131,7 +131,6 @@
 
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
                             wire:ignore.self>
-
                             @if ($historial)
                                 @foreach ($historial->historial as $cambio)
                                     @if ($cambio->type == 'creado')
@@ -365,7 +364,7 @@
 
                         </div>
                         <div class="tab-pane fade" id="mensaje" role="tabpanel" aria-labelledby="mensaje-tab"
-                            wire:ignore.self>
+                            wire:ignore.self >
                             @if ($mensaje)
                                 @foreach ($mensaje->mensajes as $mensajes)
                                     @if ($mensajes->user_id == auth()->user()->id)
@@ -445,18 +444,11 @@
             //editor mensaje
             ClassicEditor
                 .create(document.querySelector('#editorMensaje'), {
-                    // removePlugins: ['MediaEmbed'],
-                    // extraPlugins: [MyCustomUploadAdapterPlugin],
+                  
                 })
                 .then(newEditor => {
                     ckeEditorMensaje = newEditor;
-                    // Escucha el evento 'change'
-                    //para subir las imagenes y la data del ckeditor
-                    // ckeEditorMensaje.model.document.on('change', () => {
-                    //     const content = ckeEditorMensaje.getData();
-                    //     @this.mensajes = content
-                    //     console.log(content); // Imprime el contenido actualizado en la consola
-                    // });
+
 
                 })
                 .catch(error => {
@@ -556,7 +548,7 @@
                     timer: 1500
                 })
 
-                $('#ModalAgregar').modal('hide')
+                // $('#ModalAgregar').modal('hide')
 
                 ckeEditorMensaje.setData("");
 

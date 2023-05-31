@@ -20,10 +20,6 @@ class Solucion extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    
-    //  public function solution()
-    //  {
-    //      return $this->belongsTo(Ticket::class,'ticket_id');
-    //  }
+
 
 }

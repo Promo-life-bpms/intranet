@@ -3,12 +3,14 @@
 @component('mail::message')
 # ¡Buen día {{$data['username']}}!
 
-## El ticket del usuario
- {{ $data['name'] }}
+## El ticket del usuario :  {{ $data['name'] }}
+
 
 con el problema : {{ $data['name_ticket'] }}
 
-Ha sido : **{{ $data['status'] }}**.
+Ha sido : **Resuelto**.
+
+Fecha : {{ now()->format('d/m/Y') }}
 
 
 @endcomponent

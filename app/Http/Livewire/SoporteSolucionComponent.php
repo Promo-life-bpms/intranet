@@ -18,9 +18,7 @@ class SoporteSolucionComponent extends Component
     use WithPagination;
     public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes;
     protected $paginationTheme = 'bootstrap';
-    protected $rules=[
-        'message'=>'required'
-    ];
+ 
     public function render()
     {
         $categories =  auth()->user()->asignacionCategoria->pluck(["id"]);
@@ -83,7 +81,7 @@ class SoporteSolucionComponent extends Component
         }
         $this->validate(
             [
-                'description' => 'required'
+                'description' => 'required|max:10000000'
             ]
         );
 
@@ -126,10 +124,10 @@ class SoporteSolucionComponent extends Component
         }
 
         $this->validate([
-            'mensajes' => 'required'
+            'mensajes' => 'required|max:10000000'
         ]);
 
-        
+
         Mensaje::create([
             'ticket_id' => $this->ticket_id,
             'mensaje' => $this->mensajes,
@@ -141,7 +139,7 @@ class SoporteSolucionComponent extends Component
             'user_id' => auth()->user()->id,
             'type' => 'Mensaje',
             'data' => $this->mensajes
-        ]); 
+        ]);
 
         $messageNotification = [
             'name' => auth()->user()->name,

@@ -12,7 +12,8 @@
 
 **Problema** : {{ $data['name_ticket'] }}
 
-**Fecha** :{{$data['tiempo']}}
+**Fecha** : {{$data['tiempo']}}
+
 @component('mail::button', ['url' => 'http://intranet.test/soporte/solucion', 'color' => 'red'])
     Ver Ticket
 @endcomponent
