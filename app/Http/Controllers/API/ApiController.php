@@ -716,6 +716,7 @@ class ApiController extends Controller
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
+        $user = User::where('id',$user_id)->get()->last();
 
         if ($user_id != null || $user_id != []) {
 
@@ -725,8 +726,15 @@ class ApiController extends Controller
             $comment->content = $request->content;
             $comment->save();
 
+            $publication = Publications::where('id',$request->publicationID)->get()->last();
+
+            $firebase_notification = new FirebaseNotificationController();
+            $firebase_notification->commentaryPublication(strval($publication->user_id), $user->name . ' ' . $user->lastname);
+
             return true;
         }
+
+        
     }
 
     public function getProfile($id)
