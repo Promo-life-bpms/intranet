@@ -31,9 +31,10 @@ class ListRequest extends Component
         $request->save();
         $user = auth()->user();
         $userReceiver = Employee::find($request->employee_id)->user;
+        //Notificaciones
+        $communique_notification = new FirebaseNotificationController();
+        $communique_notification->sendToRh();
         try {
-            $communique_notification = new FirebaseNotificationController();
-            $communique_notification->sendToRh();
             event(new ManagerResponseRequestEvent($request->type_request, $request->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $request->direct_manager_status));
             $userReceiver->notify(new ManagerResponseRequestNotification($request->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $request->direct_manager_status));
         } catch (Exception $e) {
@@ -42,8 +43,6 @@ class ListRequest extends Component
         $usersRH = Role::where('name', 'rh')->first()->users()->where('status', 1)->get();
         if (!auth()->user()->hasRole('rh')) {
             foreach ($usersRH as $userRH) {
-                $communique_notification = new FirebaseNotificationController();
-                $communique_notification->sendApprovedRequest($userReceiver->id);
                 try {
                     $userRH->notify(new ManagerResponseRequestToRHNotification($request->type_request, $userReceiver->name . ' ' . $userReceiver->lastname,  $user->name . ' ' . $user->lastname));
                 } catch (Exception $e) {
@@ -72,7 +71,7 @@ class ListRequest extends Component
         $userReceiver = Employee::find($request->employee_id)->user;
 
         $communique_notification = new FirebaseNotificationController();
-        $communique_notification->sendApprovedRequest($userReceiver->id);
+        $communique_notification->sendRejectedRequest($userReceiver->id);
 
         event(new ManagerResponseRequestEvent($request->type_request, $request->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $request->direct_manager_status));
         $userReceiver->notify(new ManagerResponseRequestNotification($request->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $request->direct_manager_status));

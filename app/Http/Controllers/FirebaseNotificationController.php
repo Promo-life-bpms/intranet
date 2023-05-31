@@ -175,7 +175,7 @@ class FirebaseNotificationController extends Controller
     {       
         //Notificacion del que crea la solicitud
         $title = '¡Solicitud Aprobada!';
-        $body = 'Tu solicitud ha sido aprobada, visita la pagina de solicitudes para ver mas detalles' ;
+        $body = 'Tu solicitud ha sido aprobada, visita la sección de solicitudes para ver mas detalles' ;
         $topic = '/topics'.'/'. strval($user_id)   ;
         $client = new Client(['verify' => false]);
 
@@ -208,7 +208,7 @@ class FirebaseNotificationController extends Controller
     {
         //Notificacion del que crea la solicitud
         $title = '¡Solicitud Rechazada!';
-        $body = 'Tu solicitud ha sido rechazada, visita la pagina de solicitudes para ver mas detalles' ;
+        $body = 'Tu solicitud ha sido rechazada, verifica la información e intenta nuevamente.' ;
         $topic = '/topics'.'/'. strval($user_id)   ;
         $client = new Client(['verify' => false]);
 
