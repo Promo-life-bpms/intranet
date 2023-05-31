@@ -83,20 +83,36 @@
                                                 <p class="m-0"><b>Vacaciones Disponibles</b></p>
                                                 @php
                                                     $dataVacations = $request->employee->user->vacationsAvailables;
-                                                    $vacations = $dataVacations->sum('dv');
+                                                    $vacations = $request->employee->user->employee->take_expired_vacation ? $request->employee->user->vacationsComplete()->sum('dv') : $request->employee->user->vacationsAvailables()->sum('dv');
+                                                    $vacationsExpired =
+                                                        $request->employee->user->vacationsComplete()->sum('dv') -
+                                                        ($request->employee->user
+                                                            ->vacationsComplete()
+                                                            ->where('period', '<', 3)
+                                                            ->sum('dv') > 0
+                                                            ? $request->employee->user
+                                                                ->vacationsComplete()
+                                                                ->where('period', '<', 3)
+                                                                ->sum('dv')
+                                                            : 0);
                                                 @endphp
                                                 <p class="m-0">Dias de vacaciones diponibles: <b
                                                         id="diasDisponiblesEl">
                                                         {{ $vacations }} </b> </p>
+                                                @if ($request->employee->user->employee->take_expired_vacation)
+                                                    <p class="m-0"><b>{{ $vacationsExpired }} </b> dias disponibles que estan por expirar. </p>
+                                                @endif
                                                 @foreach ($dataVacations as $item)
-                                                    @php
-                                                        $dayFormater = \Carbon\Carbon::parse($item->cutoff_date);
-                                                    @endphp
-                                                    <p class="m-0"><b>{{ $item->dv }} </b> dias disponibles
-                                                        hasta el
-                                                        <b>
-                                                            {{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}</b>
-                                                    </p>
+                                                    @if ($item->dv >= 0)
+                                                        @php
+                                                            $dayFormater = \Carbon\Carbon::parse($item->cutoff_date);
+                                                        @endphp
+                                                        <p class="m-0"><b>{{ $item->dv }} </b> dias disponibles
+                                                            hasta el
+                                                            <b>
+                                                                {{ $dayFormater->format('d \d\e ') . $dayFormater->formatLocalized('%B') . ' de ' . $dayFormater->format('Y') }}</b>
+                                                        </p>
+                                                    @endif
                                                 @endforeach
                                                 <br>
                                                 <p class="m-0">
