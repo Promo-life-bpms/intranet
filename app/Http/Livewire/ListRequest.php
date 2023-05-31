@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Events\ManagerResponseRequestEvent;
+use App\Http\Controllers\FirebaseNotificationController;
 use App\Models\Employee;
 use App\Models\Request;
 use App\Models\RequestRejected;
@@ -30,6 +31,9 @@ class ListRequest extends Component
         $request->save();
         $user = auth()->user();
         $userReceiver = Employee::find($request->employee_id)->user;
+        //Notificaciones
+        $communique_notification = new FirebaseNotificationController();
+        $communique_notification->sendToRh();
         try {
             event(new ManagerResponseRequestEvent($request->type_request, $request->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $request->direct_manager_status));
             $userReceiver->notify(new ManagerResponseRequestNotification($request->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $request->direct_manager_status));
@@ -65,6 +69,10 @@ class ListRequest extends Component
         $request->save();
         $user = auth()->user();
         $userReceiver = Employee::find($request->employee_id)->user;
+
+        $communique_notification = new FirebaseNotificationController();
+        $communique_notification->sendRejectedRequest($userReceiver->id);
+
         event(new ManagerResponseRequestEvent($request->type_request, $request->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $request->direct_manager_status));
         $userReceiver->notify(new ManagerResponseRequestNotification($request->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $request->direct_manager_status));
         return 1;

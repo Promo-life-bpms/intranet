@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Publications;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -25,6 +26,11 @@ class CommentController extends Controller
             'publication_id'=>$request->id_publication,
             'content'=> $request->content
         ]);
+
+        $publication = Publications::where('id',$request->id_publication)->get()->last();
+
+        $firebase_notification = new FirebaseNotificationController();
+        $firebase_notification->commentaryPublication($publication->user_id, auth()->user()->name . ' ' . auth()->user()->lastname);
 
         //event(new CommentEvent($comment));
         return redirect()->action(HomeController::class);
