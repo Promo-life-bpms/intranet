@@ -25,6 +25,7 @@ use App\Http\Controllers\NoWorkingDaysController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FirebaseNotificationController;
 use App\Http\Controllers\HumanResources\RhController;
 
 use App\Http\Controllers\HumanResources\ScanDocumentsController;
@@ -270,6 +271,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 
     Route::get('/rh/more-information/{id}', [UserDetails::class, 'moreInformation'])->name('rh.moreInformation');
+
+    //Firebase
+    Route::post('/firebase/birthday-notification', [FirebaseNotificationController::class, 'birthdaySpecificNotificationPost'])->name('firebase.birthday');
 
 
 

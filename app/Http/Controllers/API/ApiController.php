@@ -700,6 +700,11 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
 
+        $publication = Publications::where('id', $request->publicationID)->get()->last();
+        
+        $publication_notification = new FirebaseNotificationController();
+        $publication_notification->likePublication($publication->user_id);
+
         $like = new Like();
         $like->user_id = $user_id;
         $like->publication_id = $request->publicationID;
