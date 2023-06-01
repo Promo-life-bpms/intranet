@@ -39,10 +39,10 @@ class ListadoTicketsComponent extends Component
 
     public function guardar()
     {
-        if ($this->data == trim('<p><br data-cke-filler="true"></p>')) {
-            $this->addError('data', 'La descripcion es obligatoria');
-            return;
-        }
+        // if ($this->data == trim('<p><br data-cke-filler="true"></p>')) {
+        //     $this->addError('data', 'La descripcion es obligatoria');
+        //     return;
+        // }
 
         $this->validate(
             [
@@ -95,7 +95,6 @@ class ListadoTicketsComponent extends Component
 
             $usuario->notify(new SoporteNotification($Notificacion));
         }
-
         $this->name = '';
         $this->categoria = '';
         $this->dispatchBrowserEvent('ticket_success');
@@ -176,21 +175,21 @@ class ListadoTicketsComponent extends Component
                 'data' => $actualizar_status->status->name
             ]
         );
-        $NotificacionStatus =
-            [
-                'name' => auth()->user()->name,
-                'email' => auth()->user()->email,
-                'name_ticket' => $actualizar_status->name,
-                'status' => $actualizar_status->status->name,
-                'username'=>$usuarios['0']->name
+        // $NotificacionStatus =
+        //     [
+        //         'name' => auth()->user()->name,
+        //         'email' => auth()->user()->email,
+        //         'name_ticket' => $actualizar_status->name,
+        //         'status' => $actualizar_status->status->name,
+        //         'username'=>$usuarios['0']->name
 
 
-            ];
+        //     ];
 
-        //for each para enviar notificacion de status a los usuarios relacionados
-        foreach ($usuarios as $usuarios) {
-            $usuarios->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
-        }
+        // //for each para enviar notificacion de status a los usuarios relacionados
+        // foreach ($usuarios as $usuarios) {
+        //     $usuarios->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
+        // }
     }
 
     public function verTicket($id)

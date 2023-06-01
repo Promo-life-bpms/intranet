@@ -5,7 +5,12 @@
         </div>
     </div>
 
+    <div>
+        <div class="col">
+            <canvas id="myChart"></canvas>
+        </div>
 
+    </div>
 
     <div class="card-body">
 
@@ -121,7 +126,7 @@
             toast.style.borderRadius = '5px';
             toast.innerText = message;
 
-            
+
             document.body.appendChild(toast);
 
 
@@ -129,6 +134,26 @@
                 toast.remove();
             }, 3000);
         }
+
+        document.addEventListener('livewire:load', function () {
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'bar', // Cambia el tipo de gráfico según tus necesidades
+                data: {
+                    labels: @json($labels), // Etiquetas obtenidas del componente
+                    datasets: [{
+                        label: 'Tickets resueltos', // Etiqueta del conjunto de datos
+                        data: @json($values), // Datos obtenidos del componente
+                        backgroundColor: 'rgba(0, 123, 255, 0.5)', // Color de fondo del gráfico
+                        borderColor: 'rgba(0, 123, 255, 1)', // Color del borde del gráfico
+                        borderWidth: 1 // Ancho del borde del gráfico
+                    }]
+                },
+                options: {
+                    // Opciones del gráfico
+                }
+            });
+        });
     </script>
 
 </div>
