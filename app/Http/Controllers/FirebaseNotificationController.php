@@ -78,7 +78,7 @@ class FirebaseNotificationController extends Controller
         //Notificacion del que crea la solicitud
         $title = 'Solicitud enviada';
         $body = '¡Tu solicitud ha sido enviada, le notificaremos a tu jefe directo para su aprobación!. ' ;
-        $topic = '/topics'.'/'.$applicant_id;
+        $topic = '/topics'.'/'. strval($applicant_id) ;
         $client = new Client(['verify' => false]);
 
         $body = [
@@ -108,7 +108,7 @@ class FirebaseNotificationController extends Controller
          //Notificacion para el jefe directo
          $title_manager = 'Nueva solicitud';
          $body_manager = '¡Haz recibido una nueva solicitud de un colaborador!' ;
-         $topic_manager = '/topics'.'/'.$manager_id;
+         $topic_manager = '/topics'.'/'. strval($manager_id) ;
          $client_manager = new Client(['verify' => false]);
  
          $body_manager = [

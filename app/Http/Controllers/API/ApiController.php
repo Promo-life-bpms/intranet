@@ -1399,7 +1399,6 @@ class ApiController extends Controller
             DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Rechazada"]);
             $requestCalendar = RequestCalendar::all()->where('requests_id', $request->requestID);
 
-
             $communique_notification = new FirebaseNotificationController();
             $communique_notification->sendRejectedRequest($req->employee_id);
 
@@ -1504,14 +1503,14 @@ class ApiController extends Controller
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
-        $employee = Employee::all()->where('user_id', $user_id);
+        $employee = Employee::where('user_id', $user_id)->get()->last();
         $userData = User::all()->where('id', $user_id);
         if ($token != null || $token != "") {
             $date = date("G:i:s", strtotime($request->start));
             $manager = "";
-            foreach ($employee as $emp) {
-                $manager = $emp->jefe_directo_id;
-            }
+            
+            $manager = $employee->jefe_directo_id;
+            
             $reveal_id = null;
             if ($request->revealID != "" || $request->revealID != null) {
                 $reveal_id = intval($request->revealID);
@@ -1543,14 +1542,13 @@ class ApiController extends Controller
                 $request_calendar->save();
             }
 
-            
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->createRequest(strval($user_id));
+            $communique_notification->sendToManager(strval($employee->jefe_directo_id));
+
             foreach ($userData as $user) {
                 $userReceiver = Employee::find($manager)->user;
-
-                $communique_notification = new FirebaseNotificationController();
-                $communique_notification->createRequest(strval($user_id));
-                $communique_notification->sendToManager(strval($manager->id));
-
+             
                 event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
                 $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
             }
