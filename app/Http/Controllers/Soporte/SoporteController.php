@@ -28,6 +28,11 @@ class SoporteController extends Controller
         return view('soporte.admin');
     }
 
+    public function stadistics()
+    {
+        return view('Soporte.stadistics');
+    }
+
     public function upload(Request $request)
     {
         if ($request->hasFile('upload')) {

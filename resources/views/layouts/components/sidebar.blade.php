@@ -307,10 +307,15 @@
                                 <span>Admin Soporte</span>
                             </a>
                         </li>
-                        
+
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('solucion') }}">
                                 <span>Soporte Solucion</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('estadisticas') }}">
+                                <span>Estadisticas</span>
                             </a>
                         </li>
                         @endrole
