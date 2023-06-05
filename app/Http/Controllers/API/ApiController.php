@@ -98,9 +98,9 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
         $user = User::where('id', $user_id)->get();
-        $vacations = $user[0]->employee->take_expired_vacation
-            ? DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv')
-            : DB::table('vacations_availables')->where('users_id', $user_id)->sum('dv');
+        $vacations = ($user[0]->employee->take_expired_vacation)
+            ? DB::table('vacations_availables')->where('users_id', $user_id)->sum('dv')
+            : DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv');
         $user_roles = DB::table('role_user')->where("user_id", $user_id)->get("role_id");
         $roles = [];
 
@@ -120,7 +120,7 @@ class ApiController extends Controller
             }
             $expiration = [];
 
-            $vacation_duration = Vacations::all()->where('users_id', $usr->id);
+            $vacation_duration = Vacations::where('users_id', $usr->id)->orderBy('cutoff_date', 'ASC')->get();
 
             foreach ($vacation_duration as $vacation) {
                 if ($vacation == null || $vacation == []) {
@@ -129,16 +129,18 @@ class ApiController extends Controller
                         'cutoffDate' => "Sin fecha de corte disponible",
                     ]);
                 } else {
-                    array_push($expiration, (object)[
-                        'daysAvailables' => strval(floor($vacation->dv)),
-                        'cutoffDate' => date('d-m-Y', strtotime($vacation->cutoff_date)),
-                    ]);
+                    if ($vacation->dv > 0 && $vacation->period < 3) {
+                        array_push($expiration, (object)[
+                            'daysAvailables' => strval(floor($vacation->dv)),
+                            'cutoffDate' => date('d-m-Y', strtotime($vacation->cutoff_date)),
+                        ]);
+                    }
                 }
             }
 
-            $directManager = Employee::all()->where('jefe_directo_id', $usr->id);
+            $directManager = Employee::where('jefe_directo_id', $usr->id)->get();
 
-            $rhID = Role::all()->where('display_name', 'Recursos Humanos')->first();
+            $rhID = Role::where('display_name', 'Recursos Humanos')->first();
             $isRH = DB::table('role_user')->where('user_id', $usr->id)->where('role_id', $rhID->id)->first();
 
             if (count($directManager) != 0) {
@@ -399,8 +401,8 @@ class ApiController extends Controller
         $request = ModelsRequest::all()->where('employee_id', $user_id);
         $user = User::where('id', $user_id)->get();
         $vacations = $user[0]->employee->take_expired_vacation
-            ? DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv')
-            : DB::table('vacations_availables')->where('users_id', $user_id)->sum('dv');
+            ? DB::table('vacations_availables')->where('users_id', $user_id)->sum('dv')
+            : DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv');
 
         $data = [];
         $start = "";
