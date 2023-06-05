@@ -1,22 +1,35 @@
 <div>
     <h1 class="fs-3">Tickets Soporte</h1>
 
-    <div class="row">
+    <div class="row justify-content-center">
         <div class="col-sm-8 col-md-8">
+            <div class="card-deck">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Tickets resueltos</h5>
+                        <p class="card-text">{{$ticketsResueltos}}</p>
+                    </div>
+                </div>
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Tickets en proceso</h5>
+                        <p class="card-text">{{$ticketsEnProceso}}</p>
+                    </div>
+                </div>
+            </div>
             <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3">
                 <div class="col">
-                    <h6>Resueltos por categoria</h6>
+                    <h6>Resueltos por categoría</h6>
                     <canvas id="myChart" height="700"></canvas>
                 </div>
-
                 <div class="col">
                     <h6>Por mes</h6>
                     <canvas id="Enproceso" height="700"></canvas>
                 </div>
             </div>
         </div>
-
     </div>
+    
 
     <script>
         document.addEventListener('livewire:load', function() {

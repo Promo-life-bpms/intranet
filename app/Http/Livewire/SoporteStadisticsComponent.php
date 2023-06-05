@@ -47,7 +47,9 @@ class SoporteStadisticsComponent extends Component
 
     public function render()
     {
-
-        return view('livewire.soporte-stadistics-component');
+        $ticketsResueltos=Ticket::where('status_id',4)->count();
+        $ticketsEnProceso=Ticket::where('status_id',2)->count();
+        return view('livewire.soporte-stadistics-component',compact('ticketsResueltos','ticketsEnProceso'));
+        
     }
 }
