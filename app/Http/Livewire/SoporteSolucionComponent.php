@@ -18,10 +18,13 @@ class SoporteSolucionComponent extends Component
     use WithPagination;
     public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes;
     protected $paginationTheme = 'bootstrap';
- 
+
     public function render()
     {
         $categories =  auth()->user()->asignacionCategoria->pluck(["id"]);
+        //para traer la cantidad de tickets por usuario de soporte
+        // $tickets=Ticket::whereIn('category_id',$categories)->count();
+        // dd($tickets);
         return view('livewire.soporte-solucion-component', [
 
             'solucion' => Ticket::whereIn('category_id', $categories)->paginate('15')

@@ -54,15 +54,15 @@ class SoporteAdminComponent extends Component
     {
 
         $this->categorias = Categoria::orderBy('id')->get();
+        //aqui me trae a todos los usuarios con el rol de sistemas
         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
             ->where('roles.name', '=', 'systems')
             ->select('users.*')
             ->get();
+
             return   view('livewire.soporte-admin-component',compact('users'));
-
-
-
+            
     }
 
 

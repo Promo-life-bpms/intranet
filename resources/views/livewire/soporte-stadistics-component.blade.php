@@ -1,39 +1,69 @@
 <div>
-    <h1 class="fs-3">Tickets Soporte</h1>
+    <h1 class="fs-3">Estadisticas Tickets</h1>
 
-    <div class="row justify-content-center">
-        <div class="col-sm-8 col-md-8">
-            <div class="card-deck">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h5 class="card-title">Tickets resueltos</h5>
-                        <p class="card-text">{{$ticketsResueltos}}</p>
-                    </div>
-                </div>
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h5 class="card-title">Tickets en proceso</h5>
-                        <p class="card-text">{{$ticketsEnProceso}}</p>
-                    </div>
+
+    <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3 justify-content-center">
+        <div class="col">
+            <div class="card shadow card-total mx-auto">
+                <div class="card-body">
+                    <h5 class="card-title text-center">TOTAL TICKETS</h5>
+                    <p id="total_employee" class="card-text text-center fw-bold text-dark">{{$ticketsCreados}}</p>
                 </div>
             </div>
-            <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3">
-                <div class="col">
-                    <h6>Resueltos por categoría</h6>
-                    <canvas id="myChart" height="700"></canvas>
+        </div>
+
+
+        <div class="col">
+            <div class="card shadow card-total mx-auto">
+                <div class="card-body">
+                    <h5 class="card-title text-center">TICKETS RESUELTOS</h5>
+                    <p id="total_employee" class="card-text text-center fw-bold text-success">{{$ticketsResueltos}}</p>
                 </div>
-                <div class="col">
-                    <h6>Por mes</h6>
-                    <canvas id="Enproceso" height="700"></canvas>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card shadow card-total mx-auto">
+                <div class="card-body">
+                    <h5 class="card-title text-center">TICKETS EN PROCESO</h5>
+                    <p id="total_new_users" class="card-text text-center fw-bold text-danger">{{$ticketsEnProceso}}</p>
                 </div>
             </div>
         </div>
     </div>
-    
+
+
+    <div class="row justify-content-center">
+        <div class="col-sm-8 col-md-8">
+            <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3">
+                <div class="col mx-auto">
+                    <div class="card shadow card-total">
+                    <h6 class="text-center">Resueltos por categoría</h6>
+                    </div>
+                    <canvas id="Categoria" height="600" ></canvas>
+
+                </div>
+                <div class="col mx-auto">
+                    <div class="card shadow card-total">
+                    <h6 class="text-center">Recibidos por Soporte</h6>
+                    </div>
+                    <canvas id="Poraño" height="600"></canvas>
+                </div>
+
+                <div class="col mx-auto">
+                    <div class="card shadow card-total">
+                    <h6 class="text-center">Por mes</h6>
+                    </div>
+                    <canvas id="TicketsRecibidos" height="600"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        document.addEventListener('livewire:load', function() {
-            var ctx = document.getElementById('myChart').getContext('2d');
+
+        document.addEventListener('livewire:load', function () {
+            var ctx = document.getElementById('Categoria').getContext('2d');
             var chart = new Chart(ctx, {
                 type: 'bar', // Cambia el tipo de gráfico según tus necesidades
                 data: {
@@ -41,8 +71,8 @@
                     datasets: [{
                         label: 'Tickets resueltos', // Etiqueta del conjunto de datos
                         data: @json($values), // Datos obtenidos del componente
-                        backgroundColor: 'rgba(0, 123, 255, 0.5)', // Color de fondo del gráfico
-                        borderColor: 'rgba(0, 123, 255, 1)', // Color del borde del gráfico
+                        backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8'], // Color de fondo del gráfico
+                        borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8'], // Color del borde del gráfico
                         borderWidth: 1 // Ancho del borde del gráfico
                     }]
                 },
@@ -53,44 +83,50 @@
         });
 
 
+
         document.addEventListener('livewire:load', function () {
-            var ctx = document.getElementById('Enproceso').getContext('2d');
+            var ctx = document.getElementById('Poraño').getContext('2d');
             var chart = new Chart(ctx, {
-                type: 'bar', // Cambia el tipo de gráfico según tus necesidades
+                type: 'doughnut', // Cambia el tipo de gráfico según tus necesidades
                 data: {
                     labels: @json($meses), // Etiquetas obtenidas del componente
                     datasets: [{
                         label: 'Resueltos por mes', // Etiqueta del conjunto de datos
                         data: @json($ticketsPorMes), // Datos obtenidos del componente
-                        backgroundColor:   'rgba(0, 123, 255, 0.5)', // Color de fondo del gráfico
-                        borderColor: 'rgba(0, 123, 255, 1)', // Color del borde del gráfico
+                        backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8'], // Color de fondo del gráfico
+                        borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD'], // Color del borde del gráfico
                         borderWidth: 1 // Ancho del borde del gráfico
                     }]
                 },
                 options: {
                     // Opciones del gráfico
+
+
                 }
             });
         });
 
-        // document.addEventListener('livewire:load', function () {
-        //     var ctx = document.getElementById('Enproceso').getContext('2d');
-        //     var chart = new Chart(ctx, {
-        //         type: 'bar',
-        //         data: {
-        //             labels: @json($labels),
-        //             datasets: [{
-        //                 label: 'Resueltos categoria'
-        //                 backgroundColor: 'rgba(0, 123, 255, 0.5)',
-        //                 borderColor: 'rgba(0, 123, 255, 1)',
-        //                 borderWidth: 1
-        //             }]
-        //         },
-        //         options: {
-        //             // Opciones del gráfico
-        //         }x
-        //     });
-        // });
+        document.addEventListener('livewire:load', function () {
+            var ctx = document.getElementById('TicketsRecibidos').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'bar', // Cambia el tipo de gráfico según tus necesidades
+                data: {
+                    labels: @json($usuario), // Etiquetas obtenidas del componente
+                    datasets: [{
+                        label: 'Resueltos por mes', // Etiqueta del conjunto de datos
+                        data: @json($ticketsPorMes), // Datos obtenidos del componente
+                        backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8'], // Color de fondo del gráfico
+                        borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD','#F5C2A8','#FFADAD'], // Color del borde del gráfico
+                        borderWidth: 1 // Ancho del borde del gráfico
+                    }]
+                },
+                options: {
+                    // Opciones del gráfico
+
+
+                }
+            });
+        });
     </script>
 
 </div>
