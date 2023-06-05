@@ -73,7 +73,6 @@ class MessageController extends Controller
             "receiver_id" => $receiver_id,
             "message" => $message
         ]);
-
         /*  broadcast(new MessageSent($transmitter_id, $message))->toOthers(); */
         event(new MessageSent($message->message, $receiver_id, $transmitter_id, $transmitter_name, $message->created_at));
         $userReceiver->notify(new MessageNotification($transmitter_id,  $message->message, $transmitter_name, $image));
