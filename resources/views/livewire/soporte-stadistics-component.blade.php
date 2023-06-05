@@ -45,14 +45,14 @@
                 </div>
                 <div class="col mx-auto">
                     <div class="card shadow card-total">
-                    <h6 class="text-center">Recibidos por Soporte</h6>
+                    <h6 class="text-center">Resueltos por mes</h6>
                     </div>
                     <canvas id="Poraño" height="600"></canvas>
                 </div>
 
                 <div class="col mx-auto">
                     <div class="card shadow card-total">
-                    <h6 class="text-center">Por mes</h6>
+                    <h6 class="text-center">Recibidos por soporte</h6>
                     </div>
                     <canvas id="TicketsRecibidos" height="600"></canvas>
                 </div>
