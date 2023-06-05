@@ -11,7 +11,6 @@ use App\Http\Controllers\FirebaseNotificationController;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
-
 use App\Models\Communique;
 use App\Models\Directory as ModelsDirectory;
 use App\Models\Employee;
@@ -28,24 +27,13 @@ use App\Models\Role;
 use App\Models\Vacations;
 use App\Notifications\CreateRequestNotification;
 use App\Notifications\ManagerResponseRequestNotification;
-use App\Notifications\MessageNotification;
 use App\Notifications\RHResponseRequestNotification;
-use Carbon\Carbon;
 use DateTime;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use JetBrains\PhpStorm\Internal\ReturnTypeContract;
-use Illuminate\Support\Facades\File;
-use Cache;
-use Error;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
-use Laratrust\Http\Controllers\RolesController;
-
-use function PHPUnit\Framework\isEmpty;
+use Illuminate\Support\Facades\Cache;
 
 class ApiController extends Controller
 {
@@ -688,8 +676,8 @@ class ApiController extends Controller
                 $media->resource = $request->photo;
                 $media->type_file = "photo";
                 $media->save();
-            } 
-            $user = User::where('id',$user_id)->get()->last();
+            }
+            $user = User::where('id', $user_id)->get()->last();
             $publication_notification = new FirebaseNotificationController();
             $publication_notification->publication($user->name, $contPublication);
 
@@ -703,7 +691,7 @@ class ApiController extends Controller
         $user_id = $token->tokenable_id;
 
         $publication = Publications::where('id', $request->publicationID)->get()->last();
-        
+
         $publication_notification = new FirebaseNotificationController();
         $publication_notification->likePublication($publication->user_id);
 
@@ -725,7 +713,7 @@ class ApiController extends Controller
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
-        $user = User::where('id',$user_id)->get()->last();
+        $user = User::where('id', $user_id)->get()->last();
 
         if ($user_id != null || $user_id != []) {
 
@@ -735,15 +723,13 @@ class ApiController extends Controller
             $comment->content = $request->content;
             $comment->save();
 
-            $publication = Publications::where('id',$request->publicationID)->get()->last();
+            $publication = Publications::where('id', $request->publicationID)->get()->last();
 
             $firebase_notification = new FirebaseNotificationController();
             $firebase_notification->commentaryPublication(strval($publication->user_id), $user->name . ' ' . $user->lastname);
 
             return true;
         }
-
-        
     }
 
     public function getProfile($id)
@@ -1510,9 +1496,9 @@ class ApiController extends Controller
         if ($token != null || $token != "") {
             $date = date("G:i:s", strtotime($request->start));
             $manager = "";
-            
+
             $manager = $employee->jefe_directo_id;
-            
+
             $reveal_id = null;
             if ($request->revealID != "" || $request->revealID != null) {
                 $reveal_id = intval($request->revealID);
@@ -1550,7 +1536,7 @@ class ApiController extends Controller
 
             foreach ($userData as $user) {
                 $userReceiver = Employee::find($manager)->user;
-             
+
                 event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
                 $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
             }
