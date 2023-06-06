@@ -12,28 +12,37 @@ class SoporteStadisticsComponent extends Component
 {
 
 
-    public $labels = [],$meses=[], $usuario=[];
-    public $values = [],$ticketsPorMes=[],$ticketCounts = [];
+    public $labels = [], $meses = [], $usuario = [], $name = [];
+    public $values = [], $ticketsPorMes = [], $ticketCounts = [], $totalTicket = [];
 
 
-    //Tickets resueltos por categorias
     public function mount()
     {
 
-         //aqui me trae a todos los usuarios con el rol de sistemas
-         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
-         ->join('roles', 'roles.id', '=', 'role_user.role_id')
-         ->where('roles.name', '=', 'systems')
-         ->select('users.*')
-         ->get();
+        //traer la cantidad de tickets que ha echo un usuario
+        $usuarios = User::has('tickets')->get();
+        $this->name = $usuarios->pluck('name')->toArray();
+        $this->totalTicket = [];
 
-         //me trae el nombre de los usuarios que dan soporte
-         $this->usuario=$users->pluck('name')->toArray();
-
-
+        foreach ($usuarios as $usuario) {
+            $ticket = Ticket::where('user_id', $usuario->id)->count();
+            $this->totalTicket[] = $ticket;
+        }
 
 
-      //para traer la cantidad de tickets por usuario de soporte
+
+
+        //aqui me trae a todos los usuarios con el rol de sistemas
+        $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
+            ->join('roles', 'roles.id', '=', 'role_user.role_id')
+            ->where('roles.name', '=', 'systems')
+            ->select('users.*')
+            ->get();
+
+        //me trae el nombre de los usuarios que dan soporte
+        $this->usuario = $users->pluck('name')->toArray();
+
+        //para traer la cantidad de tickets por usuario de soporte
         // $tickets=Ticket::whereIn('category_id',$categories)->count();
         // dd($tickets);
 
@@ -48,29 +57,24 @@ class SoporteStadisticsComponent extends Component
 
         $tickets = Ticket::where('status_id', 4)->get();
         //   // Agrupar los tickets por mes
-           $ticketsByMonth = $tickets->groupBy(function ($ticket) {
-               return Carbon::parse($ticket->created_at)->format('F Y');
-       });
+        $ticketsByMonth = $tickets->groupBy(function ($ticket) {
+            return Carbon::parse($ticket->created_at)->format('F Y');
+        });
 
         //   // Obtener los meses y contar los tickets por mes
-           foreach ($ticketsByMonth as $month => $monthTickets) {
-               $this->meses[] = $month;
-              $this->ticketsPorMes[] = $monthTickets->count();
-           }
-
-
+        foreach ($ticketsByMonth as $month => $monthTickets) {
+            $this->meses[] = $month;
+            $this->ticketsPorMes[] = $monthTickets->count();
+        }
     }
 
 
     public function render()
     {
-        $ticketsResueltos=Ticket::where('status_id',4)->count();
-        $ticketsEnProceso=Ticket::where('status_id',2)->count();
-        $ticketsCreados=Ticket::all()->count();
+        $ticketsResueltos = Ticket::where('status_id', 4)->count();
+        $ticketsEnProceso = Ticket::where('status_id', 2)->count();
+        $ticketsCreados = Ticket::all()->count();
 
-        return view('livewire.soporte-stadistics-component',compact('ticketsResueltos','ticketsEnProceso','ticketsCreados'));
-
+        return view('livewire.soporte-stadistics-component', compact('ticketsResueltos', 'ticketsEnProceso', 'ticketsCreados'));
     }
-
-
 }
