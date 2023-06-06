@@ -3,16 +3,22 @@
 @section('content')
 <div class="container">
     <div class="card-header">
-            <h1 style="font-size:20px">Solicitud de Servicios de Sistemas y Comunicaciones</h1>
-            
+        <h1 style="font-size:20px">Solicitud de Servicios de Sistemas y Comunicaciones</h1>
+
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <div class="card-body">
         @if (session('success'))
         <div class="alert alert-success" role="success">
             {{session('success')}}
         </div>   
         @endif
-    
-
     <form action="{{route('team.createTeamRequest')}}" method="POST">
 
             {!! Form::open(['route' => 'team.request', 'enctype' => 'multipart/form-data']) !!}
@@ -33,15 +39,36 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            {!! Form::label('', 'Nombre: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre']) !!}
-                                            @error('')
+                                            {!! Form::label('name', 'Nombre: ' , ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::text('name', null, ['id'=> 'search-input', 'class' => 'form-control', 'placeholder' => 'Buscar nombre']) !!}
+                                            @error('name')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
                                             </small> 
                                             @enderror
                                         </div>
                                     </div>
+
+                                    <script>
+                                            $(document).ready(function() {
+                                            $("#search").autocomplete({
+                                                source: function(request, response) {
+                                                    $.ajax({
+                                                        url: "{{route('team.request')}}",
+                                                        dataType: "json",
+                                                        data: {
+                                                            term: request.term
+                                                        },
+                                                        success: function(data) {
+                                                            response(data);
+                                                        }
+                                                    });
+                                                },
+                                                minLength: 2    
+                                            });
+                                        });
+                                    </script>
+                                
 
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -564,6 +591,13 @@
         {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4']) !!}
 </div>
         {!! Form::close()!!}
+
+        <!--<script>
+            var nombres = ['David', 'Jose'];
+            $('#search').autocomplete({
+                source: nombres
+            });
+        </script>-->
     </form>
 @endsection
 

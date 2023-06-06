@@ -29,7 +29,7 @@ public function index1()
 public function createTeamRequest(Request $request){
 /*dd($request);*/
 
-    $request->validate([
+    /*$request->validate([
     'category' => 'required',
     'description' => 'required'
     ]);
@@ -42,9 +42,21 @@ public function createTeamRequest(Request $request){
     $request_team->status = 'Solicitud enviada';
     $request_team->user_id = $user->id;
     $request_team->save();
-    return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!');
+    return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!');*/
 
- 
+    $term = $request->get('term');
+
+        $usuarios = ModelsTeamRequest::where('name', 'LIKE', "%{$term}%")->get();
+
+       $data = [];
+
+       foreach($usuarios as $usuario){
+        $data[] = [
+            'name' => $usuario->name,
+            'lastname'=>$usuario->lastname
+        ];
+       }
+       return $data;
   }
 
 
