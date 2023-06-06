@@ -12,14 +12,14 @@ class SoporteStadisticsComponent extends Component
 {
 
 
-    public $labels = [], $meses = [], $usuario = [], $name = [];
+    public $labels = [], $meses = [], $usuario = [], $name = [], $soporte = [];
     public $values = [], $ticketsPorMes = [], $ticketCounts = [], $totalTicket = [];
 
 
     public function mount()
     {
 
-        //traer la cantidad de tickets que ha echo un usuario
+        //traer la cantidad de tickets por un usuario
         $usuarios = User::has('tickets')->get();
         $this->name = $usuarios->pluck('name')->toArray();
         $this->totalTicket = [];
@@ -28,8 +28,6 @@ class SoporteStadisticsComponent extends Component
             $ticket = Ticket::where('user_id', $usuario->id)->count();
             $this->totalTicket[] = $ticket;
         }
-
-
 
 
         //aqui me trae a todos los usuarios con el rol de sistemas
@@ -42,9 +40,14 @@ class SoporteStadisticsComponent extends Component
         //me trae el nombre de los usuarios que dan soporte
         $this->usuario = $users->pluck('name')->toArray();
 
-        //para traer la cantidad de tickets por usuario de soporte
-        // $tickets=Ticket::whereIn('category_id',$categories)->count();
-        // dd($tickets);
+        foreach($users as $user){
+            $ticket=Ticket::where('support_id',$user->id)->count();
+            $this->soporte[]=$ticket;
+        }
+
+
+
+
 
         $category = Categoria::all();
         $this->labels = $category->pluck('name')->toArray();
@@ -67,7 +70,6 @@ class SoporteStadisticsComponent extends Component
             $this->ticketsPorMes[] = $monthTickets->count();
         }
     }
-
 
     public function render()
     {

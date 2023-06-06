@@ -16,7 +16,8 @@ class Ticket extends Model
         'create',
         'data',
         'user_id',
-        'status_id'
+        'status_id',
+        'support_id'
     ];
 
     public function category()

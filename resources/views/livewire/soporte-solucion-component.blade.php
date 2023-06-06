@@ -42,6 +42,10 @@
                                 <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})" type="button"
                                     class="btn btn-success btn-sm " wire:click="verTicket({{ $tickets->id }})"><i
                                         class="bi bi-eye"></i></button>
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#Modalasignacion"  wire:click="reasignar({{ $tickets->id }})">
+                                    <i class="bi bi-person-fill"></i>
+                                </button>
                             </td>
                         </tr>
                     @endforeach
@@ -364,7 +368,7 @@
 
                         </div>
                         <div class="tab-pane fade" id="mensaje" role="tabpanel" aria-labelledby="mensaje-tab"
-                            wire:ignore.self >
+                            wire:ignore.self>
                             @if ($mensaje)
                                 @foreach ($mensaje->mensajes as $mensajes)
                                     @if ($mensajes->user_id == auth()->user()->id)
@@ -414,6 +418,33 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div wire:ignore.self class="modal fade" id="Modalasignacion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Reasignar Ticket</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputGroupSelect01">Usuarios</label>
+                    <select class="form-select" id="inputGroupSelect01">
+                      <option selected>Seleccionar</option>
+                      @foreach ($users as $user )
+                      <option value="{{$user->id}}">{{$user->name}}</option>
+                      @endforeach
+                    </select>
+                  </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-primary">Reasignar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
 
 
         <script>
@@ -444,7 +475,7 @@
             //editor mensaje
             ClassicEditor
                 .create(document.querySelector('#editorMensaje'), {
-                  
+
                 })
                 .then(newEditor => {
                     ckeEditorMensaje = newEditor;
@@ -635,4 +666,5 @@
 
             }
         </script>
-    </div>
+
+</div>

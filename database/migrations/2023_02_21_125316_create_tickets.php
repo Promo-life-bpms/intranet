@@ -18,10 +18,11 @@ class CreateTickets extends Migration
             $table->string('name');
             $table->string('image');
             $table->string('data');
-            $table->timestamps();   
+            $table->timestamps();
             $table->foreignId('category_id')->references('id')->on('soporte_categorias');
             $table->foreignId('status_id')->references('id')->on('soporte_status');
             $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('support_id')->references('id')->on('users');
         });
     }
 

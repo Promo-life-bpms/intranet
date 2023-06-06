@@ -64,7 +64,9 @@ class ListadoTicketsComponent extends Component
                 'data' => $this->data,
                 'category_id' => (int) $this->categoria,
                 'user_id' => auth()->user()->id,
-                'status_id' => 1
+                'status_id' => 1,
+                'support_id'=>$usuarios[0]['id']
+
             ]
         );
 

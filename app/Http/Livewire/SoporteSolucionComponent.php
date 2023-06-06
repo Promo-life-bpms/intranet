@@ -1,14 +1,13 @@
 <?php
 
 namespace App\Http\Livewire;
-
-
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Soporte\Ticket;
 use App\Models\Soporte\Mensaje;
 use App\Models\Soporte\Solucion;
 use App\Models\Soporte\Historial;
+use App\Models\User;
 use App\Notifications\MessageSoporteSolutionNotification;
 use App\Notifications\SolucionSoporteNotification;
 use App\Notifications\StatusEnProcesoSoporteNotification;
@@ -25,10 +24,16 @@ class SoporteSolucionComponent extends Component
         //para traer la cantidad de tickets por usuario de soporte
         // $tickets=Ticket::whereIn('category_id',$categories)->count();
         // dd($tickets);
+        $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
+        ->join('roles', 'roles.id', '=', 'role_user.role_id')
+        ->where('roles.name', '=', 'systems')
+        ->select('users.*')
+        ->get();
+
         return view('livewire.soporte-solucion-component', [
 
             'solucion' => Ticket::whereIn('category_id', $categories)->paginate('15')
-        ]);
+        ],compact('users'));
     }
 
 
@@ -151,5 +156,12 @@ class SoporteSolucionComponent extends Component
 
         $usuario->notify(new MessageSoporteSolutionNotification($messageNotification));
         $this->dispatchBrowserEvent('message');
+    }
+
+    public function reasignar($id)
+    {
+        $ticket = Ticket::find($id);
+        $this->ticket_id = $ticket->id;
+
     }
 }

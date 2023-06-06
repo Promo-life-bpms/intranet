@@ -1,5 +1,6 @@
 <div>
-    <h1 class="fs-3">Estadisticas Tickets</h1>
+    <br>
+    <h1 class="fs-3 mx-auto">Estadisticas Tickets</h1>
 
 
     <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3 justify-content-center">
@@ -125,8 +126,8 @@
                 data: {
                     labels: @json($usuario), // Etiquetas obtenidas del componente
                     datasets: [{
-                        label: 'Resueltos por mes', // Etiqueta del conjunto de datos
-                        data: @json($ticketsPorMes), // Datos obtenidos del componente
+                        label: 'Recibidos por soporte', // Etiqueta del conjunto de datos
+                        data: @json($soporte), // Datos obtenidos del componente
                         backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD',
                         '#F5C2A8'], // Color de fondo del gráfico
                         borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8',
@@ -167,7 +168,6 @@
                 },
                 options: {
                     // Opciones del gráfico
-
 
                 }
             });
