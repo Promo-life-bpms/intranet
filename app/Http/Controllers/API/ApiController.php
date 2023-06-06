@@ -95,6 +95,10 @@ class ApiController extends Controller
 
     public function getUser($hashedToken)
     {
+        $carbon = new \Carbon\Carbon();
+        $date = $carbon->now();
+        $date = $date->format('Y-d-m');
+
 
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
@@ -102,7 +106,6 @@ class ApiController extends Controller
         $vacations = $user[0]->employee->take_expired_vacation
             ? DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv')
             : DB::table('vacations_availables')->where('users_id', $user_id)->sum('dv');
-        $user_roles = DB::table('role_user')->where("user_id", $user_id)->get("role_id");
         $roles = [];
 
         $data = [];
@@ -124,15 +127,20 @@ class ApiController extends Controller
             $vacation_duration = Vacations::all()->where('users_id', $usr->id);
 
             foreach ($vacation_duration as $vacation) {
-                if ($vacation == null || $vacation == []) {
+                if ($vacation != null || $vacation != []) {
+
+                    if($vacation->cutoff_date >= $date){
+                        array_push($expiration, (object)[
+                            'daysAvailables' => strval(floor($vacation->dv)),
+                            'cutoffDate' => date('d-m-Y', strtotime($vacation->cutoff_date)),
+                        ]);
+                    }
+                    
+                } else {
+                    
                     array_push($expiration, (object)[
                         'daysAvailables' => "Sin dias disponibles",
                         'cutoffDate' => "Sin fecha de corte disponible",
-                    ]);
-                } else {
-                    array_push($expiration, (object)[
-                        'daysAvailables' => strval(floor($vacation->dv)),
-                        'cutoffDate' => date('d-m-Y', strtotime($vacation->cutoff_date)),
                     ]);
                 }
             }
