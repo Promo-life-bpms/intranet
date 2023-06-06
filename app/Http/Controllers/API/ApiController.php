@@ -103,9 +103,9 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
         $user = User::where('id', $user_id)->get();
-        $vacations = $user[0]->employee->take_expired_vacation
-            ? DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv')
-            : DB::table('vacations_availables')->where('users_id', $user_id)->sum('dv');
+
+        $vacations = $user[0]->employee->take_expired_vacation ? $user[0]->vacationsComplete()->sum('dv') : $user[0]->vacationsAvailables()->sum('dv');
+
         $roles = [];
 
         $data = [];
@@ -124,12 +124,12 @@ class ApiController extends Controller
             }
             $expiration = [];
 
-            $vacation_duration = Vacations::all()->where('users_id', $usr->id);
+            $vacation_duration  = $user[0]->employee->take_expired_vacation ? $user[0]->vacationsComplete()->get() : $user[0]->vacationsAvailables()->get();
 
             foreach ($vacation_duration as $vacation) {
-                if ($vacation != null || $vacation != []) {
+                if ($vacation != null || $vacation != [] ) {
 
-                    if($vacation->cutoff_date >= $date){
+                    if($vacation->cutoff_date >= $date && intval($vacation->dv) >0){
                         array_push($expiration, (object)[
                             'daysAvailables' => strval(floor($vacation->dv)),
                             'cutoffDate' => date('d-m-Y', strtotime($vacation->cutoff_date)),
@@ -143,6 +143,13 @@ class ApiController extends Controller
                         'cutoffDate' => "Sin fecha de corte disponible",
                     ]);
                 }
+            }
+
+            if($expiration == []){
+                array_push($expiration, (object)[
+                    'daysAvailables' => "Sin dias disponibles",
+                    'cutoffDate' => "Sin fecha de corte disponible",
+                ]);
             }
 
             $directManager = Employee::all()->where('jefe_directo_id', $usr->id);
