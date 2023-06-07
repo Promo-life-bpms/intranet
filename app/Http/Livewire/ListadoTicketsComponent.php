@@ -24,7 +24,7 @@ class ListadoTicketsComponent extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje,$mensajes,$user;
+    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $mensajes, $user;
 
     public function render()
     {
@@ -39,10 +39,7 @@ class ListadoTicketsComponent extends Component
 
     public function guardar()
     {
-        // if ($this->data == trim('<p><br data-cke-filler="true"></p>')) {
-        //     $this->addError('data', 'La descripcion es obligatoria');
-        //     return;
-        // }
+       
 
         $this->validate(
             [
@@ -65,7 +62,7 @@ class ListadoTicketsComponent extends Component
                 'category_id' => (int) $this->categoria,
                 'user_id' => auth()->user()->id,
                 'status_id' => 1,
-                'support_id'=>$usuarios[0]['id']
+                'support_id' => $usuarios[0]['id']
 
             ]
         );
@@ -88,8 +85,8 @@ class ListadoTicketsComponent extends Component
                 'name_ticket' => $ticket->name,
                 'data' => $ticket->data,
                 'tiempo' => $ticket->created_at,
-                'categoria'=>$category->name,
-                'username'=>$usuarios['0']->name
+                'categoria' => $category->name,
+                'username' => $usuarios['0']->name
             ];
 
         //arreglo para enviar la notificacion al usuario de la categoria
@@ -162,6 +159,8 @@ class ListadoTicketsComponent extends Component
         $actualizar_status = Ticket::find($id);
         $category = Categoria::find($actualizar_status->category_id);
         $usuarios = $category->usuarios;
+
+
         $actualizar_status->update(
             [
 
@@ -177,30 +176,28 @@ class ListadoTicketsComponent extends Component
                 'data' => $actualizar_status->status->name
             ]
         );
-        // $NotificacionStatus =
-        //     [
-        //         'name' => auth()->user()->name,
-        //         'email' => auth()->user()->email,
-        //         'name_ticket' => $actualizar_status->name,
-        //         'status' => $actualizar_status->status->name,
-        //         'username'=>$usuarios['0']->name
+        $NotificacionStatus =
+            [
+                'name' => auth()->user()->name,
+                'email' => auth()->user()->email,
+                'name_ticket' => $actualizar_status->name,
+                'status' => $actualizar_status->status->name,
+                'username' => $usuarios['0']->name
 
 
-        //     ];
+            ];
 
-        // //for each para enviar notificacion de status a los usuarios relacionados
-        // foreach ($usuarios as $usuarios) {
-        //     $usuarios->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
-        // }
+        //for each para enviar notificacion de status a los usuarios relacionados
+        foreach ($usuarios as $usuarios) {
+            $usuarios->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
+        }
     }
 
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
         $message = Mensaje::find($id);
-        // $usuario=Solucion::find($ticket);
-        // $this->user=$usuario[0]->solucion;
-        $this->mensajes=$ticket;
+        $this->mensajes = $ticket;
         $this->ticket_solucion = $ticket;
         $this->ticket_id = $ticket->id;
         $this->name = $ticket->name;

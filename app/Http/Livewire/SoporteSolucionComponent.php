@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Notifications\MessageSoporteSolutionNotification;
 use App\Notifications\SolucionSoporteNotification;
 use App\Notifications\StatusEnProcesoSoporteNotification;
+use App\Notifications\ReasignacionTicketSoporte;
 
 class SoporteSolucionComponent extends Component
 {
@@ -21,19 +22,20 @@ class SoporteSolucionComponent extends Component
     public function render()
     {
         $categories =  auth()->user()->asignacionCategoria->pluck(["id"]);
-        //para traer la cantidad de tickets por usuario de soporte
-        // $tickets=Ticket::whereIn('category_id',$categories)->count();
-        // dd($tickets);
+      
         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
         ->join('roles', 'roles.id', '=', 'role_user.role_id')
         ->where('roles.name', '=', 'systems')
         ->select('users.*')
         ->get();
 
+        $ticketReasignado=Ticket::where('support_id',auth()->user()->id)->get();
+
+
         return view('livewire.soporte-solucion-component', [
 
-            'solucion' => Ticket::whereIn('category_id', $categories)->paginate('15')
-        ],compact('users'));
+            'solucion' => Ticket::where('support_id', auth()->user()->id)->simplePaginate(15)
+        ],compact('users','ticketReasignado'));
     }
 
 
@@ -83,6 +85,7 @@ class SoporteSolucionComponent extends Component
 
         $ticket = Ticket::find($this->ticket_id);
         $usuario = $ticket->user;
+
         if ($this->description == trim('<p><br data-cke-filler="true"></p>')) {
             $this->addError('description', 'La descripcion es obligatoria');
             return;
@@ -158,19 +161,31 @@ class SoporteSolucionComponent extends Component
         $this->dispatchBrowserEvent('message');
     }
 
-    public function reasignar($id)
+    public function reasignar()
     {
-        $ticket = Ticket::find($id);
-        
+        $ticket = Ticket::find($this->ticket_id);
+
+
         $this->validate(
             [
-                'support_id'=>'required'
+                'usuario_reasignacion'=>'required'
             ]
             );
 
         $ticket->update([
             'support_id'=>$this->usuario_reasignacion
         ]);
+        //aqui busco al usuario que se guarda para reasignar
+        $user = User::find($this->usuario_reasignacion);
+
+        $reasignacionTicket=[
+            'name' => auth()->user()->name,
+            'name_ticket' => $ticket->name,
+        ];
+
+        //aqui envio la notificacion al usuario
+        $user->notify(new ReasignacionTicketSoporte($reasignacionTicket));
+
 
         $this->dispatchBrowserEvent('reasignacion');
 

@@ -4,25 +4,7 @@
             <h3>Asignación de tickets</h3>
         </div>
     </div>
-{{--
-    <div class="row">
-        <div class="col-sm-8 col-md-8">
-         <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3">
-            <div class="col">
-                <h6> Tickets resueltos por mes</h6>
-                <canvas id="myChart" height="500" ></canvas>
-            </div>
 
-            <div class="col">
-                <h6 >Tickets en proceso</h6>
-                <canvas id="Enproceso" height="500" ></canvas>
-            </div>
-
-         </div>
-
-        </div>
-
-    </div> --}}
 
     <div class="card-body">
 
@@ -112,12 +94,7 @@
     </div>
 
     <script>
-        // window.addEventListener('asignacion_correcta', () => {
 
-
-        // toastr.success('Categoría asignada correctamente');
-
-        //   })
         function showToast(checkbox) {
             if (checkbox.checked) {
                 showToastMessage('green', 'Categoria Asignada');
@@ -162,7 +139,7 @@
                     }]
                 },
                 options: {
-                    // Opciones del gráfico
+                   
                 }
             });
         });

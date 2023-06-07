@@ -112,7 +112,7 @@
                     }]
                 },
                 options: {
-                    // Opciones del gráfico
+                   
 
 
                 }
@@ -137,7 +137,7 @@
                     }]
                 },
                 options: {
-                    // Opciones del gráfico
+
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -167,7 +167,7 @@
                     }]
                 },
                 options: {
-                    // Opciones del gráfico
+
 
                 }
             });

@@ -39,13 +39,25 @@
                                 @endif
                             </td>
                             <td>
-                                <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})" type="button"
-                                    class="btn btn-success btn-sm " wire:click="verTicket({{ $tickets->id }})"><i
-                                        class="bi bi-eye"></i></button>
-                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#Modalasignacion"  wire:click="verTicket({{ $tickets->id }})">
-                                    <i class="bi bi-person-fill"></i>
-                                </button>
+                                @if ($tickets->status_id)
+                                    @if ($tickets->status_id == 4)
+                                    <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
+                                        type="button" class="btn btn-success btn-sm "
+                                        wire:click="verTicket({{ $tickets->id }})"><i
+                                            class="bi bi-eye"></i></button>
+                                    @else
+                                        <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
+                                            type="button" class="btn btn-success btn-sm "
+                                            wire:click="verTicket({{ $tickets->id }})"><i
+                                                class="bi bi-eye"></i></button>
+
+                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#Modalasignacion"
+                                            wire:click="verTicket({{ $tickets->id }})">
+                                            <i class="bi bi-person-fill"></i>
+                                        </button>
+                                    @endif
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -419,267 +431,285 @@
             </div>
         </div>
     </div>
-    <div wire:ignore.self class="modal fade" id="Modalasignacion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="Modalasignacion" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Reasignar Ticket</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Reasignar Ticket</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="inputGroupSelect01">Usuarios</label>
+                        <select wire:model="usuario_reasignacion" name="usuario_reasignacion" class="form-select" id="inputGroupSelect01">
+                            <option value="" selected>Seleccionar</option>
+                            @foreach ($users as $user)
+                                @if ($user->id !== auth()->user()->id)
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+
+                    </div>
+                    @error('usuario_reasignacion')
+                        <span class="invalid-feedback">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+
+                    @if (isset($tickets->id))
+                        <button type="button"
+                            class="btn btn-primary"wire:click="reasignar({{ $tickets->id }})">Reasignar</button>
+
+                        <div wire:loading.flex wire:target="reasignar">
+                            Asignando
+                        </div>
+                    @endif
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="inputGroupSelect01">Usuarios</label>
-                    <select wire:model="usuario_reasignacion" name="support_id
-                    " class="form-select" id="inputGroupSelect01">
-                      <option selected>Seleccionar</option>
-                      @foreach ($users as $user )
-                      <option  value="{{$user->id}}">{{$user->name}}</option>
-                      @endforeach
-                    </select>
-                  </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              <button type="button" class="btn btn-primary" wire:click="reasignar({{ $tickets->id }})">Reasignar</button>
-            </div>
-          </div>
         </div>
-      </div>
+    </div>
 
 
 
-        <script>
-            let ckEditorSolucion, ckeEditorMensaje;
+    <script>
+        let ckEditorSolucion, ckeEditorMensaje;
 
-            //editor solucion
-            ClassicEditor
-                .create(document.querySelector('#editorSolucion'), {
-                    removePlugins: ['MediaEmbed'],
-                    extraPlugins: [MyCustomUploadAdapterPlugin],
-                })
-                .then(newEditor => {
-                    ckEditorSolucion = newEditor;
-                    // Escucha el evento 'change'
-                    //para subir las imagenes y la data del ckeditor
-                    ckEditorSolucion.model.document.on('change', () => {
-                        const content = ckEditorSolucion.getData();
-                        @this.description = content
-                        console.log(content); // Imprime el contenido actualizado en la consola
-                    });
-
-                })
-                .catch(error => {
-                    console.error(error);
+        //editor solucion
+        ClassicEditor
+            .create(document.querySelector('#editorSolucion'), {
+                removePlugins: ['MediaEmbed'],
+                extraPlugins: [MyCustomUploadAdapterPlugin],
+            })
+            .then(newEditor => {
+                ckEditorSolucion = newEditor;
+                // Escucha el evento 'change'
+                //para subir las imagenes y la data del ckeditor
+                ckEditorSolucion.model.document.on('change', () => {
+                    const content = ckEditorSolucion.getData();
+                    @this.description = content
+                    console.log(content); // Imprime el contenido actualizado en la consola
                 });
 
-
-            //editor mensaje
-            ClassicEditor
-                .create(document.querySelector('#editorMensaje'), {
-
-                })
-                .then(newEditor => {
-                    ckeEditorMensaje = newEditor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
 
 
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+        //editor mensaje
+        ClassicEditor
+            .create(document.querySelector('#editorMensaje'), {
+
+            })
+            .then(newEditor => {
+                ckeEditorMensaje = newEditor;
 
 
-            class MyUploadAdapter {
-                constructor(loader) {
-                    this.loader = loader;
-                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
 
-                upload() {
-                    return this.loader.file
-                        .then(file => new Promise((resolve, reject) => {
-                            this._initRequest();
-                            this._initListeners(resolve, reject, file);
-                            this._sendRequest(file);
-                        }));
-                }
 
-                abort() {
-                    if (this.xhr) {
-                        this.xhr.abort();
-                    }
-                }
+        class MyUploadAdapter {
+            constructor(loader) {
+                this.loader = loader;
+            }
 
-                _initRequest() {
-                    const xhr = this.xhr = new XMLHttpRequest();
+            upload() {
+                return this.loader.file
+                    .then(file => new Promise((resolve, reject) => {
+                        this._initRequest();
+                        this._initListeners(resolve, reject, file);
+                        this._sendRequest(file);
+                    }));
+            }
 
-                    xhr.open('POST', "{{ route('upload', ['_token' => csrf_token()]) }}", true);
-                    xhr.responseType = 'json';
-                }
-
-                _initListeners(resolve, reject, file) {
-                    const xhr = this.xhr;
-                    const loader = this.loader;
-                    const genericErrorText = `Couldn't upload file: ${ file.name }.`;
-
-                    xhr.addEventListener('error', () => reject(genericErrorText));
-                    xhr.addEventListener('abort', () => reject());
-                    xhr.addEventListener('load', () => {
-                        const response = xhr.response;
-
-                        if (!response || response.error) {
-                            return reject(response && response.error ? response.error.message : genericErrorText);
-                        }
-
-                        resolve(response);
-                    });
-
-                    if (xhr.upload) {
-                        xhr.upload.addEventListener('progress', evt => {
-                            if (evt.lengthComputable) {
-                                loader.uploadTotal = evt.total;
-                                loader.uploaded = evt.loaded;
-                            }
-                        });
-                    }
-                }
-
-                _sendRequest(file) {
-                    const data = new FormData();
-
-                    data.append('upload', file);
-
-                    this.xhr.send(data);
+            abort() {
+                if (this.xhr) {
+                    this.xhr.abort();
                 }
             }
 
-            function MyCustomUploadAdapterPlugin(editor) {
-                editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-                    return new MyUploadAdapter(loader);
-                };
+            _initRequest() {
+                const xhr = this.xhr = new XMLHttpRequest();
+
+                xhr.open('POST', "{{ route('upload', ['_token' => csrf_token()]) }}", true);
+                xhr.responseType = 'json';
             }
 
+            _initListeners(resolve, reject, file) {
+                const xhr = this.xhr;
+                const loader = this.loader;
+                const genericErrorText = `Couldn't upload file: ${ file.name }.`;
 
-            window.addEventListener('ticket_solucion', () => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Solución enviada correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
+                xhr.addEventListener('error', () => reject(genericErrorText));
+                xhr.addEventListener('abort', () => reject());
+                xhr.addEventListener('load', () => {
+                    const response = xhr.response;
 
-                $('#ModalAgregar').modal('hide')
+                    if (!response || response.error) {
+                        return reject(response && response.error ? response.error.message : genericErrorText);
+                    }
 
-                ckEditorSolucion.setData("");
+                    resolve(response);
+                });
 
-            });
-
-            window.addEventListener('message', () => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'mensaje enviado correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-
-                // $('#ModalAgregar').modal('hide')
-
-                ckeEditorMensaje.setData("");
-
-            });
-
-            window.addEventListener('reasignacion', () => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'ticket reasignado correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-
-                 $('#Modalasignacion').modal('hide')
-
-                
-
-            });
-
-
-
-            window.addEventListener('cargar', () => {
-
-                if (ckEditorSolucion) {
-                    ckEditorSolucion.destroy();
-                    ClassicEditor
-                        .create(document.querySelector('#editorSolucion'), {
-                            removePlugins: ['MediaEmbed'],
-                            extraPlugins: [MyCustomUploadAdapterPlugin],
-                        })
-                        .then(newEditor => {
-                            ckEditorSolucion = newEditor;
-                            // Escucha el evento 'change'
-                            //para subir las imagenes y la data del ckeditor
-                            ckEditorSolucion.model.document.on('change', () => {
-                                const content = ckEditorSolucion.getData();
-                                @this.description = content
-                                console.log(content); // Imprime el contenido actualizado en la consola
-                            });
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                }
-            });
-
-            window.addEventListener('cargar', () => {
-
-                if (ckeEditorMensaje) {
-                    ckeEditorMensaje.destroy();
-                    ClassicEditor
-                        .create(document.querySelector('#editorMensaje'), {
-                            removePlugins: ['MediaEmbed'],
-                            extraPlugins: [MyCustomUploadAdapterPlugin],
-                        })
-                        .then(newEditor => {
-                            ckeEditorMensaje = newEditor;
-                            // Escucha el evento 'change'
-                            //para subir las imagenes y la data del ckeditor
-                            ckeEditorMensaje.model.document.on('change', () => {
-                                const content = ckeEditorMensaje.getData();
-                                @this.mensajes = content
-                                console.log(content); // Imprime el contenido actualizado en la consola
-                            });
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                }
-            });
-
-
-
-            function atender(id, status_id) {
-
-                if (status_id == 2 || status_id == 3 || status_id == 4) {
-                    $('#ModalAgregar').modal('show')
-                    // ckEditorSolucion.enableReadOnlyMode( 'editorMensaje' )
-
-                } else {
-                    Swal.fire({
-                        title: 'Quieres dar solucion a este ticket?',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Si'
-                    }).then((result) => {
-
-                        if (result.isConfirmed) {
-                            let resultado = @this.enProceso(id)
-                            $('#ModalAgregar').modal('show')
-
-                            toastr.success("Ticket en proceso")
+                if (xhr.upload) {
+                    xhr.upload.addEventListener('progress', evt => {
+                        if (evt.lengthComputable) {
+                            loader.uploadTotal = evt.total;
+                            loader.uploaded = evt.loaded;
                         }
+                    });
+                }
+            }
+
+            _sendRequest(file) {
+                const data = new FormData();
+
+                data.append('upload', file);
+
+                this.xhr.send(data);
+            }
+        }
+
+        function MyCustomUploadAdapterPlugin(editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new MyUploadAdapter(loader);
+            };
+        }
+
+
+        window.addEventListener('ticket_solucion', () => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Solución enviada correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+            $('#ModalAgregar').modal('hide')
+
+            ckEditorSolucion.setData("");
+
+        });
+
+        window.addEventListener('message', () => {
+            Swal.fire({
+                icon: 'success',
+                title: 'mensaje enviado correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+            // $('#ModalAgregar').modal('hide')
+
+            ckeEditorMensaje.setData("");
+
+        });
+
+        window.addEventListener('reasignacion', () => {
+            Swal.fire({
+                icon: 'success',
+                title: 'ticket reasignado correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+            $('#Modalasignacion').modal('hide')
+
+
+
+        });
+
+
+
+        window.addEventListener('cargar', () => {
+
+            if (ckEditorSolucion) {
+                ckEditorSolucion.destroy();
+                ClassicEditor
+                    .create(document.querySelector('#editorSolucion'), {
+                        removePlugins: ['MediaEmbed'],
+                        extraPlugins: [MyCustomUploadAdapterPlugin],
                     })
-                }
-
+                    .then(newEditor => {
+                        ckEditorSolucion = newEditor;
+                        // Escucha el evento 'change'
+                        //para subir las imagenes y la data del ckeditor
+                        ckEditorSolucion.model.document.on('change', () => {
+                            const content = ckEditorSolucion.getData();
+                            @this.description = content
+                            console.log(content); // Imprime el contenido actualizado en la consola
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
             }
-        </script>
+        });
+
+        window.addEventListener('cargar', () => {
+
+            if (ckeEditorMensaje) {
+                ckeEditorMensaje.destroy();
+                ClassicEditor
+                    .create(document.querySelector('#editorMensaje'), {
+                        removePlugins: ['MediaEmbed'],
+                        extraPlugins: [MyCustomUploadAdapterPlugin],
+                    })
+                    .then(newEditor => {
+                        ckeEditorMensaje = newEditor;
+                        // Escucha el evento 'change'
+                        //para subir las imagenes y la data del ckeditor
+                        ckeEditorMensaje.model.document.on('change', () => {
+                            const content = ckeEditorMensaje.getData();
+                            @this.mensajes = content
+                            console.log(content); // Imprime el contenido actualizado en la consola
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+        });
+
+
+
+        function atender(id, status_id) {
+
+            if (status_id == 2 || status_id == 3 || status_id == 4) {
+                $('#ModalAgregar').modal('show')
+                // ckEditorSolucion.enableReadOnlyMode( 'editorMensaje' )
+
+            } else {
+                Swal.fire({
+                    title: 'Quieres dar solucion a este ticket?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        let resultado = @this.enProceso(id)
+                        $('#ModalAgregar').modal('show')
+
+                        toastr.success("Ticket en proceso")
+                    }
+                })
+            }
+
+        }
+    </script>
 
 </div>

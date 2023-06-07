@@ -33,19 +33,7 @@ class SoporteAdminComponent extends Component
         $this->values = collect($this->values)->toArray();
         $this->ticketsInProcess=collect($this->ticketsInProcess)->toArray();
 
-      // Obtener los datos del gráfico desde la base de datos
-    //   $tickets = Ticket::where('status_id', 4)->get();
-
-    //   // Agrupar los tickets por mes
-    //   $ticketsByMonth = $tickets->groupBy(function ($ticket) {
-    //       return Carbon::parse($ticket->created_at)->format('F Y');
-    //   });
-
-    //   // Obtener los meses y contar los tickets por mes
-    //   foreach ($ticketsByMonth as $month => $monthTickets) {
-    //       $this->labels[] = $month;
-    //       $this->values[] = $monthTickets->count();
-    //   }
+   
 
     }
 
@@ -62,7 +50,7 @@ class SoporteAdminComponent extends Component
             ->get();
 
             return   view('livewire.soporte-admin-component',compact('users'));
-            
+
     }
 
 

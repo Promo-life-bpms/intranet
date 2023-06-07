@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class StatuSoporteFinalizadoNotification extends Notification
+class ReasignacionTicketSoporte extends Notification
 {
     use Queueable;
 
@@ -17,7 +17,7 @@ class StatuSoporteFinalizadoNotification extends Notification
      * @return void
      */
 
-     public $data;
+    public $data;
     public function __construct($data)
     {
         $this->data = $data;
@@ -43,9 +43,9 @@ class StatuSoporteFinalizadoNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->markdown('mail.soporte.soporteMailStatus', ["data" => $this->data])
-            ->subject('Ticket de soporte recibido')
-            ->from('correo@gmail.com');
+                    ->line('The introduction to the notification.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for using our application!');
     }
 
     /**
@@ -58,8 +58,8 @@ class StatuSoporteFinalizadoNotification extends Notification
     {
         return [
             'data'=>$this->data,
-            'type'=>'ticket finalizado',
-            'message'=>'El ticket se ha finalizado'
+            'type'=>'ticket',
+            'message'=>'Ticket'
         ];
     }
 }
