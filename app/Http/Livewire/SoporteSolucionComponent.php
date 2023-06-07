@@ -15,7 +15,7 @@ use App\Notifications\StatusEnProcesoSoporteNotification;
 class SoporteSolucionComponent extends Component
 {
     use WithPagination;
-    public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes;
+    public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes,$usuario_reasignacion;
     protected $paginationTheme = 'bootstrap';
 
     public function render()
@@ -161,7 +161,18 @@ class SoporteSolucionComponent extends Component
     public function reasignar($id)
     {
         $ticket = Ticket::find($id);
-        $this->ticket_id = $ticket->id;
+        
+        $this->validate(
+            [
+                'support_id'=>'required'
+            ]
+            );
+
+        $ticket->update([
+            'support_id'=>$this->usuario_reasignacion
+        ]);
+
+        $this->dispatchBrowserEvent('reasignacion');
 
     }
 }

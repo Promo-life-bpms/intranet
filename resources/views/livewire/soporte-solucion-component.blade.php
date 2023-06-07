@@ -43,7 +43,7 @@
                                     class="btn btn-success btn-sm " wire:click="verTicket({{ $tickets->id }})"><i
                                         class="bi bi-eye"></i></button>
                                 <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#Modalasignacion"  wire:click="reasignar({{ $tickets->id }})">
+                                    data-bs-target="#Modalasignacion"  wire:click="verTicket({{ $tickets->id }})">
                                     <i class="bi bi-person-fill"></i>
                                 </button>
                             </td>
@@ -429,17 +429,18 @@
             <div class="modal-body">
                 <div class="input-group mb-3">
                     <label class="input-group-text" for="inputGroupSelect01">Usuarios</label>
-                    <select class="form-select" id="inputGroupSelect01">
+                    <select wire:model="usuario_reasignacion" name="support_id
+                    " class="form-select" id="inputGroupSelect01">
                       <option selected>Seleccionar</option>
                       @foreach ($users as $user )
-                      <option value="{{$user->id}}">{{$user->name}}</option>
+                      <option  value="{{$user->id}}">{{$user->name}}</option>
                       @endforeach
                     </select>
                   </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              <button type="button" class="btn btn-primary">Reasignar</button>
+              <button type="button" class="btn btn-primary" wire:click="reasignar({{ $tickets->id }})">Reasignar</button>
             </div>
           </div>
         </div>
@@ -582,6 +583,20 @@
                 // $('#ModalAgregar').modal('hide')
 
                 ckeEditorMensaje.setData("");
+
+            });
+
+            window.addEventListener('reasignacion', () => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'ticket reasignado correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
+                 $('#Modalasignacion').modal('hide')
+
+                
 
             });
 
