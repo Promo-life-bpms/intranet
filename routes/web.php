@@ -258,8 +258,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/teamrequest/', [TeamRequest::class, 'index'])->name('team.request');
     Route::get('/teamrequest1/', [TeamRequest::class, 'index1'])->name('team.record');
     Route::post('/team/create-teamrequest/', [TeamRequest::class, 'createTeamRequest'])->name('team.createTeamRequest');
-    
 
+    //Buscador automatico
+    Route::get('/dropdownlist/getUser/{id}', [TeamRequest::class, 'user']);
+    
     //Estado actual de solicitud rol sistemas
     Route::get('/Systemsrequest/',[SystemRequest::class, 'systemsrequest'])->name('systems.request');
     

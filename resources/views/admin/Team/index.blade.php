@@ -39,45 +39,26 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            {!! Form::label('name', 'Nombre: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('name', null, ['id'=> 'search-input', 'class' => 'form-control', 'placeholder' => 'Buscar nombre']) !!}
-                                            @error('name')
-                                            <small>
-                                                <font color="red"> *Este campo es requerido* </font>
-                                            </small> 
+                                            {!! Form::label('jefe_directo_id', 'Nombre', ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::select('jefe_directo_id', $manager, null, ['class' => 'form-control','placeholder' => 'Seleccione el nombre']) !!}
+                                            @error('jefe_directo_id')
+                                                <small>
+                                                    <font color="red"> *Este campo es requerido* </font>
+                                                </small>
+                                                <br>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <script>
-                                            $(document).ready(function() {
-                                            $("#search").autocomplete({
-                                                source: function(request, response) {
-                                                    $.ajax({
-                                                        url: "{{route('team.request')}}",
-                                                        dataType: "json",
-                                                        data: {
-                                                            term: request.term
-                                                        },
-                                                        success: function(data) {
-                                                            response(data);
-                                                        }
-                                                    });
-                                                },
-                                                minLength: 2    
-                                            });
-                                        });
-                                    </script>
-                                
-
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            {!! Form::label('', 'Fecha requerida: ' , ['style' => 'font-size: 11px;']) !!}
-                                            <input type="date" id="fecha" name="fecha" class="form-control">
-                                            @error('')
-                                            <small>
-                                                <font color="red"> *Este campo es requerido* </font>
-                                            </small> 
+                                            {!! Form::label('date_admission', 'Fecha requerida' , ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::text('date_admission', null, ['class' => 'form-control', 'placeholder' => 'Seleccionar fecha']) !!}
+                                            @error('date_admission')
+                                                <small>
+                                                    <font color="red"> *Este campo es requerido* </font>
+                                                </small>
+                                                <br>
                                             @enderror
                                         </div>
                                     </div>
@@ -96,27 +77,29 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            {!! Form::label('', 'Departamento: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el departamento']) !!}
-                                            @error('')
-                                            <small>
-                                                <font color="red"> *Este campo es requerido* </font>
-                                            </small> 
+                                            {!! Form::label('department', 'Departamento', ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::select('department', $departments, null, ['class' => 'form-control','placeholder' => 'Selecciona Departamento']) !!}
+                                            @error('department')
+                                                <small>
+                                                    <font color="red"> *Este campo es requerido* </font>
+                                                </small>
+                                                <br>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {!! Form::label('', 'Puesto: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el puesto']) !!}
-                                            @error('')
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {!! Form::label('position', 'Puesto', ['style' => 'font-size: 11px;']) !!}
+                                        {!! Form::text('position', null, ['class' => 'form-control','placeholder' => 'Selecciona Puesto']) !!}
+                                        @error('position')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
-                                            </small> 
-                                            @enderror
-                                        </div>
+                                            </small>
+                                            <br>
+                                        @enderror
                                     </div>
+                                </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -153,8 +136,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                
-
+                                    
                         <p style="margin-bottom:20px;"></p> 
 
                             <h2 style="font-size: 18px;">Asignación de Equipo de Cómputo y Telefonía</h2>
@@ -600,5 +582,68 @@
         </script>-->
     </form>
 @endsection
+
+@section('scripts')
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    {{-- <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery('select[name="department"]').on('change', function() {
+                var id = jQuery(this).val();
+                if (id) {
+                    jQuery.ajax({
+                        url: '/dropdownlist/getPosition/' + id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+
+                            jQuery('select[name="position"]').empty();
+                            jQuery.each(data.positions, function(key, value) {
+                                $('select[name="position"]').append('<option value="' +
+                                    key + '">' + value + '</option>');
+                            });
+                            jQuery('select[name="jefe_directo_id"]').empty();
+                            jQuery.each(data.users, function(key, value) {
+                                $('select[name="jefe_directo_id"]').append(
+                                    '<option value="' + key + '">' + value +
+                                    '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('select[name="position"]').empty();
+                }
+            });
+        });
+    </script> --}}
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery('select[name="jefe_directo_id"]').on('change', function() {
+            var id = jQuery(this).val();
+            if (id) {
+                jQuery.ajax({
+                    url: '/dropdownlist/getUser/' + id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+
+                        $("#date_admission").val(data.date_admission)
+                        $("#position").val(data.position)
+
+                          
+                    
+
+                        // console.log(data);
+                    }
+                });
+            } else {
+                $('select[name="position"]').empty();
+            }
+        });
+    });
+</script>
+@endsection 
+
+1
 
 
