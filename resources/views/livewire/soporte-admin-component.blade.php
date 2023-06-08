@@ -94,7 +94,6 @@
     </div>
 
     <script>
-
         function showToast(checkbox) {
             if (checkbox.checked) {
                 showToastMessage('green', 'Categoria Asignada');
@@ -124,7 +123,7 @@
             }, 3000);
         }
 
-        document.addEventListener('livewire:load', function () {
+        document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('myChart').getContext('2d');
             var chart = new Chart(ctx, {
                 type: 'bar', // Cambia el tipo de gráfico según tus necesidades
@@ -139,12 +138,12 @@
                     }]
                 },
                 options: {
-                   
+
                 }
             });
         });
 
-        document.addEventListener('livewire:load', function () {
+        document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('Enproceso').getContext('2d');
             var chart = new Chart(ctx, {
                 type: 'bar', // Cambia el tipo de gráfico según tus necesidades
@@ -153,7 +152,7 @@
                     datasets: [{
                         label: 'Tickets en Proceso', // Etiqueta del conjunto de datos
                         data: @json($ticketsInProcess), // Datos obtenidos del componente
-                        backgroundColor:   'rgba(0, 123, 255, 0.5)', // Color de fondo del gráfico
+                        backgroundColor: 'rgba(0, 123, 255, 0.5)', // Color de fondo del gráfico
                         borderColor: 'rgba(0, 123, 255, 1)', // Color del borde del gráfico
                         borderWidth: 1 // Ancho del borde del gráfico
                     }]
@@ -163,7 +162,6 @@
                 }
             });
         });
-
     </script>
 
 </div>

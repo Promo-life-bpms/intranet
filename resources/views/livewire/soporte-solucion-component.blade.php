@@ -41,10 +41,10 @@
                             <td>
                                 @if ($tickets->status_id)
                                     @if ($tickets->status_id == 4)
-                                    <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
-                                        type="button" class="btn btn-success btn-sm "
-                                        wire:click="verTicket({{ $tickets->id }})"><i
-                                            class="bi bi-eye"></i></button>
+                                        <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
+                                            type="button" class="btn btn-success btn-sm "
+                                            wire:click="verTicket({{ $tickets->id }})"><i
+                                                class="bi bi-eye"></i></button>
                                     @else
                                         <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
                                             type="button" class="btn btn-success btn-sm "
@@ -442,7 +442,8 @@
                 <div class="modal-body">
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="inputGroupSelect01">Usuarios</label>
-                        <select wire:model="usuario_reasignacion" name="usuario_reasignacion" class="form-select" id="inputGroupSelect01">
+                        <select wire:model="usuario_reasignacion" name="usuario_reasignacion" class="form-select"
+                            id="inputGroupSelect01">
                             <option value="" selected>Seleccionar</option>
                             @foreach ($users as $user)
                                 @if ($user->id !== auth()->user()->id)
@@ -453,9 +454,10 @@
 
                     </div>
                     @error('usuario_reasignacion')
-                        <span class="invalid-feedback">
-                            <strong>{{ $message }}</strong>
+                        <span>
+                            <font color="red"> *Selecciona un usuario* </font>
                         </span>
+                        <br>
                     @enderror
                 </div>
 

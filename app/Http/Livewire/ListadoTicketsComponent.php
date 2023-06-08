@@ -39,7 +39,7 @@ class ListadoTicketsComponent extends Component
 
     public function guardar()
     {
-       
+
 
         $this->validate(
             [

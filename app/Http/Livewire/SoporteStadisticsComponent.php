@@ -15,7 +15,6 @@ class SoporteStadisticsComponent extends Component
     public $labels = [], $meses = [], $usuario = [], $name = [], $soporte = [];
     public $values = [], $ticketsPorMes = [], $ticketCounts = [], $totalTicket = [];
 
-
     public function mount()
     {
 
@@ -30,7 +29,7 @@ class SoporteStadisticsComponent extends Component
         }
 
 
-        //aqui me trae a todos los usuarios con el rol de sistemas
+       // aqui me trae a todos los usuarios con el rol de sistemas
         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
             ->where('roles.name', '=', 'systems')
@@ -39,37 +38,41 @@ class SoporteStadisticsComponent extends Component
 
         //me trae el nombre de los usuarios que dan soporte
         $this->usuario = $users->pluck('name')->toArray();
-
-        foreach($users as $user){
-            $ticket=Ticket::where('support_id',$user->id)->count();
-            $this->soporte[]=$ticket;
+        //hace el conteo de los ticktets que reciben los de soporte
+        foreach ($users as $user) {
+            $ticket = Ticket::where('support_id', $user->id)->count();
+            $this->soporte[] = $ticket;
         }
 
-
-
-
-
+        //Trae todas las categorias
         $category = Categoria::all();
         $this->labels = $category->pluck('name')->toArray();
-
+        //cuenta los tickets con status ticket cerrado 
         foreach ($category as $categoria) {
             $ticketsCount = Ticket::where('status_id', 4)->where('category_id', $categoria->id)->count();
             $this->values[] = $ticketsCount;
         }
         $this->values = collect($this->values)->toArray();
 
+        //trae los tickets con status ticket cerrado
         $tickets = Ticket::where('status_id', 4)->get();
-        //   // Agrupar los tickets por mes
+          // Agrupar los tickets con status cerrado por mes
         $ticketsByMonth = $tickets->groupBy(function ($ticket) {
             return Carbon::parse($ticket->created_at)->format('F Y');
         });
 
-        //   // Obtener los meses y contar los tickets por mes
+          // Obtener los meses y contar los tickets por mes
         foreach ($ticketsByMonth as $month => $monthTickets) {
             $this->meses[] = $month;
             $this->ticketsPorMes[] = $monthTickets->count();
         }
+
+        
     }
+
+
+
+
 
     public function render()
     {
