@@ -28,7 +28,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Tipo de usuario: ', ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el tipo de usuario']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese tipo de usuario']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -40,7 +40,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('jefe_directo_id', 'Nombre', ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::select('jefe_directo_id', $manager, null, ['class' => 'form-control','placeholder' => 'Seleccione el nombre']) !!}
+                                            {!! Form::select('jefe_directo_id', $manager, null, ['class' => 'form-control','placeholder' => 'Seleccione nombre']) !!}
                                             @error('jefe_directo_id')
                                                 <small>
                                                     <font color="red"> *Este campo es requerido* </font>
@@ -53,7 +53,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('date_admission', 'Fecha requerida' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('date_admission', null, ['class' => 'form-control', 'placeholder' => 'Seleccionar fecha']) !!}
+                                            {!! Form::text('date_admission', null, ['class' => 'form-control', 'placeholder' => 'Ingrese fecha']) !!}
                                             @error('date_admission')
                                                 <small>
                                                     <font color="red"> *Este campo es requerido* </font>
@@ -66,7 +66,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Área: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el área']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese área']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -78,7 +78,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('department', 'Departamento', ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::select('department', $departments, null, ['class' => 'form-control','placeholder' => 'Selecciona Departamento']) !!}
+                                            {!! Form::text('department', null, ['class' => 'form-control','placeholder' => 'Ingrese departamento']) !!}
                                             @error('department')
                                                 <small>
                                                     <font color="red"> *Este campo es requerido* </font>
@@ -91,7 +91,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         {!! Form::label('position', 'Puesto', ['style' => 'font-size: 11px;']) !!}
-                                        {!! Form::text('position', null, ['class' => 'form-control','placeholder' => 'Selecciona Puesto']) !!}
+                                        {!! Form::text('position', null, ['class' => 'form-control','placeholder' => 'Ingrese puesto']) !!}
                                         @error('position')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -104,7 +104,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Extensión: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese la extensión']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese extensión']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -116,7 +116,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Jefe inmediato: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese a jefe inmediato']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese jefe inmediato']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -128,7 +128,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Empresa: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese la empresa']) !!}
+                                            {!! Form::select('status', ['Promo Life' => 'Promo Life', 'BH Trade Market' => 'BH Trade Market', 'Promo Zale'=> 'Promo Zale', 'Trade Market 57'=> 'Trade Market 57', 'Unipromtex'=> 'Unipromtex'], 'postulante', ['class' => 'form-control','placeholder' => 'Seleccione empresa']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -144,7 +144,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Tipo de computadora: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el tipo de computadora']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese tipo de computadora']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -156,7 +156,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Celular: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el celular']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese celular']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -168,7 +168,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', '#: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el número']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese número']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -180,7 +180,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'No. de extensión: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el No. de extensión']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese No. de extensión']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -192,7 +192,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Equipo a utilizar: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el equipo a utilizar']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese equipo a utilizar']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -204,7 +204,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Accesorios: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el accesorio']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese accesorio']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -216,7 +216,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'En caso de ser reasignación de equipo indique el usuario anterior: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el usuario anterior']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese usuario anterior']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -240,11 +240,11 @@
                                             
                                         </div>
                                     </div>
-                            
+                
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Correo: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el correo']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese correo']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -256,13 +256,158 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Firma: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese la firma']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese firma']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
                                             </small> 
                                             @enderror
                                         </div>
+                                    </div>
+
+                                    {{-- <div class="col-md-4">
+                                        <div class="form-group">
+                                            @error('')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small> 
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {!! Form::label('', 'Correo: ' , ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese correo']) !!}
+                                            @error('')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small> 
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {!! Form::label('', 'Firma: ' , ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese firma']) !!}
+                                            @error('')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small> 
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @error('')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small> 
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {!! Form::label('', 'Correo: ' , ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese correo']) !!}
+                                            @error('')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small> 
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {!! Form::label('', 'Firma: ' , ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese firma']) !!}
+                                            @error('')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small> 
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @error('')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small> 
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {!! Form::label('', 'Correo: ' , ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese correo']) !!}
+                                            @error('')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small> 
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {!! Form::label('', 'Firma: ' , ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese firma']) !!}
+                                            @error('')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small> 
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @error('')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small> 
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {!! Form::label('', 'Correo: ' , ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese correo']) !!}
+                                            @error('')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small> 
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {!! Form::label('', 'Firma: ' , ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese firma']) !!}
+                                            @error('')
+                                            <small>
+                                                <font color="red"> *Este campo es requerido* </font>
+                                            </small> 
+                                            @enderror
+                                        </div>
+                                    </div> --}}
+
+                                    <div id="contenedor-campos">
+                                        <button type="button" id="agregar-campo" class="btn btn-primary">
+                                            {{-- <i class="fa fa-envelope" aria-hidden="true"></i> --}}
+                                            {{-- <i class="fa fa-envelope-o" aria-hidden="true"></i> --}}
+                                            <i class="fa fa-plus-square" aria-hidden="true"></i>
+                                            Agregar
+                                        </button>
                                     </div>
 
                         <p style="margin-bottom:20px;"></p> 
@@ -272,7 +417,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Distribución y Reenvíos: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese la distribución y reenvíos']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese distribución y reenvíos']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -372,7 +517,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'ODOO: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el odoo']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese odoo']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -432,7 +577,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Usuarios(s) de ODOO: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese los usuarios de odoo']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese usuarios de odoo']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -444,7 +589,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', '1.- ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el número']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese número']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -456,7 +601,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', '2.- ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el número']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese número']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -468,7 +613,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Perfil de Trabajo en ODOO: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el perfil de trabajo en odoo']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese perfil de trabajo en odoo']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -480,7 +625,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', '1.- ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el número']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese número']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -492,7 +637,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', '2.- ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el número']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese número']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -520,7 +665,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Requiere Acceso a Carpeta Compartida del Servidor: ', ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el acceso a carpeta compartida']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese acceso a carpeta compartida']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -532,7 +677,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Ruta de la Carpeta: ', ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese la ruta de la carpeta']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese ruta de la carpeta']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -544,7 +689,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Tipo de Acceso: ', ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el tipo de acceso']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese tipo de acceso']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -560,7 +705,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Observaciones: ', ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese las observaciones']) !!}
+                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese observaciones']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -629,10 +774,7 @@
 
                         $("#date_admission").val(data.date_admission)
                         $("#position").val(data.position)
-
-                          
-                    
-
+                        $("#department").val(data.department)
                         // console.log(data);
                     }
                 });
@@ -642,8 +784,42 @@
         });
     });
 </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"> </script>
+        <script>
+            $(document).ready(function () {
+                $('#agregar-campo').click(function () {
+                    var nuevoCampo = 
+                        '<style>' +
+                        '.form-group label {' +
+                        ' font-size: 11px;' +
+                        '}' +
+                        '.form-control {' +
+                        ' font-size: 14px;' +
+                        '}' +
+                        '</style>' +
+
+                        '<div class="row">' +
+                            '<div class="col-md-4">' +
+                                '<div class="form-group">' +
+                                    '<label for="correo[]">Correo:</label>' +
+                                    '<input type="text" name="correo[]" class="form-control" placeholder="Ingrese correo">' +
+                                '</div>' +
+                            '</div>' +
+                            
+                            '<div class="col-md-4">' +
+                                '<div class="form-group">' +
+                                    '<label for="firma[]">Firma:</label>' +
+                                    '<input type="text" name="firma[]" class="form-control" placeholder="Ingrese firma">' +
+                                '</div>';
+                            '</div>' +
+                        '</div>' +
+                    $('#contenedor-campos').prepend(nuevoCampo);
+                });
+            });
+        </script>
 @endsection 
 
-1
+
 
 

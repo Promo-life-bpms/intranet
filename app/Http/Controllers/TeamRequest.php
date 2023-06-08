@@ -66,7 +66,8 @@ public function user($id){
    
     $data = [
         "date_admission"=> $employees->date_admission->format('Y-m-d'),
-        "position"=>$employees->position->department->name
+        "position"=>$employees->position->name,
+        "department"=>$employees->position->department->name
 
     ];
     return response()->json($data);

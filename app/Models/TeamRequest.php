@@ -9,6 +9,6 @@ class TeamRequest extends Model
 {
     use HasFactory;
 
-    public $table='users';   
+    public $table='request_team';   
 
 }
