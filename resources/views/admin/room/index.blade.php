@@ -56,7 +56,7 @@
                                     </div>
                                 </div>
                             </div>
-
+                            
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -75,38 +75,30 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-xl-12">
-                                    <div class="form-row">
-                                        <div class="col-sm-6 ">
-                                            <div class="form-group">
-                                                
-                                                {!! Form::label('guest', 'Selecciona a los invitados:') !!}
-                                                {!!Form::text('guest', null,['class'=>'form-control','id'=>'search-input', 'placeholder'=>'Buscar usuario'])!!}
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="row form-group">
+                                <div class="col-sm">
+                                    {!! Form::label('department_id', 'Departamento:') !!}
+                                    {!! Form::select('department_id', $departments, null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
+                                    @error('department_id')
+                                    <small>
+                                        <font color="red"> *Este campo es requerido* </font>
+                                    </small>
+                                    <br>
+                                    @enderror
                                 </div>
-                                <div class="col-xl-12">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Invitados</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="table-body">
-                                                @foreach($personas as $persona)
-                                                <tr>
-                                                    <td><input type="checkbox" name="guest[]" value="{{ $persona->email}}"> {{$persona->name.' '.$persona->lastname}}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {!! Form::label('guest[]', 'Usuarios: ', ['class' => 'required'] ) !!}
+                                            <div class =" d-flex flex-column mb-3">
+                                                <div id="seleccionar"></div>
+                                            </div>
+                                        </div>                            
                                     </div>
                                 </div>
                             </div>
-                    
+                            
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -136,14 +128,11 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <div class="dropdown">
-                                            <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                Crear reservación
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#">Sí</a></li>
-                                                <li><a class="dropdown-item" href="#">No</a></li>
-                                            </ul>
+                                        {!!Form::label('description', 'Descripción:')!!}
+                                        {!!Form::textarea('description', null,['class'=>'form-control'])!!}
+                                        @error('description')
+                                        <br>
+                                        @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -152,11 +141,14 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        {!!Form::label('description', 'Descripción:')!!}
-                                        {!!Form::textarea('description', null,['class'=>'form-control'])!!}
-                                        @error('description')
-                                        <br>
-                                        @enderror
+                                        <div class="dropdown">
+                                            <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Enviar notifacación
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#">Sí</a></li>
+                                                <li><a class="dropdown-item" href="#">No</a></li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -172,7 +164,6 @@
                 </div>
             </div>
 
-            
             @foreach ($eventos as $evento)
             {!! Form::open(['route' => 'reserviton.creative.update', 'enctype' => 'multipart/form-data', 'method'=>'PUT']) !!}
             @csrf
@@ -208,7 +199,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -226,53 +217,45 @@
                                     </div>
                                 </div>
                             </div>
- 
-                            <div class="row">
-                                <div class="col-xl-12">
-                                    <div class="form-row">
-                                        <div class="col-sm-6 ">
-                                            <div class="form-group">
-                                                {!! Form::label('guest', 'Selecciona a los invitados:') !!}
-                                                {!!Form::text('guest', null,['class'=>'form-control','id'=>'search-edit', 'placeholder'=>'Buscar usuario'])!!}
-                                            </div>
-                                        </div>
-                                    </div>
+                            
+                            <div class="row form-group">
+                                <div class="col-sm">
+                                    {!! Form::label('department_id', 'Departamento:') !!}
+                                    {!! Form::select('department_id', $departments, null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
+                                    @error('department_id')
+                                    <small>
+                                        <font color="red"> *Este campo es requerido* </font>
+                                    </small>
+                                    <br>
+                                    @enderror
                                 </div>
 
-                                <div class="col-xl-12">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Nombre</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="table-body">
-                                                @foreach($personas as $persona)
-                                                <tr>
-                                                    <td><input type="checkbox" name="guest[]" value="{{$persona->email}}"> {{$persona->name.' '.$persona->lastname}}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {!! Form::label('guest[]', 'Usuarios: ', ['class' => 'required'] ) !!}
+                                            <div class =" d-flex flex-column mb-3">
+                                                <div id="seleccionarEditar"></div>
+                                            </div>
+                                        </div>                            
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         {!!Form::label('material', 'Material:')!!}
                                         <br>
-                                        {{ Form::checkbox('material[]','Sillas', true) }}
+                                        {{ Form::checkbox('material[]','Sillas','$evento->material') }}
                                         {{ Form::label('material[]', 'Sillas') }}
                                         <br>
-                                        {{ Form::checkbox('material[]','Proyector', true) }}
+                                        {{ Form::checkbox('material[]','Proyector','$evento->material') }}
                                         {{ Form::label('material[]', 'Proyector')}}
                                     </div>
                                 </div>
                             </div>
-                           
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -332,24 +315,26 @@
             @endif
             {!! Form::close() !!}
             @endforeach
-            @stop
+
+            
+@stop
 
 @section('scripts')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script>
         $('.form-delete').submit(function(e) {
             e.preventDefault();
             Swal.fire({
                 title: '¿Estás seguro?',
-                text: "¡El registro se eliminará permanentemente!",
+                text: "¡La reservación se eliminará permanentemente!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, eliminar!',
+                confirmButtonText: '¡Sí, eliminar!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -359,27 +344,109 @@
         });
     </script>
     
-    <script>
-        $(document).ready(function() {
-            $('#search-input').on('keyup', function() {
-                var searchText = $(this).val().toLowerCase();
-                $('#table-body tr').filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
-                });
+
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery('select[name="department_id"]').on('change', function() {
+                var id = jQuery(this).val();
+                if (id) {
+                    jQuery.ajax({
+                        url: '/dropdownlist/Position/' + id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            console.log(data);
+                            jQuery('select[name="position"]').empty();
+                            jQuery.each(data.positions, function(key, value) {
+                                $('select[name="position"]').append('<option value="' +
+                                    key + '">' + value + '</option>');
+                            });
+                            jQuery('select[name="guest[]"]').empty();
+                            jQuery.each(data.users, function(key, value) {
+                                $('select[name="guest[]"]').append(
+                                    '<option value="' + key + '">' + value +
+                                    '</option>');
+                            });
+
+                            jQuery.each(data.users, function(key,value) {
+                                var newRadio = $('<input>', {
+                                    type: 'checkbox',
+                                    id: 'radio-' + value,
+                                    name: 'guest'+ key,
+                                    value: value
+                                });
+                                
+                                // Crea una etiqueta label para el radio
+                                var newLabel = $('<label>', {
+                                    for: 'radio-',
+                                    text: value
+                                });
+
+                                console.log(value);
+                                // Agrega el nuevo radio y la etiqueta al contenedor
+                                $('#seleccionar').append(newRadio).append(newLabel);
+                                $('#seleccionar').append('<br>');
+                            }); 
+                        }
+                    });
+                }else {
+                    $('select[name="position"]').empty();
+                }
             });
         });
     </script>
     
-    <script>
-        $(document).ready(function() {
-            $('#search-edit').on('keyup', function() {
-                var searchText = $(this).val().toLowerCase();
-                $('#table-body tr').filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
-                });
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery('select[name="department_id"]').on('change', function() {
+                var id = jQuery(this).val();
+                if (id) {
+                    jQuery.ajax({
+                        url: '/Position/' + id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            console.log(data);
+                            jQuery('select[name="position"]').empty();
+                            jQuery.each(data.positions, function(key, value) {
+                                $('select[name="position"]').append('<option value="' +
+                                    key + '">' + value + '</option>');
+                            });
+                            jQuery('select[name="guest[]"]').empty();
+                            jQuery.each(data.users, function(key, value) {
+                                $('select[name="guest[]"]').append(
+                                    '<option value="' + key + '">' + value +
+                                    '</option>');
+                            });
+
+                            jQuery.each(data.users, function(key,value) {
+                                var newRadio = $('<input>', {
+                                    type: 'checkbox',
+                                    id: 'radio-' + value,
+                                    name: 'guest'+ key,
+                                    value: value
+                                });
+                                
+                                // Crea una etiqueta label para el radio
+                                var newLabel = $('<label>', {
+                                    for: 'radio-',
+                                    text: value
+                                });
+                                
+                                console.log(value);
+                                // Agrega el nuevo radio y la etiqueta al contenedor
+                                $('#seleccionarEditar').append(newRadio).append(newLabel);
+                                $('#seleccionarEditar').append('<br>');
+                            }); 
+                        }
+                    });
+                }else {
+                    $('select[name="position"]').empty();
+                }
             });
         });
     </script>
+   
 
 @endsection
 

@@ -6,15 +6,16 @@ use App\Models\boardroom;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\Manager;
 use App\Models\Position;
 use App\Models\Postulant;
 use App\Models\Reservation;
 use App\Models\User;
 use Carbon\Carbon;
-use DateTime;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\Return_;
+
 
 class ReservationController extends Controller
 {
@@ -25,14 +26,44 @@ class ReservationController extends Controller
         $salitas = boardroom::all();
         $personas= User::all();
         $boardroom = boardroom::all()->pluck('name', 'id');
-        $materiales=Reservation::all()->pluck('material', 'id');
-        //dd($materiales);
+        //$usuarios = User::all('id')->where('id', auth()->user()->id);
+        //dd($usuarios)
         $eventos = Reservation::all();
-        return view('admin.room.index', compact('user','salitas','personas','boardroom','materiales','eventos'));
+        $departments  = Department::pluck('name', 'id')->toArray();
+        return view('admin.room.index', compact('user','salitas','personas','boardroom','eventos','departments'));
+    }
+    ///////////////////////////////////////////////////////BUSCAR POR DEPARTAMENTOS//////////////////////////////////////
+    public function Positions($id)
+    {
+        $dep = Department::find($id);
+        $positions = Position::all()->where("department_id", $id)->pluck("name", "id");
+        $data = $dep->positions;
+        $users = [];
+        foreach ($data as $dat) {
+            foreach ($dat->getEmployees as $emp) {
+                $users["{$emp->user->id}"] = $emp->user->name;
+            }
+        }
+        return response()->json(['positions' => $positions, 'users' => $users,]);
+    }
+    ////////////////////////////////////////////////EDITAR EL FILTRO DE BUSQUEDA//////////////////////////////////////
+    public function PositionsEdit($id)
+    {
+        $dep = Department::find($id);
+        $positions = Position::all()->where("department_id", $id)->pluck("name", "id");
+        $data = $dep->positions;
+        $users = [];
+        foreach ($data as $dat) {
+            foreach ($dat->getEmployees as $emp) {
+                $users["{$emp->user->id}"] = $emp->user->name;
+            }
+        }
+        return response()->json(['positions' => $positions, 'users' => $users,]);
     }
     /////////////////////////////////////////////Función crear evento///////////////////////////////////////////////
     public function store(Request $request)
     {
+       // dd($request);
         //AUTENTIFICAR AL USUARIO//
         $user = auth()->user();
 
@@ -44,7 +75,7 @@ class ReservationController extends Controller
             'description' => 'required',
         ]);
 
-        //VARIBLES PARA NO CONFUNDIRSE//
+        //VARIBLES PARA NO CONFUNDIRSE///
         $fecha_inicio =  $request->start;
         $fecha_termino =  $request->end;
 
@@ -109,23 +140,28 @@ class ReservationController extends Controller
                 return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados.");
             }
         }
-
-        //Traemos la información en forma de arreglo//
-        $elegirUsuarios = $request->guest;
-        //Convertimos la información en cadena//
-        $guest= implode(','.' ',$elegirUsuarios);
     
-        //Traemos la información en forma de arreglo//
+        //OBTENEMOS EL ARREGLO QUE DE LA VISTA (ARREGLO DEL MATERIAL)//
         $seleccionarMaterial= $request->material;
-        //Convertimos la información en cadena//
+        //CONVERTIMOS EL ARREGLO EN STRING PARA PODER GUARDAR LA INFORMACIÓN//
         $mate= implode(','.' ',$seleccionarMaterial);
 
+        //CREAMOS UN ARREGLO PARA OBTENER LOS DATOS NECESARIOS DEL GUEST//
+        $ejemplo=[];
+        $usuarios=User::all();
+        foreach($usuarios as $usuario){
+            if($request->has('guest'.strval($usuario->id))){
+                array_push($ejemplo,$usuario->id);
+                ///Enviar correos que tengan este id///
+            }   
+        }
+        
         //UNA VEZ QUE YA PASO LAS VALIDACIÓNES CREA EL EVENETO//
         $evento = new Reservation();
         $evento->title = $request->title;
         $evento->start = $request->start;
         $evento->end = $request->end;
-        $evento->guest = $guest;
+        $evento->guest = json_encode($ejemplo);
         $evento->material = $mate;
         $evento->chair_loan= $request->chair_loan;
         $evento->description = $request->description;
@@ -144,15 +180,8 @@ class ReservationController extends Controller
             'title' => 'required',
             'start' => 'required',
             'end' => 'required',
-            'guest' => 'required',
-            'material' => 'required',
             'description' => 'required',
         ]);
-
-        $selectedUsers = $request->guest;
-        $conversion= implode(','.' ',$selectedUsers);
-        $protections = explode(',', $conversion);
-        //dd($protections);
 
         $fecha_inicio =  $request->start;
         $fecha_termino =  $request->end;
@@ -217,15 +246,24 @@ class ReservationController extends Controller
             }
         }
 
-        
-        $selectedUsers = $request->guest;
-        $conversion= implode(','.' ',$selectedUsers);
+        //OBTENEMOS EL ARREGLO QUE DE LA VISTA (ARREGLO DEL MATERIAL)//
         $seleccionarMaterial= $request->material;
+        //CONVERTIMOS EL ARREGLO EN STRING PARA PODER GUARDAR LA INFORMACIÓN//
         $mate= implode(','.' ',$seleccionarMaterial);
+
+        //CREAMOS UN ARREGLO PARA OBTENER LOS DATOS NECESARIOS DEL GUEST//
+        $ejemplo=[];
+        $usuarios=User::all();
+        foreach($usuarios as $usuario){
+            if($request->has('guest'.strval($usuario->id))){
+                array_push($ejemplo,$usuario->id);
+                ///Enviar correos que tengan este id///
+            }   
+        }
 
         DB::table('reservations')->where('id', $request->id_evento)->update([
             'title' => $request->title, 'start' => $request->start,
-            'end' => $request->end, 'guest' => $conversion, 'material' => $mate,
+            'end' => $request->end, 'guest' => json_encode($ejemplo), 'material' => $mate,
             'chair_loan' => $request->chair_loan, 'description' => $request->description, 'id_sala' => $request->id_sala
             ]);
             return redirect()->back()->with('message2', "Evento editado correctamente.");

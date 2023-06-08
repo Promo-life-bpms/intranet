@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
           $('#Editar'+info.event.id).modal('show'); // abre el modal
           ///IMPORTANTE AQUI TENEMOS UN MODAL CONECTADO CON LA VISTA PARA PODER TRAER LA INFORMACÓN POR ID SE LE DEBE POONER "info.event.id"//
         },
-
         ////NOS ABRE EL MODAL PARA REGISTRAR///
         dateClick: function(info) {
           //Obtenemos la fecha actual//
