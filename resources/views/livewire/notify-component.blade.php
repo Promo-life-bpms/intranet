@@ -105,7 +105,7 @@
 
                                 @case('App\Notifications\ReasignacionTicketSoporte')
                                     <b>{{ $notification->data['data']['name'] }}</b>
-                                    <p class="my-0">Reasigno un ticket </p>
+                                    <p class="my-0">Te reasigno un ticket </p>
                                     <p class="my-0">Ticket : {{ $notification->data['data']['name_ticket'] }}</p>
                                 @break
 

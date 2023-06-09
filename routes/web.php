@@ -219,6 +219,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         // Route::post('ckeditor/upload', [SoporteController::class,'store'])->name('ckeditor.store');
         Route::get('/stadistics', [SoporteController::class, 'stadistics'])->name('estadisticas');
         Route::post('editor/image_upload',[SoporteController::class,'upload'])->name('upload');
+        Route::post('/stadistics/filter/',[SoporteController::class,'filterTicket'])->name('filter.stadistics');
     });
 });
 
