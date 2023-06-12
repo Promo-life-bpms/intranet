@@ -33,7 +33,7 @@ class SoporteAdminComponent extends Component
         $this->values = collect($this->values)->toArray();
         $this->ticketsInProcess=collect($this->ticketsInProcess)->toArray();
 
-   
+
 
     }
 

@@ -1,53 +1,50 @@
 @extends('layouts.app')
-
 @section('content')
-    {{-- @livewire('soporte-stadistics-component') --}}
-
-
     <br>
     <div class="card-header">
         <h1 class="fs-3 mx-auto">Estadísticas Tickets</h1>
         {{-- <h2 class="fs-2 mx-auto">{{($startDate==null ? '' : $endDate)}}</h2> --}}
     </div>
+    <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3 justify-content-center mx-auto">
+        <div class="col">
+            <form class="form-delete" action="{{ route('filter.stadistics') }}" method="POST">
+                @method('Post')
+                @csrf
+                <div class="d-flex justify-content-center">
+                    <div class="form-group me-4">
 
-    <form class="form-delete" action="{{ route('filter.stadistics') }}" method="POST">
-        @method('Post')
-        @csrf
-        <div class="d-flex justify-content-center">
-            <div class="form-group me-4">
+                        <label><b>Fecha de inicio :</b></label>
 
-                <label><b>Fecha de inicio :</b></label>
+                        <input type="date" name="startDate" class="form-control " value="{{ $startDate }}">
 
+                    </div>
+                    <div class="form-group me-4">
 
+                        <label><b>Fecha de Termino :</b></label>
 
-                <input type="date" name="startDate" class="form-control" value="{{ $startDate}}">
+                        <input type="date" name="endDate" class="form-control  " value="{{ $endDate }}">
 
-            </div>
-            <div class="form-group me-4">
-
-                <label><b>Fecha de Termino :</b></label>
-
-                <input type="date" name="endDate" class="form-control" value="{{$endDate }}">
-
-            </div>
-            <div class="form-group d-flex align-items-end">
-                <button type="submit" class="btn btn-primary me-2">Filtrar</button>
-            </div>
+                    </div>
+                    <div class="form-group d-flex align-items-end ">
+                        <label for=""></label>
+                        <button type="submit" class="btn btn-primary me-2 mt-2">Filtrar</button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
-    <form action="{{ route('estadisticas') }}" method="GET">
-        @csrf
-        <div class="d-flex justify-content-center">
-            <div class="form-group d-flex align-items-end">
-                <button type="submit" class="btn btn-secondary">
-                    <i class="fa fa-eraser me-2" aria-hidden="true"></i>
-                    Borrar filtros
-                </button>
-            </div>
+        <div class="d-flex justify-content-center mx-auto">
+            <form action="{{ route('estadisticas') }}" method="GET">
+                @csrf
 
+                    <div class="form-group d-flex  mt-4">
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="fa fa-eraser me-2" aria-hidden="true"></i>
+                            Borrar filtros
+                        </button>
+                    </div>
+            </form>
         </div>
-    </form>
-
+    </div>
     <div class="card-body">
         <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3 justify-content-center">
             <div class="col">
@@ -58,8 +55,6 @@
                     </div>
                 </div>
             </div>
-
-
             <div class="col">
                 <div class="card shadow card-total mx-auto">
                     <div class="card-body">
@@ -82,39 +77,37 @@
                 </div>
             </div>
         </div>
-
         <div class="row justify-content-center">
             <div class="col-sm-8 col-md-8">
-                <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3">
-                    <div class="col mx-auto" wire:ignore>
+                <div class="row row-cols-1 row-cols-md-2 g-2 g-md-3">
+                    <div class="col">
                         <div class="card shadow card-total">
-                            <h6 class="text-center" wire:ignore>Resueltos por categoría</h6>
+                            <h6 class="text-center">Categoría</h6>
                         </div>
-                        <canvas id="Categoria" height="600"></canvas>
-
+                        <canvas id="Categoria" height="200"></canvas>
                     </div>
-                    <div class="col mx-auto">
+                    <div class="col">
                         <div class="card shadow card-total">
-                            <h6 class="text-center">Resueltos por mes</h6>
+                            <h6 class="text-center">Por mes</h6>
                         </div>
-                        <canvas id="Poraño" height="600"></canvas>
+                        <canvas id="Poraño" height="200"></canvas>
                     </div>
-
-                    <div class="col mx-auto">
+                    <div class="col">
                         <div class="card shadow card-total">
-                            <h6 class="text-center">Recibidos por soporte</h6>
+                            <h6 class="text-center">Agente de soporte</h6>
                         </div>
-                        <canvas id="TicketsRecibidos" height="600"></canvas>
-                    </div>
-                    <div class="col mx-auto">
+                        <canvas id="TicketsRecibidos" height="200"></canvas>
+                    </div> 
+                    <div class="col">
                         <div class="card shadow card-total">
                             <h6 class="text-center">Enviados por usuario</h6>
                         </div>
-                        <canvas id="porUsuario" height="600"></canvas>
+                        <canvas id="porUsuario" height="200"></canvas>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 @endsection
 @section('scripts')

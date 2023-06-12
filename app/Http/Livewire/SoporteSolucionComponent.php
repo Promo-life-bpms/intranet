@@ -22,7 +22,7 @@ class SoporteSolucionComponent extends Component
     public function render()
     {
         $categories =  auth()->user()->asignacionCategoria->pluck(["id"]);
-      
+
         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
         ->join('roles', 'roles.id', '=', 'role_user.role_id')
         ->where('roles.name', '=', 'systems')
