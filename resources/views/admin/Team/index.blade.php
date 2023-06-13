@@ -4,8 +4,6 @@
 <div class="container">
     <div class="card-header">
         <h1 style="font-size:20px">Solicitud de Servicios de Sistemas y Comunicaciones</h1>
-
-
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
@@ -88,18 +86,18 @@
                                         </div>
                                     </div>
 
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        {!! Form::label('position', 'Puesto', ['style' => 'font-size: 11px;']) !!}
-                                        {!! Form::text('position', null, ['class' => 'form-control','placeholder' => 'Ingrese puesto']) !!}
-                                        @error('position')
-                                            <small>
-                                                <font color="red"> *Este campo es requerido* </font>
-                                            </small>
-                                            <br>
-                                        @enderror
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {!! Form::label('position', 'Puesto', ['style' => 'font-size: 11px;']) !!}
+                                            {!! Form::text('position', null, ['class' => 'form-control','placeholder' => 'Ingrese puesto']) !!}
+                                            @error('position')
+                                                <small>
+                                                    <font color="red"> *Este campo es requerido* </font>
+                                                </small>
+                                                <br>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -529,7 +527,7 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label style="font-size: 11px;">Usuarios(s) de ODOO:</label>
+                                                <label style="font-size: 11px;">Usuario(s) de ODOO:</label>
                                                 <input type="text" class="form-control" placeholder="Ingrese usuarios de odoo" disabled id="usuarios-odoo">
                                                 <small>
                                                     {{-- <font color="red"> *Este campo es requerido* </font> --}}
@@ -546,13 +544,10 @@
                                                 </small> 
                                             </div>
                                         </div>
-                                        
                                     </div>
 
-                                    
-
                                     <div id="contenedor-de-campos-usuarios-perfil">
-                                        <button type="button" id="agregar-campo-usuarios-perfil" class="btn btn-primary">
+                                        <button type="button" id="agregar-campo-usuarios-perfil" class="btn btn-primary" disabled>
                                             {{-- <i class="fa fa-envelope" aria-hidden="true"></i> --}}
                                             {{-- <i class="fa fa-envelope-o" aria-hidden="true"></i> --}}
                                             <i class="fa fa-plus-square" aria-hidden="true"></i>
@@ -563,7 +558,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Otros: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese otros']) !!}
+                                            {!! Form::textarea('', null, ['class' => 'form-control', 'style' => 'width:300px; height:100px;', 'placeholder' => 'Ingrese otros']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -576,7 +571,8 @@
                         <p style="margin-bottom:20px;"></p> 
 
                             <h2 style="font-size: 18px;">Carpetas Compartidas del Servidor a las que debe tener acceso</h2>
-
+                            
+                            <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Requiere Acceso a Carpeta Compartida del Servidor: ', ['style' => 'font-size: 11px;']) !!}
@@ -612,6 +608,7 @@
                                             @enderror
                                         </div>
                                     </div>
+                            </div>
 
                         <p style="margin-bottom:20px;"></p> 
 
@@ -620,7 +617,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('', 'Observaciones: ', ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese observaciones']) !!}
+                                            {!! Form::textarea('', null, ['class' => 'form-control', 'style' => 'width:300px; height:100px;', 'placeholder' => 'Ingrese observaciones']) !!}
                                             @error('')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
@@ -774,20 +771,20 @@
 });
         </script>
 
-<script>
-    document.getElementById('checkbox-odoo').addEventListener('change', function() {
-        var usersField = document.getElementById('usuarios-odoo');
-        var profileField = document.getElementById('perfil-odoo');
-        
-        if (this.checked) {
-            usersField.removeAttribute('disabled');
-            profileField.removeAttribute('disabled');
-        } else {
-            usersField.setAttribute('disabled', 'disabled');
-            profileField.setAttribute('disabled', 'disabled');
-        }
-    });
-</script>
+        <script>
+            document.getElementById('checkbox-odoo').addEventListener('change', function() {
+                var usersField = document.getElementById('usuarios-odoo');
+                var profileField = document.getElementById('perfil-odoo');
+                
+                if (this.checked) {
+                    usersField.removeAttribute('disabled');
+                    profileField.removeAttribute('disabled');
+                } else {
+                    usersField.setAttribute('disabled', 'disabled');
+                    profileField.setAttribute('disabled', 'disabled');
+                }
+            });
+        </script>
 @endsection 
 
 
