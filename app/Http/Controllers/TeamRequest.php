@@ -40,17 +40,46 @@ public function index1(){
 
 public function createTeamRequest(Request $request){
 /*dd($request);*/
-    $request->validate([
-    'category' => 'required',
-    'description' => 'required'
-    ]);
-    $user = auth()->user();
+    // $request->validate([
+    // 'category' => 'required',
+    // 'description' => 'required'
+    // ]);
+    
     $request_team = new ModelsTeamRequest();
-    $request_team->user_id = $request->user_id;
-    $request_team->category = $request->category;
-    $request_team->description = $request->description;
-    $request_team->status = 'Solicitud enviada';
-    $request_team->user_id = $user->id;
+    $request_team->type_of_user = $request->type_of_user;
+    $request_team->name = $request->jefe_directo_id;
+    $request_team->date_admission = $request->date_admission;
+    $request_team->area = $request->area;
+    $request_team->departament = $request->department;
+    $request_team->position = $request->position;
+    $request_team->extension = $request->extension;
+    $request_team->immediate_boss = $request->immediate_boss;
+    $request_team->company = $request->company;
+    $request_team->computer_type = $request->computer_type;
+    $request_team->cell_phone = $request->cell_phone;
+    $request_team->number = $request->number;
+    $request_team->extension_number = $request->extension_number;
+    $request_team->equipment_to_use = $request->equipment_to_use;
+    $request_team->accessories = $request->accessories;
+    $request_team->previous_user = $request->previous_user;
+    $request_team->email = $request->email;
+    $request_team->signature_or_telephone_contact_numer = $request->signature_or_telephone_contact_numer;
+    $request_team->distribution_and_forwarding = $request->distribution_and_forwarding;
+    $request_team->office = $request->office==null?0:1;
+    $request_team->acrobat_pdf = $request->acrobat_pdf==null?0:1;
+    $request_team->photoshop = $request->photoshop==null?0:1;
+    $request_team->premier = $request->premier==null?0:1;
+    $request_team->audition = $request->audition==null?0:1;
+    $request_team->solid_works = $request->solid_works==null?0:1;
+    $request_team->autocad = $request->autocad==null?0:1;
+    $request_team->odoo = $request->odoo_checkbox==null?0:1;
+    $request_team->odoo_users = $request->odoo_users;
+    $request_team->work_profile_in_odoo = $request->work_profile_in_odoo;
+    $request_team->others = $request->others;
+    $request_team->access_to_server_shared_folder = $request->access_to_server_shared_folder;
+    $request_team->folder_path = $request->folder_path;
+    $request_team->type_of_access = $request->type_of_access;
+    $request_team->observations = $request->observations;
     $request_team->save();
     return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!');  
 }
