@@ -516,7 +516,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <input type="checkbox" id="odoo_checkbox" name="odoo_checkbox">
+                                            <input type="checkbox" id="checkbox-odoo" name="odoo_checkbox">
                                             <label class="form-check-label" for="odoo_checkbox" style="font-size: 11px;">ODOO:</label>
                                             @error('')
                                             <small>
@@ -526,30 +526,30 @@
                                         </div>
                                     </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {!! Form::label('', 'Usuarios(s) de ODOO: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese usuarios de odoo']) !!}
-                                            @error('')
-                                            <small>
-                                                <font color="red"> *Este campo es requerido* </font>
-                                            </small> 
-                                            @enderror
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label style="font-size: 11px;">Usuarios(s) de ODOO:</label>
+                                                <input type="text" class="form-control" placeholder="Ingrese usuarios de odoo" disabled id="usuarios-odoo">
+                                                <small>
+                                                    {{-- <font color="red"> *Este campo es requerido* </font> --}}
+                                                </small> 
+                                            </div>
                                         </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label style="font-size: 11px;">Perfil de Trabajo en ODOO:</label>
+                                                <input type="text" class="form-control" placeholder="Ingrese perfil de trabajo en odoo" disabled id="perfil-odoo">
+                                                <small>
+                                                    {{-- <font color="red"> *Este campo es requerido* </font> --}}
+                                                </small> 
+                                            </div>
+                                        </div>
+                                        
                                     </div>
 
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {!! Form::label('', 'Perfil de Trabajo en ODOO: ' , ['style' => 'font-size: 11px;']) !!}
-                                            {!! Form::text('', null, ['class' => 'form-control', 'placeholder' => 'Ingrese perfil de trabajo en odoo']) !!}
-                                            @error('')
-                                            <small>
-                                                <font color="red"> *Este campo es requerido* </font>
-                                            </small> 
-                                            @enderror
-                                        </div>
-                                    </div>
+                                    
 
                                     <div id="contenedor-de-campos-usuarios-perfil">
                                         <button type="button" id="agregar-campo-usuarios-perfil" class="btn btn-primary">
@@ -757,9 +757,37 @@
                             '</div>' +
                         '</div>' +
                     $('#contenedor-de-campos-usuarios-perfil').prepend(nuevoCampo);
-                });     
-    });
+                });
+                
+                $('#checkbox-odoo').change(function () {
+                var campos = $('input[name="usuario(s) de ODOO[]"], input[name="perfil de trabajo de ODOO[]"]');
+                var boton = $('#agregar-campo-usuarios-perfil');
+        
+                if ($(this).is(':checked')) {
+                campos.prop('disabled', false);
+                boton.prop('disabled', false);
+                } else {
+                campos.prop('disabled', true);
+                boton.prop('disabled', true);
+                }
+                });
+});
         </script>
+
+<script>
+    document.getElementById('checkbox-odoo').addEventListener('change', function() {
+        var usersField = document.getElementById('usuarios-odoo');
+        var profileField = document.getElementById('perfil-odoo');
+        
+        if (this.checked) {
+            usersField.removeAttribute('disabled');
+            profileField.removeAttribute('disabled');
+        } else {
+            usersField.setAttribute('disabled', 'disabled');
+            profileField.setAttribute('disabled', 'disabled');
+        }
+    });
+</script>
 @endsection 
 
 
