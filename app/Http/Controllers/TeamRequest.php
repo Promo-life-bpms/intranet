@@ -80,6 +80,11 @@ public function createTeamRequest(Request $request){
     $request_team->folder_path = $request->folder_path;
     $request_team->type_of_access = $request->type_of_access;
     $request_team->observations = $request->observations;
+    // $data = [
+    //     'odoo_users' => json_encode([$request_team->odoo_users = $request->odoo_users]),
+    //     'work_profile_in_odoo' => json_encode(['profile1', 'profile2', 'profile3']),
+    // ];
+    // ModelsTeamRequest::create($data);
     $request_team->save();
     return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!');  
 }

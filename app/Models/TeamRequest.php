@@ -9,6 +9,8 @@ class TeamRequest extends Model
 {
     use HasFactory;
 
-    public $table='request_for_systems_and_communications_services';   
+    public $table='request_for_systems_and_communications_services';
+
+    // protected $fillable = ['odoo_users', 'work_profile_in_odoo'];
 
 }
