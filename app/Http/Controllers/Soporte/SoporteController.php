@@ -34,7 +34,7 @@ class SoporteController extends Controller
 
 
     //Me trae todos los tickets sin filtrado
-    public function stadistics()
+    public function estadisticas()
     {
         $labels = [];
         $meses = [];
@@ -105,7 +105,7 @@ class SoporteController extends Controller
         $ticketsEnProceso = Ticket::where('status_id', 2)->count();
         $ticketsCreados = Ticket::all()->count();
 
-        return view('Soporte.stadistics', compact(
+        return view('Soporte.estadisticas', compact(
             'ticketsResueltos',
             'ticketsEnProceso',
             'ticketsCreados',
@@ -206,7 +206,7 @@ class SoporteController extends Controller
         $ticketsCreados = Ticket::all()->whereBetween('created_at', [$startDate, $endDate])->count();
 
 
-        return view('Soporte.stadistics', compact(
+        return view('Soporte.estadisticas', compact(
             'ticketsResueltos',
             'ticketsEnProceso',
             'ticketsCreados',

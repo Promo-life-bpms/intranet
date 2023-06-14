@@ -3,11 +3,10 @@
     <br>
     <div class="card-header">
         <h1 class="fs-3 mx-auto">Estadísticas Tickets</h1>
-        {{-- <h2 class="fs-2 mx-auto">{{($startDate==null ? '' : $endDate)}}</h2> --}}
     </div>
     <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3 justify-content-center mx-auto">
         <div class="col">
-            <form class="form-delete" action="{{ route('filter.stadistics') }}" method="POST">
+            <form class="form-delete" action="{{ route('filter.estadisticas') }}" method="POST">
                 @method('Post')
                 @csrf
                 <div class="d-flex justify-content-center">
@@ -36,12 +35,12 @@
             <form action="{{ route('estadisticas') }}" method="GET">
                 @csrf
 
-                    <div class="form-group d-flex  mt-4">
-                        <button type="submit" class="btn btn-secondary">
-                            <i class="fa fa-eraser me-2" aria-hidden="true"></i>
-                            Borrar filtros
-                        </button>
-                    </div>
+                <div class="form-group d-flex  mt-4">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fa fa-eraser me-2" aria-hidden="true"></i>
+                        Borrar filtros
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -88,7 +87,7 @@
                     </div>
                     <div class="col">
                         <div class="card shadow card-total">
-                            <h6 class="text-center">Por mes</h6>
+                            <h6 class="text-center">Mes</h6>
                         </div>
                         <canvas id="Poraño" height="200"></canvas>
                     </div>
@@ -97,10 +96,11 @@
                             <h6 class="text-center">Agente de soporte</h6>
                         </div>
                         <canvas id="TicketsRecibidos" height="200"></canvas>
-                    </div> 
+                    </div>
                     <div class="col">
                         <div class="card shadow card-total">
-                            <h6 class="text-center">Enviados por usuario</h6>
+                            <h6 class="text-center">
+                               peticiones de Usuarios</h6>
                         </div>
                         <canvas id="porUsuario" height="200"></canvas>
                     </div>
@@ -116,19 +116,19 @@
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('Categoria').getContext('2d');
             var chart = new Chart(ctx, {
-                type: 'bar', // Cambia el tipo de gráfico según tus necesidades
+                type: 'bar',
                 data: {
-                    labels: @json($labels), // Etiquetas obtenidas del componente
+                    labels: @json($labels),
                     datasets: [{
-                        label: 'Tickets resueltos', // Etiqueta del conjunto de datos
-                        data: @json($values), // Datos obtenidos del componente
+                        label: 'Categorías',
+                        data: @json($values),
                         backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD',
                             '#F5C2A8'
-                        ], // Color de fondo del gráfico
+                        ],
                         borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD',
                             '#F5C2A8'
                         ],
-                        borderWidth: 1 // Ancho del borde del gráfico
+                        borderWidth: 1
                     }]
                 },
                 options: {}
@@ -137,20 +137,28 @@
 
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('Poraño').getContext('2d');
+            var labels = @json($meses);
+            var data = @json($ticketsPorMes);
+
+            var backgroundColors = [];
+            var borderColors = [];
+
+            for (var i = 0; i < labels.length; i++) {
+                var colorIndex = i % 5;
+                backgroundColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8'][colorIndex]);
+                borderColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8', '#FFADAD'][colorIndex]);
+            }
+
             var chart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: @json($meses), // Etiquetas obtenidas del componente
+                    labels: labels,
                     datasets: [{
-                        label: 'Resueltos por mes', // Etiqueta del conjunto de datos
-                        data: @json($ticketsPorMes), // Datos obtenidos del componente
-                        backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD',
-                            '#F5C2A8'
-                        ], // Color de fondo del gráfico
-                        borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8',
-                            '#FFADAD'
-                        ], // Color del borde del gráfico
-                        borderWidth: 1 // Ancho del borde del gráfico
+                        label: 'Resueltos por mes',
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 1
                     }]
                 },
                 options: {}
@@ -160,26 +168,26 @@
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('TicketsRecibidos').getContext('2d');
             var chart = new Chart(ctx, {
-                type: 'bar', // Cambia el tipo de gráfico según tus necesidades
+                type: 'bar',
                 data: {
-                    labels: @json($usuario), // Etiquetas obtenidas del componente
+                    labels: @json($usuario),
                     datasets: [{
-                        label: 'Recibidos por soporte', // Etiqueta del conjunto de datos
-                        data: @json($soporte), // Datos obtenidos del componente
+                        label: 'Agente de soporte',
+                        data: @json($soporte),
                         backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD',
                             '#F5C2A8'
-                        ], // Color de fondo del gráfico
+                        ],
                         borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8',
                             '#FFADAD'
-                        ], // Color del borde del gráfico
-                        borderWidth: 1 // Ancho del borde del gráfico
+                        ],
+                        borderWidth: 1
                     }]
                 },
                 options: {
                     scales: {
                         y: {
                             beginAtZero: true,
-                            stepSize: 1 // Establece el incremento de uno en uno en el eje Y
+                            stepSize: 1
                         }
                     }
 
@@ -189,20 +197,28 @@
 
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('porUsuario').getContext('2d');
+            var labels = @json($name);
+            var data = @json($totalTicket);
+
+            var backgroundColors = [];
+            var borderColors = [];
+
+            for (var i = 0; i < labels.length; i++) {
+                var colorIndex = i % 5;
+                backgroundColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8'][colorIndex]);
+                borderColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8', '#FFADAD'][colorIndex]);
+            }
+
             var chart = new Chart(ctx, {
-                type: 'bar', // Cambia el tipo de gráfico según tus necesidades
+                type: 'bar',
                 data: {
-                    labels: @json($name), // Etiquetas obtenidas del componente
+                    labels: @json($name),
                     datasets: [{
-                        label: 'Tickets enviados por usuarios', // Etiqueta del conjunto de datos
-                        data: @json($totalTicket), // Datos obtenidos del componente
-                        backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD',
-                            '#F5C2A8'
-                        ], // Color de fondo del gráfico
-                        borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8',
-                            '#FFADAD'
-                        ], // Color del borde del gráfico
-                        borderWidth: 1 // Ancho del borde del gráfico
+                        label: 'Usuarios',
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 1
                     }]
                 },
                 options: {}

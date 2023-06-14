@@ -315,7 +315,7 @@
                         </li>
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('estadisticas') }}">
-                                <span>Estadisticas</span>
+                                <span>Estadísticas</span>
                             </a>
                         </li>
                         @endrole
