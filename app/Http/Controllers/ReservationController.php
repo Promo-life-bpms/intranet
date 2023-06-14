@@ -46,20 +46,6 @@ class ReservationController extends Controller
         }
         return response()->json(['positions' => $positions, 'users' => $users,]);
     }
-    ////////////////////////////////////////////////EDITAR EL FILTRO DE BUSQUEDA//////////////////////////////////////
-    public function PositionsEdit($id)
-    {
-        $dep = Department::find($id);
-        $positions = Position::all()->where("department_id", $id)->pluck("name", "id");
-        $data = $dep->positions;
-        $users = [];
-        foreach ($data as $dat) {
-            foreach ($dat->getEmployees as $emp) {
-                $users["{$emp->user->id}"] = $emp->user->name;
-            }
-        }
-        return response()->json(['positions' => $positions, 'users' => $users,]);
-    }
     /////////////////////////////////////////////Función crear evento///////////////////////////////////////////////
     public function store(Request $request)
     {

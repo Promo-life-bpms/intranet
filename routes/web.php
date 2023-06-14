@@ -283,7 +283,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     //ruta para reservación//
     Route::get('/reservation/creative/',[ReservationController::class,'index'])->name('reservation.creative');
     Route::get('/dropdownlist/Position/{id}', [ReservationController::class, 'Positions']);
-    Route::get('/Position/{id}', [ReservationController::class, 'PositionsEdit']);
     Route::get('/reservation/view/',[ReservationController::class,'view'])->name('reservation.view');   
     Route::get('/reservation/nom/',[ReservationController::class,'mostrarNombre'])->name('reservation.nom');   
     Route::get('/reservation/view/edit/',[ReservationController::class,'edit'])->name('reservation.view.edit');  

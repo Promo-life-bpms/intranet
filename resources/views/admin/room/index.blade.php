@@ -92,7 +92,7 @@
                                         <div class="form-group">
                                             {!! Form::label('guest[]', 'Usuarios: ', ['class' => 'required'] ) !!}
                                             <div class =" d-flex flex-column mb-3">
-                                                <div id="seleccionar"></div>
+                                                <div id="crear"></div>
                                             </div>
                                         </div>                            
                                     </div>
@@ -221,7 +221,7 @@
                             <div class="row form-group">
                                 <div class="col-sm">
                                     {!! Form::label('department_id', 'Departamento:') !!}
-                                    {!! Form::select('department_id', $departments, null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
+                                    {!! Form::select('department_id', $departments,null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
                                     @error('department_id')
                                     <small>
                                         <font color="red"> *Este campo es requerido* </font>
@@ -235,7 +235,7 @@
                                         <div class="form-group">
                                             {!! Form::label('guest[]', 'Usuarios: ', ['class' => 'required'] ) !!}
                                             <div class =" d-flex flex-column mb-3">
-                                                <div id="seleccionarEditar"></div>
+                                                <div id="seleccionarEditar{{$evento->id}}"></div>
                                             </div>
                                         </div>                            
                                     </div>
@@ -247,11 +247,12 @@
                                     <div class="form-group">
                                         {!!Form::label('material', 'Material:')!!}
                                         <br>
-                                        {{ Form::checkbox('material[]','Sillas','$evento->material') }}
-                                        {{ Form::label('material[]', 'Sillas') }}
+                                        {{ Form::checkbox('material[]','Sillas') }}
+                                        {{ Form::label('material[]', 'Sillas',$evento->material)}}
+                                    
                                         <br>
-                                        {{ Form::checkbox('material[]','Proyector','$evento->material') }}
-                                        {{ Form::label('material[]', 'Proyector')}}
+                                        {{ Form::checkbox('material[]','Proyector') }}
+                                        {{ Form::label('material[]', 'Proyector',$evento->material)}}
                                     </div>
                                 </div>
                             </div>
@@ -384,8 +385,8 @@
 
                                 console.log(value);
                                 // Agrega el nuevo radio y la etiqueta al contenedor
-                                $('#seleccionar').append(newRadio).append(newLabel);
-                                $('#seleccionar').append('<br>');
+                                $('#crear').append(newRadio).append(newLabel);
+                                $('#crear').append('<br>');
                             }); 
                         }
                     });
@@ -396,60 +397,61 @@
         });
     </script>
     
+    @foreach($eventos as $evento)
     <script type="text/javascript">
         jQuery(document).ready(function() {
             jQuery('select[name="department_id"]').on('change', function() {
                 var id = jQuery(this).val();
                 if (id) {
                     jQuery.ajax({
-                        url: '/Position/' + id,
+                        url: '/dropdownlist/Position/' + id,
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
                             console.log(data);
                             jQuery('select[name="position"]').empty();
                             jQuery.each(data.positions, function(key, value) {
-                                $('select[name="position"]').append('<option value="' +
-                                    key + '">' + value + '</option>');
+                                jQuery('select[name="position"]').append('<option value="' +
+                                key + '">' + value + '</option>');
                             });
+
                             jQuery('select[name="guest[]"]').empty();
                             jQuery.each(data.users, function(key, value) {
-                                $('select[name="guest[]"]').append(
+                                jQuery('select[name="guest[]"]').append(
                                     '<option value="' + key + '">' + value +
                                     '</option>');
                             });
 
-                            jQuery.each(data.users, function(key,value) {
-                                var newRadio = $('<input>', {
+                            jQuery.each(data.users, function(key, value) {
+                                var newCheckbox = $('<input>', {
                                     type: 'checkbox',
-                                    id: 'radio-' + value,
-                                    name: 'guest'+ key,
+                                    id: 'check-' + value,
+                                    name: 'guest' + key,
                                     value: value
                                 });
-                                
+
                                 // Crea una etiqueta label para el radio
                                 var newLabel = $('<label>', {
-                                    for: 'radio-',
+                                    for: 'check-' + value,
                                     text: value
                                 });
-                                
-                                console.log(value);
-                                // Agrega el nuevo radio y la etiqueta al contenedor
-                                $('#seleccionarEditar').append(newRadio).append(newLabel);
-                                $('#seleccionarEditar').append('<br>');
-                            }); 
+
+                                // Agrega el nuevo radio y la etiqueta al contenedor del modal correspondiente
+                                $('#seleccionarEditar{{$evento->id}}').append(newCheckbox).append(newLabel);
+                                $('#seleccionarEditar{{$evento->id}}').append('<br>');
+                            });
                         }
                     });
-                }else {
+                } else {
                     $('select[name="position"]').empty();
+                    $('#seleccionarEditar{{$evento->id}}').empty(); // Vaciar el contenedor si no hay ID seleccionado
                 }
             });
         });
     </script>
-   
-
+    @endforeach
 @endsection
-
+    
 @section ('styles')
     <style>
         .btn1{
