@@ -42,8 +42,8 @@ class CreateRequestForSystemsAndCommunicationsServicesTable extends Migration
             $table->boolean('solid_works')->nullable();
             $table->boolean('autocad')->nullable();
             $table->boolean('odoo')->nullable();
-            $table->json('odoo_users')->nullable();
-            $table->json('work_profile_in_odoo')->nullable();
+            $table->string('odoo_users')->nullable();
+            $table->string('work_profile_in_odoo')->nullable();
             $table->string('others')->nullable();
             $table->string('access_to_server_shared_folder')->nullable();
             $table->string('folder_path')->nullable();

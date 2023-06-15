@@ -11,6 +11,6 @@ class TeamRequest extends Model
 
     public $table='request_for_systems_and_communications_services';
 
-    // protected $fillable = ['odoo_users', 'work_profile_in_odoo'];
+    protected $fillable = ['odoo_users', 'work_profile_in_odoo'];
 
 }

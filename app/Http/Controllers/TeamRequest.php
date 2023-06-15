@@ -44,7 +44,17 @@ public function createTeamRequest(Request $request){
     // 'category' => 'required',
     // 'description' => 'required'
     // ]);
-    
+    $data = [];
+    array_push($data,(object)[
+        'odoo_users' => json_encode([$request->odoo_users, $request->odoo_users5, $request->odoo_users4, $request->odoo_users3, $request->odoo_users2, $request->odoo_users1 ]),
+        'work_profile_in_odoo' => json_encode([$request->work_profile_in_odoo, $request->work_profile_in_odoo5, $request->work_profile_in_odoo4, $request->work_profile_in_odoo3, $request->work_profile_in_odoo2, $request->work_profile_in_odoo1]) 
+    ]);
+    $data2 = [];
+    array_push($data2,(object)[
+        'email' => json_encode([$request->email, $request->email5, $request->email4, $request->email3, $request->email2, $request->email1 ]),
+        'signature_or_telephone_contact_numer' => json_encode([$request->signature_or_telephone_contact_numer, $request->signature_or_telephone_contact_numer5, $request->signature_or_telephone_contact_numer4, $request->signature_or_telephone_contact_numer3, $request->signature_or_telephone_contact_numer2, $request->signature_or_telephone_contact_numer1]) 
+    ]);
+
     $request_team = new ModelsTeamRequest();
     $request_team->type_of_user = $request->type_of_user;
     $request_team->name = $request->jefe_directo_id;
@@ -62,8 +72,8 @@ public function createTeamRequest(Request $request){
     $request_team->equipment_to_use = $request->equipment_to_use;
     $request_team->accessories = $request->accessories;
     $request_team->previous_user = $request->previous_user;
-    $request_team->email = $request->email;
-    $request_team->signature_or_telephone_contact_numer = $request->signature_or_telephone_contact_numer;
+    $request_team->email = $data2[0]->email;
+    $request_team->signature_or_telephone_contact_numer = $data2[0]->signature_or_telephone_contact_numer;
     $request_team->distribution_and_forwarding = $request->distribution_and_forwarding;
     $request_team->office = $request->office==null?0:1;
     $request_team->acrobat_pdf = $request->acrobat_pdf==null?0:1;
@@ -73,18 +83,13 @@ public function createTeamRequest(Request $request){
     $request_team->solid_works = $request->solid_works==null?0:1;
     $request_team->autocad = $request->autocad==null?0:1;
     $request_team->odoo = $request->odoo_checkbox==null?0:1;
-    $request_team->odoo_users = $request->odoo_users;
-    $request_team->work_profile_in_odoo = $request->work_profile_in_odoo;
+    $request_team->odoo_users = $data[0]->odoo_users;
+    $request_team->work_profile_in_odoo = $data[0]->work_profile_in_odoo;
     $request_team->others = $request->others;
     $request_team->access_to_server_shared_folder = $request->access_to_server_shared_folder;
     $request_team->folder_path = $request->folder_path;
     $request_team->type_of_access = $request->type_of_access;
     $request_team->observations = $request->observations;
-    // $data = [
-    //     'odoo_users' => json_encode([$request_team->odoo_users = $request->odoo_users]),
-    //     'work_profile_in_odoo' => json_encode(['profile1', 'profile2', 'profile3']),
-    // ];
-    // ModelsTeamRequest::create($data);
     $request_team->save();
     return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!');  
 }

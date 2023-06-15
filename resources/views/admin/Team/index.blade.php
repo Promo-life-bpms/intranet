@@ -693,8 +693,11 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"> </script>
         <script>
             $(document).ready(function () {
+                var contador = 1;
+                var maxCampos = 5;
                 $('#agregar-campo-de-correo-firma').click(function () {
-                    var nuevoCampo = 
+                    if(contador<=maxCampos){
+                        var nuevoCampo = 
                         '<style>' +
                         '.form-group label {' +
                         ' font-size: 11px;' +
@@ -708,18 +711,26 @@
                             '<div class="col-md-4">' +
                                 '<div class="form-group">' +
                                     '<label for="correo[]">Correo:</label>' +
-                                    '<input type="text" name="correo[]" class="form-control" placeholder="Ingrese correo">' +
+                                    '<input type="text" name="email'+contador+'" class="form-control" placeholder="Ingrese correo">' +
                                 '</div>' +
                             '</div>' +
                             
                             '<div class="col-md-4">' +
                                 '<div class="form-group">' +
                                     '<label for="firma[]">Firma:</label>' +
-                                    '<input type="text" name="firma[]" class="form-control" placeholder="Ingrese firma">' +
+                                    '<input type="text" name="signature_or_telephone_contact_numer'+contador+'" class="form-control" placeholder="Ingrese firma">' +
                                 '</div>';
                             '</div>' +
                         '</div>' +
                     $('#contenedor-campos-correo-firma').prepend(nuevoCampo);
+                    contador++;
+        
+                    $('input[name="email[]"]').last().attr('id', 'email' + contador);
+                    $('input[name="signature_or_telephone_contact_numer[]"]').last().attr('id', 'signature_or_telephone_contact_numer' + contador);
+
+                } else {
+                        alert('Se ha alcanzado el límite de campos permitidos.');
+                    }
                 });
             });
         </script>
@@ -727,8 +738,11 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"> </script>
         <script>
             $(document).ready(function () {
+                var contador = 1;
+                var limiteCampos = 5;
                 $('#agregar-campo-usuarios-perfil').click(function () {
-                    var nuevoCampo = 
+                    if (contador <= limiteCampos) {
+                    var nuevoCampo =
                         '<style>' +
                         '.form-group label {' +
                         ' font-size: 11px;' +
@@ -737,39 +751,49 @@
                         ' font-size: 14px;' +
                         '}' +
                         '</style>' +
-
+            
                         '<div class="row">' +
-                            '<div class="col-md-4">' +
-                                '<div class="form-group">' +
-                                    '<label for="Usuario(s) de ODOO[]">Usuario(s) de ODOO:</label>' +
-                                    '<input type="text" name="usuario(s) de ODOO[]" class="form-control" placeholder="Ingrese usuarios de odoo">' +
-                                '</div>' +
-                            '</div>' +
-                            
-                            '<div class="col-md-4">' +
-                                '<div class="form-group">' +
-                                    '<label for="Perfil de Trabajo de ODOO[]">Perfil de Trabajo de ODOO:</label>' +
-                                    '<input type="text" name="perfil de trabajo de ODOO[]" class="form-control" placeholder="Ingrese perfil de trabajo en odoo">' +
-                                '</div>';
-                            '</div>' +
+                        '<div class="col-md-4">' +
+                        '<div class="form-group">' +
+                        '<label for="Usuario(s) de ODOO[]">Usuario(s) de ODOO:</label>' +
+                        '<input type="text" name="odoo_users' + contador + '" class="form-control" placeholder="Ingrese usuarios de odoo">' +
                         '</div>' +
+                        '</div>' +
+            
+                        '<div class="col-md-4">' +
+                        '<div class="form-group">' +
+                        '<label for="Perfil de Trabajo de ODOO[]">Perfil de Trabajo de ODOO:</label>' +
+                        '<input type="text" name="work_profile_in_odoo' + contador + '" class="form-control" placeholder="Ingrese perfil de trabajo en odoo">' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>';
+            
                     $('#contenedor-de-campos-usuarios-perfil').prepend(nuevoCampo);
+                    contador++;
+            
+                    $('input[name="odoo_users' + contador + '"]').attr('id', 'odoo_users' + contador);
+                    $('input[name="work_profile_in_odoo' + contador + '"]').attr('id', 'work_profile_in_odoo' + contador);
+                    
+                    } else {
+                        alert('Se ha alcanzado el límite de campos permitidos.');
+                    }
                 });
-                
+            
                 $('#checkbox-odoo').change(function () {
-                var campos = $('input[name="usuario(s) de ODOO[]"], input[name="perfil de trabajo de ODOO[]"]');
-                var boton = $('#agregar-campo-usuarios-perfil');
-        
-                if ($(this).is(':checked')) {
-                campos.prop('disabled', false);
-                boton.prop('disabled', false);
-                } else {
-                campos.prop('disabled', true);
-                boton.prop('disabled', true);
-                }
+                    var campos = $('input[name^="odoo_users"], input[name^="work_profile_in_odoo"]');
+                    var boton = $('#agregar-campo-usuarios-perfil');
+            
+                    if ($(this).is(':checked')) {
+                        campos.prop('disabled', false);
+                        boton.prop('disabled', false);
+                    } else {
+                        campos.prop('disabled', true);
+                        boton.prop('disabled', true);
+                    }
                 });
-});
+            });
         </script>
+            
 
         <script>
             document.getElementById('checkbox-odoo').addEventListener('change', function() {
@@ -786,7 +810,3 @@
             });
         </script>
 @endsection 
-
-
-
-
