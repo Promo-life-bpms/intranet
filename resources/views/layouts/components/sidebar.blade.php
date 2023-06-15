@@ -359,6 +359,13 @@
                         <span>Solicitud de Equipo</span>
                     </a>
                     <ul class="submenu ">
+
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="">
+                                <span>Admón. de Solicitudes</span>
+                            </a>
+                        </li>
+
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('team.request') }}">
                                 <span>Solicitud</span>

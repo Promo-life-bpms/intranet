@@ -259,6 +259,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/teamrequest1/', [TeamRequest::class, 'index1'])->name('team.record');
     Route::post('/team/create-teamrequest/', [TeamRequest::class, 'createTeamRequest'])->name('team.createTeamRequest');
 
+    //Solicitud de servicios de Sistemas y Comunicaciones
+    
+
     
     
     //Estado actual de solicitud rol sistemas
