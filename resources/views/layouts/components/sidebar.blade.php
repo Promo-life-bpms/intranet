@@ -361,7 +361,7 @@
                     <ul class="submenu ">
 
                         <li class="submenu-item ">
-                            <a class="dropdown-item" href="">
+                            <a class="dropdown-item" href="{{ route('team.admon') }}">
                                 <span>Admón. de Solicitudes</span>
                             </a>
                         </li>

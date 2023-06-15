@@ -33,6 +33,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
+use App\Http\Controllers\RequestManagement;
 use App\Http\Controllers\SeeDetails;
 use App\Http\Controllers\seeMore;
 use App\Http\Controllers\SeeMoreTeam;
@@ -41,6 +42,7 @@ use App\Http\Controllers\Systems\DevicesController;
 use App\Http\Controllers\TeamRequest;
 use App\Models\Message;
 use App\Models\RequestCalendar;
+use App\Models\TeamRequest as ModelsTeamRequest;
 use App\Models\User;
 use App\Models\Vacations;
 use Illuminate\Support\Facades\Auth;
@@ -260,7 +262,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/team/create-teamrequest/', [TeamRequest::class, 'createTeamRequest'])->name('team.createTeamRequest');
 
     //Solicitud de servicios de Sistemas y Comunicaciones
-    
+    Route::get('/admon-request/', [TeamRequest::class, 'management'])->name('team.admon');
 
     
     

@@ -103,6 +103,11 @@ public function user($id){
     ];
     return response()->json($data);
     }
+
+public function management(){
+    
+    return view('admin.team.admon');
+}
 }
 
 
