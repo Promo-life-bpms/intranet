@@ -104,26 +104,18 @@
                                     <div class="form-group">
                                         {!!Form::label('material', 'Material:')!!}
                                         <br>
-                                        {{ Form::checkbox('material[]', 'Sillas', false) }}
-                                        {{ Form::label('material[]', 'Sillas') }}
+                                        {{ Form::checkbox('material[]','Sillas', null, ['class' => 'material-checkbox']) }}
+                                        {{ Form::label('material[]', 'Sillas')}}
+                                        {{ Form::number('chair_loan', null,['id'=>'sillas', 'class'=>'form-control sillas-input','placeholder' => 'Número de sillas que utilizará','style' => 'display: none;' ])}}
                                         <br>
-                                        {{ Form::checkbox('material[]', 'Proyector', false) }}
+                                        {{ Form::checkbox('material[]','Proyector', null, ['class' => 'material-checkbox']) }}
                                         {{ Form::label('material[]', 'Proyector')}}
+                                        {{ Form::number('proyector', null, ['id' => 'proyectores', 'class' => 'form-control proyectores-input', 'placeholder' => 'Número de proyectores que utilizará', 'style' => 'display: none;']) }}
+
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        {!!Form::label('chair_loan', 'Sillas:')!!}
-                                        {!!Form::number('chair_loan', null,['class'=>'form-control', 'placeholder'=>'Número de sillas que utilizará'])!!}
-                                        @error('chair_loan')
-                                        <br>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
                             
                             <div class="row">
                                 <div class="col-md-12">
@@ -138,24 +130,8 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="dropdown">
-                                            <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                Enviar notifacación
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#">Sí</a></li>
-                                                <li><a class="dropdown-item" href="#">No</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
                             <div class="modal-footer">
-                                {!! Form::submit('Guardar', ['class' => 'btn btn-success']) !!}
+                                {!! Form::submit('Enviar notificaciones', ['class' => 'btn btn-success']) !!}
                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
                             </div>
                             {!! Form::close() !!}
@@ -247,24 +223,14 @@
                                     <div class="form-group">
                                         {!!Form::label('material', 'Material:')!!}
                                         <br>
-                                        {{ Form::checkbox('material[]','Sillas') }}
+                                        {{ Form::checkbox('material[]','Sillas', null, ['class' => 'material-checkbox']) }}
                                         {{ Form::label('material[]', 'Sillas',$evento->material)}}
-                                    
+                                        {{ Form::number('chair_loan', $evento->chair_loan,['id'=>'sillas', 'class'=>'form-control sillas','placeholder' => 'Número de sillas que utilizará','style' => 'display: none;' ])}}
                                         <br>
-                                        {{ Form::checkbox('material[]','Proyector') }}
+                                        {{ Form::checkbox('material[]','Proyector', null, ['class' => 'material-checkbox']) }}
                                         {{ Form::label('material[]', 'Proyector',$evento->material)}}
-                                    </div>
-                                </div>
-                            </div>
+                                        {{ Form::number('proyector', $evento->proyector, ['id' => 'proyectores', 'class' => 'form-control proyectores', 'placeholder' => 'Número de proyectores que utilizará', 'style' => 'display: none;']) }}
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        {!!Form::label('chair_loan', 'Sillas:')!!}
-                                        {!!Form::number('chair_loan',$evento->chair_loan,['class'=>'form-control', 'placeholder'=>'Número de sillas que utilizará'])!!}
-                                        @error('chair_loan')
-                                        <br>
-                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -281,22 +247,6 @@
                                 </div>
                             </div>
                             
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <div class="dropdown">
-                                            <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="true">
-                                                Crear reservación
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#">Sí</a></li>
-                                                <li><a class="dropdown-item" href="#">No</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             @if(auth()->user()->id==$evento->id_usuario)
                             <div class="modal-footer">
                                 {!! Form::submit('Modificar', ['class' => 'btn3 btn-warning']) !!}
@@ -325,6 +275,7 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $('.form-delete').submit(function(e) {
             e.preventDefault();
@@ -450,6 +401,58 @@
         });
     </script>
     @endforeach
+    <script>
+        $(document).ready(function() {
+            // Establecer valores predeterminados en 0 al cargar la página
+            $('.sillas-input').val('0');
+            $('.proyectores-input').val('0');
+            
+            $('.material-checkbox').change(function() {
+                if ($(this).is(':checked')) {
+                    var checkboxValue = $(this).val();
+                    if (checkboxValue === 'Sillas') {
+                        $('.sillas-input').show();
+                    } else if (checkboxValue === 'Proyector') {
+                        $('.proyectores-input').show();
+                    }
+                } else {
+                    var checkboxValue = $(this).val();
+                    if (checkboxValue === 'Sillas') {
+                        $('.sillas-input').hide();
+                        $('.sillas-input').val('0');
+                    } else if (checkboxValue === 'Proyector') {
+                        $('.proyectores-input').hide();
+                        $('.proyectores-input').val('0');
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {  
+            $('.material-checkbox').change(function() {
+                if ($(this).is(':checked')) {
+                    var checkboxValue = $(this).val();
+                    if (checkboxValue === 'Sillas') {
+                        $('.sillas').show();
+                    } else if (checkboxValue === 'Proyector') {
+                        $('.proyectores').show();
+                    }
+                } else {
+                    var checkboxValue = $(this).val();
+                    if (checkboxValue === 'Sillas') {
+                        $('.sillas').hide();
+                    } else if (checkboxValue === 'Proyector') {
+                        $('.proyectores').hide();
+                    }
+                }
+            });
+        });
+    </script>
+
+
+
 @endsection
     
 @section ('styles')

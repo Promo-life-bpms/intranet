@@ -49,7 +49,6 @@ class ReservationController extends Controller
     /////////////////////////////////////////////Función crear evento///////////////////////////////////////////////
     public function store(Request $request)
     {
-       // dd($request);
         //AUTENTIFICAR AL USUARIO//
         $user = auth()->user();
 
@@ -60,7 +59,7 @@ class ReservationController extends Controller
             'end' => 'required',
             'description' => 'required',
         ]);
-
+        //dd($request);
         //VARIBLES PARA NO CONFUNDIRSE///
         $fecha_inicio =  $request->start;
         $fecha_termino =  $request->end;
@@ -133,23 +132,24 @@ class ReservationController extends Controller
         $mate= implode(','.' ',$seleccionarMaterial);
 
         //CREAMOS UN ARREGLO PARA OBTENER LOS DATOS NECESARIOS DEL GUEST//
-        $ejemplo=[];
+        $invitades=[];
         $usuarios=User::all();
         foreach($usuarios as $usuario){
             if($request->has('guest'.strval($usuario->id))){
-                array_push($ejemplo,$usuario->id);
+                array_push($invitades,$usuario->id);
                 ///Enviar correos que tengan este id///
             }   
         }
-        
+    
         //UNA VEZ QUE YA PASO LAS VALIDACIÓNES CREA EL EVENETO//
         $evento = new Reservation();
         $evento->title = $request->title;
         $evento->start = $request->start;
         $evento->end = $request->end;
-        $evento->guest = json_encode($ejemplo);
+        $evento->guest = json_encode($invitades);
         $evento->material = $mate;
         $evento->chair_loan= $request->chair_loan;
+        $evento->proyector= $request->proyector;
         $evento->description = $request->description;
         $evento->id_usuario = $user->id;
         $evento->id_sala = $request->id_sala;
@@ -250,7 +250,7 @@ class ReservationController extends Controller
         DB::table('reservations')->where('id', $request->id_evento)->update([
             'title' => $request->title, 'start' => $request->start,
             'end' => $request->end, 'guest' => json_encode($ejemplo), 'material' => $mate,
-            'chair_loan' => $request->chair_loan, 'description' => $request->description, 'id_sala' => $request->id_sala
+            'chair_loan' => $request->chair_loan,'proyector' => $request->proyector, 'description' => $request->description, 'id_sala' => $request->id_sala
             ]);
             return redirect()->back()->with('message2', "Evento editado correctamente.");
     }

@@ -9,12 +9,14 @@ document.addEventListener('DOMContentLoaded', function() {
         slotMaxTime: "19:00:00",
         eventColor: '#6EB5FF',
 
+        //MOSTRAR LOS BOTONES DE MES, SEMANA Y LISTA//
         headerToolbar: {
             left:'prev,next today',
             center:'title',
             right:'dayGridMonth,timeGridWeek,listWeek',
         },
 
+        //CONFIGURAR COMO SE MUESTRA LAS HORAS//
         slotLabelFormat:{
             hour: '2-digit',
             minute: '2-digit',
@@ -23,12 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         
         dayClick: function(info) {
-          // Llenar automáticamente el campo de fecha en el formulario
-          /*formulario.reset();
-          formulario.start.value=info.dateStr.format("d-m-Y\TH:i");
-          formulario.end.value=info.dateStr.format("d-m-Y\TH:i");*/
-          //document.getElementById('start').value = info.dateStr;
-          //document.getElementById('end').value = info.dateStr;
           var dateField = document.getElementById('start');
           dateField.value = info.dateStr;
           var dateField = document.getElementById('end');
@@ -66,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
           else{
             info.dayEl.style.backgroundColor = '#FFBFAF';
-            alert("Error: No se puede solicitar una cita en una fecha vencida");
+            alert("Error: No se puede crear una reservación de una sala en una fecha pasada.");
           }
         },
         
@@ -78,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         },
 
+        //TRADUCCIOÓN DE LOS BOTONES DE MES, SEMANA, LISTA//
         buttonText: {
           today: 'Hoy', // Traducción del botón "Today"
           dayGridMonth: 'Mes',
@@ -87,10 +84,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
         initialView: 'dayGridMonth',
         selectable: true,
-        events:'/reservation/view/',
+        events:'/reservation/view/',        
 
-        
-      
       });
       calendar.render();
 
