@@ -40,5 +40,20 @@ class CategoriaSoporteSeeder extends Seeder
             'status'=>true,
             'slug'=>Str::slug('Diseño de tickets','-')
         ]);
+        DB::table('soporte_categorias')->insert([
+            'name'=>'Extension Telefonia',
+            'status'=>true,
+            'slug'=>Str::slug('Extension Telefonia','-')
+        ]);
+        DB::table('soporte_categorias')->insert([
+            'name'=>'Soporte Software',
+            'status'=>true,
+            'slug'=>Str::slug('Soporte Software','-')
+        ]);
+        DB::table('soporte_categorias')->insert([
+            'name'=>'Soporte Computadora',
+            'status'=>true,
+            'slug'=>Str::slug('Soporte Computadora','-')
+        ]);
     }
 }

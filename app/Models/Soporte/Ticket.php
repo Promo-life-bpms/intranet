@@ -15,6 +15,7 @@ class Ticket extends Model
         'category_id',
         'create',
         'data',
+        'priority',
         'user_id',
         'status_id',
         'support_id'

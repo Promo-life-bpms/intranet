@@ -56,6 +56,10 @@
                                             wire:click="verTicket({{ $tickets->id }})">
                                             <i class="bi bi-person-fill"></i>
                                         </button>
+                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#Modalprioridad" wire:click="time({{$tickets->id}})">
+                                        <i class="bi bi-clock"></i>
+                                    </button>
                                     @endif
                                 @endif
                             </td>
@@ -478,6 +482,42 @@
         </div>
     </div>
 
+    <div wire:ignore.self class="modal fade" id="Modalprioridad" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Asignar tiempo de solución</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="inputGroupSelect01">Tiempo</label>
+                        <input wire:model="time" type="time" name="tiempo">
+                    </div>
+                    @error('tiempo')
+                        <span>
+                            <font color="red"> *Selecciona un tiempo aproximado a resolver el ticket* </font>
+                        </span>
+                        <br>
+                    @enderror
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+
+
+                        <button type="button"
+                            class="btn btn-primary"wire:click="reasignar({{ $tickets->id }})">Asignar</button>
+
+                        <div wire:loading.flex wire:target="reasignar">
+                            Asignar
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <script>
@@ -627,9 +667,17 @@
             })
 
             $('#Modalasignacion').modal('hide')
+        });
 
+        window.addEventListener('tiempo', () => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Tiempo asignado correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
 
-
+            $('#Modalasignacion').modal('hide')
         });
 
 
