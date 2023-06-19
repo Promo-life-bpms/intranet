@@ -110,11 +110,17 @@
                                 @break
 
                                 @case('App\Notifications\EncuestaSoporteNotification')
-                                <p class="my-0">Haz recibido una puntuación de :</p>
-                                <b>{{ $notification->data['data']['score'] }} Estrellas</b>
-                                <p class="my-0">Al solucionar el Ticket : {{ $notification->data['data']['name_ticket'] }}</p>
+                                    <p class="my-0">Haz recibido una puntuación de :</p>
+                                    <b>{{ $notification->data['data']['score'] }} Estrellas</b>
+                                    <p class="my-0">Al solucionar el Ticket :
+                                        {{ $notification->data['data']['name_ticket'] }}</p>
                                 @break
 
+                                @case('App\Notifications\SoportePrioridadNotification')
+                                    <b>{{$notification->data['data']['name']}}</b>
+                                    <p class="my-0">Tu ticket: {{ $notification->data['data']['name_ticket'] }}</p>
+                                    <p class="my-0">Sera resuelto aprox. en : {{ $notification->data['data']['time'] }}</p>
+                                @break
                                 @default
                             @endswitch
                         </div>

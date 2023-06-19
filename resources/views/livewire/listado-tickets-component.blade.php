@@ -46,6 +46,9 @@
                                 <button type="button" class="btn btn-success btn-sm " data-bs-toggle="modal"
                                     data-bs-target="#ModalVer" wire:click="verTicket({{ $ticket->id }})"><i
                                         class="bi bi-eye"></i></button>
+                                <button type="button" class="btn btn-success btn-sm " data-bs-toggle="modal"
+                                    data-bs-target="#ModalEncuesta" wire:click="verTicket({{ $ticket->id }})" hidden><i
+                                        class="bi bi-card-checklist" hidden></i></button>
                                 @if ($ticket->status->name == 'Creado' || $ticket->status->name == 'En proceso' || $ticket->status->name == 'Resuelto')
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#ModalEditar" wire:click="editarTicket({{ $ticket->id }})"><i
@@ -98,7 +101,9 @@
                                     id="inputGroupSelect01">
                                     <option value="" selected>Seleccionar</option>
                                     @foreach ($categorias as $categoriaa)
-                                        <option value="{{ $categoriaa->id }}">{{ $categoriaa->name }}</option>
+                                        @if ($categoriaa->usuarios->isNotEmpty())
+                                            <option value="{{ $categoriaa->id }}">{{ $categoriaa->name }}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                                 @error('categoria')
@@ -229,6 +234,10 @@
                             <p><span class="fw-bold">Categoría :</span> <span
                                     class="Psop">{{ $categoria }}</span></p>
 
+                            <p><span class="fw-bold">Tiempo estimado a ser resuelto : <span
+                                        class="badge bg-info text-dark">{{ $prioridad }}</span></span></p>
+
+
                             <p><span class="fw-bold">Descripción :</span></p>
 
                             <div class="text-mostrar">
@@ -241,81 +250,8 @@
                                     {!! $solucion->description !!}
                                 @endforeach
                             @endif
-                            <hr>
-                            @if ($ticket_solucion)
-                                @if ($ticket_solucion->status_id == 4)
-                                    <form>
-                                        <style>
-                                            #form {
-                                                width: 250px;
-                                                margin: 0 auto;
-                                                height: 50px;
-                                            }
-
-                                          
-                                            #form label {
-                                                font-size: 20px;
-                                            }
-
-                                            input[type="radio"] {
-                                                display: none;
-                                            }
-
-                                            label {
-                                                color: grey;
-                                            }
-
-                                            .clasificacion {
-                                                direction: rtl;
-                                                unicode-bidi: bidi-override;
-                                            }
-
-                                            label:hover,
-                                            label:hover~label {
-                                                color: orange;
-                                            }
-
-                                            input[type="radio"]:checked~label {
-                                                color: orange;
-                                            }
-                                        </style>
-                                        <div>
-                                            <p><span class="fw-bold">Puntua</span></p>
-                                            <p class="clasificacion">
-                                                <input id="radio1" type="radio" name="estrellas" value="5" wire:model="score">
-                                                <!--
-                                                --><label for="radio1">★</label>
-                                                <!--
-                                                --><input id="radio2" type="radio" name="estrellas" value="4" wire:model="score">
-                                                <!--
-                                                --><label for="radio2">★</label>
-                                                <!--
-                                                --><input id="radio3" type="radio" name="estrellas" value="3" wire:model="score">
-                                                <!--
-                                                --><label for="radio3">★</label>
-                                                <!--
-                                                --><input id="radio4" type="radio" name="estrellas" value="2" wire:model="score">
-                                                <!--
-                                                --><label for="radio4">★</label>
-                                                <!--
-                                                --><input id="radio5" type="radio" name="estrellas" value="1" wire:model="score">
-                                                <!--
-                                                --><label for="radio5">★</label>
-                                            </p>
-                                        </div>
-                                        <p><span class="fw-bold">Calificar servicio de soporte :</span></p>
-                                        <textarea wire:model="comments" name="description" id="" cols="90" rows="3"></textarea>
-                                    </form>
-                                    @else
-                                @endif
-                            @endif
                             <div class="modal-footer">
-
                                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary" wire:click="encuesta" >Enviar</button>
-                                <div wire:loading.flex wire:target="encuesta">
-                                    Enviando
-                                </div>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
@@ -606,6 +542,89 @@
             </div>
         </div>
     </div>
+    {{-- Modal Encuesta --}}
+    <div wire:ignore.self class="modal" tabindex="-1" id="ModalEncuesta" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Califica nuestro servicio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                            <form method="POST">
+                                @csrf
+                                <style>
+                                    #form {
+                                        width: 250px;
+                                        margin: 0 auto;
+                                        height: 50px;
+                                    }
+                                
+                                    #form label {
+                                        font-size: 30px; /* Tamaño de fuente ajustado */
+                                        margin-right: 10px; /* Margen derecho para separar las estrellas */
+                                    }
+                                
+                                    input[type="radio"] {
+                                        display: none;
+                                    }
+                                
+                                    label {
+                                        color: grey;
+                                    }
+                                
+                                    .clasificacion {
+                                        direction: rtl;
+                                        unicode-bidi: bidi-override;
+                                    }
+                                
+                                    label:hover,
+                                    label:hover~label {
+                                        color: orange;
+                                    }
+                                
+                                    input[type="radio"]:checked~label {
+                                        color: orange;
+                                    }
+                                </style>
+                                <div>
+                                    <p><span class="fw-bold">Puntua</span></p>
+                                    <p class="clasificacion">
+                                        <input id="radio1" type="radio" name="estrellas" value="5" wire:model="score">
+                                        <!--
+                                        --><label for="radio1">★</label>
+                                        <!--
+                                        --><input id="radio2" type="radio" name="estrellas" value="4" wire:model="score">
+                                        <!--
+                                        --><label for="radio2">★</label>
+                                        <!--
+                                        --><input id="radio3" type="radio" name="estrellas" value="3" wire:model="score">
+                                        <!--
+                                        --><label for="radio3">★</label>
+                                        <!--
+                                        --><input id="radio4" type="radio" name="estrellas" value="2" wire:model="score">
+                                        <!--
+                                        --><label for="radio4">★</label>
+                                        <!--
+                                        --><input id="radio5" type="radio" name="estrellas" value="1" wire:model="score">
+                                        <!--
+                                        --><label for="radio5">★</label>
+                                    </p>
+                                </div>
+                                <p><span class="fw-bold">Comentarios :</span></p>
+                                <textarea wire:model="comments" name="description" id="" cols="80" rows="1"></textarea>
+                            </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button wire:click="encuesta" type="button" class="btn btn-primary">Enviar</button>
+                    <div wire:loading.flex wire:target="encuesta">
+                        Enviando
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         let ckEditorCreate, ckEditorEdit, ckEditorMensaje;
         ClassicEditor
@@ -706,7 +725,7 @@
 
         ClassicEditor
             .create(document.querySelector('#editorMensaje'), {
-                // extraPlugins: [MyCustomUploadAdapterPlugin],
+
             })
             .then(newEditor => {
                 ckEditorMensaje = newEditor;
@@ -790,15 +809,14 @@
         });
 
         window.addEventListener('Encuesta', () => {
-
             Swal.fire({
-                icon: 'success',
-                title: 'Encuesta correctamente',
-                showCancelButton: false,
-                timer:1500
-            })
 
-        })
+                icon: 'success',
+                title: 'Encuesta enviada',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        });
 
         window.addEventListener('category_empty', () => {
             Swal.fire({
@@ -826,6 +844,8 @@
                         'El ticket a sido finalizado',
                         'success'
                     )
+
+                    $('#ModalEncuesta').modal('show');
                 } else {
                     return;
                 }

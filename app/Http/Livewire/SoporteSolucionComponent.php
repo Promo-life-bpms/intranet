@@ -7,35 +7,40 @@ use App\Models\Soporte\Ticket;
 use App\Models\Soporte\Mensaje;
 use App\Models\Soporte\Solucion;
 use App\Models\Soporte\Historial;
+use App\Models\SoporteTiempo;
 use App\Models\User;
 use App\Notifications\MessageSoporteSolutionNotification;
 use App\Notifications\SolucionSoporteNotification;
 use App\Notifications\StatusEnProcesoSoporteNotification;
 use App\Notifications\ReasignacionTicketSoporte;
+use App\Notifications\SoportePrioridadNotification;
 
 class SoporteSolucionComponent extends Component
 {
     use WithPagination;
-    public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes,$usuario_reasignacion,$tiempo;
+    public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes, $usuario_reasignacion, $tiempo;
     protected $paginationTheme = 'bootstrap';
 
     public function render()
     {
+
+        //traer los tipos de prioridad
+        $priority = SoporteTiempo::where('id','>',1)->get();
         $categories =  auth()->user()->asignacionCategoria->pluck(["id"]);
 
         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
-        ->join('roles', 'roles.id', '=', 'role_user.role_id')
-        ->where('roles.name', '=', 'systems')
-        ->select('users.*')
-        ->get();
+            ->join('roles', 'roles.id', '=', 'role_user.role_id')
+            ->where('roles.name', '=', 'systems')
+            ->select('users.*')
+            ->get();
 
-        $ticketReasignado=Ticket::where('support_id',auth()->user()->id)->get();
+        $ticketReasignado = Ticket::where('support_id', auth()->user()->id)->get();
 
 
         return view('livewire.soporte-solucion-component', [
 
             'solucion' => Ticket::where('support_id', auth()->user()->id)->simplePaginate(15)
-        ],compact('users','ticketReasignado'));
+        ], compact('users', 'ticketReasignado', 'priority'));
     }
 
 
@@ -168,17 +173,17 @@ class SoporteSolucionComponent extends Component
 
         $this->validate(
             [
-                'usuario_reasignacion'=>'required'
+                'usuario_reasignacion' => 'required'
             ]
-            );
+        );
 
         $ticket->update([
-            'support_id'=>$this->usuario_reasignacion
+            'support_id' => $this->usuario_reasignacion
         ]);
         //aqui busco al usuario que se guarda para reasignar
         $user = User::find($this->usuario_reasignacion);
 
-        $reasignacionTicket=[
+        $reasignacionTicket = [
             'name' => auth()->user()->name,
             'name_ticket' => $ticket->name,
         ];
@@ -188,21 +193,38 @@ class SoporteSolucionComponent extends Component
 
 
         $this->dispatchBrowserEvent('reasignacion');
-
     }
 
-    // public function time($id)
-    // {
-    //     $ticket = Ticket::find($id);
+    public function time($id)
+    {
+        //me trae el ticket que tiene asignado
+        $ticket = Ticket::find($id);
+        //para acceder a los datos de resolucion de ticket
+        // dd($ticket->priority);
+        $usuario = $ticket->user;
 
-    //     //  dd($ticket);
+        $this->validate([
+            'tiempo'=>'required'
+        ]);
 
-    //         $ticket->update(
-    //             [
-    //                 'priority' => $this->tiempo
-    //                 ]
-    //             );
-                
-        
-    // }
+        $ticket->update(
+            [
+                'priority_id' => $this->tiempo
+            ]
+        );
+
+        //notificamos
+        $notificationPriority=[
+            'name'=>auth()->user()->name,
+            'name_ticket'=>$ticket->name,
+            'time'=>$ticket->priority->time
+        ];
+
+        $usuario->notify(new SoportePrioridadNotification($notificationPriority));
+
+        $this->dispatchBrowserEvent('Tiempo');
+
+
+     }
+
 }

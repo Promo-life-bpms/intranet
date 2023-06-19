@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models\Soporte;
+
+use App\Models\SoporteTiempo;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +20,8 @@ class Ticket extends Model
         'priority',
         'user_id',
         'status_id',
-        'support_id'
+        'support_id',
+        'priority_id',
     ];
 
     public function category()
@@ -54,5 +57,11 @@ class Ticket extends Model
     {
         return $this->hasOne(encuesta::class,'ticket_id');
     }
+
+    public function priority()
+    {
+        return $this->belongsTo(SoporteTiempo::class,'priority_id');
+    }
+
 
 }

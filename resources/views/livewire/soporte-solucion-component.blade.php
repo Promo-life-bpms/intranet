@@ -57,7 +57,7 @@
                                             <i class="bi bi-person-fill"></i>
                                         </button>
                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#Modalprioridad" wire:click="time({{$tickets->id}})">
+                                        data-bs-target="#Modalprioridad" wire:click="verTicket({{$tickets->id}})">
                                         <i class="bi bi-clock"></i>
                                     </button>
                                     @endif
@@ -482,7 +482,7 @@
         </div>
     </div>
 
-    {{-- <div wire:ignore.self class="modal fade" id="Modalprioridad" tabindex="-1" aria-labelledby="exampleModalLabel"
+    <div wire:ignore.self class="modal fade" id="Modalprioridad" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -492,8 +492,14 @@
                 </div>
                 <div class="modal-body">
                     <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupSelect01">Tiempo</label>
-                        <input wire:model="tiempo" type="time" name="tiempo">
+                        <label class="input-group-text" for="inputGroupSelect01">Prioridad</label>
+                        {{-- <input wire:model="tiempo" type="time" name="tiempo"> --}}
+                        <select wire:model="tiempo"  name="tiempo" class="form-select">
+                            <option value="" selected>Seleccionar</option>
+                            @foreach ($priority as $prioritys)
+                                <option value="{{$prioritys->id}}">{{$prioritys->priority}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     @error('tiempo')
                         <span>
@@ -504,19 +510,15 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-
-
                         <button type="button"
-                            class="btn btn-primary"wire:click="reasignar({{ $tickets->id }})">Asignar</button>
-
-                        <div wire:loading.flex wire:target="reasignar">
+                            class="btn btn-primary"wire:click="time({{ $tickets->id }})">Asignar</button>
+                        <div wire:loading.flex wire:target="time">
                             Asignar
                         </div>
-
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
 
 
@@ -669,7 +671,7 @@
             $('#Modalasignacion').modal('hide')
         });
 
-        window.addEventListener('tiempo', () => {
+        window.addEventListener('Tiempo', () => {
             Swal.fire({
                 icon: 'success',
                 title: 'Tiempo asignado correctamente',
@@ -677,7 +679,7 @@
                 timer: 1500
             })
 
-            $('#Modalasignacion').modal('hide')
+            $('#Modalprioridad').modal('hide')
         });
 
 

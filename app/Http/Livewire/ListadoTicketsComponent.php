@@ -26,7 +26,8 @@ class ListadoTicketsComponent extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $mensajes, $user,$score,$comments;
+    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $mensajes, $user,$score,$comments
+    ,$prioridad;
 
     public function render()
     {
@@ -65,7 +66,7 @@ class ListadoTicketsComponent extends Component
                 'user_id' => auth()->user()->id,
                 'status_id' => 1,
                 'support_id' => $usuarios[0]['id'],
-                'priority' => '00:00:00'
+                'priority_id' => 1
 
             ]
         );
@@ -199,8 +200,9 @@ class ListadoTicketsComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
-       
+
         $message = Mensaje::find($id);
+        $this->prioridad=$ticket->priority->time;
         $this->mensajes = $ticket;
         $this->ticket_solucion = $ticket;
         $this->ticket_id = $ticket->id;
@@ -265,18 +267,18 @@ class ListadoTicketsComponent extends Component
     function encuesta()
     {
         $ticket=Ticket::find($this->ticket_id);
-        
+
         encuesta::create([
             'ticket_id' => $ticket->id,
             'score'=>$this->score,
             'comments' => $this->comments
         ]);
-        
+
         $notificationEncuesta = [
             'score' => $ticket->score->score,
             'name_ticket' =>$ticket->name
         ];
-        
+
         $category = Categoria::find($ticket->category_id);
         $usuarios=$category->usuarios;
         foreach ($usuarios as $usuario) {
