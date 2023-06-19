@@ -482,7 +482,7 @@
         </div>
     </div>
 
-    <div wire:ignore.self class="modal fade" id="Modalprioridad" tabindex="-1" aria-labelledby="exampleModalLabel"
+    {{-- <div wire:ignore.self class="modal fade" id="Modalprioridad" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -493,7 +493,7 @@
                 <div class="modal-body">
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="inputGroupSelect01">Tiempo</label>
-                        <input wire:model="time" type="time" name="tiempo">
+                        <input wire:model="tiempo" type="time" name="tiempo">
                     </div>
                     @error('tiempo')
                         <span>
@@ -516,7 +516,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
 
 

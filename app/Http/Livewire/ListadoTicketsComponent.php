@@ -10,8 +10,10 @@ use  App\Models\Soporte\Ticket;
 use App\Models\Soporte\Categoria;
 use App\Models\Soporte\Solucion;
 use App\Models\Soporte\Mensaje;
+use App\Models\Soporte\encuesta;
 use App\Models\Soporte\Historial;
 use App\Notifications\EditarTicketNotification;
+use App\Notifications\EncuestaSoporteNotification;
 use App\Notifications\SoporteNotification;
 use App\Notifications\StatuSoporteFinalizadoNotification;
 use App\Notifications\MessageSoporteNotification;
@@ -24,7 +26,7 @@ class ListadoTicketsComponent extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $mensajes, $user;
+    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $mensajes, $user,$score,$comments;
 
     public function render()
     {
@@ -62,7 +64,8 @@ class ListadoTicketsComponent extends Component
                 'category_id' => (int) $this->categoria,
                 'user_id' => auth()->user()->id,
                 'status_id' => 1,
-                'support_id' => $usuarios[0]['id']
+                'support_id' => $usuarios[0]['id'],
+                'priority' => '00:00:00'
 
             ]
         );
@@ -196,6 +199,7 @@ class ListadoTicketsComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
+       
         $message = Mensaje::find($id);
         $this->mensajes = $ticket;
         $this->ticket_solucion = $ticket;
@@ -256,5 +260,29 @@ class ListadoTicketsComponent extends Component
         }
 
         $this->dispatchBrowserEvent('Mensaje');
+    }
+
+    function encuesta()
+    {
+        $ticket=Ticket::find($this->ticket_id);
+        
+        encuesta::create([
+            'ticket_id' => $ticket->id,
+            'score'=>$this->score,
+            'comments' => $this->comments
+        ]);
+        
+        $notificationEncuesta = [
+            'score' => $ticket->score->score,
+            'name_ticket' =>$ticket->name
+        ];
+        
+        $category = Categoria::find($ticket->category_id);
+        $usuarios=$category->usuarios;
+        foreach ($usuarios as $usuario) {
+            $usuario->notify(new EncuestaSoporteNotification($notificationEncuesta));
+        }
+
+       $this->dispatchBrowserEvent('Encuesta');
     }
 }

@@ -19,7 +19,7 @@ class CreateTickets extends Migration
             $table->string('image');
             $table->string('data');
             $table->timestamps();
-            $table->time('priority')->nullable();
+            $table->time('priority');
             $table->foreignId('category_id')->references('id')->on('soporte_categorias');
             $table->foreignId('status_id')->references('id')->on('soporte_status');
             $table->foreignId('user_id')->references('id')->on('users');

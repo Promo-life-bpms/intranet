@@ -241,9 +241,81 @@
                                     {!! $solucion->description !!}
                                 @endforeach
                             @endif
+                            <hr>
+                            @if ($ticket_solucion)
+                                @if ($ticket_solucion->status_id == 4)
+                                    <form>
+                                        <style>
+                                            #form {
+                                                width: 250px;
+                                                margin: 0 auto;
+                                                height: 50px;
+                                            }
+
+                                          
+                                            #form label {
+                                                font-size: 20px;
+                                            }
+
+                                            input[type="radio"] {
+                                                display: none;
+                                            }
+
+                                            label {
+                                                color: grey;
+                                            }
+
+                                            .clasificacion {
+                                                direction: rtl;
+                                                unicode-bidi: bidi-override;
+                                            }
+
+                                            label:hover,
+                                            label:hover~label {
+                                                color: orange;
+                                            }
+
+                                            input[type="radio"]:checked~label {
+                                                color: orange;
+                                            }
+                                        </style>
+                                        <div>
+                                            <p><span class="fw-bold">Puntua</span></p>
+                                            <p class="clasificacion">
+                                                <input id="radio1" type="radio" name="estrellas" value="5" wire:model="score">
+                                                <!--
+                                                --><label for="radio1">★</label>
+                                                <!--
+                                                --><input id="radio2" type="radio" name="estrellas" value="4" wire:model="score">
+                                                <!--
+                                                --><label for="radio2">★</label>
+                                                <!--
+                                                --><input id="radio3" type="radio" name="estrellas" value="3" wire:model="score">
+                                                <!--
+                                                --><label for="radio3">★</label>
+                                                <!--
+                                                --><input id="radio4" type="radio" name="estrellas" value="2" wire:model="score">
+                                                <!--
+                                                --><label for="radio4">★</label>
+                                                <!--
+                                                --><input id="radio5" type="radio" name="estrellas" value="1" wire:model="score">
+                                                <!--
+                                                --><label for="radio5">★</label>
+                                            </p>
+                                        </div>
+                                        <p><span class="fw-bold">Calificar servicio de soporte :</span></p>
+                                        <textarea wire:model="comments" name="description" id="" cols="90" rows="3"></textarea>
+                                    </form>
+                                    @else
+                                @endif
+                            @endif
                             <div class="modal-footer">
 
                                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary" wire:click="encuesta" >Enviar</button>
+                                <div wire:loading.flex wire:target="encuesta">
+                                    Enviando
+                                </div>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
@@ -716,6 +788,17 @@
 
 
         });
+
+        window.addEventListener('Encuesta', () => {
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Encuesta correctamente',
+                showCancelButton: false,
+                timer:1500
+            })
+
+        })
 
         window.addEventListener('category_empty', () => {
             Swal.fire({

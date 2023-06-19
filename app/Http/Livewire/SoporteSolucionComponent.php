@@ -16,7 +16,7 @@ use App\Notifications\ReasignacionTicketSoporte;
 class SoporteSolucionComponent extends Component
 {
     use WithPagination;
-    public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes,$usuario_reasignacion,$time;
+    public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes,$usuario_reasignacion,$tiempo;
     protected $paginationTheme = 'bootstrap';
 
     public function render()
@@ -191,18 +191,18 @@ class SoporteSolucionComponent extends Component
 
     }
 
-    public function time()
-    {
-        $ticket = Ticket::find($this->ticket_id);
+    // public function time($id)
+    // {
+    //     $ticket = Ticket::find($id);
 
-        $this->validate([
-            'tiempo'|'required'
-        ]);
+    //     //  dd($ticket);
 
-        $ticket->update([
-            'priority'=>$this->time,
-        ]);
-
-        $this->dispatchBrowserEvent('tiempo');
-    }
+    //         $ticket->update(
+    //             [
+    //                 'priority' => $this->tiempo
+    //                 ]
+    //             );
+                
+        
+    // }
 }
