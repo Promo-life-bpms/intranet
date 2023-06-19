@@ -90,6 +90,7 @@ public function createTeamRequest(Request $request){
     $request_team->folder_path = $request->folder_path;
     $request_team->type_of_access = $request->type_of_access;
     $request_team->observations = $request->observations;
+    $request_team->status = 'Solicitud Creada';
     $request_team->save();
     return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!');  
 }
@@ -104,10 +105,16 @@ public function user($id){
     return response()->json($data);
     }
 
-public function management(){
-    
-    return view('admin.team.admon');
+    public function management(){
+     $admon_requests = ModelsTeamRequest::all();
+    return view('admin.team.admon')->with('admon_requests', $admon_requests);
 }
+
+ public function informationrequest(){
+
+     return view('admin.Team.information');
+ }
+
 }
 
 

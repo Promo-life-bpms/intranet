@@ -18,6 +18,20 @@
                         <th scope="col" style="text-align: center">Opciones</th>
                     </tr>
                 </thead>
+
+                <tbody>
+                    @foreach ($admon_requests as $admon_request)
+                        <tr>    
+                            <td style="text-align: center">{{$admon_request->id}}</td>
+                            <td style="text-align: center">{{$admon_request->name}}</td>
+                            <td style="text-align: center">{{$admon_request->status}}</td>
+                            <td style="text-align: center">{{$admon_request->created_at}}</td>
+                            <td style="text-align: center">
+                            <a href="{{ route('admin.Team.information')}}" class="btn btn-primary">Ver más</a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
             </table>
         </div>
     </div>

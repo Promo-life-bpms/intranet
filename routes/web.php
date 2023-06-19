@@ -261,8 +261,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/teamrequest1/', [TeamRequest::class, 'index1'])->name('team.record');
     Route::post('/team/create-teamrequest/', [TeamRequest::class, 'createTeamRequest'])->name('team.createTeamRequest');
 
-    //Solicitud de servicios de Sistemas y Comunicaciones
+    //Solicitud de servicios de Sistemas y Comunicaciones vista de tabla de detalles de la solicitud
     Route::get('/admon-request/', [TeamRequest::class, 'management'])->name('team.admon');
+
+    //Ruta para darme valores automaticos de usuarios
+    Route::get('/dropdownlist/getUser/{id}', [TeamRequest::class, 'user']);
+
+    //Ruta para vista de informacion de solicitudes
+    Route::get('/information-request/',[TeamRequest::class, 'informationrequest'])->name('admin.Team.information');
+
+
 
     
     
