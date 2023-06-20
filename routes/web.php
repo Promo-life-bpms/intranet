@@ -268,10 +268,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dropdownlist/getUser/{id}', [TeamRequest::class, 'user']);
 
     //Ruta para vista de informacion de solicitudes
-    Route::get('/information-request/',[TeamRequest::class, 'informationrequest'])->name('admin.Team.information');
+    Route::get('/information-request/{id}',[TeamRequest::class, 'informationrequest'])->name('admin.Team.information');
 
 
-
+    //Cambio de estado de solicitud de Sistemas y Comunicaciones
+    Route::post('/team/status/', [TeamRequest::class, 'update'])->name('team.status');
     
     
     //Estado actual de solicitud rol sistemas

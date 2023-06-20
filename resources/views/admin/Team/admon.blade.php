@@ -24,10 +24,31 @@
                         <tr>    
                             <td style="text-align: center">{{$admon_request->id}}</td>
                             <td style="text-align: center">{{$admon_request->name}}</td>
-                            <td style="text-align: center">{{$admon_request->status}}</td>
+                            <td>
+                                @if ($admon_request->status == 'Aprobada')
+                                    <div class="d-flex justify-content-center">
+                                        <span class="badge bg-success">{{$admon_request->status}}</span>
+                                    </div>
+    
+                                    @elseif($admon_request->status == 'Rechazada')
+                                    <div class="d-flex justify-content-center">
+                                        <span class="badge bg-danger">{{ $admon_request->status }}</span>
+                                    </div>
+    
+                                    @elseif($admon_request->status == 'Preaprobada')
+                                    <div class="d-flex justify-content-center">
+                                        <span class="badge bg-warning text-dark">{{ $admon_request->status }}</span>
+                                    </div>
+    
+                                    @elseif($admon_request->status == 'Solicitud Creada')
+                                    <div class="d-flex justify-content-center">
+                                        <span class="badge bg-info text-dark">{{ $admon_request->status }}</span>
+                                    </div>
+                                @endif
+                            </td>
                             <td style="text-align: center">{{$admon_request->created_at}}</td>
                             <td style="text-align: center">
-                            <a href="{{ route('admin.Team.information')}}" class="btn btn-primary">Ver más</a>
+                                <a href="{{ route('admin.Team.information', $admon_request->id)}}" class="btn btn-primary">Ver más</a>
                             </td>
                         </tr>
                     @endforeach
@@ -41,7 +62,7 @@
     table {
     font-size: 66.1%;
     }
-
+    
     .btn {
     font-size: 10px;
     }

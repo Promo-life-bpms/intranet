@@ -618,7 +618,7 @@
                                         <div class="form-group">
                                             {!! Form::label('observations', 'Observaciones: ', ['style' => 'font-size: 11px;']) !!}
                                             {!! Form::textarea('observations', null, ['class' => 'form-control', 'style' => 'width:300px; height:100px;', 'placeholder' => 'Ingrese observaciones']) !!}
-                                            @error('')
+                                            @error('observations')
                                             <small>
                                                 <font color="red"> *Este campo es requerido* </font>
                                             </small> 
@@ -627,9 +627,9 @@
                                     </div> 
                     </div>
     </div>
-        {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4']) !!}
+                {!! Form::submit('CREAR SOLICITUD', ['class' => 'btnCreate mt-4']) !!}
 </div>
-        {!! Form::close()!!}
+            {!! Form::close()!!}
     </form>
 @endsection
 

@@ -16,7 +16,8 @@ use Maatwebsite\Excel\Facades\Excel;
 class TeamRequest extends Controller
 {
     //
-public function index(){
+public function index()
+{
     $user = auth()->user();
     $roles = Role::all();
     $employees = Employee::all();
@@ -29,7 +30,8 @@ public function index(){
     return view('admin.team.index', compact('roles', 'employees', 'departments', 'positions', 'companies', 'manager', 'user', 'dates', 'date_admission'));
 }
 
-public function index1(){
+public function index1()
+{
     $datos = ModelsTeamRequest::all();
     /*$datos = DB::table('request_team')
             ->select('request_team.*')
@@ -38,12 +40,30 @@ public function index1(){
     return view('admin.team.record')->with('datos', $datos);
 }
 
-public function createTeamRequest(Request $request){
+public function createTeamRequest(Request $request)
+{
 /*dd($request);*/
-    // $request->validate([
-    // 'category' => 'required',
-    // 'description' => 'required'
-    // ]);
+      $request->validate([
+        'type_of_user' => 'required',
+        'area' => 'required',
+        'extension'=>'required',
+        'immediate_boss'=>'required',
+        'company'=>'required',
+        'computer_type'=>'required',
+        'cell_phone'=>'required',
+        'number'=>'required',
+        'extension_number'=>'required',
+        'equipment_to_use'=>'required',
+        'accessories'=>'required',
+        'previous_user'=>'required',
+        'distribution_and_forwarding'=>'required',
+        'others'=>'required',
+        'access_to_server_shared_folder'=>'required',
+        'folder_path'=>'required',
+        'type_of_access'=>'required',
+        'observations'=>'required'
+      ]);
+
     $data = [];
     array_push($data,(object)[
         'odoo_users' => json_encode([$request->odoo_users, $request->odoo_users5, $request->odoo_users4, $request->odoo_users3, $request->odoo_users2, $request->odoo_users1 ]),
@@ -54,7 +74,7 @@ public function createTeamRequest(Request $request){
         'email' => json_encode([$request->email, $request->email5, $request->email4, $request->email3, $request->email2, $request->email1 ]),
         'signature_or_telephone_contact_numer' => json_encode([$request->signature_or_telephone_contact_numer, $request->signature_or_telephone_contact_numer5, $request->signature_or_telephone_contact_numer4, $request->signature_or_telephone_contact_numer3, $request->signature_or_telephone_contact_numer2, $request->signature_or_telephone_contact_numer1]) 
     ]);
-
+    
     $request_team = new ModelsTeamRequest();
     $request_team->type_of_user = $request->type_of_user;
     $request_team->name = $request->jefe_directo_id;
@@ -95,7 +115,8 @@ public function createTeamRequest(Request $request){
     return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!');  
 }
 
-public function user($id){
+public function user($id)
+{
     $employees = Employee::find($id);
     $data = [
         "date_admission"=> $employees->date_admission->format('Y-m-d'),
@@ -103,18 +124,29 @@ public function user($id){
         "department"=>$employees->position->department->name
     ];
     return response()->json($data);
-    }
+}
 
-    public function management(){
-     $admon_requests = ModelsTeamRequest::all();
+public function management()
+{
+    $admon_requests = ModelsTeamRequest::all();
     return view('admin.team.admon')->with('admon_requests', $admon_requests);
 }
 
- public function informationrequest(){
-
-     return view('admin.Team.information');
- }
-
+public function informationrequest($id)
+{
+    $information_request = ModelsTeamRequest::find($id);
+    // dd($information_request);
+     return view('admin.Team.information', compact('information_request'));
 }
-
-
+ 
+public function update(Request $request)
+{   
+     $request->validate([
+         'status' => 'required',
+     ]);  
+     DB::table('request_for_systems_and_communications_services')->where('id', intval($request->id))->update([
+         'status' => $request->status
+     ]); 
+     return redirect()->back()->with('success', '¡Solicitud Actualizada Exitosamente!');
+ }
+}
