@@ -18,12 +18,30 @@
             </div>
     </div>
 
-
     <div class="row">
             <div class="col-md-6">
                 <h5 class="title mt-3" style="font-size: 15px;">Estado</h5>
                     <p class="description" style="font-size: 15px;">
-                        Estado: {{$information_request->status}}<br>
+                        @if ($information_request->status == 'Aprobada')
+                                    <div class="text-left">
+                                        <span class="badge bg-success">{{$information_request->status}}</span>
+                                    </div>
+    
+                                    @elseif($information_request->status == 'Rechazada')
+                                    <div class="text-left">
+                                        <span class="badge bg-danger">{{ $information_request->status }}</span>
+                                    </div>
+    
+                                    @elseif($information_request->status == 'Preaprobada')
+                                    <div class="text-left">
+                                        <span class="badge bg-warning text-dark">{{ $information_request->status }}</span>
+                                    </div>
+    
+                                    @elseif($information_request->status == 'Solicitud Creada')
+                                    <div class="text-left">
+                                        <span class="badge bg-info text-dark">{{ $information_request->status }}</span>
+                                    </div>
+                        @endif
                     </p>
             </div>
 
