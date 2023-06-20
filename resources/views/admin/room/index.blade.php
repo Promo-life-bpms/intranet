@@ -80,9 +80,6 @@
                                     {!! Form::label('department_id', 'Departamento:') !!}
                                     {!! Form::select('department_id', $departments, null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
                                     @error('department_id')
-                                    <small>
-                                        <font color="red"> *Este campo es requerido* </font>
-                                    </small>
                                     <br>
                                     @enderror
                                 </div>
@@ -115,7 +112,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             
                             <div class="row">
                                 <div class="col-md-12">
@@ -197,11 +193,8 @@
                             <div class="row form-group">
                                 <div class="col-sm">
                                     {!! Form::label('department_id', 'Departamento:') !!}
-                                    {!! Form::select('department_id', $departments,null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
+                                    {!! Form::select('department_id', $departments, null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
                                     @error('department_id')
-                                    <small>
-                                        <font color="red"> *Este campo es requerido* </font>
-                                    </small>
                                     <br>
                                     @enderror
                                 </div>
@@ -230,7 +223,6 @@
                                         {{ Form::checkbox('material[]','Proyector', null, ['class' => 'material-checkbox']) }}
                                         {{ Form::label('material[]', 'Proyector',$evento->material)}}
                                         {{ Form::number('proyector', $evento->proyector, ['id' => 'proyectores', 'class' => 'form-control proyectores', 'placeholder' => 'Número de proyectores que utilizará', 'style' => 'display: none;']) }}
-
                                     </div>
                                 </div>
                             </div>
@@ -265,9 +257,7 @@
             </div>
             @endif
             {!! Form::close() !!}
-            @endforeach
-
-            
+            @endforeach              
 @stop
 
 @section('scripts')
@@ -450,9 +440,6 @@
             });
         });
     </script>
-
-
-
 @endsection
     
 @section ('styles')

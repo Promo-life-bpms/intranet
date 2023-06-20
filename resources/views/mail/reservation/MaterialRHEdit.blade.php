@@ -1,7 +1,7 @@
 @component('mail::message')
 #¡Buen día, {{$RH}}!
 <br>
-##{{$dueño}} ha creado una reunión.
+##{{$dueño}} ha modificado la reunión.
 <br>
 ##La información de la reservación es la siguiente:
 <br>

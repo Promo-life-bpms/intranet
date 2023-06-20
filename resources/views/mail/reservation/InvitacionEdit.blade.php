@@ -1,7 +1,7 @@
 @component('mail::message')
 #¡Buen día, {{$receptor_name}}!
 <br>
-##{{$emisor_name}} te ha invitado a una reunión.
+##{{$emisor_name}} ha modificado la reunión, echale un vistazo a los detalles.
 <br>
 La reunión será en el/la: "{{$nombre_sala}}" que está ubicada en: "{{$locacion}}"
 <br>
