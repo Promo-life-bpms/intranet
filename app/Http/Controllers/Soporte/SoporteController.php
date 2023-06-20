@@ -101,6 +101,8 @@ class SoporteController extends Controller
             $ticketsPorMes[] = $monthTickets->count();
         }
 
+        
+
         $ticketsResueltos = Ticket::where('status_id', 4)->count();
         $ticketsEnProceso = Ticket::where('status_id', 2)->count();
         $ticketsCreados = Ticket::all()->count();

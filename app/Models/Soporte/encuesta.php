@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class encuesta extends Model
 {
     use HasFactory;
-    public $table="encuestas";
+    public $table="soporte_encuestas";
     protected $fillable=[
         'ticket_id',
         'comments',

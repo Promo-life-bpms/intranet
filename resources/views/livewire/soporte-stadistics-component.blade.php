@@ -63,27 +63,27 @@
                         <div class="card shadow card-total">
                             <h6 class="text-center" wire:ignore>Resueltos por categoría</h6>
                         </div>
-                        <canvas id="Categoria" height="600"></canvas>
+                        <canvas id="Categoria" height="700"></canvas>
 
                     </div>
                     <div class="col mx-auto">
                         <div class="card shadow card-total">
                             <h6 class="text-center">Resueltos por mes</h6>
                         </div>
-                        <canvas id="Poraño" height="600"></canvas>
+                        <canvas id="Poraño" height="700"></canvas>
                     </div>
 
                     <div class="col mx-auto">
                         <div class="card shadow card-total">
                             <h6 class="text-center">Recibidos por soporte</h6>
                         </div>
-                        <canvas id="TicketsRecibidos" height="600"></canvas>
+                        <canvas id="TicketsRecibidos" height="700"></canvas>
                     </div>
                     <div class="col mx-auto">
                         <div class="card shadow card-total">
                             <h6 class="text-center">Enviados por usuario</h6>
                         </div>
-                        <canvas id="porUsuario" height="600"></canvas>
+                        <canvas id="porUsuario" height="700"></canvas>
                     </div>
                 </div>
             </div>

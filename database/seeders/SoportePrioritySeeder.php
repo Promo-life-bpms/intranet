@@ -22,17 +22,17 @@ class SoportePrioritySeeder extends Seeder
             
         DB::table('soporte_tiempos')->insert([
         'priority'=>'Baja',
-            'time'=>'00:30:00',
+            'time'=>'05:00:00',
         ]);
 
         DB::table('soporte_tiempos')->insert([
             'priority'=>'Media',
-            'time'=>'01:00:00',
+            'time'=>'03:00:00',
         ]);
 
         DB::table('soporte_tiempos')->insert([
             'priority'=>'Alta',
-            'time'=>'02:00:00',
+            'time'=>'01:00:00',
         ]);
 
     }

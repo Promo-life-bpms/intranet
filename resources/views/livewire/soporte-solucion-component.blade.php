@@ -503,18 +503,20 @@
                     </div>
                     @error('tiempo')
                         <span>
-                            <font color="red"> *Selecciona un tiempo aproximado a resolver el ticket* </font>
+                            <font color="red"> *Selecciona la prioridad* </font>
                         </span>
                         <br>
                     @enderror
                 </div>
                 <div class="modal-footer">
+                    @if (isset($tickets->id))    
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button"
-                            class="btn btn-primary"wire:click="time({{ $tickets->id }})">Asignar</button>
-                        <div wire:loading.flex wire:target="time">
-                            Asignar
-                        </div>
+                    <button type="button"
+                    class="btn btn-primary"wire:click="time({{ $tickets->id }})">Asignar</button>
+                    <div wire:loading.flex wire:target="time">
+                        Asignar
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

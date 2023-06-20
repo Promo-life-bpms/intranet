@@ -200,8 +200,6 @@ class ListadoTicketsComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
-
-        $message = Mensaje::find($id);
         $this->prioridad=$ticket->priority->time;
         $this->mensajes = $ticket;
         $this->ticket_solucion = $ticket;
@@ -266,10 +264,17 @@ class ListadoTicketsComponent extends Component
 
     function encuesta()
     {
+        
         $ticket=Ticket::find($this->ticket_id);
+        // dd($ticket->id);
+        //validacion encuesta
+        $this->validate([
+            'score'=>'required',
+            'comments'=>'required|max:255',
+        ]);
 
         encuesta::create([
-            'ticket_id' => $ticket->id,
+            'ticket_id' => $this->ticket_id,
             'score'=>$this->score,
             'comments' => $this->comments
         ]);

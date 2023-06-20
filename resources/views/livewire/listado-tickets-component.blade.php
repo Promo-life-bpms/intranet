@@ -43,13 +43,11 @@
                             </td>
                             <td>
 
-                                <button type="button" class="btn btn-success btn-sm " data-bs-toggle="modal"
-                                    data-bs-target="#ModalVer" wire:click="verTicket({{ $ticket->id }})"><i
-                                        class="bi bi-eye"></i></button>
-                                <button type="button" class="btn btn-success btn-sm " data-bs-toggle="modal"
-                                    data-bs-target="#ModalEncuesta" wire:click="verTicket({{ $ticket->id }})" hidden><i
-                                        class="bi bi-card-checklist" hidden></i></button>
+
                                 @if ($ticket->status->name == 'Creado' || $ticket->status->name == 'En proceso' || $ticket->status->name == 'Resuelto')
+                                    <button type="button" class="btn btn-success btn-sm " data-bs-toggle="modal"
+                                        data-bs-target="#ModalVer" wire:click="verTicket({{ $ticket->id }})"><i
+                                            class="bi bi-eye"></i></button>
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#ModalEditar" wire:click="editarTicket({{ $ticket->id }})"><i
                                             class="bi bi-pencil"></i></button>
@@ -57,6 +55,15 @@
                                     <button type="button" class="btn btn-info btn-sm"
                                         onclick="finalizar({{ $ticket->id }})"><i
                                             class="bi bi-check-square"></i></button>
+                                @else
+                                    <button type="button" class="btn btn-success btn-sm " data-bs-toggle="modal"
+                                        data-bs-target="#ModalVer" wire:click="verTicket({{ $ticket->id }})"><i
+                                            class="bi bi-eye"></i></button>
+
+                                        
+                                    <button type="button" class="btn btn-success btn-sm " data-bs-toggle="modal"
+                                        data-bs-target="#ModalEncuesta" wire:click="verTicket({{ $ticket->id }})"><i
+                                            class="bi bi-card-checklist"></i></button>
                                 @endif
                             </td>
                         </tr>
@@ -543,80 +550,99 @@
         </div>
     </div>
     {{-- Modal Encuesta --}}
-    <div wire:ignore.self class="modal" tabindex="-1" id="ModalEncuesta" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div wire:ignore.self class="modal fade" tabindex="-1" id="ModalEncuesta" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable ">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Califica nuestro servicio</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                            <form method="POST">
-                                @csrf
-                                <style>
-                                    #form {
-                                        width: 250px;
-                                        margin: 0 auto;
-                                        height: 50px;
-                                    }
-                                
-                                    #form label {
-                                        font-size: 30px; /* Tamaño de fuente ajustado */
-                                        margin-right: 10px; /* Margen derecho para separar las estrellas */
-                                    }
-                                
-                                    input[type="radio"] {
-                                        display: none;
-                                    }
-                                
-                                    label {
-                                        color: grey;
-                                    }
-                                
-                                    .clasificacion {
-                                        direction: rtl;
-                                        unicode-bidi: bidi-override;
-                                    }
-                                
-                                    label:hover,
-                                    label:hover~label {
-                                        color: orange;
-                                    }
-                                
-                                    input[type="radio"]:checked~label {
-                                        color: orange;
-                                    }
-                                </style>
-                                <div>
-                                    <p><span class="fw-bold">Puntua</span></p>
-                                    <p class="clasificacion">
-                                        <input id="radio1" type="radio" name="estrellas" value="5" wire:model="score">
-                                        <!--
-                                        --><label for="radio1">★</label>
-                                        <!--
-                                        --><input id="radio2" type="radio" name="estrellas" value="4" wire:model="score">
-                                        <!--
-                                        --><label for="radio2">★</label>
-                                        <!--
-                                        --><input id="radio3" type="radio" name="estrellas" value="3" wire:model="score">
-                                        <!--
-                                        --><label for="radio3">★</label>
-                                        <!--
-                                        --><input id="radio4" type="radio" name="estrellas" value="2" wire:model="score">
-                                        <!--
-                                        --><label for="radio4">★</label>
-                                        <!--
-                                        --><input id="radio5" type="radio" name="estrellas" value="1" wire:model="score">
-                                        <!--
-                                        --><label for="radio5">★</label>
-                                    </p>
-                                </div>
-                                <p><span class="fw-bold">Comentarios :</span></p>
-                                <textarea wire:model="comments" name="description" id="" cols="80" rows="1"></textarea>
-                            </form>
+                    <form method="POST">
+                        @csrf
+                        <style>
+                            #form {
+                                width: 250px;
+                                margin: 0 auto;
+                                height: 50px;
+                            }
+
+                            #form label {
+                                font-size: 200px;
+                                /* Tamaño de fuente ajustado */
+                                margin-right: 10px;
+                                /* Margen derecho para separar las estrellas */
+                            }
+
+                            input[type="radio"] {
+                                display: none;
+
+                            }
+
+                            label {
+                                color: grey;
+                            }
+
+                            .clasificacion {
+                                direction: rtl;
+                                unicode-bidi: bidi-override;
+                            }
+
+                            label:hover,
+                            label:hover~label {
+                                color: orange;
+                            }
+
+                            input[type="radio"]:checked~label {
+                                color: orange;
+                            }
+                        </style>
+
+                        <div class="d-flex justify-content-center">
+                            <p class="clasificacion">
+                                <input id="radio1" type="radio" name="estrellas" value="5"
+                                    wire:model="score" class="form-check-input me-1 fs-1" id="estrella_5">
+                                <label for="radio1" class="fs-1">★</label>
+                                <input id="radio2" type="radio" name="estrellas" value="4"
+                                    wire:model="score" class="form-check-input me-1 fs-1" id="estrella_4">
+                                <label for="radio2" class="fs-1">★</label>
+                                <input id="radio3" type="radio" name="estrellas" value="3"
+                                    wire:model="score" class="form-check-input me-1 fs-1" id="estrella_3">
+                                <label for="radio3" class="fs-1">★</label>
+                                <input id="radio4" type="radio" name="estrellas" value="2"
+                                    wire:model="score" class="form-check-input me-1 fs-1" id="estrella_2">
+                                <label for="radio4" class="fs-1">★</label>
+                                <input id="radio5" type="radio" name="estrellas" value="1"
+                                    wire:model="score" class="form-check-input me-1 fs-1" id="estrella_1">
+                                <label for="radio5" class="fs-1">★</label>
+                            </p>
+
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            @error('score')
+                                <span>
+                                    <font color="red"> *Selecciona alguna estrella* </font>
+                                </span>
+                                <br>
+                            @enderror
+                        </div>
+                        <p><span class="fw-bold text-center">¿Qué tan satisfecho estas con el servicio?:</span></p>
+                        <div class="d-flex justify-content-center">
+                            <textarea wire:model="comments" name="description" id="comentario" cols="45" rows="3" name="comments"
+                                class="rounded-3"></textarea>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            @error('comments')
+                                <span>
+                                    <font color="red"> *Este campo es obligatorio* </font>
+                                </span>
+                                <br>
+                            @enderror
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    {{-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> --}}
                     <button wire:click="encuesta" type="button" class="btn btn-primary">Enviar</button>
                     <div wire:loading.flex wire:target="encuesta">
                         Enviando
@@ -816,17 +842,14 @@
                 showConfirmButton: false,
                 timer: 1500
             })
+            $('#ModalEncuesta').modal('hide');
+            // document.getElementById('estrella_1').value="";
+            // document.getElementById('estrella_2').value="";
+            // document.getElementById('estrella_3').value="";
+            // document.getElementById('estrella_4').value="";
+            // document.getElementById('estrella_5').value="";
         });
 
-        window.addEventListener('category_empty', () => {
-            Swal.fire({
-
-                icon: 'erro',
-                title: 'La categoria no tiene un usuario asignado',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        })
 
         function finalizar(id) {
             Swal.fire({
@@ -845,7 +868,7 @@
                         'success'
                     )
 
-                    $('#ModalEncuesta').modal('show');
+                    // $('#ModalEncuesta').modal('show');
                 } else {
                     return;
                 }

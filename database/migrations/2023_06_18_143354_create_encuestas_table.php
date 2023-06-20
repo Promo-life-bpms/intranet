@@ -13,7 +13,7 @@ class CreateEncuestasTable extends Migration
      */
     public function up()
     {
-        Schema::create('encuestas', function (Blueprint $table) {
+        Schema::create('soporte_encuestas', function (Blueprint $table) {
             $table->id();
             $table->string('comments');
             $table->foreignId('ticket_id')->references('id')->on('soporte_tickets');
