@@ -21,36 +21,39 @@
 
                 <tbody>
                     @foreach ($datos as $dato)
-                        <tr>    
-                            <td style="text-align: center">{{$dato->id}}</td>
-                            <td style="text-align: center">{{$dato->user->name.' '. $dato->user->lastname}}</td>
-                            <td>
-                                @if ($dato->status == 'Aprobada')
-                                    <div class="d-flex justify-content-center">
-                                        <span class="badge bg-success">{{$dato->status}}</span>
-                                    </div>
-    
-                                    @elseif($dato->status == 'Rechazada')
-                                    <div class="d-flex justify-content-center">
-                                        <span class="badge bg-danger">{{ $dato->status }}</span>
-                                    </div>
-    
-                                    @elseif($dato->status == 'Preaprobada')
-                                    <div class="d-flex justify-content-center">
-                                        <span class="badge bg-warning text-dark">{{ $dato->status }}</span>
-                                    </div>
-    
-                                    @elseif($dato->status == 'Solicitud Creada')
-                                    <div class="d-flex justify-content-center">
-                                        <span class="badge bg-info text-dark">{{ $dato->status }}</span>
-                                    </div>
-                                @endif
-                            </td>
-                            <td style="text-align: center">{{$dato->created_at}}</td>
-                            <td style="text-align: center">
-                                <a href="{{ route('admin.Team.details', $dato->id)}}" class="btn btn-primary">Ver más</a>
-                            </td>
-                        </tr>
+                        @if($dato->name === auth()->id())
+                            <input type="hidden" {{$dato->name}}>
+                                <tr>    
+                                    <td style="text-align: center">{{$dato->id}}</td>
+                                    <td style="text-align: center">{{$dato->user->name.' '. $dato->user->lastname}}</td>
+                                    <td>
+                                        @if ($dato->status == 'Aprobada')
+                                            <div class="d-flex justify-content-center">
+                                                <span class="badge bg-success">{{$dato->status}}</span>
+                                            </div>
+            
+                                            @elseif($dato->status == 'Rechazada')
+                                            <div class="d-flex justify-content-center">
+                                                <span class="badge bg-danger">{{ $dato->status }}</span>
+                                            </div>
+            
+                                            @elseif($dato->status == 'Preaprobada')
+                                            <div class="d-flex justify-content-center">
+                                                <span class="badge bg-warning text-dark">{{ $dato->status }}</span>
+                                            </div>
+            
+                                            @elseif($dato->status == 'Solicitud Creada')
+                                            <div class="d-flex justify-content-center">
+                                                <span class="badge bg-info text-dark">{{ $dato->status }}</span>
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td style="text-align: center">{{$dato->created_at}}</td>
+                                    <td style="text-align: center">
+                                        <a href="{{ route('admin.Team.details', $dato->id)}}" class="btn btn-primary">Ver más</a>
+                                    </td>
+                                </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>
