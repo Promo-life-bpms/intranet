@@ -43,32 +43,34 @@ public function index1()
 public function createTeamRequest(Request $request)
 {
 /*dd($request);*/
-      $request->validate([
-        'type_of_user' => 'required',
-        'area' => 'required',
-        'extension'=>'required',
-        'immediate_boss'=>'required',
-        'company'=>'required',
-        'computer_type'=>'required',
-        'cell_phone'=>'required',
-        'number'=>'required',
-        'extension_number'=>'required',
-        'equipment_to_use'=>'required',
-        'accessories'=>'required',
-        'previous_user'=>'required',
-        'distribution_and_forwarding'=>'required',
-        'others'=>'required',
-        'access_to_server_shared_folder'=>'required',
-        'folder_path'=>'required',
-        'type_of_access'=>'required',
-        'observations'=>'required'
-      ]);
+    //   $request->validate([
+    //     'type_of_user' => 'required',
+    //     'area' => 'required',
+    //     'extension'=>'required',
+    //     'immediate_boss'=>'required',
+    //     'company'=>'required',
+    //     'computer_type'=>'required',
+    //     'cell_phone'=>'required',
+    //     'number'=>'required',
+    //     'extension_number'=>'required',
+    //     'equipment_to_use'=>'required',
+    //     'accessories'=>'required',
+    //     'previous_user'=>'required',
+    //     'distribution_and_forwarding'=>'required',
+    //     'others'=>'required',
+    //     'access_to_server_shared_folder'=>'required',
+    //     'folder_path'=>'required',
+    //     'type_of_access'=>'required',
+    //     'observations'=>'required'
+    //   ]);
 
     $data = [];
-    array_push($data,(object)[
+     array_push($data,(object)[
         'odoo_users' => json_encode([$request->odoo_users, $request->odoo_users5, $request->odoo_users4, $request->odoo_users3, $request->odoo_users2, $request->odoo_users1 ]),
         'work_profile_in_odoo' => json_encode([$request->work_profile_in_odoo, $request->work_profile_in_odoo5, $request->work_profile_in_odoo4, $request->work_profile_in_odoo3, $request->work_profile_in_odoo2, $request->work_profile_in_odoo1]) 
-    ]);
+     ]);
+
+
     $data2 = [];
     array_push($data2,(object)[
         'email' => json_encode([$request->email, $request->email5, $request->email4, $request->email3, $request->email2, $request->email1 ]),
@@ -112,7 +114,7 @@ public function createTeamRequest(Request $request)
     $request_team->observations = $request->observations;
     $request_team->status = 'Solicitud Creada';
     $request_team->save();
-    return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!');  
+    return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!', 'data',$data);  
 }
 
 public function user($id)

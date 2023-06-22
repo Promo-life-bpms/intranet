@@ -16,7 +16,7 @@ class CreateRequestForSystemsAndCommunicationsServicesTable extends Migration
         Schema::create('request_for_systems_and_communications_services', function (Blueprint $table) {
             $table->id();
             $table->string('type_of_user')->nullable();
-            $table->string('name')->nullable();
+            $table->foreignId('name')->references('id')->on('users')->onDelete('cascade');
             $table->date('date_admission')->nullable();
             $table->string('area')->nullable();
             $table->string('departament')->nullable();

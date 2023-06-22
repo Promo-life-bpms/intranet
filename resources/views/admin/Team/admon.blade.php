@@ -23,7 +23,7 @@
                     @foreach ($admon_requests as $admon_request)
                         <tr>    
                             <td style="text-align: center">{{$admon_request->id}}</td>
-                            <td style="text-align: center">{{$admon_request->name}}</td>
+                            <td style="text-align: center">{{$admon_request->user->name}}</td>
                             <td>
                                 @if ($admon_request->status == 'Aprobada')
                                     <div class="d-flex justify-content-center">

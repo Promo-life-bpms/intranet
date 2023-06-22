@@ -55,9 +55,9 @@
             <div class="col-md-6">
                 <h5 class="title mt-3" style="font-size: 15px;">Datos Generales del Personal de Nuevo Ingreso</h5>
                     <p class="description" style="font-size: 15px;">
-                        id: {{$information_request->id}}<br>
+                        id de Solicitud: {{$information_request->id}}<br>
                         Tipo de usuario: {{$information_request->type_of_user}}<br>
-                        Nombre: {{$information_request->name}}<br>
+                        Nombre: {{$information_request->user->name}}<br>
                         Fecha requerida: {{$information_request->date_admission}}<br>
                         Área: {{$information_request->area}}<br>
                         Departamento: {{$information_request->departament}}<br>

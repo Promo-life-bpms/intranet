@@ -13,4 +13,9 @@ class TeamRequest extends Model
 
     protected $fillable = ['odoo_users', 'work_profile_in_odoo'];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'name');
+    }
+
 }
