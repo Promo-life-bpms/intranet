@@ -24,13 +24,13 @@ class notificacionPJ extends Notification
     public $ubicacion;
     public $hora_inicio;
     public $hora_fin;
+    public $engrave;
     public $invitados;
-    public $material;
     public $cantidadSillas;
     public $cantidadProjectores;
     public $description;
-    public function __construct($PM,$dueño,$title,$nombre_sala, $ubicacion, $hora_inicio,$hora_fin,$invitados,$material,$cantidadSillas,
-                                $cantidadProjectores,$description)
+    public function __construct($PM, $dueño, $title, $nombre_sala, $ubicacion, $hora_inicio, $hora_fin, $engrave,
+                                $invitados, $cantidadSillas, $cantidadProjectores, $description)
     {
         $this->PM=$PM;
         $this->dueño=$dueño;
@@ -39,8 +39,8 @@ class notificacionPJ extends Notification
         $this->ubicacion=$ubicacion;
         $this->hora_inicio=$hora_inicio;
         $this->hora_fin=$hora_fin;
+        $this->engrave=$engrave;
         $this->invitados=$invitados;
-        $this->material=$material;
         $this->cantidadSillas=$cantidadSillas;
         $this->cantidadProjectores=$cantidadProjectores;
         $this->description=$description;
@@ -74,8 +74,8 @@ class notificacionPJ extends Notification
                         'ubicacion'=>$this->ubicacion,
                         'hora_inicio'=>$this->hora_inicio,
                         'hora_fin'=>$this->hora_fin,
+                        'engrave'=>$this->engrave,
                         'invitados'=>$this->invitados,
-                        'material'=>$this->material,
                         'cantidadSillas'=>$this->cantidadSillas,
                         'cantidadProjectores'=>$this->cantidadProjectores,
                         'description'=>$this->description,

@@ -95,24 +95,46 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        {!! Form::label('chair_loan', 'Cantidad de sillas:') !!}
+                                        {!! Form::number('chair_loan', 0, ['class' => 'form-control']) !!}
+                                        @error('chair_loan')
+                                        <br>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
                             
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        {!!Form::label('material', 'Material:')!!}
+                                        {!!Form::label('proyector', 'Cantidad de proyectores:')!!}
+                                        {!!Form::number('proyector', 0,['class'=>'form-control'])!!}
+                                        @error('proyector')
                                         <br>
-                                        {{ Form::checkbox('material[]','Sillas', null, ['class' => 'material-checkbox']) }}
-                                        {{ Form::label('material[]', 'Sillas')}}
-                                        {{ Form::number('chair_loan', null,['id'=>'sillas', 'class'=>'form-control sillas-input','placeholder' => 'Número de sillas que utilizará','style' => 'display: none;' ])}}
-                                        <br>
-                                        {{ Form::checkbox('material[]','Proyector', null, ['class' => 'material-checkbox']) }}
-                                        {{ Form::label('material[]', 'Proyector')}}
-                                        {{ Form::number('proyector', null, ['id' => 'proyectores', 'class' => 'form-control proyectores-input', 'placeholder' => 'Número de proyectores que utilizará', 'style' => 'display: none;']) }}
-
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
                             
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        {!! Form::label('engrave', 'Grabar reunión:') !!}
+                                        <br>
+                                        {{ Form::checkbox('engrave', 'Sí', null, ['class' => 'single-checkbox']) }}
+                                        {{ Form::label('engrave_si', 'Sí') }}
+                                        <br>
+                                        {{ Form::checkbox('engrave', 'No', null, ['class' => 'single-checkbox']) }}
+                                        {{ Form::label('engrave_no', 'No') }}
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -121,10 +143,10 @@
                                         @error('description')
                                         <br>
                                         @enderror
-                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        
 
                             <div class="modal-footer">
                                 {!! Form::submit('Enviar notificaciones', ['class' => 'btn btn-success']) !!}
@@ -193,7 +215,7 @@
                             <div class="row form-group">
                                 <div class="col-sm">
                                     {!! Form::label('department_id', 'Departamento:') !!}
-                                    {!! Form::select('department_id', $departments, null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
+                                    {!! Form::select('department_id', $departments, $evento->department_id, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
                                     @error('department_id')
                                     <br>
                                     @enderror
@@ -214,18 +236,41 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        {!!Form::label('material', 'Material:')!!}
+                                        {!!Form::label('chair_loan', 'Cantidad de sillas:')!!}
+                                        {!!Form::number('chair_loan', $evento->chair_loan,['class'=>'form-control'])!!}
+                                        @error('chair_loan')
                                         <br>
-                                        {{ Form::checkbox('material[]','Sillas', null, ['class' => 'material-checkbox']) }}
-                                        {{ Form::label('material[]', 'Sillas',$evento->material)}}
-                                        {{ Form::number('chair_loan', $evento->chair_loan,['id'=>'sillas', 'class'=>'form-control sillas','placeholder' => 'Número de sillas que utilizará','style' => 'display: none;' ])}}
-                                        <br>
-                                        {{ Form::checkbox('material[]','Proyector', null, ['class' => 'material-checkbox']) }}
-                                        {{ Form::label('material[]', 'Proyector',$evento->material)}}
-                                        {{ Form::number('proyector', $evento->proyector, ['id' => 'proyectores', 'class' => 'form-control proyectores', 'placeholder' => 'Número de proyectores que utilizará', 'style' => 'display: none;']) }}
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        {!!Form::label('proyector', 'Cantidad de proyectores:')!!}
+                                        {!!Form::number('proyector', $evento->proyector,['class'=>'form-control'])!!}
+                                        @error('proyector')
+                                        <br>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        {!! Form::label('engrave', 'Grabar reunión:') !!}
+                                        <br>
+                                        {{ Form::checkbox('engrave', 'Sí', $evento->engrave == 'Sí', ['class' => 'single-checkbox']) }}
+                                        {{ Form::label('engrave_si', 'Sí') }}
+                                        <br>
+                                        {{ Form::checkbox('engrave', 'No', $evento->engrave == 'No', ['class' => 'single-checkbox']) }}
+                                        {{ Form::label('engrave_no', 'No') }}
+                                    </div>
+                                </div>
+                            </div>
+
 
                             <div class="row">
                                 <div class="col-md-12">
@@ -266,6 +311,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
     <script>
         $('.form-delete').submit(function(e) {
             e.preventDefault();
@@ -390,34 +436,15 @@
             });
         });
     </script>
-    @endforeach
+    
     <script>
         $(document).ready(function() {
-            // Establecer valores predeterminados en 0 al cargar la página
-            $('.sillas-input').val('0');
-            $('.proyectores-input').val('0');
-            
-            $('.material-checkbox').change(function() {
-                if ($(this).is(':checked')) {
-                    var checkboxValue = $(this).val();
-                    if (checkboxValue === 'Sillas') {
-                        $('.sillas-input').show();
-                    } else if (checkboxValue === 'Proyector') {
-                        $('.proyectores-input').show();
-                    }
-                } else {
-                    var checkboxValue = $(this).val();
-                    if (checkboxValue === 'Sillas') {
-                        $('.sillas-input').hide();
-                        $('.sillas-input').val('0');
-                    } else if (checkboxValue === 'Proyector') {
-                        $('.proyectores-input').hide();
-                        $('.proyectores-input').val('0');
-                    }
-                }
+            $('.single-checkbox').on('change', function() {
+                $('.single-checkbox').not(this).prop('checked', false);
             });
         });
     </script>
+    @endforeach
 
     <script>
         $(document).ready(function() {  

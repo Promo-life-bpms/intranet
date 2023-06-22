@@ -23,11 +23,10 @@ class notificacionSistemas extends Notification
     public $ubicacion;
     public $hora_inicio;
     public $hora_fin;
-    public $material;
     public $cantidadProyectores;
     public $description;
     public function __construct($Sistemas, $dueño, $nombre_sala, $ubicacion, $hora_inicio, $hora_fin,
-                                $material, $cantidadProyectores, $description)
+                                $cantidadProyectores, $description)
     {
         $this->Sistemas=$Sistemas;
         $this->dueño=$dueño;
@@ -35,7 +34,6 @@ class notificacionSistemas extends Notification
         $this->ubicacion=$ubicacion;
         $this->hora_inicio=$hora_inicio;
         $this->hora_fin=$hora_fin;
-        $this->material=$material;
         $this->cantidadProyectores=$cantidadProyectores;
         $this->description=$description;
     }
@@ -67,7 +65,6 @@ class notificacionSistemas extends Notification
                         'ubicacion'=>$this->ubicacion,
                         'hora_inicio'=>$this->hora_inicio,
                         'hora_fin'=>$this->hora_fin,
-                        'material'=>$this->material,
                         'cantidadProyectores'=>$this->cantidadProyectores,
                         'description'=>$this->description,
         ])

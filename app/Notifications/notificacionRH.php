@@ -22,10 +22,9 @@ class notificacionRH extends Notification
     public $ubicacion;
     public $hora_inicio;
     public $hora_fin;
-    public $material;
     public $cantidadSillas;
     public $description;
-    public function __construct($RH,$dueño,$nombre_sala, $ubicacion, $hora_inicio,$hora_fin,$material,$cantidadSillas,$description)
+    public function __construct($RH,$dueño,$nombre_sala, $ubicacion, $hora_inicio,$hora_fin,$cantidadSillas,$description)
     {
         $this->RH=$RH;
         $this->dueño=$dueño;
@@ -33,7 +32,6 @@ class notificacionRH extends Notification
         $this->ubicacion=$ubicacion;
         $this->hora_inicio=$hora_inicio;
         $this->hora_fin=$hora_fin;
-        $this->material=$material;
         $this->cantidadSillas=$cantidadSillas;
         $this->description=$description;
     }
@@ -65,7 +63,6 @@ class notificacionRH extends Notification
                         'ubicacion'=>$this->ubicacion,
                         'hora_inicio'=>$this->hora_inicio,
                         'hora_fin'=>$this->hora_fin,
-                        'material'=>$this->material,
                         'cantidadSillas'=>$this->cantidadSillas,
                         'description'=>$this->description,
         ])

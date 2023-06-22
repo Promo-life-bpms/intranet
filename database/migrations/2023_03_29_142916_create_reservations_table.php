@@ -18,8 +18,9 @@ class CreateReservationsTable extends Migration
             $table->string('title');
             $table->dateTime('start');
             $table->dateTime('end');
+            $table->string('department_id');
             $table->string('guest');
-            $table->string('material');
+            $table->string('engrave');
             $table->integer('chair_loan');
             $table->integer('proyector');
             $table->string('description');
@@ -27,9 +28,6 @@ class CreateReservationsTable extends Migration
             $table->foreignId('id_sala')->references('id')->on('boardrooms')->onDelete('cascade');
         });
     }
-    
-
-
     /**
      * Reverse the migrations.
      *

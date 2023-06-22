@@ -29,8 +29,9 @@ class ReservationController extends Controller
         $personas= User::all();
         $boardroom = boardroom::all()->pluck('name', 'id');
         $eventos = Reservation::all();
+        $usuarios = User::all();
         $departments  = Department::pluck('name', 'id')->toArray();
-        return view('admin.room.index', compact('user','salitas','personas','boardroom','eventos','departments'));
+        return view('admin.room.index', compact('user','salitas','personas','boardroom','eventos','departments','usuarios'));
     }
     ///////////////////////////////////////////////////////BUSCAR POR DEPARTAMENTOS//////////////////////////////////////
     public function Positions($id)
@@ -124,18 +125,12 @@ class ReservationController extends Controller
                 return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados.");
             }
         }
-    
-        //OBTENEMOS EL ARREGLO QUE DE LA VISTA (ARREGLO DEL MATERIAL)//
-        $seleccionarMaterial= $request->material;
-        //CONVERTIMOS EL ARREGLO EN STRING PARA PODER GUARDAR LA INFORMACIÓN//
-        $mate= implode(','.' ',$seleccionarMaterial);
-    
         //CREAMOS UN ARREGLO PARA OBTENER LOS DATOS NECESARIOS DEL GUEST//
-        $invitades=[];
+        $invi=[];
         $usuarios=User::all();
         foreach($usuarios as $usuario){
             if($request->has('guest'.strval($usuario->id))){
-                array_push($invitades,$usuario->id);
+                array_push($invi,$usuario->id);
             }   
         }
 
@@ -144,8 +139,9 @@ class ReservationController extends Controller
         $evento->title = $request->title;
         $evento->start = $request->start;
         $evento->end = $request->end;
-        $evento->guest = json_encode($invitades);
-        $evento->material = $mate;
+        $evento->guest = json_encode($invi);
+        $evento->department_id=$request->department_id;
+        $evento->engrave= $request->engrave;
         $evento->chair_loan= $request->chair_loan;
         $evento->proyector= $request->proyector;
         $evento->description = $request->description;
@@ -154,50 +150,57 @@ class ReservationController extends Controller
         $evento->save();
 
         //OBTENCIÓN DE INFORMACIÓN PARA ENVIAR LOS CORREOS//
+        //LE DAMOS FORMATO A LAS FECHAS//
         $horainicio= Carbon::parse($request->start)->format('Y-m-d H:i');
         $horafin= Carbon::parse($request->end)->format('Y-m-d H:i');
+        //OBTENEMOS LA INFORMACIÓN DE LA SALA//
         $sala= $evento->boordroms->name;
         $ubica=$evento->boordroms->location;
+        //AUTENTIFICAMOS AL USUARIO PERO CON SU NOMBRE//
         $name= auth()->user()->name;
-    
-        //CORREO PARA LOS INVIDATOS DE LA REUNIÓN//
+
+        //OBTENEMOS A TODOS LOS USUARIOS DEL FORMULARIO//
         $invitades=[];
         $usuarios=User::all();
         foreach($usuarios as $usuario){
             if($request->has('guest'.strval($usuario->id))){
                 array_push($invitades,$usuario->name);
-                ///Enviar correos que tengan este id///
-                $invitados= implode(','.' ',$invitades);
-                $usuario->notify(new NotificacionSalas ($name, $invitados, $horainicio, $horafin, $ubica, $sala, $request->description));
+                $invitados= implode(','.' ',$invitades);   
             }   
+        }
+        //CORREO PARA LOS INVIDATOS DE LA REUNIÓN//
+        $IDs = $invitades;
+        foreach($IDs as $invit){
+            $usuario->notify(new NotificacionSalas ($name, $invit, $horainicio, $horafin, $ubica, $sala, $request->description));
         }
 
         //CORREO PARA EL DEPARTAMENTO DE PROJECT MANAGER//
         $Project =User::where('id', 31)->first()->name;
         $informar =User::where('id', 31)->first();
         $informar->notify(new notificacionPJ ($Project, $name, $request->title, $sala,$ubica, $horainicio, $horafin,
-                                              $invitados, $mate, $request->chair_loan, $request->proyector,
+                                              $request->engrave,$invitados, $request->chair_loan, $request->proyector,
                                               $request->description));
                                               
         //CORREO PARA EL DEPARTAMENTO DE RECURSOS HUMANOS PARA MATERIAL (SILLAS)//
         if ($request->chair_loan > 0) {
-            $RH =User::where('id', 6)->first()->name;
-            $RecursosHumanos =User::where('id', 6)->first();
-            $RecursosHumanos->notify(new  notificacionRH ($RH, $name, $sala, $ubica, $horainicio, $horafin, $mate, $request->chair_loan,
-                                                          $request->description));
+            $userIDs = [6, 9, 118]; // IDS DEL PERSONAL DE RECURSOS HUMANOS//
+            foreach ($userIDs as $userID) {
+                $RH = User::where('id', $userID)->first()->name;
+                $RecursosHumanos = User::where('id', $userID)->first();
+                $RecursosHumanos->notify(new notificacionRH($RH, $name, $sala, $ubica, $horainicio, $horafin, $request->chair_loan, 
+                                                                $request->description));
+            }
         }
-        
         //CORREO PARA EL DEPARTAMENTO DE SISTEMAS PARA MATERIAL (PROYECTORES)//
         if ($request->proyector > 0) {
             $SISTEMAS =User::where('id', 127)->first()->name;
             $DS =User::where('id', 127)->first();
-            $DS->notify(new  notificacionSistemas ($SISTEMAS, $name, $sala, $ubica, $horainicio, $horafin, $mate, $request->proyector,
+            $DS->notify(new  notificacionSistemas ($SISTEMAS, $name, $sala, $ubica, $horainicio, $horafin, $request->proyector,
                                                    $request->description));
         }
-
         return redirect()->back()->with('message', "Reservación creada correctamente.");
     }
-    //////////////////////////////////////////////Función para editar/////////////////////////////////////////////////
+    //////////////////////////////////////////////FUNCIÓN PARA EDITAR/////////////////////////////////////////////////
     public function update(Request $request)
     {
         //INFORMACIÓN QUE DEBE VALIDAR QUE SE ENCUENTRE//
@@ -271,80 +274,84 @@ class ReservationController extends Controller
                 return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados");
             }
         }
-
-        //OBTENEMOS EL ARREGLO QUE DE LA VISTA (ARREGLO DEL MATERIAL)//
-        $seleccionarMaterial= $request->material;
-        //CONVERTIMOS EL ARREGLO EN STRING PARA PODER GUARDAR LA INFORMACIÓN//
-        $mate= implode(','.' ',$seleccionarMaterial);
-
         //CREAMOS UN ARREGLO PARA OBTENER LOS DATOS NECESARIOS DEL GUEST//
-        $ejemplo=[];
+        $invitades=[];
         $usuarios=User::all();
         foreach($usuarios as $usuario){
             if($request->has('guest'.strval($usuario->id))){
-                array_push($ejemplo,$usuario->id);
-                ///Enviar correos que tengan este id///   
+                array_push($invitades,$usuario->id);
+                $invitados= implode(','.' ',$invitades);   
             }   
         }
 
         DB::table('reservations')->where('id', $request->id_evento)->update([
             'title' => $request->title, 'start' => $request->start,
-            'end' => $request->end, 'guest' => json_encode($ejemplo), 'material' => $mate,
-            'chair_loan' => $request->chair_loan,'proyector' => $request->proyector, 'description' => $request->description, 'id_sala' => $request->id_sala
-            ]);
+            'end' => $request->end, 'department_id'=>$request->department_id,
+            'guest' => json_encode($invitades),'engrave' => $request->engrave,
+            'chair_loan' => $request->chair_loan,'proyector' => $request->proyector, 
+            'description' => $request->description, 'id_sala' => $request->id_sala
+        ]);
             
         //OBTENCIÓN DE INFORMACIÓN PARA ENVIAR LOS CORREOS//
+        //LE DAMOS FORMATO A LAS FECHAS//
         $horainicio= Carbon::parse($request->start)->format('Y-m-d H:i');
         $horafin= Carbon::parse($request->end)->format('Y-m-d H:i');
+        //OBTENEMOS LA SALA//
         $sala= $request->id_sala;
         $ubica = boardroom::where('id', $sala)->value('location');
         $names = boardroom::where('id', $sala)->value('name');
         $name= auth()->user()->name;
-        
-            //CORREO PARA LOS INVIDATOS DE LA REUNIÓN//
+
+        //CREAMOS UN ARREGLO PARA OBTENER LOS DATOS NECESARIOS DEL GUEST//
         $invitades=[];
         $usuarios=User::all();
         foreach($usuarios as $usuario){
             if($request->has('guest'.strval($usuario->id))){
                 array_push($invitades,$usuario->name);
-                ///Enviar correos que tengan este id///
-                $invitados= implode(','.' ',$invitades);
-                $usuario->notify(new NotificacionEdit ($name, $invitados, $horainicio, $horafin, $ubica,$names, $request->description));
-            }
+                $asistentes= implode(','.' ',$invitades);   
+            }   
         }
-            
+        //CORREO PARA LOS INVIDATOS DE LA REUNIÓN//
+        $IDs = $invitades;
+        foreach($IDs as $invit){
+            $usuario->notify(new NotificacionEdit ($name, $invit, $horainicio, $horafin, $ubica, $sala, $request->description));
+        }
+
         //CORREO PARA EL DEPARTAMENTO DE PROJECT MANAGER//
         $Project =User::where('id', 31)->first()->name;
         $informar =User::where('id', 31)->first();
         $informar->notify(new notificacionPJEdit ($Project, $name, $request->title, $names,$ubica, $horainicio, $horafin,
-                                                  $invitados,$mate, $request->chair_loan, $request->proyector,
+                                                  $request->engrave,$asistentes, $request->chair_loan, $request->proyector,
                                                   $request->description));
                                                   
         //CORREO PARA EL DEPARTAMENTO DE RECURSOS HUMANOS PARA MATERIAL (SILLAS)//
         if ($request->chair_loan > 0) {
-            $RH =User::where('id', 6)->first()->name;
-            $RecursosHumanos =User::where('id', 6)->first();
-            $RecursosHumanos->notify(new  notificacionRHEdit ($RH, $name, $names, $ubica, $horainicio, $horafin, $mate, $request->chair_loan,
-                                                              $request->description));
+            $userIDs = [6, 9, 118]; // Agrega los IDs de usuario adicionales que deseas obtener
+            foreach ($userIDs as $userID) {
+                $RH = User::where('id', $userID)->first()->name;
+                $RecursosHumanos = User::where('id', $userID)->first();
+                $RecursosHumanos->notify(new notificacionRHEdit($RH, $name, $names, $ubica, $horainicio, $horafin, $request->chair_loan, 
+                                                                $request->description));
+            }
         }
             
         //CORREO PARA EL DEPARTAMENTO DE SISTEMAS PARA MATERIAL (PROYECTORES)//
         if ($request->proyector > 0) {
             $SISTEMAS =User::where('id', 127)->first()->name;
             $DS =User::where('id', 127)->first();
-            $DS->notify(new  notificacionSistemasEdit ($SISTEMAS, $name, $names, $ubica, $horainicio, $horafin, $mate, $request->proyector,
+            $DS->notify(new  notificacionSistemasEdit ($SISTEMAS, $name, $names, $ubica, $horainicio, $horafin, $request->proyector,
                                                        $request->description));
         }
-        
+
         return redirect()->back()->with('message2', "Evento editado correctamente.");
     }
-    //////////////////////////////////////////////Metodo eliminar///////////////////////////////////////////////////
+    //////////////////////////////////////////////FUNCIÓN ELIMINAR///////////////////////////////////////////////////
     public function destroy(Request $request)
     {
         DB::table('reservations')->where('id', $request->id_evento)->delete();
         return redirect()->back()->with('message1', 'Evento eliminado.');
     }
-    /////////////////////////////////////////////Mostrar eventos////////////////////////////////////////////////////
+    /////////////////////////////////////////////MOSTRAR EVENTOS////////////////////////////////////////////////////
     public function view(Reservation $reservation)
     {
         $reservation = Reservation::all();
