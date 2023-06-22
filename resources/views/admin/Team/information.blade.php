@@ -57,7 +57,7 @@
                     <p class="description" style="font-size: 15px;">
                         id de Solicitud: {{$information_request->id}}<br>
                         Tipo de usuario: {{$information_request->type_of_user}}<br>
-                        Nombre: {{$information_request->user->name}}<br>
+                        Nombre: {{$information_request->user->name.' '. $information_request->user->lastname}}<br>
                         Fecha requerida: {{$information_request->date_admission}}<br>
                         Área: {{$information_request->area}}<br>
                         Departamento: {{$information_request->departament}}<br>

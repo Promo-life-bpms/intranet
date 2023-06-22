@@ -33,36 +33,32 @@ public function index()
 public function index1()
 {
     $datos = ModelsTeamRequest::all();
-    /*$datos = DB::table('request_team')
-            ->select('request_team.*')
-            ->orderBy('id')
-            ->get();*/
     return view('admin.team.record')->with('datos', $datos);
 }
 
 public function createTeamRequest(Request $request)
 {
 /*dd($request);*/
-    //   $request->validate([
-    //     'type_of_user' => 'required',
-    //     'area' => 'required',
-    //     'extension'=>'required',
-    //     'immediate_boss'=>'required',
-    //     'company'=>'required',
-    //     'computer_type'=>'required',
-    //     'cell_phone'=>'required',
-    //     'number'=>'required',
-    //     'extension_number'=>'required',
-    //     'equipment_to_use'=>'required',
-    //     'accessories'=>'required',
-    //     'previous_user'=>'required',
-    //     'distribution_and_forwarding'=>'required',
-    //     'others'=>'required',
-    //     'access_to_server_shared_folder'=>'required',
-    //     'folder_path'=>'required',
-    //     'type_of_access'=>'required',
-    //     'observations'=>'required'
-    //   ]);
+    $request->validate([
+    'type_of_user' => 'required',
+    'area' => 'required',
+    'extension'=>'required',
+    'immediate_boss'=>'required',
+    'company'=>'required',
+    'computer_type'=>'required',
+    'cell_phone'=>'required',
+    'number'=>'required',
+    'extension_number'=>'required',
+    'equipment_to_use'=>'required',
+    'accessories'=>'required',
+    'previous_user'=>'required',
+    'distribution_and_forwarding'=>'required',
+    'others'=>'required',
+    'access_to_server_shared_folder'=>'required',
+    'folder_path'=>'required',
+    'type_of_access'=>'required',
+    'observations'=>'required'
+    ]);
 
     $data = [];
      array_push($data,(object)[

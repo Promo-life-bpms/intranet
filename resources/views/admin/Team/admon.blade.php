@@ -14,7 +14,7 @@
                         <th scope="col" style="text-align: center">ID de Solicitud</th>
                         <th scope="col" style="text-align: center">Solicitante</th>
                         <th scope="col" style="text-align: center">Estado</th>
-                        <th scope="col" style="text-align: center">Fecha de creación</th>
+                        <th scope="col" style="text-align: center">Fecha de Creación</th>
                         <th scope="col" style="text-align: center">Opciones</th>
                     </tr>
                 </thead>
@@ -23,7 +23,7 @@
                     @foreach ($admon_requests as $admon_request)
                         <tr>    
                             <td style="text-align: center">{{$admon_request->id}}</td>
-                            <td style="text-align: center">{{$admon_request->user->name}}</td>
+                            <td style="text-align: center">{{$admon_request->user->name.' '. $admon_request->user->lastname}}</td>
                             <td>
                                 @if ($admon_request->status == 'Aprobada')
                                     <div class="d-flex justify-content-center">

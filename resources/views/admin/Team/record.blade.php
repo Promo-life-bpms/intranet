@@ -11,62 +11,46 @@
             <table class="table table-striped" id="table-directory">
                 <thead>
                     <tr>
-                        <th scope="col" style="text-align: center">Categoria</th>
-                        <th scope="col" style="text-align: center">Descripción</th>
-                        <th scope="col" style="text-align: center">Estado</th>
                         <th scope="col" style="text-align: center">ID de Solicitud</th>
+                        <th scope="col" style="text-align: center">Solicitante</th>
+                        <th scope="col" style="text-align: center">Estado</th>
+                        <th scope="col" style="text-align: center">Fecha de Creación</th>
                         <th scope="col" style="text-align: center">Opciones</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @foreach ($datos as $dato )
-
-                        @if($dato->user_id === auth()->id())
-                            <input type="hidden" {{$dato->user_id}}>
-                            <tr>    
-                                <td style="text-align: center">{{$dato->category}}</td>
-                                <td style="text-align: center">{{$dato->description}}</td>
-
-                                <td>
-                                    @if ($dato->status == 'Aceptado')
+                    @foreach ($datos as $dato)
+                        <tr>    
+                            <td style="text-align: center">{{$dato->id}}</td>
+                            <td style="text-align: center">{{$dato->user->name.' '. $dato->user->lastname}}</td>
+                            <td>
+                                @if ($dato->status == 'Aprobada')
                                     <div class="d-flex justify-content-center">
                                         <span class="badge bg-success">{{$dato->status}}</span>
                                     </div>
-
-                                    
-                                        @elseif($dato->status == 'Rechazado')
+    
+                                    @elseif($dato->status == 'Rechazada')
                                     <div class="d-flex justify-content-center">
                                         <span class="badge bg-danger">{{ $dato->status }}</span>
                                     </div>
-
-                                        @elseif($dato->status == 'Pendiente')
+    
+                                    @elseif($dato->status == 'Preaprobada')
                                     <div class="d-flex justify-content-center">
                                         <span class="badge bg-warning text-dark">{{ $dato->status }}</span>
                                     </div>
-
-                                        @elseif($dato->status == 'Solicitud enviada')
+    
+                                    @elseif($dato->status == 'Solicitud Creada')
                                     <div class="d-flex justify-content-center">
                                         <span class="badge bg-info text-dark">{{ $dato->status }}</span>
                                     </div>
-                                    @endif
-                                </td>
-
-                                <td style="text-align: center">{{$dato->id}}</td>
-
-                                <td>
-                                    @if ($dato->status == 'Aceptado')
-                                        <div class="d-flex justify-content-center">
-                                            <a type="button" class="btn btn-primary"  href="{{ route('admin.Team.details', $dato->id)}}">Ver Más</a>
-                                        </div>
-                                    @else
-                                        <div class="d-flex justify-content-center">
-                                            <a type="button" class="btn btn-primary{{ $dato->status == 'Pendiente' ? ' disabled' : '' }}"  href="{{ route('admin.Team.details', $dato->id)}}" onclick="{{ $dato->status == 'Pendiente' ? 'return false;' : '' }}">Ver Más</a>
-                                        </div>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endif 
+                                @endif
+                            </td>
+                            <td style="text-align: center">{{$dato->created_at}}</td>
+                            <td style="text-align: center">
+                                <a href="{{ route('admin.Team.details', $dato->id)}}" class="btn btn-primary">Ver más</a>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
