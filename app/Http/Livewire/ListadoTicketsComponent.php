@@ -8,7 +8,6 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use  App\Models\Soporte\Ticket;
 use App\Models\Soporte\Categoria;
-use App\Models\Soporte\Solucion;
 use App\Models\Soporte\Mensaje;
 use App\Models\Soporte\encuesta;
 use App\Models\Soporte\Historial;
@@ -27,7 +26,7 @@ class ListadoTicketsComponent extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $mensajes, $user,$score,$comments
-    ,$prioridad;
+    ,$prioridad,$estrellas;
 
     public function render()
     {
@@ -200,6 +199,7 @@ class ListadoTicketsComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
+        $this->estrellas=$ticket->score;
         $this->prioridad=$ticket->priority->time;
         $this->mensajes = $ticket;
         $this->ticket_solucion = $ticket;
@@ -264,10 +264,11 @@ class ListadoTicketsComponent extends Component
 
     function encuesta()
     {
-        
+
         $ticket=Ticket::find($this->ticket_id);
-        // dd($ticket->id);
-        //validacion encuesta
+        $category = Categoria::find($ticket->category_id);
+
+        $usuarios = $category->usuarios;
         $this->validate([
             'score'=>'required',
             'comments'=>'required|max:255',
@@ -275,6 +276,7 @@ class ListadoTicketsComponent extends Component
 
         encuesta::create([
             'ticket_id' => $this->ticket_id,
+            'support_id' =>$usuarios[0]['id'],
             'score'=>$this->score,
             'comments' => $this->comments
         ]);

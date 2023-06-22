@@ -63,5 +63,4 @@ class Ticket extends Model
         return $this->belongsTo(SoporteTiempo::class,'priority_id');
     }
 
-
 }

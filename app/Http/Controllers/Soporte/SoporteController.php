@@ -8,6 +8,7 @@ use App\Models\Soporte\Categoria;
 use App\Http\Controllers\Controller;
 use App\Models\Soporte\Ticket;
 use App\Models\User;
+use App\Models\SoporteTiempo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
@@ -45,10 +46,17 @@ class SoporteController extends Controller
         $ticketsPorMes = [];
         $ticketCounts = [];
         $totalTicket = [];
-
+        $namePriority = [];
         //variables para guardar la fecha que se quiere filtrar
         $startDate = null;
         $endDate = null;
+
+
+        //Trae los nombres de las prioridaes
+        $prioridad = SoporteTiempo::where('id', '>', 1)->get();
+        $namePriority = $prioridad->pluck('priority')->toArray();
+
+        //Contar los tickets
 
 
         // traer la cantidad de tickets por un usuario
@@ -101,7 +109,7 @@ class SoporteController extends Controller
             $ticketsPorMes[] = $monthTickets->count();
         }
 
-        
+
 
         $ticketsResueltos = Ticket::where('status_id', 4)->count();
         $ticketsEnProceso = Ticket::where('status_id', 2)->count();
@@ -121,6 +129,7 @@ class SoporteController extends Controller
             'totalTicket',
             'startDate',
             'endDate',
+            'namePriority',
 
 
 
@@ -133,7 +142,6 @@ class SoporteController extends Controller
 
         $startDate = $request->startDate;
         $endDate = $request->endDate;
-
         $labels = [];
         $meses = [];
         $usuario = [];

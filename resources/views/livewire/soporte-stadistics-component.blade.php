@@ -1,11 +1,12 @@
 <div>
     <br>
     <div class="card-header">
-        <h1 class="fs-3 mx-auto">Estadísticas Tickets</h1>
+        <h1 class="fs-3 mx-auto">Esddadadísticas Tickets</h1>
     </div>
     <form class="form-delete">
         @method('Post')
         @csrf
+        
         <div class="d-flex justify-content-center">
             <div class="form-group me-4">
                 <label><b>Fecha de inicio :</b></label>
@@ -85,6 +86,13 @@
                         </div>
                         <canvas id="porUsuario" height="700"></canvas>
                     </div>
+                    <div class="col mx-auto">
+                        <div class="card shadow card-total">
+                            <h6 class="text-center">Prioridad</h6>
+                        </div>
+                        <canvas id="prioridad" height="700"></canvas>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -168,6 +176,29 @@
 
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('porUsuario').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'bar', // Cambia el tipo de gráfico según tus necesidades
+                data: {
+                    labels: @json($name), // Etiquetas obtenidas del componente
+                    datasets: [{
+                        label: 'Tickets enviados por usuarios', // Etiqueta del conjunto de datos
+                        data: @json($totalTicket), // Datos obtenidos del componente
+                        backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD',
+                            '#F5C2A8'
+                        ], // Color de fondo del gráfico
+                        borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8',
+                            '#FFADAD'
+                        ], // Color del borde del gráfico
+                        borderWidth: 1 // Ancho del borde del gráfico
+                    }]
+                },
+                options: {
+                }
+            });
+        });
+
+        document.addEventListener('livewire:load', function() {
+            var ctx = document.getElementById('prioridad').getContext('2d');
             var chart = new Chart(ctx, {
                 type: 'bar', // Cambia el tipo de gráfico según tus necesidades
                 data: {

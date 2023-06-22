@@ -45,25 +45,34 @@
 
 
                                 @if ($ticket->status->name == 'Creado' || $ticket->status->name == 'En proceso' || $ticket->status->name == 'Resuelto')
-                                    <button type="button" class="btn btn-success btn-sm " data-bs-toggle="modal"
+                                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#ModalVer" wire:click="verTicket({{ $ticket->id }})"><i
                                             class="bi bi-eye"></i></button>
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#ModalEditar" wire:click="editarTicket({{ $ticket->id }})"><i
                                             class="bi bi-pencil"></i></button>
-
                                     <button type="button" class="btn btn-info btn-sm"
                                         onclick="finalizar({{ $ticket->id }})"><i
                                             class="bi bi-check-square"></i></button>
                                 @else
-                                    <button type="button" class="btn btn-success btn-sm " data-bs-toggle="modal"
+                                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#ModalVer" wire:click="verTicket({{ $ticket->id }})"><i
                                             class="bi bi-eye"></i></button>
-
-                                        
-                                    <button type="button" class="btn btn-success btn-sm " data-bs-toggle="modal"
-                                        data-bs-target="#ModalEncuesta" wire:click="verTicket({{ $ticket->id }})"><i
-                                            class="bi bi-card-checklist"></i></button>
+                                    @if ($ticket->score)
+                                        @if ($ticket->score->score < 0)
+                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#ModalEncuesta"
+                                                wire:click="verTicket({{ $ticket->id }})">
+                                                <i class="bi bi-card-checklist"></i>
+                                            </button>
+                                        @endif
+                                    @else
+                                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#ModalEncuesta"
+                                            wire:click="verTicket({{ $ticket->id }})">
+                                            <i class="bi bi-card-checklist"></i>
+                                        </button>
+                                    @endif
                                 @endif
                             </td>
                         </tr>
@@ -597,7 +606,6 @@
                                 color: orange;
                             }
                         </style>
-
                         <div class="d-flex justify-content-center">
                             <p class="clasificacion">
                                 <input id="radio1" type="radio" name="estrellas" value="5"
@@ -612,11 +620,11 @@
                                 <input id="radio4" type="radio" name="estrellas" value="2"
                                     wire:model="score" class="form-check-input me-1 fs-1" id="estrella_2">
                                 <label for="radio4" class="fs-1">★</label>
+
                                 <input id="radio5" type="radio" name="estrellas" value="1"
                                     wire:model="score" class="form-check-input me-1 fs-1" id="estrella_1">
                                 <label for="radio5" class="fs-1">★</label>
                             </p>
-
                         </div>
                         <div class="d-flex justify-content-center">
                             @error('score')
@@ -728,7 +736,6 @@
                 return new MyUploadAdapter(loader);
             };
         }
-
         ClassicEditor
             .create(document.querySelector('#editorEditar'), {
                 removePlugins: ['MediaEmbed'],
@@ -792,7 +799,6 @@
             }
 
         })
-
         window.addEventListener('ticket_success', () => {
             Swal.fire({
                 icon: 'success',
@@ -800,9 +806,7 @@
                 showConfirmButton: false,
                 timer: 1500
             })
-
             $('#ModalAgregar').modal('hide')
-
             ckEditorCreate.setData("");
 
         });
@@ -814,11 +818,8 @@
                 showConfirmButton: false,
                 timer: 1500
             })
-
             $('#ModalEditar').modal('hide')
             ckEditorEdit.setData("");
-
-
         });
         window.addEventListener('Mensaje', () => {
             Swal.fire({
@@ -830,8 +831,6 @@
             })
             // $('#ModalVer').modal('hide');
             ckEditorMensaje.setData("");
-
-
         });
 
         window.addEventListener('Encuesta', () => {
@@ -867,7 +866,6 @@
                         'El ticket a sido finalizado',
                         'success'
                     )
-
                     // $('#ModalEncuesta').modal('show');
                 } else {
                     return;

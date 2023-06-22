@@ -23,7 +23,6 @@
                             <td>{{ $tickets->name }}</td>
                             <td class="col-2">{{ $tickets->category->name }}</td>
                             <td class="col-2">
-
                                 @if ($tickets->status->name == 'Resuelto')
                                     <div class="alert-sm alert-success rounded-3" role="alert">
                                         {{ $tickets->status->name }}</div>
@@ -56,10 +55,12 @@
                                             wire:click="verTicket({{ $tickets->id }})">
                                             <i class="bi bi-person-fill"></i>
                                         </button>
-                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#Modalprioridad" wire:click="verTicket({{$tickets->id}})">
-                                        <i class="bi bi-clock"></i>
-                                    </button>
+
+                                        <button id="btnModalPrioridad" type="button" class="btn btn-primary btn-sm"
+                                            data-bs-toggle="modal" data-bs-target="#Modalprioridad"
+                                            wire:click="verTicket({{ $tickets->id }})">
+                                            <i class="bi bi-clock"></i>
+                                        </button>
                                     @endif
                                 @endif
                             </td>
@@ -93,14 +94,24 @@
                                 type="button" role="tab" aria-controls="historial"
                                 aria-selected="false">Mensajes</button>
                         </li>
+                        @if ($status)
+
+                            @if ($status->status_id == 4)
+                                <li class="nav-item" role="presentation" wire:ignore>
+                                    <button class="nav-link" id="calificacion-tab" data-bs-toggle="tab"
+                                        data-bs-target="#calificacion" type="button" role="tab"
+                                        aria-controls="historial" aria-selected="false">Evaluación Servicio</button>
+                                </li>
+                            @endif
+                        @endif
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
                     <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"
-                            wire:ignore.self>
+                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                            aria-labelledby="home-tab" wire:ignore.self>
                             <form method="POST">
                                 @csrf
                                 <p><span class="fw-bold ">Problema a resolver :</span> <span
@@ -149,6 +160,87 @@
 
                         </div>
 
+                        <div class="tab-pane fade" id="calificacion" role="tabpanel" wire:ignore.self>
+                            <div class="d-flex justify-content-center">
+                                <style>
+                                    #form {
+                                        width: 250px;
+                                        margin: 0 auto;
+                                        height: 50px;
+                                    }
+
+                                    #form label {
+                                        font-size: 200px;
+                                        /* Tamaño de fuente ajustado */
+                                        margin-right: 10px;
+                                        /* Margen derecho para separar las estrellas */
+                                    }
+
+                                    input[type="radio"] {
+                                        display: none;
+
+                                    }
+
+                                    label {
+                                        color: grey;
+                                    }
+
+                                    .clasificacion {
+                                        direction: rtl;
+                                        unicode-bidi: bidi-override;
+                                    }
+
+                                    label:hover,
+                                    label:hover~label {
+                                        color: orange;
+                                    }
+
+                                    input[type="radio"]:checked~label {
+                                        color: orange;
+                                    }
+                                </style>
+
+                              
+                                <div class="d-flex justify-content-center">
+                                    @if ($estrellas)                        
+                                        <p class="clasificacion">
+                                            <input id="radio1" disabled disabled type="radio" name="estrellas"
+                                                value="{{ $estrellas }}" class="form-check-input me-1 fs-1"
+                                                id="estrella_5" @if ($estrellas->score == 5) checked @endif>
+                                            <label for="radio1" class="fs-1">★</label>
+                                            <input id="radio2" disabled type="radio" name="estrellas"
+                                                value="{{ $estrellas }}" class="form-check-input me-1 fs-1"
+                                                id="estrella_4" @if ($estrellas->score == 4) checked @endif>
+                                            <label for="radio2" class="fs-1">★</label>
+                                            <input id="radio3" disabled type="radio" name="estrellas"
+                                                value="{{ $estrellas }}" class="form-check-input me-1 fs-1"
+                                                id="estrella_3" @if ($estrellas->score == 3) checked @endif>
+                                            <label for="radio3" class="fs-1">★</label>
+                                            <input id="radio4" disabled type="radio" name="estrellas"
+                                                value="{{ $estrellas }}" class="form-check-input me-1 fs-1"
+                                                id="estrella_2" @if ($estrellas->score == 2) checked @endif>
+                                            <label for="radio4" class="fs-1">★</label>
+                                            <input id="radio5" disabled type="radio" name="estrellas"
+                                                value="{{ $estrellas }}" class="form-check-input me-1 fs-1"
+                                                id="estrella_1" @if ($estrellas->score == 1) checked @endif>
+                                            <label for="radio5" class="fs-1">★</label>
+                                        </p>
+                                    @endif
+                                       
+                                </div> 
+                                 
+                            </div>
+                            @if ($comments)
+                            <div class="d-flex justify-content-center">
+                                <span class="fw-bold">Comentarios :</span>
+                                <p>
+                                 {{$comments->comments}}
+                                </p>
+                            </div>
+                            @endif 
+                       
+
+                        </div>
                         <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab"
                             wire:ignore.self>
                             @if ($historial)
@@ -494,10 +586,10 @@
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="inputGroupSelect01">Prioridad</label>
                         {{-- <input wire:model="tiempo" type="time" name="tiempo"> --}}
-                        <select wire:model="tiempo"  name="tiempo" class="form-select">
+                        <select wire:model="tiempo" name="tiempo" class="form-select">
                             <option value="" selected>Seleccionar</option>
                             @foreach ($priority as $prioritys)
-                                <option value="{{$prioritys->id}}">{{$prioritys->priority}}</option>
+                                <option value="{{ $prioritys->id }}">{{ $prioritys->priority }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -509,13 +601,13 @@
                     @enderror
                 </div>
                 <div class="modal-footer">
-                    @if (isset($tickets->id))    
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button"
-                    class="btn btn-primary"wire:click="time({{ $tickets->id }})">Asignar</button>
-                    <div wire:loading.flex wire:target="time">
-                        Asignar
-                    </div>
+                    @if (isset($tickets->id))
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button"
+                            class="btn btn-primary"wire:click="time({{ $tickets->id }})">Asignar</button>
+                        <div wire:loading.flex wire:target="time">
+                            Asignar
+                        </div>
                     @endif
                 </div>
             </div>
@@ -657,7 +749,6 @@
             })
 
             // $('#ModalAgregar').modal('hide')
-
             ckeEditorMensaje.setData("");
 
         });
@@ -681,7 +772,8 @@
                 timer: 1500
             })
 
-            $('#Modalprioridad').modal('hide')
+            $('#Modalprioridad').modal('hide');
+
         });
 
 

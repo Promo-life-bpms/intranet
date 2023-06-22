@@ -17,6 +17,7 @@ class CreateEncuestasTable extends Migration
             $table->id();
             $table->string('comments');
             $table->foreignId('ticket_id')->references('id')->on('soporte_tickets');
+            $table->foreignId('support_id')->references('id')->on('users');
             $table->integer('score');
             $table->timestamps();
         });

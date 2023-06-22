@@ -12,6 +12,7 @@ class encuesta extends Model
     protected $fillable=[
         'ticket_id',
         'comments',
-        'score'
+        'score',
+        'support_id'
     ];
 }

@@ -18,9 +18,10 @@ use App\Notifications\SoportePrioridadNotification;
 class SoporteSolucionComponent extends Component
 {
     use WithPagination;
-    public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes, $usuario_reasignacion, $tiempo;
+    public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes, $usuario_reasignacion, $tiempo,$estrellas,
+    $comments;
     protected $paginationTheme = 'bootstrap';
-
+    protected $listeners=['ocultarBoton'];
     public function render()
     {
 
@@ -74,6 +75,9 @@ class SoporteSolucionComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
+        // dd($this->comments=$ticket->score->comments);
+        $this->estrellas=$ticket->score;
+        $this->comments=$ticket->score;
         $this->usuario = $ticket->user;
         $this->status = $ticket;
         $this->historial = $ticket;
@@ -221,10 +225,8 @@ class SoporteSolucionComponent extends Component
         ];
 
         $usuario->notify(new SoportePrioridadNotification($notificationPriority));
-
         $this->dispatchBrowserEvent('Tiempo');
 
-
      }
-
+     
 }
