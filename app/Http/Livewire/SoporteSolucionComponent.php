@@ -75,7 +75,6 @@ class SoporteSolucionComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
-        // dd($this->comments=$ticket->score->comments);
         $this->estrellas=$ticket->score;
         $this->comments=$ticket->score;
         $this->usuario = $ticket->user;
@@ -184,8 +183,18 @@ class SoporteSolucionComponent extends Component
         $ticket->update([
             'support_id' => $this->usuario_reasignacion
         ]);
+
+
         //aqui busco al usuario que se guarda para reasignar
         $user = User::find($this->usuario_reasignacion);
+
+        Historial::create([
+            'ticket_id' => $this->ticket_id,
+            'user_id' => auth()->user()->id,
+            'type' => 'Reasignacion',
+            'data' => $user->name
+        ]);
+
 
         $reasignacionTicket = [
             'name' => auth()->user()->name,
@@ -194,8 +203,6 @@ class SoporteSolucionComponent extends Component
 
         //aqui envio la notificacion al usuario
         $user->notify(new ReasignacionTicketSoporte($reasignacionTicket));
-
-
         $this->dispatchBrowserEvent('reasignacion');
     }
 
@@ -217,6 +224,14 @@ class SoporteSolucionComponent extends Component
             ]
         );
 
+        Historial::create([
+            'ticket_id' => $this->ticket_id,
+            'user_id' => auth()->user()->id,
+            'type' => 'Tiempo',
+            'data' =>$ticket->priority->time
+        ]);
+
+
         //notificamos
         $notificationPriority=[
             'name'=>auth()->user()->name,
@@ -228,5 +243,5 @@ class SoporteSolucionComponent extends Component
         $this->dispatchBrowserEvent('Tiempo');
 
      }
-     
+
 }

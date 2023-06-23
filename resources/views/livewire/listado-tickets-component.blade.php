@@ -182,8 +182,10 @@
                                     id="inputGroupSelect01">
                                     <option value="" selected>Seleccionar</option>
                                     @foreach ($categorias as $categoriaa)
+                                    @if ($categoriaa->usuarios->isNotEmpty())
                                         <option value="{{ $categoriaa->id }}">{{ $categoriaa->name }}</option>
-                                    @endforeach
+                                    @endif
+                                @endforeach
                                 </select>
                                 @error('categoria')
                                     <span class="invalid-feedback">
@@ -250,8 +252,11 @@
                             <p><span class="fw-bold">Categoría :</span> <span
                                     class="Psop">{{ $categoria }}</span></p>
 
+                            @if ($prioridad == '00:00:00')
+                            @else
                             <p><span class="fw-bold">Tiempo estimado a ser resuelto : <span
-                                        class="badge bg-info text-dark">{{ $prioridad }}</span></span></p>
+                                class="badge bg-info text-dark">{{ $prioridad }}</span></span></p>
+                            @endif
 
 
                             <p><span class="fw-bold">Descripción :</span></p>
@@ -495,6 +500,171 @@
                                                                 ({{ $cambio->created_at->diffForHumans() }})</div>
                                                             <h4 class="card-title text-green">Ticket Cerrado</h4>
                                                             <p class="card-text text-dark">{!! $cambio->data !!}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @elseif ($cambio->type == 'Reasignacion')
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                    <div class="row h-50">
+                                                        <div class="col">&nbsp;</div>
+                                                        <div class="col ">&nbsp;</div>
+                                                    </div>
+                                                    <h5 class="m-2">
+                                                        <span class=" rounded-circle bg-light "><i
+                                                                class="bi bi-check2-all">
+                                                            </i></span>
+                                                    </h5>
+                                                    <div class="row h-50">
+                                                        <div class="col border-end">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="col">
+                                                            &nbsp;
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col py-2">
+                                                    <div class="card">
+                                                        <div class="card-body  shadow ">
+                                                            <div class="float-end text-dark">
+                                                                ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                            <h4 class="card-title text-green">Ticket reasignado a :</h4>
+                                                            <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @elseif ($cambio->type == 'Tiempo')
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                    <div class="row h-50">
+                                                        <div class="col">&nbsp;</div>
+                                                        <div class="col ">&nbsp;</div>
+                                                    </div>
+                                                    <h5 class="m-2">
+                                                        <span class=" rounded-circle bg-light "><i class="bi bi-clock"></i></span>
+                                                    </h5>
+                                                    <div class="row h-50">
+                                                        <div class="col border-end">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="col">
+                                                            &nbsp;
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col py-2">
+                                                    <div class="card">
+                                                        <div class="card-body  shadow ">
+                                                            <div class="float-end text-dark">
+                                                                ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                            <h4 class="card-title text-green">Tiempo de solución asignado</h4>
+                                                            <p class="card-text text-muted">{!! $cambio->data !!}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @elseif ($cambio->type == 'Encuesta')
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
+                                                    <div class="row h-50">
+                                                        <div class="col">&nbsp;</div>
+                                                        <div class="col ">&nbsp;</div>
+                                                    </div>
+                                                    <h5 class="m-2">
+                                                        <span class=" rounded-circle bg-light "><i class="bi bi-card-checklist"></i></span>
+                                                    </h5>
+                                                    <div class="row h-50">
+                                                        <div class="col border-end">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="col">
+                                                            &nbsp;
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col py-2">
+                                                    <div class="card">
+                                                        <div class="card-body  shadow ">
+                                                            <div class="float-end text-dark">
+                                                                ({{ $cambio->created_at->diffForHumans() }})</div>
+                                                            <h4 class="card-title text-green">Evaluación soporte realizada</h4>
+
+                                                            {{-- <p class="card-text text-muted">{!! $cambio->data !!}</p> --}}
+                                                            <div class="d-flex justify-content-center">
+                                                                <style>
+                                                                    #form {
+                                                                        width: 250px;
+                                                                        margin: 0 auto;
+                                                                        height: 50px;
+                                                                    }
+
+                                                                    #form label {
+                                                                        font-size: 200px;
+                                                                        /* Tamaño de fuente ajustado */
+                                                                        margin-right: 10px;
+                                                                        /* Margen derecho para separar las estrellas */
+                                                                    }
+
+                                                                    input[type="radio"] {
+                                                                        display: none;
+
+                                                                    }
+
+                                                                    label {
+                                                                        color: grey;
+                                                                    }
+
+                                                                    .clasificacion {
+                                                                        direction: rtl;
+                                                                        unicode-bidi: bidi-override;
+                                                                    }
+
+                                                                    label:hover,
+                                                                    label:hover~label {
+                                                                        color: orange;
+                                                                    }
+
+                                                                    input[type="radio"]:checked~label {
+                                                                        color: orange;
+                                                                    }
+                                                                </style>
+                                                                <div class="d-flex justify-content-center">
+                                                                        <p class="clasificacion">
+                                                                            <input id="radio1" disabled disabled type="radio" name="estrellas"
+                                                                                 class="form-check-input me-1 fs-1"
+                                                                                id="estrella_5" @if ($cambio->data == 5) checked @endif>
+                                                                            <label for="radio1" class="fs-1">★</label>
+                                                                            <input id="radio2" disabled type="radio" name="estrellas"
+                                                                                 class="form-check-input me-1 fs-1"
+                                                                                id="estrella_4" @if ($cambio->data == 4) checked @endif>
+                                                                            <label for="radio2" class="fs-1">★</label>
+                                                                            <input id="radio3" disabled type="radio" name="estrellas"
+                                                                                 class="form-check-input me-1 fs-1"
+                                                                                id="estrella_3" @if ($cambio->data == 3) checked @endif>
+                                                                            <label for="radio3" class="fs-1">★</label>
+                                                                            <input id="radio4" disabled type="radio" name="estrellas"
+                                                                                 class="form-check-input me-1 fs-1"
+                                                                                id="estrella_2" @if ($cambio->data == 2) checked @endif>
+                                                                            <label for="radio4" class="fs-1">★</label>
+                                                                            <input id="radio5" disabled type="radio" name="estrellas"
+                                                                                 class="form-check-input me-1 fs-1"
+                                                                                id="estrella_1" @if ($cambio->data == 1) checked @endif>
+                                                                            <label for="radio5" class="fs-1">★</label>
+                                                                        </p>
+
+
+                                                                </div>
+
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

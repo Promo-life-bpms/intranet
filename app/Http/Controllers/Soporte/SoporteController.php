@@ -44,6 +44,7 @@ class SoporteController extends Controller
         $soporte = [];
         $values = [];
         $ticketsPorMes = [];
+        $ticketsPriority=[];
         $ticketCounts = [];
         $totalTicket = [];
         $namePriority = [];
@@ -53,10 +54,17 @@ class SoporteController extends Controller
 
 
         //Trae los nombres de las prioridaes
-        $prioridad = SoporteTiempo::where('id', '>', 1)->get();
-        $namePriority = $prioridad->pluck('priority')->toArray();
+        // $prioridad = SoporteTiempo::where('id', '>', 1)->get();
+        // $namePriority = $prioridad->pluck('priority')->toArray();
+        // $prioritys=['Baja','Media','Alta'];
+        // //Contar los tickets
 
-        //Contar los tickets
+        // foreach($prioritys as $prioridad){
+        //     $conteo=SoporteTiempo::where('priority',$prioritys)->count();
+        //     $ticketsPriority=[$prioridad]=$conteo;
+
+        // }
+        // dd($ticketsPriority);
 
 
         // traer la cantidad de tickets por un usuario

@@ -110,9 +110,9 @@
                                 @break
 
                                 @case('App\Notifications\EncuestaSoporteNotification')
-                                    <p class="my-0">Haz recibido una puntuación de :</p>
-                                    <b>{{ $notification->data['data']['score'] }} Estrellas</b>
-                                    <p class="my-0">Al solucionar el Ticket :
+                                    <b>Recibiste</b>
+                                    <p class="my-0">{{ $notification->data['data']['score'] }} Estrellas</p>
+                                    <p class="my-0">Al resolver:
                                         {{ $notification->data['data']['name_ticket'] }}</p>
                                 @break
 

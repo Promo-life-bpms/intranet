@@ -104,22 +104,15 @@
                         </div>
                         <canvas id="porUsuario" height="200"></canvas>
                     </div>
-                    <div class="col ">
-                        <div class="card shadow card-total">
-                            <h6 class="text-center">Prioridad</h6>
-                        </div>
-                        <canvas id="prioridad" height="200"></canvas>
-                    </div>
-                    <div class="col ">
+                    {{-- <div class="col ">
                         <div class="card shadow card-total">
                             <h6 class="text-center">Evaluacion</h6>
                         </div>
                         <canvas id="estrellas" height="200"></canvas>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
-
     </div>
 @endsection
 @section('scripts')
@@ -237,27 +230,5 @@
             });
         });
 
-        document.addEventListener('livewire:load', function() {
-            var ctx = document.getElementById('prioridad').getContext('2d');
-
-            var chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: @json($namePriority),
-                    datasets: [{
-                        label: 'Usuarios',
-                        data:@json($values) ,
-                        backgroundColor:['#00539C', '#EEA47F', '#EE7F7F', '#006EAD',
-                            '#F5C2A8'
-                        ],
-                        borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8',
-                            '#FFADAD'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {}
-            });
-        });
-    </script>
+   
 @endsection

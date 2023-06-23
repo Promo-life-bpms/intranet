@@ -53,6 +53,11 @@ class Ticket extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function support()
+    {
+        return $this->belongsTo(User::class,'support_id');
+    }
+
     public function score()
     {
         return $this->hasOne(encuesta::class,'ticket_id');

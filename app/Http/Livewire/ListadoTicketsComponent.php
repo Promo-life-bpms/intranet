@@ -147,10 +147,12 @@ class ListadoTicketsComponent extends Component
             'name_ticket' => $ticketEditar->name,
         ];
 
-        $usuarios = $category->usuarios;
-        foreach ($usuarios  as $usuario) {
-            $usuario->notify(new EditarTicketNotification($notificacionEditar));
-        }
+        // $usuarios = $category->usuarios;
+        // foreach ($usuarios  as $usuario) {
+        //     $usuario->notify(new EditarTicketNotification($notificacionEditar));
+        // }
+
+        $ticketEditar->support->notify(new EditarTicketNotification($notificacionEditar));
 
         $this->name = '';
         $this->categoria = ' ';
@@ -191,14 +193,16 @@ class ListadoTicketsComponent extends Component
             ];
 
         //for each para enviar notificacion de status a los usuarios relacionados
-        foreach ($usuarios as $usuarios) {
-            $usuarios->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
-        }
+        // foreach ($usuarios as $usuarios) {
+        //     $usuarios->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
+        // }
+        $actualizar_status->support->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
     }
 
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
+        //  dd($ticket->support_id);
         $this->estrellas=$ticket->score;
         $this->prioridad=$ticket->priority->time;
         $this->mensajes = $ticket;
@@ -254,10 +258,12 @@ class ListadoTicketsComponent extends Component
             'name_ticket' => $ticket->name
         ];
 
-        $usuarios = $category->usuarios;
-        foreach ($usuarios as $usuario) {
-            $usuario->notify(new MessageSoporteNotification($notificationMessage));
-        }
+        // $usuarios = $category->usuarios;
+        // foreach ($usuarios as $usuario) {
+        //     $usuario->notify(new MessageSoporteNotification($notificationMessage));
+        // }
+
+        $ticket->support->notify(new MessageSoporteNotification($notificationMessage));
 
         $this->dispatchBrowserEvent('Mensaje');
     }
@@ -276,10 +282,19 @@ class ListadoTicketsComponent extends Component
 
         encuesta::create([
             'ticket_id' => $this->ticket_id,
-            'support_id' =>$usuarios[0]['id'],
+            'support_id' =>$ticket->support_id,
             'score'=>$this->score,
             'comments' => $this->comments
         ]);
+
+        Historial::create(
+            [
+                'ticket_id' => $this->ticket_id,
+                'user_id' => auth()->user()->id,
+                'type' => 'Encuesta',
+                'data' => $this->score
+            ]
+        );
 
         $notificationEncuesta = [
             'score' => $ticket->score->score,
@@ -287,10 +302,12 @@ class ListadoTicketsComponent extends Component
         ];
 
         $category = Categoria::find($ticket->category_id);
-        $usuarios=$category->usuarios;
-        foreach ($usuarios as $usuario) {
-            $usuario->notify(new EncuestaSoporteNotification($notificationEncuesta));
-        }
+        // $usuarios=$category->usuarios;
+        // foreach ($usuarios as $usuario) {
+        //     $usuario->notify(new EncuestaSoporteNotification($notificationEncuesta));
+        // }
+
+        $ticket->support->notify(new EncuestaSoporteNotification($notificationEncuesta));
 
        $this->dispatchBrowserEvent('Encuesta');
     }
