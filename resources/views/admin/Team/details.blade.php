@@ -80,14 +80,25 @@
     <div class="col-md-6">
         <h5 class="title mt-3" style="font-size: 15px;">Cuenta(s) de Correo(s) Requerida(s)</h5>
             <p class="description" style="font-size: 15px;">
-                Correo: {{$see_details->email}}<br>
+
+                @foreach ($datos=json_decode($see_details->email, true)  as $elemento )
+                    @if($elemento !== null)
+                        Correo: {{$elemento}}<br>
+                    @endif
+                @endforeach
             </p>
     </div>
     
     <div class="col-md-6">
         <h5 class="title mt-3" style="font-size: 15px;">Firma: Número(s) de Contacto Telefónico</h5>
             <p class="description" style="font-size: 15px;">
-                Firma: {{$see_details->signature_or_telephone_contact_numer}}<br>
+
+                @foreach ($datos=json_decode($see_details->signature_or_telephone_contact_numer, true) as $elemento)
+                    @if ($elemento!==null)
+                        Firma:{{$elemento}}<br>
+                    @endif
+                @endforeach
+    
             </p>
     </div>
 
