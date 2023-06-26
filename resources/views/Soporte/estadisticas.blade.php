@@ -120,19 +120,28 @@
     <script>
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('Categoria').getContext('2d');
+
+            var nombres=@json($labels);
+            var datos = @json($values);
+
+            var backgroundColors = [];
+            var borderColors = [];
+
+            for (var i = 0; i < nombres.length; i++) {
+                var colorIndex = i % 5;
+                backgroundColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8'][colorIndex]);
+                borderColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8', '#FFADAD'][colorIndex]);
+            }
+
             var chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: @json($labels),
+                    labels:nombres,
                     datasets: [{
                         label: 'Categorías',
-                        data: @json($values),
-                        backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD',
-                            '#F5C2A8'
-                        ],
-                        borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD',
-                            '#F5C2A8'
-                        ],
+                        data: datos,
+                        backgroundColor:backgroundColors,
+                        borderColor: borderColors,
                         borderWidth: 1
                     }]
                 },
@@ -172,6 +181,16 @@
 
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('TicketsRecibidos').getContext('2d');
+
+            // var nombres= @json($usuario);
+            // var ticket = @json($soporte);
+
+            // for (var i = 0; i < nombres.length; i++) {
+            //     var colorIndex = i % 5;
+            //     backgroundColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8'][colorIndex]);
+            //     borderColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8', '#FFADAD'][colorIndex]);
+            // }
+
             var chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -208,7 +227,7 @@
             var backgroundColors = [];
             var borderColors = [];
 
-            for (var i = 0; i < labels.length; i++) {
+            for (var i = 0; i  <labels.length; i++) {
                 var colorIndex = i % 5;
                 backgroundColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8'][colorIndex]);
                 borderColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8', '#FFADAD'][colorIndex]);
@@ -230,5 +249,5 @@
             });
         });
 
-   
+</script>
 @endsection

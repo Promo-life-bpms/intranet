@@ -200,40 +200,62 @@
                                     }
                                 </style>
                                 <div class="d-flex justify-content-center">
-                                    @if ($estrellas)
+                                    @if ($estrellas && $estrellas->score)
                                         <p class="clasificacion">
-                                            <input id="radio1"  disabled type="radio" name="estrellas"
+                                            {{-- <input id="radio1"  disabled type="radio" name="estrellas" value="{{$estrellas}}"
                                                  class="form-check-input me-1 fs-1"
                                                 id="estrella_5" @if ($estrellas->score == 5) checked @endif>
                                             <label for="radio1" class="fs-1">★</label>
-                                            <input id="radio2" disabled type="radio" name="estrellas"
+                                            <input value="{{$estrellas}}" id="radio2" disabled type="radio" name="estrellas"
                                                  class="form-check-input me-1 fs-1"
                                                 id="estrella_4" @if ($estrellas->score == 4) checked @endif>
                                             <label for="radio2" class="fs-1">★</label>
-                                            <input id="radio3" disabled type="radio" name="estrellas"
+                                            <input id="radio3" value="{{$estrellas}}" disabled type="radio" name="estrellas"
                                                  class="form-check-input me-1 fs-1"
                                                 id="estrella_3" @if ($estrellas->score == 3) checked @endif>
                                             <label for="radio3" class="fs-1">★</label>
-                                            <input id="radio4" disabled type="radio" name="estrellas"
+                                            <input id="radio4" value="{{$estrellas}}" disabled type="radio" name="estrellas"
                                                  class="form-check-input me-1 fs-1"
                                                 id="estrella_2" @if ($estrellas->score == 2) checked @endif>
                                             <label for="radio4" class="fs-1">★</label>
-                                            <input id="radio5" disabled type="radio" name="estrellas"
+                                            <input id="radio5" value="{{$estrellas}}" disabled type="radio" name="estrellas"
                                                  class="form-check-input me-1 fs-1"
                                                 id="estrella_1" @if ($estrellas->score == 1) checked @endif>
-                                            <label for="radio5" class="fs-1">★</label>
+                                            <label for="radio5" class="fs-1">★</label> --}}
+                                            @if ($estrellas->score == 5)
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                            @elseif ($estrellas->score == 4)
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                            @elseif ($estrellas->score == 3)
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                            @elseif ($estrellas->score == 2)
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                            @else
+                                                <label for="radio1" class="fs-1 text-warning">★</label>
+                                            @endif
+
                                         </p>
                                     @endif
                                 </div>
 
                             </div>
                             @if ($comments)
-                            <div class="d-flex justify-content-center">
-                                <span class="fw-bold">Comentarios :</span>
-                                <p>
-                                 {{$comments->comments}}
-                                </p>
-                            </div>
+                                <div class="d-flex justify-content-center">
+                                    <span class="fw-bold">Comentarios :</span>
+                                    <p>
+                                        {{ $comments->comments }}
+                                    </p>
+                                </div>
                             @endif
 
 
@@ -467,7 +489,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @elseif ($cambio->type == 'Reasignacion')
+                                    @elseif ($cambio->type == 'Reasignacion')
                                         <div class="container">
                                             <div class="row">
                                                 <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
@@ -501,7 +523,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @elseif ($cambio->type == 'Tiempo')
+                                    @elseif ($cambio->type == 'Tiempo')
                                         <div class="container">
                                             <div class="row">
                                                 <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
@@ -510,7 +532,8 @@
                                                         <div class="col ">&nbsp;</div>
                                                     </div>
                                                     <h5 class="m-2">
-                                                        <span class=" rounded-circle bg-light "><i class="bi bi-clock"></i></span>
+                                                        <span class=" rounded-circle bg-light "><i
+                                                                class="bi bi-clock"></i></span>
                                                     </h5>
                                                     <div class="row h-50">
                                                         <div class="col border-end">
@@ -526,14 +549,15 @@
                                                         <div class="card-body  shadow ">
                                                             <div class="float-end text-dark">
                                                                 ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                            <h4 class="card-title text-green">Tiempo de solución asignado</h4>
+                                                            <h4 class="card-title text-green">Tiempo de solución
+                                                                asignado</h4>
                                                             <p class="card-text text-muted">{!! $cambio->data !!}</p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        @elseif ($cambio->type == 'Encuesta')
+                                    @elseif ($cambio->type == 'Encuesta')
                                         <div class="container">
                                             <div class="row">
                                                 <div class="col-auto text-center  flex-column  d-none  d-sm-flex">
@@ -542,7 +566,8 @@
                                                         <div class="col ">&nbsp;</div>
                                                     </div>
                                                     <h5 class="m-2">
-                                                        <span class=" rounded-circle bg-light "><i class="bi bi-card-checklist"></i></span>
+                                                        <span class=" rounded-circle bg-light "><i
+                                                                class="bi bi-card-checklist"></i></span>
                                                     </h5>
                                                     <div class="row h-50">
                                                         <div class="col border-end">
@@ -558,7 +583,8 @@
                                                         <div class="card-body  shadow ">
                                                             <div class="float-end text-dark">
                                                                 ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                            <h4 class="card-title text-green">Evaluación soporte realizada</h4>
+                                                            <h4 class="card-title text-green">Evaluación soporte
+                                                                realizada</h4>
 
                                                             {{-- <p class="card-text text-muted">{!! $cambio->data !!}</p> --}}
                                                             <div class="d-flex justify-content-center">
@@ -600,28 +626,38 @@
                                                                     }
                                                                 </style>
                                                                 <div class="d-flex justify-content-center">
-                                                                        <p class="clasificacion">
-                                                                            <input id="radio1" disabled disabled type="radio" name="estrellas"
-                                                                                 class="form-check-input me-1 fs-1"
-                                                                                id="estrella_5" @if ($cambio->data == 5) checked @endif>
-                                                                            <label for="radio1" class="fs-1">★</label>
-                                                                            <input id="radio2" disabled type="radio" name="estrellas"
-                                                                                 class="form-check-input me-1 fs-1"
-                                                                                id="estrella_4" @if ($cambio->data == 4) checked @endif>
-                                                                            <label for="radio2" class="fs-1">★</label>
-                                                                            <input id="radio3" disabled type="radio" name="estrellas"
-                                                                                 class="form-check-input me-1 fs-1"
-                                                                                id="estrella_3" @if ($cambio->data == 3) checked @endif>
-                                                                            <label for="radio3" class="fs-1">★</label>
-                                                                            <input id="radio4" disabled type="radio" name="estrellas"
-                                                                                 class="form-check-input me-1 fs-1"
-                                                                                id="estrella_2" @if ($cambio->data == 2) checked @endif>
-                                                                            <label for="radio4" class="fs-1">★</label>
-                                                                            <input id="radio5" disabled type="radio" name="estrellas"
-                                                                                 class="form-check-input me-1 fs-1"
-                                                                                id="estrella_1" @if ($cambio->data == 1) checked @endif>
-                                                                            <label for="radio5" class="fs-1">★</label>
-                                                                        </p>
+                                                                    <p class="clasificacion">
+                                                                        <input id="radio1" disabled disabled
+                                                                            type="radio" name="estrellas"
+                                                                            class="form-check-input me-1 fs-1"
+                                                                            id="estrella_5"
+                                                                            @if ($cambio->data == 5) checked @endif>
+                                                                        <label for="radio1" class="fs-1">★</label>
+                                                                        <input id="radio2" disabled type="radio"
+                                                                            name="estrellas"
+                                                                            class="form-check-input me-1 fs-1"
+                                                                            id="estrella_4"
+                                                                            @if ($cambio->data == 4) checked @endif>
+                                                                        <label for="radio2" class="fs-1">★</label>
+                                                                        <input id="radio3" disabled type="radio"
+                                                                            name="estrellas"
+                                                                            class="form-check-input me-1 fs-1"
+                                                                            id="estrella_3"
+                                                                            @if ($cambio->data == 3) checked @endif>
+                                                                        <label for="radio3" class="fs-1">★</label>
+                                                                        <input id="radio4" disabled type="radio"
+                                                                            name="estrellas"
+                                                                            class="form-check-input me-1 fs-1"
+                                                                            id="estrella_2"
+                                                                            @if ($cambio->data == 2) checked @endif>
+                                                                        <label for="radio4" class="fs-1">★</label>
+                                                                        <input id="radio5" disabled type="radio"
+                                                                            name="estrellas"
+                                                                            class="form-check-input me-1 fs-1"
+                                                                            id="estrella_1"
+                                                                            @if ($cambio->data == 1) checked @endif>
+                                                                        <label for="radio5" class="fs-1">★</label>
+                                                                    </p>
                                                                 </div>
 
                                                             </div>
