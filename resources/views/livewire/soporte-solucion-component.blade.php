@@ -94,16 +94,15 @@
                                 type="button" role="tab" aria-controls="historial"
                                 aria-selected="false">Mensajes</button>
                         </li>
-                        @if ($status)
-
-                            @if ($status->status_id == 4)
+                        {{-- @if ($estrellas) --}}
+                            @if ($estrellas && $estrellas->score)
                                 <li class="nav-item" role="presentation" wire:ignore>
                                     <button class="nav-link" id="calificacion-tab" data-bs-toggle="tab"
                                         data-bs-target="#calificacion" type="button" role="tab"
                                         aria-controls="historial" aria-selected="false">Evaluación Servicio</button>
                                 </li>
                             @endif
-                        @endif
+                        {{-- @endif --}}
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -202,26 +201,7 @@
                                 <div class="d-flex justify-content-center">
                                     @if ($estrellas && $estrellas->score)
                                         <p class="clasificacion">
-                                            {{-- <input id="radio1"  disabled type="radio" name="estrellas" value="{{$estrellas}}"
-                                                 class="form-check-input me-1 fs-1"
-                                                id="estrella_5" @if ($estrellas->score == 5) checked @endif>
-                                            <label for="radio1" class="fs-1">★</label>
-                                            <input value="{{$estrellas}}" id="radio2" disabled type="radio" name="estrellas"
-                                                 class="form-check-input me-1 fs-1"
-                                                id="estrella_4" @if ($estrellas->score == 4) checked @endif>
-                                            <label for="radio2" class="fs-1">★</label>
-                                            <input id="radio3" value="{{$estrellas}}" disabled type="radio" name="estrellas"
-                                                 class="form-check-input me-1 fs-1"
-                                                id="estrella_3" @if ($estrellas->score == 3) checked @endif>
-                                            <label for="radio3" class="fs-1">★</label>
-                                            <input id="radio4" value="{{$estrellas}}" disabled type="radio" name="estrellas"
-                                                 class="form-check-input me-1 fs-1"
-                                                id="estrella_2" @if ($estrellas->score == 2) checked @endif>
-                                            <label for="radio4" class="fs-1">★</label>
-                                            <input id="radio5" value="{{$estrellas}}" disabled type="radio" name="estrellas"
-                                                 class="form-check-input me-1 fs-1"
-                                                id="estrella_1" @if ($estrellas->score == 1) checked @endif>
-                                            <label for="radio5" class="fs-1">★</label> --}}
+                                    
                                             @if ($estrellas->score == 5)
                                                 <label for="radio1" class="fs-1 text-warning">★</label>
                                                 <label for="radio1" class="fs-1 text-warning">★</label>

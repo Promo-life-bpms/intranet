@@ -118,8 +118,8 @@
 
                                 @case('App\Notifications\SoportePrioridadNotification')
                                     <b>{{$notification->data['data']['name']}}</b>
-                                    <p class="my-0">Tu ticket: {{ $notification->data['data']['name_ticket'] }}</p>
-                                    <p class="my-0">Sera resuelto aprox. en : {{ $notification->data['data']['time'] }}</p>
+                                    <p class="my-0">Ticket :{{ $notification->data['data']['name_ticket'] }}</p>
+                                    <p class="my-0">Sera solucionado aprox. en :{{ $notification->data['data']['time'] }}</p>
                                 @break
                                 @default
                             @endswitch

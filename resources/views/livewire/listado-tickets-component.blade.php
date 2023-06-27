@@ -779,20 +779,20 @@
                         <div class="d-flex justify-content-center">
                             <p class="clasificacion">
                                 <input id="radio1" type="radio" name="estrellas" value="5"
-                                    wire:model="score" class="form-check-input me-1 fs-1" id="estrella_5">
+                                    wire:model="score" class="form-check-input me-1 fs-1">
                                 <label for="radio1" class="fs-1">★</label>
                                 <input id="radio2" type="radio" name="estrellas" value="4"
-                                    wire:model="score" class="form-check-input me-1 fs-1" id="estrella_4">
+                                    wire:model="score" class="form-check-input me-1 fs-1">
                                 <label for="radio2" class="fs-1">★</label>
                                 <input id="radio3" type="radio" name="estrellas" value="3"
-                                    wire:model="score" class="form-check-input me-1 fs-1" id="estrella_3">
+                                    wire:model="score" class="form-check-input me-1 fs-1">
                                 <label for="radio3" class="fs-1">★</label>
                                 <input id="radio4" type="radio" name="estrellas" value="2"
-                                    wire:model="score" class="form-check-input me-1 fs-1" id="estrella_2">
+                                    wire:model="score" class="form-check-input me-1 fs-1">
                                 <label for="radio4" class="fs-1">★</label>
 
                                 <input id="radio5" type="radio" name="estrellas" value="1"
-                                    wire:model="score" class="form-check-input me-1 fs-1" id="estrella_1">
+                                    wire:model="score" class="form-check-input me-1 fs-1">
                                 <label for="radio5" class="fs-1">★</label>
                             </p>
                         </div>
@@ -806,7 +806,7 @@
                         </div>
                         <p><span class="fw-bold text-center">¿Qué tan satisfecho estas con el servicio?:</span></p>
                         <div class="d-flex justify-content-center">
-                            <textarea wire:model="comments" name="description" id="comentario" cols="45" rows="3" name="comments"
+                            <textarea wire:model="comments" name="f" id="comentario" cols="45" rows="3" name="comments"
                                 class="rounded-3"></textarea>
                         </div>
                         <div class="d-flex justify-content-center">
@@ -1012,11 +1012,12 @@
                 timer: 1500
             })
             $('#ModalEncuesta').modal('hide');
-            // document.getElementById('estrella_1').value="";
-            // document.getElementById('estrella_2').value="";
-            // document.getElementById('estrella_3').value="";
-            // document.getElementById('estrella_4').value="";
-            // document.getElementById('estrella_5').value="";
+            // document.getElementById('radio_1').value="";
+            // document.getElementById('radio_2').value="";
+            // document.getElementById('radio_3').value="";
+            // document.getElementById('radio_4').value="";
+            // document.getElementById('radio_5').value="";
+            // document.getElementById('comentario').value="";
         });
 
 

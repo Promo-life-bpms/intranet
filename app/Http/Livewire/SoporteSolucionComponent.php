@@ -22,13 +22,12 @@ class SoporteSolucionComponent extends Component
     $comments;
     protected $paginationTheme = 'bootstrap';
     protected $listeners=['ocultarBoton'];
+
     public function render()
     {
-
         //traer los tipos de prioridad
         $priority = SoporteTiempo::where('id','>',1)->get();
         $categories =  auth()->user()->asignacionCategoria->pluck(["id"]);
-
         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
             ->where('roles.name', '=', 'systems')
@@ -43,8 +42,6 @@ class SoporteSolucionComponent extends Component
             'solucion' => Ticket::where('support_id', auth()->user()->id)->simplePaginate(15)
         ], compact('users', 'ticketReasignado', 'priority'));
     }
-
-
     public function enProceso($id)
     {
 
@@ -71,7 +68,6 @@ class SoporteSolucionComponent extends Component
 
         $user->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
     }
-
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
@@ -184,7 +180,6 @@ class SoporteSolucionComponent extends Component
             'support_id' => $this->usuario_reasignacion
         ]);
 
-
         //aqui busco al usuario que se guarda para reasignar
         $user = User::find($this->usuario_reasignacion);
 
@@ -205,13 +200,10 @@ class SoporteSolucionComponent extends Component
         $user->notify(new ReasignacionTicketSoporte($reasignacionTicket));
         $this->dispatchBrowserEvent('reasignacion');
     }
-
     public function time($id)
     {
-        //me trae el ticket que tiene asignado
+
         $ticket = Ticket::find($id);
-        //para acceder a los datos de resolucion de ticket
-        // dd($ticket->priority);
         $usuario = $ticket->user;
 
         $this->validate([

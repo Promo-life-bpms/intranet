@@ -104,12 +104,12 @@
                         </div>
                         <canvas id="porUsuario" height="200"></canvas>
                     </div>
-                    {{-- <div class="col ">
+                    <div class="col ">
                         <div class="card shadow card-total">
                             <h6 class="text-center">Evaluacion</h6>
                         </div>
-                        <canvas id="estrellas" height="200"></canvas>
-                    </div> --}}
+                        <canvas id="Prioridad" height="200"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -178,19 +178,8 @@
                 options: {}
             });
         });
-
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('TicketsRecibidos').getContext('2d');
-
-            // var nombres= @json($usuario);
-            // var ticket = @json($soporte);
-
-            // for (var i = 0; i < nombres.length; i++) {
-            //     var colorIndex = i % 5;
-            //     backgroundColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8'][colorIndex]);
-            //     borderColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8', '#FFADAD'][colorIndex]);
-            // }
-
             var chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -218,9 +207,38 @@
                 }
             });
         });
-
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('porUsuario').getContext('2d');
+            var labels = @json($name);
+            var data = @json($totalTicket);
+
+            var backgroundColors = [];
+            var borderColors = [];
+
+            for (var i = 0; i  <labels.length; i++) {
+                var colorIndex = i % 5;
+                backgroundColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8'][colorIndex]);
+                borderColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8', '#FFADAD'][colorIndex]);
+            }
+
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: @json($name),
+                    datasets: [{
+                        label: 'Usuarios',
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {}
+            });
+        });
+
+        document.addEventListener('livewire:load', function() {
+            var ctx = document.getElementById('Prioridad').getContext('2d');
             var labels = @json($name);
             var data = @json($totalTicket);
 

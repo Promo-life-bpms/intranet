@@ -8,9 +8,7 @@ use App\Models\Soporte\Categoria;
 use App\Http\Controllers\Controller;
 use App\Models\Soporte\Ticket;
 use App\Models\User;
-use App\Models\SoporteTiempo;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 
 class SoporteController extends Controller
@@ -44,7 +42,7 @@ class SoporteController extends Controller
         $soporte = [];
         $values = [];
         $ticketsPorMes = [];
-        $ticketsPriority=[];
+        $ticketsPriority = [];
         $ticketCounts = [];
         $totalTicket = [];
         $namePriority = [];
@@ -53,25 +51,23 @@ class SoporteController extends Controller
         $endDate = null;
 
 
-        //Trae los nombres de las prioridaes
+        // //Trae los nombres de las prioridaes
         // $prioridad = SoporteTiempo::where('id', '>', 1)->get();
         // $namePriority = $prioridad->pluck('priority')->toArray();
         // $prioritys=['Baja','Media','Alta'];
+
         // //Contar los tickets
 
         // foreach($prioritys as $prioridad){
         //     $conteo=SoporteTiempo::where('priority',$prioritys)->count();
         //     $ticketsPriority=[$prioridad]=$conteo;
-
         // }
         // dd($ticketsPriority);
-
-
         // traer la cantidad de tickets por un usuario
+
         $usuarios = User::has('tickets')->get();
         $name = $usuarios->pluck('name')->toArray();
         $totalTicket = [];
-
         foreach ($usuarios as $usuario) {
             $ticket = Ticket::where('user_id', $usuario->id)->count();
             $totalTicket[] = $ticket;
@@ -138,9 +134,6 @@ class SoporteController extends Controller
             'startDate',
             'endDate',
             'namePriority',
-
-
-
         ));
     }
 
