@@ -85,9 +85,9 @@
                 <h5 class="title mt-3" style="font-size: 15px;">Cuenta(s) de Correo(s) Requerida(s)</h5>
                     <p class="description" style="font-size: 15px;">
 
-                        @foreach ($datos=json_decode($information_request->email, true)  as $elemento )
+                        @foreach ($datos=json_decode($information_request->email, true)  as $index => $elemento )
                             @if($elemento !== null)
-                                Correo: {{$elemento}}<br>
+                                Correo:{{$index + 1}}: {{$elemento}}<br>
                             @endif
                         @endforeach
 
@@ -98,9 +98,9 @@
                 <h5 class="title mt-3" style="font-size: 15px;">Firma: Número(s) de Contacto Telefónico</h5>
                     <p class="description" style="font-size: 15px;">
 
-                        @foreach ($datos=json_decode($information_request->signature_or_telephone_contact_numer, true) as $elemento)
+                        @foreach ($datos=json_decode($information_request->signature_or_telephone_contact_numer, true) as $index => $elemento)
                             @if ($elemento!==null)
-                                Firma:{{$elemento}}<br>
+                                Firma:{{$index + 1}}: {{$elemento}}<br>
                             @endif
                         @endforeach
                     </p>

@@ -722,7 +722,8 @@
                                 '</div>';
                             '</div>' +
                         '</div>' +
-                    $('#contenedor-campos-correo-firma').prepend(nuevoCampo);
+                        $(nuevoCampo).insertBefore('#agregar-campo-de-correo-firma'); // Cambio realizado aquí
+                    // $('#contenedor-campos-correo-firma').append(nuevoCampo);
                     contador++;
         
                     $('input[name="email[]"]').last().attr('id', 'email' + contador);
@@ -768,7 +769,7 @@
                         '</div>' +
                         '</div>';
             
-                    $('#contenedor-de-campos-usuarios-perfil').prepend(nuevoCampo);
+                        $(nuevoCampo).insertBefore('#contenedor-de-campos-usuarios-perfil');
                     contador++;
             
                     $('input[name="odoo_users' + contador + '"]').attr('id', 'odoo_users' + contador);
