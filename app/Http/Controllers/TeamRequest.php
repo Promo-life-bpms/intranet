@@ -134,6 +134,7 @@ public function informationrequest($id)
 {
     $information_request = ModelsTeamRequest::find($id);
     // dd($information_request);
+    
      return view('admin.Team.information', compact('information_request'));
 }
  

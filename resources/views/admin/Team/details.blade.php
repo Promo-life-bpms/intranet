@@ -120,8 +120,19 @@
                 Solid Works: {{$see_details->solid_works}}<br>
                 Autocad: {{$see_details->autocad}}<br>
                 ODOO: {{$see_details->odoo}}<br>
-                Usuario(s) de ODOO: {{$see_details->odoo_users}}<br>
-                Perfil de Trabajo en ODOO {{$see_details->work_profile_in_odoo}}<br>
+                
+                @foreach ($usuarios=json_decode($see_details->odoo_users, true) as $index => $element)
+                    @if ($element!==null)
+                        Usuario(s) de ODOO: {{$index + 1}}: {{$element}}<br>
+                    @endif
+                @endforeach
+
+                @foreach ($perfiles=json_decode($see_details->work_profile_in_odoo, true) as $index => $profile)
+                    @if ($profile!==null)
+                        Perfil de Trabajo en ODOO: {{$index + 1}}: {{$profile}}<br>
+                    @endif
+                @endforeach
+
                 Otros: {{$see_details->others}}<br>
             </p>
     </div>
