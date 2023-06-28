@@ -33,21 +33,21 @@
 
                         <div class="modal-body text-left">
                             <p class="m-0">
-                                <b>Fecha de inicio:</b>
+                                <b>Fecha y hora de inicio:</b>
                                 {{$evento->start. '.'}}
                             </p>
                         </div>
                         
                         <div class="modal-body text-left">
                             <p class="m-0">
-                                <b>Fecha de fin:</b>
+                                <b>Fecha y hora de fin:</b>
                                 {{$evento->end. '.'}}
                             </p>
                         </div>
 
                         <div class="modal-body text-left">
                             <p class="m-0">
-                                <b>Correo de los invitadas:</b>
+                                <b>Invitados:</b>
                                 {{$evento->guest.'.'}}
                              </p>
                         </div>

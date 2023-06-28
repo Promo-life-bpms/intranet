@@ -8,11 +8,12 @@
 
 Título: "{{$title}}".
 
-La reunión se llevará a cabo en el/la: "{{$nombre_sala}}" que está ubicada en: "{{$ubicacion}}".
+La reunión se llevará a cabo en el(la): "{{$nombre_sala}}" que está ubicado(a) en: "{{$ubicacion}}".
+
+Dará comienzo el día "{{$diainicio}}" de "{{$mesinicio}}" del presente año a las "{{$horainicio}}" y 
+finalizará el día "{{$diafin}}" de "{{$mesfin}}" del presente año a las "{{$horafin}}".
 
 {{$dueño}} desea que "{{$engrave}}" se grabe la reunión.
-
-Comenzará: "{{$hora_inicio}}" y finalizará: "{{$hora_fin}}".
 
 Las personas invitadas a la reunión son:
 "{{$invitados}}".

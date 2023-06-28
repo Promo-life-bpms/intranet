@@ -21,19 +21,27 @@ class notificacionSistemas extends Notification
     public $dueño;
     public $nombre_sala;
     public $ubicacion;
-    public $hora_inicio;
-    public $hora_fin;
+    public $diainicio;
+    public $mesinicio;
+    public $horainicio;
+    public $diafin;
+    public $mesfin;
+    public $horafin;
     public $cantidadProyectores;
     public $description;
-    public function __construct($Sistemas, $dueño, $nombre_sala, $ubicacion, $hora_inicio, $hora_fin,
-                                $cantidadProyectores, $description)
+    public function __construct($Sistemas, $dueño, $nombre_sala, $ubicacion, $diainicio, $mesinicio, $horainicio,  
+                                $diafin, $mesfin, $horafin, $cantidadProyectores, $description)
     {
         $this->Sistemas=$Sistemas;
         $this->dueño=$dueño;
         $this->nombre_sala=$nombre_sala;
         $this->ubicacion=$ubicacion;
-        $this->hora_inicio=$hora_inicio;
-        $this->hora_fin=$hora_fin;
+        $this->diainicio=$diainicio;
+        $this->mesinicio=$mesinicio;
+        $this->horainicio=$horainicio;
+        $this->diafin=$diafin;
+        $this->mesfin=$mesfin;
+        $this->horafin=$horafin;
         $this->cantidadProyectores=$cantidadProyectores;
         $this->description=$description;
     }
@@ -63,8 +71,12 @@ class notificacionSistemas extends Notification
                         'dueño'=>$this->dueño,
                         'nombre_sala'=>$this->nombre_sala,
                         'ubicacion'=>$this->ubicacion,
-                        'hora_inicio'=>$this->hora_inicio,
-                        'hora_fin'=>$this->hora_fin,
+                        'diainicio'=>$this->diainicio,
+                        'mesinicio'=>$this->mesinicio,
+                        'horainicio'=>$this->horainicio,
+                        'diafin'=>$this->diafin,
+                        'mesfin'=>$this->mesfin,
+                        'horafin'=>$this->horafin,
                         'cantidadProyectores'=>$this->cantidadProyectores,
                         'description'=>$this->description,
         ])

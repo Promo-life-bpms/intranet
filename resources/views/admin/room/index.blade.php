@@ -215,7 +215,7 @@
                             <div class="row form-group">
                                 <div class="col-sm">
                                     {!! Form::label('department_id', 'Departamento:') !!}
-                                    {!! Form::select('department_id', $departments, $evento->department_id, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
+                                    {!! Form::select('department_id', $departments,null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
                                     @error('department_id')
                                     <br>
                                     @enderror
@@ -227,6 +227,7 @@
                                             {!! Form::label('guest[]', 'Usuarios: ', ['class' => 'required'] ) !!}
                                             <div class =" d-flex flex-column mb-3">
                                                 <div id="seleccionarEditar{{$evento->id}}"></div>
+                                                {{ Form::label('guest[]'.$evento->id, $evento->guest) }}
                                             </div>
                                         </div>                            
                                     </div>
@@ -417,13 +418,11 @@
                                     value: value
                                 });
 
-                                // Crea una etiqueta label para el radio
                                 var newLabel = $('<label>', {
                                     for: 'check-' + value,
                                     text: value
                                 });
 
-                                // Agrega el nuevo radio y la etiqueta al contenedor del modal correspondiente
                                 $('#seleccionarEditar{{$evento->id}}').append(newCheckbox).append(newLabel);
                                 $('#seleccionarEditar{{$evento->id}}').append('<br>');
                             });
@@ -436,34 +435,12 @@
             });
         });
     </script>
-    
+    @endforeach
+
     <script>
         $(document).ready(function() {
             $('.single-checkbox').on('change', function() {
                 $('.single-checkbox').not(this).prop('checked', false);
-            });
-        });
-    </script>
-    @endforeach
-
-    <script>
-        $(document).ready(function() {  
-            $('.material-checkbox').change(function() {
-                if ($(this).is(':checked')) {
-                    var checkboxValue = $(this).val();
-                    if (checkboxValue === 'Sillas') {
-                        $('.sillas').show();
-                    } else if (checkboxValue === 'Proyector') {
-                        $('.proyectores').show();
-                    }
-                } else {
-                    var checkboxValue = $(this).val();
-                    if (checkboxValue === 'Sillas') {
-                        $('.sillas').hide();
-                    } else if (checkboxValue === 'Proyector') {
-                        $('.proyectores').hide();
-                    }
-                }
             });
         });
     </script>

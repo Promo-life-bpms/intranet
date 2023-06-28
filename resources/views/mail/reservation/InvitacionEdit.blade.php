@@ -3,9 +3,10 @@
 
 <h2> {{$emisor_name}} ha modificado la reunión, echale un vistazo a los detalles. </h2>
 
-La reunión será en el/la: "{{$nombre_sala}}" que está ubicada en: "{{$locacion}}".
+La reunión será en el(la): "{{$nombre_sala}}" que está ubicado(a) en: "{{$locacion}}".
 
-La reunión dará comienzo: "{{$hora_inicio}}" y finalizará: "{{$hora_fin}}".
+Dará comienzo el día "{{$diainicio}}" de "{{$mesinicio}}" del presente año a las "{{$horainicio}}" y 
+finalizará el día "{{$diafin}}" de "{{$mesfin}}" del presente año a las "{{$horafin}}".
 
 <h2> El motivo de la reunión es el siguiente: "{{$description}}". </h2>
 

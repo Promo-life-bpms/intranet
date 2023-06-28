@@ -22,23 +22,32 @@ class notificacionPJ extends Notification
     public $title;
     public $nombre_sala;
     public $ubicacion;
-    public $hora_inicio;
-    public $hora_fin;
+    public $diainicio;
+    public $mesinicio;
+    public $horainicio;
+    public $diafin;
+    public $mesfin;
+    public $horafin;
     public $engrave;
     public $invitados;
     public $cantidadSillas;
     public $cantidadProjectores;
     public $description;
-    public function __construct($PM, $dueño, $title, $nombre_sala, $ubicacion, $hora_inicio, $hora_fin, $engrave,
-                                $invitados, $cantidadSillas, $cantidadProjectores, $description)
+    public function __construct($PM, $dueño, $title, $nombre_sala, $ubicacion,  $diainicio, $mesinicio, $horainicio, 
+                                $diafin, $mesfin, $horafin, $engrave,$invitados, $cantidadSillas, $cantidadProjectores, 
+                                $description)
     {
         $this->PM=$PM;
         $this->dueño=$dueño;
         $this->title=$title;
         $this->nombre_sala=$nombre_sala;
         $this->ubicacion=$ubicacion;
-        $this->hora_inicio=$hora_inicio;
-        $this->hora_fin=$hora_fin;
+        $this->diainicio=$diainicio;
+        $this->mesinicio=$mesinicio;
+        $this->horainicio=$horainicio;
+        $this->diafin=$diafin;
+        $this->mesfin=$mesfin;
+        $this->horafin=$horafin;
         $this->engrave=$engrave;
         $this->invitados=$invitados;
         $this->cantidadSillas=$cantidadSillas;
@@ -72,8 +81,12 @@ class notificacionPJ extends Notification
                         'title'=>$this->title,
                         'nombre_sala'=>$this->nombre_sala,
                         'ubicacion'=>$this->ubicacion,
-                        'hora_inicio'=>$this->hora_inicio,
-                        'hora_fin'=>$this->hora_fin,
+                        'diainicio'=>$this->diainicio,
+                        'mesinicio'=>$this->mesinicio,
+                        'horainicio'=>$this->horainicio,
+                        'diafin'=>$this->diafin,
+                        'mesfin'=>$this->mesfin,
+                        'horafin'=>$this->horafin,
                         'engrave'=>$this->engrave,
                         'invitados'=>$this->invitados,
                         'cantidadSillas'=>$this->cantidadSillas,

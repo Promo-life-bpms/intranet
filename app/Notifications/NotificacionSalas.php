@@ -19,17 +19,26 @@ class NotificacionSalas extends Notification
 
     public $emisor_name;
     public $receptor_name;
-    public $hora_inicio;
-    public $hora_fin;
+    public $diainicio;
+    public $mesinicio;
+    public $horainicio;
+    public $diafin;
+    public $mesfin;
+    public $horafin;
     public $locacion;
     public $nombre_sala;
     public $description;
-    public function __construct($emisor_name, $receptor_name, $hora_inicio, $hora_fin, $locacion, $nombre_sala, $description)
+    public function __construct($emisor_name, $receptor_name, $diainicio, $mesinicio, $horainicio, 
+                                $diafin, $mesfin, $horafin, $locacion, $nombre_sala, $description)
     {
         $this->emisor_name=$emisor_name;
         $this->receptor_name=$receptor_name;
-        $this->hora_inicio=$hora_inicio;
-        $this->hora_fin=$hora_fin;
+        $this->diainicio=$diainicio;
+        $this->mesinicio=$mesinicio;
+        $this->horainicio=$horainicio;
+        $this->diafin=$diafin;
+        $this->mesfin=$mesfin;
+        $this->horafin=$horafin;
         $this->locacion=$locacion;
         $this->nombre_sala=$nombre_sala;
         $this->description=$description;
@@ -57,8 +66,12 @@ class NotificacionSalas extends Notification
         return (new MailMessage)
                     ->markdown('mail.reservation.Invitacion',[
                         'emisor_name'=>$this->emisor_name,
-                        'hora_inicio'=>$this->hora_inicio,
-                        'hora_fin'=>$this->hora_fin,
+                        'diainicio'=>$this->diainicio,
+                        'mesinicio'=>$this->mesinicio,
+                        'horainicio'=>$this->horainicio,
+                        'diafin'=>$this->diafin,
+                        'mesfin'=>$this->mesfin,
+                        'horafin'=>$this->horafin,
                         'locacion'=>$this->locacion,
                         'nombre_sala'=>$this->nombre_sala,
                         'receptor_name'=>$this->receptor_name,
