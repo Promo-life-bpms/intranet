@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Livewire;
+
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Soporte\Ticket;
@@ -13,26 +14,27 @@ use App\Notifications\MessageSoporteSolutionNotification;
 use App\Notifications\SolucionSoporteNotification;
 use App\Notifications\StatusEnProcesoSoporteNotification;
 use App\Notifications\ReasignacionTicketSoporte;
-use App\Notifications\SoportePrioridadNotification;
 
 class SoporteSolucionComponent extends Component
 {
     use WithPagination;
-    public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes, $usuario_reasignacion, $tiempo,$estrellas,
-    $comments;
+    public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes, $usuario_reasignacion, $tiempo, $estrellas,
+        $comments, $prioridad;
     protected $paginationTheme = 'bootstrap';
-    protected $listeners=['ocultarBoton'];
+    protected $listeners = ['ocultarBoton'];
 
     public function render()
     {
         //traer los tipos de prioridad
-        $priority = SoporteTiempo::where('id','>',1)->get();
+        $priority = SoporteTiempo::where('id', '>', 1)->get();
         $categories =  auth()->user()->asignacionCategoria->pluck(["id"]);
         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
             ->where('roles.name', '=', 'systems')
             ->select('users.*')
             ->get();
+
+
 
         $ticketReasignado = Ticket::where('support_id', auth()->user()->id)->get();
 
@@ -71,8 +73,9 @@ class SoporteSolucionComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
-        $this->estrellas=$ticket->score;
-        $this->comments=$ticket->score;
+        $this->estrellas = $ticket->score;
+        $this->comments = $ticket->score;
+        $this->prioridad = $ticket->priority->time;
         $this->usuario = $ticket->user;
         $this->status = $ticket;
         $this->historial = $ticket;
@@ -207,7 +210,7 @@ class SoporteSolucionComponent extends Component
         $usuario = $ticket->user;
 
         $this->validate([
-            'tiempo'=>'required'
+            'tiempo' => 'required'
         ]);
 
         $ticket->update(
@@ -220,20 +223,18 @@ class SoporteSolucionComponent extends Component
             'ticket_id' => $this->ticket_id,
             'user_id' => auth()->user()->id,
             'type' => 'Tiempo',
-            'data' =>$ticket->priority->time
+            'data' => $ticket->priority->time
         ]);
 
 
         //notificamos
-        $notificationPriority=[
-            'name'=>auth()->user()->name,
-            'name_ticket'=>$ticket->name,
-            'time'=>$ticket->priority->time
-        ];
+        // $notificationPriority=[
+        //     'name'=>auth()->user()->name,
+        //     'name_ticket'=>$ticket->name,
+        //     'time'=>$ticket->priority->time
+        // ];
 
-        $usuario->notify(new SoportePrioridadNotification($notificationPriority));
+        // $usuario->notify(new SoportePrioridadNotification($notificationPriority));
         $this->dispatchBrowserEvent('Tiempo');
-
-     }
-
+    }
 }

@@ -8,6 +8,8 @@ use App\Models\Soporte\Categoria;
 use App\Http\Controllers\Controller;
 use App\Models\Soporte\Ticket;
 use App\Models\User;
+use App\Models\Soporte\encuesta;
+use App\Models\SoporteTiempo;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 
@@ -36,6 +38,7 @@ class SoporteController extends Controller
     public function estadisticas()
     {
         $labels = [];
+        $califications=[5,4,3,2,1];
         $meses = [];
         $usuario = [];
         $name = [];
@@ -46,25 +49,48 @@ class SoporteController extends Controller
         $ticketCounts = [];
         $totalTicket = [];
         $namePriority = [];
+        $ticket_especial=[];
         //variables para guardar la fecha que se quiere filtrar
         $startDate = null;
         $endDate = null;
+        //Trae los nombres de las prioridaes
+        // $prioridad = SoporteTiempo::where('id', '>',1)->and('id','<',5)->get();
+        $prioridad= SoporteTiempo::whereIn('id',[2,3,4,5])->get();
+        $namePriority = $prioridad->pluck('priority')->toArray();
+
+        //traer los tickets
+        $ticket=Ticket::all();
+        $prioritys=[2,3,4,5];
+        //Contar los tickets
+        foreach($prioritys as $priority){
+            $conteo=Ticket::where('priority_id',$priority)->count();
+            $ticketsPriority[]=$conteo;
+        }
+        //me trae todos los tickets que tienen encuesta realizadas
+        $calificaciones = encuesta::all();
+        //creo un arreglo para que busque los datos que quiero
+        $estrellas = [5, 4, 3, 2, 1];
+        //creo un arreglo que almacenara el conteo
+        $TotalEstrellas = [];
+
+        foreach ($estrellas as $estrella) {
+            $conteo = encuesta::where('score', $estrella)->count();
+            $TotalEstrellas[] = $conteo;
+        }
+
+        //TRAER LOS TICKETS
+        $Priority_especial=SoporteTiempo::whereIn('id',[5])->get();
+        // $especial=$Priority_especial->pluck('priority')->toArray();
+        $prioridad=[5];
+
+        foreach($prioridad as $especial){
+            $conteo=Ticket::where('priority_id',$prioridad)->count();
+            $ticket_especial[]=$conteo;
+        }
 
 
-        // //Trae los nombres de las prioridaes
-        // $prioridad = SoporteTiempo::where('id', '>', 1)->get();
-        // $namePriority = $prioridad->pluck('priority')->toArray();
-        // $prioritys=['Baja','Media','Alta'];
-
-        // //Contar los tickets
-
-        // foreach($prioritys as $prioridad){
-        //     $conteo=SoporteTiempo::where('priority',$prioritys)->count();
-        //     $ticketsPriority=[$prioridad]=$conteo;
-        // }
         // dd($ticketsPriority);
-        // traer la cantidad de tickets por un usuario
-
+        //traer la cantidad de tickets por un usuario
         $usuarios = User::has('tickets')->get();
         $name = $usuarios->pluck('name')->toArray();
         $totalTicket = [];
@@ -99,7 +125,6 @@ class SoporteController extends Controller
         }
         $values = collect($values)->toArray();
         //Traer todas las categorías
-
         // trae los tickets con status ticket cerrado
         $tickets = Ticket::where('status_id', 4)->get();
         // Agrupar los tickets con status cerrado por mes
@@ -134,6 +159,9 @@ class SoporteController extends Controller
             'startDate',
             'endDate',
             'namePriority',
+            'ticketsPriority',
+            'califications',
+            'TotalEstrellas',
         ));
     }
 
@@ -143,6 +171,7 @@ class SoporteController extends Controller
 
         $startDate = $request->startDate;
         $endDate = $request->endDate;
+        $califications=[5,4,3,2,1];
         $labels = [];
         $meses = [];
         $usuario = [];
@@ -190,7 +219,6 @@ class SoporteController extends Controller
             $values[] = $ticketsCount;
         }
         $values = collect($values)->toArray();
-
         // Traer los tickets con status ticket cerrado
         $ticketsQuery = Ticket::where('status_id', 4);
 
@@ -212,6 +240,23 @@ class SoporteController extends Controller
             $ticketsPorMes[] = $monthTickets->count();
         }
 
+        //Tickets por prioridad
+        $prioridad = SoporteTiempo::where('id', '>', 1)->get();
+        $namePriority = $prioridad->pluck('priority')->toArray();
+        $prioritys=[2,3,4,5];
+        foreach($prioritys as $priority){
+            $conteo=Ticket::where('priority_id',$priority)->whereBetween('created_at',[$startDate,$endDate])->count();
+            $ticketsPriority[]=$conteo;
+        }
+        //Tickets por cantidad de estrellas por fechas
+          $calificaciones = encuesta::all();
+          $estrellas = [5, 4, 3, 2, 1];
+          $TotalEstrellas = [];
+          foreach ($estrellas as $estrella) {
+              $conteo = encuesta::where('score', $estrella)->whereBetween('created_at',[$startDate,$endDate])->count();
+              $TotalEstrellas[] = $conteo;
+          }
+        //Trae los totales de tickets resueltos, en proceso , creados
         $ticketsResueltos = Ticket::where('status_id', 4)->whereBetween('created_at', [$startDate, $endDate])->count();
         $ticketsEnProceso = Ticket::where('status_id', 2)->whereBetween('created_at', [$startDate, $endDate])->count();
         $ticketsCreados = Ticket::all()->whereBetween('created_at', [$startDate, $endDate])->count();
@@ -230,7 +275,11 @@ class SoporteController extends Controller
             'name',
             'totalTicket',
             'startDate',
-            'endDate'
+            'endDate',
+            'namePriority',
+            'ticketsPriority',
+            'TotalEstrellas',
+            'califications'
         ));
     }
 

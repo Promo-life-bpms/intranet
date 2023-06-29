@@ -215,8 +215,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/store', [SoporteController::class, 'store'])->name('soporte.store');
         Route::get('/solucion', [SoporteController::class, 'solucion'])->middleware('role:systems')->name('solucion');
         Route::get('/admin', [SoporteController::class, 'admin'])->middleware('role:systems')->name('admin');
-        // Route::post('ckeditor/upload', [SoporteController::class,'upload'])->name('ckeditor.upload');
-        // Route::post('ckeditor/upload', [SoporteController::class,'store'])->name('ckeditor.store');
         Route::get('/estadisticas', [SoporteController::class, 'estadisticas'])->name('estadisticas');
         Route::post('editor/image_upload',[SoporteController::class,'upload'])->name('upload');
         Route::post('/estadisticas/filter/',[SoporteController::class,'filterTicket'])->name('filter.estadisticas');

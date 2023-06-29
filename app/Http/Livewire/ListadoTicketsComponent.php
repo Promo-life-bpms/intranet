@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Livewire;
-
-
 use Livewire\WithPagination;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -53,51 +51,53 @@ class ListadoTicketsComponent extends Component
 
         //encuentra la categoria del ticket
         $category = Categoria::find((int) $this->categoria);
-        //encuentrar a los usuarios relacionados con la categoria del ticket
-
-        $usuarios =  $category->usuarios;
-        // dd($usuarios);
+        $usuarios = $category->usuarios;
 
         $cantidadTicketsMenor = null;
-        $usuarioConMenosTickets = null;
-        //recorro a todos los usuarios para hacer el conteo
+        $usuariosConMenosTickets = [];
+
+        // Encontrar usuarios con menos tickets
         foreach ($usuarios as $usuario) {
-            //hago todo el conteo
             $cantidadTickets = $usuario->tickets->count();
 
             if ($cantidadTicketsMenor === null || $cantidadTickets < $cantidadTicketsMenor) {
                 $cantidadTicketsMenor = $cantidadTickets;
-                $usuarioConMenosTickets = $usuario;
+                $usuariosConMenosTickets = [$usuario];
+            } elseif ($cantidadTickets === $cantidadTicketsMenor) {
+                $usuariosConMenosTickets[] = $usuario;
             }
         }
 
+        if (count($usuariosConMenosTickets) > 0) {
+            // Elegir un usuario al azar entre aquellos con menos tickets
+            $usuarioConMenosTickets = $usuariosConMenosTickets[array_rand($usuariosConMenosTickets)];
+        } else {
+            // Elegir un usuario al azar si no se encuentran usuarios
+            $usuarioConMenosTickets = $usuarios->random();
+        }
 
-        if ($usuarioConMenosTickets !== null) {
-            $ticket = Ticket::create([
-                'name' => $this->name,
-                'data' => $this->data,
-                'category_id' => (int) $this->categoria,
-                'user_id' => auth()->user()->id,
-                'status_id' => 1,
-                'support_id' => $usuarioConMenosTickets->id,
-                'priority_id' => 1
-            ]);
+        $ticket = Ticket::create([
+            'name' => $this->name,
+            'data' => $this->data,
+            'category_id' => (int) $this->categoria,
+            'user_id' => auth()->user()->id,
+            'status_id' => 1,
+            'support_id' => $usuarioConMenosTickets->id,
+            'priority_id' => 1
+        ]);
 
-
-        $Notificacion =
-        [
+        $Notificacion = [
             'name' => auth()->user()->name,
             'email' => auth()->user()->email,
             'name_ticket' => $ticket->name,
             'data' => $ticket->data,
             'tiempo' => $ticket->created_at,
             'categoria' => $category->name,
-            'username' => $usuarios['0']->name
+            'username' => $usuarioConMenosTickets->name
         ];
 
         $usuarioConMenosTickets->notify(new SoporteNotification($Notificacion));
 
-        }
 
         //Historial de creado
         Historial::create(
@@ -270,7 +270,6 @@ class ListadoTicketsComponent extends Component
                 'user_id' => auth()->user()->id
             ]);
         } else {
-
             Mensaje::create([
                 'ticket_id' => $this->ticket_id,
                 'mensaje' => $this->mensaje,
@@ -280,25 +279,20 @@ class ListadoTicketsComponent extends Component
                 'status_id' => 2
             ]);
         }
-
         $notificationMessage = [
             'name' => auth()->user()->name,
             'name_ticket' => $ticket->name
         ];
-
         // $usuarios = $category->usuarios;
         // foreach ($usuarios as $usuario) {
         //     $usuario->notify(new MessageSoporteNotification($notificationMessage));
         // }
-
         $ticket->support->notify(new MessageSoporteNotification($notificationMessage));
-
         $this->dispatchBrowserEvent('Mensaje');
     }
 
     function encuesta()
     {
-
         $ticket = Ticket::find($this->ticket_id);
         $category = Categoria::find($ticket->category_id);
         $usuarios = $category->usuarios;
@@ -333,9 +327,9 @@ class ListadoTicketsComponent extends Component
         // foreach ($usuarios as $usuario) {
         //     $usuario->notify(new EncuestaSoporteNotification($notificationEncuesta));
         // }
-
         $ticket->support->notify(new EncuestaSoporteNotification($notificationEncuesta));
-
         $this->dispatchBrowserEvent('Encuesta');
+        $this->score='';
+        $this->comments='';
     }
 }

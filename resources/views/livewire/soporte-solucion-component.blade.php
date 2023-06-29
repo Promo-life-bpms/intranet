@@ -13,6 +13,7 @@
                         <th scope="col">Nombre</th>
                         <th scope="col">Categoría</th>
                         <th scope="col">Status</th>
+                        {{-- <th scope="col">Prioridad</th> --}}
                         <th scope="col">Acciones</th>
                     </tr>
                 </thead>
@@ -37,6 +38,23 @@
                                         {{ $tickets->status->name }}</div>
                                 @endif
                             </td>
+                            {{-- <td class="col-2">
+                                @if ($tickets->priority->priority == 'Baja')
+                                <span class="badge badge-primary" role="alert">{{
+                                    $tickets->priority->priority}}</span>
+                                    @elseif ($tickets->priority->priority == 'Media')
+                                    <span class="badge badge-primary" role="alert">{{
+                                        $tickets->priority->priority}}</span>
+                                    @elseif ($tickets->priority->priority == 'Alta')
+                                    <span class="badge badge-primary" role="alert">{{
+                                        $tickets->priority->priority}}</span>
+                                    @elseif ($tickets->priority->priority == 'Especial')
+                                    <span class="badge badge-primary" role="alert">{{
+                                        $tickets->priority->priority}}</span>
+                                    @else
+
+                                @endif
+                            </td> --}}
                             <td>
                                 @if ($tickets->status_id)
                                     @if ($tickets->status_id == 4)
@@ -95,13 +113,13 @@
                                 aria-selected="false">Mensajes</button>
                         </li>
                         {{-- @if ($estrellas) --}}
-                            @if ($estrellas && $estrellas->score)
-                                <li class="nav-item" role="presentation" wire:ignore>
-                                    <button class="nav-link" id="calificacion-tab" data-bs-toggle="tab"
-                                        data-bs-target="#calificacion" type="button" role="tab"
-                                        aria-controls="historial" aria-selected="false">Evaluación Servicio</button>
-                                </li>
-                            @endif
+                        @if ($estrellas && $estrellas->score)
+                            <li class="nav-item" role="presentation" wire:ignore>
+                                <button class="nav-link" id="calificacion-tab" data-bs-toggle="tab"
+                                    data-bs-target="#calificacion" type="button" role="tab"
+                                    aria-controls="historial" aria-selected="false">Evaluación Servicio</button>
+                            </li>
+                        @endif
                         {{-- @endif --}}
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -119,6 +137,15 @@
 
                                 <p><span class="fw-bold ">Categoría :</span> <span
                                         class="">{{ $categoria }}</span></p>
+
+                                @if ($prioridad == '00:00:00')
+                                @elseif ($prioridad == '01:00:00' || $prioridad == '03:00:00' || $prioridad == '05:00:00')
+                                    <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                class="badge bg-info text-dark">{{ $prioridad }}</span></span></p>
+                                @elseif ($prioridad == '24:00:00')
+                                    <p><span class="fw-bold">Ticket especial: <span
+                                                class="badge bg-danger">{{ $prioridad }}</span></span></p>
+                                @endif
 
                                 <p><span class="fw-bold  ">Descripción:</span></p>
 
@@ -201,7 +228,7 @@
                                 <div class="d-flex justify-content-center">
                                     @if ($estrellas && $estrellas->score)
                                         <p class="clasificacion">
-                                    
+
                                             @if ($estrellas->score == 5)
                                                 <label for="radio1" class="fs-1 text-warning">★</label>
                                                 <label for="radio1" class="fs-1 text-warning">★</label>
@@ -718,10 +745,11 @@
                             id="inputGroupSelect01">
                             <option value="" selected>Seleccionar</option>
                             @foreach ($users as $user)
-                                @if ($user->id !== auth()->user()->id)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                @endif
-                            @endforeach
+                            @if ($user->id !== auth()->user()->id && $user->has('asignacionCategoria') && !$user->asignacionCategoria->isEmpty())
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endif
+                        @endforeach
+                        
                         </select>
 
                     </div>

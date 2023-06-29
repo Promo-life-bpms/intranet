@@ -15,4 +15,10 @@ class encuesta extends Model
         'score',
         'support_id'
     ];
+
+    public function calification ()
+    {
+        return $this->belongsTo(Ticket::class,'ticket_id');
+    }
+
 }

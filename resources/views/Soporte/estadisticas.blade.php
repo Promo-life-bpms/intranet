@@ -13,16 +13,23 @@
                     <div class="form-group me-4">
 
                         <label><b>Fecha de inicio :</b></label>
-
                         <input type="date" name="startDate" class="form-control " value="{{ $startDate }}">
-
+                        @error('startDate')
+                        <span>
+                            <font color="red"> *Selecciona una fecha de inicio* </font>
+                        </span>
+                        <br>
+                    @enderror
                     </div>
                     <div class="form-group me-4">
-
                         <label><b>Fecha de Termino :</b></label>
-
                         <input type="date" name="endDate" class="form-control  " value="{{ $endDate }}">
-
+                        @error('endDate')
+                        <span>
+                            <font color="red"> *Selecciona una fecha de termino* </font>
+                        </span>
+                        <br>
+                    @enderror
                     </div>
                     <div class="form-group d-flex align-items-end ">
                         <label for=""></label>
@@ -34,7 +41,6 @@
         <div class="d-flex justify-content-center mx-auto">
             <form action="{{ route('estadisticas') }}" method="GET">
                 @csrf
-
                 <div class="form-group d-flex  mt-4">
                     <button type="submit" class="btn btn-secondary">
                         <i class="fa fa-eraser me-2" aria-hidden="true"></i>
@@ -64,7 +70,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col">
                 <div class="card shadow card-total mx-auto">
                     <div class="card-body">
@@ -106,10 +111,17 @@
                     </div>
                     <div class="col ">
                         <div class="card shadow card-total">
-                            <h6 class="text-center">Evaluacion</h6>
+                            <h6 class="text-center">Prioridades</h6>
                         </div>
                         <canvas id="Prioridad" height="200"></canvas>
                     </div>
+                    <div class="col ">
+                        <div class="card shadow card-total">
+                            <h6 class="text-center">Estrellas por ticket</h6>
+                        </div>
+                        <canvas id="Stars" height="200"></canvas>
+                    </div>
+                   
                 </div>
             </div>
         </div>
@@ -239,8 +251,8 @@
 
         document.addEventListener('livewire:load', function() {
             var ctx = document.getElementById('Prioridad').getContext('2d');
-            var labels = @json($name);
-            var data = @json($totalTicket);
+            var labels = @json($namePriority);
+            var data = @json($ticketsPriority);
 
             var backgroundColors = [];
             var borderColors = [];
@@ -254,9 +266,9 @@
             var chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: @json($name),
+                    labels: @json($namePriority),
                     datasets: [{
-                        label: 'Usuarios',
+                        label: 'Prioridades',
                         data: data,
                         backgroundColor: backgroundColors,
                         borderColor: borderColors,
@@ -267,5 +279,35 @@
             });
         });
 
+
+        document.addEventListener('livewire:load', function() {
+            var ctx = document.getElementById('Stars').getContext('2d');
+            var labels = @json($califications);
+            var data = @json($TotalEstrellas);
+
+            var backgroundColors = [];
+            var borderColors = [];
+
+            for (var i = 0; i  <labels.length; i++) {
+                var colorIndex = i % 5;
+                backgroundColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8'][colorIndex]);
+                borderColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8', '#FFADAD'][colorIndex]);
+            }
+
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: @json($califications),
+                    datasets: [{
+                        label: 'Estrellas',
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {}
+            });
+        });
 </script>
 @endsection
