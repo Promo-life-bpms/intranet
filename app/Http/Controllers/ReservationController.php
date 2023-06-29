@@ -226,10 +226,13 @@ class ReservationController extends Controller
                 }
             }
             foreach ($users as $userID) {
-                $RH= User::where('id', $userID)->first()->name;
-                $RecursosHumanos = User::where('id', $userID)->first();
-                $RecursosHumanos->notify(new notificacionRH($RH, $name, $sala, $ubica, $diaInicio,$LInicio,$HoraInicio, 
-                                                            $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));                                                  
+                if($userID==6){
+                    $RH= User::where('id', $userID)->first()->name;
+                    $RecursosHumanos = User::where('id', $userID)->first();
+                    $RecursosHumanos->notify(new notificacionRH($RH, $name, $sala, $ubica, $diaInicio,$LInicio,$HoraInicio, 
+                                                                $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
+                    break;
+                }                                                  
             }
         }
 
@@ -407,10 +410,13 @@ class ReservationController extends Controller
                 }
             }
             foreach ($users as $userID) {
-                $RH= User::where('id', $userID)->first()->name;
-                $RecursosHumanos = User::where('id', $userID)->first();
-                $RecursosHumanos->notify(new notificacionRHEdit($RH, $name, $names, $ubica, $diaInicio,$LInicio,$HoraInicio, $diaFin, $LFin, 
-                                                                $HoraFin, $request->chair_loan, $request->description));
+                if ($userID == 6) { // RESTRICCION PARA ENVIAR EL CORREO SOLO A DENISSE//
+                    $RH = User::where('id', $userID)->first()->name;
+                    $RecursosHumanos = User::where('id', $userID)->first();
+                    $RecursosHumanos->notify(new notificacionRHEdit($RH, $name, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, $diaFin, $LFin, 
+                                                                    $HoraFin, $request->chair_loan, $request->description));
+                    break; // Terminar el bucle después de enviar el correo al ID 6
+                }
             }
         }
 

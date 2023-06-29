@@ -275,11 +275,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/rh/more-information/{id}', [UserDetails::class, 'moreInformation'])->name('rh.moreInformation');
     
     
-    //sala recreativa//
-    //ruta para la disponibilidad//
-    Route::get('/dispo/creative/',[BoardroomController::class,'vista'])->name('dispo.creative'); //visualizar los dias disponibles y horas
-    Route::get('/dispo/view/',[BoardroomController::class,'view'])->name('dispo.view');  
-    Route::get('/dispo/nombre/',[BoardroomController::class,'mostrarNombre'])->name('dispo.nombre');//parar mostrar información de una llave foranea  
+    //sala recreativa//  
     //ruta para reservación//
     Route::get('/reservation/creative/',[ReservationController::class,'index'])->name('reservation.creative');
     Route::get('/dropdownlist/Position/{id}', [ReservationController::class, 'Positions']);

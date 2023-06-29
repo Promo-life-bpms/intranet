@@ -314,24 +314,13 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item  has-sub {{request()->is('dispo.creative') ? 'active' : '' }}">
-                    <a href="{{ route('dispo.creative') }}" class='sidebar-link'>
+                <li class="sidebar-item {{request()->is('reservation.creative') ? 'active' : '' }}">
+                    <a href="{{ route('reservation.creative') }}" class='sidebar-link'>
                         <i class="fa fa-pencil-square" aria-hidden="true"></i>
                         <span>Reserva de la sala recreativa</span>
                     </a>
-                    <ul class="submenu z-index-1 position-absolute">
-                        <li class="submenu-item ">
-                            <a class="dropdown-item text-break" href="{{ route('dispo.creative') }}">
-                                <span>Disponibilidad de las salas</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item ">
-                            <a class="dropdown-item text-break" href="{{ route('reservation.creative') }}">
-                                <span>Reservación de una sala</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
+
                 <!-- <li class="sidebar-item  {{ request()->is('users') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-grid-fill"></i>
