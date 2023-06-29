@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         headerToolbar: {
             left:'prev,next today',
             center:'title',
-            right:'dayGridMonth,timeGridWeek,listWeek',
+            right:'dayGridMonth,listWeek',
         },
 
         //CONFIGURAR COMO SE MUESTRA LAS HORAS//
@@ -78,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
         buttonText: {
           today: 'Hoy', // Traducción del botón "Today"
           dayGridMonth: 'Mes',
-          timeGridWeek:'Semana',
           listWeek: 'Lista'
         },
             

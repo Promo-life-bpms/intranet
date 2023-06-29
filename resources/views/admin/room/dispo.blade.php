@@ -47,13 +47,6 @@
 
                         <div class="modal-body text-left">
                             <p class="m-0">
-                                <b>Invitados:</b>
-                                {{$evento->guest.'.'}}
-                             </p>
-                        </div>
-                    
-                        <div class="modal-body text-left">
-                            <p class="m-0">
                                 <b>Ubicacón de la sala:</b>
                                 {{$evento->boordroms->location. '.'}}
                              </p>

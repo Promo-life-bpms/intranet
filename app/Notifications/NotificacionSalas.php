@@ -77,7 +77,7 @@ class NotificacionSalas extends Notification
                         'receptor_name'=>$this->receptor_name,
                         'description'=>$this->description,
                     ])
-                    ->subject('TE HAN INVITADO A UNA REUNIÓN :")')
+                    ->subject('TE HAN INVITADO A UNA REUNIÓN')
                     ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
     }
 

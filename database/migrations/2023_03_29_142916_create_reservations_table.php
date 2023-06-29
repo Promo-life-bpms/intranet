@@ -18,7 +18,6 @@ class CreateReservationsTable extends Migration
             $table->string('title');
             $table->dateTime('start');
             $table->dateTime('end');
-            $table->string('department_id');
             $table->string('guest');
             $table->string('engrave');
             $table->integer('chair_loan');

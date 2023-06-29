@@ -19,7 +19,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-
 class ReservationController extends Controller
 {
     /////////////////////////////////////////////////////MOSTRAR VISTA//////////////////////////////////////////////
@@ -29,9 +28,31 @@ class ReservationController extends Controller
         $salitas = boardroom::all();
         $boardroom = boardroom::all()->pluck('name', 'id');
         $eventos = Reservation::all();
-        $usuarios = User::all()->pluck('name');
+        $guests = $eventos->pluck('guest');
         $departments  = Department::pluck('name', 'id')->toArray();
-        return view('admin.room.index', compact('user','salitas','boardroom','eventos','departments','usuarios'));
+        $nombresInvitados = Reservation::whereIn('guest', $guests)->get();
+        $arreglon =[];
+        foreach($nombresInvitados as $invitados){
+            $arreglo = explode(',', $invitados->guest);
+            $arreglon[] = $arreglo;
+        }
+        
+        $nameusers = [];
+        foreach ($arreglon as $nombresusuarios) {
+            $nombres = [];
+            foreach ($nombresusuarios as $id) {
+                $user = User::where('id', $id)->first();
+                if ($user) {
+                    $nombre = $user->name;
+                    $apellido = $user->lastname;
+                    $nombres[] = "$nombre $apellido";
+                } else {
+                    $nombres[] = "Usuario no encontrado";
+                }
+            }
+            $nameusers[] = $nombres;
+        }      
+        return view('admin.room.index', compact('user','salitas','boardroom','eventos','departments','nameusers'));
     }
     ///////////////////////////////////////////////////////BUSCAR POR DEPARTAMENTOS//////////////////////////////////////
     public function Positions($id)
@@ -131,10 +152,9 @@ class ReservationController extends Controller
         foreach($usuarios as $usuario){
             if($request->has('guest'.strval($usuario->id))){
                 array_push($invi,$usuario->id);
+                $invitados = implode(',', $invi);
             }   
         }
-
-        $invitados = implode(',', $invi);
 
         //UNA VEZ QUE YA PASO LAS VALIDACIÓNES CREA EL EVENETO//
         $evento = new Reservation();
@@ -142,7 +162,6 @@ class ReservationController extends Controller
         $evento->start = $request->start;
         $evento->end = $request->end;
         $evento->guest = $invitados;
-        $evento->department_id=$request->department_id;
         $evento->engrave= $request->engrave;
         $evento->chair_loan= $request->chair_loan;
         $evento->proyector= $request->proyector;
@@ -221,7 +240,6 @@ class ReservationController extends Controller
             $DS->notify(new  notificacionSistemas ($SISTEMAS, $name, $sala, $ubica,$diaInicio,$LInicio,$HoraInicio, 
                                                    $diaFin, $LFin, $HoraFin, $request->proyector, $request->description));
         }
-
         return redirect()->back()->with('message', "Reservación creada correctamente.");
     }
     //////////////////////////////////////////////FUNCIÓN PARA EDITAR/////////////////////////////////////////////////
@@ -320,8 +338,7 @@ class ReservationController extends Controller
         //HACEMOS LA ACTUALIZACIÓN DE LA BASE DE DATOS//
         DB::table('reservations')->where('id', $request->id_evento)->update([
             'title' => $request->title, 'start' => $request->start,
-            'end' => $request->end, 'department_id'=>$request->department_id,
-            'guest' => $invitados,'engrave' => $request->engrave,
+            'end' => $request->end,'guest' => $invitados,'engrave' => $request->engrave,
             'chair_loan' => $request->chair_loan,'proyector' => $request->proyector, 
             'description' => $request->description, 'id_sala' => $request->id_sala
         ]);
@@ -404,8 +421,6 @@ class ReservationController extends Controller
             $DS->notify(new  notificacionSistemasEdit ($SISTEMAS, $name, $names, $ubica,$diaInicio,$LInicio,$HoraInicio, $diaFin, $LFin, 
                                                        $HoraFin, $request->proyector, $request->description));
         }
-
-        
         return redirect()->back()->with('message2', "Evento editado correctamente.");
     }
     //////////////////////////////////////////////FUNCIÓN ELIMINAR///////////////////////////////////////////////////
