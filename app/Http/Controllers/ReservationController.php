@@ -127,22 +127,10 @@ class ReservationController extends Controller
         //CONDICIONES QUE DEBE PASAR ANRTES DE EDITAR AL EVENTO// 
         //EL PRIMER FOREACH ES PARA SABER QUE NO TOME TIEMPO DE EVENTOS YA CREADOS//
         foreach ($eventosRefactorizados as $evento) {
-            if ($fechaInicio >= $evento['start']-1 && $fechaInicio <= $evento['end']-1) {
-                // Si esta dentro del rango
-                return redirect()->back()->with('message1', "Ya existe un evento dentro de la hora elegida.");
-            }
-            if($fechaFinal >= $evento['start']+1 && $fechaFinal <= $evento['end']+1){
-                return redirect()->back()->with('message1', "Ya existe un evento dentro de la hora elegida.");
-            }
-        }
-
-        //EL SEGUNDO FOREACH ES PARA SABER QUE NO SOBRE PASE TIEMPO DE EVENTOS YA CREADOS//
-        foreach($eventosRefactorizados as $evento){
-            if ($fechaInicio <= $evento['start'] && $fechaFinal >= $evento['end']) {
-                // Si esta dentro del el rango
-                return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados.");
-            }
-            if ($fechaInicio >= $evento['start'] && $fechaFinal <= $evento['end']){
+            if (($fechaInicio >= $evento['start'] && $fechaInicio < $evento['end']) ||
+            ($fechaFinal > $evento['start'] && $fechaFinal <= $evento['end']) ||
+            ($fechaInicio <= $evento['start'] && $fechaFinal >= $evento['end'])
+            ){
                 return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados.");
             }
         }
@@ -248,84 +236,61 @@ class ReservationController extends Controller
     //////////////////////////////////////////////FUNCIÓN PARA EDITAR/////////////////////////////////////////////////
     public function update(Request $request)
     {
-        //INFORMACIÓN QUE DEBE VALIDAR QUE SE ENCUENTRE//
+        // INFORMACIÓN QUE DEBE VALIDAR QUE SE ENCUENTRE //
         $request->validate([
             'title' => 'required',
             'start' => 'required',
             'end' => 'required',
             'description' => 'required',
         ]);
-
-        $fecha_inicio =  $request->start;
-        $fecha_termino =  $request->end;
-
-        //OBTENEMOS LOS EVENTOS DEL DÍA//
+        
+        $fecha_inicio = $request->start;
+        $fecha_termino = $request->end;
+        
+        // OBTENEMOS LOS EVENTOS DEL DÍA //
         $EventosDelDia = Reservation::whereDate('start', Carbon::parse($fecha_inicio)->format('Y-m-d'))
-            ->whereDate('end', Carbon::parse($fecha_termino)->format('Y-m-d'))
-            ->where('id_sala', $request->id_sala)->get();
-        //dd($start, $end, $eventos->toArray());
-
-        //OBTENEMOS UN NUEVO ARREGLO DE LOS EVENTOS YA CREADOS PARA PODER CONVERTIR LAS HORAS A MILISEGUNDOS//
+                                      ->whereDate('end', Carbon::parse($fecha_termino)->format('Y-m-d'))
+                                      ->where('id_sala', $request->id_sala)
+                                      ->get();
+                                      
+        // OBTENEMOS UN NUEVO ARREGLO DE LOS EVENTOS YA CREADOS PARA PODER CONVERTIR LAS HORAS A MILISEGUNDOS //
         $eventosRefactorizados = [];
         foreach ($EventosDelDia as $item) {
-            $componentes = [
-                'id' => $item['id'],
-                'start' => strtotime($item['start']) * 1000,
-                'end' => strtotime($item['end']) * 1000,
-                'id_sala' => $item['id_sala']
-
-            ];
-            //array_push($eventosRefactorizados, $componentes);
-            $eventosRefactorizados[] = $componentes;
+            if ($item['id'] != $request->id_evento) {
+                $componentes = [
+                    'id' => $item['id'],
+                    'start' => strtotime($item['start']) * 1000,
+                    'end' => strtotime($item['end']) * 1000,
+                    'id_sala' => $item['id_sala']
+                ];
+                $eventosRefactorizados[] = $componentes;
+            }
         }
-        //dd($eventosRefactorizados);
-
-        //FORMATEAMOS LAS HORAS PARA PODERLAS CONVERTIR A MILISEGUNDOS//
+        // FORMATEAMOS LAS HORAS PARA PODERLAS CONVERTIR A MILISEGUNDOS //
         $inicio = $request->start; // Fecha de inicio del form
         $fechastart = Carbon::parse($inicio);
         $fechaInicio = strtotime($fechastart->format('Y-m-d H:i:s')) * 1000;
 
-        $final = $request->end; //fecha de fin del form
+        $final = $request->end; // fecha de fin del form
         $fechaend = Carbon::parse($final);
         $fechaFinal = strtotime($fechaend->format('Y-m-d H:i:s')) * 1000;
-        $fechaActual = now()->format('Y-m-d H:i:s');   
-
-        if ($fecha_inicio <= $fechaActual) {
-            return redirect()->back()->with('message1', 'No se puede crear una reservación en un día pasado.');  
-        }
-
-        if($fecha_termino < $fecha_inicio){
-            return redirect()->back()->with('message1', "Una reservación no puede finalizar antes que la hora de inicio.");
-        }
-
-        //CONDICIONES QUE DEBE PASAR ANRTES DE EDITAR AL EVENTO// 
-        //EL PRIMER FOREACH ES PARA SABER QUE NO TOME TIEMPO DE EVENTOS YA CREADOS//
+        
+        // CONDICIONES QUE DEBE PASAR ANTES DE EDITAR EL EVENTO //
         foreach ($eventosRefactorizados as $evento) {
-
-            if ($fechaInicio >= $evento['start']-1 && $fechaInicio <= $evento['end']-1) {
-                return redirect()->back()->with('message1', "Ya existe un evento dentro de la hora elegida.");
-            }
-            if($fechaFinal >= $evento['start']+1 && $fechaFinal <= $evento['end']-1){
-                return redirect()->back()->with('message1', "Ya existe un evento dentro de la hora elegida.");
-            }
-        }
-        //EL SEGUNDO FOREACH ES PARA SABER QUE NO SOBRE PASE TIEMPO DE EVENTOS YA CREADOS//
-        foreach($eventosRefactorizados as $evento){
-            if ($fechaInicio <= $evento['start'] && $fechaFinal >= $evento['end']) {
-                // Si esta dentro del el rango
+            if (($fechaInicio >= $evento['start'] && $fechaInicio < $evento['end']) ||
+            ($fechaFinal > $evento['start'] && $fechaFinal <= $evento['end']) ||
+            ($fechaInicio <= $evento['start'] && $fechaFinal >= $evento['end'])
+            ){
                 return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados.");
             }
-            if ($fechaInicio >= $evento['start'] && $fechaFinal <= $evento['end']){
-                return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados");
-            }
         }
         
-        //AGREGAMOS LOS NUEVOS USUARIOS AL VIEJO ARREGLO//
+        // AGREGAMOS LOS NUEVOS USUARIOS AL VIEJO ARREGLO //
         $invitadospos = DB::table('reservations')
-                ->select('guest')
-                ->where('id', $request->id_evento)
-                ->first();
-        
+                            ->select('guest')
+                            ->where('id', $request->id_evento)
+                            ->first();
+                            
         $invitades = [];
         $usuarios = User::all();
         foreach ($usuarios as $usuario) {
@@ -337,16 +302,20 @@ class ReservationController extends Controller
             $invitades = array_merge($invitades, [$invitadospos->guest]);
         }
         $invitados = implode(',', $invitades);
-
-        //HACEMOS LA ACTUALIZACIÓN DE LA BASE DE DATOS//
-        DB::table('reservations')->where('id', $request->id_evento)->update([
-            'title' => $request->title, 'start' => $request->start,
-            'end' => $request->end,'guest' => $invitados,'engrave' => $request->engrave,
-            'chair_loan' => $request->chair_loan,'proyector' => $request->proyector, 
-            'description' => $request->description, 'id_sala' => $request->id_sala
-        ]);
         
-            
+        // HACEMOS LA ACTUALIZACIÓN DE LA BASE DE DATOS //
+        DB::table('reservations')->where('id', $request->id_evento)->update([
+            'title' => $request->title,
+            'start' => $request->start,
+            'end' => $request->end,
+            'guest' => $invitados,
+            'engrave' => $request->engrave,
+            'chair_loan' => $request->chair_loan,
+            'proyector' => $request->proyector,
+            'description' => $request->description,
+            'id_sala' => $request->id_sala
+        ]);
+             
         //OBTENCIÓN DE INFORMACIÓN PARA ENVIAR LOS CORREOS//
         //LE DAMOS FORMATO A LAS FECHAS//
         setlocale(LC_TIME, 'es_ES');

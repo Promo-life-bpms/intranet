@@ -149,7 +149,7 @@
                         
 
                             <div class="modal-footer">
-                                {!! Form::submit('Enviar notificaciones', ['class' => 'btn btn-success']) !!}
+                                {!! Form::submit('Crear reservación', ['class' => 'btn btn-success']) !!}
                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
                             </div>
                             {!! Form::close() !!}
