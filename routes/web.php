@@ -26,6 +26,7 @@ use App\Http\Controllers\NoWorkingDaysController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FirebaseNotificationController;
 use App\Http\Controllers\FullCalenderController;
 use App\Http\Controllers\HumanResources\RhController;
 
@@ -264,15 +265,20 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/rh/delete-definitive-postulant/', [RhController::class, 'deleteDefinitivePostulant'])->name('rh.deleteDefinitivePostulant');
     Route::post('/rh/create-stadistic-report/', [RhController::class, 'createStadisticReport'])->name('rh.createStadisticReport');
 
-    
+
     Route::post('/rh/create-user-document/', [RhController::class, 'createUserDocument'])->name('rh.createUserDocument');
     Route::get('/rh/drop-update-documentation/{id}', [RhController::class, 'dropUpdateDocumentation'])->name('rh.dropUpdateDocumentation');
     Route::get('/rh/drop-user-details.blade/{id}', [RhController::class, 'dropUserDetails'])->name('rh.dropUserDetails');
 
     Route::post('/rh/convert-to-employee/', [RhController::class, 'convertToEmployee'])->name('rh.convertToEmployee');
-    
+
 
     Route::get('/rh/more-information/{id}', [UserDetails::class, 'moreInformation'])->name('rh.moreInformation');
+
+    //Firebase
+    Route::post('/firebase/birthday-notification', [FirebaseNotificationController::class, 'birthdaySpecificNotificationPost'])->name('firebase.birthday');
+
+
     
     
     //sala recreativa//  
@@ -293,5 +299,6 @@ Route::get('vacations/sendRemembers/', [VacationsController::class, 'sendRemembe
 Route::get('request/alertRequesPendients/', [RequestController::class, 'alertPendient']);
 
 
-
-
+Route::get('vacations/updatePeriods/', [VacationsController::class, 'updatePeriods']);
+Route::get('vacations/updateInformationVacations', [VacationsController::class, 'updateInformationVacations']);
+Route::get('vacations/obtenerInformacionDeLosUsuarios', [VacationsController::class, 'obtenerInformacionDeLosUsuarios']);

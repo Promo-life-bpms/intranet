@@ -11,6 +11,7 @@ class Employee extends Model
     public $table='employees';
 
     protected $fillable = [
+        'take_expired_vacation',
         'birthday_date',
         'date_admission',
         'status',

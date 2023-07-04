@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Http\Controllers\FirebaseNotificationController;
 use Livewire\Component;
 
 class CommentComponent extends Component
@@ -17,6 +18,10 @@ class CommentComponent extends Component
         $this->validate([
             'comment'  => 'required'
         ]);
+
+        $firebase_notification = new FirebaseNotificationController();
+        $firebase_notification->commentaryPublication($this->publication->user_id, auth()->user()->name . ' ' );
+
         $commentCreated = $this->publication->comments()->create([
             'user_id' => auth()->user()->id,
             'content' => $this->comment

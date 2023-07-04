@@ -15,6 +15,7 @@ class CreateEmployeeTable extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
+            $table->boolean('take_expired_vacation')->default(0);
             $table->date('birthday_date')->nullable();
             $table->date('date_admission')->nullable();
             $table->boolean('status')->nullable();

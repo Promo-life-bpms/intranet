@@ -83,9 +83,8 @@ class RequestController extends Controller
         // Obtener dias no laborables
         $noworkingdays = NoWorkingDays::orderBy('day')->get();
         // Obtener dias de vacaciones
-        $vacations = auth()->user()->vacationsAvailables->where('period', '<>', 3)->sum('dv');
-        $dataVacations  = auth()->user()->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'DESC')->get();
-
+        $vacations = auth()->user()->employee->take_expired_vacation ? auth()->user()->vacationsComplete()->sum('dv') : auth()->user()->vacationsAvailables()->sum('dv');
+        $dataVacations  = auth()->user()->vacationsAvailables()->orderBy('period', 'DESC')->get();
         if ($vacations == null) {
             $vacations = 0;
         }
@@ -153,10 +152,15 @@ class RequestController extends Controller
         $user->daysSelected()->update(['requests_id' => $req->id]);
 
         // Enviar notificacion
+        $communique_notification = new FirebaseNotificationController();
+        $communique_notification->createRequest(strval($user->id));
+        $communique_notification->sendToManager(strval($req->direct_manager_id));
+
+
         $userReceiver = Employee::find($req->direct_manager_id)->user;
         event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
         $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
-
+ 
         return redirect()->action([RequestController::class, 'index']);
     }
 

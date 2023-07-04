@@ -13,7 +13,6 @@ class Reservation extends Model
     
     protected $fillable=['title','start','end','number_of_people', 'material','chair_loan','description'];
 
-
     public function users()
     {
         return $this->belongsTo(User::class, 'id_usuario');
