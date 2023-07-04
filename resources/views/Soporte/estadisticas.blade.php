@@ -105,7 +105,7 @@
                     <div class="col">
                         <div class="card shadow card-total">
                             <h6 class="text-center">
-                               peticiones de Usuarios</h6>
+                               Peticiones de Usuarios</h6>
                         </div>
                         <canvas id="porUsuario" height="200"></canvas>
                     </div>
@@ -117,11 +117,11 @@
                     </div>
                     <div class="col ">
                         <div class="card shadow card-total">
-                            <h6 class="text-center">Estrellas por ticket</h6>
+                            <h6 class="text-center">Puntuaciones</h6>
                         </div>
                         <canvas id="Stars" height="200"></canvas>
                     </div>
-                   
+
                 </div>
             </div>
         </div>

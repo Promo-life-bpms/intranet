@@ -257,7 +257,7 @@
                                 <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
                                             class="badge bg-info text-dark">{{ $prioridad }}</span></span></p>
                             @elseif ($prioridad == '24:00:00')
-                                <p><span class="fw-bold">Ticket especial: <span
+                                <p><span class="fw-bold">Sera resuelto dentro de :<span
                                             class="badge bg-danger">{{ $prioridad }}</span></span></p>
                             @endif
                             <p><span class="fw-bold">Descripción :</span></p>
@@ -792,7 +792,7 @@
                                 color: orange;
                             }
                         </style>
-                        <div wire:ignore class="d-flex justify-content-center">
+                        <div  class="d-flex justify-content-center">
                             <p class="clasificacion">
                                 <input id="radio1" type="radio" name="estrellas" value="5"
                                     wire:model="score" class="form-check-input me-1 fs-1">
@@ -1029,7 +1029,7 @@
                 showConfirmButton: false,
                 timer: 1500
             })
-            $('#ModalEncuesta').modal('hide');            
+            $('#ModalEncuesta').modal('hide');
         });
 
 

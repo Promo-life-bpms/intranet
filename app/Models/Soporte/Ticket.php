@@ -22,6 +22,7 @@ class Ticket extends Model
         'status_id',
         'support_id',
         'priority_id',
+        'special'
     ];
 
     public function category()

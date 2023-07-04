@@ -59,7 +59,6 @@
 
                     <div class="modal-body">
                         <div class=" input-group mb-3">
-
                             @foreach ($categorias as $categoria)
                                 @php
                                     $check = false;

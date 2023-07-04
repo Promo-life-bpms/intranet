@@ -14,12 +14,13 @@ use App\Notifications\MessageSoporteSolutionNotification;
 use App\Notifications\SolucionSoporteNotification;
 use App\Notifications\StatusEnProcesoSoporteNotification;
 use App\Notifications\ReasignacionTicketSoporte;
+use Hamcrest\Core\HasToString;
 
 class SoporteSolucionComponent extends Component
 {
     use WithPagination;
     public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes, $usuario_reasignacion, $tiempo, $estrellas,
-        $comments, $prioridad;
+        $comments, $prioridad, $time,$hora2;
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['ocultarBoton'];
 
@@ -71,8 +72,14 @@ class SoporteSolucionComponent extends Component
         $user->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
     }
     public function verTicket($id)
-    {
+    {   
+
+        // $horas=[];
         $ticket = Ticket::find($id);
+        // for($i=0;$i<24;$i++){
+        //     $hora=$i;
+        // }
+       
         $this->estrellas = $ticket->score;
         $this->comments = $ticket->score;
         $this->prioridad = $ticket->priority->time;
@@ -236,5 +243,17 @@ class SoporteSolucionComponent extends Component
 
         // $usuario->notify(new SoportePrioridadNotification($notificationPriority));
         $this->dispatchBrowserEvent('Tiempo');
+    }
+
+
+    public function special($id)
+    {
+        $ticket = Ticket::find($id);
+
+        $ticket->update([
+            'special' => $this->time,
+        ]);
+
+        $this->dispatchBrowserEvent('special');
     }
 }

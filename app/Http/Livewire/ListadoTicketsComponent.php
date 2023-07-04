@@ -39,7 +39,6 @@ class ListadoTicketsComponent extends Component
     public function guardar()
     {
 
-
         $this->validate(
             [
                 'name' => 'required',
@@ -327,7 +326,7 @@ class ListadoTicketsComponent extends Component
         // foreach ($usuarios as $usuario) {
         //     $usuario->notify(new EncuestaSoporteNotification($notificationEncuesta));
         // }
-        $ticket->support->notify(new EncuestaSoporteNotification($notificationEncuesta));
+        // $ticket->support->notify(new EncuestaSoporteNotification($notificationEncuesta));
         $this->dispatchBrowserEvent('Encuesta');
         $this->score='';
         $this->comments='';

@@ -25,6 +25,7 @@ class CreateTickets extends Migration
             $table->foreignId('user_id')->references('id')->on('users');
             $table->foreignId('support_id')->references('id')->on('users');
             $table->foreignId('priority_id')->references('id')->on('soporte_tiempos');
+            $table->time('special')->nullable();
         });
     }
 

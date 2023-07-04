@@ -745,11 +745,11 @@
                             id="inputGroupSelect01">
                             <option value="" selected>Seleccionar</option>
                             @foreach ($users as $user)
-                            @if ($user->id !== auth()->user()->id && $user->has('asignacionCategoria') && !$user->asignacionCategoria->isEmpty())
-                                <option value="{{ $user->id }}">{{ $user->name }}</option>
-                            @endif
-                        @endforeach
-                        
+                                @if ($user->id !== auth()->user()->id && $user->has('asignacionCategoria') && !$user->asignacionCategoria->isEmpty())
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endif
+                            @endforeach
+
                         </select>
 
                     </div>
@@ -790,7 +790,8 @@
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="inputGroupSelect01">Prioridad</label>
                         {{-- <input wire:model="tiempo" type="time" name="tiempo"> --}}
-                        <select wire:model="tiempo" name="tiempo" class="form-select">
+                        <select wire:model="tiempo" name="tiempo" class="form-select"
+                            onchange="showTimeInput($this)">
                             <option value="" selected>Seleccionar</option>
                             @foreach ($priority as $prioritys)
                                 <option value="{{ $prioritys->id }}">{{ $prioritys->priority }}</option>
@@ -803,6 +804,40 @@
                         </span>
                         <br>
                     @enderror
+                    <button class="btn btn-info" onclick="hide()">Especial</button>
+                    <hr>
+                    <div wire:ignore id="timeInput" class="d-none">
+                        {{-- <label class="input-group-text" for="inputGroupSelect01">Tiempo</label> --}}
+                        {{-- <input wire:model="tiempo" type="time" name="tiempo"> --}}
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="inputGroupSelect02">Horas</label>
+                            <select wire:model="time" class="form-select" id="inputGroupSelect02">                                
+                                <option selected>Seleccionar...</option>
+                                <option value="01:00">01:00</option>
+                                <option value="02:00">02:00</option>
+                                <option value="03:00">03:00</option>
+                                <option value="04:00">04:00</option>
+                                <option value="5:00">05:00</option>
+                                <option value="6:00">06:00</option>
+                                <option value="7:00">07:00</option>
+                                <option value="8:00">08:00</option>
+                                <option value="9:00">09:00</option>
+                                <option value="12:00">12:00</option>                        
+                                <option value="24:00">24:00</option>
+                                <option value="48:00">48:00</option>
+                                <option value="72:00">72:00</option>
+                                <option value="96:00">96:00</option>
+                                <option value="100:00">100:00</option>
+                            </select>
+                            <br>
+                            <button type="button"
+                                class="btn btn-primary"wire:click="special({{ $tickets->id }})">Asignar</button>
+                            <div wire:loading.flex wire:target="special">
+                                Asignando
+                            </div>
+                        </div>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     @if (isset($tickets->id))
@@ -847,6 +882,7 @@
 
         //editor mensaje
         ClassicEditor
+
             .create(document.querySelector('#editorMensaje'), {
 
             })
@@ -980,6 +1016,18 @@
 
         });
 
+        window.addEventListener('special', () => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Tiempo asignado correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+            $('#Modalprioridad').modal('hide');
+
+        });
+
 
 
         window.addEventListener('cargar', () => {
@@ -1032,8 +1080,6 @@
             }
         });
 
-
-
         function atender(id, status_id) {
 
             if (status_id == 2 || status_id == 3 || status_id == 4) {
@@ -1060,6 +1106,24 @@
             }
 
         }
+
+        function showTimeInput(selectElement) {
+            var timeInput = document.getElementById('timeInput');
+
+            if (selectElement.value === 'Especial') {
+                timeInput.style.display = 'block';
+            } else {
+                timeInput.style.display = 'none';
+            }
+        }
+
+        function hide() {
+            //CON JQERY
+            $('#timeInput').toggleClass('d-none');
+
+        }
+
+
     </script>
 
 </div>

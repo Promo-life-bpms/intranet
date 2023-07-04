@@ -41,9 +41,9 @@ class CategoriaSoporteSeeder extends Seeder
             'slug'=>Str::slug('Diseño de tickets','-')
         ]);
         DB::table('soporte_categorias')->insert([
-            'name'=>'Extension Telefonia',
+            'name'=>'Telefonía',
             'status'=>true,
-            'slug'=>Str::slug('Extension Telefonia','-')
+            'slug'=>Str::slug('Telefonía','-')
         ]);
         DB::table('soporte_categorias')->insert([
             'name'=>'Soporte Software',
@@ -54,6 +54,34 @@ class CategoriaSoporteSeeder extends Seeder
             'name'=>'Soporte Computadora',
             'status'=>true,
             'slug'=>Str::slug('Soporte Computadora','-')
+        ]);
+        DB::table('soporte_categorias')->insert([
+            'name'=>'Correo',
+            'status'=>true,
+            'slug'=>Str::slug('Correo','-')
+        ]);
+        DB::table('soporte_categorias')->insert([
+            'name'=>'Enlaces',
+            'status'=>true,
+            'slug'=>Str::slug('Correo','-')
+        ]);
+
+        DB::table('soporte_categorias')->insert([
+            'name'=>'CCTV',
+            'status'=>true,
+            'slug'=>Str::slug('CCTV','-')
+        ]);
+
+        DB::table('soporte_categorias')->insert([
+            'name'=>'Impresora',
+            'status'=>true,
+            'slug'=>Str::slug('Impresora','-')
+        ]);
+
+        DB::table('soporte_categorias')->insert([
+            'name'=>'Mantenimiento',
+            'status'=>true,
+            'slug'=>Str::slug('Mantenimiento','-')
         ]);
     }
 }
