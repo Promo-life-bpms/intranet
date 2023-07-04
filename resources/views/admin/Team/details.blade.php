@@ -121,7 +121,7 @@
                 Autocad: {{$see_details->autocad}}<br>
                 ODOO: {{$see_details->odoo}}<br>
                 
-                @foreach ($perfiles=json_decode($see_details->work_profile_in_odoo, true) as $indexa => $profile)
+                {{-- @foreach ($perfiles=json_decode($see_details->work_profile_in_odoo, true) as $indexa => $profile)
                     @foreach ($usuarios = json_decode($see_details->odoo_users, true) as $index => $element)
                         @if ($index == $indexa)
                             @if ($element !== null)
@@ -130,7 +130,20 @@
                                 Perfil de Trabajo en ODOO: {{$index + 1}}: {{$profile}}<br>
                         @endif
                     @endforeach
-                @endforeach
+                @endforeach --}}
+
+                @foreach ($perfiles = json_decode($see_details->work_profile_in_odoo, true) as $indexa => $profile)
+                    @foreach ($usuarios = json_decode($see_details->odoo_users, true) as $index => $element)
+                        @if ($index == $indexa && ($element !== null || $profile !== null))
+                            @if ($element !== null)
+                                Usuario(s) de ODOO: {{$index + 1}}: {{$element}}<br>
+                            @endif
+                            @if ($profile !== null)
+                                Perfil de Trabajo en ODOO: {{$index + 1}}: {{$profile}}<br>
+                            @endif
+                        @endif
+                    @endforeach
+                @endforeach          
 
                 Otros: {{$see_details->others}}<br>
             </p>

@@ -48,6 +48,9 @@ use App\Models\Vacations;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Mime\MessageConverter;
 
+use App\Mail\NotificacionSolicitudes;
+use Illuminate\Support\Facades\Mail;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -284,7 +287,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     //Agregado adicional en historial de usuarios
     Route::get('/team/details/{id}', [SeeDetails::class, 'details'])->name('admin.Team.details');
+
+    // Route::get('/admon-request/notify', [TeamRequest::class, 'notify']);
+
 });
+
+
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
 Route::get('vacations/sendRemembers/', [VacationsController::class, 'sendRemembers'])->name('admin.vacations.sendRemembers');

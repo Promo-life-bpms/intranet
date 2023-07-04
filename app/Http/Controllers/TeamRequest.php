@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NotificacionSolicitudes;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\Employee;
@@ -11,6 +12,7 @@ use App\Models\TeamRequest as ModelsTeamRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TeamRequest extends Controller
@@ -110,6 +112,8 @@ public function createTeamRequest(Request $request)
     $request_team->observations = $request->observations;
     $request_team->status = 'Solicitud Creada';
     $request_team->save();
+    $correo = new NotificacionSolicitudes($request->all());
+    Mail::to('denisse@trademarket.com.mx')->send($correo);
     return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!', 'data',$data);  
 }
 
@@ -145,7 +149,7 @@ public function update(Request $request)
      ]);  
      DB::table('request_for_systems_and_communications_services')->where('id', intval($request->id))->update([
          'status' => $request->status
-     ]); 
+     ]);
      return redirect()->back()->with('success', '¡Solicitud Actualizada Exitosamente!');
  }
 }
