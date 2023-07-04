@@ -6,7 +6,7 @@
         <body>
             <h1>¡Se ha generado una nueva solicitud!</h1>
                 
-            <p>Para visualizar las nuevas solicitudes y sus detalle da clic al siguiente botón</p>    
+            <p>Para visualizar las nuevas solicitudes y sus detalles da clic al siguiente botón</p>    
         </body>
 </html>
   
