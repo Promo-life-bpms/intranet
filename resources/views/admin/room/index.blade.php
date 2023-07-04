@@ -231,7 +231,7 @@
                                                 {!! Form::label('guest[]', 'Usuarios ya invitados: ', ['class' => 'required'] ) !!}
                                                 @foreach ($nameusers[$loop->index] as $nombre)
                                                 @if ($index == $loop->parent->index)
-                                                <p style="margin: 0; color: #000000;">{{ trim($nombre) }}</p>
+                                                <p style="margin: 0; color: #231C63B3; font-weight: bold">{{ trim($nombre) }}</p>
                                                 @endif
                                                 @endforeach                
                                             </div>
@@ -352,7 +352,7 @@
                                     <b>Los invitados a la reunión son:</b>
                                     @foreach ($nameusers[$loop->index] as $nombre)
                                     @if ($index == $loop->parent->index)
-                                    <p style="margin: 0; color: #000000;">{{ trim($nombre) }}</p>
+                                    <p style="margin: 0; color: #607080;">{{ trim($nombre) }}</p>
                                     @endif
                                     @endforeach 
                                 </p>

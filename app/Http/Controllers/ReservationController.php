@@ -160,7 +160,7 @@ class ReservationController extends Controller
 
         //OBTENCIÓN DE INFORMACIÓN PARA ENVIAR LOS CORREOS//
         //LE DAMOS FORMATO A LAS FECHAS//
-        setlocale(LC_TIME, 'es_ES');
+        /*setlocale(LC_TIME, 'es_ES');
         $diaInicio= Carbon::parse($request->start)->format('d');
         $MesInicio = Carbon::parse($request->start)->format('m');
         $LInicio = strftime('%B', mktime(0, 0, 0, $MesInicio, 1));
@@ -230,7 +230,7 @@ class ReservationController extends Controller
             $DS =User::where('id', 127)->first();
             $DS->notify(new  notificacionSistemas ($SISTEMAS, $name, $sala, $ubica,$diaInicio,$LInicio,$HoraInicio, 
                                                    $diaFin, $LFin, $HoraFin, $request->proyector, $request->description));
-        }
+        }*/
         return redirect()->back()->with('message', "Reservación creada correctamente.");
     }
     //////////////////////////////////////////////FUNCIÓN PARA EDITAR/////////////////////////////////////////////////
@@ -278,7 +278,7 @@ class ReservationController extends Controller
         //dd($fechaActual);
 
         if ($fecha_inicio <= $fechaActual) {
-            return redirect()->back()->with('message1', 'No se puede crear una reservación en un día pasado.');  
+            return redirect()->back()->with('message1', 'No se puede editar una reservación de una fecha pasa o elegir una fecha pasada.');  
         }
 
         if($fecha_termino < $fecha_inicio){
@@ -328,7 +328,7 @@ class ReservationController extends Controller
              
         //OBTENCIÓN DE INFORMACIÓN PARA ENVIAR LOS CORREOS//
         //LE DAMOS FORMATO A LAS FECHAS//
-        setlocale(LC_TIME, 'es_ES');
+        /*setlocale(LC_TIME, 'es_ES');
         $diaInicio= Carbon::parse($request->start)->format('d');
         $MesInicio = Carbon::parse($request->start)->format('m');
         $LInicio = strftime('%B', mktime(0, 0, 0, $MesInicio, 1));
@@ -404,7 +404,7 @@ class ReservationController extends Controller
             $DS =User::where('id', 127)->first();
             $DS->notify(new  notificacionSistemasEdit ($SISTEMAS, $name, $names, $ubica,$diaInicio,$LInicio,$HoraInicio, $diaFin, $LFin, 
                                                        $HoraFin, $request->proyector, $request->description));
-        }
+        }*/
         return redirect()->back()->with('message2', "Evento editado correctamente.");
     }
     //////////////////////////////////////////////FUNCIÓN ELIMINAR///////////////////////////////////////////////////
