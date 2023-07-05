@@ -19,9 +19,9 @@
         <body>
             <div class="container">
                 <h1 class="custom-h1 center-text">¡Se ha generado una nueva solicitud!</h1> 
-                <p>Para visualizar las nuevas solicitudes y sus detalles da clic al siguiente botón</p>
+                <p>Para visualizar las nuevas solicitudes y sus detalles da clic al siguiente botón.</p>
                     <div class="d-flex justify-content-center">
-                        <a href="" class="btn btn-primary">Ir a ver detalles</a>
+                        <a href="" class="btn btn-warning">Ir a Detalles</a>
                     </div>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>    
