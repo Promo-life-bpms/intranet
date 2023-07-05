@@ -21,7 +21,7 @@
                 <h1 class="custom-h1 center-text">¡Se ha generado una nueva solicitud!</h1> 
                 <p>Para visualizar las nuevas solicitudes y sus detalles da clic al siguiente botón.</p>
                     <div class="d-flex justify-content-center">
-                        <a href="" class="btn btn-warning">Ir a Detalles</a>
+                        <a href="{{ route('team.admon') }}" class="btn btn-warning">Ver solicitudes</a>
                     </div>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>    
