@@ -121,7 +121,6 @@
                         </div>
                         <canvas id="Stars" height="200"></canvas>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -309,5 +308,6 @@
                 options: {}
             });
         });
+
 </script>
 @endsection

@@ -20,7 +20,7 @@ class SoporteSolucionComponent extends Component
 {
     use WithPagination;
     public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes, $usuario_reasignacion, $tiempo, $estrellas,
-        $comments, $prioridad, $time,$hora2;
+        $comments, $prioridad, $time,$especial;
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['ocultarBoton'];
 
@@ -35,11 +35,7 @@ class SoporteSolucionComponent extends Component
             ->select('users.*')
             ->get();
 
-
-
         $ticketReasignado = Ticket::where('support_id', auth()->user()->id)->get();
-
-
         return view('livewire.soporte-solucion-component', [
 
             'solucion' => Ticket::where('support_id', auth()->user()->id)->simplePaginate(15)
@@ -72,14 +68,11 @@ class SoporteSolucionComponent extends Component
         $user->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
     }
     public function verTicket($id)
-    {   
+    {
 
-        // $horas=[];
         $ticket = Ticket::find($id);
-        // for($i=0;$i<24;$i++){
-        //     $hora=$i;
-        // }
-       
+        // dd($ticket);
+        $this->especial=$ticket->special;
         $this->estrellas = $ticket->score;
         $this->comments = $ticket->score;
         $this->prioridad = $ticket->priority->time;
@@ -246,14 +239,25 @@ class SoporteSolucionComponent extends Component
     }
 
 
-    public function special($id)
+    public function special()
     {
-        $ticket = Ticket::find($id);
+        $ticket=Ticket::find($this->ticket_id);
 
         $ticket->update([
             'special' => $this->time,
         ]);
 
+
+
+        Historial::create([
+            'ticket_id' => $this->ticket_id,
+            'user_id' => auth()->user()->id,
+            'type' => 'Tiempo',
+            'data' => $ticket->special
+        ]);
+
+
         $this->dispatchBrowserEvent('special');
     }
 }
+

@@ -38,7 +38,7 @@ class SoporteController extends Controller
     public function estadisticas()
     {
         $labels = [];
-        $califications=[5,4,3,2,1];
+        $califications = [5, 4, 3, 2, 1];
         $meses = [];
         $usuario = [];
         $name = [];
@@ -49,22 +49,26 @@ class SoporteController extends Controller
         $ticketCounts = [];
         $totalTicket = [];
         $namePriority = [];
-        $ticket_especial=[];
+        $ticket_especial = [];
         //variables para guardar la fecha que se quiere filtrar
         $startDate = null;
         $endDate = null;
+
+        //Traer los tickets
+        $Ticket_especial = Ticket::where('special','>','00:00:00')->count();
+
         //Trae los nombres de las prioridaes
         // $prioridad = SoporteTiempo::where('id', '>',1)->and('id','<',5)->get();
-        $prioridad= SoporteTiempo::whereIn('id',[2,3,4,5])->get();
+        $prioridad = SoporteTiempo::whereIn('id', [2, 3, 4, 5])->get();
         $namePriority = $prioridad->pluck('priority')->toArray();
 
         //traer los tickets
-        $ticket=Ticket::all();
-        $prioritys=[2,3,4,5];
+        $ticket = Ticket::all();
+        $prioritys = [2, 3, 4, 5];
         //Contar los tickets
-        foreach($prioritys as $priority){
-            $conteo=Ticket::where('priority_id',$priority)->count();
-            $ticketsPriority[]=$conteo;
+        foreach ($prioritys as $priority) {
+            $conteo = Ticket::where('priority_id', $priority)->count();
+            $ticketsPriority[] = $conteo;
         }
         //me trae todos los tickets que tienen encuesta realizadas
         $calificaciones = encuesta::all();
@@ -79,13 +83,13 @@ class SoporteController extends Controller
         }
 
         //TRAER LOS TICKETS
-        $Priority_especial=SoporteTiempo::whereIn('id',[5])->get();
+        $Priority_especial = SoporteTiempo::whereIn('id', [5])->get();
         // $especial=$Priority_especial->pluck('priority')->toArray();
-        $prioridad=[5];
+        $prioridad = [5];
 
-        foreach($prioridad as $especial){
-            $conteo=Ticket::where('priority_id',$prioridad)->count();
-            $ticket_especial[]=$conteo;
+        foreach ($prioridad as $especial) {
+            $conteo = Ticket::where('priority_id', $prioridad)->count();
+            $ticket_especial[] = $conteo;
         }
 
 
@@ -162,6 +166,7 @@ class SoporteController extends Controller
             'ticketsPriority',
             'califications',
             'TotalEstrellas',
+            'Ticket_especial'
         ));
     }
 
@@ -171,7 +176,7 @@ class SoporteController extends Controller
 
         $startDate = $request->startDate;
         $endDate = $request->endDate;
-        $califications=[5,4,3,2,1];
+        $califications = [5, 4, 3, 2, 1];
         $labels = [];
         $meses = [];
         $usuario = [];
@@ -243,19 +248,19 @@ class SoporteController extends Controller
         //Tickets por prioridad
         $prioridad = SoporteTiempo::where('id', '>', 1)->get();
         $namePriority = $prioridad->pluck('priority')->toArray();
-        $prioritys=[2,3,4,5];
-        foreach($prioritys as $priority){
-            $conteo=Ticket::where('priority_id',$priority)->whereBetween('created_at',[$startDate,$endDate])->count();
-            $ticketsPriority[]=$conteo;
+        $prioritys = [2, 3, 4, 5];
+        foreach ($prioritys as $priority) {
+            $conteo = Ticket::where('priority_id', $priority)->whereBetween('created_at', [$startDate, $endDate])->count();
+            $ticketsPriority[] = $conteo;
         }
         //Tickets por cantidad de estrellas por fechas
-          $calificaciones = encuesta::all();
-          $estrellas = [5, 4, 3, 2, 1];
-          $TotalEstrellas = [];
-          foreach ($estrellas as $estrella) {
-              $conteo = encuesta::where('score', $estrella)->whereBetween('created_at',[$startDate,$endDate])->count();
-              $TotalEstrellas[] = $conteo;
-          }
+        $calificaciones = encuesta::all();
+        $estrellas = [5, 4, 3, 2, 1];
+        $TotalEstrellas = [];
+        foreach ($estrellas as $estrella) {
+            $conteo = encuesta::where('score', $estrella)->whereBetween('created_at', [$startDate, $endDate])->count();
+            $TotalEstrellas[] = $conteo;
+        }
         //Trae los totales de tickets resueltos, en proceso , creados
         $ticketsResueltos = Ticket::where('status_id', 4)->whereBetween('created_at', [$startDate, $endDate])->count();
         $ticketsEnProceso = Ticket::where('status_id', 2)->whereBetween('created_at', [$startDate, $endDate])->count();

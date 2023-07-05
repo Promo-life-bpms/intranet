@@ -142,9 +142,11 @@
                                 @elseif ($prioridad == '01:00:00' || $prioridad == '03:00:00' || $prioridad == '05:00:00')
                                     <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
                                                 class="badge bg-info text-dark">{{ $prioridad }}</span></span></p>
-                                @elseif ($prioridad == '24:00:00')
-                                    <p><span class="fw-bold">Ticket especial: <span
-                                                class="badge bg-danger">{{ $prioridad }}</span></span></p>
+                                @endif
+
+                                @if ($especial)
+                                <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                    class="badge bg-info text-dark">{{ $especial }}</span></span></p>
                                 @endif
 
                                 <p><span class="fw-bold  ">Descripción:</span></p>
@@ -760,8 +762,6 @@
                         <br>
                     @enderror
                 </div>
-
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
 
@@ -811,7 +811,7 @@
                         {{-- <input wire:model="tiempo" type="time" name="tiempo"> --}}
                         <div class="input-group mb-3">
                             <label class="input-group-text" for="inputGroupSelect02">Horas</label>
-                            <select wire:model="time" class="form-select" id="inputGroupSelect02">                                
+                            <select wire:model="time" class="form-select" id="inputGroupSelect02">
                                 <option selected>Seleccionar...</option>
                                 <option value="01:00">01:00</option>
                                 <option value="02:00">02:00</option>
@@ -822,7 +822,7 @@
                                 <option value="7:00">07:00</option>
                                 <option value="8:00">08:00</option>
                                 <option value="9:00">09:00</option>
-                                <option value="12:00">12:00</option>                        
+                                {{-- <option value="12:00">12:00</option> --}}
                                 <option value="24:00">24:00</option>
                                 <option value="48:00">48:00</option>
                                 <option value="72:00">72:00</option>
@@ -830,11 +830,13 @@
                                 <option value="100:00">100:00</option>
                             </select>
                             <br>
+                            @if (isset($tickets->id))
                             <button type="button"
-                                class="btn btn-primary"wire:click="special({{ $tickets->id }})">Asignar</button>
+                            class="btn btn-primary rounded-3"wire:click="special({{ $tickets->id }})">Asignar</button>
                             <div wire:loading.flex wire:target="special">
                                 Asignando
                             </div>
+                            @endif
                         </div>
                         </select>
                     </div>

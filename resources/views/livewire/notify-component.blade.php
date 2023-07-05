@@ -109,18 +109,6 @@
                                     <p class="my-0">Ticket : {{ $notification->data['data']['name_ticket'] }}</p>
                                 @break
 
-                                {{-- @case('App\Notifications\EncuestaSoporteNotification')
-                                    <b>Recibiste</b>
-                                    <p class="my-0">{{ $notification->data['data']['score'] }} Estrellas</p>
-                                    <p class="my-0">Al resolver:
-                                        {{ $notification->data['data']['name_ticket'] }}</p>
-                                @break --}}
-
-                                {{-- @case('App\Notifications\SoportePrioridadNotification')
-                                    <b>{{$notification->data['data']['name']}}</b>
-                                    <p class="my-0">Ticket :{{ $notification->data['data']['name_ticket'] }}</p>
-                                    <p class="my-0">Sera solucionado aprox. en :{{ $notification->data['data']['time'] }}</p>
-                                @break --}}
                                 @default
                             @endswitch
                         </div>

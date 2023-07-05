@@ -23,7 +23,8 @@ class ListadoTicketsComponent extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $mensajes, $user, $score, $comments, $prioridad, $estrellas;
+    public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $mensajes, $user, $score, $comments, $prioridad, $estrellas,
+    $especial;
 
     public function render()
     {
@@ -143,6 +144,7 @@ class ListadoTicketsComponent extends Component
     public function guardarEditar($id)
     {
         $ticketEditar = Ticket::find($id);
+        // dd($ticketEditar->support);
         $category = Categoria::find($ticketEditar->category_id);
         if ($this->data == trim('<p><br data-cke-filler="true"></p>')) {
             $this->addError('data', 'La descripcion es obligatoria');
@@ -230,6 +232,7 @@ class ListadoTicketsComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
+        $this->especial=$ticket->special;
         $this->estrellas = $ticket->score;
         $this->prioridad = $ticket->priority->time;
         $this->mensajes = $ticket;

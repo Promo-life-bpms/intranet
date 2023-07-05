@@ -256,10 +256,13 @@
                             @elseif ($prioridad == '01:00:00' || $prioridad == '03:00:00' || $prioridad == '05:00:00')
                                 <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
                                             class="badge bg-info text-dark">{{ $prioridad }}</span></span></p>
-                            @elseif ($prioridad == '24:00:00')
-                                <p><span class="fw-bold">Sera resuelto dentro de :<span
-                                            class="badge bg-danger">{{ $prioridad }}</span></span></p>
                             @endif
+
+                            @if ($especial)
+                            <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                class="badge bg-info text-dark">{{ $especial }}</span></span></p>
+                            @endif
+
                             <p><span class="fw-bold">Descripción :</span></p>
                             <div class="text-mostrar">
                                 <p>{!! $data !!}</p>

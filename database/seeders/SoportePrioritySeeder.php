@@ -34,10 +34,7 @@ class SoportePrioritySeeder extends Seeder
             'priority'=>'Alta',
             'time'=>'01:00:00',
         ]);
-
-        DB::table('soporte_tiempos')->insert([
-            'priority'=>'Especial',
-            'time'=>'24:00:00',
-        ]);
     }
+
 }
+
