@@ -62,6 +62,9 @@ public function createTeamRequest(Request $request)
     'observations'=>'required'
     ]);
 
+    try{
+        DB::beginTransaction();
+
     $data = [];
      array_push($data,(object)[
         'odoo_users' => json_encode([$request->odoo_users, $request->odoo_users5, $request->odoo_users4, $request->odoo_users3, $request->odoo_users2, $request->odoo_users1 ]),
@@ -111,10 +114,17 @@ public function createTeamRequest(Request $request)
     $request_team->type_of_access = $request->type_of_access;
     $request_team->observations = $request->observations;
     $request_team->status = 'Solicitud Creada';
-    $request_team->save();
     $correo = new NotificacionSolicitudes($request->all());
     Mail::to('denisse@trademarket.com.mx')->send($correo);
+    $request_team->save();
+
+    DB::commit();
     return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!', 'data',$data);  
+}catch(\Exception $e){
+
+    DB::rollBack();
+    return redirect()->route('team.request')->with('error', 'Ocurrió un error al enviar la solicitud. Por favor, inténtelo de nuevo más tarde.');
+}
 }
 
 public function user($id)

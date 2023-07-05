@@ -17,6 +17,13 @@
             {{session('success')}}
         </div>   
         @endif
+
+        @if (session('error'))
+        <div class="alert alert-danger" role="alert">
+            {{ session('error') }}
+        </div>
+        @endif
+        
     <form action="{{route('team.createTeamRequest')}}" method="POST">
 
             {!! Form::open(['route' => 'team.request', 'enctype' => 'multipart/form-data']) !!}
