@@ -21,8 +21,10 @@ class CreateVacationsAvailablesTable extends Migration
             $table->enum('period', [1, 2, 3]);
             $table->decimal('days_availables', 5, 2)->nullable()->default(0);
             $table->integer('dv')->nullable()->default(0);
-            $table->date('cutoff_date')->nullable();
             $table->integer('days_enjoyed')->default(0);
+            $table->date('date_start')->nullable();
+            $table->date('date_end')->nullable();
+            $table->date('cutoff_date')->nullable();
             $table->foreignId('users_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

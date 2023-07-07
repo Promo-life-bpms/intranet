@@ -25,13 +25,26 @@ use App\Http\Controllers\NoWorkingDaysController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FirebaseNotificationController;
+use App\Http\Controllers\HumanResources\RhController;
+
+use App\Http\Controllers\HumanResources\ScanDocumentsController;
+use App\Http\Controllers\HumanResources\UserDetails;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
+
 use App\Http\Controllers\Soporte\SoporteController;
 use App\Http\Controllers\SoporteSolucionController;
 use App\Http\Livewire\SoporteSolucionComponent;
+
+use App\Http\Controllers\Systems\DevicesController;
+use App\Models\Message;
+use App\Models\RequestCalendar;
+use App\Models\User;
+use App\Models\Vacations;
+
 use Illuminate\Support\Facades\Auth;
 
 
@@ -68,6 +81,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('exportUsuarios/', [UserController::class, 'exportUsuarios'])->name('user.exportUsuarios');
         Route::get('sendAccess/', [UserController::class, 'sendAccess'])->name('user.sendAccess');
         Route::get('sendAccess/{user}', [UserController::class, 'sendAccessPerUser'])->name('user.sendAccessUnit');
+        Route::get('user-details/{user_id}', [UserController::class, 'userDetails'])->name('user.userDetails');
+        Route::post('update-user-details/', [UserController::class, 'updateUserDetails'])->name('user.updateUserDetails');
+
     });
 
     // Inicio
@@ -208,6 +224,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::resource('providers', ProviderController::class);
     Route::get('/providers/import/create', [ProviderController::class, 'create_import'])->name('providers.createImport');
     Route::post('/providers/import/store', [ProviderController::class, 'store_import'])->name('providers.storeImport');
+
     //soporte
     Route::prefix('soporte')->group(function () {
         Route::get('/', [SoporteController::class, 'index'])->name('soporte');
@@ -219,8 +236,73 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('editor/image_upload',[SoporteController::class,'upload'])->name('upload');
         Route::post('/estadisticas/filter/',[SoporteController::class,'filterTicket'])->name('filter.estadisticas');
     });
+
+
+    //Sistemas
+    Route::get('/systems/devices', [DevicesController::class, 'index'])->name('systems.devices');
+
+    //Recursos humanos - gestion de empleados
+    Route::get('/rh/stadistics', [RhController::class, 'stadistics'])->name('rh.stadistics');
+    Route::post('/rh/filterstadistics', [RhController::class, 'filterstadistics'])->name('rh.filterstadistics');
+    Route::get('/rh/postulants', [RhController::class, 'postulants'])->name('rh.postulants');
+    Route::get('/rh/drop-user', [RhController::class, 'dropUser'])->name('rh.dropUser');
+
+    Route::get('/rh/drop-documentation/{user}', [RhController::class, 'dropDocumentation'])->name('rh.dropDocumentation');
+    Route::delete('/rh/drop-delete-user', [RhController::class, 'dropDeleteUser'])->name('rh.dropDeleteUser');
+    Route::post('/rh/build-down-documentation/', [RhController::class, 'buildDownDocumentation'])->name('rh.buildDownDocumentation');
+    Route::post('/rh/create-motive-down/', [RhController::class, 'createMotiveDown'])->name('rh.createMotiveDown');
+    Route::get('/rh/down-users/', [RhController::class, 'downUsers'])->name('rh.downUsers');
+    Route::post('/rh/up-users/', [RhController::class, 'upUsers'])->name('rh.upUsers');
+
+    Route::get('/rh/scan-documents/{id}', [ScanDocumentsController::class, 'scanDocuments'])->name('rh.scanDocuments');
+    Route::put('/rh/update-documents/', [ScanDocumentsController::class, 'updateDocuments'])->name('rh.updateDocuments');
+    Route::delete('/rh/drop-delete-document', [ScanDocumentsController::class, 'deleteDocuments'])->name('rh.deleteDocuments');
+    Route::post('/rh/store-documents/', [ScanDocumentsController::class, 'storeDocuments'])->name('rh.storeDocuments');
+    Route::get('/rh/create-postulant/', [RhController::class, 'createPostulant'])->name('rh.createPostulant');
+    Route::post('/rh/store-postulant/', [RhController::class, 'storePostulant'])->name('rh.storePostulant');
+    Route::post('/rh/store-more-information/', [RhController::class, 'storeMoreInformation'])->name('rh.storeMoreInformation');
+    Route::get('/rh/create-workplan/{postulant_id}', [RhController::class, 'createWorkplan'])->name('rh.createWorkplan');
+    Route::get('/rh/create-signed-kit/{postulant_id}', [RhController::class, 'createSignedKit'])->name('rh.createSignedKit');
+    Route::post('/rh/store-postulant-documents/', [RhController::class, 'storePostulantDocuments'])->name('rh.storePostulantDocuments');
+    Route::post('/rh/delete-postulant-documents/', [RhController::class, 'deletePostulantDocuments'])->name('rh.deletePostulantDocuments');
+    Route::post('/rh/store-postulant-kit/', [RhController::class, 'storePostulantKit'])->name('rh.storePostulantKit');
+    Route::post('/rh/store-up-postulant/', [RhController::class, 'storeUpPostulant'])->name('rh.storeUpPostulant');
+    Route::post('/rh/delete-postulant/', [RhController::class, 'deletePostulant'])->name('rh.deletePostulant');
+
+    Route::post('/rh/drop-postulant/', [RhController::class, 'dropPostulant'])->name('rh.dropPostulant');
+
+    Route::get('/rh/edit-postulant/{postulant_id}', [RhController::class, 'editPostulant'])->name('rh.editPostulant');
+    Route::put('/rh/update-postulant/', [RhController::class, 'updatePostulant'])->name('rh.updatePostulant');
+    Route::get('/rh/create-postulant-documentation/{postulant_id}', [RhController::class, 'createPostulantDocumentation'])->name('rh.createPostulantDocumentation');
+    Route::post('/rh/build-postulant-documentation/', [RhController::class, 'buildPostulantDocumentation'])->name('rh.buildPostulantDocumentation');
+    Route::get('/rh/create-more-postulant/{postulant_id}', [RhController::class, 'createMorePostulant'])->name('rh.createMorePostulant');
+    Route::get('/rh/create-up-postulant/{postulant_id}', [RhController::class, 'createUpPostulant'])->name('rh.createUpPostulant');
+    Route::get('/rh/no-selected-postulant/', [RhController::class, 'noSelectedPostulant'])->name('rh.noSelectedPostulant');
+    Route::post('/rh/delete-definitive-postulant/', [RhController::class, 'deleteDefinitivePostulant'])->name('rh.deleteDefinitivePostulant');
+    Route::post('/rh/create-stadistic-report/', [RhController::class, 'createStadisticReport'])->name('rh.createStadisticReport');
+
+
+    Route::post('/rh/create-user-document/', [RhController::class, 'createUserDocument'])->name('rh.createUserDocument');
+    Route::get('/rh/drop-update-documentation/{id}', [RhController::class, 'dropUpdateDocumentation'])->name('rh.dropUpdateDocumentation');
+    Route::get('/rh/drop-user-details.blade/{id}', [RhController::class, 'dropUserDetails'])->name('rh.dropUserDetails');
+
+    Route::post('/rh/convert-to-employee/', [RhController::class, 'convertToEmployee'])->name('rh.convertToEmployee');
+
+
+    Route::get('/rh/more-information/{id}', [UserDetails::class, 'moreInformation'])->name('rh.moreInformation');
+
+    //Firebase
+    Route::post('/firebase/birthday-notification', [FirebaseNotificationController::class, 'birthdaySpecificNotificationPost'])->name('firebase.birthday');
+
+
+
 });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
 Route::get('vacations/sendRemembers/', [VacationsController::class, 'sendRemembers'])->name('admin.vacations.sendRemembers');
 Route::get('request/alertRequesPendients/', [RequestController::class, 'alertPendient']);
+
+
+Route::get('vacations/updatePeriods/', [VacationsController::class, 'updatePeriods']);
+Route::get('vacations/updateInformationVacations', [VacationsController::class, 'updateInformationVacations']);
+Route::get('vacations/obtenerInformacionDeLosUsuarios', [VacationsController::class, 'obtenerInformacionDeLosUsuarios']);

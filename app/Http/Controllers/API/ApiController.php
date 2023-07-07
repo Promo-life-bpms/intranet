@@ -7,10 +7,10 @@ use App\Events\ManagerResponseRequestEvent;
 use App\Events\MessageSent;
 use App\Events\RHResponseRequestEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FirebaseNotificationController;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
-
 use App\Models\Communique;
 use App\Models\Directory as ModelsDirectory;
 use App\Models\Employee;
@@ -27,24 +27,13 @@ use App\Models\Role;
 use App\Models\Vacations;
 use App\Notifications\CreateRequestNotification;
 use App\Notifications\ManagerResponseRequestNotification;
-use App\Notifications\MessageNotification;
 use App\Notifications\RHResponseRequestNotification;
-use Carbon\Carbon;
 use DateTime;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use JetBrains\PhpStorm\Internal\ReturnTypeContract;
-use Illuminate\Support\Facades\File;
-use Cache;
-use Error;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
-use Laratrust\Http\Controllers\RolesController;
-
-use function PHPUnit\Framework\isEmpty;
+use Illuminate\Support\Facades\Cache;
 
 class ApiController extends Controller
 {
@@ -94,12 +83,17 @@ class ApiController extends Controller
 
     public function getUser($hashedToken)
     {
+        $carbon = new \Carbon\Carbon();
+        $date = $carbon->now();
+        $date = $date->format('Y-d-m');
+
 
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
         $user = User::where('id', $user_id)->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv');
-        $user_roles = DB::table('role_user')->where("user_id", $user_id)->get("role_id");
+
+        $vacations = $user[0]->employee->take_expired_vacation ? $user[0]->vacationsComplete()->sum('dv') : $user[0]->vacationsAvailables()->sum('dv');
+
         $roles = [];
 
         $data = [];
@@ -118,25 +112,37 @@ class ApiController extends Controller
             }
             $expiration = [];
 
-            $vacation_duration = Vacations::all()->where('users_id', $usr->id);
+            $vacation_duration  = $user[0]->employee->take_expired_vacation ? $user[0]->vacationsComplete()->get() : $user[0]->vacationsAvailables()->get();
 
             foreach ($vacation_duration as $vacation) {
-                if ($vacation == null || $vacation == []) {
+                if ($vacation != null || $vacation != [] ) {
+
+                    if($vacation->cutoff_date >= $date && intval($vacation->dv) >0){
+                        array_push($expiration, (object)[
+                            'daysAvailables' => strval(floor($vacation->dv)),
+                            'cutoffDate' => date('d-m-Y', strtotime($vacation->cutoff_date)),
+                        ]);
+                    }
+                    
+                } else {
+                    
                     array_push($expiration, (object)[
                         'daysAvailables' => "Sin dias disponibles",
                         'cutoffDate' => "Sin fecha de corte disponible",
                     ]);
-                } else {
-                    array_push($expiration, (object)[
-                        'daysAvailables' => strval(floor($vacation->dv)),
-                        'cutoffDate' => date('d-m-Y', strtotime($vacation->cutoff_date)),
-                    ]);
                 }
+            }
+
+            if($expiration == []){
+                array_push($expiration, (object)[
+                    'daysAvailables' => "Sin dias disponibles",
+                    'cutoffDate' => "Sin fecha de corte disponible",
+                ]);
             }
 
             $directManager = Employee::all()->where('jefe_directo_id', $usr->id);
 
-            $rhID = Role::all()->where('display_name', 'Recursos Humanos')->first();
+            $rhID = Role::where('display_name', 'Recursos Humanos')->first();
             $isRH = DB::table('role_user')->where('user_id', $usr->id)->where('role_id', $rhID->id)->first();
 
             if (count($directManager) != 0) {
@@ -395,7 +401,10 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
         $request = ModelsRequest::all()->where('employee_id', $user_id);
-        $vacations = DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv');
+        $user = User::where('id', $user_id)->get();
+        $vacations = $user[0]->employee->take_expired_vacation
+            ? DB::table('vacations_availables')->where('users_id', $user_id)->sum('dv')
+            : DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv');
 
         $data = [];
         $start = "";
@@ -531,6 +540,10 @@ class ApiController extends Controller
             $notification->notifiable_id = $manager;
             $notification->data = json_encode($data_send);
             $notification->save();
+
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->createRequest(strval($user_id));
+            $communique_notification->sendToManager(strval($manager));
         }
 
         return  true;
@@ -677,6 +690,9 @@ class ApiController extends Controller
                 $media->type_file = "photo";
                 $media->save();
             }
+            $user = User::where('id', $user_id)->get()->last();
+            $publication_notification = new FirebaseNotificationController();
+            $publication_notification->publication($user->name, $contPublication);
 
             return $token;
         }
@@ -686,6 +702,11 @@ class ApiController extends Controller
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
+
+        $publication = Publications::where('id', $request->publicationID)->get()->last();
+
+        $publication_notification = new FirebaseNotificationController();
+        $publication_notification->likePublication($publication->user_id);
 
         $like = new Like();
         $like->user_id = $user_id;
@@ -705,6 +726,7 @@ class ApiController extends Controller
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
+        $user = User::where('id', $user_id)->get()->last();
 
         if ($user_id != null || $user_id != []) {
 
@@ -713,6 +735,11 @@ class ApiController extends Controller
             $comment->publication_id = $request->publicationID;
             $comment->content = $request->content;
             $comment->save();
+
+            $publication = Publications::where('id', $request->publicationID)->get()->last();
+
+            $firebase_notification = new FirebaseNotificationController();
+            $firebase_notification->commentaryPublication(strval($publication->user_id), $user->name . ' ' . $user->lastname);
 
             return true;
         }
@@ -1176,6 +1203,9 @@ class ApiController extends Controller
 
             foreach ($userData as $user) {
                 $userReceiver = Employee::find($manager)->user;
+                $communique_notification = new FirebaseNotificationController();
+                $communique_notification->createRequest(strval($userReceiver->id));
+                $communique_notification->sendToManager(strval($manager));
                 event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
                 $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
             }
@@ -1333,12 +1363,15 @@ class ApiController extends Controller
 
     public function postManagerRequest(Request $request)
     {
+        $req = ModelsRequest::where('id', $request->requestID)->get()->first();
+
         if ($request->responseRequest == "Aprobada") {
 
             DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Aprobada"]);
-            $req = ModelsRequest::where('id', $request->requestID)->get()->first();
 
-            //Notificacion manual RH
+            //Notificacion a RH
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->sendToRh();
             $data_send = [
                 "id" => $req->id,
                 "employee_id" => $req->employee_id,
@@ -1366,6 +1399,10 @@ class ApiController extends Controller
 
             DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Rechazada"]);
             $requestCalendar = RequestCalendar::all()->where('requests_id', $request->requestID);
+
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->sendRejectedRequest($req->employee_id);
+
             foreach ($requestCalendar as $calendar) {
                 $rejectedCalendar = new RequestRejected();
                 $rejectedCalendar->title = $calendar->title;
@@ -1388,11 +1425,15 @@ class ApiController extends Controller
 
     public function postRhRequest(Request $request)
     {
+        $req = ModelsRequest::where('id', $request->requestID)->get()->first();
+
         if ($request->responseRequest == "Aprobada") {
 
             DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Aprobada"]);
+            //Notificaciones
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->sendApprovedRequest($req->employee_id);
 
-            $req = ModelsRequest::all()->where('id', $request->requestID)->first();
             if ($req->type_request == "Solicitar vacaciones") {
                 $user = User::all()->where('id', $req->employee_id)->first();
                 $dias = RequestCalendar::all()->where('requests_id',  $request->requestID);
@@ -1433,8 +1474,11 @@ class ApiController extends Controller
         } else if ($request->responseRequest == "Rechazada") {
 
             DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Rechazada"]);
-            $req = ModelsRequest::all()->where('id', $request->requestID)->first();
             $requestCalendar = RequestCalendar::all()->where('requests_id', $request->requestID);
+
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->sendRejectedRequest($req->employee_id);
+
             foreach ($requestCalendar as $calendar) {
                 $rejectedCalendar = new RequestRejected();
                 $rejectedCalendar->title = $calendar->title;
@@ -1460,14 +1504,14 @@ class ApiController extends Controller
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
-        $employee = Employee::all()->where('user_id', $user_id);
+        $employee = Employee::where('user_id', $user_id)->get()->last();
         $userData = User::all()->where('id', $user_id);
         if ($token != null || $token != "") {
             $date = date("G:i:s", strtotime($request->start));
             $manager = "";
-            foreach ($employee as $emp) {
-                $manager = $emp->jefe_directo_id;
-            }
+
+            $manager = $employee->jefe_directo_id;
+
             $reveal_id = null;
             if ($request->revealID != "" || $request->revealID != null) {
                 $reveal_id = intval($request->revealID);
@@ -1499,8 +1543,13 @@ class ApiController extends Controller
                 $request_calendar->save();
             }
 
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->createRequest(strval($user_id));
+            $communique_notification->sendToManager(strval($employee->jefe_directo_id));
+
             foreach ($userData as $user) {
                 $userReceiver = Employee::find($manager)->user;
+
                 event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
                 $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
             }

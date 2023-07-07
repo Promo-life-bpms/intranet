@@ -36,7 +36,7 @@
         <div class="px-2">
             <section class="section">
                 @yield('dashboard')
-                <div class="card">
+                <div class="card p-4">
                     @yield('content')
                 </div>
             </section>
