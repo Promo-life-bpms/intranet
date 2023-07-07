@@ -259,8 +259,8 @@
                             @endif
 
                             @if ($especial)
-                            <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                class="badge bg-info text-dark">{{ $especial }}</span></span></p>
+                                <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                            class="badge bg-info text-dark">{{ $especial }}</span></span></p>                           
                             @endif
 
                             <p><span class="fw-bold">Descripción :</span></p>
@@ -795,7 +795,7 @@
                                 color: orange;
                             }
                         </style>
-                        <div  class="d-flex justify-content-center">
+                        <div class="d-flex justify-content-center">
                             <p class="clasificacion">
                                 <input id="radio1" type="radio" name="estrellas" value="5"
                                     wire:model="score" class="form-check-input me-1 fs-1">

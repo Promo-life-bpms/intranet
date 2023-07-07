@@ -121,6 +121,12 @@
                         </div>
                         <canvas id="Stars" height="200"></canvas>
                     </div>
+                    <div class="col">
+                        <div class="card shadow card-total">
+                            <h6 class="text-center">Especiales</h6>
+                        </div>
+                        <canvas id="especiales" height="200"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -306,6 +312,26 @@
                     }]
                 },
                 options: {}
+            });
+        });
+
+
+
+        document.addEventListener('livewire:load', function() {
+            var ctx = document.getElementById('especiales').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels:['especiales'],
+                    datasets: [{
+                        label: 'Especiales',
+                        data: [@json($Ticket_especial)],
+                        backgroundColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8'],
+                        borderColor: ['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8'],
+                        borderWidth: 1
+                    }]
+                },
+
             });
         });
 

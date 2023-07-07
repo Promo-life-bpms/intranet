@@ -13,7 +13,6 @@
                         <th scope="col">Nombre</th>
                         <th scope="col">Categoría</th>
                         <th scope="col">Status</th>
-                        {{-- <th scope="col">Prioridad</th> --}}
                         <th scope="col">Acciones</th>
                     </tr>
                 </thead>
@@ -38,23 +37,6 @@
                                         {{ $tickets->status->name }}</div>
                                 @endif
                             </td>
-                            {{-- <td class="col-2">
-                                @if ($tickets->priority->priority == 'Baja')
-                                <span class="badge badge-primary" role="alert">{{
-                                    $tickets->priority->priority}}</span>
-                                    @elseif ($tickets->priority->priority == 'Media')
-                                    <span class="badge badge-primary" role="alert">{{
-                                        $tickets->priority->priority}}</span>
-                                    @elseif ($tickets->priority->priority == 'Alta')
-                                    <span class="badge badge-primary" role="alert">{{
-                                        $tickets->priority->priority}}</span>
-                                    @elseif ($tickets->priority->priority == 'Especial')
-                                    <span class="badge badge-primary" role="alert">{{
-                                        $tickets->priority->priority}}</span>
-                                    @else
-
-                                @endif
-                            </td> --}}
                             <td>
                                 @if ($tickets->status_id)
                                     @if ($tickets->status_id == 4)
@@ -145,8 +127,8 @@
                                 @endif
 
                                 @if ($especial)
-                                <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                    class="badge bg-info text-dark">{{ $especial }}</span></span></p>
+                                    <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                class="badge bg-info text-dark">{{ $especial }}</span></span></p>
                                 @endif
 
                                 <p><span class="fw-bold  ">Descripción:</span></p>
@@ -708,8 +690,6 @@
                             @error('mensajes')
                                 <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
                             @enderror
-
-
                             <div class="modal-footer">
                                 @if ($status)
                                     @if ($status->status_id == 4)
@@ -764,7 +744,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-
                     @if (isset($tickets->id))
                         <button type="button"
                             class="btn btn-primary"wire:click="reasignar({{ $tickets->id }})">Reasignar</button>
@@ -786,32 +765,42 @@
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Asignar tiempo de solución</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupSelect01">Prioridad</label>
-                        {{-- <input wire:model="tiempo" type="time" name="tiempo"> --}}
-                        <select wire:model="tiempo" name="tiempo" class="form-select"
-                            onchange="showTimeInput($this)">
-                            <option value="" selected>Seleccionar</option>
-                            @foreach ($priority as $prioritys)
-                                <option value="{{ $prioritys->id }}">{{ $prioritys->priority }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @error('tiempo')
-                        <span>
-                            <font color="red"> *Selecciona la prioridad* </font>
-                        </span>
-                        <br>
-                    @enderror
-                    <button class="btn btn-info" onclick="hide()">Especial</button>
-                    <hr>
-                    <div wire:ignore id="timeInput" class="d-none">
+                    @if ($especial > '00:00:00')
+                    @else
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="inputGroupSelect01">Prioridad</label>
+                            <select wire:model="tiempo" name="tiempo" class="form-select"
+                                onchange="showTimeInput($this)">
+                                <option value="" selected>Seleccionar</option>
+                                @foreach ($priority as $prioritys)
+                                    <option value="{{ $prioritys->id }}">{{ $prioritys->priority }}</option>
+                                @endforeach
+                            </select>                            
+                        </div>
+                        @error('tiempo')
+                            <span>
+                                <font color="red"> *Selecciona la prioridad* </font>
+                            </span>
+                            <br>
+                        @enderror
+                    @endif
+
+                    @if ($prioridadID == 2 || $prioridadID == 3 || $prioridadID == 4)
+                    @else
+                        <button class="btn btn-info" onclick="hide()">Especial</button>
+                    @endif
+
+
+                    <div id="timeInput" class="d-none">
                         {{-- <label class="input-group-text" for="inputGroupSelect01">Tiempo</label> --}}
                         {{-- <input wire:model="tiempo" type="time" name="tiempo"> --}}
-                        <div class="input-group mb-3">
+                        <hr>
+                        <div wire:ignore class="input-group mb-3">
                             <label class="input-group-text" for="inputGroupSelect02">Horas</label>
-                            <select wire:model="time" class="form-select" id="inputGroupSelect02">
+                            <select wire:model="time_special" name="time_special" class="form-select"
+                                id="inputGroupSelect02">
                                 <option selected>Seleccionar...</option>
                                 <option value="01:00">01:00</option>
                                 <option value="02:00">02:00</option>
@@ -822,40 +811,45 @@
                                 <option value="7:00">07:00</option>
                                 <option value="8:00">08:00</option>
                                 <option value="9:00">09:00</option>
-                                {{-- <option value="12:00">12:00</option> --}}
-                                <option value="24:00">24:00</option>
-                                <option value="48:00">48:00</option>
-                                <option value="72:00">72:00</option>
-                                <option value="96:00">96:00</option>
-                                <option value="100:00">100:00</option>
+                                <option value="24:00">1 día</option>
+                                <option value="48:00">2 días</option>
+                                <option value="72:00">3 días</option>
+                                <option value="96:00">4 días</option>
+                                <option value="120:00">5 días</option>
                             </select>
-                            <br>
                             @if (isset($tickets->id))
-                            <button type="button"
-                            class="btn btn-primary rounded-3"wire:click="special({{ $tickets->id }})">Asignar</button>
-                            <div wire:loading.flex wire:target="special">
-                                Asignando
-                            </div>
+                                <button type="button"
+                                    class="btn btn-success rounded-3"wire:click="special({{ $tickets->id }})">Asignar</button>
+                                <div wire:loading wire:target="special">
+                                    Asignando
+                                </div>
                             @endif
                         </div>
-                        </select>
+                        @error('time_special')
+                            <span>
+                                <font color="red"> *Selecciona una hora* </font>
+                            </span>
+                        @enderror
+
                     </div>
                 </div>
                 <div class="modal-footer">
                     @if (isset($tickets->id))
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button"
-                            class="btn btn-primary"wire:click="time({{ $tickets->id }})">Asignar</button>
-                        <div wire:loading.flex wire:target="time">
-                            Asignar
-                        </div>
+                        @if ($especial)
+                        @else
+                            <button type="button"
+                                class="btn btn-primary"wire:click="time({{ $tickets->id }})">Asignar</button>
+                            <div wire:loading.flex wire:target="time">
+                                Asignando
+                            </div>
+                        @endif
+                     
                     @endif
                 </div>
             </div>
         </div>
     </div>
-
-
 
     <script>
         let ckEditorSolucion, ckeEditorMensaje;
@@ -1124,8 +1118,6 @@
             $('#timeInput').toggleClass('d-none');
 
         }
-
-
     </script>
 
 </div>

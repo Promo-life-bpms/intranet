@@ -20,7 +20,7 @@ class SoporteSolucionComponent extends Component
 {
     use WithPagination;
     public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes, $usuario_reasignacion, $tiempo, $estrellas,
-        $comments, $prioridad, $time,$especial;
+        $comments, $prioridad, $time_special,$especial,$prioridadID;
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['ocultarBoton'];
 
@@ -71,7 +71,8 @@ class SoporteSolucionComponent extends Component
     {
 
         $ticket = Ticket::find($id);
-        // dd($ticket);
+        $this->prioridadID=$ticket->priority_id;
+        // dd($ticket->priority_id);
         $this->especial=$ticket->special;
         $this->estrellas = $ticket->score;
         $this->comments = $ticket->score;
@@ -203,10 +204,10 @@ class SoporteSolucionComponent extends Component
         $user->notify(new ReasignacionTicketSoporte($reasignacionTicket));
         $this->dispatchBrowserEvent('reasignacion');
     }
-    public function time($id)
+    public function time()
     {
 
-        $ticket = Ticket::find($id);
+        $ticket = Ticket::find($this->ticket_id);
         $usuario = $ticket->user;
 
         $this->validate([
@@ -243,8 +244,14 @@ class SoporteSolucionComponent extends Component
     {
         $ticket=Ticket::find($this->ticket_id);
 
+
+        $this->validate([
+            'time_special'=>'required'
+        ]);
+
+
         $ticket->update([
-            'special' => $this->time,
+            'special' => $this->time_special,
         ]);
 
 

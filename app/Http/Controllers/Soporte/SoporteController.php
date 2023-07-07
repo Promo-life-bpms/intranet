@@ -261,6 +261,11 @@ class SoporteController extends Controller
             $conteo = encuesta::where('score', $estrella)->whereBetween('created_at', [$startDate, $endDate])->count();
             $TotalEstrellas[] = $conteo;
         }
+
+
+        //Tickets especiales filtrado
+        $Ticket_especial = Ticket::where('special','>','00:00:00')->whereBetween('created_at', [$startDate, $endDate])->count();
+
         //Trae los totales de tickets resueltos, en proceso , creados
         $ticketsResueltos = Ticket::where('status_id', 4)->whereBetween('created_at', [$startDate, $endDate])->count();
         $ticketsEnProceso = Ticket::where('status_id', 2)->whereBetween('created_at', [$startDate, $endDate])->count();
@@ -284,7 +289,8 @@ class SoporteController extends Controller
             'namePriority',
             'ticketsPriority',
             'TotalEstrellas',
-            'califications'
+            'califications',
+            'Ticket_especial'
         ));
     }
 
