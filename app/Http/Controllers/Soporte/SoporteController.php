@@ -32,8 +32,6 @@ class SoporteController extends Controller
     {
         return view('soporte.admin');
     }
-
-
     //Me trae todos los tickets sin filtrado
     public function estadisticas()
     {
@@ -50,12 +48,11 @@ class SoporteController extends Controller
         $totalTicket = [];
         $namePriority = [];
         $ticket_especial = [];
-        //variables para guardar la fecha que se quiere filtrar
+
         $startDate = null;
         $endDate = null;
 
-        //Traer los tickets
-        $Ticket_especial = Ticket::where('special','>','00:00:00')->count();
+                $Ticket_especial = Ticket::where('special','>','00:00:00')->count();
 
         //Trae los nombres de las prioridaes
         // $prioridad = SoporteTiempo::where('id', '>',1)->and('id','<',5)->get();
@@ -141,8 +138,6 @@ class SoporteController extends Controller
             $meses[] = $month;
             $ticketsPorMes[] = $monthTickets->count();
         }
-
-
 
         $ticketsResueltos = Ticket::where('status_id', 4)->count();
         $ticketsEnProceso = Ticket::where('status_id', 2)->count();
@@ -232,8 +227,8 @@ class SoporteController extends Controller
             $ticketsQuery->whereBetween('created_at', [$startDate, $endDate]);
         }
 
-        $tickets = $ticketsQuery->get();
 
+        $tickets = $ticketsQuery->get();
         // Agrupar los tickets con status cerrado por mes
         $ticketsByMonth = $tickets->groupBy(function ($ticket) {
             return Carbon::parse($ticket->created_at)->format('F Y');
@@ -320,9 +315,10 @@ class SoporteController extends Controller
             });
             $img->save($thumbnailpath);
 
+            //para mover el tamaño en el que guarda y muestra la imagen para enviar
             echo json_encode([
                 'default' => asset('storage/uploads/' . $filenametostore),
-                '500' => asset('storage/uploads/thumbnail/' . $filenametostore)
+                '700' => asset('storage/uploads/thumbnail/' . $filenametostore)
             ]);
         }
     }

@@ -72,7 +72,6 @@ class SoporteSolucionComponent extends Component
 
         $ticket = Ticket::find($id);
         $this->prioridadID=$ticket->priority_id;
-        // dd($ticket->priority_id);
         $this->especial=$ticket->special;
         $this->estrellas = $ticket->score;
         $this->comments = $ticket->score;

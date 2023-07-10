@@ -127,8 +127,22 @@
                                 @endif
 
                                 @if ($especial)
-                                    <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                                class="badge bg-info text-dark">{{ $especial }}</span></span></p>
+                                    @if ($especial == '24:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">1 día</span></span></p>
+                                    @elseif ($especial == '48:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">2 días</span></span></p>
+                                    @elseif ($especial == '72:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">3 días</span></span></p>
+                                    @elseif ($especial == '96:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">4 días</span></span></p>
+                                    @elseif ($especial == '120:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">5 días</span></span></p>
+                                    @endif
                                 @endif
 
                                 <p><span class="fw-bold  ">Descripción:</span></p>
@@ -161,7 +175,9 @@
                                         <button type="button" class="btn btn-success"
                                             wire:click="guardarSolucion">Enviar</button>
                                         <div wire:loading.flex wire:target="guardarSolucion">
-                                            Enviando
+                                            <div class="spinner-border text-dark" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                              </div>
                                         </div>
                                     </div>
                                 @endif
@@ -701,7 +717,9 @@
                                         <button type="button" class="btn btn-success"
                                             wire:click="mensaje">Enviar</button>
                                         <div wire:loading.flex wire:target="mensaje">
-                                            Enviando
+                                            <div class="spinner-border text-dark" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                              </div>
                                         </div>
                                     @endif
                                 @endif
@@ -749,7 +767,9 @@
                             class="btn btn-primary"wire:click="reasignar({{ $tickets->id }})">Reasignar</button>
 
                         <div wire:loading.flex wire:target="reasignar">
-                            Asignando
+                            <div class="spinner-border text-dark" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                              </div>
                         </div>
                     @endif
                 </div>
@@ -777,7 +797,7 @@
                                 @foreach ($priority as $prioritys)
                                     <option value="{{ $prioritys->id }}">{{ $prioritys->priority }}</option>
                                 @endforeach
-                            </select>                            
+                            </select>
                         </div>
                         @error('tiempo')
                             <span>
@@ -821,7 +841,9 @@
                                 <button type="button"
                                     class="btn btn-success rounded-3"wire:click="special({{ $tickets->id }})">Asignar</button>
                                 <div wire:loading wire:target="special">
-                                    Asignando
+                                    <div class="spinner-border text-dark" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                      </div>
                                 </div>
                             @endif
                         </div>
@@ -841,10 +863,12 @@
                             <button type="button"
                                 class="btn btn-primary"wire:click="time({{ $tickets->id }})">Asignar</button>
                             <div wire:loading.flex wire:target="time">
-                                Asignando
+                                <div class="spinner-border text-dark" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                  </div>
                             </div>
                         @endif
-                     
+
                     @endif
                 </div>
             </div>
@@ -1023,9 +1047,6 @@
             $('#Modalprioridad').modal('hide');
 
         });
-
-
-
         window.addEventListener('cargar', () => {
 
             if (ckEditorSolucion) {
@@ -1112,12 +1133,9 @@
                 timeInput.style.display = 'none';
             }
         }
-
         function hide() {
             //CON JQERY
             $('#timeInput').toggleClass('d-none');
-
         }
     </script>
-
 </div>

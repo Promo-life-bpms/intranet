@@ -142,7 +142,9 @@
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-success" wire:click='guardar'>Guardar</button>
                     <div wire:loading.flex wire:target="guardar">
-                        Guardando
+                        <div class="spinner-border text-dark" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                          </div>
                     </div>
                 </div>
             </div>
@@ -210,7 +212,9 @@
                     <button type="button" class="btn btn-success"
                         wire:click="guardarEditar({{ $ticket_id }})">Guardar</button>
                     <div wire:loading.flex wire:target="guardarEditar">
-                        Guardando
+                        <div class="spinner-border text-dark" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                          </div>
                     </div>
                 </div>
             </div>
@@ -259,8 +263,22 @@
                             @endif
 
                             @if ($especial)
-                                <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                            class="badge bg-info text-dark">{{ $especial }}</span></span></p>                           
+                                @if ($especial == '24:00:00')
+                                    <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                        class="badge bg-info text-dark">1 día</span></span></p>
+                                    @elseif ($especial == '48:00:00')
+                                    <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                        class="badge bg-info text-dark">2 días</span></span></p>
+                                    @elseif ($especial == '72:00:00')
+                                    <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                        class="badge bg-info text-dark">3 día</span></span></p>
+                                    @elseif ($especial == '96:00:00')
+                                    <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                        class="badge bg-info text-dark">4 días</span></span></p>
+                                    @elseif ($especial == '120:00:00')
+                                    <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                        class="badge bg-info text-dark">5 días</span></span></p>
+                                @endif
                             @endif
 
                             <p><span class="fw-bold">Descripción :</span></p>
@@ -736,7 +754,9 @@
                                         <button type="button" class="btn btn-success"
                                             wire:click="enviarMensaje">Enviar</button>
                                         <div wire:loading.flex wire:target="enviarMensaje">
-                                            Enviando
+                                            <div class="spinner-border text-dark" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                              </div>
                                         </div>
                                     @endif
                                 @endif
@@ -1052,7 +1072,6 @@
                         'El ticket a sido finalizado',
                         'success'
                     )
-                    // $('#ModalEncuesta').modal('show');
                 } else {
                     return;
                 }

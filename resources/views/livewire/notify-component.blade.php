@@ -102,13 +102,11 @@
                                     <p class="my-0">Envio un mensaje </p>
                                     <p class="my-0">Ticket :{{ $notification->data['data']['name_ticket'] }}</p>
                                 @break
-
                                 @case('App\Notifications\ReasignacionTicketSoporte')
                                     <b>{{ $notification->data['data']['name'] }}</b>
                                     <p class="my-0">Te reasigno un ticket </p>
                                     <p class="my-0">Ticket : {{ $notification->data['data']['name_ticket'] }}</p>
                                 @break
-
                                 @default
                             @endswitch
                         </div>

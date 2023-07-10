@@ -4,10 +4,7 @@
             <h3>Asignación de tickets</h3>
         </div>
     </div>
-
-
     <div class="card-body">
-
         <div class="table-responsive">
             <table class="table table-hover table-bordered text-center">
                 <thead>
@@ -19,7 +16,6 @@
                     </tr>
                 </thead>
                 <tbody>
-
                     @foreach ($users as $usuario)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
