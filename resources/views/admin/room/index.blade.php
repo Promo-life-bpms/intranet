@@ -87,7 +87,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            {!! Form::label('guest[]', 'Usuarios: ', ['class' => 'required'] ) !!}
+                                            {!! Form::label('guest[]', 'Usuarios: ', ['class' => 'required' ] ) !!}
                                             <div class =" d-flex flex-column mb-3">
                                                 <div id="crear"></div>
                                             </div>
@@ -107,7 +107,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             
                             <div class="row">
                                 <div class="col-md-12">
@@ -398,13 +397,44 @@
             })
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var engraveCheckbox = document.getElementById('engrave-checkbox');
+            var emailField = document.getElementById('email-field');
+            engraveCheckbox.addEventListener('change', function() {
+                emailField.classList.toggle('d-none', !this.checked);
+            });
+        });
+    </script>
     
-
     <script type="text/javascript">
         jQuery(document).ready(function() {
+            var selectAllCheckbox = $('<input>', {
+                type: 'checkbox',
+                id: 'select-all-checkbox'
+            });
+        
+            // Crea una etiqueta label para el checkbox "Seleccionar todo"
+            var selectAllLabel = $('<label>', {
+                for: 'select-all-checkbox',
+                text: 'Seleccionar todo'
+            });
+        
+            // Agrega el <br>, el checkbox y la etiqueta al contenedor
+            $('#crear').append('<br>');
+            $('#crear').append(selectAllCheckbox);
+            $('#crear').append(selectAllLabel);
+
+            // Oculta el checkbox "Seleccionar todo" inicialmente
+            selectAllCheckbox.hide();
+            selectAllLabel.hide();
+        
             jQuery('select[name="department_id"]').on('change', function() {
                 var id = jQuery(this).val();
                 if (id) {
+                    selectAllCheckbox.show();
+                    selectAllLabel.show();
+                
                     jQuery.ajax({
                         url: '/dropdownlist/Position/' + id,
                         type: "GET",
@@ -412,48 +442,88 @@
                         success: function(data) {
                             console.log(data);
                             jQuery('select[name="position"]').empty();
+                    
+                            var usersContainer = $('<div>'); // Crea un contenedor para los usuarios
                             jQuery.each(data.positions, function(key, value) {
                                 $('select[name="position"]').append('<option value="' +
-                                    key + '">' + value + '</option>');
-                            });
-                            jQuery('select[name="guest[]"]').empty();
-                            jQuery.each(data.users, function(key, value) {
-                                $('select[name="guest[]"]').append(
+                                   key + '">' + value + '</option>');
+                                });
+                        
+                                jQuery('select[name="guest[]"]').empty();
+                                jQuery.each(data.users, function(key, value) {
+                                    $('select[name="guest[]"]').append(
                                     '<option value="' + key + '">' + value +
                                     '</option>');
-                            });
-
-                            jQuery.each(data.users, function(key,value) {
-                                var newRadio = $('<input>', {
+                                });
+                        
+                                jQuery.each(data.users, function(key, value) {
+                                    var newCheckbox = $('<input>', {
                                     type: 'checkbox',
-                                    id: 'radio-' + value,
-                                    name: 'guest'+ key,
+                                    id: 'checkbox-' + value,
+                                    name: 'guest' + key,
                                     value: value
                                 });
-                                
-                                // Crea una etiqueta label para el radio
+
+                                // Crea una etiqueta label para el checkbox
                                 var newLabel = $('<label>', {
-                                    for: 'radio-',
+                                    for: 'checkbox-' + value,
                                     text: value
                                 });
-
+                        
                                 console.log(value);
-                                // Agrega el nuevo radio y la etiqueta al contenedor
-                                $('#crear').append(newRadio).append(newLabel);
-                                $('#crear').append('<br>');
-                            }); 
+                                // Agrega el nuevo checkbox y la etiqueta al contenedor de usuarios
+                                usersContainer.append(newCheckbox).append(newLabel);
+                                usersContainer.append('<br>');
+                            });
+                        
+                            // Agrega el contenedor de usuarios después del checkbox "Seleccionar todo"
+                            $('#crear').append(usersContainer);
                         }
                     });
-                }else {
+                } else {
                     $('select[name="position"]').empty();
+                    selectAllCheckbox.hide();
+                    selectAllLabel.hide();
                 }
+            });
+
+            // Controlador de eventos para el checkbox "Seleccionar todo"
+            $('#select-all-checkbox').on('change', function() {
+                var isChecked = $(this).prop('checked');
+                $('input[type="checkbox"][name^="guest"]').prop('checked', isChecked);
             });
         });
     </script>
-    
+
+
     @foreach($eventos as $evento)
-    <script type="text/javascript">
+        <script type="text/javascript">
         jQuery(document).ready(function() {
+            var selectAllCheckbox = $('<input>', {
+                type: 'checkbox',
+                id: 'selectAll',
+                name: 'selectAll',
+                value: 'selectAll'
+            });
+            
+            var selectAllLabel = $('<label>', {
+                for: 'selectAll',
+                text: 'Seleccionar todo'
+            });
+
+            // Ocultar el checkbox "Seleccionar todo" y el nombre de usuario inicialmente
+            selectAllCheckbox.hide();
+            selectAllLabel.hide();
+            $('#nombreUsuarios').hide();
+            
+            // Agregar el checkbox "Seleccionar todo" y el contenedor de nombres de usuario al contenedor principal
+            $('#seleccionarEditar{{$evento->id}}').prepend(selectAllLabel).prepend(selectAllCheckbox).append('<br>').append('<div id="nombreUsuarios"></div>');
+
+            selectAllCheckbox.on('change', function() {
+                var isChecked = $(this).prop('checked');
+                $('input[name^="guest"]').prop('checked', isChecked);
+            });
+
             jQuery('select[name="department_id"]').on('change', function() {
                 var id = jQuery(this).val();
                 if (id) {
@@ -466,41 +536,48 @@
                             jQuery('select[name="position"]').empty();
                             jQuery.each(data.positions, function(key, value) {
                                 jQuery('select[name="position"]').append('<option value="' +
-                                key + '">' + value + '</option>');
+                                        key + '">' + value + '</option>');
+                                    });
+
+                                    jQuery('select[name="guest[]"]').empty();
+                                    $('#nombreUsuarios').empty(); // Vaciar el contenedor de nombres de usuario antes de actualizarlo
+
+                                    jQuery.each(data.users, function(key, value) {
+                                        var newCheckbox = $('<input>', {
+                                            type: 'checkbox',
+                                            id: 'check-' + value,
+                                            name: 'guest' + key,
+                                            value: value
+                                        });
+                                        
+                                        var newLabel = $('<label>', {
+                                            for: 'check-' + value,
+                                            text: value
+                                        });
+
+                                        $('#seleccionarEditar{{$evento->id}}').append(newCheckbox).append(newLabel).append('<br>');
+                                        // Agregar el nombre del usuario al contenedor de nombres de usuario
+                                        $('#nombreUsuarios').append(value).append('<br>');
+                                    });
+
+                                    // Mostrar el checkbox "Seleccionar todo" y el contenedor de nombres de usuario cuando se seleccione un departamento
+                                    selectAllCheckbox.show();
+                                    selectAllLabel.show();
+                                    $('#nombreUsuarios').show();
+                                }
                             });
-
-                            jQuery('select[name="guest[]"]').empty();
-                            jQuery.each(data.users, function(key, value) {
-                                jQuery('select[name="guest[]"]').append(
-                                    '<option value="' + key + '">' + value +
-                                    '</option>');
-                            });
-
-                            jQuery.each(data.users, function(key, value) {
-                                var newCheckbox = $('<input>', {
-                                    type: 'checkbox',
-                                    id: 'check-' + value,
-                                    name: 'guest' + key,
-                                    value: value
-                                });
-
-                                var newLabel = $('<label>', {
-                                    for: 'check-' + value,
-                                    text: value
-                                });
-
-                                $('#seleccionarEditar{{$evento->id}}').append(newCheckbox).append(newLabel);
-                                $('#seleccionarEditar{{$evento->id}}').append('<br>');
-                            });
+                        } else {
+                            $('select[name="position"]').empty();
+                            $('#seleccionarEditar{{$evento->id}}').empty(); // Vaciar el contenedor si no hay ID seleccionado
+                            
+                            // Ocultar el checkbox "Seleccionar todo" y el contenedor de nombres de usuario si no hay departamento seleccionado
+                            selectAllCheckbox.hide();
+                            selectAllLabel.hide();
+                            $('#nombreUsuarios').hide();
                         }
                     });
-                } else {
-                    $('select[name="position"]').empty();
-                    $('#seleccionarEditar{{$evento->id}}').empty(); // Vaciar el contenedor si no hay ID seleccionado
-                }
-            });
-        });
-    </script>
+                });
+        </script>
     @endforeach
 
     <script>

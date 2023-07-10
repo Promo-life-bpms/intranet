@@ -204,6 +204,14 @@
                         <span>Organigrama</span>
                     </a>
                 </li>
+
+                <li class="sidebar-item {{request()->is('reservation.creative') ? 'active' : '' }}">
+                    <a href="{{ route('reservation.creative') }}" class='sidebar-link'>
+                        <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                        <span>Reserva de la sala recreativa</span>
+                    </a>
+                </li>
+                
                 @if (!auth()->user()->hasRole('becario'))
                     <li class="sidebar-item  has-sub {{ request()->is('request') ? 'active' : '' }}">
                         <a href="{{ route('request.index') }}" class='sidebar-link'>
@@ -313,14 +321,6 @@
                         <span>Accesos</span>
                     </a>
                 </li>
-
-                <li class="sidebar-item {{request()->is('reservation.creative') ? 'active' : '' }}">
-                    <a href="{{ route('reservation.creative') }}" class='sidebar-link'>
-                        <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                        <span>Reserva de la sala recreativa</span>
-                    </a>
-                </li>
-
                 <!-- <li class="sidebar-item  {{ request()->is('users') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-grid-fill"></i>

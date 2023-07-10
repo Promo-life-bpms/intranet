@@ -50,7 +50,7 @@ class ReservationController extends Controller
                 }
             }
             $nameusers[] = $nombres;
-        }      
+        }    
         return view('admin.room.index', compact('user','salitas','boardroom','eventos','departments','nameusers'));
     }
     ///////////////////////////////////////////////////////BUSCAR POR DEPARTAMENTOS//////////////////////////////////////
@@ -80,6 +80,7 @@ class ReservationController extends Controller
             'end' => 'required',
             'description' => 'required',
         ]);
+        //dd($request);
         //VARIBLES PARA NO CONFUNDIRSE///
         $fecha_inicio =  $request->start;
         $fecha_termino =  $request->end;
@@ -112,16 +113,24 @@ class ReservationController extends Controller
         $final = $request->end; //fecha de fin del form
         $fechaend = Carbon::parse($final);
         $fechaFinal = strtotime($fechaend->format('Y-m-d H:i:s')) * 1000;
-
         $fechaActual = now()->format('Y-m-d H:i:s');
         //dd($fechaActual);
-
+       
         if ($fecha_inicio <= $fechaActual) {
-            return redirect()->back()->with('message1', 'No se puede crear una reservación en un día pasado.');  
+            return redirect()->back()->with('message1', 'No se puede crear una reservación en una fecha pasada.');  
         }
 
         if($fecha_termino < $fecha_inicio){
             return redirect()->back()->with('message1', "Una reservación no puede finalizar antes que la hora de inicio.");
+        }
+
+        $allreservation = Reservation::where('id_usuario', $user->id)
+                                            ->where('start', '>=', $request->start)
+                                            ->where('end', '<=', $request->end)
+                                            ->exists();
+                                            
+        if ($allreservation) {
+            return redirect()->back()->with('message1', 'No puedes reservar todas las salas a la misma fecha y hora.');
         }
 
         //CONDICIONES QUE DEBE PASAR ANRTES DE EDITAR AL EVENTO// 
@@ -160,7 +169,7 @@ class ReservationController extends Controller
 
         //OBTENCIÓN DE INFORMACIÓN PARA ENVIAR LOS CORREOS//
         //LE DAMOS FORMATO A LAS FECHAS//
-        /*setlocale(LC_TIME, 'es_ES');
+        setlocale(LC_TIME, 'es_ES');
         $diaInicio= Carbon::parse($request->start)->format('d');
         $MesInicio = Carbon::parse($request->start)->format('m');
         $LInicio = strftime('%B', mktime(0, 0, 0, $MesInicio, 1));
@@ -188,7 +197,7 @@ class ReservationController extends Controller
             }   
         }
         //CORREO PARA LOS INVIDATOS DE LA REUNIÓN//
-        $IDs = $invitades;
+        /*$IDs = $invitades;
         foreach($IDs as $invit){
             $usuario->notify(new NotificacionSalas ($name, $invit, $diaInicio,$LInicio,$HoraInicio, $diaFin, $LFin, 
                                                     $HoraFin, $ubica, $sala, $request->description));
@@ -199,10 +208,10 @@ class ReservationController extends Controller
         $informar =User::where('id', 31)->first();
         $informar->notify(new notificacionPJ ($Project, $name, $request->title, $sala,$ubica,$diaInicio,$LInicio,$HoraInicio, 
                                               $diaFin, $LFin, $HoraFin,$request->engrave,$invitados, $request->chair_loan, 
-                                              $request->proyector, $request->description));
+                                              $request->proyector, $request->description))*/
                                               
         //CORREO PARA EL DEPARTAMENTO DE RECURSOS HUMANOS PARA MATERIAL (SILLAS)//
-        if ($request->chair_loan > 0) {
+        /*if ($request->chair_loan > 0) {
             //$userIDs =Department::all()->pluck('id'); // IDs DE RECURSOS HUMANOS//
             $dep = Department::find(1);
             $positions = Position::all()->where("department_id", 1)->pluck("name", "id");
@@ -220,12 +229,16 @@ class ReservationController extends Controller
                     $RecursosHumanos->notify(new notificacionRH($RH, $name, $sala, $ubica, $diaInicio,$LInicio,$HoraInicio, 
                                                                 $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
                     break;
-                }                                                  
+                }                                                 
             }
-        }
-
+            //AQUÍ SE PUEDE AGREGAR EL CORREO DE ALGÚN OTRO COLABORADOR QUE NO SEA DE RH//
+            $AD= User::where('id', 147)->first()->name;
+            $ADMINISTRACION = User::where('id', 147)->first();
+            $ADMINISTRACION->notify(new notificacionRH($AD, $name, $sala, $ubica, $diaInicio,$LInicio,$HoraInicio, 
+                                                        $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
+        }*/
         //CORREO PARA EL DEPARTAMENTO DE SISTEMAS PARA MATERIAL (PROYECTORES)//
-        if ($request->proyector > 0) {
+        /*if ($request->proyector > 0) {
             $SISTEMAS =User::where('id', 127)->first()->name;
             $DS =User::where('id', 127)->first();
             $DS->notify(new  notificacionSistemas ($SISTEMAS, $name, $sala, $ubica,$diaInicio,$LInicio,$HoraInicio, 
@@ -236,6 +249,8 @@ class ReservationController extends Controller
     //////////////////////////////////////////////FUNCIÓN PARA EDITAR/////////////////////////////////////////////////
     public function update(Request $request)
     {
+
+        $user = auth()->user();
         // INFORMACIÓN QUE DEBE VALIDAR QUE SE ENCUENTRE //
         $request->validate([
             'title' => 'required',
@@ -243,7 +258,7 @@ class ReservationController extends Controller
             'end' => 'required',
             'description' => 'required',
         ]);
-        
+        dd($request);
         $fecha_inicio = $request->start;
         $fecha_termino = $request->end;
         
@@ -295,6 +310,16 @@ class ReservationController extends Controller
             }
         }
         
+        //CONDICION PARA QUE UN USUARIO NO PUEDA RESERVAR LAS SALAS A LA MISMA HORA EN EL MISMO DÍA// 
+        $allreservation = Reservation::where('id_usuario', $user->id)
+                                            ->where('start', '>=', $request->start)
+                                            ->where('end', '<=', $request->end)
+                                            ->exists();
+                                            
+        if ($allreservation) {
+            return redirect()->back()->with('message1', 'No puedes reservar todas las salas a la misma fecha y hora.');
+        }
+
         // AGREGAMOS LOS NUEVOS USUARIOS AL VIEJO ARREGLO //
         $invitadospos = DB::table('reservations')
                             ->select('guest')
@@ -312,7 +337,7 @@ class ReservationController extends Controller
             $invitades = array_merge($invitades, [$invitadospos->guest]);
         }
         $invitados = implode(',', $invitades);
-        
+
         // HACEMOS LA ACTUALIZACIÓN DE LA BASE DE DATOS //
         DB::table('reservations')->where('id', $request->id_evento)->update([
             'title' => $request->title,
@@ -359,9 +384,9 @@ class ReservationController extends Controller
             $nombre= User::where('id', $usuario)->first()->name; 
             $nombres[] = $nombre;  
             $guest= implode(',',$nombres);
-        }
+        }*/
         //CORREO PARA LOS INVIDATOS DE LA REUNIÓN//
-        foreach($array as $invitado){
+        /*foreach($array as $invitado){
             $nombre= User::where('id', $invitado)->first()->name;
             $notificacion = User::where('id', $invitado)->first();
             $notificacion->notify(new NotificacionEdit ($name, $nombre, $diaInicio,$LInicio,$HoraInicio, $diaFin, $LFin, 
@@ -373,10 +398,10 @@ class ReservationController extends Controller
         $informar =User::where('id', 31)->first();
         $informar->notify(new notificacionPJEdit ($Project, $name, $request->title, $names,$ubica,$diaInicio,$LInicio,$HoraInicio, 
                                                   $diaFin, $LFin, $HoraFin,$request->engrave,$guest, $request->chair_loan, 
-                                                  $request->proyector,$request->description));
+                                                  $request->proyector,$request->description));*/
                                                   
         //CORREO PARA EL DEPARTAMENTO DE RECURSOS HUMANOS PARA MATERIAL (SILLAS)//
-        if ($request->chair_loan > 0) {
+        /*if ($request->chair_loan > 0) {
             //$userIDs =Department::all()->pluck('id'); // IDs DE RECURSOS HUMANOS//
             $dep = Department::find(1);
             $positions = Position::all()->where("department_id", 1)->pluck("name", "id");
@@ -396,10 +421,15 @@ class ReservationController extends Controller
                     break; // Terminar el bucle después de enviar el correo al ID 6
                 }
             }
-        }
+            //AQUÍ SE PUEDE AGREGAR EL CORREO DE ALGÚN OTRO COLABORADOR QUE NO SEA DE RH//
+            $AD= User::where('id', 147)->first()->name;
+            $ADMINISTRACION = User::where('id', 147)->first();
+            $ADMINISTRACION->notify(new notificacionRHEdit($AD, $name, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, $diaFin, $LFin, 
+                                                           $HoraFin, $request->chair_loan, $request->description));
+        }*/
 
         //CORREO PARA EL DEPARTAMENTO DE SISTEMAS PARA MATERIAL (PROYECTORES)//
-        if ($request->proyector > 0) {
+        /*if ($request->proyector > 0) {
             $SISTEMAS =User::where('id', 127)->first()->name;
             $DS =User::where('id', 127)->first();
             $DS->notify(new  notificacionSistemasEdit ($SISTEMAS, $name, $names, $ubica,$diaInicio,$LInicio,$HoraInicio, $diaFin, $LFin, 
