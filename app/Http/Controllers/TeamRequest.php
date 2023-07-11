@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Livewire\NotifyComponent;
 use App\Mail\NotificacionSolicitudes;
 use App\Models\Company;
 use App\Models\Department;
@@ -10,6 +11,7 @@ use App\Models\Position;
 use App\Models\Role;
 use App\Models\TeamRequest as ModelsTeamRequest;
 use App\Models\User;
+use App\Notifications\notificacionCorreo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -62,22 +64,24 @@ public function createTeamRequest(Request $request)
     'observations'=>'required'
     ]);
 
-    try{
-        DB::beginTransaction();
+    // try{
+    // DB::beginTransaction();
 
     $data = [];
      array_push($data,(object)[
         'odoo_users' => json_encode([$request->odoo_users, $request->odoo_users5, $request->odoo_users4, $request->odoo_users3, $request->odoo_users2, $request->odoo_users1 ]),
-        'work_profile_in_odoo' => json_encode([$request->work_profile_in_odoo, $request->work_profile_in_odoo5, $request->work_profile_in_odoo4, $request->work_profile_in_odoo3, $request->work_profile_in_odoo2, $request->work_profile_in_odoo1]) 
+        'work_profile_in_odoo' => json_encode([$request->work_profile_in_odoo, $request->work_profile_in_odoo5, $request->work_profile_in_odoo4, $request->work_profile_in_odoo3, $request->work_profile_in_odoo2, $request->work_profile_in_odoo1])
      ]);
 
 
     $data2 = [];
     array_push($data2,(object)[
         'email' => json_encode([$request->email, $request->email5, $request->email4, $request->email3, $request->email2, $request->email1 ]),
-        'signature_or_telephone_contact_numer' => json_encode([$request->signature_or_telephone_contact_numer, $request->signature_or_telephone_contact_numer5, $request->signature_or_telephone_contact_numer4, $request->signature_or_telephone_contact_numer3, $request->signature_or_telephone_contact_numer2, $request->signature_or_telephone_contact_numer1]) 
+        'signature_or_telephone_contact_numer' => json_encode([$request->signature_or_telephone_contact_numer, $request->signature_or_telephone_contact_numer5, $request->signature_or_telephone_contact_numer4, $request->signature_or_telephone_contact_numer3, $request->signature_or_telephone_contact_numer2, $request->signature_or_telephone_contact_numer1])
     ]);
-    
+
+    $DRH = User::where('id', 6)->first()->name;
+    $name = auth()->user()->name;
     $request_team = new ModelsTeamRequest();
     $request_team->type_of_user = $request->type_of_user;
     $request_team->name = $request->jefe_directo_id;
@@ -114,18 +118,20 @@ public function createTeamRequest(Request $request)
     $request_team->type_of_access = $request->type_of_access;
     $request_team->observations = $request->observations;
     $request_team->status = 'Solicitud Creada';
-    $correo = new NotificacionSolicitudes($request->all());
-    Mail::to('denisse@trademarket.com.mx')->send($correo);
     $request_team->save();
 
-    DB::commit();
-    return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!', 'data',$data);  
-}catch(\Exception $e){
+    $Recursos =User::where('id', 6)->first()->name;
+    $DRH = User::where('id', 6)->first();
+    $DRH->notify(new notificacionCorreo($Recursos, $name));
 
-    DB::rollBack();
-    return redirect()->route('team.request')->with('error', 'Ocurrió un error al enviar la solicitud. Por favor, inténtelo de nuevo más tarde.');
+    // DB::commit();
+    return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!', 'data',$data);
+//  }catch(\Exception $e){
+
+    // DB::rollBack();
+    // return redirect()->route('team.request')->with('error', 'Ocurrió un error al enviar la solicitud. Por favor, inténtelo de nuevo más tarde.');
 }
-}
+
 
 public function user($id)
 {
@@ -146,17 +152,24 @@ public function management()
 
 public function informationrequest($id)
 {
+    $DRH = User::where('id', 31)->first()->name;
+    $name = auth()->user()->name;
+
     $information_request = ModelsTeamRequest::find($id);
+
+    $Tecnologia_e_innovacion =User::where('id', 31)->first()->name;
+    $DRH = User::where('id', 31)->first();
+    $DRH->notify(new notificacionCorreo($Tecnologia_e_innovacion, $name));
     // dd($information_request);
-    
+
      return view('admin.Team.information', compact('information_request'));
 }
- 
+
 public function update(Request $request)
-{   
+{
      $request->validate([
          'status' => 'required',
-     ]);  
+     ]);
      DB::table('request_for_systems_and_communications_services')->where('id', intval($request->id))->update([
          'status' => $request->status
      ]);
