@@ -11,6 +11,7 @@ use App\Models\Position;
 use App\Models\Role;
 use App\Models\TeamRequest as ModelsTeamRequest;
 use App\Models\User;
+use App\Notifications\notificacionAprobaciones;
 use App\Notifications\notificacionCorreo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -152,16 +153,8 @@ public function management()
 
 public function informationrequest($id)
 {
-    $DRH = User::where('id', 31)->first()->name;
-    $name = auth()->user()->name;
-
     $information_request = ModelsTeamRequest::find($id);
-
-    $Tecnologia_e_innovacion =User::where('id', 31)->first()->name;
-    $DRH = User::where('id', 31)->first();
-    $DRH->notify(new notificacionCorreo($Tecnologia_e_innovacion, $name));
     // dd($information_request);
-
      return view('admin.Team.information', compact('information_request'));
 }
 
