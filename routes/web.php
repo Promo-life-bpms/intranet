@@ -27,7 +27,6 @@ use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FirebaseNotificationController;
 use App\Http\Controllers\HumanResources\RhController;
-
 use App\Http\Controllers\HumanResources\ScanDocumentsController;
 use App\Http\Controllers\HumanResources\UserDetails;
 use App\Http\Controllers\LikeController;

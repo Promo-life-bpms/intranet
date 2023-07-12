@@ -4,9 +4,9 @@
     <div class="card-header">
         <h1 class="fs-3 mx-auto">Estadísticas Tickets</h1>
     </div>
-    <div class="row row-cols-3 row-cols-lg-3 g-2 g-lg-3 justify-content-center mx-auto">
+    <div class=" row row-cols-3 row-cols-lg-3 g-2 g-lg-3 justify-content-center mx-auto">
         <div class="col">
-            <form class="form-delete" action="{{ route('filter.estadisticas') }}" method="POST">
+            <form class="form-delete justify-content-center" action="{{ route('filter.estadisticas') }}" method="POST">
                 @method('Post')
                 @csrf
                 <div class="d-flex justify-content-center">

@@ -52,10 +52,9 @@ class SoporteController extends Controller
         $startDate = null;
         $endDate = null;
 
-                $Ticket_especial = Ticket::where('special','>','00:00:00')->count();
+        $Ticket_especial = Ticket::where('special','>','00:00:00')->count();
 
         //Trae los nombres de las prioridaes
-        // $prioridad = SoporteTiempo::where('id', '>',1)->and('id','<',5)->get();
         $prioridad = SoporteTiempo::whereIn('id', [2, 3, 4, 5])->get();
         $namePriority = $prioridad->pluck('priority')->toArray();
 

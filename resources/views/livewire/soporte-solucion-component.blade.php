@@ -94,7 +94,6 @@
                                 type="button" role="tab" aria-controls="historial"
                                 aria-selected="false">Mensajes</button>
                         </li>
-                        {{-- @if ($estrellas) --}}
                         @if ($estrellas && $estrellas->score)
                             <li class="nav-item" role="presentation" wire:ignore>
                                 <button class="nav-link" id="calificacion-tab" data-bs-toggle="tab"
@@ -102,7 +101,7 @@
                                     aria-controls="historial" aria-selected="false">Evaluación Servicio</button>
                             </li>
                         @endif
-                        {{-- @endif --}}
+
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -177,7 +176,7 @@
                                         <div wire:loading.flex wire:target="guardarSolucion">
                                             <div class="spinner-border text-dark" role="status">
                                                 <span class="visually-hidden">Loading...</span>
-                                              </div>
+                                            </div>
                                         </div>
                                     </div>
                                 @endif
@@ -676,7 +675,6 @@
                                     @endif
                                 @endforeach
                             @endif
-
                         </div>
                         <div class="tab-pane fade" id="mensaje" role="tabpanel" aria-labelledby="mensaje-tab"
                             wire:ignore.self>
@@ -719,7 +717,7 @@
                                         <div wire:loading.flex wire:target="mensaje">
                                             <div class="spinner-border text-dark" role="status">
                                                 <span class="visually-hidden">Loading...</span>
-                                              </div>
+                                            </div>
                                         </div>
                                     @endif
                                 @endif
@@ -769,14 +767,13 @@
                         <div wire:loading.flex wire:target="reasignar">
                             <div class="spinner-border text-dark" role="status">
                                 <span class="visually-hidden">Loading...</span>
-                              </div>
+                            </div>
                         </div>
                     @endif
                 </div>
             </div>
         </div>
     </div>
-
     <div wire:ignore.self class="modal fade" id="Modalprioridad" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
@@ -810,50 +807,49 @@
                     @if ($prioridadID == 2 || $prioridadID == 3 || $prioridadID == 4)
                     @else
                         <button class="btn btn-info" onclick="hide()">Especial</button>
-                    @endif
 
 
-                    <div id="timeInput" class="d-none">
-                        {{-- <label class="input-group-text" for="inputGroupSelect01">Tiempo</label> --}}
-                        {{-- <input wire:model="tiempo" type="time" name="tiempo"> --}}
-                        <hr>
-                        <div wire:ignore class="input-group mb-3">
-                            <label class="input-group-text" for="inputGroupSelect02">Horas</label>
-                            <select wire:model="time_special" name="time_special" class="form-select"
-                                id="inputGroupSelect02">
-                                <option selected>Seleccionar...</option>
-                                <option value="01:00">01:00</option>
-                                <option value="02:00">02:00</option>
-                                <option value="03:00">03:00</option>
-                                <option value="04:00">04:00</option>
-                                <option value="5:00">05:00</option>
-                                <option value="6:00">06:00</option>
-                                <option value="7:00">07:00</option>
-                                <option value="8:00">08:00</option>
-                                <option value="9:00">09:00</option>
-                                <option value="24:00">1 día</option>
-                                <option value="48:00">2 días</option>
-                                <option value="72:00">3 días</option>
-                                <option value="96:00">4 días</option>
-                                <option value="120:00">5 días</option>
-                            </select>
-                            @if (isset($tickets->id))
-                                <button type="button"
-                                    class="btn btn-success rounded-3"wire:click="special({{ $tickets->id }})">Asignar</button>
-                                <div wire:loading wire:target="special">
-                                    <div class="spinner-border text-dark" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                      </div>
-                                </div>
-                            @endif
+                        <div id="timeInput" class="d-none">
+                            {{-- <label class="input-group-text" for="inputGroupSelect01">Tiempo</label> --}}
+                            {{-- <input wire:model="tiempo" type="time" name="tiempo"> --}}
+                            <hr>
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="inputGroupSelect02">Horas</label>
+                                <select wire:model="time_special" name="time_special" class="form-select"
+                                    id="inputGroupSelect02">
+                                    <option value="" selected>Seleccionar...</option>
+                                    <option value="01:00">01:00</option>
+                                    <option value="02:00">02:00</option>
+                                    <option value="03:00">03:00</option>
+                                    <option value="04:00">04:00</option>
+                                    <option value="5:00">05:00</option>
+                                    <option value="6:00">06:00</option>
+                                    <option value="7:00">07:00</option>
+                                    <option value="8:00">08:00</option>
+                                    <option value="9:00">09:00</option>
+                                    <option value="24:00">1 día</option>
+                                    <option value="48:00">2 días</option>
+                                    <option value="72:00">3 días</option>
+                                    <option value="96:00">4 días</option>
+                                    <option value="120:00">5 días</option>
+                                </select>
+                                @if (isset($tickets->id))
+                                    <button type="button"
+                                        class="btn btn-success rounded-3"wire:click="special({{ $tickets->id }})">Asignar</button>
+                                    <div wire:loading wire:target="special">
+                                        <div class="spinner-border text-dark" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                            @error('time_special')
+                                <span>
+                                    <font color="red"> *Selecciona una hora* </font>
+                                </span>
+                            @enderror
                         </div>
-                        @error('time_special')
-                            <span>
-                                <font color="red"> *Selecciona una hora* </font>
-                            </span>
-                        @enderror
-
-                    </div>
+                    @endif
                 </div>
                 <div class="modal-footer">
                     @if (isset($tickets->id))
@@ -865,7 +861,7 @@
                             <div wire:loading.flex wire:target="time">
                                 <div class="spinner-border text-dark" role="status">
                                     <span class="visually-hidden">Loading...</span>
-                                  </div>
+                                </div>
                             </div>
                         @endif
 
@@ -1133,6 +1129,7 @@
                 timeInput.style.display = 'none';
             }
         }
+
         function hide() {
             //CON JQERY
             $('#timeInput').toggleClass('d-none');

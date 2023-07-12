@@ -41,6 +41,11 @@ class CategoriaSoporteSeeder extends Seeder
             'slug'=>Str::slug('Diseño de tickets','-')
         ]);
         DB::table('soporte_categorias')->insert([
+            'name'=>'Odoo',
+            'status'=>true,
+            'slug'=>Str::slug('Odoo','-')
+        ]);
+        DB::table('soporte_categorias')->insert([
             'name'=>'Telefonía',
             'status'=>true,
             'slug'=>Str::slug('Telefonía','-')
@@ -63,7 +68,7 @@ class CategoriaSoporteSeeder extends Seeder
         DB::table('soporte_categorias')->insert([
             'name'=>'Enlaces',
             'status'=>true,
-            'slug'=>Str::slug('Correo','-')
+            'slug'=>Str::slug('Enlaces','-')
         ]);
 
         DB::table('soporte_categorias')->insert([
@@ -83,5 +88,6 @@ class CategoriaSoporteSeeder extends Seeder
             'status'=>true,
             'slug'=>Str::slug('Mantenimiento','-')
         ]);
+
     }
 }

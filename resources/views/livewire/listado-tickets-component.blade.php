@@ -42,8 +42,6 @@
 
                             </td>
                             <td>
-
-
                                 @if ($ticket->status->name == 'Creado' || $ticket->status->name == 'En proceso' || $ticket->status->name == 'Resuelto')
                                     <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#ModalVer" wire:click="verTicket({{ $ticket->id }})"><i
@@ -271,7 +269,7 @@
                                         class="badge bg-info text-dark">2 días</span></span></p>
                                     @elseif ($especial == '72:00:00')
                                     <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                        class="badge bg-info text-dark">3 día</span></span></p>
+                                        class="badge bg-info text-dark">3 días</span></span></p>
                                     @elseif ($especial == '96:00:00')
                                     <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
                                         class="badge bg-info text-dark">4 días</span></span></p>
@@ -862,7 +860,9 @@
                     {{-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> --}}
                     <button wire:click="encuesta" type="button" class="btn btn-primary">Enviar</button>
                     <div wire:loading.flex wire:target="encuesta">
-                        Enviando
+                        <div class="spinner-border text-dark" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                          </div>
                     </div>
                 </div>
             </div>
@@ -873,7 +873,6 @@
 
         ClassicEditor
             .create(document.querySelector('#editor'), {
-                removePlugins: ['MediaEmbed'],
                 extraPlugins: [MyCustomUploadAdapterPlugin],
             })
             .then(newEditor => {
@@ -949,7 +948,6 @@
 
         ClassicEditor
             .create(document.querySelector('#editorEditar'), {
-                removePlugins: ['MediaEmbed'],
                 extraPlugins: [MyCustomUploadAdapterPlugin],
             })
             .then(newEditor => {
@@ -991,7 +989,7 @@
 
                 ClassicEditor
                     .create(document.querySelector('#editorMensaje'), {
-                        removePlugins: ['MediaEmbed'],
+
                         extraPlugins: [MyCustomUploadAdapterPlugin],
                     })
                     .then(newEditor => {

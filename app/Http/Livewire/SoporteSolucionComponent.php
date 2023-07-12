@@ -27,6 +27,8 @@ class SoporteSolucionComponent extends Component
     public function render()
     {
         //traer los tipos de prioridad
+
+
         $priority = SoporteTiempo::where('id', '>', 1)->get();
         $categories =  auth()->user()->asignacionCategoria->pluck(["id"]);
         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
@@ -253,17 +255,14 @@ class SoporteSolucionComponent extends Component
             'special' => $this->time_special,
         ]);
 
-
-
         Historial::create([
             'ticket_id' => $this->ticket_id,
             'user_id' => auth()->user()->id,
             'type' => 'Tiempo',
             'data' => $ticket->special
         ]);
-
-
         $this->dispatchBrowserEvent('special');
+        $this->time_special='';
     }
 }
 

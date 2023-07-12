@@ -33,7 +33,6 @@ class ListadoTicketsComponent extends Component
         return view('livewire.listado-tickets-component', [
 
             'tickets' => Ticket::where('user_id', auth()->id())->orderBy('id')->paginate(15)
-
         ]);
     }
 
@@ -109,23 +108,6 @@ class ListadoTicketsComponent extends Component
 
             ]
         );
-   // $Notificacion =
-        //     [
-        //         'name' => auth()->user()->name,
-        //         'email' => auth()->user()->email,
-        //         'name_ticket' => $ticket->name,
-        //         'data' => $ticket->data,
-        //         'tiempo' => $ticket->created_at,
-        //         'categoria' => $category->name,
-        //         'username' => $usuarios['0']->name
-        //     ];
-
-        // //arreglo para enviar la notificacion al usuario de la categoria
-        // foreach ($usuarios as $usuario) {
-
-        //     $usuario->notify(new SoporteNotification($Notificacion));
-        // }
-
         $this->name = '';
         $this->categoria = '';
         $this->dispatchBrowserEvent('ticket_success');
@@ -177,11 +159,6 @@ class ListadoTicketsComponent extends Component
             'name_ticket' => $ticketEditar->name,
         ];
 
-        // $usuarios = $category->usuarios;
-        // foreach ($usuarios  as $usuario) {
-        //     $usuario->notify(new EditarTicketNotification($notificacionEditar));
-        // }
-
         $ticketEditar->support->notify(new EditarTicketNotification($notificacionEditar));
 
         $this->name = '';
@@ -218,14 +195,8 @@ class ListadoTicketsComponent extends Component
                 'name_ticket' => $actualizar_status->name,
                 'status' => $actualizar_status->status->name,
                 'username' => $usuarios['0']->name
-
-
             ];
 
-        //for each para enviar notificacion de status a los usuarios relacionados
-        // foreach ($usuarios as $usuarios) {
-        //     $usuarios->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
-        // }
         $actualizar_status->support->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
     }
 
@@ -285,10 +256,6 @@ class ListadoTicketsComponent extends Component
             'name' => auth()->user()->name,
             'name_ticket' => $ticket->name
         ];
-        // $usuarios = $category->usuarios;
-        // foreach ($usuarios as $usuario) {
-        //     $usuario->notify(new MessageSoporteNotification($notificationMessage));
-        // }
         $ticket->support->notify(new MessageSoporteNotification($notificationMessage));
         $this->dispatchBrowserEvent('Mensaje');
     }
@@ -325,11 +292,6 @@ class ListadoTicketsComponent extends Component
         ];
 
         $category = Categoria::find($ticket->category_id);
-        // $usuarios=$category->usuarios;
-        // foreach ($usuarios as $usuario) {
-        //     $usuario->notify(new EncuestaSoporteNotification($notificationEncuesta));
-        // }
-        // $ticket->support->notify(new EncuestaSoporteNotification($notificationEncuesta));
         $this->dispatchBrowserEvent('Encuesta');
         $this->score='';
         $this->comments='';
