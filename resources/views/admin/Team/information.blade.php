@@ -176,7 +176,7 @@
                 <input type="text" value="{{$information_request->id}}" name="id" hidden>
                 <div class="col-md-3">
                     <div class="form-group">
-                            {!! Form::select('status', ['Aprobada'=> 'Aprobada', 'Preaprobada'=> 'Preaprobada', 'Rechazada'=> 'Rechazada'], 'Estado', ['class' => 'form-control','placeholder' => 'Seleccione el cambio de estado']) !!}
+                            {!! Form::select('status', ['Aprobada'=> 'Aprobada', 'Rechazada'=> 'Rechazada'], 'Estado', ['class' => 'form-control','placeholder' => 'Seleccione el cambio de estado']) !!}
                             @error('status')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
@@ -184,9 +184,18 @@
                             @enderror
                     </div>
                 </div>
-                {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}         
+                {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}         
         {!! Form::close()!!}
     </form>
+
+    <script>
+        var btnActualizar = document.getElementById('btnActualizar');
+        var estadoActual = "{{$information_request->status}}";
+        if (estadoActual === "Aprobada" || estadoActual === "Rechazada") {
+            // Deshabilita el botón de actualizar
+            btnActualizar.disabled = true;
+        }
+    </script>
 </div>
 
 <style>

@@ -50,7 +50,7 @@ class notificacionAprobaciones extends Notification
                 'TI'=>$this->TI,
                 'name'=>$this->name
             ])
-            ->subject(' Aprobaciones de Solicitudes de Servicios de Sistemas y Comunicaciones')
+            ->subject(' Aprobación de RH de Solicitudes de Servicios de Sistemas y Comunicaciones')
             ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
     }
 
