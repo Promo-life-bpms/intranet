@@ -189,12 +189,12 @@
     </form>
 
     <script>
-        var btnActualizar = document.getElementById('btnActualizar');
-        var estadoActual = "{{$information_request->status}}";
-        if (estadoActual === "Aprobada" || estadoActual === "Rechazada") {
-            // Deshabilita el botón de actualizar
-            btnActualizar.disabled = true;
-        }
+    var btnActualizar = document.getElementById('btnActualizar');
+    var estadoActual = "{{$information_request->status}}";
+    if (estadoActual === "Aprobada" || estadoActual === "Rechazada") {
+        
+        btnActualizar.disabled = true;
+    }
     </script>
 </div>
 
