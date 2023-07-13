@@ -69,8 +69,8 @@ class SoporteSolucionComponent extends Component
         ];
 
         $user->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
-        // $support_solution= new FirebaseNotificationController();
-        // $support_solution->supportInProgress(auth()->user()->name,$actualizar_status->name);
+        $support_solution= new FirebaseNotificationController();
+        $support_solution->supportInProgress($actualizar_status->name,$user->id);
     }
     public function verTicket($id)
     {
@@ -132,8 +132,8 @@ class SoporteSolucionComponent extends Component
 
         $usuario->notify(new SolucionSoporteNotification($solucionNotification));
         $this->dispatchBrowserEvent('ticket_solucion');
-        // $support_solution=new FirebaseNotificationController();
-        // $support_solution->supportSolution($ticket->name);
+        $support_solution=new FirebaseNotificationController();
+        $support_solution->supportSolution($ticket->name,$usuario->id);
     }
 
     //enviar mensaje en soporte solucion
@@ -172,8 +172,8 @@ class SoporteSolucionComponent extends Component
 
         $usuario->notify(new MessageSoporteSolutionNotification($messageNotification));
         $this->dispatchBrowserEvent('message');
-        // $support_message= new FirebaseNotificationController();
-        // $support_message->supportMessageUser(auth()->user()->name,$ticket->name);
+        $support_message= new FirebaseNotificationController();
+        $support_message->supportMessageUser(auth()->user()->name,$ticket->name,$usuario->id);
     }
 
     public function reasignar()
@@ -210,8 +210,8 @@ class SoporteSolucionComponent extends Component
         //aqui envio la notificacion al usuario
         $user->notify(new ReasignacionTicketSoporte($reasignacionTicket));
         $this->dispatchBrowserEvent('reasignacion');
-        // $support_reassignment= new FirebaseNotificationController();
-        // $support_reassignment->supportReassignment(auth()->user()->name);
+        $support_reassignment= new FirebaseNotificationController();
+        $support_reassignment->supportReassignment(auth()->user()->name,$user->id);
     }
     public function time()
     {

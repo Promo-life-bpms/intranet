@@ -414,13 +414,13 @@ class FirebaseNotificationController extends Controller
 
     }
 
-
-    public function supportNotification($user,$name)
+//NOTIFICACIONES USUARIO A SOPORTE
+    public function supportNotification($user,$ticket,$user_id)
     {
 
         $title = '¡Haz recibido un ticket!';
-        $body = '¡'. $user. ' Te ha enviado un ticket : ' . $name ;
-        $topic = '/topics'. '/'.strval(34);
+        $body = '¡'. $user. ' Te ha enviado un ticket : ' . $ticket ;
+        $topic = '/topics'. '/'.strval($user_id);
         $client = new Client(['verify' => false]);
         $body = [
             'to' => $topic,
@@ -443,12 +443,12 @@ class FirebaseNotificationController extends Controller
         );
     }
 
-    public function supportEditNotification($user,$name)
+    public function supportEditNotification($user,$ticket,$user_id)
     {
 
          $title = '¡Edito ticket!';
-         $body = '¡'. $user. ' Edito el ticket : ' . $name ;
-         $topic = '/topics'. '/'.strval(34);
+         $body = '¡'. $user. ' Edito el ticket : ' . $ticket ;
+         $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
          $body = [
              'to' => $topic,
@@ -473,12 +473,12 @@ class FirebaseNotificationController extends Controller
 
     }
 
-    public function supportFinishedTicket($user,$name)
+    public function supportFinishedTicket($user,$ticket,$user_id)
     {
 
          $title = '!Ticket Finalizado!';
-         $body =  $user. ' Finalizo el ticket : ' . $name ;
-         $topic = '/topics'. '/'.strval(34);
+         $body =  $user. ' Finalizo el ticket : ' . $ticket ;
+         $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
          $body = [
              'to' => $topic,
@@ -501,12 +501,12 @@ class FirebaseNotificationController extends Controller
          );
     }
 
-    public function supportMessage($user,$name)
+    public function supportMessage($user,$ticket,$user_id)
     {
 
          $title = '¡Mensaje!';
-         $body = '¡'. $user. ' Envio un mensaje en el ticket : ' . $name ;
-         $topic = '/topics'. '/'.strval(34);
+         $body = '¡'. $user. ' Envio un mensaje en el ticket : ' . $ticket ;
+         $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
          $body = [
              'to' => $topic,
@@ -529,12 +529,14 @@ class FirebaseNotificationController extends Controller
          );
     }
 
-    public function supportInProgress($user,$name)
+
+    //NOTIFICACIONES SOPORTE A USUARIOS
+    public function supportInProgress($ticket,$user_id)
     {
 
          $title = '¡En proceso!';
-         $body = ' Ticket : ' . $name ;
-         $topic = '/topics'. '/'.strval(34);
+         $body = ' Ticket : ' . $ticket ;
+         $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
          $body = [
              'to' => $topic,
@@ -557,12 +559,12 @@ class FirebaseNotificationController extends Controller
          );
     }
 
-    public function supportSolution($name)
+    public function supportSolution($ticket,$user_id)
     {
 
          $title = '¡Solución recibida!';
-         $body = 'En el Ticket : ' . $name ;
-         $topic = '/topics'. '/'.strval(34);
+         $body = 'En el Ticket : ' . $ticket ;
+         $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
          $body = [
              'to' => $topic,
@@ -585,12 +587,12 @@ class FirebaseNotificationController extends Controller
          );
     }
 
-    public function supportReassignment($name)
+    public function supportReassignment($ticket,$user_id)
     {
 
          $title = '¡Ticket!';
-         $body = '!' . $name .'Te asigno un ticket';
-         $topic = '/topics'. '/'.strval(34);
+         $body = '!' . $ticket .'Te asigno un ticket';
+         $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
          $body = [
              'to' => $topic,
@@ -613,12 +615,12 @@ class FirebaseNotificationController extends Controller
          );
     }
 
-    public function supportMessageUser($user,$ticket)
+    public function supportMessageUser($user,$ticket,$user_id)
     {
 
          $title = '¡Mensaje!';
          $body = $user.'Te envio un mensaje en el ticket :'.$ticket ;
-         $topic = '/topics'. '/'.strval(34);
+         $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
          $body = [
              'to' => $topic,
