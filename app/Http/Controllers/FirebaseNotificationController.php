@@ -13,7 +13,7 @@ class FirebaseNotificationController extends Controller
         $title ='Nueva Publicación';
         $body = '¡'. $user. ' ha realizado una nueva publicación!. ' . $message;
         $topic = "/topics/PUBLICACIONES";
-        
+
         $client = new Client(['verify' => false]);
 
         $body = [
@@ -23,7 +23,7 @@ class FirebaseNotificationController extends Controller
                     'body'=> $body,
                 ],
         ];
-        
+
         $response = $client->request(
             'POST',
             'https://fcm.googleapis.com/fcm/send',
@@ -35,11 +35,11 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-        
+
     }
 
     public function communique($title_message,$message)
-    {        
+    {
         $title = $title_message;
         if($message == '.'){
             $body = '¡Se ha realizado un nuevo comunicado!. ' ;
@@ -48,7 +48,7 @@ class FirebaseNotificationController extends Controller
         }
 
         $topic = "/topics/COMUNICADOS";
-        
+
         $client = new Client(['verify' => false]);
 
         $body = [
@@ -58,7 +58,7 @@ class FirebaseNotificationController extends Controller
                     'body'=> $body,
                 ],
         ];
-        
+
         $response = $client->request(
             'POST',
             'https://fcm.googleapis.com/fcm/send',
@@ -70,7 +70,7 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-        
+
     }
 
     public function createRequest($applicant_id)
@@ -88,7 +88,7 @@ class FirebaseNotificationController extends Controller
                     'body'=> $body,
                 ],
         ];
-        
+
         $response = $client->request(
             'POST',
             'https://fcm.googleapis.com/fcm/send',
@@ -110,7 +110,7 @@ class FirebaseNotificationController extends Controller
          $body_manager = '¡Haz recibido una nueva solicitud de un colaborador!' ;
          $topic_manager = '/topics'.'/'. strval($manager_id) ;
          $client_manager = new Client(['verify' => false]);
- 
+
          $body_manager = [
              'to' => $topic_manager,
                  'notification' => [
@@ -118,7 +118,7 @@ class FirebaseNotificationController extends Controller
                      'body'=> $body_manager,
                  ],
          ];
-         
+
          $response = $client_manager->request(
              'POST',
              'https://fcm.googleapis.com/fcm/send',
@@ -130,14 +130,14 @@ class FirebaseNotificationController extends Controller
                  'body' => json_encode($body_manager),
              ]
          );
-   
+
     }
 
     public function sendToRh()
     {
         $usersRH =  Role::where('name', 'rh')->first()->users;
         foreach ($usersRH as $user) {
-            
+
             //Notificacion del que crea la solicitud
             $title = 'Nueva solicitud';
             $body = '¡Tienes una nueva solicitud para aprobar de un colaborador.!' ;
@@ -165,11 +165,11 @@ class FirebaseNotificationController extends Controller
             );
 
         }
-          
+
     }
 
     public function sendApprovedRequest($user_id)
-    {       
+    {
         //Notificacion del que crea la solicitud
         $title = '¡Solicitud Aprobada!';
         $body = 'Tu solicitud ha sido aprobada, visita la sección de solicitudes para ver mas detalles' ;
@@ -317,7 +317,7 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-        
+
     }
 
     public function birthdayNotification($name)
@@ -347,7 +347,7 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-        
+
     }
 
     public function birthdaySpecificNotification($user_id, $name)
@@ -377,7 +377,7 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-        
+
     }
 
     public function birthdaySpecificNotificationPost(Request $request)
@@ -411,6 +411,233 @@ class FirebaseNotificationController extends Controller
 
         return back()->with('message', 'Felicitacion enviada correctamente');
 
-        
+
+    }
+
+
+    public function supportNotification($user,$name)
+    {
+
+        $title = '¡Haz recibido un ticket!';
+        $body = '¡'. $user. ' Te ha enviado un ticket : ' . $name ;
+        $topic = '/topics'. '/'.strval(34);
+        $client = new Client(['verify' => false]);
+        $body = [
+            'to' => $topic,
+                'notification' => [
+                    'title'=> $title,
+                    'body'=> $body,
+                ],
+        ];
+
+        $response = $client->request(
+            'POST',
+            'https://fcm.googleapis.com/fcm/send',
+                [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                ],
+                'body' => json_encode($body),
+            ]
+        );
+    }
+
+    public function supportEditNotification($user,$name)
+    {
+
+         $title = '¡Edito ticket!';
+         $body = '¡'. $user. ' Edito el ticket : ' . $name ;
+         $topic = '/topics'. '/'.strval(34);
+         $client = new Client(['verify' => false]);
+         $body = [
+             'to' => $topic,
+                 'notification' => [
+                     'title'=> $title,
+                     'body'=> $body,
+                 ],
+         ];
+
+         $response = $client->request(
+             'POST',
+             'https://fcm.googleapis.com/fcm/send',
+                 [
+                 'headers' => [
+                     'Content-Type' => 'application/json',
+                     'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                 ],
+                 'body' => json_encode($body),
+             ]
+         );
+
+
+    }
+
+    public function supportFinishedTicket($user,$name)
+    {
+
+         $title = '!Ticket Finalizado!';
+         $body =  $user. ' Finalizo el ticket : ' . $name ;
+         $topic = '/topics'. '/'.strval(34);
+         $client = new Client(['verify' => false]);
+         $body = [
+             'to' => $topic,
+                 'notification' => [
+                     'title'=> $title,
+                     'body'=> $body,
+                 ],
+         ];
+
+         $response = $client->request(
+             'POST',
+             'https://fcm.googleapis.com/fcm/send',
+                 [
+                 'headers' => [
+                     'Content-Type' => 'application/json',
+                     'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                 ],
+                 'body' => json_encode($body),
+             ]
+         );
+    }
+
+    public function supportMessage($user,$name)
+    {
+
+         $title = '¡Mensaje!';
+         $body = '¡'. $user. ' Envio un mensaje en el ticket : ' . $name ;
+         $topic = '/topics'. '/'.strval(34);
+         $client = new Client(['verify' => false]);
+         $body = [
+             'to' => $topic,
+                 'notification' => [
+                     'title'=> $title,
+                     'body'=> $body,
+                 ],
+         ];
+
+         $response = $client->request(
+             'POST',
+             'https://fcm.googleapis.com/fcm/send',
+                 [
+                 'headers' => [
+                     'Content-Type' => 'application/json',
+                     'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                 ],
+                 'body' => json_encode($body),
+             ]
+         );
+    }
+
+    public function supportInProgress($user,$name)
+    {
+
+         $title = '¡En proceso!';
+         $body = ' Ticket : ' . $name ;
+         $topic = '/topics'. '/'.strval(34);
+         $client = new Client(['verify' => false]);
+         $body = [
+             'to' => $topic,
+                 'notification' => [
+                     'title'=> $title,
+                     'body'=> $body,
+                 ],
+         ];
+
+         $response = $client->request(
+             'POST',
+             'https://fcm.googleapis.com/fcm/send',
+                 [
+                 'headers' => [
+                     'Content-Type' => 'application/json',
+                     'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                 ],
+                 'body' => json_encode($body),
+             ]
+         );
+    }
+
+    public function supportSolution($name)
+    {
+
+         $title = '¡Solución recibida!';
+         $body = 'En el Ticket : ' . $name ;
+         $topic = '/topics'. '/'.strval(34);
+         $client = new Client(['verify' => false]);
+         $body = [
+             'to' => $topic,
+                 'notification' => [
+                     'title'=> $title,
+                     'body'=> $body,
+                 ],
+         ];
+
+         $response = $client->request(
+             'POST',
+             'https://fcm.googleapis.com/fcm/send',
+                 [
+                 'headers' => [
+                     'Content-Type' => 'application/json',
+                     'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                 ],
+                 'body' => json_encode($body),
+             ]
+         );
+    }
+
+    public function supportReassignment($name)
+    {
+
+         $title = '¡Ticket!';
+         $body = '!' . $name .'Te asigno un ticket';
+         $topic = '/topics'. '/'.strval(34);
+         $client = new Client(['verify' => false]);
+         $body = [
+             'to' => $topic,
+                 'notification' => [
+                     'title'=> $title,
+                     'body'=> $body,
+                 ],
+         ];
+
+         $response = $client->request(
+             'POST',
+             'https://fcm.googleapis.com/fcm/send',
+                 [
+                 'headers' => [
+                     'Content-Type' => 'application/json',
+                     'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                 ],
+                 'body' => json_encode($body),
+             ]
+         );
+    }
+
+    public function supportMessageUser($user,$ticket)
+    {
+
+         $title = '¡Mensaje!';
+         $body = $user.'Te envio un mensaje en el ticket :'.$ticket ;
+         $topic = '/topics'. '/'.strval(34);
+         $client = new Client(['verify' => false]);
+         $body = [
+             'to' => $topic,
+                 'notification' => [
+                     'title'=> $title,
+                     'body'=> $body,
+                 ],
+         ];
+
+         $response = $client->request(
+             'POST',
+             'https://fcm.googleapis.com/fcm/send',
+                 [
+                 'headers' => [
+                     'Content-Type' => 'application/json',
+                     'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                 ],
+                 'body' => json_encode($body),
+             ]
+         );
     }
 }

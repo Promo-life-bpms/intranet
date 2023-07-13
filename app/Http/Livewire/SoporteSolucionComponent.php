@@ -15,6 +15,7 @@ use App\Notifications\SolucionSoporteNotification;
 use App\Notifications\StatusEnProcesoSoporteNotification;
 use App\Notifications\ReasignacionTicketSoporte;
 use Hamcrest\Core\HasToString;
+use App\Http\Controllers\FirebaseNotificationController;
 
 class SoporteSolucionComponent extends Component
 {
@@ -68,10 +69,11 @@ class SoporteSolucionComponent extends Component
         ];
 
         $user->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
+        // $support_solution= new FirebaseNotificationController();
+        // $support_solution->supportInProgress(auth()->user()->name,$actualizar_status->name);
     }
     public function verTicket($id)
     {
-
         $ticket = Ticket::find($id);
         $this->prioridadID=$ticket->priority_id;
         $this->especial=$ticket->special;
@@ -130,6 +132,8 @@ class SoporteSolucionComponent extends Component
 
         $usuario->notify(new SolucionSoporteNotification($solucionNotification));
         $this->dispatchBrowserEvent('ticket_solucion');
+        // $support_solution=new FirebaseNotificationController();
+        // $support_solution->supportSolution($ticket->name);
     }
 
     //enviar mensaje en soporte solucion
@@ -168,6 +172,8 @@ class SoporteSolucionComponent extends Component
 
         $usuario->notify(new MessageSoporteSolutionNotification($messageNotification));
         $this->dispatchBrowserEvent('message');
+        // $support_message= new FirebaseNotificationController();
+        // $support_message->supportMessageUser(auth()->user()->name,$ticket->name);
     }
 
     public function reasignar()
@@ -204,6 +210,8 @@ class SoporteSolucionComponent extends Component
         //aqui envio la notificacion al usuario
         $user->notify(new ReasignacionTicketSoporte($reasignacionTicket));
         $this->dispatchBrowserEvent('reasignacion');
+        // $support_reassignment= new FirebaseNotificationController();
+        // $support_reassignment->supportReassignment(auth()->user()->name);
     }
     public function time()
     {
@@ -227,16 +235,6 @@ class SoporteSolucionComponent extends Component
             'type' => 'Tiempo',
             'data' => $ticket->priority->time
         ]);
-
-
-        //notificamos
-        // $notificationPriority=[
-        //     'name'=>auth()->user()->name,
-        //     'name_ticket'=>$ticket->name,
-        //     'time'=>$ticket->priority->time
-        // ];
-
-        // $usuario->notify(new SoportePrioridadNotification($notificationPriority));
         $this->dispatchBrowserEvent('Tiempo');
     }
 

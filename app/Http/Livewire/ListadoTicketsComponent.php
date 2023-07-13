@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Livewire;
+
+use App\Http\Controllers\FirebaseNotificationController;
 use Livewire\WithPagination;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -96,7 +98,8 @@ class ListadoTicketsComponent extends Component
         ];
 
         $usuarioConMenosTickets->notify(new SoporteNotification($Notificacion));
-
+        // $support_notification= new FirebaseNotificationController();
+        // $support_notification->supportNotification(auth()->user()->name,$this->name);
 
         //Historial de creado
         Historial::create(
@@ -160,7 +163,8 @@ class ListadoTicketsComponent extends Component
         ];
 
         $ticketEditar->support->notify(new EditarTicketNotification($notificacionEditar));
-
+        // $support_notification_edit= new FirebaseNotificationController();
+        // $support_notification_edit->supportEditNotification(auth()->user()->name,$ticketEditar->name);
         $this->name = '';
         $this->categoria = ' ';
         $this->dispatchBrowserEvent('editar');
@@ -171,8 +175,6 @@ class ListadoTicketsComponent extends Component
         $actualizar_status = Ticket::find($id);
         $category = Categoria::find($actualizar_status->category_id);
         $usuarios = $category->usuarios;
-
-
         $actualizar_status->update(
             [
 
@@ -198,6 +200,8 @@ class ListadoTicketsComponent extends Component
             ];
 
         $actualizar_status->support->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
+        // $support_finished= new FirebaseNotificationController();
+        // $support_finished->supportFinishedTicket(auth()->user()->name, $actualizar_status->name);
     }
 
     public function verTicket($id)
@@ -258,6 +262,8 @@ class ListadoTicketsComponent extends Component
         ];
         $ticket->support->notify(new MessageSoporteNotification($notificationMessage));
         $this->dispatchBrowserEvent('Mensaje');
+        // $support_message=new FirebaseNotificationController();
+        // $support_message->supportMessage(auth()->user()->name, $ticket->name);
     }
 
     function encuesta()
