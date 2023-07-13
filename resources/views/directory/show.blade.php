@@ -9,12 +9,22 @@
     </div>
     <div class="card-body">
 
+        @if (session('message'))
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
+        @endif
+
         <div class="row">
             @foreach ($directories as $directory)
                 {!! Form::model($directory, [
                     'route' => ['directories.update', $directory],
                     'method' => 'put',
                 ]) !!}
+            
+
+                <input type="text" name="id" value="{{ $directory->id }}" hidden >
+                <input type="text" name="user_id" value="{{ $directory->user_id }}" hidden >
 
                 <div class="card bg-light p-4">
                     <div class="row">
