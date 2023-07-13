@@ -184,18 +184,9 @@
                             @enderror
                     </div>
                 </div>
-                {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}         
+                {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}         
         {!! Form::close()!!}
     </form>
-
-    <script>
-    var btnActualizar = document.getElementById('btnActualizar');
-    var estadoActual = "{{$information_request->status}}";
-    if (estadoActual === "Aprobada" || estadoActual === "Rechazada") {
-        
-        btnActualizar.disabled = true;
-    }
-    </script>
 </div>
 
 <style>

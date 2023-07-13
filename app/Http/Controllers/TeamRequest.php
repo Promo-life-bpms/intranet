@@ -153,13 +153,13 @@ public function management()
 
 public function informationrequest($id)
 {
-    $name = auth()->user()->name;
+    // $name = auth()->user()->name;
     $information_request = ModelsTeamRequest::find($id);
-    $DRH = User::where('id', 31)->first();
-    if ($information_request->status === 'Aprobada') {
-        $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
-        $DRH->notify(new notificacionAprobaciones($Tecnologia_e_innovacion, $name));
-    }
+    // $DRH = User::where('id', 31)->first();
+    // if ($information_request->status === 'Aprobada') {
+    //     $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
+    //     $DRH->notify(new notificacionAprobaciones($Tecnologia_e_innovacion, $name));
+    // }
      return view('admin.Team.information', compact('information_request'));
 }
 
