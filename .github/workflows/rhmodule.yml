@@ -1,0 +1,16 @@
+name: Enviar notificación de actualización de la rama por Slack
+on:
+  push:
+    branches:
+      - rh-module
+  pull_request:
+    types:
+      - closed
+jobs:
+  slack_notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enviar la notificación por slack
+        run: |
+          MESSAGE="🚨 Se ha actualizado la rama de rh-module en el GitHub de la intranet 🚨"
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"'"$MESSAGE"'"}' https://hooks.slack.com/services/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

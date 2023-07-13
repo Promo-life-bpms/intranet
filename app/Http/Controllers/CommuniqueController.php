@@ -86,6 +86,8 @@ class CommuniqueController extends Controller
         $communique->companies()->attach($request->companies);
         $communique->departments()->attach($request->departments);
 
+        $communique_notification = new FirebaseNotificationController();
+        $communique_notification->communique($request->title, $request->description);
 
         return redirect()->action([CommuniqueController::class, 'show']);
     }

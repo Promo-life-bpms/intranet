@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\Directory;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class DirectoryController
@@ -57,7 +58,7 @@ class DirectoryController extends Controller
         $directory = Directory::create($request->all());
 
         return redirect()->route('directories.index')
-            ->with('success', 'Directory created successfully.');
+            ->with('success', 'Registro agregado satisfactoriamente');
     }
 
     /**
@@ -70,7 +71,9 @@ class DirectoryController extends Controller
     {
         $user = User::find($id);
         $directories = $user->directory;
-        $companies = Company::all();
+        $companies = Company::all()->pluck('name_company', 'id');
+
+        /* dd($directories); */
         return view('directory.show', compact('directories', 'user', 'companies'));
     }
 
@@ -95,21 +98,25 @@ class DirectoryController extends Controller
      * @param  Directory $directory
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Directory $directory)
+    public function update(Request $request)
     {
-        request()->validate(Directory::$rules);
-
         request()->validate([
+            'id' => 'required',
             'user_id' => 'required',
             'type' => 'required',
             'data' => 'required',
             'company' => 'required',
         ]);
 
-        $directory->update($request->all());
+        DB::table('directories')->where('id',$request->id)->update([
+            'type' => $request->type,
+            'data' => $request->data,
+            'company' => $request->company 
+        ]);
 
-        return redirect()->route('directories.show', $request->user_id)
-            ->with('success', 'Directory updated successfully');
+
+        return redirect()->route('directories.show', $request->user_id )
+            ->with('message', 'Registro actualizado satisfactoriamente');
     }
 
     /**
@@ -122,6 +129,6 @@ class DirectoryController extends Controller
         $directory = Directory::find($id)->delete();
 
         return redirect()->route('directories.index')
-            ->with('success', 'Directory deleted successfully');
+            ->with('success', 'Registro borrado satisfactoriamente');
     }
 }
