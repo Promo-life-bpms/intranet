@@ -23,6 +23,7 @@ class CreateReservationsTable extends Migration
             $table->integer('chair_loan');
             $table->integer('proyector');
             $table->string('description');
+            $table->string('reservation');
             $table->foreignId('id_usuario')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('id_sala')->references('id')->on('boardrooms')->onDelete('cascade');
         });

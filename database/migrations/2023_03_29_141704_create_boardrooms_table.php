@@ -17,7 +17,7 @@ class CreateBoardroomsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('location');
-            $table->string('capacitance');
+            $table->string('capacity');
             $table->string('description');
         });
     }
