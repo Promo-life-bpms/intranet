@@ -469,8 +469,6 @@ class FirebaseNotificationController extends Controller
                  'body' => json_encode($body),
              ]
          );
-
-
     }
 
     public function supportFinishedTicket($user,$ticket,$user_id)

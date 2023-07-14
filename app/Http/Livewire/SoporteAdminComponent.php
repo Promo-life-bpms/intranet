@@ -12,7 +12,6 @@ use Carbon\Carbon;
 class SoporteAdminComponent extends Component
 {
     public $categorias, $name, $usuario_id,$user;
-
     public $labels = [];
     public $values = [];
     public $ticketsInProcess = [];
@@ -20,7 +19,7 @@ class SoporteAdminComponent extends Component
 
     public function mount()
     {
-       //Lógica para obtener los datos del gráfico desde la base de datos
+
         $category=Categoria::all();
         $this->labels=$category->pluck('name')->toArray();
 
@@ -33,8 +32,6 @@ class SoporteAdminComponent extends Component
         $this->values = collect($this->values)->toArray();
         $this->ticketsInProcess=collect($this->ticketsInProcess)->toArray();
 
-
-
     }
 
 
@@ -42,7 +39,6 @@ class SoporteAdminComponent extends Component
     {
 
         $this->categorias = Categoria::orderBy('id')->get();
-        //aqui me trae a todos los usuarios con el rol de sistemas
         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
             ->where('roles.name', '=', 'systems')
@@ -63,13 +59,10 @@ class SoporteAdminComponent extends Component
 
     }
 
-
     public function asignacion($categorias)
     {
         $usuario = User::find($this->usuario_id);
         $usuario->asignacionCategoria()->toggle([$categorias]);
 
     }
-
-
 }

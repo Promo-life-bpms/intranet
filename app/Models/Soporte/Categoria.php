@@ -22,7 +22,4 @@ class Categoria extends Model
         return $this->belongsToMany(User::class, 'soporte_usuarios_soporte',  'categorias_id', 'users_id');
     }
 
-
-
-
 }

@@ -48,11 +48,8 @@ class ListadoTicketsComponent extends Component
             ]
         );
 
-
-        //encuentra la categoria del ticket
         $category = Categoria::find((int) $this->categoria);
         $usuarios = $category->usuarios;
-
         $cantidadTicketsMenor = null;
         $usuariosConMenosTickets = [];
 
@@ -96,12 +93,11 @@ class ListadoTicketsComponent extends Component
             'username' => $usuarioConMenosTickets->name
         ];
 
-
         $usuarioConMenosTickets->notify(new SoporteNotification($Notificacion));
          $support_notification= new FirebaseNotificationController();
          $support_notification->supportNotification(auth()->user()->name,$this->name,$usuarioConMenosTickets->id);
 
-        //Historial de creado
+
         Historial::create(
             [
                 'ticket_id' => $ticket->id,

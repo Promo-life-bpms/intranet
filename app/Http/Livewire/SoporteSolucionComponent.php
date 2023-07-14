@@ -14,7 +14,6 @@ use App\Notifications\MessageSoporteSolutionNotification;
 use App\Notifications\SolucionSoporteNotification;
 use App\Notifications\StatusEnProcesoSoporteNotification;
 use App\Notifications\ReasignacionTicketSoporte;
-use Hamcrest\Core\HasToString;
 use App\Http\Controllers\FirebaseNotificationController;
 
 class SoporteSolucionComponent extends Component
@@ -27,9 +26,6 @@ class SoporteSolucionComponent extends Component
 
     public function render()
     {
-        //traer los tipos de prioridad
-
-
         $priority = SoporteTiempo::where('id', '>', 1)->get();
         $categories =  auth()->user()->asignacionCategoria->pluck(["id"]);
         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')
@@ -69,8 +65,8 @@ class SoporteSolucionComponent extends Component
         ];
 
         $user->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
-        $support_solution= new FirebaseNotificationController();
-        $support_solution->supportInProgress($actualizar_status->name,$user->id);
+        // $support_solution= new FirebaseNotificationController();
+        // $support_solution->supportInProgress($actualizar_status->name,$user->id);
     }
     public function verTicket($id)
     {
@@ -136,7 +132,7 @@ class SoporteSolucionComponent extends Component
         $support_solution->supportSolution($ticket->name,$usuario->id);
     }
 
-    //enviar mensaje en soporte solucion
+
     public function mensaje()
     {
         $ticket = Ticket::find($this->ticket_id);
@@ -191,7 +187,6 @@ class SoporteSolucionComponent extends Component
             'support_id' => $this->usuario_reasignacion
         ]);
 
-        //aqui busco al usuario que se guarda para reasignar
         $user = User::find($this->usuario_reasignacion);
 
         Historial::create([
@@ -207,7 +202,7 @@ class SoporteSolucionComponent extends Component
             'name_ticket' => $ticket->name,
         ];
 
-        //aqui envio la notificacion al usuario
+
         $user->notify(new ReasignacionTicketSoporte($reasignacionTicket));
         $this->dispatchBrowserEvent('reasignacion');
         $support_reassignment= new FirebaseNotificationController();

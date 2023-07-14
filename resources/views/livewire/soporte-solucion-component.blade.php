@@ -1079,12 +1079,10 @@
                     })
                     .then(newEditor => {
                         ckeEditorMensaje = newEditor;
-                        // Escucha el evento 'change'
-                        //para subir las imagenes y la data del ckeditor
                         ckeEditorMensaje.model.document.on('change', () => {
                             const content = ckeEditorMensaje.getData();
                             @this.mensajes = content
-                            console.log(content); // Imprime el contenido actualizado en la consola
+                            console.log(content); 
                         });
                     })
                     .catch(error => {
@@ -1097,8 +1095,6 @@
 
             if (status_id == 2 || status_id == 3 || status_id == 4) {
                 $('#ModalAgregar').modal('show')
-                // ckEditorSolucion.enableReadOnlyMode( 'editorMensaje' )
-
             } else {
                 Swal.fire({
                     title: 'Quieres dar solucion a este ticket?',
@@ -1131,7 +1127,7 @@
         }
 
         function hide() {
-            //CON JQERY
+            //JQERY
             $('#timeInput').toggleClass('d-none');
         }
     </script>
