@@ -236,8 +236,10 @@
                     @else
                     {{ Form::hidden('reservation', 'No') }}
                 @endif
+
                 
-                <div class="row" id="sala" @if ($evento->reservation == 'Sí') style="display: none;" @endif>
+
+                <div class="row" id="sala_{{$evento->id}}" @if ($evento->reservation == 'Sí') style="display: none;" @endif>
                     <div class="col-md-12">
                         <div class="form-group">
                             {!! Form::label('id_sala', 'Nombre de la sala:') !!}
@@ -247,6 +249,11 @@
                             @enderror
                         </div>
                     </div>
+                </div>
+
+                <div id="mensaje_{{$evento->id}}" style="{{ $evento->reservation == 'Sí' ? '' : 'display: none;' }}">
+                    <p>Reservar la sala entera implica que solo el personal autorizado tiene acceso a la sala, por lo cual, 
+                       los cubículos quedan deshabilitados hasta el término de la sesión.</p>
                 </div>
                    
                 <div class="row">
@@ -428,11 +435,12 @@
 @stop
 
 @section('scripts')
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 
 <script>
     $('.form-delete').submit(function(e) {
@@ -643,18 +651,42 @@
     });
 </script>
 
+@foreach($eventos as $evento)
 <script>
     $(document).ready(function() {
         $('input[name="reservation"]').change(function() {
             if ($(this).val() === 'No') {
-                $('#sala').show();
+                $('#sala_{{$evento->id}}').show();
             } else {
-                $('#sala').hide();
+                $('#sala_{{$evento->id}}').hide();
             }
         });
     });
-    
 </script>
+@endforeach
+
+@foreach($eventos as $evento)
+<script>
+    $(document).ready(function() {
+        // Manejar el evento de cambio de los radios "Sí" y "No"
+        $('input[name="reservation"]').change(function() {
+            if ($(this).val() === 'Sí') {
+                $('#mensaje_{{$evento->id}}').show(); // Mostrar el disclaimer si se selecciona "Sí"
+            } else {
+                $('#mensaje_{{$evento->id}}').hide(); // Ocultar el disclaimer si se selecciona "No"
+            }
+        });
+
+        // Inicializar la visibilidad del disclaimer en función del estado inicial del radio seleccionado
+        if ($('input[name="reservation"]:checked').val() === 'Sí') {
+            $('#mensaje_{{$evento->id}}').show();
+        } else {
+            $('#mensaje_{{$evento->id}}').hide();
+        }
+    });
+</script>
+@endforeach
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -689,8 +721,6 @@
         });
     });
 </script>
-
-
 @endsection
 
 @section ('styles')

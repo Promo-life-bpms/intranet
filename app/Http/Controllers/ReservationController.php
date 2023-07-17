@@ -148,12 +148,14 @@ class ReservationController extends Controller
             return redirect()->back()->with('message1', 'No puedes reservar todas las salas a la misma fecha y hora.');
         }
         
-        $gerentes = Reservation::where('start', $fecha_inicio)
-                                ->where('end', $fecha_termino)
+        $id_sala = boardroom::all();
+        $gerentes = Reservation::where('start','<=', $fecha_inicio)
+                                ->where('end','>=', $fecha_termino)
                                 ->where('reservation', 'Sí')
-                                ->exists();                   
+                                ->where('id_sala', $id_sala)
+                                ->exists();                 
         if ($gerentes) {
-            return redirect()->back()->with('message1', 'Un gerente reservo toda la sala, por lo tanto no puedes reservar ninguna sala en esta fecha y hora.');
+            return redirect()->back()->with('message1', 'Un gerente reservo toda la sala, por lo tanto no puedes crear un evento en esta fecha y hora.');
         }
 
         //CONDICIONES QUE DEBE PASAR ANRTES DE EDITAR AL EVENTO// 
@@ -192,7 +194,7 @@ class ReservationController extends Controller
 
         //OBTENCIÓN DE INFORMACIÓN PARA ENVIAR LOS CORREOS//
         //LE DAMOS FORMATO A LAS FECHAS//
-        /*setlocale(LC_TIME, 'es_ES');
+        setlocale(LC_TIME, 'es_ES');
         $diaInicio = Carbon::parse($request->start)->format('d');
         $MesInicio = Carbon::parse($request->start)->format('m');
         $LInicio = strftime('%B', mktime(0, 0, 0, $MesInicio, 1));
@@ -282,7 +284,7 @@ class ReservationController extends Controller
 
             $DS->notify(new  notificacionSistemas ($SISTEMAS, $name, $sala, $ubica,$diaInicio,$LInicio,$HoraInicio, 
                                                    $diaFin, $LFin, $HoraFin, $request->proyector, $request->description));
-        }*/
+        }
         return redirect()->back()->with('message', "Reservación creada correctamente.");
     }
     //////////////////////////////////////////////FUNCIÓN PARA EDITAR/////////////////////////////////////////////////
@@ -339,17 +341,7 @@ class ReservationController extends Controller
             return redirect()->back()->with('message1', "Una reservación no puede finalizar antes que la hora de inicio.");
         }
 
-        $event = Reservation::find($request->id_evento);
-        $gerentes = Reservation::where('start', $fecha_inicio)
-                        ->where('end', $fecha_termino)
-                        ->where('reservation', 'Sí')
-                        ->exists();
-        
-        if ($gerentes && $event->id_usuario !== $user->id) {
-            return redirect()->back()->with('message1', 'Un gerente reservó toda la sala, por lo tanto no puedes reservar ninguna sala en esta fecha y hora.');
-        }
-
-
+         
         // CONDICIONES QUE DEBE PASAR ANTES DE EDITAR EL EVENTO //
         foreach ($eventosRefactorizados as $evento) {
             if (($fechaInicio >= $evento['start'] && $fechaInicio < $evento['end']) ||
@@ -358,6 +350,14 @@ class ReservationController extends Controller
             ) {
                 return redirect()->back()->with('message1', "El evento no puede tomar horas de otros eventos ya creados.");
             }
+        } 
+        
+        $gerentes = Reservation::where('start','<=', $fecha_inicio)
+                                ->where('end','>=', $fecha_termino)
+                                ->where('reservation', 'Sí')
+                                ->exists();                 
+        if ($gerentes) {
+            return redirect()->back()->with('message1', 'Un gerente reservo toda la sala, por lo tanto no puedes editar el evento en esta fecha y hora.');
         }
         
         $event = Reservation::find($request->id_evento);
@@ -408,7 +408,7 @@ class ReservationController extends Controller
 
         //OBTENCIÓN DE INFORMACIÓN PARA ENVIAR LOS CORREOS//
         //LE DAMOS FORMATO A LAS FECHAS//
-        /*setlocale(LC_TIME, 'es_ES');
+        setlocale(LC_TIME, 'es_ES');
         $diaInicio= Carbon::parse($request->start)->format('d');
         $MesInicio = Carbon::parse($request->start)->format('m');
         $LInicio = strftime('%B', mktime(0, 0, 0, $MesInicio, 1));
@@ -502,7 +502,8 @@ class ReservationController extends Controller
             $DS =User::where('id', 127)->first();
             $DS->notify(new  notificacionSistemasEdit ($SISTEMAS, $name, $names, $ubica,$diaInicio,$LInicio,$HoraInicio, $diaFin, $LFin, 
                                                        $HoraFin, $request->proyector, $request->description));
-        }*/
+        }
+
         return redirect()->back()->with('message2', "Evento editado correctamente.");
     }
     //////////////////////////////////////////////FUNCIÓN ELIMINAR///////////////////////////////////////////////////
