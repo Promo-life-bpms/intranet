@@ -155,12 +155,16 @@ public function informationrequest($id)
 {
     // $name = auth()->user()->name;
     $information_request = ModelsTeamRequest::find($id);
+    $estadoActual = $information_request->status;
+
+    $isUser6 = auth()->user()->id == 6;
+
     // $DRH = User::where('id', 31)->first();
     // if ($information_request->status === 'Aprobada') {
     //     $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
     //     $DRH->notify(new notificacionAprobaciones($Tecnologia_e_innovacion, $name));
     // }
-     return view('admin.Team.information', compact('information_request'));
+     return view('admin.Team.information', compact('information_request', 'estadoActual', 'isUser6'));
 }
 
 public function update(Request $request)

@@ -171,7 +171,7 @@
     </div>
 
     <form action="{{route('team.status')}}" method="POST">
-        {!! Form::open(['route' => 'team.status', 'enctype' => 'multipart/form-data']) !!}
+        {!! Form::open(['route' => 'team.status', 'enctype' => 'multipart/form-data', $information_request->id]) !!}
                 @csrf
                 <input type="text" value="{{$information_request->id}}" name="id" hidden>
                 <div class="col-md-3">
@@ -184,7 +184,25 @@
                             @enderror
                     </div>
                 </div>
-                {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}         
+
+                @if ($estadoActual == 'Aprobada' || $estadoActual == 'Rechazada')
+                    @if ($isUser6)
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled'=> 'disabled']) !!}
+                    @else
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled', 'title' => 'No se pueden realizar modificaciones']) !!}
+                    @endif
+
+                    @elseif ($estadoActual == 'Rechazada')
+                    
+                    @if ($isUser6)
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                     @else
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled', 'title' => 'No se pueden realizar modificaciones']) !!}
+                    @endif
+                    
+                    @else
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                @endif
         {!! Form::close()!!}
     </form>
 </div>
