@@ -95,6 +95,7 @@ class ReservationController extends Controller
             'end' => 'required',
             'description' => 'required',
         ]);
+        
         //dd($request->reservation);
         // dd($request);
         //VARIBLES PARA NO CONFUNDIRSE///
@@ -148,11 +149,9 @@ class ReservationController extends Controller
             return redirect()->back()->with('message1', 'No puedes reservar todas las salas a la misma fecha y hora.');
         }
         
-        $id_sala = boardroom::all();
         $gerentes = Reservation::where('start','<=', $fecha_inicio)
                                 ->where('end','>=', $fecha_termino)
                                 ->where('reservation', 'Sí')
-                                ->where('id_sala', $id_sala)
                                 ->exists();                 
         if ($gerentes) {
             return redirect()->back()->with('message1', 'Un gerente reservo toda la sala, por lo tanto no puedes crear un evento en esta fecha y hora.');

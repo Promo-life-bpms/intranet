@@ -442,34 +442,35 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
-<script>
-    $('.form-delete').submit(function(e) {
-        e.preventDefault();
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡La reservación se eliminará permanentemente!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '¡Sí, eliminar!',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                this.submit();
-            }
-        })
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var engraveCheckbox = document.getElementById('engrave-checkbox');
-        var emailField = document.getElementById('email-field');
-        engraveCheckbox.addEventListener('change', function() {
-            emailField.classList.toggle('d-none', !this.checked);
+    <script>
+        $('.form-delete').submit(function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡La reservación se eliminará permanentemente!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '¡Sí, eliminar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            })
         });
-    });
-</script>
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var engraveCheckbox = document.getElementById('engrave-checkbox');
+            var emailField = document.getElementById('email-field');
+            engraveCheckbox.addEventListener('change', function() {
+                emailField.classList.toggle('d-none', !this.checked);
+            });
+        });
+    </script>
 
 <script type="text/javascript">
     jQuery(document).ready(function() {
@@ -559,33 +560,34 @@
     });
 </script>
 
-@foreach($eventos as $evento)
-<script type="text/javascript">
-    jQuery(document).ready(function() {
-        var selectAllCheckbox = $('<input>', {
-            type: 'checkbox',
-            id: 'selectAll',
-            name: 'selectAll',
-            value: 'selectAll'
-        });
+    @foreach($eventos as $evento)
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                var selectAllCheckbox = $('<input>', {
+                    type: 'checkbox',
+                    id: 'selectAll',
+                    name: 'selectAll',
+                    value: 'selectAll'
+                });
+                
+                var selectAllLabel = $('<label>', {
+                    for: 'selectAll',
+                    text: 'Seleccionar todo'
+                });
 
-        var selectAllLabel = $('<label>', {
-            for: 'selectAll',
-            text: 'Seleccionar todo'
-        });
+                // Ocultar el checkbox "Seleccionar todo" y el nombre de usuario inicialmente
+                selectAllCheckbox.hide();
+                selectAllLabel.hide();
+                $('#nombreUsuarios').hide();
+                
+                // Agregar el checkbox "Seleccionar todo" y el contenedor de nombres de usuario al contenedor principal
+                $('#seleccionarEditar{{$evento->id}}').prepend(selectAllLabel).prepend(selectAllCheckbox).append('<br>').append('<div id="nombreUsuarios"></div>');
 
-        // Ocultar el checkbox "Seleccionar todo" y el nombre de usuario inicialmente
-        selectAllCheckbox.hide();
-        selectAllLabel.hide();
-        $('#nombreUsuarios').hide();
+                selectAllCheckbox.on('change', function() {
+                    var isChecked = $(this).prop('checked');
+                    $('input[name^="guest"]').prop('checked', isChecked);
 
-        // Agregar el checkbox "Seleccionar todo" y el contenedor de nombres de usuario al contenedor principal
-        $('#seleccionarEditar{{$evento->id}}').prepend(selectAllLabel).prepend(selectAllCheckbox).append('<br>').append('<div id="nombreUsuarios"></div>');
-
-        selectAllCheckbox.on('change', function() {
-            var isChecked = $(this).prop('checked');
-            $('input[name^="guest"]').prop('checked', isChecked);
-        });
+                });
 
         jQuery('select[name="department_id"]').on('change', function() {
             var id = jQuery(this).val();
@@ -643,115 +645,112 @@
 </script>
 @endforeach
 
-<script>
-    $(document).ready(function() {
-        $('.single-checkbox').on('change', function() {
-            $('.single-checkbox').not(this).prop('checked', false);
+    <script>
+        $(document).ready(function() {
+            $('.single-checkbox').on('change', function() {
+                $('.single-checkbox').not(this).prop('checked', false);
+            });
         });
-    });
-</script>
+    </script>
 
-@foreach($eventos as $evento)
-<script>
-    $(document).ready(function() {
-        $('input[name="reservation"]').change(function() {
-            if ($(this).val() === 'No') {
-                $('#sala_{{$evento->id}}').show();
-            } else {
-                $('#sala_{{$evento->id}}').hide();
-            }
+    @foreach($eventos as $evento)
+        <script>
+            $(document).ready(function() {
+                $('input[name="reservation"]').change(function() {
+                    if ($(this).val() === 'No') {
+                        $('#sala_{{$evento->id}}').show();
+                    } else {
+                        $('#sala_{{$evento->id}}').hide();
+                    }
+                });
+            });
+        </script>
+    @endforeach
+
+    @foreach($eventos as $evento)
+        <script>
+            $(document).ready(function() {
+                // Manejar el evento de cambio de los radios "Sí" y "No"
+                $('input[name="reservation"]').change(function() {
+                    if ($(this).val() === 'Sí') {
+                        $('#mensaje_{{$evento->id}}').show(); // Mostrar el disclaimer si se selecciona "Sí"
+                    } else {
+                        $('#mensaje_{{$evento->id}}').hide(); // Ocultar el disclaimer si se selecciona "No"
+                    }
+                });
+                // Inicializar la visibilidad del disclaimer en función del estado inicial del radio seleccionado
+                if ($('input[name="reservation"]:checked').val() === 'Sí') {
+                    $('#mensaje_{{$evento->id}}').show();
+                } else {
+                    $('#mensaje_{{$evento->id}}').hide();
+                }
+            });
+        </script>
+    @endforeach
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var reservationSi = document.getElementById('reservation_si');
+            var reservationNo = document.getElementById('reservation_no');
+            var reservationDiv = document.getElementById('reservation_div');
+            var salasDiv = document.getElementById('salas_div');
+            var selectSala = document.querySelector('select[name="id_sala"]');
+            var disclaimer = document.getElementById('disclaimer');
+            reservationSi.checked = false; // Desmarcar el radio button 'Sí'
+
+            reservationSi.addEventListener('change', function() {
+                salasDiv.style.display = (this.checked && this.value === 'Sí') ? 'none' : 'block';
+                disclaimer.style.display = (this.checked && this.value === 'Sí') ? 'block' : 'none';
+
+                if (this.checked && this.value === 'Sí') {
+                    selectSala.value = selectSala.querySelector('option:not([disabled])').value;
+                    alert('Reservará toda la sala');
+                } else {
+                    selectSala.value = '';
+                }
+            });
+
+            reservationNo.addEventListener('change', function() {
+                salasDiv.style.display = (this.checked && this.value === 'No') ? 'block' : 'none';
+                disclaimer.style.display = 'none';
+                
+                if (this.checked && this.value === 'No') {
+                    selectSala.value = '';
+                }
+            });
         });
-    });
-</script>
-@endforeach
-
-@foreach($eventos as $evento)
-<script>
-    $(document).ready(function() {
-        // Manejar el evento de cambio de los radios "Sí" y "No"
-        $('input[name="reservation"]').change(function() {
-            if ($(this).val() === 'Sí') {
-                $('#mensaje_{{$evento->id}}').show(); // Mostrar el disclaimer si se selecciona "Sí"
-            } else {
-                $('#mensaje_{{$evento->id}}').hide(); // Ocultar el disclaimer si se selecciona "No"
-            }
-        });
-
-        // Inicializar la visibilidad del disclaimer en función del estado inicial del radio seleccionado
-        if ($('input[name="reservation"]:checked').val() === 'Sí') {
-            $('#mensaje_{{$evento->id}}').show();
-        } else {
-            $('#mensaje_{{$evento->id}}').hide();
-        }
-    });
-</script>
-@endforeach
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var reservationSi = document.getElementById('reservation_si');
-        var reservationNo = document.getElementById('reservation_no');
-        var reservationDiv = document.getElementById('reservation_div');
-        var salasDiv = document.getElementById('salas_div');
-        var selectSala = document.querySelector('select[name="id_sala"]');
-        var disclaimer = document.getElementById('disclaimer');
-
-        reservationSi.checked = false; // Desmarcar el radio button 'Sí'
-
-        reservationSi.addEventListener('change', function() {
-            salasDiv.style.display = (this.checked && this.value === 'Sí') ? 'none' : 'block';
-            disclaimer.style.display = (this.checked && this.value === 'Sí') ? 'block' : 'none';
-
-            if (this.checked && this.value === 'Sí') {
-                selectSala.value = selectSala.querySelector('option:not([disabled])').value;
-                alert('Reservará toda la sala');
-            } else {
-                selectSala.value = '';
-            }
-        });
-
-        reservationNo.addEventListener('change', function() {
-            salasDiv.style.display = (this.checked && this.value === 'No') ? 'block' : 'none';
-            disclaimer.style.display = 'none';
-
-            if (this.checked && this.value === 'No') {
-                selectSala.value = '';
-            }
-        });
-    });
-</script>
+    </script>
 @endsection
 
 @section ('styles')
-<style>
-    .btn1 {
-        margin-top: 12px;
-        border: 10px;
-        width: 100px;
-        padding: 10px 10px;
-        text-align: center;
-        border-radius: 10px;
-    }
-
-    .btn2 {
-        margin-top: 8px;
-        border: 10px;
-        width: 100px;
-        padding: 10px 10px;
-        text-align: center;
-        border-radius: 10px;
-
-    }
-
-    .btn3 {
-        margin-top: 8px;
-        border: 10px;
-        width: 100px;
-        padding: 10px 10px;
-        text-align: center;
-        border-radius: 10px;
-        color: #ffffff;
-    }
-</style>
+    <style>
+        .btn1 {
+            margin-top: 12px;
+            border: 10px;
+            width: 100px;
+            padding: 10px 10px;
+            text-align: center;
+            border-radius: 10px;
+        }
+        
+        .btn2 {
+            margin-top: 8px;
+            border: 10px;
+            width: 100px;
+            padding: 10px 10px;
+            text-align: center;
+            border-radius: 10px;
+        }
+        
+        .btn3 {
+            margin-top: 8px;
+            border: 10px;
+            width: 100px;
+            padding: 10px 10px;
+            text-align: center;
+            border-radius: 10px;
+            color: #ffffff;
+        }
+    </style>
 @endsection

@@ -292,6 +292,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::put('/reservation/creative/', [ReservationController::class, 'update'])->name('reserviton.creative.update');
     Route::post('/reservation/creative/delete/', [ReservationController::class, 'destroy'])->name('reserviton.creative.delete');
 
+    //Firebase
+    Route::post('/firebase/reservation/creative', [FirebaseNotificationController::class, 'reservationNotification'])->name('firebase.reservation.creative');
+
    });
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
