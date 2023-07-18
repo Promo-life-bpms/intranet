@@ -20,6 +20,14 @@ class SoporteAdminComponent extends Component
     public function mount()
     {
 
+      
+
+    }
+
+
+    public function render()
+    {
+
         $category=Categoria::all();
         $this->labels=$category->pluck('name')->toArray();
 
@@ -31,12 +39,6 @@ class SoporteAdminComponent extends Component
         }
         $this->values = collect($this->values)->toArray();
         $this->ticketsInProcess=collect($this->ticketsInProcess)->toArray();
-
-    }
-
-
-    public function render()
-    {
 
         $this->categorias = Categoria::orderBy('id')->get();
         $users = User::join('role_user', 'users.id', '=', 'role_user.user_id')

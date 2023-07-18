@@ -15,6 +15,6 @@ class UsuariosSoporte extends Model
         'categorias_id',
     ];
 
-
+    
 
 }

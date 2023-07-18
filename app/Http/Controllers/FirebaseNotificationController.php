@@ -419,7 +419,7 @@ class FirebaseNotificationController extends Controller
     {
 
         $title = '¡Haz recibido un ticket!';
-        $body = '¡'. $user. ' Te ha enviado un ticket : ' . $ticket ;
+        $body = '¡'. $user. ' Te ha enviado un ticket ! : ' . $ticket ;
         $topic = '/topics'. '/'.strval($user_id);
         $client = new Client(['verify' => false]);
         $body = [

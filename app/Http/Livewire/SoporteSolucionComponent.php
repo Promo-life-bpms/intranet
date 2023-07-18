@@ -65,8 +65,8 @@ class SoporteSolucionComponent extends Component
         ];
 
         $user->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
-        // $support_solution= new FirebaseNotificationController();
-        // $support_solution->supportInProgress($actualizar_status->name,$user->id);
+        $support_solution= new FirebaseNotificationController();
+        $support_solution->supportInProgress($actualizar_status->name,$user->id);
     }
     public function verTicket($id)
     {

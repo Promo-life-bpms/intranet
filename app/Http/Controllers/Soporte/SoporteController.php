@@ -17,17 +17,17 @@ class SoporteController extends Controller
 {
     public function index()
     {
-        return view('soporte.index');
+        return view('Soporte.index');
     }
 
     public function solucion()
     {
-        return view('soporte.solucion');
+        return view('Soporte.solucion');
     }
 
     public function admin()
     {
-        return view('soporte.admin');
+        return view('Soporte.admin');
     }
 
     public function estadisticas()
