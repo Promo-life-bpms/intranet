@@ -156,6 +156,12 @@ class ReservationController extends Controller
         if ($gerentes) {
             return redirect()->back()->with('message1', 'Un gerente reservo toda la sala, por lo tanto no puedes crear un evento en esta fecha y hora.');
         }
+        $poratras = Reservation::where('start','<', $fecha_termino)
+                                ->where('reservation', 'Sí')
+                                ->exists();
+        if ($poratras) {
+            return redirect()->back()->with('message1', 'Un gerente reservo toda la sala, por lo tanto no puedes editar el evento en esta fecha y hora..');
+        }
 
         //CONDICIONES QUE DEBE PASAR ANRTES DE EDITAR AL EVENTO// 
         foreach ($eventosRefactorizados as $evento) {
@@ -358,6 +364,13 @@ class ReservationController extends Controller
         if ($gerentes) {
             return redirect()->back()->with('message1', 'Un gerente reservo toda la sala, por lo tanto no puedes editar el evento en esta fecha y hora.');
         }
+
+        $poratras = Reservation::where('start','<', $fecha_termino)
+                                ->where('reservation', 'Sí')
+                                ->exists();
+        if ($poratras) {
+            return redirect()->back()->with('message1', 'Un gerente reservo toda la sala, por lo tanto no puedes editar el evento en esta fecha y hora..');
+        }
         
         $event = Reservation::find($request->id_evento);
         if (!$event) {
@@ -447,6 +460,7 @@ class ReservationController extends Controller
                                                    $HoraFin, $ubica, $names, $request->description));
         }
 
+        ///SON PARA LOS CORREOS MASIVOS///
         if ($request->reservation == 'Sí') {
             $users = User::all();
             foreach ($users as $user) {

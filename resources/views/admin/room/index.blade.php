@@ -425,6 +425,12 @@
                         {{($evento->description.'.')}}
                     </p>
                 </div>
+                <div class="modal-body text-left">
+                    <p class="m-0">
+                        <b>Reservo toda la sala (solo para gerentes): </b>
+                        {{($evento->reservation.'.')}}
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -589,61 +595,62 @@
 
                 });
 
-        jQuery('select[name="department_id"]').on('change', function() {
-            var id = jQuery(this).val();
-            if (id) {
-                jQuery.ajax({
-                    url: '/dropdownlist/Position/' + id,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        console.log(data);
-                        jQuery('select[name="position"]').empty();
-                        jQuery.each(data.positions, function(key, value) {
-                            jQuery('select[name="position"]').append('<option value="' +
-                                key + '">' + value + '</option>');
+                jQuery('select[name="department_id"]').on('change', function() {
+                    var id = jQuery(this).val();
+                    
+                    if (id) {
+                        jQuery.ajax({
+                            url: '/dropdownlist/Position/' + id,
+                            type: "GET",
+                            dataType: "json",
+                            success: function(data) {
+                                console.log(data);
+                                jQuery('select[name="position"]').empty();
+                                jQuery.each(data.positions, function(key, value) {
+                                    jQuery('select[name="position"]').append('<option value="' + key 
+                                    + '">' + value + '</option>');
+                                });
+
+                                jQuery('select[name="guest[]"]').empty();
+                                $('#nombreUsuarios').empty(); // Vaciar el contenedor de nombres de usuario antes de actualizarlo
+
+                                jQuery.each(data.users, function(key, value) {
+                                    var newCheckbox = $('<input>', {
+                                        type: 'checkbox',
+                                        id: 'check-' + value,
+                                        name: 'guest' + key,
+                                        value: value
+                                    });
+
+                                    var newLabel = $('<label>', {
+                                        for: 'check-' + value,
+                                        text: value
+                                    });
+
+                                    $('#seleccionarEditar{{$evento->id}}').append(newCheckbox).append(newLabel).append('<br>');
+                                    // Agregar el nombre del usuario al contenedor de nombres de usuario
+                                    $('#nombreUsuarios').append(value).append('<br>');
+                                });
+
+                                // Mostrar el checkbox "Seleccionar todo" y el contenedor de nombres de usuario cuando se seleccione un departamento
+                                selectAllCheckbox.show();
+                                selectAllLabel.show();
+                                $('#nombreUsuarios').hide();
+                            }
                         });
-
-                        jQuery('select[name="guest[]"]').empty();
-                        $('#nombreUsuarios').empty(); // Vaciar el contenedor de nombres de usuario antes de actualizarlo
-
-                        jQuery.each(data.users, function(key, value) {
-                            var newCheckbox = $('<input>', {
-                                type: 'checkbox',
-                                id: 'check-' + value,
-                                name: 'guest' + key,
-                                value: value
-                            });
-
-                            var newLabel = $('<label>', {
-                                for: 'check-' + value,
-                                text: value
-                            });
-
-                            $('#seleccionarEditar{{$evento->id}}').append(newCheckbox).append(newLabel).append('<br>');
-                            // Agregar el nombre del usuario al contenedor de nombres de usuario
-                            $('#nombreUsuarios').append(value).append('<br>');
-                        });
-
-                        // Mostrar el checkbox "Seleccionar todo" y el contenedor de nombres de usuario cuando se seleccione un departamento
-                        selectAllCheckbox.show();
-                        selectAllLabel.show();
+                    } else {
+                        $('select[name="position"]').empty();
+                        $('#seleccionarEditar{{$evento->id}}').empty(); // Vaciar el contenedor si no hay ID seleccionado
+                
+                        // Ocultar el checkbox "Seleccionar todo" y el contenedor de nombres de usuario si no hay departamento seleccionado 
+                        selectAllCheckbox.hide();           
+                        selectAllLabel.hide();
                         $('#nombreUsuarios').hide();
                     }
                 });
-            } else {
-                $('select[name="position"]').empty();
-                $('#seleccionarEditar{{$evento->id}}').empty(); // Vaciar el contenedor si no hay ID seleccionado
-
-                // Ocultar el checkbox "Seleccionar todo" y el contenedor de nombres de usuario si no hay departamento seleccionado
-                selectAllCheckbox.hide();
-                selectAllLabel.hide();
-                $('#nombreUsuarios').hide();
-            }
-        });
-    });
-</script>
-@endforeach
+            });
+        </script>
+    @endforeach
 
     <script>
         $(document).ready(function() {
