@@ -178,7 +178,6 @@ public function informationrequest($id)
     if ($isUser6 && !$isRequestApprovedOrRejected) {
         $canUserUpdateStatus = true;
     }
-
      return view('admin.Team.information', compact('information_request', 'canUserUpdateStatus', 'isRequestApprovedOrRejected'));
 }
 

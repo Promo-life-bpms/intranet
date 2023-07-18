@@ -188,7 +188,7 @@
                 {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
                 @else
                 {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!} 
-                @endif        
+                @endif             
         {!! Form::close()!!}
     </form>
 </div>
