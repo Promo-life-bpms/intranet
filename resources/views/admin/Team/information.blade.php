@@ -184,7 +184,11 @@
                             @enderror
                     </div>
                 </div>
-                {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}         
+                @if($canUserUpdateStatus)
+                {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                @else
+                {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!} 
+                @endif        
         {!! Form::close()!!}
     </form>
 </div>

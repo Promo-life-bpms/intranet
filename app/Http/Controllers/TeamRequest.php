@@ -155,16 +155,31 @@ public function informationrequest($id)
 {
     // $name = auth()->user()->name;
     $information_request = ModelsTeamRequest::find($id);
-    $estadoActual = $information_request->status;
-
-    $isUser6 = auth()->user()->id == 6;
-
     // $DRH = User::where('id', 31)->first();
     // if ($information_request->status === 'Aprobada') {
-    //     $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
-    //     $DRH->notify(new notificacionAprobaciones($Tecnologia_e_innovacion, $name));
+    // $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
+    // $DRH->notify(new notificacionAprobaciones($Tecnologia_e_innovacion, $name));
     // }
-     return view('admin.Team.information', compact('information_request', 'estadoActual', 'isUser6'));
+
+    $user = auth()->user();
+    $isUser6 = ($user && $user->id === 6);
+    $isUser31 = ($user && $user->id === 31);
+    $isRequestApprovedOrRejected = in_array($information_request->status, ['Aprobada', 'Rechazada']);
+    $canUserUpdateStatus = false;
+
+    if ($isUser31 && $information_request->status === 'Aprobada') {
+        $canUserUpdateStatus = true;
+    }
+    
+    if ($isUser6 && $information_request->status === 'Rechazada') {
+        $canUserUpdateStatus = true;
+    }
+
+    if ($isUser6 && !$isRequestApprovedOrRejected) {
+        $canUserUpdateStatus = true;
+    }
+
+     return view('admin.Team.information', compact('information_request', 'canUserUpdateStatus', 'isRequestApprovedOrRejected'));
 }
 
 public function update(Request $request)
