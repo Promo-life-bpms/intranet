@@ -156,13 +156,7 @@ class ReservationController extends Controller
         if ($gerentes) {
             return redirect()->back()->with('message1', 'Un gerente reservo toda la sala, por lo tanto no puedes crear un evento en esta fecha y hora.');
         }
-        $poratras = Reservation::where('start','<', $fecha_termino)
-                                ->where('reservation', 'Sí')
-                                ->exists();
-        if ($poratras) {
-            return redirect()->back()->with('message1', 'Un gerente reservo toda la sala, por lo tanto no puedes editar el evento en esta fecha y hora..');
-        }
-
+        
         //CONDICIONES QUE DEBE PASAR ANRTES DE EDITAR AL EVENTO// 
         foreach ($eventosRefactorizados as $evento) {
             if (($fechaInicio >= $evento['start'] && $fechaInicio < $evento['end']) ||
@@ -202,11 +196,13 @@ class ReservationController extends Controller
         setlocale(LC_TIME, 'es_ES');
         $diaInicio = Carbon::parse($request->start)->format('d');
         $MesInicio = Carbon::parse($request->start)->format('m');
+        $AnoInicio = Carbon::parse($request->start)->format('Y');
         $LInicio = strftime('%B', mktime(0, 0, 0, $MesInicio, 1));
         $HoraInicio = Carbon::parse($request->start)->format('H:i');
 
         $diaFin = Carbon::parse($request->end)->format('d');
         $MesFin = Carbon::parse($request->end)->format('m');
+        $AnoFin = Carbon::parse($request->end)->format('Y');
         $LFin = strftime('%B', mktime(0, 0, 0, $MesFin, 1));
         $HoraFin = Carbon::parse($request->end)->format('H:i');
 
@@ -245,7 +241,12 @@ class ReservationController extends Controller
                     break;
                 }
             }
+            //Por el momento esta con mi usuario para poner todos solo se debe colocar 
+            // $topic = "/topics/PUBLICACIONES";
+            $comunicado = new FirebaseNotificationController();
+            $comunicado->reservationNotification($name, $diaInicio, $LInicio, $AnoInicio, $HoraInicio, $diaFin, $LFin, $AnoFin, $HoraFin);
         }
+        
         
         //CORREO PARA EL DEPARTAMENTO DE PROJECT MANAGER//
         $Project = User::where('id', 31)->first()->name;
@@ -364,13 +365,6 @@ class ReservationController extends Controller
         if ($gerentes) {
             return redirect()->back()->with('message1', 'Un gerente reservo toda la sala, por lo tanto no puedes editar el evento en esta fecha y hora.');
         }
-
-        $poratras = Reservation::where('start','<', $fecha_termino)
-                                ->where('reservation', 'Sí')
-                                ->exists();
-        if ($poratras) {
-            return redirect()->back()->with('message1', 'Un gerente reservo toda la sala, por lo tanto no puedes editar el evento en esta fecha y hora..');
-        }
         
         $event = Reservation::find($request->id_evento);
         if (!$event) {
@@ -423,11 +417,13 @@ class ReservationController extends Controller
         setlocale(LC_TIME, 'es_ES');
         $diaInicio= Carbon::parse($request->start)->format('d');
         $MesInicio = Carbon::parse($request->start)->format('m');
+        $AnoInicio = Carbon::parse($request->start)->format('Y');
         $LInicio = strftime('%B', mktime(0, 0, 0, $MesInicio, 1));
         $HoraInicio = Carbon::parse($request->start)->format('H:i');
 
         $diaFin= Carbon::parse($request->end)->format('d');
         $MesFin= Carbon::parse($request->end)->format('m');
+        $AnoFin= Carbon::parse($request->end)->format('Y');
         $LFin = strftime('%B', mktime(0, 0, 0, $MesFin, 1));
         $HoraFin= Carbon::parse($request->end)->format('H:i');
 
@@ -457,7 +453,7 @@ class ReservationController extends Controller
             $nombre= User::where('id', $invitado)->first()->name;
             $notificacion = User::where('id', $invitado)->first();
             $notificacion->notify(new NotificacionEdit ($name, $nombre, $diaInicio,$LInicio,$HoraInicio, $diaFin, $LFin, 
-                                                   $HoraFin, $ubica, $names, $request->description));
+                                                        $HoraFin, $ubica, $names, $request->description));
         }
 
         ///SON PARA LOS CORREOS MASIVOS///
@@ -471,6 +467,10 @@ class ReservationController extends Controller
                     break;
                 }
             }
+            //Por el momento esta con mi usuario para poner todos solo se debe colocar 
+            // $topic = "/topics/PUBLICACIONES";
+            $comunicado = new FirebaseNotificationController();
+            $comunicado->reservationNotificationedit($name, $diaInicio, $LInicio,$AnoInicio,$HoraInicio, $diaFin, $LFin,$AnoFin, $HoraFin);
         }
 
         //CORREO PARA EL DEPARTAMENTO DE PROJECT MANAGER//
