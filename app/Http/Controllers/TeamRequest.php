@@ -162,23 +162,23 @@ public function informationrequest($id)
     // }
 
     $user = auth()->user();
-    $isUser31 = ($user && $user->id === 31);
     $isUser6 = ($user && $user->id === 6);
+    $isUser31 = ($user && $user->id === 31);
+
+
     $isRequestApprovedOrRejected = in_array($information_request->status, ['Aprobada', 'Rechazada']);
-    
+
     if ($isUser31 && $information_request->status === 'Aprobada') {
-        // Si la persona con ID 31 está viendo una solicitud "Aprobada",
-        // permitirle cambiar el estado, habilitando el botón de actualizar.
         $canUserUpdateStatus = true;
+
     }elseif ($isUser6 && $information_request->status === 'Rechazada') {
-        // Si la persona con ID 6 está viendo una solicitud "Rechazada",
-        // permitirle cambiar el estado, habilitando el botón de actualizar.
         $canUserUpdateStatus = true;
+        
     } else {
-        // En cualquier otro caso, el botón de actualizar estará deshabilitado.
         $canUserUpdateStatus = false;
     }
-   
+    $canUserUpdateStatusNew = $isUser6;
+
      return view('admin.Team.information', compact('information_request', 'canUserUpdateStatus', 'isRequestApprovedOrRejected'));
 }
 
