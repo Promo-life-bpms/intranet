@@ -184,12 +184,7 @@
                             @enderror
                     </div>
                 </div>
-
-                @if($canUserUpdateStatus && !$isRequestApprovedOrRejected)
                     {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
-                    @else
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!} 
-                @endif
         {!! Form::close()!!}
     </form>
 </div>

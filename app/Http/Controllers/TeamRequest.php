@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Notifications\notificacionAprobaciones;
 use App\Notifications\notificacionCorreo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
@@ -121,9 +122,9 @@ public function createTeamRequest(Request $request)
     $request_team->status = 'Solicitud Creada';
     $request_team->save();
 
-    $Recursos =User::where('id', 6)->first()->name;
-    $DRH = User::where('id', 6)->first();
-    $DRH->notify(new notificacionCorreo($Recursos, $name));
+    // $Recursos =User::where('id', 6)->first()->name;
+    // $DRH = User::where('id', 6)->first();
+    // $DRH->notify(new notificacionCorreo($Recursos, $name));
 
     // DB::commit();
     return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!', 'data',$data);
@@ -160,26 +161,7 @@ public function informationrequest($id)
     // $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
     // $DRH->notify(new notificacionAprobaciones($Tecnologia_e_innovacion, $name));
     // }
-
-    $user = auth()->user();
-    $isUser6 = ($user && $user->id === 6);
-    $isUser31 = ($user && $user->id === 31);
-
-
-    $isRequestApprovedOrRejected = in_array($information_request->status, ['Aprobada', 'Rechazada']);
-
-    if ($isUser31 && $information_request->status === 'Aprobada') {
-        $canUserUpdateStatus = true;
-
-    }elseif ($isUser6 && $information_request->status === 'Rechazada') {
-        $canUserUpdateStatus = true;
-        
-    } else {
-        $canUserUpdateStatus = false;
-    }
-    $canUserUpdateStatusNew = $isUser6;
-
-     return view('admin.Team.information', compact('information_request', 'canUserUpdateStatus', 'isRequestApprovedOrRejected'));
+     return view('admin.Team.information', compact('information_request'));
 }
 
 public function update(Request $request)
