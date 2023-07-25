@@ -184,7 +184,13 @@
                             @enderror
                     </div>
                 </div>
+
+                @if ($deshabilitarBoton)
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!}
+                    @else
                     {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                @endif
+                
         {!! Form::close()!!}
     </form>
 </div>

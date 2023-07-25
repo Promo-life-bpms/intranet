@@ -161,8 +161,27 @@ public function informationrequest($id)
     // $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
     // $DRH->notify(new notificacionAprobaciones($Tecnologia_e_innovacion, $name));
     // }
-     return view('admin.Team.information', compact('information_request'));
-}
+    
+    $user = Auth::user();
+    $deshabilitarBoton = false; // Establecer el valor predeterminado a true (deshabilitado) para todos los usuarios.
+
+    if ($user) {
+        if ($information_request->status === 'Rechazada' && $user->id === 31) {
+            // Si el usuario con ID 31 cambió el estado a "Rechazada", deshabilitar el botón.
+            $deshabilitarBoton = true;
+        } elseif (($information_request->status === 'Aprobada' || ($information_request->status === 'Aprobada' && $user->id === 31)) && $user->id === 6) {
+            // Si el usuario con ID 6 cambió el estado a "Aprobada" o si el usuario con ID 31 cambió el estado a "Aprobada", deshabilitar el botón.
+            $deshabilitarBoton = true;
+        } elseif ($information_request->status === 'Rechazada') {
+            // Agrega aquí cualquier otra lógica que desees para el estado "Rechazada".
+        } else {
+            // Para cualquier otro caso, habilitar el botón.
+            $deshabilitarBoton = false;
+        }
+    }
+    
+    return view('admin.Team.information', compact('information_request', 'deshabilitarBoton'));
+}    
 
 public function update(Request $request)
 {
