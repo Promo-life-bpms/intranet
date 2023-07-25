@@ -20,6 +20,6 @@ y finalizará el día "{{$diafin}}" de "{{$mesfin}}" del presente año a las
 
 <h2> El motivo de la reunión es el siguiente: "{{$description}}". </h2>
 
-<h3> ¡TE ESTAREMOS ESPERANDO, SE PUNTUAL! </h3>
+<h3> TE ESTAREMOS ESPERANDO, ¡SE PUNTUAL! </h3>
 
 @endcomponent

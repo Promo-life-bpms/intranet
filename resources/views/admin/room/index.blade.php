@@ -34,15 +34,18 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             {!! Form::text('id_usuario', $user->name,['class'=>'form-control', 'hidden']) !!}
-                            {!!Form::label('title ', 'Título:')!!}
+                            {!!Form::label('title ', 'Título:', ['class' => 'required'])!!}
                             {!!Form::text('title', null,['class'=>'form-control', 'placeholder'=>'Ingresa un titulo'])!!}
                             @error('title')
-                            <br>
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
                             @enderror
                         </div>
                     </div>
                 </div>
-                
+
                 @php
                     $esGerente = false;
                     foreach ($gerentes as $gerente) {
@@ -62,6 +65,12 @@
                             {{ Form::label('reservation_si', 'Sí') }}
                             {{ Form::radio('reservation', 'No', null, ['id' => 'reservation_no', 'checked' => !$esGerente]) }}
                             {{ Form::label('reservation_no', 'No') }}
+                            @error('reservation')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -76,6 +85,12 @@
                                     <option value="{{ $sala->id }}">{{ $sala->name }}</option>
                                 @endforeach
                             </select>
+                            @error('id_sala')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -89,6 +104,12 @@
                         <div class="form-group">
                             {!! Form::label('start', 'Inicio:') !!}
                             <input type="datetime-local" id="meeting-time" name="start" class="form-control">
+                            @error('start')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -98,38 +119,11 @@
                         <div class="form-group">
                             {!! Form::label('end', 'Final:') !!}
                             <input type="datetime-local" id="meeting-time" name="end" class="form-control">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row form-group">
-                    <div class="col-sm">
-                        {!! Form::label('department_id', 'Departamento:') !!}
-                        {!! Form::select('department_id', $departments, null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
-                        @error('department_id')
-                        <br>
-                        @enderror
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                {!! Form::label('guest[]', 'Usuarios: ', ['class' => 'required' ] ) !!}
-                                <div class=" d-flex flex-column mb-3">
-                                    <div id="crear"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            {!! Form::label('chair_loan', 'Cantidad de sillas:') !!}
-                            {!! Form::number('chair_loan', 0, ['class' => 'form-control']) !!}
-                            @error('chair_loan')
-                            <br>
+                            @error('end')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
                             @enderror
                         </div>
                     </div>
@@ -138,8 +132,69 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
+                            <div id="selected-users-div"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row form-group">
+                    <div class="col-sm">
+                        {!! Form::label('department_id', 'Departamento:') !!}  
+                        {!! Form::select('department_id', $departments, null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            {!! Form::label('guest[]', 'Usuarios:', ['class' => 'required']) !!}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="select-all-checkbox" disabled>
+                                <label class="form-check-label"  for="select-all-checkbox">
+                                    Seleccionar todo
+                                </label>
+                            </div>
+                            <div class="d-flex flex-column mb-3">
+                                <div id="crear"></div>
+                                @error('guest')
+                                    <small>
+                                        <font color="red"> *Este campo es requerido* </font>
+                                    </small>
+                                    <br>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            {!! Form::label('chair_loan', 'Cantidad de sillas:') !!}
+                            {!! Form::number('chair_loan', 0, ['class' => 'form-control', 'id' => 'chair_loan_input', 'min' => 0]) !!}
+                            @error('chair_loan')
+                                <small>
+                                    <font color="red"> *La cantidad de sillas no puede ser menor a cero* </font>
+                                </small>
+                                <br>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="mensaje_sillas" style="display: none;">
+                    <p>Considera que al solicitar sillas el tiempo de la reservación debe realizarse con un mínimo de dos días de anticipación.</p>
+                </div>
+                <div id="mensaje_sillas2" style="display: none;">
+                    <p>No puedes elegir una cantidad de sillas con valor negativo.</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
                             {!!Form::label('proyector', 'Cantidad de proyectores:')!!}
-                            {!!Form::number('proyector', 0,['class'=>'form-control'])!!}
+                            {!!Form::number('proyector', 0,['class'=>'form-control', 'min' => 0])!!}
                             @error('proyector')
                             <br>
                             @enderror
@@ -157,6 +212,12 @@
                             <br>
                             {{ Form::checkbox('engrave', 'No', null, ['class' => 'single-checkbox']) }}
                             {{ Form::label('engrave_no', 'No') }}
+                            @error('engrave')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -167,14 +228,17 @@
                             {!!Form::label('description', 'Descripción:')!!}
                             {!!Form::textarea('description', null,['class'=>'form-control'])!!}
                             @error('description')
-                            <br>
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
                             @enderror
                         </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    {!! Form::submit('Crear reservación', ['class' => 'btn btn-success']) !!}
+                    {!! Form::submit('Crear reservación', ['class' => 'btn btn-success', 'onclick' => 'submitForm()']) !!}
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
                 {!! Form::close() !!}
@@ -204,7 +268,10 @@
                             {!!Form::label('title ', 'Título:')!!}
                             {!!Form::text('title', $evento->title,['class'=>'form-control', 'placeholder'=>'Ingresa un titulo'])!!}
                             @error('title')
-                            <br>
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
                             @enderror
                         </div>
                     </div>
@@ -230,6 +297,12 @@
                                 {{ Form::label('reservation_si', 'Sí') }}
                                 {{ Form::radio('reservation', 'No', $evento->reservation == 'No', ['id' => 'reservation_no']) }}
                                 {{ Form::label('reservation_no', 'No') }}
+                                @error('reservation')
+                                    <small>
+                                        <font color="red"> *Este campo es requerido* </font>
+                                    </small>
+                                    <br>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -237,15 +310,16 @@
                     {{ Form::hidden('reservation', 'No') }}
                 @endif
 
-                
-
                 <div class="row" id="sala_{{$evento->id}}" @if ($evento->reservation == 'Sí') style="display: none;" @endif>
                     <div class="col-md-12">
                         <div class="form-group">
                             {!! Form::label('id_sala', 'Nombre de la sala:') !!}
                             {!! Form::select('id_sala', $boardroom, $evento->boordroms->id, ['class'=>'form-control']) !!}
                             @error('id_sala')
-                            <br>
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
                             @enderror
                         </div>
                     </div>
@@ -261,6 +335,12 @@
                         <div class="form-group">
                             {!! Form::label('start', 'Inicio:') !!}
                             <input type="datetime-local" id="meeting-time" value="{{$evento->start}}" name="start" class="form-control">
+                            @error('start')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -270,6 +350,33 @@
                         <div class="form-group">
                             {!! Form::label('end', 'Final:') !!}
                             <input type="datetime-local" id="meeting-time" value="{{$evento->end}}" name="end" class="form-control">
+                            @error('end')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            {!! Form::label('guest[]', 'Usuarios ya invitados: ', ['class' => 'required'] ) !!}
+                            @foreach ($nameusers[$loop->index] as $nombre)
+                                @if ($index == $loop->parent->index)
+                                    <p style="margin: 0; color: #231C63B3; font-weight: bold">{{ trim($nombre) }}</p>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div id="usuariosSeleccionadosDiv{{$evento->id}}"></div>
                         </div>
                     </div>
                 </div>
@@ -278,50 +385,50 @@
                     <div class="col-sm">
                         {!! Form::label('department_id', 'Departamento:') !!}
                         {!! Form::select('department_id', $departments,null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
-                        @error('department_id')
-                        <br>
-                        @enderror
                     </div>
-
 
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 {!! Form::label('guest[]', 'Usuarios: ', ['class' => 'required'] ) !!}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="select-all-users-{{$evento->id}}"  disabled>
+                                            <label class="form-check-label" for="select-all-users">Seleccionar todo</label>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class=" d-flex flex-column mb-3">
                                     <div id="seleccionarEditar{{$evento->id}}"></div>
-                                    {!! Form::label('guest[]', 'Usuarios ya invitados: ', ['class' => 'required'] ) !!}
-                                    @foreach ($nameusers[$loop->index] as $nombre)
-                                    @if ($index == $loop->parent->index)
-                                    <p style="margin: 0; color: #231C63B3; font-weight: bold">{{ trim($nombre) }}</p>
-                                    @endif
-                                    @endforeach
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            {!!Form::label('chair_loan', 'Cantidad de sillas:')!!}
-                            {!!Form::number('chair_loan', $evento->chair_loan,['class'=>'form-control'])!!}
-                            @error('chair_loan')
-                            <br>
-                            @enderror
+                            {!! Form::label('chair_loan', 'Cantidad de sillas:') !!}
+                            {!! Form::number('chair_loan', $evento->chair_loan, ['class' => 'form-control', 'id' => 'chair-'.$evento->id, 'min' => 0]) !!}
                         </div>
                     </div>
+                </div>
+                
+                <div id="mensaje-{{ $evento->id }}" style="display: {{ $evento->chair_loan > 0 ? 'block' : 'none' }};">
+                    <p>Considera que al solicitar sillas el tiempo de la reservación debe realizarse con un mínimo de dos días de anticipación.</p>
+                </div>
+
+                <div id="mensaje2-{{ $evento->id }}" style="display: {{ $evento->chair_loan < 0 ? 'block' : 'none' }};">
+                    <p>No puedes elegir una cantidad de sillas con valor negativo.</p>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
                             {!!Form::label('proyector', 'Cantidad de proyectores:')!!}
-                            {!!Form::number('proyector', $evento->proyector,['class'=>'form-control'])!!}
-                            @error('proyector')
-                            <br>
-                            @enderror
+                            {!!Form::number('proyector', $evento->proyector,['class'=>'form-control', 'min' => 0])!!}
                         </div>
                     </div>
                 </div>
@@ -336,10 +443,15 @@
                             <br>
                             {{ Form::checkbox('engrave', 'No', $evento->engrave == 'No', ['class' => 'single-checkbox']) }}
                             {{ Form::label('engrave_no', 'No') }}
+                            @error('engrave')
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
+                            @enderror
                         </div>
                     </div>
                 </div>
-
 
                 <div class="row">
                     <div class="col-md-12">
@@ -347,7 +459,10 @@
                             {!!Form::label('description', 'Descripción:')!!}
                             {!!Form::textarea('description',$evento->description,['class'=>'form-control'])!!}
                             @error('description')
-                            <br>
+                                <small>
+                                    <font color="red"> *Este campo es requerido* </font>
+                                </small>
+                                <br>
                             @enderror
                         </div>
                     </div>
@@ -355,7 +470,7 @@
 
                 @if(auth()->user()->id==$evento->id_usuario)
                 <div class="modal-footer">
-                    {!! Form::submit('Modificar', ['class' => 'btn3 btn-warning']) !!}
+                    {!! Form::submit('Modificar', ['class' => 'btn3 btn-warning', 'onclick' => 'submitsubmitFormEditar()']) !!}
                     <form action="{{ route('reserviton.creative.delete', ['id_evento' =>$evento->id]) }}" method="post"></form>
                     <form class="form-delete m-2 mt-0" action="{{ route('reserviton.creative.delete')}}" method="post">
                         {!! Form::text('id_evento', $evento->id,['class'=>'form-control', 'hidden']) !!}
@@ -371,70 +486,79 @@
 </div>
 
 @elseif(auth()->user()->id!=$evento->id_usuario)
-<div class="modal fade" id="Editar{{$evento->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">{{($evento->users->name. ' ' .$evento->users->lastname)}} creo la reservación</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="modal-body text-left">
-                    <p class="m-0">
-                        <b>Título:</b>
-                        {{$evento->title. '.'}}
-                    </p>
+    <div class="modal fade" id="Editar{{$evento->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">{{($evento->users->name. ' ' .$evento->users->lastname)}} creo la reservación</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body text-left">
-                    <p class="m-0">
-                        <b>Nombre de la sala:</b>
-                        {{$evento->boordroms->name. '.'}}
-                    </p>
-                </div>
-                <div class="modal-body text-left">
-                    <p class="m-0">
-                        <b>Fecha y hora de inicio:</b>
-                        {{$evento->start. '.'}}
-                    </p>
-                </div>
-                <div class="modal-body text-left">
-                    <p class="m-0">
-                        <b>Fecha y hora de fin:</b>
-                        {{$evento->end. '.'}}
-                    </p>
-                </div>
-                <div class="modal-body text-left">
-                    <p class="m-0">
-                        <b>Ubicacón de la sala:</b>
-                        {{$evento->boordroms->location. '.'}}
-                    </p>
-                </div>
-                <div class="modal-body text-left">
-                    <p class="m-0">
-                        <b>Los invitados a la reunión son:</b>
-                        @foreach ($nameusers[$loop->index] as $nombre)
-                        @if ($index == $loop->parent->index)
-                    <p style="margin: 0; color: #607080;">{{ trim($nombre) }}</p>
-                    @endif
-                    @endforeach
-                    </p>
-                </div>
-                <div class="modal-body text-left">
-                    <p class="m-0">
-                        <b>Descripción: </b>
-                        {{($evento->description.'.')}}
-                    </p>
-                </div>
-                <div class="modal-body text-left">
-                    <p class="m-0">
-                        <b>Reservo toda la sala (solo para gerentes): </b>
-                        {{($evento->reservation.'.')}}
-                    </p>
+                
+                <div class="modal-body">
+                    <div class="modal-body text-left">
+                        <p class="m-0">
+                            <b>Título:</b>
+                            {{$evento->title. '.'}}
+                        </p>
+                    </div>
+                    
+                    <div class="modal-body text-left">
+                        <p class="m-0">
+                            <b>Nombre de la sala:</b>
+                            {{$evento->boordroms->name. '.'}}
+                        </p>
+                    </div>
+
+                    <div class="modal-body text-left">
+                        <p class="m-0">
+                            <b>Fecha y hora de inicio:</b>
+                            {{$evento->start. '.'}}
+                        </p>
+                    </div>
+                    
+                    <div class="modal-body text-left">
+                        <p class="m-0">
+                            <b>Fecha y hora de fin:</b>
+                            {{$evento->end. '.'}}
+                        </p>
+                    </div>
+                    
+                    <div class="modal-body text-left">
+                        <p class="m-0">
+                            <b>Ubicacón de la sala:</b>
+                            {{$evento->boordroms->location. '.'}}
+                        </p>
+                    </div>
+                    
+                    <div class="modal-body text-left">
+                        <p class="m-0">
+                            <b>Los invitados a la reunión son:</b>
+                            @foreach ($nameusers[$loop->index] as $nombre)
+                                @if ($index == $loop->parent->index)
+                                    <p style="margin: 0; color: #607080;">{{ trim($nombre) }}</p>
+                                @endif
+                            @endforeach
+                        </p>
+                    </div>
+                    
+                    <div class="modal-body text-left">
+                        <p class="m-0">
+                            <b>Descripción: </b>
+                            {{($evento->description.'.')}}
+                        </p>
+                    </div>
+                    
+                    <div class="modal-body text-left">
+                        <p class="m-0">
+                            <b>Reservo toda la sala (solo para gerentes): </b>
+                            {{($evento->reservation.'.')}}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endif
 {!! Form::close() !!}
 @endforeach
@@ -467,7 +591,45 @@
             })
         });
     </script>
+    <script>
+        function submitForm() {
+            // Obtener los valores de los campos que deseas verificar
+            const title = document.querySelector('input[name="title"]').value;          
+            const id_sala = document.querySelector('select[name="id_sala"]').value;       
+            const start = document.querySelector('input[name="start"]').value;        
+            const end = document.querySelector('input[name="end"]').value;
+            const description = document.querySelector('textarea[name="description"]').value;
+            const engrave = document.querySelector('input[name="engrave"]').value;
+            const reservation  = document.querySelector('input[name="reservation"]').value;
+
+            // Verificar si los campos obligatorios están vacíos
+            if (!title || !id_sala || !start || !end || !description || !engrave || !reservation) {
+                // Mostrar la alerta
+                alert("No se creó la reservación. Por favor, asegúrate de completar todos los campos del formulario.");
+                return false; // Evitar que el formulario se envíe
+            }
+        }
+    </script>
     
+    <script>
+        function submitsubmitFormEditar() {
+            // Obtener los valores de los campos que deseas verificar
+            const title = document.querySelector('input[name="title"]').value;          
+            const id_sala = document.querySelector('select[name="id_sala"]').value;       
+            const start = document.querySelector('input[name="start"]').value;        
+            const end = document.querySelector('input[name="end"]').value;
+            const description = document.querySelector('textarea[name="description"]').value;
+            const engrave = document.querySelector('input[name="engrave"]').value;
+            
+            // Verificar si los campos obligatorios están vacíos
+            if (!title || !id_sala || !start || !end || !description || !engrave) {
+                // Mostrar la alerta
+                alert("Asegúrate de completar todos los campos del formulario de lo contrario no se editará el evento. Sí lo realizaste ignora el mensaje.");
+                return false; // Evitar que el formulario se envíe
+            }
+        }
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var engraveCheckbox = document.getElementById('engrave-checkbox');
@@ -477,35 +639,32 @@
             });
         });
     </script>
-
+    
 <script type="text/javascript">
     jQuery(document).ready(function() {
-        var selectAllCheckbox = $('<input>', {
-            type: 'checkbox',
-            id: 'select-all-checkbox'
-        });
+        // Conjunto para almacenar los usuarios seleccionados de todos los departamentos
+        var allSelectedUsers = new Set();
+        // Conjunto para almacenar los usuarios seleccionados del departamento actual (los mostrados en pantalla)
+        var currentDepartmentSelectedUsers = new Set();
 
-        // Crea una etiqueta label para el checkbox "Seleccionar todo"
-        var selectAllLabel = $('<label>', {
-            for: 'select-all-checkbox',
-            text: 'Seleccionar todo'
-        });
+        function updateSelectedUsersDiv() {
+            var selectedUsersDiv = $('#selected-users-div');
+            selectedUsersDiv.empty();
 
-        // Agrega el <br>, el checkbox y la etiqueta al contenedor
-        $('#crear').append('<br>');
-        $('#crear').append(selectAllCheckbox);
-        $('#crear').append(selectAllLabel);
+            if (allSelectedUsers.size > 0) {
+                selectedUsersDiv.append('<p>Usuarios seleccionados:</p>');
+                selectedUsersDiv.append('<ul>');
+                allSelectedUsers.forEach(function(user) {
+                    selectedUsersDiv.find('ul').append('<li>' + user + '</li>');
+                });
+                selectedUsersDiv.append('</ul>');
+            } else {
+                selectedUsersDiv.append('<p>No se han seleccionado usuarios.</p>');
+            }
+        }
 
-        // Oculta el checkbox "Seleccionar todo" inicialmente
-        selectAllCheckbox.hide();
-        selectAllLabel.hide();
-
-        jQuery('select[name="department_id"]').on('change', function() {
-            var id = jQuery(this).val();
+        function fetchUsersByDepartment(id) {
             if (id) {
-                selectAllCheckbox.show();
-                selectAllLabel.show();
-
                 jQuery.ajax({
                     url: '/dropdownlist/Position/' + id,
                     type: "GET",
@@ -514,143 +673,254 @@
                         console.log(data);
                         jQuery('select[name="position"]').empty();
 
-                        var usersContainer = $('<div>'); // Crea un contenedor para los usuarios
-                        jQuery.each(data.positions, function(key, value) {
-                            $('select[name="position"]').append('<option value="' +
-                                key + '">' + value + '</option>');
+                        var usersContainer = $('<div>'); // Crea un contenedor para los usuarios del departamento actual
+
+                        // Agrega los nuevos usuarios del departamento seleccionado al contenedor
+                        jQuery.each(data.users, function(key, value) {
+                            if (!allSelectedUsers.has(value)) {
+                                var newCheckbox = $('<input>', {
+                                    type: 'checkbox',
+                                    id: 'checkbox-' + value,
+                                    name: 'guest[]',
+                                    value: value,
+                                    class: 'checkbox-margin form-check-input'
+                                });
+
+                                // Crea una etiqueta label para el checkbox
+                                var newLabel = $('<label>', {
+                                    for: 'checkbox-' + value,
+                                    text: value
+                                });
+
+                                console.log(value);
+                                // Agrega el nuevo checkbox y la etiqueta al contenedor de usuarios
+                                usersContainer.append(newCheckbox).append(newLabel);
+                                usersContainer.append('<br>');
+                            }
                         });
 
-                        jQuery('select[name="guest[]"]').empty();
-                        jQuery.each(data.users, function(key, value) {
-                            $('select[name="guest[]"]').append(
-                                '<option value="' + key + '">' + value +
-                                '</option>');
-                        });
-
-                        jQuery.each(data.users, function(key, value) {
+                        // Agrega los usuarios seleccionados de otros departamentos al contenedor
+                        allSelectedUsers.forEach(function(user) {
                             var newCheckbox = $('<input>', {
                                 type: 'checkbox',
-                                id: 'checkbox-' + value,
-                                name: 'guest' + key,
-                                value: value
+                                id: 'checkbox-' + user,
+                                name: 'guest[]',
+                                value: user,
+                                class: 'checkbox-margin',
+                                checked: true, // Marca el checkbox ya que el usuario está seleccionado
+                                class: 'checkbox-margin form-check-input' 
                             });
 
                             // Crea una etiqueta label para el checkbox
                             var newLabel = $('<label>', {
-                                for: 'checkbox-' + value,
-                                text: value
+                                for: 'checkbox-' + user,
+                                text: user
                             });
 
-                            console.log(value);
+                            console.log(user);
                             // Agrega el nuevo checkbox y la etiqueta al contenedor de usuarios
                             usersContainer.append(newCheckbox).append(newLabel);
                             usersContainer.append('<br>');
                         });
 
+                        // Vaciar el contenedor "crear" antes de agregar los usuarios del nuevo departamento
+                        $('#crear').empty();
                         // Agrega el contenedor de usuarios después del checkbox "Seleccionar todo"
                         $('#crear').append(usersContainer);
+
+                        // Habilitar o deshabilitar el checkbox "Seleccionar todo" según el departamento seleccionado
+                        if (id) {
+                            $('#select-all-checkbox').prop('disabled', false);
+                        } else {
+                            $('#select-all-checkbox').prop('disabled', true);
+                        }
                     }
                 });
             } else {
                 $('select[name="position"]').empty();
-                selectAllCheckbox.hide();
-                selectAllLabel.hide();
             }
+        }
+
+        // Controlador de eventos para el campo "department_id"
+        jQuery('select[name="department_id"]').on('change', function() {
+            var id = jQuery(this).val();
+            fetchUsersByDepartment(id);
         });
 
         // Controlador de eventos para el checkbox "Seleccionar todo"
         $('#select-all-checkbox').on('change', function() {
+            if ($(this).prop('disabled')) return; // No hacer nada si el checkbox está deshabilitado
             var isChecked = $(this).prop('checked');
-            $('input[type="checkbox"][name^="guest"]').prop('checked', isChecked);
+            // Marcar o desmarcar solo los usuarios del departamento actual que se muestran en pantalla
+            $('#crear').find('input[type="checkbox"]').each(function() {
+                $(this).prop('checked', isChecked);
+                var value = $(this).val();
+                if (isChecked) {
+                    currentDepartmentSelectedUsers.add(value); // Agregar el usuario seleccionado al conjunto del departamento actual
+                    allSelectedUsers.add(value); // Agregar el usuario seleccionado al conjunto de usuarios seleccionados de todos los departamentos
+                } else {
+                    currentDepartmentSelectedUsers.delete(value); // Eliminar el usuario deseleccionado del conjunto del departamento actual
+                    allSelectedUsers.delete(value); // Eliminar el usuario deseleccionado del conjunto de usuarios seleccionados de todos los departamentos
+                }
+            });
+            updateSelectedUsersDiv(); // Actualiza el contenido del div con los usuarios seleccionados
+        });
+
+        // Controlador de eventos para los checkboxes de usuarios dentro del div "crear"
+        $('#crear').on('change', 'input[type="checkbox"][name^="guest"]', function() {
+            var isChecked = $(this).prop('checked');
+            var value = $(this).val();
+            if (isChecked) {
+                currentDepartmentSelectedUsers.add(value); // Agregar el usuario seleccionado al conjunto del departamento actual
+                allSelectedUsers.add(value); // Agregar el usuario seleccionado al conjunto de usuarios seleccionados de todos los departamentos
+            } else {
+                currentDepartmentSelectedUsers.delete(value); // Eliminar el usuario deseleccionado del conjunto del departamento actual
+                allSelectedUsers.delete(value); // Eliminar el usuario deseleccionado del conjunto de usuarios seleccionados de todos los departamentos
+            }
+            updateSelectedUsersDiv(); // Actualiza el contenido del div con los usuarios seleccionados
         });
     });
 </script>
 
     @foreach($eventos as $evento)
         <script type="text/javascript">
-            jQuery(document).ready(function() {
-                var selectAllCheckbox = $('<input>', {
-                    type: 'checkbox',
-                    id: 'selectAll',
-                    name: 'selectAll',
-                    value: 'selectAll'
-                });
+        jQuery(document).ready(function() {
+            var allSelectedUsers = new Set();
+
+            function updateSelectedUsersDiv() {
+                var selectedUsersDiv = $('#usuariosSeleccionadosDiv{{$evento->id}}');
+                selectedUsersDiv.empty();
                 
-                var selectAllLabel = $('<label>', {
-                    for: 'selectAll',
-                    text: 'Seleccionar todo'
-                });
-
-                // Ocultar el checkbox "Seleccionar todo" y el nombre de usuario inicialmente
-                selectAllCheckbox.hide();
-                selectAllLabel.hide();
-                $('#nombreUsuarios').hide();
+                if (allSelectedUsers.size > 0) {
+                    selectedUsersDiv.append('<p>Usuarios seleccionados:</p>');
+                    selectedUsersDiv.append('<ul>');
+                    allSelectedUsers.forEach(function(user) {
+                        selectedUsersDiv.find('ul').append('<li>' + user.name + '</li>');
+                    });
+                    selectedUsersDiv.append('</ul>');
+                } else {
+                    selectedUsersDiv.append('<p>No se han seleccionado usuarios.</p>');
+                }
                 
-                // Agregar el checkbox "Seleccionar todo" y el contenedor de nombres de usuario al contenedor principal
-                $('#seleccionarEditar{{$evento->id}}').prepend(selectAllLabel).prepend(selectAllCheckbox).append('<br>').append('<div id="nombreUsuarios"></div>');
-
-                selectAllCheckbox.on('change', function() {
-                    var isChecked = $(this).prop('checked');
-                    $('input[name^="guest"]').prop('checked', isChecked);
-
-                });
-
-                jQuery('select[name="department_id"]').on('change', function() {
-                    var id = jQuery(this).val();
-                    
-                    if (id) {
-                        jQuery.ajax({
-                            url: '/dropdownlist/Position/' + id,
-                            type: "GET",
-                            dataType: "json",
-                            success: function(data) {
-                                console.log(data);
-                                jQuery('select[name="position"]').empty();
-                                jQuery.each(data.positions, function(key, value) {
-                                    jQuery('select[name="position"]').append('<option value="' + key 
-                                    + '">' + value + '</option>');
+                // Actualizar la variable guest[] con los usuarios seleccionados
+                var selectedUsersArray = Array.from(allSelectedUsers, user => user.id);
+                $('input[name="guest[]"]').val(selectedUsersArray);
+            }
+            
+            function fetchUsersByDepartment(id) {
+                if (id) {
+                    jQuery.ajax({
+                        url: '/dropdownlist/Position/' + id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            jQuery('select[name="position"]').empty();
+                            var usersContainer = $('<div>'); // Crea un contenedor para los usuarios del departamento actual
+                            // Agregar los usuarios seleccionados de todos los departamentos al contenedor para el departamento actual
+                            allSelectedUsers.forEach(function(user) {
+                                var newCheckbox = $('<input>', {
+                                    type: 'checkbox',
+                                    id: 'check-' + user.id,
+                                    name: 'guest' + user.id,
+                                    value: user.name,
+                                    checked: true, // Marcar como seleccionado si el usuario está en el conjunto de usuarios seleccionados de todos los departamentos
+                                    class: 'checkbox-margin form-check-input'
                                 });
 
-                                jQuery('select[name="guest[]"]').empty();
-                                $('#nombreUsuarios').empty(); // Vaciar el contenedor de nombres de usuario antes de actualizarlo
+                                newCheckbox.on('change', function() {
+                                    var isChecked = $(this).prop('checked');
+                                    var value = $(this).val();
+                                    if (!isChecked) {
+                                        allSelectedUsers.delete(user); // Eliminar el usuario deseleccionado del conjunto de usuarios seleccionados de todos los departamentos
+                                    } else {
+                                        allSelectedUsers.add(user); // Agregar el usuario seleccionado al conjunto de usuarios seleccionados de todos los departamentos
+                                    }
+                                    updateSelectedUsersDiv(); // Actualiza el contenido del div con los usuarios seleccionados
+                                });
 
-                                jQuery.each(data.users, function(key, value) {
+                                var newLabel = $('<label>', {
+                                    for: 'check-' + user.id,
+                                    text: user.name
+                                });
+
+                                usersContainer.append(newCheckbox).append(newLabel).append('<br>');
+                            });
+                            // Agregar los nuevos usuarios del departamento seleccionado al contenedor
+                            jQuery.each(data.users, function(key, value) {
+                                if (!allSelectedUsers.has(value)) {
+                                    var user = { id: key, name: value }; 
                                     var newCheckbox = $('<input>', {
                                         type: 'checkbox',
                                         id: 'check-' + value,
                                         name: 'guest' + key,
-                                        value: value
+                                        value: value,
+                                        class: 'checkbox-margin form-check-input'
                                     });
-
+                                    
+                                    newCheckbox.on('change', function() {
+                                        var isChecked = $(this).prop('checked');
+                                        var value = $(this).val();
+                                        if (!isChecked) {
+                                            allSelectedUsers.delete(user); // Eliminar el usuario deseleccionado del conjunto de usuarios seleccionados de todos los departamentos
+                                        } else {
+                                            allSelectedUsers.add(user); // Agregar el usuario seleccionado al conjunto de usuarios seleccionados de todos los departamentos
+                                        }
+                                        updateSelectedUsersDiv(); // Actualizar el contenido del div con los usuarios seleccionados
+                                    });
                                     var newLabel = $('<label>', {
                                         for: 'check-' + value,
                                         text: value
                                     });
+                                    usersContainer.append(newCheckbox).append(newLabel).append('<br>');
+                                }
+                            });
+                            $('#seleccionarEditar{{$evento->id}}').empty();
+                            $('#seleccionarEditar{{$evento->id}}').append(usersContainer);
+                        }
+                    });
+                    
+                    // Mostrar el checkbox "Seleccionar todo" solo cuando se elija un departamento
+                    $('#select-all-users-{{$evento->id}}').show();
+                    // Controlar el evento cuando se marque o desmarque el checkbox "Seleccionar todo"
+                    $('#select-all-users-{{$evento->id}}').on('change', function() {
+                        var isChecked = $(this).prop('checked');
 
-                                    $('#seleccionarEditar{{$evento->id}}').append(newCheckbox).append(newLabel).append('<br>');
-                                    // Agregar el nombre del usuario al contenedor de nombres de usuario
-                                    $('#nombreUsuarios').append(value).append('<br>');
-                                });
-
-                                // Mostrar el checkbox "Seleccionar todo" y el contenedor de nombres de usuario cuando se seleccione un departamento
-                                selectAllCheckbox.show();
-                                selectAllLabel.show();
-                                $('#nombreUsuarios').hide();
-                            }
+                        // Marcar o desmarcar solo los usuarios visibles en pantalla
+                        $('#seleccionarEditar{{$evento->id}} input:visible[type="checkbox"]').prop('checked', isChecked);
+                        // Actualizar el conjunto de usuarios seleccionados de todos los departamentos
+                        allSelectedUsers.clear();
+                        $('#seleccionarEditar{{$evento->id}} input:visible[type="checkbox"]:checked').each(function() {
+                            allSelectedUsers.add({ id: $(this).attr('name').substring(5), name: $(this).val() });
                         });
-                    } else {
-                        $('select[name="position"]').empty();
-                        $('#seleccionarEditar{{$evento->id}}').empty(); // Vaciar el contenedor si no hay ID seleccionado
-                
-                        // Ocultar el checkbox "Seleccionar todo" y el contenedor de nombres de usuario si no hay departamento seleccionado 
-                        selectAllCheckbox.hide();           
-                        selectAllLabel.hide();
-                        $('#nombreUsuarios').hide();
-                    }
-                });
+                        updateSelectedUsersDiv(); // Actualizar el contenido del div con los usuarios seleccionados
+                    });
+                    // Al cargar la página, actualizar el div con los usuarios seleccionados
+                    updateSelectedUsersDiv();
+                } else {
+                    // Si no se eligió un departamento, ocultar el checkbox "Seleccionar todo" y desmarcar los usuarios
+                    $('#select-all-users-{{$evento->id}}').hide();
+                    $('#select-all-users-{{$evento->id}}').prop('checked', false);
+                    $('#seleccionarEditar{{$evento->id}} input[type="checkbox"]').prop('checked', false);
+                    allSelectedUsers.clear();
+                    $('select[name="position"]').empty();
+                    $('#seleccionarEditar{{$evento->id}}').empty();
+                }
+                if (id) {
+                    $('#select-all-users-{{$evento->id}}').prop('disabled', false);
+                } else {
+                    $('#select-all-users-{{$evento->id}}').prop('disabled', true);
+                }
+            }
+            // Controlador de eventos para el campo "department_id"
+            jQuery('select[name="department_id"]').on('change', function() {
+                var id = jQuery(this).val();
+                fetchUsersByDepartment(id);
             });
+        });
         </script>
     @endforeach
+
+
 
     <script>
         $(document).ready(function() {
@@ -695,6 +965,57 @@
         </script>
     @endforeach
 
+    <script>
+        jQuery(document).ready(function() {
+            // Controlador de eventos para el input "chair_loan"
+            jQuery('#chair_loan_input').on('input', function() {
+                var cantidadSillas = parseInt(jQuery(this).val());
+                // Verifica si la cantidad de sillas es mayor que 0
+                if (cantidadSillas > 0) {
+                    // Muestra el div "mensaje_hola" si la cantidad de sillas es mayor que 0
+                    jQuery('#mensaje_sillas').show();
+                } else {
+                    // Oculta el div "mensaje_hola" si la cantidad de sillas es 0 o menor
+                    jQuery('#mensaje_sillas').hide();
+                }
+                if (cantidadSillas < 0) {
+                    // Muestra el div "mensaje_hola" si la cantidad de sillas es menor que 0
+                    jQuery('#mensaje_sillas2').show();
+                } else {
+                    // Oculta el div "mensaje_hola" si la cantidad de sillas es 0 o menor
+                    jQuery('#mensaje_sillas2').hide();
+                }
+            });
+        });
+    </script>
+    
+    <script>
+        jQuery(document).ready(function() {
+            // Controlador de eventos para los inputs de cantidad de sillas
+            jQuery('input[id^="chair-"]').on('input', function() {
+                var eventId = jQuery(this).attr('id').split('-')[1];
+                var cantidadSillas = parseInt(jQuery(this).val());
+
+                // Verifica si la cantidad de sillas es mayor que 0
+                if (cantidadSillas > 0) {
+                    // Muestra el mensaje para el evento correspondiente
+                    jQuery('#mensaje-' + eventId).show();
+                } else {
+                    // Oculta el mensaje para el evento correspondiente
+                    jQuery('#mensaje-' + eventId).hide();
+                }
+
+                if(cantidadSillas < 0){
+                    // Muestra el mensaje para el evento correspondiente
+                    jQuery('#mensaje2-' + eventId).show();
+                } else {
+                    // Oculta el mensaje para el evento correspondiente
+                    jQuery('#mensaje2-' + eventId).hide();
+                }
+                
+            });
+        });
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -759,5 +1080,9 @@
             border-radius: 10px;
             color: #ffffff;
         }
+        .checkbox-margin {
+            margin-right: 6px;
+        }
+
     </style>
 @endsection
