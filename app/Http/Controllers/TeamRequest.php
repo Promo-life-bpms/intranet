@@ -13,6 +13,7 @@ use App\Models\TeamRequest as ModelsTeamRequest;
 use App\Models\User;
 use App\Notifications\notificacionAprobaciones;
 use App\Notifications\notificacionCorreo;
+use App\Notifications\notificacionSistemas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -82,8 +83,8 @@ public function createTeamRequest(Request $request)
         'signature_or_telephone_contact_numer' => json_encode([$request->signature_or_telephone_contact_numer, $request->signature_or_telephone_contact_numer5, $request->signature_or_telephone_contact_numer4, $request->signature_or_telephone_contact_numer3, $request->signature_or_telephone_contact_numer2, $request->signature_or_telephone_contact_numer1])
     ]);
 
-    $DRH = User::where('id', 6)->first()->name;
-    $name = auth()->user()->name;
+    // $DRH = User::where('id', 6)->first()->name;
+    // $name = auth()->user()->name;
     $request_team = new ModelsTeamRequest();
     $request_team->type_of_user = $request->type_of_user;
     $request_team->name = $request->jefe_directo_id;
@@ -160,26 +161,36 @@ public function informationrequest($id)
     // if ($information_request->status === 'Aprobada') {
     // $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
     // $DRH->notify(new notificacionAprobaciones($Tecnologia_e_innovacion, $name));
+
+    // $name = auth()->user()->name;
+    // $DTI = User::where('id', 127)->first();
+    // if($information_request->status === 'Aprobada'){
+    // $Sistemas = User::where('id', 127)->first()->name;
+    // $DTI->notify(new notificacionSistemas($Sistemas, $name));
     // }
-    
+
     $user = Auth::user();
+
     $deshabilitarBoton = false;
 
     if ($user) {
-    if ($information_request->status === 'Rechazada' && $user->id === 31) {
-        $deshabilitarBoton = true;
-        
-    } elseif ($information_request->status === 'Aprobada' && $user->id === 6) {
-        $deshabilitarBoton = true;
+            if ($information_request->status === 'Rechazada' && $user->id === 31) {
+                $deshabilitarBoton = true;
+                $information_request->status = 'Rechazada';
+    
+        }elseif($information_request->status === 'Aprobada' && $user->id === 6) {
+                $deshabilitarBoton = true;
 
-    } else {
-    
-        $deshabilitarBoton = false;
-    }
-}
-    
+            }elseif($information_request->status === 'Aprobada' && $user->id === 6) {
+                $deshabilitarBoton = true;
+        }
+
+        }else {
+            $deshabilitarBoton = false;
+            $information_request->status = 'Rechazada';
+    }    
     return view('admin.Team.information', compact('information_request', 'deshabilitarBoton'));
-}    
+}
 
 public function update(Request $request)
 {
