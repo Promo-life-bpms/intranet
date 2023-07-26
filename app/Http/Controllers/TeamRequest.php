@@ -163,22 +163,20 @@ public function informationrequest($id)
     // }
     
     $user = Auth::user();
-    $deshabilitarBoton = false; // Establecer el valor predeterminado a true (deshabilitado) para todos los usuarios.
+    $deshabilitarBoton = false;
 
     if ($user) {
-        if ($information_request->status === 'Rechazada' && $user->id === 31) {
-            // Si el usuario con ID 31 cambió el estado a "Rechazada", deshabilitar el botón.
-            $deshabilitarBoton = true;
-        } elseif (($information_request->status === 'Aprobada' || ($information_request->status === 'Aprobada' && $user->id === 31)) && $user->id === 6) {
-            // Si el usuario con ID 6 cambió el estado a "Aprobada" o si el usuario con ID 31 cambió el estado a "Aprobada", deshabilitar el botón.
-            $deshabilitarBoton = true;
-        } elseif ($information_request->status === 'Rechazada') {
-            // Agrega aquí cualquier otra lógica que desees para el estado "Rechazada".
-        } else {
-            // Para cualquier otro caso, habilitar el botón.
-            $deshabilitarBoton = false;
-        }
+    if ($information_request->status === 'Rechazada' && $user->id === 31) {
+        $deshabilitarBoton = true;
+        
+    } elseif ($information_request->status === 'Aprobada' && $user->id === 6) {
+        $deshabilitarBoton = true;
+
+    } else {
+    
+        $deshabilitarBoton = false;
     }
+}
     
     return view('admin.Team.information', compact('information_request', 'deshabilitarBoton'));
 }    

@@ -186,7 +186,7 @@
                 </div>
 
                 @if ($deshabilitarBoton)
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!}
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4 boton-deshabilitado', 'disabled' => 'disabled']) !!}
                     @else
                     {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
                 @endif
@@ -215,6 +215,11 @@
 
 .right-column {
     margin-left: 10px;
+}
+
+.boton-deshabilitado {
+    opacity: 0.5;
+    pointer-events: none;
 }
 </style>
 @endsection
