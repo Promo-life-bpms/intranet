@@ -385,8 +385,8 @@
 
                                     <div class="row form-group">
                                         <div class="col-sm">
-                                            {!! Form::label('department_id', 'Departamento:') !!}
-                                            {!! Form::select('department_id', $departments,null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
+                                            {!! Form::label('department', 'Departamento:') !!}
+                                            {!! Form::select('department', $departments,null, ['class' => 'form-control','placeholder' => 'Selecciona el departamento...']) !!}
                                         </div>
 
                                         <div class="row">
@@ -917,7 +917,7 @@
                 }
             }
             // Controlador de eventos para el campo "department_id"
-            jQuery('select[name="department_id"]').on('change', function() {
+            jQuery('select[name="department"]').on('change', function() {
                 var id = jQuery(this).val();
                 fetchUsersByDepartment(id);
             });
