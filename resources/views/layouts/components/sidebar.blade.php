@@ -1,5 +1,5 @@
 <div id="sidebar" class="active">
-    <div class="sidebar-wrapper active">
+    <div class="sidebar-wrapper active" style="padding-bottom:100px">
         <div class="toggler">
             <a href="#" class="sidebar-hide d-xl-none d-flex justify-content-end px-5" style="font-size: 2rem"><i
                     class="bi bi-x bi-middle"></i></a>
@@ -53,7 +53,7 @@
         </div>
 
         <div class="sidebar-menu">
-            <ul class="menu">
+            <ul class="menu" style="margin-bottom:40px">
                 @role('admin')
                     <li class="sidebar-title">Administrador</li>
                     <li class="sidebar-item has-sub {{ request()->is('admin') ? 'active' : '' }}">
@@ -63,7 +63,7 @@
                             <span>Administrador</span>
                         </a>
 
-                        <ul class="submenu">
+                        <ul class="submenu" >
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.organization.index') }}">
@@ -204,6 +204,14 @@
                         <span>Organigrama</span>
                     </a>
                 </li>
+
+                <li class="sidebar-item {{request()->is('reservation.creative') ? 'active' : '' }}">
+                    <a href="{{ route('reservation.creative') }}" class='sidebar-link'>
+                        <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                        <span>Reserva de la sala recreativa</span>
+                    </a>
+                </li>
+                
                 @if (!auth()->user()->hasRole('becario'))
                     <li class="sidebar-item  has-sub {{ request()->is('request') ? 'active' : '' }}">
                         <a href="{{ route('request.index') }}" class='sidebar-link'>
@@ -313,23 +321,6 @@
                         <span>Accesos</span>
                     </a>
                 </li>
-
-
-                {{-- <li class="sidebar-item {{ request()->is('folder') ? 'active' : '' }}">
-                    <a href="{{ route('folder') }}" class='sidebar-link'>
-                        <i class="fa fa-folder-open" aria-hidden="true"></i>
-                        <span>Carpetas</span>
-                    </a>
-                </li> --}}
-
-                {{-- <li class="sidebar-item {{ request()->is('work') ? 'active' : '' }}">
-                    <a href="{{ route('work') }}" class='sidebar-link'>
-                        <i class="fa fa-trello" aria-hidden="true"></i>
-                        <span>Trello</span>
-                    </a>
-                </li> --}}
-
-
                 <!-- <li class="sidebar-item  {{ request()->is('users') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-grid-fill"></i>
