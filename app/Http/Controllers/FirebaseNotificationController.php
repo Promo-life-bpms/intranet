@@ -413,4 +413,66 @@ class FirebaseNotificationController extends Controller
 
         
     }
+
+    public function reservationNotification($user, $diaInicio, $LInicio,$AnoInicio,$HoraInicio, $diaFin, $LFin,$AnoFin, $HoraFin)
+    {
+        $title ='Reservación de la sala recreativa';
+        $body = '¡'. $user. ' ha reservado toda la sala recreativa! La reunión será el día '. $diaInicio . ' de '. $LInicio .' del '. $AnoInicio . ' a las '. $HoraInicio .' y finalizará el día '. 
+        $diaFin.' de '. $LFin.' del '. $AnoFin . ' a las '. $HoraFin.'. Por lo tanto en este horario no se podrá reservar la sala ni los cubículos. ';
+        $topic = '/topics/191'; //Me limita a mí//
+        
+        $client = new Client(['verify' => false]);
+
+        $body = [
+            'to' => $topic,
+                'notification' => [
+                    'title'=> $title,
+                    'body'=> $body,
+                ],
+        ];
+        
+        $response = $client->request(
+            'POST',
+            'https://fcm.googleapis.com/fcm/send',
+                [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                ],
+                'body' => json_encode($body),
+            ]
+        );
+        
+    }
+
+    public function reservationNotificationedit($user, $diaInicio, $LInicio,$AnoInicio,$HoraInicio, $diaFin, $LFin,$AnoFin, $HoraFin)
+    {
+        $title ='Reservación de la sala recreativa';
+        $body = '¡'. $user. ' ha modificado la reservación! La reunión será el día '. $diaInicio . ' de '. $LInicio .' del '. $AnoInicio . ' a las '. $HoraInicio .' y finalizará el día '. 
+        $diaFin.' de '. $LFin.' del '. $AnoFin . ' a las '. $HoraFin.'. Por lo tanto en este horario no se podrá reservar la sala ni los cubículos. ';
+        $topic = '/topics/191'; //Me limita a mí//
+        
+        $client = new Client(['verify' => false]);
+
+        $body = [
+            'to' => $topic,
+                'notification' => [
+                    'title'=> $title,
+                    'body'=> $body,
+                ],
+        ];
+        
+        $response = $client->request(
+            'POST',
+            'https://fcm.googleapis.com/fcm/send',
+                [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'key=AAAAwN4KaL4:APA91bHFXg98RZ-H2YSY2RBoj2atnEYKNX-uR5bFUqAf-bUoHj6HbNBrhb2tNdr8sCIRw4XzNRm8Y5QklFFQz3pd4CU0l59qpcJ8byAa5jPXdtVnU4g8ZbIpYxjZXwrRFW68D5g2KYNH'
+                ],
+                'body' => json_encode($body),
+            ]
+        );
+        
+    }
 }

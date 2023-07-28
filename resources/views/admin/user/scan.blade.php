@@ -115,7 +115,7 @@
                             <h5 class="modal-title" id="modalEdit">Seleccione el archivo</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        {!! Form::open(['route' => 'rh.updateDocuments', 'enctype' => 'multipart/form-data', 'method'=>'put']) !!}
+                        {!! Form::open(['route' => 'rh.updateDocuments', 'enctype' => 'multipart/form-data', 'method'=>'POST']) !!}
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col">

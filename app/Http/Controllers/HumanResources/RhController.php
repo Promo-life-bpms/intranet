@@ -27,7 +27,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-
 class RhController extends Controller
 {
     public function stadistics()
