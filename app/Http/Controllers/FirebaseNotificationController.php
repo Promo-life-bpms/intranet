@@ -419,7 +419,7 @@ class FirebaseNotificationController extends Controller
         $title ='Reservación de la sala recreativa';
         $body = '¡'. $user. ' ha reservado toda la sala recreativa! La reunión será el día '. $diaInicio . ' de '. $LInicio .' del '. $AnoInicio . ' a las '. $HoraInicio .' y finalizará el día '. 
         $diaFin.' de '. $LFin.' del '. $AnoFin . ' a las '. $HoraFin.'. Por lo tanto en este horario no se podrá reservar la sala ni los cubículos. ';
-        $topic = '/topics/191'; //Me limita a mí//
+        $topic = '/topics/169'; //Me limita a mí//
         
         $client = new Client(['verify' => false]);
 
@@ -450,7 +450,7 @@ class FirebaseNotificationController extends Controller
         $title ='Reservación de la sala recreativa';
         $body = '¡'. $user. ' ha modificado la reservación! La reunión será el día '. $diaInicio . ' de '. $LInicio .' del '. $AnoInicio . ' a las '. $HoraInicio .' y finalizará el día '. 
         $diaFin.' de '. $LFin.' del '. $AnoFin . ' a las '. $HoraFin.'. Por lo tanto en este horario no se podrá reservar la sala ni los cubículos. ';
-        $topic = '/topics/191'; //Me limita a mí//
+        $topic = '/topics/169'; //Me limita a mí//
         
         $client = new Client(['verify' => false]);
 
