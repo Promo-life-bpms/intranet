@@ -187,9 +187,16 @@
 
                 @if (($user->id === 6 || $user->id === 31 || $user->id === 127) && $information_request->status === 'Solicitud Creada')
                     {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
-                    @else
+                @elseif ($user->id === 31 && $enable_button_for_user_id_31)
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                @else
                     {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!}
-                @endif  
+                @endif
+
+                
+                
+
+                
         {!! Form::close()!!}
     </form>
 </div>

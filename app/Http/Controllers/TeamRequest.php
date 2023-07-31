@@ -170,7 +170,11 @@ class TeamRequest extends Controller
         // }
 
         $user = Auth::user();
-        return view('admin.Team.information', compact('information_request', 'user'));
+        $user_id = 6;
+        $enable_button_for_user_id_31 = ($user_id === 6 && $information_request->status === 'Aprobada');
+        
+
+        return view('admin.Team.information', compact('information_request', 'user', 'enable_button_for_user_id_31'));
     }
 
     public function update(Request $request)
