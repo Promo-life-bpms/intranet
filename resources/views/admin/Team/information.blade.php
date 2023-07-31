@@ -185,12 +185,11 @@
                     </div>
                 </div>
 
-                @if ($deshabilitarBoton)
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4 boton-deshabilitado', 'disabled' => 'disabled']) !!}
-                    @else
+                @if (($user->id === 6 || $user->id === 31 || $user->id === 127) && $information_request->status === 'Solicitud Creada')
                     {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
-                @endif
-                
+                    @else
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!}
+                @endif  
         {!! Form::close()!!}
     </form>
 </div>

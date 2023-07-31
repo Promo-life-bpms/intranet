@@ -170,20 +170,7 @@ class TeamRequest extends Controller
         // }
 
         $user = Auth::user();
-
-        $deshabilitarBoton = false;
-
-        if ($user) {
-            if ($information_request->status === 'Rechazada' && $user->id === 31) {
-                $deshabilitarBoton = true;
-            }
-            elseif ($information_request->status === 'Aprobada' && $user->id === 6) {
-                $deshabilitarBoton = true;
-            }else{
-                $deshabilitarBoton = false;
-        }
-    }
-        return view('admin.Team.information', compact('information_request', 'deshabilitarBoton'));
+        return view('admin.Team.information', compact('information_request', 'user'));
     }
 
     public function update(Request $request)
