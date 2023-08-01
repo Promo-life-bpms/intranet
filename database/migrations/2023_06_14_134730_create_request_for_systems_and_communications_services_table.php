@@ -49,7 +49,7 @@ class CreateRequestForSystemsAndCommunicationsServicesTable extends Migration
             $table->string('folder_path')->nullable();
             $table->string('type_of_access')->nullable();
             $table->string('observations')->nullable();
-            $table->string('status');
+            $table->integer('status');
             $table->timestamps();
         });
     }

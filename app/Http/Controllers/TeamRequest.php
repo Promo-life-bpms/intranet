@@ -120,7 +120,7 @@ class TeamRequest extends Controller
         $request_team->folder_path = $request->folder_path;
         $request_team->type_of_access = $request->type_of_access;
         $request_team->observations = $request->observations;
-        $request_team->status = 'Solicitud Creada';
+        $request_team->status = 0;
         $request_team->save();
 
         // $Recursos =User::where('id', 6)->first()->name;
@@ -169,12 +169,12 @@ class TeamRequest extends Controller
         // $DTI->notify(new notificacionSistemas($Sistemas, $name));
         // }
 
-        $user = Auth::user();
-        $user_id = 6;
-        $enable_button_for_user_id_31 = ($user_id === 6 && $information_request->status === 'Aprobada');
+        // $user = Auth::user();
+        // $user_id = 6;
+        // $enable_button_for_user_id_31 = ($user_id === 6 && $information_request->status === 'Aprobada');
         
 
-        return view('admin.Team.information', compact('information_request', 'user', 'enable_button_for_user_id_31'));
+        return view('admin.Team.information', compact('information_request'));
     }
 
     public function update(Request $request)
@@ -182,9 +182,25 @@ class TeamRequest extends Controller
         $request->validate([
             'status' => 'required',
         ]);
-        DB::table('request_for_systems_and_communications_services')->where('id', intval($request->id))->update([
-            'status' => $request->status
-        ]);
+
+        $statusMapping = [
+            'Aprobada' => 1,
+            'Rechazada' => 2,
+        ];
+    
+        if (!isset($statusMapping[$request->status])) {
+            return redirect()->back()->withErrors(['status' => 'El estado proporcionado no es válido.']);
+        }
+    
+        $statusValue = $statusMapping[$request->status];
+        
+    
+        DB::table('request_for_systems_and_communications_services')
+            ->where('id', intval($request->id))
+            ->update([
+                'status' => $statusValue
+            ]);
+    
         return redirect()->back()->with('success', '¡Solicitud Actualizada Exitosamente!');
     }
 }

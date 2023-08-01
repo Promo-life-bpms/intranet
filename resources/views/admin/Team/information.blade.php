@@ -22,24 +22,19 @@
             <div class="col-md-6">
                 <h5 class="title mt-3" style="font-size: 15px;">Estado</h5>
                     <p class="description" style="font-size: 15px;">
-                        @if ($information_request->status == 'Aprobada')
+                        @if ($information_request->status == 1)
                                     <div class="text-left">
-                                        <span class="badge bg-success">{{$information_request->status}}</span>
+                                        <span class="badge bg-success">Aprobada</span>
                                     </div>
     
-                                    @elseif($information_request->status == 'Rechazada')
+                                    @elseif($information_request->status == 2)
                                     <div class="text-left">
-                                        <span class="badge bg-danger">{{ $information_request->status }}</span>
+                                        <span class="badge bg-danger">Rechazada</span>
                                     </div>
     
-                                    @elseif($information_request->status == 'Preaprobada')
+                                    @elseif($information_request->status == 0)
                                     <div class="text-left">
-                                        <span class="badge bg-warning text-dark">{{ $information_request->status }}</span>
-                                    </div>
-    
-                                    @elseif($information_request->status == 'Solicitud Creada')
-                                    <div class="text-left">
-                                        <span class="badge bg-info text-dark">{{ $information_request->status }}</span>
+                                        <span class="badge bg-info text-dark">Solicitud Creada</span>
                                     </div>
                         @endif
                     </p>
@@ -176,7 +171,7 @@
                 <input type="text" value="{{$information_request->id}}" name="id" hidden>
                 <div class="col-md-3">
                     <div class="form-group">
-                            {!! Form::select('status', ['Aprobada'=> 'Aprobada', 'Rechazada'=> 'Rechazada'], 'Estado', ['class' => 'form-control','placeholder' => 'Seleccione el cambio de estado']) !!}
+                            {!! Form::select('status', ['1'=> 'Aprobada', 'Rechazada'=> 'Rechazada'], 'Estado', ['class' => 'form-control','placeholder' => 'Seleccione el cambio de estado']) !!}
                             @error('status')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
@@ -184,19 +179,7 @@
                             @enderror
                     </div>
                 </div>
-
-                @if (($user->id === 6 || $user->id === 31 || $user->id === 127) && $information_request->status === 'Solicitud Creada')
                     {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
-                @elseif ($user->id === 31 && $enable_button_for_user_id_31)
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
-                @else
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!}
-                @endif
-
-                
-                
-
-                
         {!! Form::close()!!}
     </form>
 </div>
@@ -223,7 +206,7 @@
     margin-left: 10px;
 }
 
-.boton-deshabilitado {
+.btnDisabled {
     opacity: 0.5;
     pointer-events: none;
 }

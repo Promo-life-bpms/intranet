@@ -25,24 +25,19 @@
                             <td style="text-align: center">{{$admon_request->id}}</td>
                             <td style="text-align: center">{{$admon_request->user->name.' '. $admon_request->user->lastname}}</td>
                             <td>
-                                @if ($admon_request->status == 'Aprobada')
+                                @if ($admon_request->status == 1)
                                     <div class="d-flex justify-content-center">
-                                        <span class="badge bg-success">{{$admon_request->status}}</span>
+                                        <span class="badge bg-success">Aprobada</span>
                                     </div>
     
-                                    @elseif($admon_request->status == 'Rechazada')
+                                    @elseif($admon_request->status == 2)
                                     <div class="d-flex justify-content-center">
-                                        <span class="badge bg-danger">{{ $admon_request->status }}</span>
+                                        <span class="badge bg-danger">Rechazada</span>
                                     </div>
     
-                                    @elseif($admon_request->status == 'Preaprobada')
+                                    @elseif($admon_request->status == 0)
                                     <div class="d-flex justify-content-center">
-                                        <span class="badge bg-warning text-dark">{{ $admon_request->status }}</span>
-                                    </div>
-    
-                                    @elseif($admon_request->status == 'Solicitud Creada')
-                                    <div class="d-flex justify-content-center">
-                                        <span class="badge bg-info text-dark">{{ $admon_request->status }}</span>
+                                        <span class="badge bg-info text-dark">Solicitud Creada</span>
                                     </div>
                                 @endif
                             </td>
