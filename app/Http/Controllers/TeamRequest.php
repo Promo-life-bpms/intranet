@@ -169,11 +169,6 @@ class TeamRequest extends Controller
         // $DTI->notify(new notificacionSistemas($Sistemas, $name));
         // }
 
-        // $user = Auth::user();
-        // $user_id = 6;
-        // $enable_button_for_user_id_31 = ($user_id === 6 && $information_request->status === 'Aprobada');
-        
-
         return view('admin.Team.information', compact('information_request'));
     }
 
@@ -182,7 +177,7 @@ class TeamRequest extends Controller
         $request->validate([
             'status' => 'required',
         ]);
-
+        
         $statusMapping = [
             'Aprobada' => 1,
             'Rechazada' => 2,
@@ -193,7 +188,6 @@ class TeamRequest extends Controller
         }
     
         $statusValue = $statusMapping[$request->status];
-        
     
         DB::table('request_for_systems_and_communications_services')
             ->where('id', intval($request->id))
