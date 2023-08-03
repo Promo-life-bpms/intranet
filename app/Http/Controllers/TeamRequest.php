@@ -135,7 +135,6 @@ class TeamRequest extends Controller
         // return redirect()->route('team.request')->with('error', 'Ocurrió un error al enviar la solicitud. Por favor, inténtelo de nuevo más tarde.');
     }
 
-
     public function user($id)
     {
         $employees = Employee::find($id);
@@ -170,9 +169,20 @@ class TeamRequest extends Controller
         // }
         
         $user = auth()->user();
-        $enable_button_for_user_id_31 = false;
+        if(request()->has('rh_button') && $user->id === 6){
+            if($information_request->status === 1 || $information_request->status === 2){
 
-        return view('admin.Team.information', compact('information_request', 'user', 'enable_button_for_user_id_31'));
+            } else {
+
+            }
+        
+        }elseif(request()->has('ti_button') && $user->id === 31){
+            
+        }elseif(request()->has('ss_button')){
+
+        }
+
+        return view('admin.Team.information', compact('information_request', 'user'));
     }
 
     public function update(Request $request)
@@ -182,8 +192,10 @@ class TeamRequest extends Controller
         ]);
         
         $statusMapping = [
+            'Solicitud Creada' => 0,
             'Aprobada' => 1,
             'Rechazada' => 2,
+
         ];
     
         if (!isset($statusMapping[$request->status])) {
