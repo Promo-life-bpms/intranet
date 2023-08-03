@@ -179,7 +179,43 @@
                             @enderror
                     </div>
                 </div>
+
+                {{-- @if($user->id === 6)
+                    @if($information_request->status === 0)
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                    @elseif($information_request->status === 1)
+                        @if($user->id === 31)
+                            {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                        @else
+                            {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!}
+                        @endif
+                    @else
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!}
+                    @endif
+                @elseif($user->id === 31)
+                    @if($information_request->status === 1)
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                    @else
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!}
+                    @endif
+                @else
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!}
+                @endif --}}
+
+                {{-- @if (($user->id === 6 || $user->id === 31 || $user->id === 127) && $information_request->status === 0)
                     {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                @elseif ($user->id === 31 && ($information_request->status === 1 || $enable_button_for_user_id_31))
+                    @if ($information_request->status !== 2 && $information_request->status === 1 )
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                    @else
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!}
+                    @endif
+                @elseif ($user->id === 6 && $information_request->status === 2)
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                @else
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4 btnDisabled', 'disabled' => 'disabled']) !!}
+                @endif --}}
+                
         {!! Form::close()!!}
     </form>
 </div>

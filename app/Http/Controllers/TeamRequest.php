@@ -168,8 +168,11 @@ class TeamRequest extends Controller
         // $Sistemas = User::where('id', 127)->first()->name;
         // $DTI->notify(new notificacionSistemas($Sistemas, $name));
         // }
+        
+        $user = auth()->user();
+        $enable_button_for_user_id_31 = false;
 
-        return view('admin.Team.information', compact('information_request'));
+        return view('admin.Team.information', compact('information_request', 'user', 'enable_button_for_user_id_31'));
     }
 
     public function update(Request $request)
