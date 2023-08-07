@@ -67,8 +67,8 @@ class TeamRequest extends Controller
             'observations' => 'required'
         ]);
 
-        // try{
-        // DB::beginTransaction();
+    try{
+        DB::beginTransaction();
 
         $data = [];
         array_push($data, (object)[
@@ -83,8 +83,8 @@ class TeamRequest extends Controller
             'signature_or_telephone_contact_numer' => json_encode([$request->signature_or_telephone_contact_numer, $request->signature_or_telephone_contact_numer5, $request->signature_or_telephone_contact_numer4, $request->signature_or_telephone_contact_numer3, $request->signature_or_telephone_contact_numer2, $request->signature_or_telephone_contact_numer1])
         ]);
 
-        // $DRH = User::where('id', 6)->first()->name;
-        // $name = auth()->user()->name;
+        $DRH = User::where('id', 6)->first()->name;
+        $name = auth()->user()->name;
         $request_team = new ModelsTeamRequest();
         $request_team->type_of_user = $request->type_of_user;
         $request_team->name = $request->jefe_directo_id;
@@ -123,16 +123,18 @@ class TeamRequest extends Controller
         $request_team->status = 0;
         $request_team->save();
 
-        // $Recursos =User::where('id', 6)->first()->name;
-        // $DRH = User::where('id', 6)->first();
-        // $DRH->notify(new notificacionCorreo($Recursos, $name));
+        $Recursos =User::where('id', 6)->first()->name;
+        $DRH = User::where('id', 6)->first();
+        $DRH->notify(new notificacionCorreo($Recursos, $name));
 
-        // DB::commit();
+        DB::commit();
         return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!', 'data', $data);
-        //  }catch(\Exception $e){
+        
+    }catch(\Exception $e){
 
-        // DB::rollBack();
-        // return redirect()->route('team.request')->with('error', 'Ocurrió un error al enviar la solicitud. Por favor, inténtelo de nuevo más tarde.');
+        DB::rollBack();
+        return redirect()->route('team.request')->with('error', 'Ocurrió un error al enviar la solicitud. Por favor, inténtelo de nuevo más tarde.');
+        }
     }
 
     public function user($id)
@@ -154,39 +156,14 @@ class TeamRequest extends Controller
 
     public function informationrequest($id)
     {
-        // $name = auth()->user()->name;
         $information_request = ModelsTeamRequest::find($id);
-        // $DRH = User::where('id', 31)->first();
-        // if ($information_request->status === 'Aprobada') {
-        // $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
-        // $DRH->notify(new notificacionAprobaciones($Tecnologia_e_innovacion, $name));
-
-        // $name = auth()->user()->name;
-        // $DTI = User::where('id', 127)->first();
-        // if($information_request->status === 'Aprobada'){
-        // $Sistemas = User::where('id', 127)->first()->name;
-        // $DTI->notify(new notificacionSistemas($Sistemas, $name));
-        // }
         
-        $user = auth()->user();
-        if(request()->has('rh_button') && $user->id === 6){
-            if($information_request->status === 1 || $information_request->status === 2){
-
-            } else {
-
-            }
-        
-        }elseif(request()->has('ti_button') && $user->id === 31){
-            
-        }elseif(request()->has('ss_button')){
-
-        }
-
-        return view('admin.Team.information', compact('information_request', 'user'));
-    }
+        return view('admin.Team.information', compact('information_request'));
+}
 
     public function update(Request $request)
     {
+        
         $request->validate([
             'status' => 'required',
         ]);
@@ -209,7 +186,23 @@ class TeamRequest extends Controller
             ->update([
                 'status' => $statusValue
             ]);
+
+            $userId = auth()->user()->id;
     
+        if($statusValue === 1 && $userId === 6){
+            $name = auth()->user()->name;
+            $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
+            $DRH = User::where('id', 31)->first();
+            $DRH->notify(new  notificacionAprobaciones($Tecnologia_e_innovacion, $name));
+        }
+
+        if ($statusValue === 1 && $userId === 31) {
+            $name = auth()->user()->name;
+            $Sistemas = User::where('id', 127)->first()->name;
+            $DTI = User::where('id', 127)->first();
+            $DTI->notify(new notificacionSistemas($Sistemas, $name));
+        }
+
         return redirect()->back()->with('success', '¡Solicitud Actualizada Exitosamente!');
     }
 }

@@ -121,18 +121,7 @@
                         Solid Works: {{$information_request->solid_works}}<br>
                         Autocad: {{$information_request->autocad}}<br>
                         ODOO: {{$information_request->odoo}}<br>
-                        
-                        {{-- @foreach ($perfiles=json_decode($information_request->work_profile_in_odoo, true) as $indexa => $profile)
-                            @foreach ($usuarios = json_decode($information_request->odoo_users, true) as $index => $element)
-                                @if ($index == $indexa)
-                                    @if ($element !== null)
-                                        Usuario(s) de ODOO: {{$index + 1}}: {{$element}}<br>
-                                    @endif
-                                        Perfil de Trabajo en ODOO: {{$index + 1}}: {{$profile}}<br>
-                                @endif
-                            @endforeach
-                        @endforeach --}}
-
+                
                         @foreach ($perfiles = json_decode($information_request->work_profile_in_odoo, true) as $indexa => $profile)
                             @foreach ($usuarios = json_decode($information_request->odoo_users, true) as $index => $element)
                                 @if ($index == $indexa && ($element !== null || $profile !== null))
@@ -236,7 +225,7 @@
                     {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4 btnDisabled', 'disabled' => 'disabled']) !!}
                 @endif --}}
 
-                @if($user->id === 6)
+                {{-- @if($user->id === 6)
                 {!! Form::submit('ACTUALIZAR RH', ['class' => 'btnCreate mt-4', 'name' => 'rh_button', 'value' => '1', 'disabled' => ($information_request->status === 1 || $information_request->status === 2)]) !!}
                 @endif
 
@@ -246,7 +235,10 @@
 
                 @if($user->id === 127)
                 {!! Form::submit('ACTUALIZAR SS', ['class' => 'btnCreate mt-4', 'name' => 'ss_button', 'value' => '3']) !!}
-                @endif
+                @endif --}}
+
+                
+                {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
         {!! Form::close()!!}
     </form>
 </div>
@@ -273,9 +265,5 @@
     margin-left: 10px;
 }
 
-.btnDisabled {
-    opacity: 0.5;
-    pointer-events: none;
-}
 </style>
 @endsection
