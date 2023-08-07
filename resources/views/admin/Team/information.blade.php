@@ -157,7 +157,7 @@
     </div>
 
     <form action="{{route('team.status')}}" method="POST">
-        {!! Form::open(['route' => 'team.status', 'enctype' => 'multipart/form-data']) !!}
+        {!! Form::open(['route' => 'team.status', 'enctype' => 'multipart/form-data', ]) !!}
                 @csrf
                 <input type="text" value="{{$information_request->id}}" name="id" hidden>
                 <div class="col-md-3">
@@ -236,9 +236,47 @@
                 @if($user->id === 127)
                 {!! Form::submit('ACTUALIZAR SS', ['class' => 'btnCreate mt-4', 'name' => 'ss_button', 'value' => '3']) !!}
                 @endif --}}
-
                 
-                {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                {{-- @if(in_array(auth()->user()->id, [6]) && in_array($information_request->status, [1, 2]))
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled' => 'disabled']) !!}
+                @else
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                @endif --}}
+
+                {{-- @if ($information_request->status === 1)
+                    {!! Form::submit('APROBADA', ['class' => 'btnCreate mt-4', 'disabled']) !!}
+                @elseif ($information_request->status === 2)
+                    {!! Form::submit('RECHAZADA', ['class' => 'btnCreate mt-4', 'disabled']) !!}
+                @else
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                @endif --}}
+
+                {{-- @if ($information_request->status === 1)
+                    {!! Form::submit('APROBADA', ['class' => 'btnCreate mt-4', 'disabled']) !!}
+                @elseif ($information_request->status === 2)
+                    {!! Form::submit('RECHAZADA', ['class' => 'btnCreate mt-4', 'disabled']) !!}
+                @else
+                    @if ($user->id == 31)
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4']) !!}
+                    @else
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'disabled']) !!}
+                    @endif
+                @endif --}}
+
+                @if($user->id === 6)
+                    @if($information_request->status !== 1 && $information_request->status !== 2)
+                        {!! Form::submit('ACTUALIZAR RH', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizarRH']) !!}
+                    @endif
+                @endif
+
+                @if($user->id === 31)
+                {!! Form::submit('ACTUALIZAR TI', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizarTI', 'disabled' => ($information_request->status === 1 || $information_request->status === 2)]) !!}
+                @endif
+
+                @if($user->id === 127)
+                {!! Form::submit('ACTUALIZAR SP', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizarSistemas']) !!}
+                @endif
+
         {!! Form::close()!!}
     </form>
 </div>

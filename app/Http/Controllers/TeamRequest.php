@@ -157,9 +157,11 @@ class TeamRequest extends Controller
     public function informationrequest($id)
     {
         $information_request = ModelsTeamRequest::find($id);
-        
-        return view('admin.Team.information', compact('information_request'));
-}
+
+        $user = auth()->user();
+
+        return view('admin.Team.information', compact('information_request', 'user'));
+    }
 
     public function update(Request $request)
     {
@@ -187,22 +189,21 @@ class TeamRequest extends Controller
                 'status' => $statusValue
             ]);
 
-            $userId = auth()->user()->id;
-    
-        if($statusValue === 1 && $userId === 6){
-            $name = auth()->user()->name;
-            $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
-            $DRH = User::where('id', 31)->first();
-            $DRH->notify(new  notificacionAprobaciones($Tecnologia_e_innovacion, $name));
-        }
+        $userId = auth()->user()->id;
+        
+        // if($statusValue === 1 && $userId === 6){
+        // $name = auth()->user()->name;
+        // $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
+        // $DRH = User::where('id', 31)->first();
+        // $DRH->notify(new  notificacionAprobaciones($Tecnologia_e_innovacion, $name));
+        // }
 
-        if ($statusValue === 1 && $userId === 31) {
-            $name = auth()->user()->name;
-            $Sistemas = User::where('id', 127)->first()->name;
-            $DTI = User::where('id', 127)->first();
-            $DTI->notify(new notificacionSistemas($Sistemas, $name));
-        }
-
+        // if($statusValue === 1 && $userId === 31) {
+        // $name = auth()->user()->name;
+        // $Sistemas = User::where('id', 127)->first()->name;
+        // $DTI = User::where('id', 127)->first();
+        // $DTI->notify(new notificacionSistemas($Sistemas, $name));
+        // }
         return redirect()->back()->with('success', '¡Solicitud Actualizada Exitosamente!');
     }
 }
