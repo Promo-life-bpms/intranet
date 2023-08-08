@@ -121,6 +121,7 @@ class TeamRequest extends Controller
         $request_team->type_of_access = $request->type_of_access;
         $request_team->observations = $request->observations;
         $request_team->status = 0;
+        $request_team->status_approvals = $request->status_approvals;
         $request_team->save();
 
         $Recursos =User::where('id', 6)->first()->name;
@@ -204,6 +205,7 @@ class TeamRequest extends Controller
         // $DTI = User::where('id', 127)->first();
         // $DTI->notify(new notificacionSistemas($Sistemas, $name));
         // }
+        
         return redirect()->back()->with('success', '¡Solicitud Actualizada Exitosamente!');
     }
 }

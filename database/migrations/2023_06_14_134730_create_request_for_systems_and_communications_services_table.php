@@ -50,6 +50,7 @@ class CreateRequestForSystemsAndCommunicationsServicesTable extends Migration
             $table->string('type_of_access')->nullable();
             $table->string('observations')->nullable();
             $table->integer('status');
+            $table->integer('status_approvals');
             $table->timestamps();
         });
     }
