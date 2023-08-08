@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="{{ asset('css/app10.css') }}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/index.global.min.js"></script>
 
 
     @livewireStyles()
@@ -49,6 +50,8 @@
     <script src="{{ asset('assets/vendors/momentjs/moment.js') }}"></script>
     <script src="{{ asset('js/app10.js') }}"></script>
     <script src="{{ asset('assets/js/mazer.js') }}"></script>
+    <script src="{{ asset('js/calendar.js') }}"></script>
+    <script src="{{ asset('js/calendario.js') }}"></script>
 
 
     @yield('scripts')
