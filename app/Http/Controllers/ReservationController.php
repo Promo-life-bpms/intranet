@@ -178,7 +178,7 @@ class ReservationController extends Controller
                                               ->toArray();
             }
         $invitados = implode(',' . ' ', $invitadosIds);
-
+        
         //UNA VEZ QUE YA PASO LAS VALIDACIÓNES CREA EL EVENETO//
         $evento = new Reservation();
         $evento->title = $request->title;
