@@ -73,15 +73,18 @@ class ReservationController extends Controller
     public function Positions($id)
     {
         $dep = Department::find($id);
-        $positions = Position::all()->where("department_id", $id)->pluck("name", "id");
+        $positions = Position::where("department_id", $id)->pluck("name", "id");
         $data = $dep->positions;
         $users = [];
+
         foreach ($data as $dat) {
             foreach ($dat->getEmployees as $emp) {
-                $users["{$emp->user->id}"] = $emp->user->name . ' ' . $emp->user->lastname;
+                if ($emp->user->status == 1) {  
+                    $users["{$emp->user->id}"] = $emp->user->name . ' ' . $emp->user->lastname;
+                }
             }
         }
-        return response()->json(['positions' => $positions, 'users' => $users,]);
+        return response()->json(['positions' => $positions, 'users' => $users]);
     }
     /////////////////////////////////////////////FUNCIÓN CREAR EVENTO//////////////////////////////////////////////////
     public function store(Request $request)
@@ -178,7 +181,7 @@ class ReservationController extends Controller
                                               ->toArray();
             }
         $invitados = implode(',' . ' ', $invitadosIds);
-
+        
         //UNA VEZ QUE YA PASO LAS VALIDACIÓNES CREA EL EVENETO//
         $evento = new Reservation();
         $evento->title = $request->title;
