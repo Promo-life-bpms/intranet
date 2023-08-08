@@ -1,0 +1,179 @@
+[33m9249c8bd7e15059f78fd3c11cf380577ac12b77e[m[33m ([m[1;36mHEAD -> [m[1;32mrh-module[m[33m, [m[1;31morigin/rh-module[m[33m, [m[1;31morigin/oscar-rh[m[33m)[m merge test-yael to oscar-rh
+[33m1d36c81042408028ea2503cf269ac79a6641eab6[m[33m ([m[1;31morigin/test-yael[m[33m)[m avance filtrado por empresa
+[33m97619bf62ef54a108980bbf13065fa87abb2ef97[m filtrado de informacion por empresa en controlador
+[33m353b433e3f55700ddb4ac068d50771584dcff841[m fix dashboard sin filtrar datos
+[33m966497cafde5db07da6f1195a08d7329b42d74f2[m fix busqueda de bajas
+[33ma694aeb8e384c8b1fcb471b86540667cc9504f6b[m avance filtrado del total de empleados
+[33mda53f67ec56ef947a979c1d64dab15e5ba9673e6[m fix filtrado de nuevos ingresos
+[33mefbcac5acb82149d7d47844bac60737dca1bba59[m modificacion formularios de generacion y agregado de generacion en los usuarios existentes
+[33macadedbafc250e608ecbe32406cea54adf344e45[m Continuacion de filtrado de datos dashboard
+[33m803a74ec3528069cc66d0501a0e075df48175dd3[m agregado de filtrado en la generacion de documentos solo cuando el status del usuario sea activo
+[33m81f7e826f854af1649b43f5a13c0a01bb5abdcf8[m agregado de contrato indeterminado en la documentacion del empleado
+[33m50c5f1248b237386d578b6206fb144f1f8b406d7[m[33m ([m[1;31morigin/yael[m[33m)[m Nuevo avance con la conexion de la base de datos con el dashboard
+[33m3c64b15a7e3e02dc6d085e06cfeb088a064f95e7[m agregado de campo otro en motivo y modificacion de estilo
+[33m28dffd2e9013214108c4086c6aefe3d7fd285c1d[m avance agregado de input de otro motivo
+[33m7bf378fb24e18e034821c0c3ec6108fd283571a9[m fix generacion de documentos y agregado de boton para acender a empleado
+[33m6b5c7216925c651dfa7a63cc7c65194a44747c79[m fix baja de usuarios, volver a darlos de alta
+[33mc1fdecc6e39afcf4a0314e897f836ef26bf7d727[m avance tabla de baja
+[33m6922b726cb9c802e2de628c9ff97b01bcff95541[m fix subtitulo de documentos escaneados y agregado de  arrows de retorno en la informacion de usuarios
+[33m049496484b82dd89e666d78d4ac43b929dc67680[m avance tabla de usuarios de baja
+[33m5efcdc67e5289de369a3f552d2cbfa2e4f09a9b9[m validacion de datos al pasar de candidato a empleado y filtro para la eneracion de documentos
+[33mad298fccae4e02f3d830d47adc532fe72e92bd80[m Merge branch 'oscar-rh' into rh-module
+[33m25585ab8df8ca802a5e9f45d625bd92d3f6637c4[m creacion de empleado mediante los postulantes
+[33meb1fe73e3d202e4e78432242c622ac885f8b465d[m fix tabla beneficiario y cruds de usuarios y postulantes
+[33m99d3b085c4ee51ed26c7d1bdfe67fd3696e59df8[m conexion de vistas de informacion de empleado y correcion de estilos
+[33m6159f1d2723435b84be94123eb2d7f417c4eedb6[m merge yael
+[33m814029dc5ee9e59ad906ae08ce85b8950a8d4b5e[m Merge branch 'features-v1-c' into oscar-rh
+[33mcc5c3d05390b815609c6ca495199e571fd04e66e[m agregado de imagenes a carta de banco
+[33m8f13faff40aa7b57b74e36df7d49c7b2cb3e60f9[m fix documentos y avance de agregado de imagenes enc arta de banco
+[33m71a5fd91d6d6d6275c1fd4c4702fc50c545bab1b[m[33m ([m[1;31morigin/features-v1-c[m[33m)[m corrección del switch
+[33m8dc3cb21600466add83b1ada2594f0002fb60c15[m Avance de acomodo de gráficas en la vista de estadísticas
+[33mb9e7bac42dd1a4dda65ff2ff85cd50fe55b3160b[m modificación del error de editar archivos
+[33mb341241588679dbb8ef1779e393fc8f2eaf7e1e1[m fix contrato determinado e indeterminado
+[33m3ccf188370f6980a9901e3b62f09f2326594c7bf[m fix documento de alta de personal
+[33mf996cfcd317bd74c88f373e6c069e86c5b4adfde[m modificacion de tablas y re estructuracion de formulario de alta
+[33mc073c0afb8ba70a30f80b9605bd487701568b6fb[m Culminación de vista de estadísticas
+[33m71ac361f0e41a4b8db33e7e66fe5156b2032a932[m se agrego el apartado para subir, modificar e eliminar documentos de empleados dados de baja
+[33mbff14ec54c297bcaa34f846447929c0f9ce393df[m agregado de formato base de carta de banco
+[33madffdf110d5b149edbb87c3a77ab9fa66d359d98[m fix numerales de lista de formatod e no competencia y nomeclarturas deguardado
+[33m7e9cee8ea3caf8f56a9475c767948e2447c11409[m cambio de checkbox por radio button  en la generacion de documentos y modificacion a documento de alta y contrato determinado
+[33m4cbcc689557df89824a0e0f104b8089ca7bb4753[m Merge pull request #2 from adminportales/features-v1-hector
+[33m352ae33ad6f98e1fae3fef4c488c7400543332a3[m[33m ([m[1;31morigin/features-v1-hector[m[33m)[m Se agrego un workflow dentro de la carpeta de .github para envio de notificaciones por slack
+[33m79b7b19051d3ead531ca609ce50ffc0b74090040[m avance de modificacion en formularios
+[33mc8903a857f0fac800dc54173f0fd72d77dd0cce0[m separacion de documentos de la vista principal
+[33ma983bc30f61b0f5dbd0464006fe715894c7246e1[m fix generacion de documentos corruptos
+[33mf50d0df93c7e271e4ff32ba73bcbfc1d459ff6fb[m depuracion documento de no competencia
+[33md839fbc50b45b5593451ee3bcb95d477ddecfc4a[m agregado de convenio de confidencialidad
+[33meda2921401510e23483a538dc28a8a17bb1176d8[m Avance de creación de estadísticas para altas y bajas
+[33m5f2bd0adc1eed70b4c9cdfbd5e31f48091424fab[m Guardado y Modificación de datos dentro del formulario de informacion adicional
+[33m9bc7c76474dd83e3934e6fb2a0c8d31a0144691d[m avance formato no competencias-agregado de tablas
+[33m45e4718a52b423ebae0f63868fffd3859b42da1f[m Avance de creacion de formulario de informacion adicional
+[33m367657a3efc03106217672efba1802f8bd4ab469[m agregado de contrato indetermidado
+[33m93f9ed57b6a75293ee6177d32af5a9021b8fb7f1[m agregado de contrato determinado
+[33m8f4b92e770dcc70241e0bee256637fa1b2806799[m Agregado de boton de informacion adicional en la vista editar usuario
+[33m00f0eb9f08f4f0cc88ea7638df57504616f6da41[m agregado de tabla a documento de contrato definido
+[33m4bc7610664dc216d9eba78b8a4ed80c6d232fc3a[m avance contrato determinado
+[33m2f92a1b4160e835e011fdaafc718040e88a0ae34[m avance formato no competencia
+[33m08c9fdf3713e00370ae4afc071a00a3ad73c7e39[m avance documentos de alta
+[33m5edce5446eaf582485827ffb38b0ec55b9b12123[m finalizacion de contrato de confidencialidad
+[33m7383ecaa901d96f4af664eed9e09141ddd0b684d[m avance convenio de confidencialdiad tablas
+[33m4ecb8f4b078cb8f23c8c9e10934caaacc7293a17[m generador de documentacion de baja funcionando
+[33m39ace4fac0fe39f984d7f46365a0ee1327985043[m separacion de componente alta de usuario del controlador principal
+[33mf1a736fb7eca8a4f3cf3efba514d9371e5df34b3[m generacion de formato de alta
+[33m55644983ef71a930f5b2970d069bdbc986bd89b1[m avance agregado de informacion al xml
+[33mdaa9cce3e10cf024ed59ba5fba6fb53cf53fd65d[m avance generacion  de documentos
+[33m6aa31e077dfc0fd74a97589b6c998e42e8f5a04e[m agregado de formulario de documentos
+[33mc4b1fec7b2c46beb36fe528a97c2d9fd65f14ed9[m fix tabla de beneficiarios
+[33m276c167a957c24eb3386446155bb873833832d38[m avance creud de alta y pantalla principal de alta
+[33m0aa752f8faef03df2758c8d287240de5adc487d9[m fix formulario de registro y agregado de tablas de postulantes
+[33mbf75a7b808d5e978cc8fe80e9650f5692514ec37[m avance modulo de alta
+[33ma40441c25f35438fb3553af50a47206e0ef5cbea[m avance de formulario de alta
+[33m2431d619781f3c138676d43722306f30151c5e44[m version 1 del modulo de bajas de terminado
+[33m8f895ebf6c3fc51bec46698725ab9020b3974713[m agregado de tabla motivo y formulario de baja funcional
+[33me68eff334c4bbdaa9bb2da73f09900230d92b305[m avance de la pantalla de baja de empleado
+[33m8a49cdcce9246f1269ecc5b89282193be407e3ab[m avance modulo de dispositivos para sistemas
+[33mf44e6292be8b66b4d1be5418e957ffe6633c86fc[m fix llaves foraneas de tablas
+[33md2088c22aa9ef35c91808739fffbf522986b88a5[m agregado de talas para modulo de rh y sistemas
+[33mbac6493c0350eb6a382df58772a5a95c62013cc0[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/dev[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Actualuzaciones de RH
+[33m1fc298c0bb4db6080c66ac351ad207f319eae882[m Mover los dias a la tabla rejected
+[33m32ebcbae0995205732c44ebb971a4ebc50d28b7e[m FIX FECHA ACTUAL
+[33m0410f9775fd2c0f84cdbfc20a2af5908220cfb24[m Actualizacion de calculo de vacaciones
+[33m431f28f074118158d99e928a28480a5a36962ba3[m Merge branch 'main' of https://github.com/adminportales/intranet
+[33m5a90f4052df5acfd55ede5e45f118f0ff656f3a1[m Get Users desde Intranet
+[33m42c700b11aa9f5b48a515e4944715a072a450e87[m Recordatorios de Vacaciones
+[33mcb1d07bb7d1f06c75d6ccd64f5cba43ef142b822[m Ocultar publicaciones desde la app movil
+[33meb865cfadd659d483dd7a3e461bddb20a08d55fe[m Fix en el LS
+[33m97889bf4bb6f2ef255e73467f19a0e6cb9e46258[m Inclusion de PC
+[33md10c9028b7dae61a3b3f59149ea84b82821b950d[m Subir videos a la intranet
+[33m6ced24d32d9437b9f79e6935dc9a5a9436276137[m Subir archivos
+[33mc4982bd0c5f1f4a70cb3d086bf15a116d95ca7cb[m correccion de clases en chat
+[33ma90ae8eb9a8eabd65b84189ed84645de71158430[m Merge branch 'dev' into dev_sam
+[33m01bf6ae15608ff32ecef7f97c1b1b7f97779f9b2[m chat
+[33m8549952114dcb1f488b96faf6f25089572fc03e9[m Actualizacion de Avances de intranet
+[33m47dc49851c0b174ca2df742140996ec486e812de[m Merge remote-tracking branch 'origin/dev_antonio' into dev
+[33m3a0d4fc007e7c190819e0a12971bacd09b6ba98e[m Merge remote-tracking branch 'origin/dev_oscar' into dev
+[33m95392b0b15c39d62933ca77565fd0a6c86352c38[m Merge remote-tracking branch 'origin/dev_sam' into dev
+[33m25adacb45285b5a600dfffa106c25109ea8cdb27[m Avances
+[33m361ee0d9739faca2fe604c1a7d29b26df14bce9e[m chat-seguimiento
+[33m3500b7468fdc88e1971203247f0ad47ccbdf2e32[m pulido_chat
+[33m89941158ee4aa11e0fe9421550e10a1c01b45939[m Seguimiento de chat2.0
+[33me5b838bddda09dad94ae7e16639cc9debd4739c4[m Avance en chat
+[33m8e8cac9d007e9d356828dd3913a7c46918f1c925[m Seguimiento de chat
+[33mf144b004bfa4a5b72fc6fba4bf1fe4f22c840f5b[m correcion de filtro de roles de usuario
+[33m45e02d199358cfb6d06d06f00032de94e5355640[m fix roles de usuarios
+[33m2a026828e505e6d9979053a9a40d67368da63fae[m fix validación de dias en las solicitudes
+[33m9f08848e87f55a919745ac2bb9d27e5e072c271b[m agregado de notificaciones al api de solicitudes
+[33ma689c5daf5a2b6009eb8c42671f1d2463dfe034b[m Avance en publicaciones
+[33m4ef4467a1179d94fe6939ba3d0f0a64047b439fd[m Merge branch 'dev_antonio' into dev
+[33m04e72c8b73ca2af0976410dc14533394e9956f96[m Merge remote-tracking branch 'origin/dev_oscar' into dev
+[33m419229cfff386d634112be007aa2eb44fea109a7[m Merge remote-tracking branch 'origin/dev_sam' into dev
+[33m6d1ba19de51719e72dfe20c8df64f1a14cc48493[m Modificaciones en las vacaciones y vistas
+[33m344d6844fb80da5dfe5b8793004c58cfc15382c0[m fix dias de vacaciones
+[33md52749404fea1e0c75904c7042394596a4883f72[m fix dias de vacaciones disponibles
+[33mdeadfa52a63828d100e6f286ab893f7e2ad36a87[m cambio de ruta para crear solicitudes
+[33m45aeb2d0864e8ff2c9ebe71af4c3fa682d73e720[m actualizacion de dias de vacaciones al autorizarlas
+[33m9e85ce05b3490da6eb05485cfcb93bf9f4610b41[m add notificaciones de manager a rh
+[33m7c5d5dc9fca35215e78009ff9e084ea3d1ba5e86[m creacion de api post solicitudes para manager
+[33md5474a71fc3c262ff5428a7703deca60d5ab88fb[m Proceso
+[33m49a8bb7500397b548cd2866a319521740e2849f6[m agregado de fullname en las solicitudes
+[33m8e7955e75dd70e4d0583d3a80be5260aa3641172[m creacion de endpoint para obtener las solicitudes por rol
+[33m39797cc47a8ded43d92e4bebfab443012f6e7cd4[m agregado de roles al endpoint de usuario
+[33me510d246cb5cf66a2b4841704ba93bf630d0348b[m fix guardado de imagen
+[33m1b95969b26334015eec7e9d36d6401dff083f297[m separacion de api request
+[33m204da39d34590f7b31a51d7b40e45cd7df0434ab[m Chat/Livewire pulido-proceso
+[33ma64c24d4b25bbfb48ef23e4588de1c72dca35a23[m Reporte de Usuarios
+[33m4ba9ad4870ed9b66cdd80c41f50d22999126c8c8[m Merge remote-tracking branch 'origin/dev_oscar' into dev
+[33m66d3637eee8527721d73804421736e7416e93757[m Correcciones y hora de ultima conexion
+[33mb99c7bcd6c656c97299f69996a133c193b0bbb30[m fix fechas de las solicitudes funcionando correctamente
+[33mccc78cf72079cfb43a4df7f2e3f1acd048799f74[m fix dias del calendario de las solicitudes en la app movil
+[33m0823ec5c284f2cbff52f079fc2f347f4926aede1[m Fix en el archivo de los chats
+[33m2dd57b6164e6b37157bdd379b68e9b2ebb9d0590[m Merge branch 'dev_antonio' into dev
+[33m153be6882dcc18b044fae8867728e807c7b5d37c[m Fix en el listado de RH
+[33mf2806f45a72bc0237d6f6d2884d543d9a5297b1b[m fix de las solicitudes en api
+[33mfb8d92c559f79d691dcfaa6909af849b8d573424[m estilos de chat
+[33m0871b11b00fae1cdd1f4ba651e5037ec875ae07a[m Chat/Livewire
+[33mafd9e81090395352eaa217fc4fe221012a93dcf7[m agregado de campo revealName al api de las publicaciones
+[33m40cccd20330437e4c19b8754b8561e086a20f66f[m agregado de reveal_id al api de solicitudes
+[33m420663fa5a38b8e400a0307170ea11ab96c4ab48[m agregado de endpoint para consumo de empleados por area
+[33mcc814081712d0e374f2150f0cb9a3856c83b4cd8[m avance fix borrar imagen de publicacion
+[33m9727290603b6c5f12d63aa2b13512b846e02f53e[m agregado de imagenes a las publicaciones funcionando
+[33m1572228242dfbcaa8045f5c24e0a8c7e7b476f81[m Merge branch 'dev' into dev_oscar
+[33m74eaefdce4975cb8ab7f936262c44afc0bc167fa[m guardado de imagenes de las publicaciones en movil
+[33me52b083852531943ee363d940429329f3edfe61f[m Fixs en el home y las solicitudes
+[33m783e8aec380998314fc59b0035f799c1e0c482fd[m Chat/Livewire
+[33m8796e8c301f5aa4adfefd0876e552404123c8820[m Correccion en las solicitudes
+[33m01cf560548dcda2db7ecf2e2e7fc47506c2d4c9d[m Merge remote-tracking branch 'origin/dev_oscar'
+[33mad9cd8989623b4f6f73a51e40237b57bc3a94256[m Merge branch 'dev_oscar'
+[33m2cbc0c983e7a5b8e620890095790626eae4d450d[m Fix Organigrama
+[33m2fb7687b190565129b1e9033e74c4b536409e5ac[m avance endpoint de editar publciaciones
+[33m786b111ba4bdd854aaf2c1f6adb4374c99f06b31[m Fix Login
+[33ma25643d51bf408da3898335dd13dd9d19c446224[m Fix Notificaciones
+[33m504bbf8b36453526af15650b1e669d36c55389a9[m Correccion de las solicitudes
+[33m8d4c0df60eef74693a5cb3c481280915725f83c1[m Fix Logos
+[33m82120fe5a89faca462136454f426642043866868[m Merge dev with dev_antonio
+[33mca0c521dd8bba2bd9c98090cc3f1510e24826e93[m Fix Notify
+[33mf903490731a7755bbfa52cb3f7eb1dd2b80d510e[m Merge remote-tracking branch 'origin/dev_oscar' into dev
+[33mdec4afaf453fbb5152c7bb78cf439213447d2aa8[m Merge branch 'dev_oscar' of https://github.com/adminportales/intranet into dev_oscar
+[33m7fad33a588598794bea4d5a40bb8d94002fb76d5[m Fix Notify
+[33m98cb57cca375c2b58353bcd222efa5616d0911b8[m Modificaciones en las publicaciones e inicio de modificaciones en las solicitudes
+[33m2fa7cea896ea443072066ec0e059fd7412c64f70[m Modificacion de header/NotificationBell(Liveware)
+[33m3d911514a70e461820d8c4f9c6753eb25289268a[m fix  endpoint de borrar publicaciones
+[33m25ce1c0718dc995cdf68e309b0fac5188085a6ee[m Merge Commit
+[33me20a5f84bc45055a1dc50f17dced36a677763a33[m Cambios en los usuarios para que no se borren, livewire en las publicaciones, cambio de idioma, correccion de fechas en los cumpleaos
+[33mae930ce0509604cb19834b97df35c900d8aa5b17[m Correccion de imagenes en chat
+[33m1545621b866d03cab8183c107185a1091900cab8[m Correccion de imagenes
+[33m55e6f17d95420e69ebddd1d441d8903cbcfe8a71[m Correccion organigrama
+[33m78252ff2bd3de1467ebc69501a9f2f3c6f2b49d0[m Profile Fixes Photos
+[33m985d738cf3ae6e3600352cbcada19ee094263c7f[m Profile Fixes Photos
+[33m87a134b1c12365a95f093d3dd091f4b7b2bc3534[m Profile Fixes
+[33mc03774df6230b29b22fa5cc41ed07c435781e90e[m Estilos de las imagnes
+[33m72c0320524fd11763fc2521d18e03e9e4c2335f9[m Import Providers
+[33m8ab69e470fac6e329c94c7d4c6c2038e897fafaf[m agregado de apk
+[33m70ec91cf9782d4da4bfe7d71f6515ce63192fd25[m arreglo del filtro de  mensajes en API movil
+[33mfbde0cb3de3c6cf98b1d51e7f18decaa42017730[m Fix en Home y Organigrama
+[33m594f0bea41af22e421174aa15627919f8606df92[m Merge remote-tracking branch 'origin/code_final'
+[33m8575f5f022e7592f2d6b552a7e7e78efef501a70[m Termino de chat 1v
+[33mc07c06ce886101676a85cb5b3266f3005eff7bf7[m Termino de estilos
+[33m5eb246b1829b51ef3784d7654f3953d40fbd753e[m re estructuracion de publicaciones
+[33mf0d409fd3f29ee1b72a133fc803258c557367954[m envio de fecha completa para calculo en proyecto movil
+[33m75f340cc2b58fe8681ed78b376a8669a786c6e85[m fix filtrado de usuarios
