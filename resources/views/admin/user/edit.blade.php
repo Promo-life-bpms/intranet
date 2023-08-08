@@ -1,14 +1,64 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="card-header">
-        <h3>Editar usuario</h3>
+<div class="card-header">
+    <div class="d-flex justify-content-between">
+        <div class="d-flex flex-row">
+            @if($user->status == '1')
+                <a  href="{{ route('admin.users.index') }}">
+                    <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
+                </a>
+            @else
+                <a  href="{{ route('rh.downUsers') }}">
+                    <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
+                </a>
+            @endif
+         
+            <h3 style="margin-left:16px;" class="separator">Editar usuario</h3> 
+        </div>
+      
+        <div>      
+            <div class="d-flex justify-content-evenly">
+            @if($user->status == '0')
+            <a  href="{{ route('rh.dropDocumentation', ['user' => $user->id]) }}"
+                type="button" class="btn btn-primary">
+                <i class="fa fa-calendar me-2" aria-hidden="true"></i>
+                Fecha y motivos de baja</a>
+            @endif
+            <div class="separator" style="width: 10px;" ></div>     
+  
+            <form 
+                action="{{ route('rh.scanDocuments',['id' => $user->id]) }}"
+                method="GET">
+                 @csrf
+                <button type="submit" class="btn btn-primary"> 
+                    <i class="fa fa-file-text me-2" aria-hidden="true"></i>
+                    Documentos guardados
+                </button>
+            </form>     
+            <div class="separator" style="width: 10px;" ></div>     
+            <form 
+                action="{{ route('admin.user.userDetails',['user_id' => $user->id]) }}"
+                method="GET">
+                 @csrf
+                <button type="submit" class="btn btn-primary"> 
+                    <i class="fa fa-info me-2" aria-hidden="true"></i>
+
+                    Información adicional
+                </button>
+            </form>
+            </div>
+
+            
+        </div>
     </div>
+</div>
     <div class="card-body">
         @if (session('message'))
-            <div class="alert alert-danger">
+            <div class="alert alert-success">
                 {{ session('message') }}
             </div>
+
         @endif
         {!! Form::model($user, [
             'route' => ['admin.users.update', $user],
@@ -20,7 +70,7 @@
                 <p>Informacion Personal</p>
                 <div class="form-group">
                     {!! Form::label('name', 'Nombre') !!}
-                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
+                    {!! Form::text('name', $user->name, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
                     @error('name')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>
@@ -30,7 +80,7 @@
                 </div>
                 <div class="form-group">
                     {!! Form::label('lastname', 'Apellidos') !!}
-                    {!! Form::text('lastname', null, ['class' => 'form-control', 'placeholder' => 'Ingrese los apellidos']) !!}
+                    {!! Form::text('lastname', $user->lastname, ['class' => 'form-control', 'placeholder' => 'Ingrese los apellidos']) !!}
                     @error('lastname')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>
@@ -39,8 +89,8 @@
                     @enderror
                 </div>
                 <div class="form-group">
-                    {!! Form::label('name', 'Correo') !!}
-                    {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el correo de acceso']) !!}
+                    {!! Form::label('email', 'Correo') !!}
+                    {!! Form::text('email', $user->email, ['class' => 'form-control', 'placeholder' => 'Ingrese el correo de acceso']) !!}
                     @error('email')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>

@@ -1,5 +1,5 @@
 <div id="sidebar" class="active">
-    <div class="sidebar-wrapper active">
+    <div class="sidebar-wrapper active" style="padding-bottom:100px">
         <div class="toggler">
             <a href="#" class="sidebar-hide d-xl-none d-flex justify-content-end px-5" style="font-size: 2rem"><i
                     class="bi bi-x bi-middle"></i></a>
@@ -53,7 +53,7 @@
         </div>
 
         <div class="sidebar-menu">
-            <ul class="menu">
+            <ul class="menu" style="margin-bottom:40px">
                 @role('admin')
                     <li class="sidebar-title">Administrador</li>
                     <li class="sidebar-item has-sub {{ request()->is('admin') ? 'active' : '' }}">
@@ -63,7 +63,7 @@
                             <span>Administrador</span>
                         </a>
 
-                        <ul class="submenu">
+                        <ul class="submenu" >
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.organization.index') }}">
@@ -147,6 +147,31 @@
                             </li>
                         </ul>
                     </li>
+
+                    <li class="sidebar-item has-sub">
+                        <a href="#" class='sidebar-link'>
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            <span>Altas y bajas </span>
+                        </a>
+                        <ul class="submenu ">
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('rh.stadistics') }}">
+                                    <span>Estadisticas</span>
+                                </a>
+                            </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('rh.postulants') }}">
+                                    <span>Generar alta</span>
+                                </a>
+                            </li>
+
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('rh.dropUser') }}">
+                                    <span>Generar baja</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 @endrole('rh')
                 <li class="sidebar-title">Menu</li>
                 <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
@@ -179,6 +204,14 @@
                         <span>Organigrama</span>
                     </a>
                 </li>
+
+                <li class="sidebar-item {{request()->is('reservation.creative') ? 'active' : '' }}">
+                    <a href="{{ route('reservation.creative') }}" class='sidebar-link'>
+                        <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                        <span>Reserva de la sala recreativa</span>
+                    </a>
+                </li>
+
                 @if (!auth()->user()->hasRole('becario'))
                     <li class="sidebar-item  has-sub {{ request()->is('request') ? 'active' : '' }}">
                         <a href="{{ route('request.index') }}" class='sidebar-link'>

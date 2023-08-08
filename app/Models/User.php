@@ -85,6 +85,11 @@ class User extends Authenticatable
         return $this->hasMany(Vacations::class, 'users_id')->where('period', '<>', 3);
     }
 
+    public function vacationsComplete()
+    {
+        return $this->hasMany(Vacations::class, 'users_id');
+    }
+
     public function directory()
     {
         return $this->hasMany(Directory::class, 'user_id');
@@ -107,5 +112,17 @@ class User extends Authenticatable
     public function daysSelected()
     {
         return $this->hasMany(RequestCalendar::class, 'users_id')->where('requests_id', null);
+    }
+
+    public function userDownMotive()
+    {
+        return $this->hasOne(UserDownMotive::class, 'user_id');
+
+    }
+
+    public function userDetails()
+    {
+        return $this->hasOne(UserDetails::class, 'user_id');
+
     }
 }
