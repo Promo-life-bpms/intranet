@@ -765,5 +765,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Director General PL',
             'department_id' => 12
         ]);
+
+        
+        $this->call(CategoriaSoporteSeeder::class);
     }
 }

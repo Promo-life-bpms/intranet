@@ -84,7 +84,7 @@ class PublicationsController extends Controller
                 }
             }
 
-            
+
             $publication_notification = new FirebaseNotificationController();
             $publication_notification->publication(auth()->user()->name,$content );
 

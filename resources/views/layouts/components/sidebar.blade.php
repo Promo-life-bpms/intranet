@@ -321,6 +321,56 @@
                         <span>Accesos</span>
                     </a>
                 </li>
+
+                <li class="sidebar-item has-sub {{ request()->is('soporte') ? 'active' : '' }}">
+                    <a href="#" class='sidebar-link'>
+                        <i class="fa fa-wrench" aria-hidden="true"></i>
+                        <span>Soporte</span>
+                    </a>
+                     <ul class="submenu ">
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{route('soporte')}}">
+                                <span>Pedir Soporte
+                                </span>
+                            </a>
+                        </li>
+                        @role('systems')
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{route('admin')}}">
+                                <span>Admin Soporte</span>
+                            </a>
+                        </li>
+
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('solucion') }}">
+                                <span>Soporte Solucion</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a class="dropdown-item" href="{{ route('estadisticas') }}">
+                                <span>Estadísticas</span>
+                            </a>
+                        </li>
+                        @endrole
+                    </ul>
+                </li>
+
+
+                {{-- <li class="sidebar-item {{ request()->is('folder') ? 'active' : '' }}">
+                    <a href="{{ route('folder') }}" class='sidebar-link'>
+                        <i class="fa fa-folder-open" aria-hidden="true"></i>
+                        <span>Carpetas</span>
+                    </a>
+                </li> --}}
+
+                {{-- <li class="sidebar-item {{ request()->is('work') ? 'active' : '' }}">
+                    <a href="{{ route('work') }}" class='sidebar-link'>
+                        <i class="fa fa-trello" aria-hidden="true"></i>
+                        <span>Trello</span>
+                    </a>
+                </li> --}}
+
+
                 <!-- <li class="sidebar-item  {{ request()->is('users') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-grid-fill"></i>
