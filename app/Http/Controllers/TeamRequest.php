@@ -191,6 +191,7 @@ class TeamRequest extends Controller
             ]);
 
         $userId = auth()->user()->id;
+        $user = auth()->user();
         
         // if($statusValue === 1 && $userId === 6){
         // $name = auth()->user()->name;
@@ -205,7 +206,24 @@ class TeamRequest extends Controller
         // $DTI = User::where('id', 127)->first();
         // $DTI->notify(new notificacionSistemas($Sistemas, $name));
         // }
-        
+
+        if($user->id === 31){
+            $newStatusApproval = '';
+
+            if($statusValue === 1){
+                $newStatusApproval = '1';
+            }elseif($statusValue === 2){
+                $newStatusApproval = '2';
+            }
+
+            DB::table('request_for_systems_and_communications_services')
+            ->where('id', intval($request->id))
+            ->update([
+                'status_approvals' => $newStatusApproval
+            ]);
+
+            
+        }
         return redirect()->back()->with('success', '¡Solicitud Actualizada Exitosamente!');
     }
 }
