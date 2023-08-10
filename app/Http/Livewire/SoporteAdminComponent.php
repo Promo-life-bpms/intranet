@@ -20,8 +20,6 @@ class SoporteAdminComponent extends Component
     public function mount()
     {
 
-      
-
     }
 
 
