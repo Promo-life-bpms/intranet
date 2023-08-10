@@ -242,12 +242,9 @@ class ReservationController extends Controller
         if ($request->reservation == 'Sí') {
             $users = User::all();
             foreach ($users as $user) {
-                if ($user->id == 32) {
                     $nombre = User::where('id', $user->id)->pluck('name')->first();
                     $user->notify(new NotificacionReservaMasiva($name, $nombre, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                                 $diaFin, $LFin, $HoraFin ));
-                    break;
-                }
             }
             //Por el momento esta con mi usuario para poner todos solo se debe colocar 
             // $topic = "/topics/PUBLICACIONES";
@@ -498,12 +495,9 @@ class ReservationController extends Controller
         if ($request->reservation == 'Sí') {
             $users = User::all();
             foreach ($users as $user) {
-                if ($user->id == 32) {
                     $nombre = User::where('id', $user->id)->pluck('name')->first();
                     $user->notify(new NotificacionReservaMasivaEdit($name, $nombre, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                                 $diaFin, $LFin, $HoraFin ));
-                    break;
-                }
             }
             //Por el momento esta con mi usuario para poner todos solo se debe colocar 
             // $topic = "/topics/PUBLICACIONES";
