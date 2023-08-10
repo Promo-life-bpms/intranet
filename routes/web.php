@@ -227,15 +227,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/providers/import/store', [ProviderController::class, 'store_import'])->name('providers.storeImport');
 
     //soporte
-    Route::prefix('soporte')->group(function () {
+    Route::prefix('support')->group(function () {
         Route::get('/', [SoporteController::class, 'index'])->name('soporte');
         Route::get('/create', [SoporteController::class, 'create'])->name('soporte.create');
         Route::get('/store', [SoporteController::class, 'store'])->name('soporte.store');
-        Route::get('/solucion', [SoporteController::class, 'solucion'])->middleware('role:systems')->name('solucion');
+        Route::get('/solution', [SoporteController::class, 'solucion'])->middleware('role:systems')->name('solucion');
         Route::get('/admin', [SoporteController::class, 'admin'])->middleware('role:systems')->name('admin');
-        Route::get('/estadisticas', [SoporteController::class, 'estadisticas'])->name('estadisticas');
+        Route::get('/statistics', [SoporteController::class, 'estadisticas'])->name('estadisticas');
         Route::post('editor/image_upload',[SoporteController::class,'upload'])->name('upload');
-        Route::post('/estadisticas/filter/',[SoporteController::class,'filterTicket'])->name('filter.estadisticas');
+        Route::post('/statistics/filter/',[SoporteController::class,'filterTicket'])->name('filter.estadisticas');
+       
     });
 
 

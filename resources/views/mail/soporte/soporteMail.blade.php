@@ -11,7 +11,7 @@
 
 **Fecha** : {{$data['tiempo']}}
 
-@component('mail::button', ['url' => 'http://intranet.test/soporte/solucion', 'color' => 'red'])
+@component('mail::button', ['url' => 'https://intranet.promolife.lat/soporte/solucion', 'color' => 'red'])
     Ver Ticket
 @endcomponent
 @endcomponent
