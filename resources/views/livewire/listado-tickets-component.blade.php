@@ -316,7 +316,7 @@
                             </div>
                             <hr>
                             <p><span class="fw-bold ">Solución:</span></p>
-                            <div class="text-center container">
+                            <div class="container">
                                 @if ($ticket_solucion)
                                 @foreach ($ticket_solucion->solution as $solucion)
                                 {!! $solucion->description !!}

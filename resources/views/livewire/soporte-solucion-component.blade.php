@@ -1023,17 +1023,14 @@
 
         });
 
-        window.addEventListener('message', () => {
+        window.addEventListener('message_suppport', () => {
             Swal.fire({
                 icon: 'success',
                 title: 'mensaje enviado correctamente',
                 showConfirmButton: false,
                 timer: 1500
-            })
-
-            // $('#ModalAgregar').modal('hide')
+            })            
             ckeEditorMensaje.setData("");
-
         });
 
         window.addEventListener('reasignacion', () => {
