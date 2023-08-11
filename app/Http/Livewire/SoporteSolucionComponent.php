@@ -167,10 +167,11 @@ class SoporteSolucionComponent extends Component
         ];
 
         $usuario->notify(new MessageSoporteSolutionNotification($messageNotification));
-        $this->dispatchBrowserEvent('message');
         $support_message= new FirebaseNotificationController();
         $support_message->supportMessageUser(auth()->user()->name,$ticket->name,$usuario->id);
+        $this->dispatchBrowserEvent('message_support');
     }
+
 
     public function reasignar()
     {
