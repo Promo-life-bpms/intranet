@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Soporte\Categoria;
+use App\Models\Soporte\UsuariosSoporte;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laratrust\Traits\LaratrustUserTrait;
+use PhpOffice\PhpSpreadsheet\Calculation\Category;
+use PhpParser\Node\Stmt\Return_;
+use App\Models\Soporte\Ticket;
 
 class User extends Authenticatable
 {
@@ -114,6 +119,25 @@ class User extends Authenticatable
         return $this->hasMany(RequestCalendar::class, 'users_id')->where('requests_id', null);
     }
 
+    //Relacionar el usuario para traer los roles
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
+    }
+
+    public function asignacionCategoria()
+    {
+        return $this->belongsToMany(Categoria::class, 'soporte_usuarios_soporte', "users_id", 'categorias_id');
+    }
+
+    //para traer los tickets relacionados con el usuario
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class,'user_id');
+    }
+
+
+
     public function userDownMotive()
     {
         return $this->hasOne(UserDownMotive::class, 'user_id');
@@ -125,4 +149,5 @@ class User extends Authenticatable
         return $this->hasOne(UserDetails::class, 'user_id');
 
     }
+
 }
