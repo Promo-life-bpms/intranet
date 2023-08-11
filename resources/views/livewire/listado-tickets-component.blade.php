@@ -260,8 +260,8 @@
                                             class="badge bg-info text-dark">{{ $prioridad }}</span></span></p>
                             @endif
 
-                            @if ($especial)
-                                @if ($especial == '24:00:00')
+                            @if ($especial)                                                 
+                                    @if ($especial == '24:00:00')
                                     <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
                                         class="badge bg-info text-dark">1 día</span></span></p>
                                     @elseif ($especial == '48:00:00')
@@ -276,20 +276,53 @@
                                     @elseif ($especial == '120:00:00')
                                     <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
                                         class="badge bg-info text-dark">5 días</span></span></p>
+                                        @elseif ($especial == '01:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                            class="badge bg-info text-dark">1 hora</span></span></p>
+                                        @elseif ($especial == '02:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                            class="badge bg-info text-dark">2 horas</span></span></p>
+                                        @elseif ($especial == '03:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                            class="badge bg-info text-dark">3 horas</span></span></p>
+                                        @elseif ($especial == '04:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                            class="badge bg-info text-dark">4 horas</span></span></p>
+                                      @elseif ($especial == '05:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                        class="badge bg-info text-dark">4 horas</span></span></p>
+                                        @elseif ($especial == '06:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                        class="badge bg-info text-dark">6 horas</span></span></p>
+                                        @elseif ($especial == '07:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                         class="badge bg-info text-dark">7 horas</span></span></p>
+                                        @elseif ($especial == '08:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                        class="badge bg-info text-dark">8 horas</span></span></p>
+                                        @elseif ($especial == '09:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                        class="badge bg-info text-dark">9 horas</span></span></p>
                                 @endif
                             @endif
 
                             <p><span class="fw-bold">Descripción :</span></p>
-                            <div class="text-mostrar">
-                                <p>{!! $data !!}</p>
+                            <div class="text-mostrar container">
+                                <div class="row">
+                                    <div class="col">                                        
+                                        <p>{!! $data !!}</p>
+                                    </div>
+                                </div>
                             </div>
                             <hr>
                             <p><span class="fw-bold ">Solución:</span></p>
-                            @if ($ticket_solucion)
+                            <div class="text-center container">
+                                @if ($ticket_solucion)
                                 @foreach ($ticket_solucion->solution as $solucion)
-                                    {!! $solucion->description !!}
+                                {!! $solucion->description !!}
                                 @endforeach
-                            @endif
+                                @endif
+                            </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
                             </div>
@@ -409,8 +442,7 @@
                                                         <div class="card">
                                                             <div class="card-body rounded-3  shadow " id="historial">
                                                                 <div class="float-end text-dark">
-                                                                    ({{ $cambio->created_at->diffForHumans() }})</div>
-                                                                {{-- {{$user->name}} --}}
+                                                                    ({{ $cambio->created_at->diffForHumans() }})</div>                                                                
                                                                 <h4 class="card-title text-green">{{ $cambio->type }}
                                                                     de Soporte</h4>
                                                                 <p class="card-text text-dark">{!! $cambio->data !!}
@@ -735,7 +767,6 @@
                                 <div wire:ignore class="mb-3 text-input-mensaje">
                                     <textarea wire:model="mensaje" id="editorMensaje" cols="20" rows="3" class="form-control"
                                         name="mensaje"></textarea>
-
                                 </div>
                                 @error('mensaje')
                                     <p class="text-danger fz-1 font-bold m-0">{{ $message }}</p>
