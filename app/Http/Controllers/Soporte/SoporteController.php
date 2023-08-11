@@ -278,7 +278,7 @@ class SoporteController extends Controller
             });
             $img->save($thumbnailpath);
 
-            //para mover el tamaño en el que guarda y muestra la imagen para enviar
+           //para mover el tamaño en el que guarda y muestra la imagen para enviar
             echo json_encode([
                 'default' => asset('storage/uploads/' . $filenametostore),
                 '700' => asset('storage/uploads/thumbnail/' . $filenametostore)
