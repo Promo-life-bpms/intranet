@@ -122,6 +122,7 @@ class TeamRequest extends Controller
         $request_team->observations = $request->observations;
         $request_team->status = 0;
         $request_team->status_approvals = $request->status_approvals;
+        $request_team->final_status = $request->final_status;
         $request_team->save();
 
         $Recursos =User::where('id', 6)->first()->name;
@@ -220,10 +221,41 @@ class TeamRequest extends Controller
             ->where('id', intval($request->id))
             ->update([
                 'status_approvals' => $newStatusApproval
-            ]);
-
-            
+            ]);            
         }
+
+        if($user->id === 127){
+            $newfinalStatus = '';
+
+            if($statusValue === 1){
+                $newfinalStatus = '1';
+            }elseif($statusValue === 2){
+                $newfinalStatus = '2';
+            }
+
+            DB::table('request_for_systems_and_communications_services')
+            ->where('id', intval($request->id))
+            ->update([
+                'final_status' => $newfinalStatus
+            ]);            
+        }
+
+        if($user->id === 6){
+            $status = '';
+
+            if($statusValue === 1){
+                $status = '1';
+            }elseif($statusValue === 2){
+                $status = '2';
+            }
+
+            DB::table('request_for_systems_and_communications_services')
+            ->where('id', intval($request->id))
+            ->update([
+                'status' => $status
+            ]);            
+        }
+
         return redirect()->back()->with('success', '¡Solicitud Actualizada Exitosamente!');
     }
 }

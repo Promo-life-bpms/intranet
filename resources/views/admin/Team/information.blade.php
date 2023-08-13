@@ -171,70 +171,25 @@
                     </div>
                 </div>
 
-                {{-- @if($user->id === 6)
-                    @if($information_request->status === 0)
-                        {!! Form::submit('ACTUALIZAR RH', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizarRH']) !!}
-                    @elseif($information_request->status === 1 || $information_request->status === 2)
-                        {!! Form::submit('ACTUALIZAR RH', ['class' => 'btnCreate mt-4 btn-disabled', 'id' => 'btnActualizarRH', 'disabled']) !!}
-                    @endif
-                @elseif($user->id === 31)
-                    @if($information_request->status_approvals !== 1 && $information_request->status_approvals !== 2)
-                        {!! Form::submit('ACTUALIZAR TI', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizarTI']) !!}
+                    {{-- @if ($user->id === 6 && ($information_request->status !== 1 && $information_request->status !== 2) || ($user->id === 31 && ($information_request->status_approvals !== 1 && $information_request->status_approvals !== 2)) || ($user->id === 127 && ($information_request->final_status !== 1 && $information_request->final_status !== 2)))
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
+                    @elseif ($user->id === 6 && $information_request->status_approvals === 2 )
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}    
                     @else
-                        {!! Form::submit('ACTUALIZAR RH', ['class' => 'btnCreate mt-4 btn-disabled', 'id' => 'btnActualizarRH', 'disabled']) !!}
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar', 'disabled' => 'disabled', 'style' => 'opacity: 0.5;']) !!}
+                    @endif --}}
+
+                    @if($user->id===6 && $information_request->status===0)
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
+                    @elseif($user->id===31 && ($information_request->status_approvals!==1 && $information_request->status_approvals!==2))
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
+                    @elseif($user->id===6 && ($information_request->status_approvals===2 && $information_request->status!==1))
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
+                    @elseif($user->id===31 && ($information_request->status===1))
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
+                    @else
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar', 'disabled' => 'disabled', 'style' => 'opacity: 0.5;']) !!}
                     @endif
-                @endif --}}
-
-                {{-- @if(($user->id === 6 && $information_request->status === 0) ||
-                    ($user->id === 31 && $information_request->status_approvals !== 1 && $information_request->status_approvals !== 2))
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                @else
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4 btn-disabled', 'id' => 'btnActualizar', 'disabled']) !!}
-                @endif --}}
-
-                {{-- @if (($user->id === 6 && $information_request->status === 0) ||
-                    ($user->id === 31 && ($information_request->status_approvals !== 1 && $information_request->status_approvals !== 2)))
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                @elseif ($user->id === 6 && $information_request->status_approvals === 2)
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                @else
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4 btn-disabled', 'id' => 'btnActualizar', 'disabled']) !!}
-                @endif --}}
-
-                @if ($user->id === 6 && $information_request->status === 0)
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                @elseif ($user->id === 6 && $information_request->status !== 2)
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4 btn-disabled', 'id' => 'btnActualizar', 'disabled']) !!}
-                @elseif ($user->id === 31 && ($information_request->status_approvals !== 1 && $information_request->status_approvals !== 2))
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                @elseif ($user->id === 6 && $information_request->status_approvals === 2)
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                @elseif ($user->id === 31 && $information_request->status_approvals === 2)
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4 btn-disabled', 'id' => 'btnActualizar', 'disabled']) !!}
-                @else
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4 btn-disabled', 'id' => 'btnActualizar', 'disabled']) !!}
-                @endif
-
-            
-
-           
-       
-
-            
-
-                
-
-
-
-
-               
-
-            
-
-
-
-
-
 
 
         {!! Form::close()!!}
@@ -263,10 +218,7 @@
     margin-left: 10px;
 }
 
-.btn-disabled {
-    opacity: 0.6;
-    pointer-events: none;
-}
+
 
 </style>
 @endsection
