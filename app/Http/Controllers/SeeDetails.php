@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SeeDetails as ModelsSeeDetails;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SeeDetails extends Controller

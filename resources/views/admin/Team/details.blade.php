@@ -18,24 +18,19 @@
     <div class="col-md-6">
         <h5 class="title mt-3" style="font-size: 15px;">Estado</h5>
             <p class="description" style="font-size: 15px;">
-                @if ($see_details->status == 'Aprobada')
+                @if ($see_details->status == 1)
                             <div class="text-left">
-                                <span class="badge bg-success">{{$see_details->status}}</span>
+                                <span class="badge bg-success">Aprobada</span>
                             </div>
 
-                            @elseif($see_details->status == 'Rechazada')
+                            @elseif($see_details->status == 2)
                             <div class="text-left">
-                                <span class="badge bg-danger">{{ $see_details->status }}</span>
+                                <span class="badge bg-danger">Rechazada</span>
                             </div>
 
-                            @elseif($see_details->status == 'Preaprobada')
+                            @elseif($see_details->status == 0)
                             <div class="text-left">
-                                <span class="badge bg-warning text-dark">{{ $see_details->status }}</span>
-                            </div>
-
-                            @elseif($see_details->status == 'Solicitud Creada')
-                            <div class="text-left">
-                                <span class="badge bg-info text-dark">{{ $see_details->status }}</span>
+                                <span class="badge bg-info text-dark">Solicitud Creada</span>
                             </div>
                 @endif
             </p>

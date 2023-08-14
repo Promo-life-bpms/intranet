@@ -27,24 +27,19 @@
                                     <td style="text-align: center">{{$dato->id}}</td>
                                     <td style="text-align: center">{{$dato->user->name.' '. $dato->user->lastname}}</td>
                                     <td>
-                                        @if ($dato->status == 'Aprobada')
+                                        @if ($dato->status == 1)
                                             <div class="d-flex justify-content-center">
-                                                <span class="badge bg-success">{{$dato->status}}</span>
+                                                <span class="badge bg-success">Aprobada</span>
                                             </div>
             
-                                            @elseif($dato->status == 'Rechazada')
+                                            @elseif($dato->status == 2)
                                             <div class="d-flex justify-content-center">
-                                                <span class="badge bg-danger">{{ $dato->status }}</span>
+                                                <span class="badge bg-danger">Rechazada</span>
                                             </div>
             
-                                            @elseif($dato->status == 'Preaprobada')
+                                            @elseif($dato->status == 0)
                                             <div class="d-flex justify-content-center">
-                                                <span class="badge bg-warning text-dark">{{ $dato->status }}</span>
-                                            </div>
-            
-                                            @elseif($dato->status == 'Solicitud Creada')
-                                            <div class="d-flex justify-content-center">
-                                                <span class="badge bg-info text-dark">{{ $dato->status }}</span>
+                                                <span class="badge bg-info text-dark">Solicitud Creada</span>
                                             </div>
                                         @endif
                                     </td>

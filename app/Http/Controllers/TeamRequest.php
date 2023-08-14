@@ -255,7 +255,6 @@ class TeamRequest extends Controller
                 'status' => $status
             ]);            
         }
-
         return redirect()->back()->with('success', '¡Solicitud Actualizada Exitosamente!');
     }
 }

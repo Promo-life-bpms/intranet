@@ -24,7 +24,7 @@
                     <p class="description" style="font-size: 15px;">
                         @if ($information_request->status == 1)
                                     <div class="text-left">
-                                        <span class="badge bg-success">Aprobada por {{$approval_person}}</span>
+                                        <span class="badge bg-success">Aprobada</span>
                                     </div>
     
                                     @elseif($information_request->status == 2)
