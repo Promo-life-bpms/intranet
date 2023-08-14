@@ -24,7 +24,7 @@
                     <p class="description" style="font-size: 15px;">
                         @if ($information_request->status == 1)
                                     <div class="text-left">
-                                        <span class="badge bg-success">Aprobada</span>
+                                        <span class="badge bg-success">Aprobada por {{$approval_person}}</span>
                                     </div>
     
                                     @elseif($information_request->status == 2)
@@ -35,9 +35,7 @@
                                     @elseif($information_request->status == 0)
                                     <div class="text-left">
                                         <span class="badge bg-info text-dark">Solicitud Creada</span>
-                                    </div>
-
-                                    
+                                    </div>         
                         @endif
                     </p>
             </div>
@@ -171,27 +169,17 @@
                     </div>
                 </div>
 
-                    {{-- @if ($user->id === 6 && ($information_request->status !== 1 && $information_request->status !== 2) || ($user->id === 31 && ($information_request->status_approvals !== 1 && $information_request->status_approvals !== 2)) || ($user->id === 127 && ($information_request->final_status !== 1 && $information_request->final_status !== 2)))
+                    @if($user->id === 6 && $information_request->status === 0)
                         {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                    @elseif ($user->id === 6 && $information_request->status_approvals === 2 )
-                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}    
-                    @else
-                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar', 'disabled' => 'disabled', 'style' => 'opacity: 0.5;']) !!}
-                    @endif --}}
-
-                    @if($user->id===6 && $information_request->status===0)
+                    @elseif($user->id === 31 && ($information_request->status_approvals !== 1 && $information_request->status_approvals !== 2))
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
+                    @elseif($user->id === 6 && ($information_request->status_approvals === 2 && $information_request->status !== 1))
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
+                    @elseif($user->id === 31 && ($information_request->status === 1 && $information_request->status_approvals !== 1))
+                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
+                    @elseif($user->id === 127 && ($information_request->final_status !== 1 && $information_request->final_status !==2))
                     {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                    @elseif($user->id===31 && ($information_request->status_approvals!==1 && $information_request->status_approvals!==2))
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                    @elseif($user->id===6 && ($information_request->status_approvals===2 && $information_request->status!==1))
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                    @elseif($user->id===31 && ($information_request->status===1))
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                    @else
-                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar', 'disabled' => 'disabled', 'style' => 'opacity: 0.5;']) !!}
                     @endif
-
-
         {!! Form::close()!!}
     </form>
 </div>

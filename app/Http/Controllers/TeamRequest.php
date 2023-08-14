@@ -83,8 +83,8 @@ class TeamRequest extends Controller
             'signature_or_telephone_contact_numer' => json_encode([$request->signature_or_telephone_contact_numer, $request->signature_or_telephone_contact_numer5, $request->signature_or_telephone_contact_numer4, $request->signature_or_telephone_contact_numer3, $request->signature_or_telephone_contact_numer2, $request->signature_or_telephone_contact_numer1])
         ]);
 
-        $DRH = User::where('id', 6)->first()->name;
-        $name = auth()->user()->name;
+        // $DRH = User::where('id', 6)->first()->name;
+        // $name = auth()->user()->name;
         $request_team = new ModelsTeamRequest();
         $request_team->type_of_user = $request->type_of_user;
         $request_team->name = $request->jefe_directo_id;
@@ -125,9 +125,9 @@ class TeamRequest extends Controller
         $request_team->final_status = $request->final_status;
         $request_team->save();
 
-        $Recursos =User::where('id', 6)->first()->name;
-        $DRH = User::where('id', 6)->first();
-        $DRH->notify(new notificacionCorreo($Recursos, $name));
+        // $Recursos =User::where('id', 6)->first()->name;
+        // $DRH = User::where('id', 6)->first();
+        // $DRH->notify(new notificacionCorreo($Recursos, $name));
 
         DB::commit();
         return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!', 'data', $data);
