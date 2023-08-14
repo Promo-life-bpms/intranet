@@ -162,7 +162,11 @@ class TeamRequest extends Controller
 
         $user = auth()->user();
 
-        return view('admin.Team.information', compact('information_request', 'user'));
+        $user6 = User::find(6)->name;
+        $user31 = User::find(31)->name;
+        $user127 = User::find(127)->name;
+
+        return view('admin.Team.information', compact('information_request', 'user', 'user6', 'user31', 'user127'));
     }
 
     public function update(Request $request)
@@ -184,15 +188,18 @@ class TeamRequest extends Controller
         }
     
         $statusValue = $statusMapping[$request->status];
+        $userName = auth()->user()->name;
     
         DB::table('request_for_systems_and_communications_services')
             ->where('id', intval($request->id))
             ->update([
-                'status' => $statusValue
+                'status' => $statusValue,
+                'approval_person' => $userName
             ]);
 
         $userId = auth()->user()->id;
         $user = auth()->user();
+        
         
         // if($statusValue === 1 && $userId === 6){
         // $name = auth()->user()->name;
@@ -220,7 +227,8 @@ class TeamRequest extends Controller
             DB::table('request_for_systems_and_communications_services')
             ->where('id', intval($request->id))
             ->update([
-                'status_approvals' => $newStatusApproval
+                'status_approvals' => $newStatusApproval,
+                'approval_person' => $userName
             ]);            
         }
 
@@ -236,7 +244,8 @@ class TeamRequest extends Controller
             DB::table('request_for_systems_and_communications_services')
             ->where('id', intval($request->id))
             ->update([
-                'final_status' => $newfinalStatus
+                'final_status' => $newfinalStatus,
+                'approval_person' => $userName
             ]);            
         }
 
@@ -255,6 +264,9 @@ class TeamRequest extends Controller
                 'status' => $status
             ]);            
         }
+
+
+
         return redirect()->back()->with('success', '¡Solicitud Actualizada Exitosamente!');
     }
 }
