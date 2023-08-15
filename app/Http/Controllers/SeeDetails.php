@@ -10,9 +10,8 @@ class SeeDetails extends Controller
 {
     public function details($id)
     {
-       
-        $see_details = ModelsSeeDetails::find($id);
         /*dd($see_details);*/
+        $see_details = ModelsSeeDetails::find($id);
         $userName = auth()->user()->name;
         return view('admin.Team.details', compact('see_details'));
     }

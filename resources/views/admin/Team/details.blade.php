@@ -75,7 +75,6 @@
     <div class="col-md-6">
         <h5 class="title mt-3" style="font-size: 15px;">Cuenta(s) de Correo(s) Requerida(s)</h5>
             <p class="description" style="font-size: 15px;">
-
                 @foreach ($datos=json_decode($see_details->email, true)  as $index => $elemento )
                     @if($elemento !== null)
                         Correo:{{$index + 1}}: {{$elemento}}<br>
@@ -87,13 +86,11 @@
     <div class="col-md-6">
         <h5 class="title mt-3" style="font-size: 15px;">Firma: Número(s) de Contacto Telefónico</h5>
             <p class="description" style="font-size: 15px;">
-
                 @foreach ($datos=json_decode($see_details->signature_or_telephone_contact_numer, true) as $index => $elemento)
                     @if ($elemento!==null)
                         Firma:{{$index + 1}}: {{$elemento}}<br>
                     @endif
                 @endforeach
-    
             </p>
     </div>
 
@@ -115,7 +112,6 @@
                 Solid Works: {{$see_details->solid_works}}<br>
                 Autocad: {{$see_details->autocad}}<br>
                 ODOO: {{$see_details->odoo}}<br>
-                
                 @foreach ($perfiles = json_decode($see_details->work_profile_in_odoo, true) as $indexa => $profile)
                     @foreach ($usuarios = json_decode($see_details->odoo_users, true) as $index => $element)
                         @if ($index == $indexa && ($element !== null || $profile !== null))
@@ -128,7 +124,6 @@
                         @endif
                     @endforeach
                 @endforeach          
-
                 Otros: {{$see_details->others}}<br>
             </p>
     </div>
@@ -171,5 +166,5 @@
     .right-column {
         margin-left: 10px;
     }
-    </style>
-    @endsection
+</style>
+@endsection

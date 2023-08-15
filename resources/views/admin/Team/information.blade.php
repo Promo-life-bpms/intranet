@@ -171,17 +171,17 @@
                     </div>
                 </div>
 
-                    @if($user->id === 6 && $information_request->status === 0)
-                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                    @elseif($user->id === 31 && ($information_request->status_approvals !== 1 && $information_request->status_approvals !== 2))
-                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                    @elseif($user->id === 6 && ($information_request->status_approvals === 2 && $information_request->status !== 1))
-                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                    @elseif($user->id === 31 && ($information_request->status === 1 && $information_request->status_approvals !== 1))
-                        {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                    @elseif($user->id === 127 && ($information_request->final_status !== 1 && $information_request->final_status !==2))
+                @if($user->id === 6 && $information_request->status === 0)
                     {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
-                    @endif
+                @elseif($user->id === 31 && ($information_request->status_approvals !== 1 && $information_request->status_approvals !== 2))
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
+                @elseif($user->id === 6 && ($information_request->status_approvals === 2 && $information_request->status !== 1))
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
+                @elseif($user->id === 31 && ($information_request->status === 1 && $information_request->status_approvals !== 1))
+                    {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
+                @elseif($user->id === 127 && ($information_request->final_status !== 1 && $information_request->final_status !==2))
+                {!! Form::submit('ACTUALIZAR', ['class' => 'btnCreate mt-4', 'id' => 'btnActualizar']) !!}
+                @endif
         {!! Form::close()!!}
     </form>
 </div>
@@ -207,8 +207,5 @@
 .right-column {
     margin-left: 10px;
 }
-
-
-
 </style>
 @endsection
