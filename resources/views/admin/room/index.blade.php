@@ -557,6 +557,15 @@
                                                 {{($evento->description.'.')}}
                                             </p>
                                         </div>
+
+                                        <div class="modal-body text-left">
+                                            <p class="m-0">
+                                                <b>Se solicitó grabar la reunión: </b>
+                                                {{($evento->engrave.'.')}}
+                                                <br>
+                                                <b>Nota: Sí deseas grabar tu reunión debes crear tu reservación con cinco días de anticipación.</b>
+                                            </p>
+                                        </div>
                                         
                                         <div class="modal-body text-left">
                                             <p class="m-0">
