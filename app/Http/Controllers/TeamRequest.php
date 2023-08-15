@@ -83,8 +83,8 @@ class TeamRequest extends Controller
             'signature_or_telephone_contact_numer' => json_encode([$request->signature_or_telephone_contact_numer, $request->signature_or_telephone_contact_numer5, $request->signature_or_telephone_contact_numer4, $request->signature_or_telephone_contact_numer3, $request->signature_or_telephone_contact_numer2, $request->signature_or_telephone_contact_numer1])
         ]);
 
-        // $DRH = User::where('id', 6)->first()->name;
-        // $name = auth()->user()->name;
+        $DRH = User::where('id', 6)->first()->name;
+        $name = auth()->user()->name;
         $request_team = new ModelsTeamRequest();
         $request_team->type_of_user = $request->type_of_user;
         $request_team->name = $request->jefe_directo_id;
@@ -124,10 +124,9 @@ class TeamRequest extends Controller
         $request_team->status_approvals = $request->status_approvals;
         $request_team->final_status = $request->final_status;
         $request_team->save();
-
-        // $Recursos =User::where('id', 6)->first()->name;
-        // $DRH = User::where('id', 6)->first();
-        // $DRH->notify(new notificacionCorreo($Recursos, $name));
+        $Recursos =User::where('id', 6)->first()->name;
+        $DRH = User::where('id', 6)->first();
+        $DRH->notify(new notificacionCorreo($Recursos, $name));
 
         DB::commit();
         return redirect()->route('team.request')->with('success', '¡Solicitud Creada Exitosamente!', 'data', $data);
@@ -166,7 +165,9 @@ class TeamRequest extends Controller
         $user31 = User::find(31)->name;
         $user127 = User::find(127)->name;
 
-        return view('admin.Team.information', compact('information_request', 'user', 'user6', 'user31', 'user127'));
+        $allowedUserIds = [6,31,127];
+
+        return view('admin.Team.information', compact('information_request', 'user', 'user6', 'user31', 'user127', 'allowedUserIds'));
     }
 
     public function update(Request $request)
@@ -201,19 +202,19 @@ class TeamRequest extends Controller
         $user = auth()->user();
         
         
-        // if($statusValue === 1 && $userId === 6){
-        // $name = auth()->user()->name;
-        // $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
-        // $DRH = User::where('id', 31)->first();
-        // $DRH->notify(new  notificacionAprobaciones($Tecnologia_e_innovacion, $name));
-        // }
+        if($statusValue === 1 && $userId === 6){
+        $name = auth()->user()->name;
+        $Tecnologia_e_innovacion = User::where('id', 31)->first()->name;
+        $DRH = User::where('id', 31)->first();
+        $DRH->notify(new  notificacionAprobaciones($Tecnologia_e_innovacion, $name));
+        }
 
-        // if($statusValue === 1 && $userId === 31) {
-        // $name = auth()->user()->name;
-        // $Sistemas = User::where('id', 127)->first()->name;
-        // $DTI = User::where('id', 127)->first();
-        // $DTI->notify(new notificacionSistemas($Sistemas, $name));
-        // }
+        if($statusValue === 1 && $userId === 31) {
+        $name = auth()->user()->name;
+        $Sistemas = User::where('id', 127)->first()->name;
+        $DTI = User::where('id', 127)->first();
+        $DTI->notify(new notificacionSistemas($Sistemas, $name));
+        }
 
         if($user->id === 31){
             $newStatusApproval = '';
@@ -264,9 +265,6 @@ class TeamRequest extends Controller
                 'status' => $status
             ]);            
         }
-
-
-
         return redirect()->back()->with('success', '¡Solicitud Actualizada Exitosamente!');
     }
 }

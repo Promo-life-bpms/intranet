@@ -160,7 +160,9 @@
                 <input type="text" value="{{$information_request->id}}" name="id" hidden>
                 <div class="col-md-3">
                     <div class="form-group">
+                        @if(in_array($user->id, $allowedUserIds))
                             {!! Form::select('status', ['Aprobada'=> 'Aprobada', 'Rechazada'=> 'Rechazada'], 'Estado', ['class' => 'form-control','placeholder' => 'Seleccione el cambio de estado']) !!}
+                        @endif
                             @error('status')
                             <small>
                                 <font color="red"> *Este campo es requerido* </font>
