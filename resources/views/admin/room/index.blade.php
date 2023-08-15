@@ -294,24 +294,24 @@
                                         }
                                     @endphp
                 
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    {!! Form::label('reservation', 'Reservar toda la sala:') !!}
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                {!! Form::label('reservation', 'Reservar toda la sala:') !!}
+                                                <br>
+                                                {{ Form::radio('reservation', 'Sí', $evento->reservation == 'Sí', ['id' => 'reservation_si']) }}
+                                                {{ Form::label('reservation_si', 'Sí') }}
+                                                {{ Form::radio('reservation', 'No', $evento->reservation == 'No', ['id' => 'reservation_no']) }}
+                                                {{ Form::label('reservation_no', 'No') }}
+                                                @error('reservation')
+                                                    <small>
+                                                        <font color="red"> *Este campo es requerido* </font>
+                                                    </small>
                                                     <br>
-                                                    {{ Form::radio('reservation', 'Sí', $evento->reservation == 'Sí', ['id' => 'reservation_si']) }}
-                                                    {{ Form::label('reservation_si', 'Sí') }}
-                                                    {{ Form::radio('reservation', 'No', $evento->reservation == 'No', ['id' => 'reservation_no']) }}
-                                                    {{ Form::label('reservation_no', 'No') }}
-                                                    @error('reservation')
-                                                        <small>
-                                                            <font color="red"> *Este campo es requerido* </font>
-                                                        </small>
-                                                        <br>
-                                                    @enderror
-                                                </div>
+                                                @enderror
                                             </div>
                                         </div>
+                                    </div>
                                         
 
                                     <div class="row" id="sala_{{$evento->id}}" @if ($evento->reservation == 'Sí') style="display: none;" @endif>
@@ -445,23 +445,23 @@
                                             <div class="form-group">
                                                 {!! Form::label('engrave', 'Grabar reunión:') !!}
                                                 <br>
-                                                {{ Form::checkbox('engrave', 'Sí', $evento->engrave == 'Sí', ['class' => 'single-checkbox', 'id' => 'engrave-checkbox']) }}
+                                                {{ Form::radio('engrave', 'Sí', $evento->engrave == 'Sí', ['class' => 'single-checkbox', 'id' => 'engrave-checkbox-' . $evento->id, 'onclick' => 'toggleGrabarDiv(' . $evento->id . ')']) }}         
                                                 {{ Form::label('engrave_si', 'Sí') }}
                                                 <br>
-                                                {{ Form::checkbox('engrave', 'No', $evento->engrave == 'No', ['class' => 'single-checkbox', 'id' => 'engrave-checkbox']) }}
+                                                {{ Form::radio('engrave', 'No', $evento->engrave == 'No', ['class' => 'single-checkbox', 'id' => 'engrave-checkbox-no-' . $evento->id, 'onclick' => 'toggleGrabarDiv(' . $evento->id . ')']) }}
                                                 {{ Form::label('engrave_no', 'No') }}
                                                 @error('engrave')
-                                                <small>
-                                                    <font color="red"> *Este campo es requerido* </font>
-                                                </small>
-                                                <br>
+                                                    <small>
+                                                        <font color="red"> *Este campo es requerido* </font>
+                                                    </small>
+                                                    <br>
                                                 @enderror
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div id="grabar" style="display: {{ $evento->engrave == 'Sí' ? 'block' : 'none' }}">
-                                    Sí deseas que tu reunión se grabe debes crear tu reervación con cinco días de anticipación.
+                                    <div id="grabar-{{ $evento->id }}" style="display: {{ $evento->engrave == 'Sí' ? 'block' : 'none' }}">
+                                        Sí deseas que tu reunión se grabe debes crear tu reserva con cinco días de anticipación.
                                     </div>
 
                                     <div class="row">
@@ -1041,21 +1041,17 @@
             }
         });
     </script>
-    
-    <script>
-    const engraveCheck = document.getElementById('engrave-checkbox');
-    const holaDiv = document.getElementById('grabar');
+     
+    @foreach($eventos as $evento)
+        <script>
+            function toggleGrabarDiv(eventId) {
+                var engraveCheckbox = document.getElementById('engrave-checkbox-' + eventId);
+                var grabarDiv = document.getElementById('grabar-' + eventId);
+                grabarDiv.style.display = engraveCheckbox.checked ? 'block' : 'none';
+            }
+        </script>
+    @endforeach
 
-    engraveCheck.addEventListener('change', function() {
-        if (this.checked) {
-            holaDiv.style.display = 'block';
-        } else {
-            holaDiv.style.display = 'none';
-        }
-    });
-    </script>
-
-    
     <script>
         jQuery(document).ready(function() {
             // Controlador de eventos para los inputs de cantidad de sillas
