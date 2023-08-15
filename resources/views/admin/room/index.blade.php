@@ -47,7 +47,7 @@
                             </div>
                         
                             @php
-                                $esGerente = false;
+                                $esGerente = true;
                                 foreach ($gerentes as $gerente) {
                                     if ($gerente == auth()->user()->id) {
                                         $esGerente = true;
@@ -209,10 +209,10 @@
                                     <div class="form-group">
                                         {!! Form::label('engrave', 'Grabar reunión:') !!}
                                         <br>
-                                        {{ Form::checkbox('engrave', 'Sí', null, ['class' => 'single-checkbox']) }}
+                                        {{ Form::checkbox('engrave', 'Sí', null, ['class' => 'single-checkbox', 'id' => 'engrave-checkbox']) }}
                                         {{ Form::label('engrave_si', 'Sí') }}
                                         <br>
-                                        {{ Form::checkbox('engrave', 'No', null, ['class' => 'single-checkbox']) }}
+                                        {{ Form::checkbox('engrave', 'No', null, ['class' => 'single-checkbox', 'id' => 'no-engrave-checkbox']) }}
                                         {{ Form::label('engrave_no', 'No') }}
                                         @error('engrave')
                                             <small>
@@ -223,6 +223,11 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            <div id="mensaje-div" style="display: none;">
+                                Recuerda que sí deseas que se grabe tu reunión debes crear la reservación con cinco días de anticipación.
+                            </div>
+
 
                             <div class="row">
                                 <div class="col-md-12">
@@ -280,7 +285,7 @@
                                     </div>
 
                                     @php 
-                                        $esGerente = false;
+                                        $esGerente = true;
                                         foreach ($gerentes as $gerente) {
                                             if ($gerente == auth()->user()->id) {
                                                 $esGerente = true;
@@ -289,7 +294,6 @@
                                         }
                                     @endphp
                 
-                                    @if ($gerente == auth()->user()->id)
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
@@ -308,9 +312,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @else
-                                            {{ Form::hidden('reservation', 'No') }}
-                                    @endif
+                                        
 
                                     <div class="row" id="sala_{{$evento->id}}" @if ($evento->reservation == 'Sí') style="display: none;" @endif>
                                         <div class="col-md-12">
@@ -443,19 +445,23 @@
                                             <div class="form-group">
                                                 {!! Form::label('engrave', 'Grabar reunión:') !!}
                                                 <br>
-                                                {{ Form::checkbox('engrave', 'Sí', $evento->engrave == 'Sí', ['class' => 'single-checkbox']) }}
+                                                {{ Form::checkbox('engrave', 'Sí', $evento->engrave == 'Sí', ['class' => 'single-checkbox', 'id' => 'engrave-checkbox']) }}
                                                 {{ Form::label('engrave_si', 'Sí') }}
                                                 <br>
-                                                {{ Form::checkbox('engrave', 'No', $evento->engrave == 'No', ['class' => 'single-checkbox']) }}
+                                                {{ Form::checkbox('engrave', 'No', $evento->engrave == 'No', ['class' => 'single-checkbox', 'id' => 'engrave-checkbox']) }}
                                                 {{ Form::label('engrave_no', 'No') }}
                                                 @error('engrave')
-                                                    <small>
-                                                        <font color="red"> *Este campo es requerido* </font>
-                                                    </small>
-                                                    <br>
+                                                <small>
+                                                    <font color="red"> *Este campo es requerido* </font>
+                                                </small>
+                                                <br>
                                                 @enderror
                                             </div>
                                         </div>
+                                    </div>
+
+                                    <div id="grabar" style="display: {{ $evento->engrave == 'Sí' ? 'block' : 'none' }}">
+                                        Recuerda que sí deseas que se grabe tu reunión debes crear la reservación con cinco días de anticipación.
                                     </div>
 
                                     <div class="row">
@@ -557,7 +563,9 @@
                                                 <b>Reservo toda la sala:</b> {{($evento->reservation.'.')}}
                                                 <br>
                                                 @if($evento->reservation=='Sí')
-                                                <b>Nota: Solo los gerentes pueden reservar la sala completa, esto incluye la sala y los cubículos.</b>
+                                                <b>Nota:En este horario no podrás acceder ni reservar la sala recreativa, esto incluye a los cubículos y solo el 
+                                                        personal autorizado puede acceder a ella.
+                                                </b>
                                                 @endif
                                             </p>
                                         </div>
@@ -955,13 +963,16 @@
                 // Manejar el evento de cambio de los radios "Sí" y "No"
                 $('input[name="reservation"]').change(function() {
                     if ($(this).val() === 'Sí') {
-                        $('#mensaje_{{$evento->id}}').show(); // Mostrar el disclaimer si se selecciona "Sí"
+                        $('#mensaje_{{$evento->id}}').show();
                     } else {
-                        $('#mensaje_{{$evento->id}}').hide(); // Ocultar el disclaimer si se selecciona "No"
+                        $('#mensaje_{{$evento->id}}').hide();
                     }
                 });
+            
                 // Inicializar la visibilidad del disclaimer en función del estado inicial del radio seleccionado
-                if ($('input[name="reservation"]:checked').val() === 'Sí') {
+                var initialReservation = "{{ $evento->reservation }}"; // Obtener el valor de reservation desde PHP
+        
+                if (initialReservation === 'Sí') {
                     $('#mensaje_{{$evento->id}}').show();
                 } else {
                     $('#mensaje_{{$evento->id}}').hide();
@@ -969,6 +980,7 @@
             });
         </script>
     @endforeach
+
 
     <script>
         jQuery(document).ready(function() {
@@ -1007,6 +1019,42 @@
             });
         });
     </script>
+
+    <script>
+        const engraveCheckbox = document.getElementById('engrave-checkbox');
+        const noEngraveCheckbox = document.getElementById('no-engrave-checkbox');
+        const mensajeDiv = document.getElementById('mensaje-div');
+        
+        engraveCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                mensajeDiv.style.display = 'block';
+            } else if (!noEngraveCheckbox.checked) {
+                mensajeDiv.style.display = 'none';
+            }
+        });
+        
+        noEngraveCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                mensajeDiv.style.display = 'none';
+            } else if (engraveCheckbox.checked) {
+                mensajeDiv.style.display = 'block';
+            }
+        });
+    </script>
+    
+    <script>
+    const engraveCheck = document.getElementById('engrave-checkbox');
+    const holaDiv = document.getElementById('grabar');
+
+    engraveCheck.addEventListener('change', function() {
+        if (this.checked) {
+            holaDiv.style.display = 'block';
+        } else {
+            holaDiv.style.display = 'none';
+        }
+    });
+    </script>
+
     
     <script>
         jQuery(document).ready(function() {
@@ -1041,15 +1089,28 @@
             // Controlador de eventos para los inputs de cantidad de sillas
             jQuery('input[id^="proyec-"]').on('input', function() {
                 var eventId = jQuery(this).attr('id').split('-')[1];
-                var cantidadSillas = parseInt(jQuery(this).val());
-                if(cantidadSillas < 0){
-                    // Muestra el mensaje para el evento correspondiente
-                    jQuery('#mensajesi-' + eventId).show();
-                } else {
-                    // Oculta el mensaje para el evento correspondiente
+                var cantidadProyectores = parseInt(jQuery(this).val());
+            
+                if (cantidadProyectores >= 0) {
+                    // Oculta el mensaje para el evento correspondiente si la cantidad es mayor a 0
                     jQuery('#mensajesi-' + eventId).hide();
+                } else {
+                    // Muestra el mensaje para el evento correspondiente si la cantidad es menor o igual a 0
+                    jQuery('#mensajesi-' + eventId).show();
                 }
-                
+            });
+
+            // Oculta el mensaje para los eventos que tienen proyector >= 0 al cargar la página
+            jQuery('input[id^="proyec-"]').each(function() {
+                var eventId = jQuery(this).attr('id').split('-')[1];
+                var cantidadProyectores = parseInt(jQuery(this).val());
+            
+                if (cantidadProyectores >= 0) {
+                    jQuery('#mensajesi-' + eventId).hide();
+                } else {
+                    // Muestra el mensaje para el evento correspondiente si la cantidad es menor o igual a 0
+                    jQuery('#mensajesi-' + eventId).show();
+                }
             });
         });
     </script>

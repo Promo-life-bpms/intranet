@@ -229,6 +229,8 @@ class ReservationController extends Controller
                                               ->pluck('id')
                                               ->toArray();
             }
+        
+        //CORREO PARA LOS INVITADOS DE LA REUNIÓN//
         foreach ($invitadosIds as $invitado) {
             $user = User::where('id', $invitado)->first();
             if ($user) {
@@ -239,10 +241,15 @@ class ReservationController extends Controller
         }
 
         //CORREOS MASIVOS CUANDO UN GERENTE RESERVA TODA LA SALA//
+        //Por el momento puse esos ids para hacer pruebas es el ID de Federico, Tomas  y Ana Miriam.//
         if ($request->reservation == 'Sí') {
-            $users = User::all();
+            $userIdsToNotify = [31, 32, 9];
+            $users = User::whereIn('id', $userIdsToNotify)
+                         ->where('status', 1)
+                         ->get();
+
             foreach ($users as $user) {
-                    $nombre = User::where('id', $user->id)->pluck('name')->first();
+                    $nombre = $user->name;
                     $user->notify(new NotificacionReservaMasiva($name, $nombre, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                                 $diaFin, $LFin, $HoraFin ));
             }
@@ -492,10 +499,15 @@ class ReservationController extends Controller
         }
 
         ///SON PARA LOS CORREOS MASIVOS///
+        //Por el momento puse esos ids para hacer pruebas es el ID de Federico, Tomas  y Ana Miriam.//
         if ($request->reservation == 'Sí') {
-            $users = User::all();
+            $userIdsToNotify = [31, 32, 9];
+            $users = User::whereIn('id', $userIdsToNotify)
+                         ->where('status', 1)
+                         ->get();
+
             foreach ($users as $user) {
-                    $nombre = User::where('id', $user->id)->pluck('name')->first();
+                    $nombre = $user->name;
                     $user->notify(new NotificacionReservaMasivaEdit($name, $nombre, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                                 $diaFin, $LFin, $HoraFin ));
             }
