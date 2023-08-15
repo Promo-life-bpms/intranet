@@ -461,7 +461,7 @@
                                     </div>
 
                                     <div id="grabar" style="display: {{ $evento->engrave == 'Sí' ? 'block' : 'none' }}">
-                                        Recuerda que sí deseas que se grabe tu reunión debes crear la reservación con cinco días de anticipación.
+                                    Sí deseas que tu reunión se grabe debes crear tu reervación con cinco días de anticipación.
                                     </div>
 
                                     <div class="row">

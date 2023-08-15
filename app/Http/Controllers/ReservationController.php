@@ -243,10 +243,7 @@ class ReservationController extends Controller
         //CORREOS MASIVOS CUANDO UN GERENTE RESERVA TODA LA SALA//
         //Por el momento puse esos ids para hacer pruebas es el ID de Federico, Tomas  y Ana Miriam.//
         if ($request->reservation == 'Sí') {
-            $userIdsToNotify = [31, 32, 9];
-            $users = User::whereIn('id', $userIdsToNotify)
-                         ->where('status', 1)
-                         ->get();
+            $users = User::where('status', 1)->get();
 
             foreach ($users as $user) {
                     $nombre = $user->name;
@@ -501,11 +498,7 @@ class ReservationController extends Controller
         ///SON PARA LOS CORREOS MASIVOS///
         //Por el momento puse esos ids para hacer pruebas es el ID de Federico, Tomas  y Ana Miriam.//
         if ($request->reservation == 'Sí') {
-            $userIdsToNotify = [31, 32, 9];
-            $users = User::whereIn('id', $userIdsToNotify)
-                         ->where('status', 1)
-                         ->get();
-
+            $users = User::where('status', 1)->get();
             foreach ($users as $user) {
                     $nombre = $user->name;
                     $user->notify(new NotificacionReservaMasivaEdit($name, $nombre, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
