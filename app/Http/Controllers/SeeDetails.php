@@ -13,6 +13,7 @@ class SeeDetails extends Controller
        
         $see_details = ModelsSeeDetails::find($id);
         /*dd($see_details);*/
+        $userName = auth()->user()->name;
         return view('admin.Team.details', compact('see_details'));
     }
 }

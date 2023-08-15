@@ -20,12 +20,12 @@
             <p class="description" style="font-size: 15px;">
                 @if ($see_details->status == 1)
                             <div class="text-left">
-                                <span class="badge bg-success">Aprobada</span>
+                                <span class="badge bg-success">Aprobada por {{$see_details->approval_person}}</span>
                             </div>
 
                             @elseif($see_details->status == 2)
                             <div class="text-left">
-                                <span class="badge bg-danger">Rechazada</span>
+                                <span class="badge bg-danger">Rechazada por {{$see_details->approval_person}}</span>
                             </div>
 
                             @elseif($see_details->status == 0)
