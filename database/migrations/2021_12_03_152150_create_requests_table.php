@@ -21,6 +21,7 @@ class CreateRequestsTable extends Migration
             $table->string('payment');
             $table->time('start')->nullable();
             $table->time('end')->nullable();
+            $table->string('opcion')->nullable();
             $table->string('reason');
             $table->foreignId('direct_manager_id')->references('id')->on('employees');
             $table->string('direct_manager_status');

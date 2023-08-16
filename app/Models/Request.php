@@ -16,6 +16,7 @@ class Request extends Model
         'payment',
         'start',
         'end',
+        'opcion',
         'reason',
         'reveal_id',
         'direct_manager_id',

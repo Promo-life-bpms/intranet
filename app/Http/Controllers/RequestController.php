@@ -125,12 +125,25 @@ class RequestController extends Controller
             return back()->with('message', 'No puedes crear solicitudes por que no agregaste dias en el calendario');
         }
         $payment = '';
-        if ($request->type_request == "Solicitar vacaciones") {
+        /*  if ($request->type_request == "Solicitar vacaciones") {
             $payment = 'A cuenta de vacaciones';
         } else {
             $payment = 'Descontar Tiempo/Dia';
+        } */
+        switch ($request->type_request) {
+            case 'Solicitar vacaciones':
+                $payment = 'A cuenta de vacaciones';
+                break;
+            case 'Salir durante la jornada':
+                $payment = 'Descontar Tiempo/Dia';
+                break;
+            case 'Faltar a sus labores':
+                $payment = 'Descontar Tiempo/Dia';
+                break;
+            default:
+                $payment = 'Permiso especial';
+                break;
         }
-
         $user = auth()->user();
 
         $req = new ModelsRequest();
@@ -140,6 +153,7 @@ class RequestController extends Controller
         $req->reason = $request->reason;
         $req->start = $request->start;
         $req->end = $request->end;
+        $req->opcion = $request->opcion;
         $req->reveal_id = $request->reveal;
 
         $req->direct_manager_id = $user->employee->jefe_directo_id;
@@ -152,15 +166,15 @@ class RequestController extends Controller
         $user->daysSelected()->update(['requests_id' => $req->id]);
 
         // Enviar notificacion
-        $communique_notification = new FirebaseNotificationController();
+        /*   $communique_notification = new FirebaseNotificationController();
         $communique_notification->createRequest(strval($user->id));
         $communique_notification->sendToManager(strval($req->direct_manager_id));
 
 
         $userReceiver = Employee::find($req->direct_manager_id)->user;
         event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
-        $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
- 
+        $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname)); */
+
         return redirect()->action([RequestController::class, 'index']);
     }
 
@@ -262,6 +276,7 @@ class RequestController extends Controller
         $requests = ModelsRequest::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->whereRaw('DATE(created_at) >= ?', [$request->start])->whereRaw('DATE(created_at) <= ?', [$request->end])->get();
 
         $start = $request->start;
+
         $end = $request->end;
 
         return view('request.filter', compact('requests', 'requestDays', 'start', 'end'));

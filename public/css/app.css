@@ -442,6 +442,10 @@ body {
   background-color: #fff;
 }
 
+.padding-b100 {
+  padding-bottom: 100px;
+}
+
 .like-btn {
   display: inline-block;
   cursor: pointer;
