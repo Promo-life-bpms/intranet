@@ -11,8 +11,10 @@ class Historial extends Model
     public $table = "soporte_historial";
     protected $fillable = [
         'ticket_id',
-        'date',
+        'user_id',
         'type',
         'data',
     ];
+
+    
 }

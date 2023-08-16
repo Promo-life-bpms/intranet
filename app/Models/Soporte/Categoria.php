@@ -2,6 +2,7 @@
 
 namespace App\Models\Soporte;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,5 +16,10 @@ class Categoria extends Model
         'status',
         'slug',
     ];
+
+    public function usuarios()
+    {
+        return $this->belongsToMany(User::class, 'soporte_usuarios_soporte',  'categorias_id', 'users_id');
+    }
 
 }

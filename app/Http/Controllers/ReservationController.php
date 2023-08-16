@@ -73,15 +73,18 @@ class ReservationController extends Controller
     public function Positions($id)
     {
         $dep = Department::find($id);
-        $positions = Position::all()->where("department_id", $id)->pluck("name", "id");
+        $positions = Position::where("department_id", $id)->pluck("name", "id");
         $data = $dep->positions;
         $users = [];
+
         foreach ($data as $dat) {
             foreach ($dat->getEmployees as $emp) {
-                $users["{$emp->user->id}"] = $emp->user->name . ' ' . $emp->user->lastname;
+                if ($emp->user->status == 1) {  
+                    $users["{$emp->user->id}"] = $emp->user->name . ' ' . $emp->user->lastname;
+                }
             }
         }
-        return response()->json(['positions' => $positions, 'users' => $users,]);
+        return response()->json(['positions' => $positions, 'users' => $users]);
     }
     /////////////////////////////////////////////FUNCIÓN CREAR EVENTO//////////////////////////////////////////////////
     public function store(Request $request)
@@ -178,7 +181,7 @@ class ReservationController extends Controller
                                               ->toArray();
             }
         $invitados = implode(',' . ' ', $invitadosIds);
-
+        
         //UNA VEZ QUE YA PASO LAS VALIDACIÓNES CREA EL EVENETO//
         $evento = new Reservation();
         $evento->title = $request->title;
@@ -226,6 +229,8 @@ class ReservationController extends Controller
                                               ->pluck('id')
                                               ->toArray();
             }
+        
+        //CORREO PARA LOS INVITADOS DE LA REUNIÓN//
         foreach ($invitadosIds as $invitado) {
             $user = User::where('id', $invitado)->first();
             if ($user) {
@@ -236,15 +241,14 @@ class ReservationController extends Controller
         }
 
         //CORREOS MASIVOS CUANDO UN GERENTE RESERVA TODA LA SALA//
+        //Por el momento puse esos ids para hacer pruebas es el ID de Federico, Tomas  y Ana Miriam.//
         if ($request->reservation == 'Sí') {
-            $users = User::all();
+            $users = User::where('status', 1)->get();
+
             foreach ($users as $user) {
-                if ($user->id == 32) {
-                    $nombre = User::where('id', $user->id)->pluck('name')->first();
+                    $nombre = $user->name;
                     $user->notify(new NotificacionReservaMasiva($name, $nombre, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                                 $diaFin, $LFin, $HoraFin ));
-                    break;
-                }
             }
             //Por el momento esta con mi usuario para poner todos solo se debe colocar 
             // $topic = "/topics/PUBLICACIONES";
@@ -492,15 +496,13 @@ class ReservationController extends Controller
         }
 
         ///SON PARA LOS CORREOS MASIVOS///
+        //Por el momento puse esos ids para hacer pruebas es el ID de Federico, Tomas  y Ana Miriam.//
         if ($request->reservation == 'Sí') {
-            $users = User::all();
+            $users = User::where('status', 1)->get();
             foreach ($users as $user) {
-                if ($user->id == 32) {
-                    $nombre = User::where('id', $user->id)->pluck('name')->first();
+                    $nombre = $user->name;
                     $user->notify(new NotificacionReservaMasivaEdit($name, $nombre, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                                 $diaFin, $LFin, $HoraFin ));
-                    break;
-                }
             }
             //Por el momento esta con mi usuario para poner todos solo se debe colocar 
             // $topic = "/topics/PUBLICACIONES";

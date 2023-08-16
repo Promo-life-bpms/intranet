@@ -15,13 +15,15 @@ class CreateTickets extends Migration
     {
         Schema::create('soporte_tickets', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('category_id');
-            $table->string('image');
-            $table->string('create');
-            $table->string('data');
-            $table->string('status_id');
-            $table->timestamps();
+            $table->string('name');            
+            $table->mediumText('data');
+            $table->timestamps();           
+            $table->foreignId('category_id')->references('id')->on('soporte_categorias');
+            $table->foreignId('status_id')->references('id')->on('soporte_status');
+            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('support_id')->references('id')->on('users');
+            $table->foreignId('priority_id')->references('id')->on('soporte_tiempos');
+            $table->time('special')->nullable();
         });
     }
 
@@ -35,3 +37,4 @@ class CreateTickets extends Migration
         Schema::dropIfExists('tickets');
     }
 }
+

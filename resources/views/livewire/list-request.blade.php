@@ -141,7 +141,7 @@
                         .then((response) => {
                             console.log(response);
                             if (response == 1) {
-                                Swal.fire('La solicitud de ha rechazado correctamente', '', 'success')
+                                Swal.fire('La solicitud se ha rechazado correctamente', '', 'success')
                             }
                         }, function() {
                             // one or more failed

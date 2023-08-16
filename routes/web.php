@@ -29,6 +29,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FirebaseNotificationController;
 use App\Http\Controllers\HumanResources\RhController;
 use App\Http\Controllers\FullCalenderController;
+
 use App\Http\Controllers\HumanResources\ScanDocumentsController;
 use App\Http\Controllers\HumanResources\UserDetails;
 use App\Http\Controllers\LikeController;
@@ -37,12 +38,15 @@ use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PruebaController;
 use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\Soporte\SoporteController;
+use App\Http\Controllers\SoporteSolucionController;
+use App\Http\Livewire\SoporteSolucionComponent;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Systems\DevicesController;
 use App\Models\Message;
 use App\Models\RequestCalendar;
 use App\Models\User;
 use App\Models\Vacations;
+
 use Illuminate\Support\Facades\Auth;
 
 
@@ -101,7 +105,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     // Permisos y Vacaciones
 
-    // Aniversarios y cumpleaños
+    // Aniversarios y cumpleaños0
     Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
     Route::get('/aniversary/birthday', [AniversaryController::class, 'birthday'])->name('birthday');
 
@@ -221,6 +225,20 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::resource('providers', ProviderController::class);
     Route::get('/providers/import/create', [ProviderController::class, 'create_import'])->name('providers.createImport');
     Route::post('/providers/import/store', [ProviderController::class, 'store_import'])->name('providers.storeImport');
+
+    //soporte
+    Route::prefix('support')->group(function () {
+        Route::get('/', [SoporteController::class, 'index'])->name('soporte');
+        Route::get('/create', [SoporteController::class, 'create'])->name('soporte.create');
+        Route::get('/store', [SoporteController::class, 'store'])->name('soporte.store');
+        Route::get('/solution', [SoporteController::class, 'solucion'])->middleware('role:systems')->name('solucion');
+        Route::get('/admin', [SoporteController::class, 'admin'])->middleware('role:systems')->name('admin');
+        Route::get('/statistics', [SoporteController::class, 'estadisticas'])->name('estadisticas');
+        Route::post('editor/image_upload',[SoporteController::class,'upload'])->name('upload');
+        Route::post('/statistics/filter/',[SoporteController::class,'filterTicket'])->name('filter.estadisticas');
+
+    });
+
 
     //Sistemas
     Route::get('/systems/devices', [DevicesController::class, 'index'])->name('systems.devices');

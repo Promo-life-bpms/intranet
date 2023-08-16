@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCategorias extends Migration
+class CreateSoporteTiemposTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateCategorias extends Migration
      */
     public function up()
     {
-        Schema::create('soporte_categorias', function (Blueprint $table) {
+        Schema::create('soporte_tiempos', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('status');
-            $table->string('slug');
+            $table->string('priority');
+            $table->time('time');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateCategorias extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categorias');
+        Schema::dropIfExists('soporte_tiempos');
     }
 }
