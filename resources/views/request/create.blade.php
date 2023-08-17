@@ -95,7 +95,7 @@
                     {{ session('message') }}
                 </div>
             @endif
-            {!! Form::open(['route' => 'request.store']) !!}
+            {!! Form::open(['route' => 'request.store', 'enctype' => 'multipart/form-data']) !!}
             <div class="row">
                 <div class=" col-md-6">
 
@@ -203,7 +203,7 @@
                             <div class="mb-2 form-group">
 
                                 {!! Form::label('file', 'Anexa tu justificante: (opcional)') !!}
-                                {!! Form::file('file', ['class' => 'form-control']) !!}
+                                {!! Form::file('file[]', ['class' => 'form-control', 'multiple' => 'multiple'] ) !!}
 
                                 @error('reason')
                                     <small>

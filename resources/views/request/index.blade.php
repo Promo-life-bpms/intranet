@@ -116,8 +116,16 @@
                                                         {{ $request->reveal->name . ' ' . $request->reveal->lastname }}
                                                     </p>
                                                 @endif
+                                                @if ($request->doc_permiso !== null)
+                                                    <b>Archivo</b>
+                                                    <a href="{{ $request->doc_permiso }}"
+                                                        target>{{ basename($request->doc_permiso) }}</a>
+                                                @else
+                                                    <b>No hay archivo cargado</b>
+                                                @endif
                                             </div>
                                             <div class="modal-footer">
+
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Cerrar</button>
                                             </div>

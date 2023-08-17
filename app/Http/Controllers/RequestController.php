@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
 
 class RequestController extends Controller
 {
@@ -145,7 +146,6 @@ class RequestController extends Controller
                 break;
         }
         $user = auth()->user();
-
         $req = new ModelsRequest();
         $req->employee_id = $user->employee->id;
         $req->type_request = $request->type_request;
@@ -154,11 +154,30 @@ class RequestController extends Controller
         $req->start = $request->start;
         $req->end = $request->end;
         $req->opcion = $request->opcion;
+        $req->doc_permiso = $request->imagenes;
         $req->reveal_id = $request->reveal;
 
         $req->direct_manager_id = $user->employee->jefe_directo_id;
         $req->direct_manager_status = "Pendiente";
         $req->human_resources_status = "Pendiente";
+
+        $imagenes = $request->file('file');
+        if ($imagenes == null) {
+            $imagenes = null;
+        } else {
+            $namesImagenes = [];
+            foreach ($imagenes as $imagen) {
+
+                $n = $imagen->getClientOriginalName();
+                $nombreImagen = time() . ' ' . Str::slug($n);
+                $imagen->move(public_path('storage/images/'), $nombreImagen);
+                array_push($namesImagenes, 'storage/images/' . $nombreImagen);
+            }  # code...
+        }
+
+
+
+        $req->doc_permiso = $imagen;
 
         $req->save();
 

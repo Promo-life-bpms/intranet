@@ -23,6 +23,7 @@ class CreateRequestsTable extends Migration
             $table->time('end')->nullable();
             $table->string('opcion')->nullable();
             $table->string('reason');
+            $table->text('doc_permiso')->nullable();
             $table->foreignId('direct_manager_id')->references('id')->on('employees');
             $table->string('direct_manager_status');
             $table->string('human_resources_status');

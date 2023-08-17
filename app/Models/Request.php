@@ -18,6 +18,7 @@ class Request extends Model
         'end',
         'opcion',
         'reason',
+        'doc_permiso',
         'reveal_id',
         'direct_manager_id',
         'direct_manager_status',
