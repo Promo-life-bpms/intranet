@@ -89,5 +89,10 @@ class CategoriaSoporteSeeder extends Seeder
             'slug'=>Str::slug('Mantenimiento','-')
         ]);
 
+        DB::table('soporte_categorias')->insert([
+            'name'=>'Reuniones en Zoom',
+            'status'=>true,
+            'slug'=>Str::slug('Mantenimiento','-')
+        ]);
     }
 }

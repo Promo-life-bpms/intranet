@@ -20,7 +20,7 @@ class SoporteSolucionComponent extends Component
 {
     use WithPagination;
     public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes, $usuario_reasignacion, $tiempo, $estrellas,
-        $comments, $prioridad, $time_special,$especial,$prioridadID;
+        $comments, $prioridad, $time_special,$especial,$prioridadID,$nombre,$apellido;
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['ocultarBoton'];
 
@@ -33,11 +33,9 @@ class SoporteSolucionComponent extends Component
             ->where('roles.name', '=', 'systems')
             ->select('users.*')
             ->get();
-
         $ticketReasignado = Ticket::where('support_id', auth()->user()->id)->get();
         return view('livewire.soporte-solucion-component', [
-
-            'solucion' => Ticket::where('support_id', auth()->user()->id)->simplePaginate(15)
+            'solucion' => Ticket::where('support_id', auth()->user()->id)->orderBy('created_at', 'desc')->simplePaginate(15)
         ], compact('users', 'ticketReasignado', 'priority'));
     }
     public function enProceso($id)
@@ -65,17 +63,19 @@ class SoporteSolucionComponent extends Component
         ];
 
         $user->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
-        $support_solution= new FirebaseNotificationController();
-        $support_solution->supportInProgress($actualizar_status->name,$user->id);
+        // $support_solution= new FirebaseNotificationController();
+        // $support_solution->supportInProgress($actualizar_status->name,$user->id);
     }
     public function verTicket($id)
     {
-        $ticket = Ticket::find($id);
+        $ticket = Ticket::find($id);        
         $this->prioridadID=$ticket->priority_id;
         $this->especial=$ticket->special;
         $this->estrellas = $ticket->score;
         $this->comments = $ticket->score;
         $this->prioridad = $ticket->priority->time;
+        $this->nombre=$ticket->user->name;
+        $this->apellido=$ticket->user->lastname;
         $this->usuario = $ticket->user;
         $this->status = $ticket;
         $this->historial = $ticket;
@@ -167,11 +167,10 @@ class SoporteSolucionComponent extends Component
         ];
 
         $usuario->notify(new MessageSoporteSolutionNotification($messageNotification));
-        $support_message= new FirebaseNotificationController();
-        $support_message->supportMessageUser(auth()->user()->name,$ticket->name,$usuario->id);
-        $this->dispatchBrowserEvent('message_support');
+        // $support_message= new FirebaseNotificationController();
+        // $support_message->supportMessageUser(auth()->user()->name,$ticket->name,$usuario->id);
+        $this->dispatchBrowserEvent('mensaje_soporte');
     }
-
 
     public function reasignar()
     {
@@ -209,6 +208,8 @@ class SoporteSolucionComponent extends Component
         $support_reassignment= new FirebaseNotificationController();
         $support_reassignment->supportReassignment(auth()->user()->name,$user->id);
     }
+
+    
     public function time()
     {
 

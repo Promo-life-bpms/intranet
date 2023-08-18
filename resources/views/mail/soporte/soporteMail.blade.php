@@ -5,8 +5,8 @@
 
 **Categoría** : {{$data['categoria']}}
 
-**Usuario** : {{ $data['name'] }}
-
+**Usuario** : {{ $data['name'] }} {{ $data['lastname'] }}
+{{-- Falta agregar el departamento --}}
 **Problema** : {{ $data['name_ticket'] }}
 
 **Fecha** : {{$data['tiempo']}}

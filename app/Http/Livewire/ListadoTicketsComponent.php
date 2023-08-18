@@ -85,6 +85,7 @@ class ListadoTicketsComponent extends Component
 
         $Notificacion = [
             'name' => auth()->user()->name,
+             'lastname'   => auth()->user()->lastname,
             'email' => auth()->user()->email,
             'name_ticket' => $ticket->name,
             'data' => $ticket->data,
@@ -94,8 +95,8 @@ class ListadoTicketsComponent extends Component
         ];
 
         $usuarioConMenosTickets->notify(new SoporteNotification($Notificacion));
-         $support_notification= new FirebaseNotificationController();
-         $support_notification->supportNotification(auth()->user()->name,$this->name,$usuarioConMenosTickets->id);
+        //  $support_notification= new FirebaseNotificationController();
+        //  $support_notification->supportNotification(auth()->user()->name,$this->name,$usuarioConMenosTickets->id);
 
 
         Historial::create(

@@ -10,6 +10,7 @@
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
+                        <th scope="col">Usuario</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Categoría</th>
                         <th scope="col">Status</th>
@@ -20,6 +21,7 @@
                     @foreach ($solucion as $tickets)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
+                            <td>{{ $tickets->user->name }} {{ $tickets->user->lastname }}</td>
                             <td>{{ $tickets->name }}</td>
                             <td class="col-2">{{ $tickets->category->name }}</td>
                             <td class="col-2">
@@ -39,7 +41,7 @@
                             </td>
                             <td>
                                 @if ($tickets->status_id)
-                                    @if ($tickets->status_id == 4)
+                                    @if ($tickets->status_id === 4)
                                         <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
                                             type="button" class="btn btn-success btn-sm "
                                             wire:click="verTicket({{ $tickets->id }})"><i
@@ -115,7 +117,11 @@
                                 <p><span class="fw-bold ">Problema a resolver :</span> <span
                                         class="">{{ $name }}</span>
                                 </p>
-
+                                
+                                <p><span class="fw-bold ">Usuario :</span> <span
+                                    class=""> {{ $nombre }} {{ $apellido }}</span>
+                                 </p>
+                                
                                 <p><span class="fw-bold ">Categoría :</span> <span
                                         class="">{{ $categoria }}</span></p>
 
@@ -770,7 +776,7 @@
                             id="inputGroupSelect01">
                             <option value="" selected>Seleccionar</option>
                             @foreach ($users as $user)
-                                @if ($user->id !== auth()->user()->id && $user->has('asignacionCategoria') && !$user->asignacionCategoria->isEmpty())
+                                @if ($user->id !== auth()->user()->id)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endif
                             @endforeach
@@ -1023,7 +1029,7 @@
 
         });
 
-        window.addEventListener('message_suppport', () => {
+        window.addEventListener('mensaje_soporte', () => {
             Swal.fire({
                 icon: 'success',
                 title: 'mensaje enviado correctamente',
