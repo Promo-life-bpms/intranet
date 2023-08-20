@@ -31,7 +31,7 @@ class ReasignacionTicketSoporte extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['mail','database'];
     }
 
     /**
@@ -43,10 +43,10 @@ class ReasignacionTicketSoporte extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
-    }
+                    ->markdown('mail.soporte.soporteReasignacionMail',["data"=>$this->data])
+                    ->subject('Te reasignaron un ticket')                                        
+                    ->from(auth()->user()->email);
+    }               
 
     /**
      * Get the array representation of the notification.

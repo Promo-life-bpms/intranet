@@ -1,17 +1,17 @@
 @component('mail::message')
 # ¡Buen día !
 
-## Haz recibido un ticket
+## {{$data['name']}} te ha reasignado un ticket!
 
-**Categoría** : {{$data['categoria']}}
+**Usuario:** {{$data['user_ticket']}}
 
-**Usuario** : {{ $data['name'] }} {{ $data['lastname'] }}
+**Categoria:** {{$data['ticket_category']}}
 
-**Departamento** : {{$data['department']}}
+**Departamento:** {{$data['user_department']}}
 
 **Problema** : {{ $data['name_ticket'] }}
 
-**Fecha** : {{$data['tiempo']}}
+## Revisalo para darle solución.
 
 @component('mail::button', ['url' => 'https://intranet.promolife.lat/support/solution', 'color' => 'red'])
     Ver Ticket

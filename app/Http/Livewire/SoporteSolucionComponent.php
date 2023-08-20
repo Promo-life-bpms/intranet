@@ -20,7 +20,7 @@ class SoporteSolucionComponent extends Component
 {
     use WithPagination;
     public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes, $usuario_reasignacion, $tiempo, $estrellas,
-        $comments, $prioridad, $time_special,$especial,$prioridadID,$nombre,$apellido;
+        $comments, $prioridad, $time_special,$especial,$prioridadID,$nombre,$apellido,$departamento;
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['ocultarBoton'];
 
@@ -34,8 +34,12 @@ class SoporteSolucionComponent extends Component
             ->select('users.*')
             ->get();
         $ticketReasignado = Ticket::where('support_id', auth()->user()->id)->get();
-        return view('livewire.soporte-solucion-component', [
-            'solucion' => Ticket::where('support_id', auth()->user()->id)->orderBy('created_at', 'desc')->simplePaginate(15)
+
+        $all_tickets=Ticket::all();
+        return view('livewire.soporte-solucion-component', 
+        [
+            'solucion' => Ticket::where('support_id', auth()->user()->id)->orderBy('created_at', 'desc')->simplePaginate(15),
+            'all_tickets' => $all_tickets,
         ], compact('users', 'ticketReasignado', 'priority'));
     }
     public function enProceso($id)
@@ -77,6 +81,7 @@ class SoporteSolucionComponent extends Component
         $this->nombre=$ticket->user->name;
         $this->apellido=$ticket->user->lastname;
         $this->usuario = $ticket->user;
+        $this->departamento=$ticket->user->employee->position->department->name;
         $this->status = $ticket;
         $this->historial = $ticket;
         $this->mensaje = $ticket;
@@ -128,8 +133,8 @@ class SoporteSolucionComponent extends Component
 
         $usuario->notify(new SolucionSoporteNotification($solucionNotification));
         $this->dispatchBrowserEvent('ticket_solucion');
-        $support_solution=new FirebaseNotificationController();
-        $support_solution->supportSolution($ticket->name,$usuario->id);
+        // $support_solution=new FirebaseNotificationController();
+        // $support_solution->supportSolution($ticket->name,$usuario->id);
     }
 
 
@@ -175,7 +180,7 @@ class SoporteSolucionComponent extends Component
     public function reasignar()
     {
         $ticket = Ticket::find($this->ticket_id);
-
+        
 
         $this->validate(
             [
@@ -199,14 +204,17 @@ class SoporteSolucionComponent extends Component
 
         $reasignacionTicket = [
             'name' => auth()->user()->name,
+            'user_ticket' => $ticket->user->name,
+            'user_department' =>$ticket->user->employee->position->department->name,
+            'ticket_category' => $ticket->category->name,
             'name_ticket' => $ticket->name,
         ];
 
 
         $user->notify(new ReasignacionTicketSoporte($reasignacionTicket));
         $this->dispatchBrowserEvent('reasignacion');
-        $support_reassignment= new FirebaseNotificationController();
-        $support_reassignment->supportReassignment(auth()->user()->name,$user->id);
+        // $support_reassignment= new FirebaseNotificationController();
+        // $support_reassignment->supportReassignment(auth()->user()->name,$user->id);
     }
 
     

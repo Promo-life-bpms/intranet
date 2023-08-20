@@ -88,6 +88,7 @@ class ListadoTicketsComponent extends Component
              'lastname'   => auth()->user()->lastname,
             'email' => auth()->user()->email,
             'name_ticket' => $ticket->name,
+            'department' => auth()->user()->employee->position->department->name,
             'data' => $ticket->data,
             'tiempo' => $ticket->created_at,
             'categoria' => $category->name,
@@ -160,8 +161,8 @@ class ListadoTicketsComponent extends Component
         ];
 
         $ticketEditar->support->notify(new EditarTicketNotification($notificacionEditar));
-        $support_notification_edit= new FirebaseNotificationController();
-        $support_notification_edit->supportEditNotification(auth()->user()->name,$ticketEditar->name,$ticketEditar->support->id);
+        // $support_notification_edit= new FirebaseNotificationController();
+        // $support_notification_edit->supportEditNotification(auth()->user()->name,$ticketEditar->name,$ticketEditar->support->id);
         $this->name = '';
         $this->categoria = ' ';
         $this->dispatchBrowserEvent('editar');
@@ -197,8 +198,8 @@ class ListadoTicketsComponent extends Component
             ];
 
         $actualizar_status->support->notify(new StatuSoporteFinalizadoNotification($NotificacionStatus));
-        $support_finished= new FirebaseNotificationController();
-        $support_finished->supportFinishedTicket(auth()->user()->name, $actualizar_status->name,$actualizar_status->support->id);
+        // $support_finished= new FirebaseNotificationController();
+        // $support_finished->supportFinishedTicket(auth()->user()->name, $actualizar_status->name,$actualizar_status->support->id);
     }
 
     public function verTicket($id)
@@ -259,8 +260,8 @@ class ListadoTicketsComponent extends Component
         ];
         $ticket->support->notify(new MessageSoporteNotification($notificationMessage));
         $this->dispatchBrowserEvent('Mensaje');
-        $support_message=new FirebaseNotificationController();
-        $support_message->supportMessage(auth()->user()->name, $ticket->name,$ticket->support->id);
+        // $support_message=new FirebaseNotificationController();
+        // $support_message->supportMessage(auth()->user()->name, $ticket->name,$ticket->support->id);
     }
 
     function encuesta()

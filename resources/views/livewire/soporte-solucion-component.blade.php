@@ -17,7 +17,63 @@
                         <th scope="col">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody>   
+                    @if (auth()->user()->id === 127)
+                    
+                    @foreach ($all_tickets as $tickets)
+                        <tr>
+                            <th scope="row">{{ $loop->iteration }}</th>
+                            <td>{{ $tickets->user->name }} {{ $tickets->user->lastname }}</td>
+                            <td>{{ $tickets->name }}</td>
+                            <td class="col-2">{{ $tickets->category->name }}</td>
+                            <td class="col-2">
+                                @if ($tickets->status->name == 'Resuelto')
+                                    <div class="alert-sm alert-success rounded-3" role="alert">
+                                        {{ $tickets->status->name }}</div>
+                                @elseif ($tickets->status->name == 'Creado')
+                                    <div class="alert-sm alert-info rounded-3" role="alert">
+                                        {{ $tickets->status->name }}</div>
+                                @elseif ($tickets->status->name == 'En proceso')
+                                    <div class="alert-sm alert-primary rounded-3" role="alert">
+                                        {{ $tickets->status->name }}</div>
+                                @elseif ($tickets->status->name == 'Ticket Cerrado')
+                                    <div class="alert-sm alert-warning rounded-3" role="alert">
+                                        {{ $tickets->status->name }}</div>
+                                @endif
+                            </td>
+                            <td>
+                                @if ($tickets->status_id)
+                                    @if ($tickets->status_id === 4)
+                                        <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
+                                            type="button" class="btn btn-success btn-sm "
+                                            wire:click="verTicket({{ $tickets->id }})"><i
+                                                class="bi bi-eye"></i></button>
+                                    @else
+                                        <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
+                                            type="button" class="btn btn-success btn-sm "
+                                            wire:click="verTicket({{ $tickets->id }})"><i
+                                                class="bi bi-eye"></i></button>
+
+                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#Modalasignacion"
+                                            wire:click="verTicket({{ $tickets->id }})">
+                                            <i class="bi bi-person-fill"></i>
+                                        </button>
+
+                                        <button id="btnModalPrioridad" type="button" class="btn btn-info btn-sm"
+                                            data-bs-toggle="modal" data-bs-target="#Modalprioridad"
+                                            wire:click="verTicket({{ $tickets->id }})">
+                                            <i class="bi bi-clock"></i>
+                                        </button>
+                                    @endif
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+                    @else
+
                     @foreach ($solucion as $tickets)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
@@ -73,6 +129,7 @@
             <div class="d-flex justify-content-center">
                 {{ $solucion->links() }}
             </div>
+                    @endif                    
         </div>
     </div>
     <div wire:ignore.self class="modal fade" id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -121,7 +178,11 @@
                                 <p><span class="fw-bold ">Usuario :</span> <span
                                     class=""> {{ $nombre }} {{ $apellido }}</span>
                                  </p>
-                                
+                                 
+                                 <p><span class="fw-bold ">Departamento :</span> <span
+                                    class="">{{$departamento}}</span>
+                                 </p>
+
                                 <p><span class="fw-bold ">Categoría :</span> <span
                                         class="">{{ $categoria }}</span></p>
 
