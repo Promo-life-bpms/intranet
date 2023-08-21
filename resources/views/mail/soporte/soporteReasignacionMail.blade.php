@@ -1,9 +1,9 @@
 @component('mail::message')
 # ¡Buen día !
 
-## {{$data['name']}} te ha reasignado un ticket!
+## {{$data['name']}} {{$data['user_lastname']}} te ha reasignado un ticket!
 
-**Usuario:** {{$data['user_ticket']}}
+**Usuario:** {{$data['user_ticket']}} {{$data['user_lastname_ticket']}} 
 
 **Categoria:** {{$data['ticket_category']}}
 

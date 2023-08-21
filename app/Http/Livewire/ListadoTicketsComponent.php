@@ -85,7 +85,7 @@ class ListadoTicketsComponent extends Component
 
         $Notificacion = [
             'name' => auth()->user()->name,
-             'lastname'   => auth()->user()->lastname,
+            'lastname'   => auth()->user()->lastname,
             'email' => auth()->user()->email,
             'name_ticket' => $ticket->name,
             'department' => auth()->user()->employee->position->department->name,
@@ -157,6 +157,7 @@ class ListadoTicketsComponent extends Component
 
         $notificacionEditar = [
             'name' => auth()->user()->name,
+            'last_name' => auth()->user()->lastname,
             'name_ticket' => $ticketEditar->name,
         ];
 
@@ -164,7 +165,7 @@ class ListadoTicketsComponent extends Component
         // $support_notification_edit= new FirebaseNotificationController();
         // $support_notification_edit->supportEditNotification(auth()->user()->name,$ticketEditar->name,$ticketEditar->support->id);
         $this->name = '';
-        $this->categoria = ' ';
+        $this->categoria = '';
         $this->dispatchBrowserEvent('editar');
     }
 

@@ -18,8 +18,7 @@
                     </tr>
                 </thead>
                 <tbody>   
-                    @if (auth()->user()->id === 127)
-                    
+                    @if (auth()->user()->id === 127)                    
                     @foreach ($all_tickets as $tickets)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
@@ -44,27 +43,28 @@
                             <td>
                                 @if ($tickets->status_id)
                                     @if ($tickets->status_id === 4)
-                                        <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
+                                        <button data-bs-toggle="modal" data-bs-target="#ModalAgregar"
                                             type="button" class="btn btn-success btn-sm "
                                             wire:click="verTicket({{ $tickets->id }})"><i
                                                 class="bi bi-eye"></i></button>
                                     @else
-                                        <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
+                                        <button data-bs-toggle="modal" data-bs-target="#ModalAgregar"
                                             type="button" class="btn btn-success btn-sm "
                                             wire:click="verTicket({{ $tickets->id }})"><i
                                                 class="bi bi-eye"></i></button>
-
                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#Modalasignacion"
                                             wire:click="verTicket({{ $tickets->id }})">
                                             <i class="bi bi-person-fill"></i>
                                         </button>
-
                                         <button id="btnModalPrioridad" type="button" class="btn btn-info btn-sm"
                                             data-bs-toggle="modal" data-bs-target="#Modalprioridad"
                                             wire:click="verTicket({{ $tickets->id }})">
                                             <i class="bi bi-clock"></i>
                                         </button>
+                                        <button type="button" class="btn btn-warning btn-sm"
+                                        onclick="finalizar({{ $tickets->id }})"><i
+                                            class="bi bi-check-square"></i></button>
                                     @endif
                                 @endif
                             </td>
@@ -73,7 +73,6 @@
                 </tbody>
             </table>
                     @else
-
                     @foreach ($solucion as $tickets)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
@@ -98,7 +97,7 @@
                             <td>
                                 @if ($tickets->status_id)
                                     @if ($tickets->status_id === 4)
-                                        <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
+                                        <button data-bs-toggle="modal" data-bs-target="#ModalAgregar"
                                             type="button" class="btn btn-success btn-sm "
                                             wire:click="verTicket({{ $tickets->id }})"><i
                                                 class="bi bi-eye"></i></button>
@@ -107,18 +106,21 @@
                                             type="button" class="btn btn-success btn-sm "
                                             wire:click="verTicket({{ $tickets->id }})"><i
                                                 class="bi bi-eye"></i></button>
-
                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#Modalasignacion"
                                             wire:click="verTicket({{ $tickets->id }})">
                                             <i class="bi bi-person-fill"></i>
                                         </button>
-
                                         <button id="btnModalPrioridad" type="button" class="btn btn-info btn-sm"
                                             data-bs-toggle="modal" data-bs-target="#Modalprioridad"
                                             wire:click="verTicket({{ $tickets->id }})">
-                                            <i class="bi bi-clock"></i>
+                                            <i class="bi bi-clock"></i>                                        
                                         </button>
+
+                                        <button type="button" class="btn btn-warning btn-sm"
+                                        onclick="finalizar({{ $tickets->id }})"><i
+                                            class="bi bi-check-square"></i></button>
+
                                     @endif
                                 @endif
                             </td>
@@ -129,9 +131,10 @@
             <div class="d-flex justify-content-center">
                 {{ $solucion->links() }}
             </div>
-                    @endif                    
+                @endif                    
         </div>
     </div>
+
     <div wire:ignore.self class="modal fade" id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-scrollable  modal-lg">
@@ -160,12 +163,10 @@
                                     aria-controls="historial" aria-selected="false">Evaluación Servicio</button>
                             </li>
                         @endif
-
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                <div class="modal-body">
+                <div class="modal-body"> 
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                             aria-labelledby="home-tab" wire:ignore.self>
@@ -822,6 +823,7 @@
             </div>
         </div>
     </div>
+
     <div wire:ignore.self class="modal fade" id="Modalasignacion" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
@@ -868,6 +870,7 @@
             </div>
         </div>
     </div>
+
     <div wire:ignore.self class="modal fade" id="Modalprioridad" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
@@ -1206,6 +1209,32 @@
             }
 
         }
+        
+
+        function finalizar(id) {
+            Swal.fire({
+                title: 'Quieres finalizar el ticket?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Finalizar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let resultado = @this.finalizarTicket(id)
+                    Swal.fire(
+                        'Finalizado ',
+                        'El ticket a sido finalizado',
+                        'success'
+                    )
+                } else {
+                    return;
+                }
+
+            })
+
+        }
+
 
         function showTimeInput(selectElement) {
             var timeInput = document.getElementById('timeInput');
@@ -1222,4 +1251,5 @@
             $('#timeInput').toggleClass('d-none');
         }
     </script>
+
 </div>

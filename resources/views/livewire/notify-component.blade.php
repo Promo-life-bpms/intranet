@@ -105,7 +105,8 @@
                                 @case('App\Notifications\ReasignacionTicketSoporte')
                                     <b>{{ $notification->data['data']['name'] }}</b>
                                     <p class="my-0">Te reasigno un ticket </p>
-                                    <p class="my-0">Ticket : {{ $notification->data['data']['name_ticket'] }}</p>
+                                    <p class="my-0">Ticket : {{ $notification->data['data']['name_ticket'] }}</p> 
+                                    <a  class="d-flex mb-2 justify-content-center btn-sm btn-primary" href="http://127.0.0.1:8000/support/solution" target="_blank" role="button">Ver Ticket</a>                                   
                                 @break
                                 @default
                             @endswitch

@@ -8,6 +8,7 @@ use App\Models\Soporte\Ticket;
 use App\Models\Soporte\Mensaje;
 use App\Models\Soporte\Solucion;
 use App\Models\Soporte\Historial;
+use App\Models\Soporte\Categoria;
 use App\Models\SoporteTiempo;
 use App\Models\User;
 use App\Notifications\MessageSoporteSolutionNotification;
@@ -72,6 +73,7 @@ class SoporteSolucionComponent extends Component
     }
     public function verTicket($id)
     {
+
         $ticket = Ticket::find($id);        
         $this->prioridadID=$ticket->priority_id;
         $this->especial=$ticket->special;
@@ -90,6 +92,7 @@ class SoporteSolucionComponent extends Component
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
         $this->dispatchBrowserEvent('cargar');
+        
     }
 
     public function guardarSolucion()
@@ -204,7 +207,9 @@ class SoporteSolucionComponent extends Component
 
         $reasignacionTicket = [
             'name' => auth()->user()->name,
+             'user_lastname'=>auth()->user()->lastname,
             'user_ticket' => $ticket->user->name,
+             'user_lastname_ticket'=>$ticket->user->lastname,
             'user_department' =>$ticket->user->employee->position->department->name,
             'ticket_category' => $ticket->category->name,
             'name_ticket' => $ticket->name,
@@ -266,6 +271,29 @@ class SoporteSolucionComponent extends Component
         ]);
         $this->dispatchBrowserEvent('special');
         $this->time_special='';
+    }
+
+
+    //Agregando funcion finalizar ticket en soporte_solucion
+    public function finalizarTicket($id)
+    {
+        $actualizar_status = Ticket::find($id);
+        $actualizar_status->update(
+            [
+
+                'status_id' => 4
+            ]
+        );
+        Historial::create(
+
+            [
+                'ticket_id' => $actualizar_status->id,
+                'user_id' => auth()->user()->id,
+                'type' => 'status_finished',
+                'data' => $actualizar_status->status->name
+            ]
+        );
+               
     }
 }
 
