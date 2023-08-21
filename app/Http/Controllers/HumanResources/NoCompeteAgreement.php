@@ -7,7 +7,7 @@ use PhpOffice\PhpWord\Style\Language;
 
 class NoCompeteAgreement extends Controller
 {
-    public function noCompeteAgreement($postulant, $postulant_details)
+    public function noCompeteAgreement($postulant)
     {
         $social_reason = "";
         $company_name = "";
@@ -16,10 +16,10 @@ class NoCompeteAgreement extends Controller
         $senior = "EL SEÑOR";
         $name = strtoupper($postulant->name);
         $lastname = strtoupper($postulant->lastname); 
-        $rfc = strtoupper($postulant_details->rfc);
-        $position = strtoupper($postulant_details->position);
-        $date_admission = date('d/m/Y', strtotime($postulant_details->date_admission));
-        $address =strtoupper($postulant_details->address);
+        $rfc = strtoupper($postulant->rfc);
+        $position = strtoupper($postulant->position);
+        $date_admission = date('d/m/Y', strtotime($postulant->date_admission));
+        $address =strtoupper($postulant->full_address);
 
         //Promolife
         if($postulant->company_id == 1){

@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="card-header">
-        <h3>Generar baja</h3>
+        <h3>Datos de baja</h3>
     </div>
     <div class="card-body">
         <div class="d-flex flex-row justify-content-between add-container" >
@@ -53,20 +53,25 @@
                                 <div class="d-flex w-100 ">
                                     <div>
                                         <a  href="{{ route('rh.dropDocumentation', ['user' => $user->id]) }}"
-                                            type="button" class="btn btn-option">Documentación</a>
+                                            type="button" class="btn btn-option">Datos de baja</a>
                                     </div>
                                 </div>
-                                <div class="d-flex" >
-                                    <div>
-                                        <form class="form-delete"
-                                            action="{{ route('rh.dropDeleteUser', ['user' => $user->id]) }}"
-                                            method="POST">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="submit" class="btn btn-option2">Generar baja</button>
-                                        </form>
-                                    </div>
-                                </div>
+
+                                @if ($user->userDetails != null)
+                                    @if ($user->userDetails->date_down != null)
+                                    <div class="d-flex" >
+                                        <div>
+                                            <form class="form-delete"
+                                                action="{{ route('rh.dropDeleteUser', ['user' => $user->id]) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" class="btn btn-option2">Generar baja</button>
+                                            </form>
+                                        </div>
+                                    </div> 
+                                    @endif
+                                @endif
                             </td>
                         </tr>
                     @endforeach

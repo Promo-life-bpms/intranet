@@ -8,9 +8,7 @@
                     <div class="card-header">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
-                            <span id="card_title">
-                                {{ __('Directorio Telefonico y Correos') }}
-                            </span>
+                            <h3 id="card_title">{{ __('Directorio Telefonico y Correos') }}</h3>
                         </div>
                     </div>
                     @if ($message = Session::get('success'))

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\HumanResources;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\UserDetails;
 use App\Models\UserDocumentation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,8 +14,14 @@ class ScanDocumentsController extends Controller
 {
     public function scanDocuments($id)
     {
+        $status = 1;
+
+        $user = User::where('id',$id)->get()->last();
         $user_documents= UserDocumentation::all()->where('user_id', $id);
-        return view('admin.user.scan', compact('id','user_documents' ));
+        $user_details = UserDetails::where('user_id',$id)->get();
+
+        $status = $user->status;
+        return view('admin.user.scan', compact('id','user_documents','user_details','status' ));
     }
 
     public function storeDocuments(Request $request)
@@ -51,17 +59,18 @@ class ScanDocumentsController extends Controller
     
     public function updateDocuments(Request $request)
     {
-        $request->validate([
-            'documents' => 'required',
-            'description' => 'required',
-            'id'=>'required'
-        ]);
-        $request1 = UserDocumentation::all()->where('id', $request->id)->last();
-        File::delete($request1->resource);
-        
-        $path="";
 
+        if($request->description != '' || $request != null){
+
+        }
+     
+        $document = UserDocumentation::all()->where('id', $request->id)->last();
+        
+        $path=$document->resource;
+        $extension=$document->type;
         if ($request->hasFile('documents')) {
+            File::delete($document->resource);
+
             $filenameWithExt = $request->file('documents')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('documents')->clientExtension();

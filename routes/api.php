@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\ApiController;
+use App\Http\Controllers\FirebaseNotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/getUsers', [ApiController::class, 'getUsers']);
@@ -52,3 +53,15 @@ Route::post('/postCreateRequest', [APIController::class, 'postCreateRequest'])->
 
 Route::post('/postManagerRequest', [APIController::class, 'postManagerRequest'])->name('api.postManagerRequest');
 Route::post('/postRhRequest', [APIController::class, 'postRhRequest'])->name('api.postRhRequest');
+
+Route::post('/firebase/publication', [FirebaseNotificationController::class, 'publication'])->name('api.firebase.publication');
+
+Route::post('/firebase/birthday-notification', [FirebaseNotificationController::class, 'publication'])->name('api.firebase.birthday');
+
+//POSIBLES APIS SALA RECREATIVA//
+Route::get('/eventos', [ApiController::class, 'AllEvents'])->name('api.allEventos'); //Visualización de los eventos//
+Route::get('/eventos/view', [ApiController::class, 'EventVist'])->name('api.allView');//Variables vista//
+Route::get('/eventos/filtro/{id}', [ApiController::class, 'PositionsEvent'])->name('api.eventsFiltro');//Filtrado de eventos//
+Route::post('/eventos/create', [ApiController::class, 'storeReservation'])->name('api.eventosCreate');//Crear eventos//
+Route::post('/eventos/destroy/{event_id}', [ApiController::class, 'destroyEvents'])->name('api.eventosDelete'); //Eliminar//
+Route::post('/eventos/edit/', [ApiController::class, 'updateEvents'])->name('api.eventosEdit');//Editar//

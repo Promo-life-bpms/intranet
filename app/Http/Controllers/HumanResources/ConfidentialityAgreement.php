@@ -7,13 +7,13 @@ use PhpOffice\PhpWord\Style\Language;
 
 class ConfidentialityAgreement extends Controller
 {
-    public function confidentialityAgreement($postulant, $postulant_details)
+    public function confidentialityAgreement($postulant)
     {
         $company = "";
         $employer = "";
         $name = strtoupper($postulant->name);
         $lastname = strtoupper($postulant->lastname);
-        $date_admission = date('d/m/Y', strtotime( $postulant_details->date_admission));
+        $date_admission = date('d/m/Y', strtotime( $postulant->date_admission));
 
          //Promolife
         if($postulant->company_id == 1){

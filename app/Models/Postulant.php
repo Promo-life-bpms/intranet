@@ -9,5 +9,10 @@ class Postulant extends Model
 {
     use HasFactory;
     public $table = "postulant";
+
+    public function postulantDocumentation()
+    {
+        return $this->hasMany(PostulantDocumentation::class, 'postulant_id');
+    }
 }
     

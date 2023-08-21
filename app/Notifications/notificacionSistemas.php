@@ -19,14 +19,12 @@ class notificacionSistemas extends Notification
 
     public $SP;
     public $name;
-
-
-    public function __construct($SP, $name)
+    public function __construct( $SP, $name)
     {
         $this->SP=$SP;
         $this->name=$name;
     }
-
+    
     /**
      * Get the notification's delivery channels.
      *

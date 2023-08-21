@@ -1,33 +1,28 @@
 <div>
+    <style>
+        table .form-control {
+            padding: 2px !important;
+        }
+
+        table td {
+            padding: 2px !important;
+        }
+    </style>
     <div class="d-flex justify-content-end pb-3">
         <input wire:model='keyWord' type="text" class="form-control" name="search" id="search"
             placeholder="Buscar Empleados">
     </div>
-
-    <div class="d-flex justify-content-between">
-        @if (session()->has('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
-        @if (session()->has('message'))
-            <div class="alert alert-success">
-                {{ session('message') }}
-            </div>
-        @endif
-        <div wire:loading.flex>
-            <div class="spinner-border text-info" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-    </div>
     <div class="table-responsive">
         <table class="table table-striped" id="table-directory">
             <thead>
-                <tr>
+                <tr class="text-center">
                     <th>Nombre</th>
-                    <th>Periodo Actual</th>
-                    <th>Periodo Anterior</th>
+                    <th>Ingreso</th>
+                    <th>Dias Totales</th>
+                    <th>Dias Disfrutados</th>
+                    <th>Dias Disponibles</th>
+                    <th>Respetar Vacaciones Vencidas</th>
+                    <th>Ver Detalle</th>
                 </tr>
             </thead>
 
@@ -35,56 +30,219 @@
                 @foreach ($users as $user)
                     @if ($user->status == 1)
                         @if (!$user->hasRole('becario'))
-                            <tr>
-                                <td>{{ $user->name }} {{ $user->lastname }} <br>
-                                    Ingreso: {{ $user->employee->date_admission->format('d-m-Y') }} <br>
-                                    Dias disponibles de ambos periodos:
-                                    <b>{{ $user->vacationsAvailables()->where('period', '<>', 3)->sum('dv') }}</b>
+                            <tr class="text-center">
+                                <td>
+                                    {{ $user->name }} {{ $user->lastname }}
                                 </td>
-                                @foreach ($user->vacationsAvailables()->where('period', '<>', 3)->orderBy('period', 'ASC')->get() as $vacation)
-                                    <td>
-                                        @php
-                                            $dateCut = new \Carbon\Carbon($vacation->cutoff_date);
-                                        @endphp
-                                        <div>
-                                            <strong>Periodo:</strong>
-                                            {{ $dateCut->subYears(2)->format('d-m-Y') . ' - ' . $dateCut->addYear(1)->format('d-m-Y') }}
-                                            <br>
-                                            <strong>Vencimiento:</strong> {{ $dateCut->addYear(1)->format('d-m-Y') }}
-                                            <br>
-                                            <strong>Dias
-                                                {{ $vacation->period == 1 ? 'Actuales Calculados' : 'Vencidos Calculados' }}:</strong>
-                                            {{ $vacation->days_availables }}
-                                            <br>
-                                            <strong>Dias Disponibles
-                                                {{ $vacation->period == 1 ? 'del Periodo Actual: ' : 'del Periodo Vencido: ' }}</strong>
-                                            {{ $vacation->dv }}
-                                            <br>
-                                            <strong>Dias Disfrutados
-                                                {{ $vacation->period == 1 ? 'del Periodo Actual: ' : 'del Periodo Vencido: ' }}</strong>
-                                            {{ $vacation->days_enjoyed }}
-                                            <!-- Button trigger modal -->
-                                            @role('admin')
-                                                <div class="d-flex">
-                                                    <input type="number"
-                                                        wire:model="daysEnjoyed.{{ $user->id }}.{{ $vacation->period }}"
-                                                        class="form-control" placeholder="Colocar dias disfrutados">
-                                                    <button class="btn btn-warning d-flex"
-                                                        wire:click="updateDays({{ $vacation->id }}, {{ $user->id }}, {{ $vacation->period }})">Actualizar
-                                                    </button>
+                                <td>
+                                    {{ $user->employee->date_admission->format('d/m/Y') }}
+                                </td>
+                                <td>
+                                    {{ $user->vacationsComplete()->sum('days_availables') }}</b>
+                                </td>
+                                <td>
+                                    {{ $user->vacationsComplete()->sum('days_enjoyed') }}</b>
+                                </td>
+                                <td>
+                                    {{ $user->employee->take_expired_vacation ? $user->vacationsComplete()->sum('dv') : $user->vacationsAvailables()->sum('dv') }}</b>
+                                </td>
+                                <td>
+                                    <div>
+                                        <input {{ $user->employee->take_expired_vacation ? 'checked' : '' }}
+                                            type="checkbox" class="form-check-input" id="exampleCheck1"
+                                            wire:click="changeStatusVacations({{ $user->id }})">
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#modalDetails{{ $user->id }}">
+                                        Ver Detalles
+                                    </button>
+                                    <!-- Modal -->
+                                    <div wire:ignore.self class="modal fade" id="modalDetails{{ $user->id }}"
+                                        tabindex="-1" aria-labelledby="modalDetails{{ $user->id }}Label"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog" style="max-width: 1300px;">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="modalDetails{{ $user->id }}Label">
+                                                        {{ $user->employee->user->name . ' ' . $user->employee->user->lastname }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
                                                 </div>
-                                            @endrole()
+                                                <div class="modal-body">
+                                                    <div>
+                                                        <div class="d-flex justify-content-between">
+                                                            <div class="text-left">
+                                                                <p class="m-0"><strong>Empresa:</strong>
+                                                                    {{ $user->employee->companies[0]->name_company }}
+                                                                </p>
+                                                                <p class="m-0"><strong>Alta:</strong>
+                                                                    {{ $user->employee->date_admission->format('d-M-Y') }}
+                                                                </p>
+                                                                <p class="m-0"><strong>Calculo al: </strong>
+                                                                    {{ now()->format('d-M-Y') }}
+                                                                </p>
+                                                                @php
+                                                                    $yearsWork = $user->employee->date_admission->diffInYears(now());
+                                                                    $lastPeriodYear = (string) ((int) $user->employee->date_admission->format('Y') + $yearsWork);
+                                                                    $lastPeriodCurrent = \Carbon\Carbon::parse($lastPeriodYear . '-' . (string) $user->employee->date_admission->format('m-d'));
+                                                                    $daysItsYear = $lastPeriodCurrent->diffInDays(now());
+                                                                @endphp
+                                                                <p class="m-0"><strong>Dias transcurridos del
+                                                                        {{ $lastPeriodCurrent->format('d-M-Y') . ' al ' . now()->format('d-M-Y') }}:
+                                                                    </strong> {{ $daysItsYear . ' dias' }}
+                                                                </p>
+                                                            </div>
+                                                            <div>
+                                                                <div class="d-flex justify-content-between">
+                                                                    <div wire:loading.flex>
+                                                                        <div class="spinner-border text-info"
+                                                                            role="status">
+                                                                            <span class="sr-only">Loading...</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    @if (session()->has('error'))
+                                                                        <div class="alert alert-danger" wire:poll.3s>
+                                                                            {{ session('error') }}
+                                                                        </div>
+                                                                    @endif
+                                                                    @if (session()->has('message'))
+                                                                        <div class="alert alert-success p-1 m-0"
+                                                                            wire:poll.3s>
+                                                                            {{ session('message') }}
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div style="overflow: auto; max-height: 500px">
+                                                        <table class="table table-bordered table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th colspan="3"></th>
+                                                                    <th colspan="3" class="text-center">Dias</th>
+                                                                    <th colspan="3"></th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="col">#</th>
+                                                                    <th scope="col" class="text-center">Año</th>
+                                                                    <th scope="col" class="text-center">Periodo</th>
+
+                                                                    <th scope="col" class="text-center">
+                                                                        Correspondientes</th>
+                                                                    <th scope="col" class="text-center">Disfrutados
+                                                                    </th>
+                                                                    <th scope="col" class="text-center">Restantes
+                                                                    </th>
+
+
+                                                                    <th scope="col" class="text-center">Vencimiento
+                                                                    </th>
+                                                                    <th scope="col" class="text-center">Editar</th>
+                                                                    <th scope="col" class="text-center">Estado</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @php
+                                                                    $totalCalculados = 0;
+                                                                    $totalDisponibles = 0;
+                                                                    $totalDisfrutados = 0;
+                                                                @endphp
+                                                                @foreach ($user->vacationsComplete()->orderBy('date_end', 'DESC')->get() as $vacation)
+                                                                    @php
+                                                                        $date_start = new \Carbon\Carbon($vacation->date_start);
+                                                                        $date_end = new \Carbon\Carbon($vacation->date_end);
+                                                                        $cutoff_date = new \Carbon\Carbon($vacation->cutoff_date);
+                                                                        $totalCalculados = $totalCalculados + $vacation->days_availables;
+                                                                        $totalDisponibles = $totalDisponibles + $vacation->dv;
+                                                                        $totalDisfrutados = $totalDisfrutados + $vacation->days_enjoyed;
+                                                                    @endphp
+                                                                    <tr>
+                                                                        <td scope="row">{{ $loop->iteration }}</td>
+                                                                        <td class="text-center">
+                                                                            {{ $date_start->format('Y') }}
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            {{ $date_start->format('d-m-Y') }}
+                                                                            al
+                                                                            {{ $date_end->format('d-m-Y') }}</td>
+                                                                        <td class="text-center">
+                                                                            {{ $vacation->days_availables }}</td>
+                                                                        <td class="text-center">
+                                                                            <p
+                                                                                class="{{ $vacation->days_enjoyed <= $vacation->days_availables ? '' : 'text-danger' }} m-0 font-bold">
+                                                                                {{ $vacation->days_enjoyed }}
+                                                                            </p>
+                                                                        </td>
+                                                                        {{-- <td class="text-center">{{ $vacation->dv }}</td> --}}
+                                                                        <td class="text-center">
+                                                                            {{ $vacation->dv }}</td>
+
+                                                                        <td class="text-center">
+                                                                            {{ $cutoff_date->format('d-m-Y') }}
+                                                                        </td>
+                                                                        <td style="width: 150px" class="text-center">
+                                                                            <div class="d-flex">
+                                                                                <input type="number"
+                                                                                    wire:model="daysEnjoyed.{{ $user->id }}.{{ $vacation->id }}"
+                                                                                    wire:keydown.enter="updateDays({{ $vacation->id }}, {{ $user->id }}, {{ $vacation->id }})"
+                                                                                    class="form-control text-center"
+                                                                                    placeholder="Dias disfrutados">
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            @switch($vacation->period)
+                                                                                @case(1)
+                                                                                    <span class="badge bg-success">
+                                                                                        Actual
+                                                                                    </span>
+                                                                                @break
+
+                                                                                @case(2)
+                                                                                    <span class="badge bg-warning">
+                                                                                        Anterior
+                                                                                    </span>
+                                                                                @break
+
+                                                                                @case(3)
+                                                                                    <span class="badge bg-danger">
+                                                                                        Expirado
+                                                                                    </span>
+                                                                                @break
+
+                                                                                @default
+                                                                            @endswitch
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    {{-- <td></td> --}}
+                                                                    <td class="text-center">{{ $totalCalculados }} <br>
+                                                                        Dias Cumplidos</td>
+                                                                        <td class="text-center">{{ $totalDisfrutados }}
+                                                                            <br> Dias Disfrutados
+                                                                        </td>
+                                                                    <td class="text-center">
+                                                                        {{ $totalCalculados - $totalDisfrutados }} <br>
+                                                                        Dias Restantes</td>
+                                                                </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                            </div>
                                         </div>
-                                        @php
-                                            $dateCut = 0;
-                                        @endphp
-                                    </td>
-                                @endforeach
-                                @if (count($user->vacationsAvailables) == 1)
-                                    <td>
-                                        No hay informacion del periodo anterior
-                                    </td>
-                                @endif
+                                    </div>
+                                </td>
+                                </td>
                             </tr>
                         @endif
                     @endif

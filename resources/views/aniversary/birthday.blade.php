@@ -5,6 +5,13 @@
         <h3>Cumpleaños de {{ now()->formatLocalized('%B') }}</h3>
     </div>
     <div class="card-body">
+
+        @if (session('message'))
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
+            <br>
+        @endif
         <div class="row justify-content-center">
             @foreach ($employees as $employee)
                 <div class="card aniversary-card" style="width: 16rem;">
@@ -23,6 +30,28 @@
                         <p class="card-text text-center">
                             {{ $employee->birthday_date->format('d \d\e ') . $employee->birthday_date->formatLocalized('%B') }}
                         </p>
+
+                        @role('admin')
+
+                            <div class="d-flex justify-content-center">
+                                <form method="POST" action="{{ route('firebase.birthday',['user_id' => $employee->user->id, 'name' => $employee->user->name]) }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="btn btn-primary ">Enviar felicitación</button>.
+                                </form>
+                            </div>
+                        @endrole('admin')
+                        
+                        @role('rh')
+
+                            <div class="d-flex justify-content-center">
+                            <form method="POST" action="{{ route('firebase.birthday',['user_id' => $employee->user->id, 'name' => $employee->user->name]) }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="btn btn-primary ">Enviar felicitación</button>.
+                                </form>
+                            </div>
+                        @endrole('rh')
                     </div>
                 </div>
             @endforeach

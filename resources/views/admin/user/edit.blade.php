@@ -17,22 +17,45 @@
             <h3 style="margin-left:16px;" class="separator">Editar usuario</h3> 
         </div>
       
-        <div>                
+        <div>      
+            <div class="d-flex justify-content-evenly">
+            @if($user->status == '0')
+            <a  href="{{ route('rh.dropDocumentation', ['user' => $user->id]) }}"
+                type="button" class="btn btn-primary">
+                <i class="fa fa-calendar me-2" aria-hidden="true"></i>
+                Fecha y motivos de baja</a>
+            @endif
+            <div class="separator" style="width: 10px;" ></div>     
+  
             <form 
-                action="{{ route('rh.moreInformation', ['id' => $user->id]) }}"
+                action="{{ route('rh.scanDocuments',['id' => $user->id]) }}"
                 method="GET">
                  @csrf
                 <button type="submit" class="btn btn-primary"> 
-                    <i class="fa fa-user-plus me-2" aria-hidden="true"></i>
+                    <i class="fa fa-file-text me-2" aria-hidden="true"></i>
+                    Documentos guardados
+                </button>
+            </form>     
+            <div class="separator" style="width: 10px;" ></div>     
+            <form 
+                action="{{ route('admin.user.userDetails',['user_id' => $user->id]) }}"
+                method="GET">
+                 @csrf
+                <button type="submit" class="btn btn-primary"> 
+                    <i class="fa fa-info me-2" aria-hidden="true"></i>
+
                     Información adicional
                 </button>
             </form>
+            </div>
+
+            
         </div>
     </div>
 </div>
     <div class="card-body">
         @if (session('message'))
-            <div class="alert alert-danger">
+            <div class="alert alert-success">
                 {{ session('message') }}
             </div>
 

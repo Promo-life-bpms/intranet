@@ -7,27 +7,31 @@ use App\Events\ManagerResponseRequestEvent;
 use App\Events\MessageSent;
 use App\Events\RHResponseRequestEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FirebaseNotificationController;
+use App\Models\boardroom;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
-
 use App\Models\Communique;
+use App\Models\Department;
 use App\Models\Directory as ModelsDirectory;
 use App\Models\Employee;
 use App\Models\Like;
+use App\Models\Manager;
 use App\Models\Manual;
 use App\Models\Media;
 use App\Models\Message;
 use App\Models\Notification;
+use App\Models\Position;
 use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
 use App\Models\RequestCalendar;
 use App\Models\RequestRejected;
+use App\Models\Reservation;
 use App\Models\Role;
 use App\Models\Vacations;
 use App\Notifications\CreateRequestNotification;
 use App\Notifications\ManagerResponseRequestNotification;
-use App\Notifications\MessageNotification;
 use App\Notifications\RHResponseRequestNotification;
 use Carbon\Carbon;
 use DateTime;
@@ -35,16 +39,7 @@ use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use JetBrains\PhpStorm\Internal\ReturnTypeContract;
-use Illuminate\Support\Facades\File;
-use Cache;
-use Error;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
-use Laratrust\Http\Controllers\RolesController;
-
-use function PHPUnit\Framework\isEmpty;
+use Illuminate\Support\Facades\Cache;
 
 class ApiController extends Controller
 {
@@ -94,12 +89,17 @@ class ApiController extends Controller
 
     public function getUser($hashedToken)
     {
+        $carbon = new \Carbon\Carbon();
+        $date = $carbon->now();
+        $date = $date->format('Y-d-m');
+
 
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
         $user = User::where('id', $user_id)->get();
-        $vacations = DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv');
-        $user_roles = DB::table('role_user')->where("user_id", $user_id)->get("role_id");
+
+        $vacations = $user[0]->employee->take_expired_vacation ? $user[0]->vacationsComplete()->sum('dv') : $user[0]->vacationsAvailables()->sum('dv');
+
         $roles = [];
 
         $data = [];
@@ -118,25 +118,37 @@ class ApiController extends Controller
             }
             $expiration = [];
 
-            $vacation_duration = Vacations::all()->where('users_id', $usr->id);
+            $vacation_duration  = $user[0]->employee->take_expired_vacation ? $user[0]->vacationsComplete()->get() : $user[0]->vacationsAvailables()->get();
 
             foreach ($vacation_duration as $vacation) {
-                if ($vacation == null || $vacation == []) {
+                if ($vacation != null || $vacation != [] ) {
+
+                    if($vacation->cutoff_date >= $date && intval($vacation->dv) >0){
+                        array_push($expiration, (object)[
+                            'daysAvailables' => strval(floor($vacation->dv)),
+                            'cutoffDate' => date('d-m-Y', strtotime($vacation->cutoff_date)),
+                        ]);
+                    }
+                    
+                } else {
+                    
                     array_push($expiration, (object)[
                         'daysAvailables' => "Sin dias disponibles",
                         'cutoffDate' => "Sin fecha de corte disponible",
                     ]);
-                } else {
-                    array_push($expiration, (object)[
-                        'daysAvailables' => strval(floor($vacation->dv)),
-                        'cutoffDate' => date('d-m-Y', strtotime($vacation->cutoff_date)),
-                    ]);
                 }
+            }
+
+            if($expiration == []){
+                array_push($expiration, (object)[
+                    'daysAvailables' => "Sin dias disponibles",
+                    'cutoffDate' => "Sin fecha de corte disponible",
+                ]);
             }
 
             $directManager = Employee::all()->where('jefe_directo_id', $usr->id);
 
-            $rhID = Role::all()->where('display_name', 'Recursos Humanos')->first();
+            $rhID = Role::where('display_name', 'Recursos Humanos')->first();
             $isRH = DB::table('role_user')->where('user_id', $usr->id)->where('role_id', $rhID->id)->first();
 
             if (count($directManager) != 0) {
@@ -395,7 +407,10 @@ class ApiController extends Controller
         $token = DB::table('personal_access_tokens')->where('token', $hashedToken)->first();
         $user_id = $token->tokenable_id;
         $request = ModelsRequest::all()->where('employee_id', $user_id);
-        $vacations = DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv');
+        $user = User::where('id', $user_id)->get();
+        $vacations = $user[0]->employee->take_expired_vacation
+            ? DB::table('vacations_availables')->where('users_id', $user_id)->sum('dv')
+            : DB::table('vacations_availables')->where('users_id', $user_id)->where('period', '<>', 3)->sum('dv');
 
         $data = [];
         $start = "";
@@ -531,6 +546,10 @@ class ApiController extends Controller
             $notification->notifiable_id = $manager;
             $notification->data = json_encode($data_send);
             $notification->save();
+
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->createRequest(strval($user_id));
+            $communique_notification->sendToManager(strval($manager));
         }
 
         return  true;
@@ -677,6 +696,9 @@ class ApiController extends Controller
                 $media->type_file = "photo";
                 $media->save();
             }
+            $user = User::where('id', $user_id)->get()->last();
+            $publication_notification = new FirebaseNotificationController();
+            $publication_notification->publication($user->name, $contPublication);
 
             return $token;
         }
@@ -686,6 +708,11 @@ class ApiController extends Controller
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
+
+        $publication = Publications::where('id', $request->publicationID)->get()->last();
+
+        $publication_notification = new FirebaseNotificationController();
+        $publication_notification->likePublication($publication->user_id);
 
         $like = new Like();
         $like->user_id = $user_id;
@@ -705,6 +732,7 @@ class ApiController extends Controller
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
+        $user = User::where('id', $user_id)->get()->last();
 
         if ($user_id != null || $user_id != []) {
 
@@ -713,6 +741,11 @@ class ApiController extends Controller
             $comment->publication_id = $request->publicationID;
             $comment->content = $request->content;
             $comment->save();
+
+            $publication = Publications::where('id', $request->publicationID)->get()->last();
+
+            $firebase_notification = new FirebaseNotificationController();
+            $firebase_notification->commentaryPublication(strval($publication->user_id), $user->name . ' ' . $user->lastname);
 
             return true;
         }
@@ -1176,6 +1209,9 @@ class ApiController extends Controller
 
             foreach ($userData as $user) {
                 $userReceiver = Employee::find($manager)->user;
+                $communique_notification = new FirebaseNotificationController();
+                $communique_notification->createRequest(strval($userReceiver->id));
+                $communique_notification->sendToManager(strval($manager));
                 event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
                 $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
             }
@@ -1333,12 +1369,15 @@ class ApiController extends Controller
 
     public function postManagerRequest(Request $request)
     {
+        $req = ModelsRequest::where('id', $request->requestID)->get()->first();
+
         if ($request->responseRequest == "Aprobada") {
 
             DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Aprobada"]);
-            $req = ModelsRequest::where('id', $request->requestID)->get()->first();
 
-            //Notificacion manual RH
+            //Notificacion a RH
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->sendToRh();
             $data_send = [
                 "id" => $req->id,
                 "employee_id" => $req->employee_id,
@@ -1366,6 +1405,10 @@ class ApiController extends Controller
 
             DB::table('requests')->where('id', $request->requestID)->update(['direct_manager_status' => "Rechazada"]);
             $requestCalendar = RequestCalendar::all()->where('requests_id', $request->requestID);
+
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->sendRejectedRequest($req->employee_id);
+
             foreach ($requestCalendar as $calendar) {
                 $rejectedCalendar = new RequestRejected();
                 $rejectedCalendar->title = $calendar->title;
@@ -1388,11 +1431,15 @@ class ApiController extends Controller
 
     public function postRhRequest(Request $request)
     {
+        $req = ModelsRequest::where('id', $request->requestID)->get()->first();
+
         if ($request->responseRequest == "Aprobada") {
 
             DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Aprobada"]);
+            //Notificaciones
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->sendApprovedRequest($req->employee_id);
 
-            $req = ModelsRequest::all()->where('id', $request->requestID)->first();
             if ($req->type_request == "Solicitar vacaciones") {
                 $user = User::all()->where('id', $req->employee_id)->first();
                 $dias = RequestCalendar::all()->where('requests_id',  $request->requestID);
@@ -1433,8 +1480,11 @@ class ApiController extends Controller
         } else if ($request->responseRequest == "Rechazada") {
 
             DB::table('requests')->where('id', $request->requestID)->update(['human_resources_status' => "Rechazada"]);
-            $req = ModelsRequest::all()->where('id', $request->requestID)->first();
             $requestCalendar = RequestCalendar::all()->where('requests_id', $request->requestID);
+
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->sendRejectedRequest($req->employee_id);
+
             foreach ($requestCalendar as $calendar) {
                 $rejectedCalendar = new RequestRejected();
                 $rejectedCalendar->title = $calendar->title;
@@ -1460,14 +1510,14 @@ class ApiController extends Controller
     {
         $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
         $user_id = $token->tokenable_id;
-        $employee = Employee::all()->where('user_id', $user_id);
+        $employee = Employee::where('user_id', $user_id)->get()->last();
         $userData = User::all()->where('id', $user_id);
         if ($token != null || $token != "") {
             $date = date("G:i:s", strtotime($request->start));
             $manager = "";
-            foreach ($employee as $emp) {
-                $manager = $emp->jefe_directo_id;
-            }
+
+            $manager = $employee->jefe_directo_id;
+
             $reveal_id = null;
             if ($request->revealID != "" || $request->revealID != null) {
                 $reveal_id = intval($request->revealID);
@@ -1499,13 +1549,366 @@ class ApiController extends Controller
                 $request_calendar->save();
             }
 
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->createRequest(strval($user_id));
+            $communique_notification->sendToManager(strval($employee->jefe_directo_id));
+
             foreach ($userData as $user) {
                 $userReceiver = Employee::find($manager)->user;
+
                 event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
                 $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
             }
         }
 
         return  true;
+    }
+
+    //CALENDARIO DE RERESERVACIÓN//
+    public function EventVist()
+    {
+        $user = auth()->user();
+        $salitas = boardroom::all();
+        $boardroom = boardroom::all()->pluck('name', 'id');
+        $eventos = Reservation::all();
+        $guests = $eventos->pluck('guest');
+        $departments  = Department::pluck('name', 'id')->toArray();
+        $nombresInvitados = Reservation::whereIn('guest', $guests)->get();
+        $arreglon = [];
+        foreach ($nombresInvitados as $invitados) {
+            $arreglo = explode(',', $invitados->guest);
+            $arreglon[] = $arreglo;
+        }
+
+        $nameusers = [];
+        foreach ($arreglon as $nombresusuarios) {
+            $nombres = [];
+            foreach ($nombresusuarios as $id) {
+                $user = User::where('id', $id)->first();
+                if ($user) {
+                    $nombre = $user->name;
+                    $apellido = $user->lastname;
+                    $nombres[] = "$nombre $apellido";
+                } else {
+                    $nombres[] = "Usuario no encontrado";
+                }
+            }
+            $nameusers[] = $nombres;
+        }
+        //OBTENCIÓN DE LOS JEFES DE CADA ÁREA (GERENTES)//
+        $managers = Manager::all();
+        $gerentes = [];
+        foreach ($managers as $manager) {
+            $user = User::find($manager->users_id);
+            if ($user) {
+                $gerentes[$user->id] = $user->id;
+            }
+        }
+        $EventVari = [
+            'user' => $user,
+            'salitas' => $salitas,
+            'boardroom' => $boardroom,
+            'eventos'=> $eventos,
+            'departments' => $departments,
+            'nameusers' => $nameusers,
+            'gerentes' => $gerentes,
+        ];
+        return response()->json($EventVari);
+    }
+
+    //Filtrado//
+    public function PositionsEvent($id)
+    {
+        $dep = Department::find($id);
+        $positions = Position::all()->where("department_id", $id)->pluck("name", "id");
+        $data = $dep->positions;
+        $users = [];
+        foreach ($data as $dat) {
+            foreach ($dat->getEmployees as $emp) {
+                $users["{$emp->user->id}"] = $emp->user->name . ' ' . $emp->user->lastname;
+            }
+        }
+        return response()->json(['positions' => $positions, 'users' => $users,]);
+    }
+
+    //OBTENER LOS EVENTOS//
+    public function AllEvents()
+    {
+        return Reservation::all();
+    }
+
+    //API CREAR EVENTOS//
+    public function storeReservation(Request $request)
+    {
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;
+        $userData = User::all()->where('id', $user_id);
+
+        //OBTENER LA INFORMACIÓN DEL FORM//
+        $request->validate([
+            'title' => 'required',
+            'start' => 'required',
+            'end' => 'required',
+            'description' => 'required',
+            'engrave' => 'required',
+            'reservation' => 'required',
+            'id_sala'=> 'required'
+        ]);
+        
+        $fecha_inicio =  $request->start;
+        $fecha_termino =  $request->end;
+
+        //OBTENEMOS LOS EVENTOS DEL DÍA//
+        $EventosDelDia = Reservation::whereDate('start', Carbon::parse($fecha_inicio)->format('Y-m-d'))
+            ->whereDate('end', Carbon::parse($fecha_termino)->format('Y-m-d'))
+            ->where('id_sala', $request->id_sala)->get();
+        //return ($EventosDelDia);
+
+        //OBTENEMOS UN NUEVO ARREGLO DE LOS EVENTOS YA CREADOS PARA PODER CONVERTIR LAS HORAS A MILISEGUNDOS//
+        $eventosRefactorizados = [];
+        foreach ($EventosDelDia as $item) {
+            $componentes = [
+                'id' => $item['id'],
+                'start' => strtotime($item['start']) * 1000,
+                'end' => strtotime($item['end']) * 1000,
+                'id_sala' => $item['id_sala']
+            ];
+            //array_push($eventosRefactorizados, $componentes); otra forma de traer el arreglo nuevo
+            $eventosRefactorizados[] = $componentes;
+        }
+        //dd($eventosRefactorizados);
+
+        //FORMATEAMOS LAS HORAS PARA PODERLAS CONVERTIR A MILISEGUNDOS//
+        $inicio = $request->start; // Fecha de inicio del form
+        $fechastart = Carbon::parse($inicio);
+        $fechaInicio = strtotime($fechastart->format('Y-m-d H:i:s')) * 1000;
+
+        $final = $request->end; //fecha de fin del form
+        $fechaend = Carbon::parse($final);
+        $fechaFinal = strtotime($fechaend->format('Y-m-d H:i:s')) * 1000;
+        $fechaActual = now()->format('Y-m-d H:i:s');
+        //dd($fechaActual);
+
+        if ($fecha_inicio <= $fechaActual) {
+            return response()->json(['message1' => 'No se puede crear una reservación en una fecha pasada.']);
+        }
+
+        if ($fecha_termino < $fecha_inicio) {
+            return response()->json(['message1' =>"Una reservación no puede finalizar antes que la hora de inicio."]);
+        }
+
+        $allreservation = Reservation::where('id_usuario', $user_id)
+            ->where('start', '>=', $request->start)
+            ->where('end', '<=', $request->end)
+            ->exists();
+        if ($allreservation) {
+            return response()->json(['message1' => 'No puedes reservar todas las salas a la misma fecha y hora.']);
+        }
+        
+        $gerentes = Reservation::where('start','<=', $fecha_inicio)
+                                ->where('end','>=', $fecha_termino)
+                                ->where('reservation', 'Sí')
+                                ->exists();                 
+        if ($gerentes) {
+            return response()->json(['message1'=>'Un gerente reservo toda la sala, por lo tanto no puedes crear un evento en esta fecha y hora.']);
+        }
+        
+        //CONDICIONES QUE DEBE PASAR ANRTES DE EDITAR AL EVENTO// 
+        foreach ($eventosRefactorizados as $evento) {
+            if (($fechaInicio >= $evento['start'] && $fechaInicio < $evento['end']) ||
+                ($fechaFinal > $evento['start'] && $fechaFinal <= $evento['end']) ||
+                ($fechaInicio <= $evento['start'] && $fechaFinal >= $evento['end'])
+            ) {
+                return response()->json(['message1' => "El evento no puede tomar horas de otros eventos ya creados."]);
+            }
+        }
+        
+        if ($request->has('guest') && is_array($request->guest)) {
+            $NameUserGuest = $request->guest;
+            $invitadosIds = User::whereIn(DB::raw("CONCAT(name, ' ', lastname)"), $NameUserGuest)
+                                              ->pluck('id')
+                                              ->toArray();
+            }
+        $invitados = implode(',' . ' ', $invitadosIds);
+
+        //UNA VEZ QUE YA PASO LAS VALIDACIÓNES CREA EL EVENETO//
+        $evento = new Reservation();
+        $evento->title = $request->title;
+        $evento->start = $request->start;
+        $evento->end = $request->end;
+        $evento->guest = $invitados;
+        $evento->engrave = $request->engrave;
+        $evento->chair_loan = $request->chair_loan;
+        $evento->proyector = $request->proyector;
+        $evento->description = $request->description;
+        $evento->reservation = $request->reservation;
+        $evento->id_usuario = $user_id;
+        $evento->id_sala = $request->id_sala;
+        $evento->save();
+        return response()->json(['message' => "Reservación creada correctamente.", 'data' => $evento],201);
+    }
+
+    //API EDITAR//
+    public function updateEvents(Request $request)
+    {
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;
+        
+        // INFORMACIÓN QUE DEBE VALIDAR QUE SE ENCUENTRE //
+        $request->validate([
+            'title' => 'required',
+            'start' => 'required',
+            'end' => 'required',
+            'description' => 'required',
+            'engrave' => 'required',
+            'id_sala' => 'required'
+        ]);
+
+        $fecha_inicio = $request->start;
+        $fecha_termino = $request->end;
+        
+        // OBTENEMOS LOS EVENTOS DEL DÍA //
+        $EventosDelDia = Reservation::whereDate('start', Carbon::parse($fecha_inicio)->format('Y-m-d'))
+                                    ->whereDate('end', Carbon::parse($fecha_termino)->format('Y-m-d'))
+                                    ->where('id_sala', $request->id_sala)
+                                    ->get();
+
+        // OBTENEMOS UN NUEVO ARREGLO DE LOS EVENTOS YA CREADOS PARA PODER CONVERTIR LAS HORAS A MILISEGUNDOS //
+        $eventosRefactorizados = [];
+        foreach ($EventosDelDia as $item) {
+            if ($item['id'] != $request->id_evento) {
+                $componentes = [
+                    'id' => $item['id'],
+                    'start' => strtotime($item['start']) * 1000,
+                    'end' => strtotime($item['end']) * 1000,
+                    'id_sala' => $item['id_sala']
+                ];
+                $eventosRefactorizados[] = $componentes;
+            }
+        }
+
+        // FORMATEAMOS LAS HORAS PARA PODERLAS CONVERTIR A MILISEGUNDOS //
+        $inicio = $request->start;
+        $fechastart = Carbon::parse($inicio);
+        $fechaInicio = strtotime($fechastart->format('Y-m-d H:i:s')) * 1000;
+        
+        $final = $request->end;
+        $fechaend = Carbon::parse($final);
+        $fechaFinal = strtotime($fechaend->format('Y-m-d H:i:s')) * 1000;
+        $fechaActual = now()->format('Y-m-d H:i:s');
+
+        if ($fecha_inicio <= $fechaActual) {
+            return response()->json(['message1' => 'No se puede editar una reservación de una fecha pasada o elegir una fecha pasada.']);
+        }
+
+        if ($fecha_termino < $fecha_inicio) {
+            return response()->json(['message1' => "Una reservación no puede finalizar antes que la hora de inicio."]);
+        }
+
+        // CONDICIONES QUE DEBE PASAR ANTES DE EDITAR EL EVENTO //
+        foreach ($eventosRefactorizados as $evento) {
+            if (($fechaInicio >= $evento['start'] && $fechaInicio < $evento['end']) ||
+            ($fechaFinal > $evento['start'] && $fechaFinal <= $evento['end']) ||
+            ($fechaInicio <= $evento['start'] && $fechaFinal >= $evento['end'])
+            ) {
+                return response()->json(['message1' => "El evento no puede tomar horas de otros eventos ya creados."]);
+            }
+        }
+        
+        $event = Reservation::find($request->id_evento);
+        if (!$event) {
+            return response()->json(['message1', 'El evento que intentas editar no existe.']);
+        }
+
+        // Verificar si el usuario tiene permiso para editar el evento
+        if ($event->reservation === 'Sí' && $event->id_usuario !== $user_id->id) {
+            return response()->json(['message1', 'No tienes permiso para editar este evento.']);
+        }
+
+        // Si el usuario tiene permiso para editar el evento, ignorar la verificación de los eventos reservados por los gerentes.
+        if ($event->reservation === 'Sí' && $event->id_usuario === $user_id->id) {
+            // AGREGAMOS LOS NUEVOS USUARIOS AL VIEJO ARREGLO //
+            $invitadospos = DB::table('reservations')
+                              ->select('guest')
+                              ->where('id', $request->id_evento)
+                              ->first();
+            $invitades = [];
+            $usuarios = User::all();
+            foreach ($usuarios as $usuario) {
+                if ($request->has('guest' . strval($usuario->id))) {
+                    $invitades[] = $usuario->id;
+                }
+            }
+            if ($invitadospos) {
+                $invitades = array_merge($invitades, [$invitadospos->guest]);
+            }
+            $invitados = implode(',', $invitades);
+
+            // HACEMOS LA ACTUALIZACIÓN DE LA BASE DE DATOS //
+            DB::table('reservations')->where('id', $request->id_evento)->update([
+                'title' => $request->title,
+                'start' => $request->start,
+                'end' => $request->end,
+                'guest' => $invitados,
+                'engrave' => $request->engrave,
+                'chair_loan' => $request->chair_loan,
+                'proyector' => $request->proyector,
+                'description' => $request->description,
+                'reservation' => $request->reservation,
+                'id_sala' => $request->id_sala
+            ]);        
+        } else {
+            // Verificar eventos reservados por gerentes.
+            $gerentes = Reservation::where('start', '<=', $fecha_inicio)
+                                   ->where('end', '>=', $fecha_termino)
+                                   ->where('reservation', 'Sí')
+                                   ->exists();
+            if ($gerentes) {
+                return response()->json(['message1', 'Un gerente reservó toda la sala, por lo tanto no puedes editar el evento en esta fecha y hora.']);
+            }
+        }
+
+        // AGREGAMOS LOS NUEVOS USUARIOS AL VIEJO ARREGLO //
+        $invitadospos = DB::table('reservations')
+                          ->select('guest')
+                          ->where('id', $request->id_evento)
+                          ->first();
+        $invitades = [];
+        $usuarios = User::all();
+        foreach ($usuarios as $usuario) {
+            if ($request->has('guest' . strval($usuario->id))) {
+                $invitades[] = $usuario->id;
+            }
+        }
+        if ($invitadospos) {
+            $invitades = array_merge($invitades, [$invitadospos->guest]);
+        }
+        $invitados = implode(',', $invitades);
+
+        // HACEMOS LA ACTUALIZACIÓN DE LA BASE DE DATOS //
+        DB::table('reservations')->where('id', $request->id_evento)->update([
+            'title' => $request->title,
+            'start' => $request->start,
+            'end' => $request->end,
+            'guest' => $invitados,
+            'engrave' => $request->engrave,
+            'chair_loan' => $request->chair_loan,
+            'proyector' => $request->proyector,
+            'description' => $request->description,
+            'reservation' => $request->reservation,
+            'id_sala' => $request->id_sala
+        ]);
+        return response()->json(['message2', "Evento editado correctamente."]);
+    }
+
+    // API ELIMINAR //
+    public function destroyEvents(Request $request)
+    {
+        $token = DB::table('personal_access_tokens')->where('token', $request->token)->first();
+        $user_id = $token->tokenable_id;
+        if ($user_id != null) {
+            DB::table('reservations')->where('id', $request->id_evento)->delete();
+            return response()->json(['message1'=>'Evento eliminado.']);
+        }
     }
 }

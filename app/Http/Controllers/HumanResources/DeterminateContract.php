@@ -7,22 +7,22 @@ use PhpOffice\PhpWord\Style\Language;
 
 class DeterminateContract extends Controller
 {
-    public function determinateContract($postulant, $postulant_details )
+    public function determinateContract($postulant )
     {
         $company = "";
         $employer = "";
         $name = strtoupper($postulant->name);
         $lastname = strtoupper($postulant->lastname); 
-        $nacionality = strtoupper($postulant_details->nacionality);  
-        $civil_status = strtoupper($postulant_details->civil_status) ;
-        $domicile = strtoupper($postulant_details->address) ;
-        $age = $postulant_details->age;
-        $curp = strtoupper($postulant_details->curp);
-        $position = strtoupper($postulant_details->position);
-        $position_objetive =  strtoupper($postulant_details->position_objetive);
-        $date_admission = date('d,m,Y', strtotime($postulant_details->date_admission));
-        $daily_salary = strtoupper($postulant_details->daily_salary); 
-        $daily_salary_letter = strtoupper($postulant_details->daily_salary_letter); 
+        $nacionality = strtoupper($postulant->nacionality);  
+        $civil_status = strtoupper($postulant->civil_status) ;
+        $domicile = strtoupper($postulant->full_address) ;
+        $age = $postulant->age;
+        $curp = strtoupper($postulant->curp);
+        $position = strtoupper($postulant->vacant);
+        $position_objetive =  strtoupper($postulant->position_objetive);
+        $date_admission = date('d,m,Y', strtotime($postulant->date_admission));
+        $daily_salary = strtoupper($postulant->daily_salary); 
+        $daily_salary_letter = strtoupper($postulant->daily_salary_letter); 
 
         
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
