@@ -162,6 +162,7 @@ class RequestController extends Controller
         $req->human_resources_status = "Pendiente";
 
         $imagenes = $request->file('file');
+        $pathLogo = null;
         if ($imagenes == null) {
             $imagenes = null;
         } else {
@@ -169,15 +170,18 @@ class RequestController extends Controller
             foreach ($imagenes as $imagen) {
 
                 $n = $imagen->getClientOriginalName();
+                // dd($n);
                 $nombreImagen = time() . ' ' . Str::slug($n);
-                $imagen->move(public_path('storage/images/'), $nombreImagen);
-                array_push($namesImagenes, 'storage/images/' . $nombreImagen);
+                $pathLogo = 'storage/archivos/' . $nombreImagen;
+                $imagen->move(public_path('storage/archivos'), $nombreImagen);
+
+                array_push($namesImagenes, 'public/storage/images/' . $nombreImagen);
             }  # code...
         }
 
 
 
-        $req->doc_permiso = $imagen;
+        $req->doc_permiso = $pathLogo;
 
         $req->save();
 
@@ -196,7 +200,37 @@ class RequestController extends Controller
 
         return redirect()->action([RequestController::class, 'index']);
     }
+    public function cargarArchivo(Request $request, ModelsRequest $modelRequest)
+    {
+        $user = auth()->user()->id;
+        $verModelos = ModelsRequest::where('employee_id', $user)->get();
+        foreach ($verModelos as $verModer) {
+            # code...
 
+            if ($request->hasFile('archivo')) {
+                $archivo = $request->file('archivo');
+                $nombreArchivo = $archivo->getClientOriginalName();
+                $archivo->storeAs('archivos', $nombreArchivo, 'public'); // Almacena en storage/app/public/archivos
+
+                if ($verModer->doc_permiso == null) {
+
+                    $verModer->update(['doc_permiso' => 'archivos/' . $nombreArchivo]);
+                    $verModer->save();
+                } else {
+                    $verModer->doc_permiso;
+                }
+                // Actualiza el campo doc_permiso en la tabla requests
+
+
+            }
+        }
+
+
+
+        return redirect()->action([RequestController::class, 'index']);
+
+        // Redirige de nuevo a donde sea apropiado
+    }
     public function edit(ModelsRequest $request)
     {
         auth()->user()->daysSelected()->delete();

@@ -78,6 +78,7 @@
                                                 <p class="m-0">
                                                     <b>Tipo de Solicitud: </b>
                                                     {{ $request->type_request }}
+
                                                 </p>
                                                 <br>
                                                 <p class="m-0"><b>Vacaciones Disponibles</b></p>
@@ -100,7 +101,8 @@
                                                         id="diasDisponiblesEl">
                                                         {{ $vacations }} </b> </p>
                                                 @if ($request->employee->user->employee->take_expired_vacation)
-                                                    <p class="m-0"><b>{{ $vacationsExpired }} </b> dias disponibles que estan por expirar. </p>
+                                                    <p class="m-0"><b>{{ $vacationsExpired }} </b> dias disponibles
+                                                        que estan por expirar. </p>
                                                 @endif
                                                 @foreach ($dataVacations as $item)
                                                     @if ($item->dv >= 0)
@@ -254,9 +256,26 @@
                                                     <b>Tipo de Pago: </b>
                                                     {{ $request->payment }}
                                                 </p>
+                                                @if ($request->opcion)
+                                                    <p class="m-0">
+                                                        <b>Opcion: </b>
+                                                        {{ $request->opcion }}
+                                                    </p>
+                                                @endif
+
                                                 <p class="m-0">
                                                     <b>Estado: </b>
                                                     {{ $request->human_resources_status }}
+                                                </p>
+                                                <p class="m-0">
+                                                    @if ($request->doc_permiso == null)
+                                                    {{"No hay archivo"}}
+                                                    @else
+                                                    <a>Archivo</a>
+                                                    <a href="{{ $request->doc_permiso }}"
+                                                        target>{{ basename($request->doc_permiso) }}</a>
+                                                    @endif
+
                                                 </p>
                                                 <br>
                                                 <p class="m-0"> <b> Dias ausente:</b>

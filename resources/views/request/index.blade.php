@@ -110,18 +110,29 @@
                                                 <p class="m-0">
                                                     <b> Motivo: </b>{{ $request->reason }}
                                                 </p>
+                                                <p class="m-0">
+                                                    <b> Opcion: </b>{{ $request->opcion }}
+                                                </p>
                                                 @if ($request->reveal)
                                                     <p class="m-0">
                                                         <b>Apoyo durante tu ausencia:</b>
                                                         {{ $request->reveal->name . ' ' . $request->reveal->lastname }}
                                                     </p>
                                                 @endif
-                                                @if ($request->doc_permiso !== null)
+                                                @if ($request->doc_permiso == null)
+                                                    <b>No hay archivo cargado</b>
+                                                    <form action="{{ route('cargarArchivo') }}" method="POST"
+                                                        enctype="multipart/form-data">
+                                                        @csrf
+                                                        <label for="archivo">Cargar archivo:</label>
+                                                        <input type="file" name="archivo" id="archivo"
+                                                            accept=".pdf, .doc, .docx">
+                                                        <button onclick="store()">Cargar</button>
+                                                    </form>
+                                                @else
                                                     <b>Archivo</b>
                                                     <a href="{{ $request->doc_permiso }}"
                                                         target>{{ basename($request->doc_permiso) }}</a>
-                                                @else
-                                                    <b>No hay archivo cargado</b>
                                                 @endif
                                             </div>
                                             <div class="modal-footer">
