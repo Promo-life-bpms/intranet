@@ -258,8 +258,12 @@
                                                 </p>
                                                 @if ($request->opcion)
                                                     <p class="m-0">
-                                                        <b>Opcion: </b>
-                                                        {{ $request->opcion }}
+                                                        @if ($request->opcion == null)
+                                                        @else
+                                                            <b>Opcion: </b>
+                                                            {{ $request->opcion }}
+                                                        @endif
+
                                                     </p>
                                                 @endif
 
@@ -269,11 +273,12 @@
                                                 </p>
                                                 <p class="m-0">
                                                     @if ($request->doc_permiso == null)
-                                                    {{"No hay archivo"}}
+                                                        {{ 'No hay archivo' }}
                                                     @else
-                                                    <a>Archivo</a>
-                                                    <a href="{{ $request->doc_permiso }}"
-                                                        target>{{ basename($request->doc_permiso) }}</a>
+                                                        <a>Archivo</a>
+
+                                                        <a href="{{ asset('storage/archivos/' . basename($request->doc_permiso)) }}"
+                                                            target="_blank">{{ basename($request->doc_permiso) }}</a>
                                                     @endif
 
                                                 </p>

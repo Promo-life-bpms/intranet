@@ -111,7 +111,11 @@
                                                     <b> Motivo: </b>{{ $request->reason }}
                                                 </p>
                                                 <p class="m-0">
-                                                    <b> Opcion: </b>{{ $request->opcion }}
+                                                    @if ($request->opcion == null)
+                                                    @else
+                                                        <b> Opcion: </b>{{ $request->opcion }}
+                                                    @endif
+
                                                 </p>
                                                 @if ($request->reveal)
                                                     <p class="m-0">
@@ -124,15 +128,19 @@
                                                     <form action="{{ route('cargarArchivo') }}" method="POST"
                                                         enctype="multipart/form-data">
                                                         @csrf
+                                                        <input type="hidden" name="id" value="{{ $request->id }}">
                                                         <label for="archivo">Cargar archivo:</label>
                                                         <input type="file" name="archivo" id="archivo"
                                                             accept=".pdf, .doc, .docx">
-                                                        <button onclick="store()">Cargar</button>
+                                                        <button type="submit">Cargar</button>
                                                     </form>
                                                 @else
                                                     <b>Archivo</b>
-                                                    <a href="{{ $request->doc_permiso }}"
-                                                        target>{{ basename($request->doc_permiso) }}</a>
+                                                    <button>
+                                                        <a href="{{ $request->doc_permiso }}" target="_blank">
+                                                            {{ $request->doc_permiso }}
+                                                        </a>
+                                                    </button>
                                                 @endif
                                             </div>
                                             <div class="modal-footer">
