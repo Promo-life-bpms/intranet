@@ -44,7 +44,7 @@
                             </td>
                             <td>
                                 @if ($user->roles)
-                                    {{ $user->roles[0]->display_name }}
+                                    {{ isset($user->roles[0]->display_name) ? $user->roles[0]->display_name : '' }}
                                 @endif
                             </td>
                             <td>
