@@ -74,14 +74,23 @@ class RequestController extends Controller
     public function index(Request $request)
     {
         $myrequests = auth()->user()->employee->requestDone()->orderBy('created_at', "DESC")->get();
+
+
         return view('request.index', compact('myrequests'));
     }
 
     public function create()
     {
+
         // Eliminar los dias selecionados con anterioridad qie no estan ligados a un request
         auth()->user()->daysSelected()->delete();
         // Obtener dias no laborables
+        $daysWithAsuntosEscolares = RequestCalendar::join('requests', 'request_calendars.requests_id', 'requests.id')->where('employee_id', auth()->user()->id)
+            ->where('type_request', 'Atencion de asuntos personales')
+            ->select('request_calendars.start')
+            ->count();
+
+        // dd($daysWithAsuntosEscolares);
         $noworkingdays = NoWorkingDays::orderBy('day')->get();
         // Obtener dias de vacaciones
         $vacations = auth()->user()->employee->take_expired_vacation ? auth()->user()->vacationsComplete()->sum('dv') : auth()->user()->vacationsAvailables()->sum('dv');
@@ -101,7 +110,7 @@ class RequestController extends Controller
         }
 
 
-        return view('request.create', compact('noworkingdays', 'vacations', 'dataVacations', 'users'));
+        return view('request.create', compact('noworkingdays', 'vacations', 'dataVacations', 'users', 'daysWithAsuntosEscolares'));
     }
 
     public function store(Request $request)
@@ -153,6 +162,11 @@ class RequestController extends Controller
         $req->reason = $request->reason;
         $req->start = $request->start;
         $req->end = $request->end;
+        if ($req->opcion == null) {
+            $req->opcion = null;
+        } else {
+            $req->opcion = $request->opcion;
+        }
         $req->opcion = $request->opcion;
         $req->doc_permiso = $request->imagenes;
         $req->reveal_id = $request->reveal;
@@ -169,7 +183,7 @@ class RequestController extends Controller
         } else {
 
             foreach ($imagenes as $imagen) {
-                dd($imagen);
+
                 $n = $imagen->getClientOriginalName();
                 // dd($n);
                 $nombreImagen = time() . ' ' . Str::slug($n);
@@ -227,7 +241,6 @@ class RequestController extends Controller
                 $verModelo->update([
                     'doc_permiso' => 'storage/archivos/' . $nombreImagen
                 ]);
-
             }
             $verModelo->save();
         }
@@ -253,6 +266,7 @@ class RequestController extends Controller
 
         $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
 
+        dd($daysSelected);
         return view('request.edit', compact('noworkingdays', 'vacations', 'daysSelected', 'request', 'dataVacations'));
     }
 

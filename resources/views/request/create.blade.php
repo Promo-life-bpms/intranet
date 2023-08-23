@@ -203,7 +203,7 @@
                             <div class="mb-2 form-group">
 
                                 {!! Form::label('file', 'Anexa tu justificante: (opcional)') !!}
-                                {!! Form::file('file[]', ['class' => 'form-control', 'multiple' => 'multiple'] ) !!}
+                                {!! Form::file('file[]', ['class' => 'form-control', 'multiple' => 'multiple']) !!}
 
                                 @error('reason')
                                     <small>
@@ -368,6 +368,7 @@
                     let check = false;
                     //Valida si selecciona un dia no laborable
                     const dates = start.format('YYYY-MM-DD');
+
                     events.forEach(function(e) {
                         console.log(start);
                         if (dates == e.start) {
@@ -400,14 +401,19 @@
                             displayInfo('No se puede seleccionar fin de semana');
                             return false;
                         } else {
-
                             var start = $.fullCalendar.formatDate(start, "YYYY-MM-DD");
                             var end = $.fullCalendar.formatDate(end, "YYYY-MM-DD");
+
                             let canSelected = false;
-                            const maxDays = 5;
-                            const days = 3;
 
                             let dataVacationsSelected = null;
+
+                            const maxDays = 5;
+
+                            const maxDaysPerYear = 3;
+                            let daysWithAsuntosEscolares = {{ $daysWithAsuntosEscolares }};
+
+                            console.log(daysWithAsuntosEscolares);
                             switch (tipoSolicitud) {
                                 case 'Solicitar vacaciones':
 
@@ -473,17 +479,19 @@
                                     console.log(arrayDeMatrimonio);
                                     break;
                                 case 'Atencion de asuntos personales':
-                                    if (arrayDeAtencion.length < days) {
+                                    let dp = maxDaysPerYear - (daysWithAsuntosEscolares == null ? 0 :
+                                        daysWithAsuntosEscolares)
+                                    if (arrayDeAtencion.length < dp) {
                                         arrayDeAtencion.push(start)
                                         canSelected = true;
                                     } else {
                                         canSelected = false
                                         displayError('No puedes seleccionar más de 3 días');
                                     }
-                                    console.log(arrayDeAtencion);
+
                                     break;
                                 default:
-                                    console.log("Default", tipoSolicitud);
+
                                     canSelected = true
                                     break;
                             }
