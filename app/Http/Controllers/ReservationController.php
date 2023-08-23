@@ -21,7 +21,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Manager;
-
+use Exception;
 
 class ReservationController extends Controller
 {
@@ -230,40 +230,66 @@ class ReservationController extends Controller
                                               ->toArray();
             }
         
-        //CORREO PARA LOS INVITADOS DE LA REUNIÓN//
+         ///Almanecan los correos que esten  mal para posteriormente mostrarlos en los mensajes///
+        $correosInvalidosInvitados = [];
+        $correosInvalidosMasivos = [];
+        $correosInvalidosSistemas = [];
+        $correosInvalidosRecursosHumanos = [];
+ 
         foreach ($invitadosIds as $invitado) {
             $user = User::where('id', $invitado)->first();
             if ($user) {
                 $nombreUsuario = $user->name;
-                $user->notify(new NotificacionSalas($name, $nombreUsuario, $diaInicio, $LInicio, $HoraInicio, $diaFin, $LFin,
-                                                    $HoraFin, $ubica, $sala, $request->description));
+ 
+                try {
+                    // Verificar si el correo del usuario es válido antes de enviar la notificación
+                    if (filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+                        $user->notify(new NotificacionSalas($name, $nombreUsuario, $diaInicio, $LInicio, $HoraInicio, $diaFin, $LFin,
+                                                            $HoraFin, $ubica, $sala, $request->description));
+                    } else {
+                        // Agregar el correo electrónico inválido al arreglo
+                        $correosInvalidosInvitados[] = $user->email;
+                    }
+                } catch (Exception $e) {
+                    
+                }
             }
         }
-
+ 
         //CORREOS MASIVOS CUANDO UN GERENTE RESERVA TODA LA SALA//
         //Por el momento puse esos ids para hacer pruebas es el ID de Federico, Tomas  y Ana Miriam.//
         if ($request->reservation == 'Sí') {
             $users = User::where('status', 1)->get();
-
+         
             foreach ($users as $user) {
-                    $nombre = $user->name;
-                    $user->notify(new NotificacionReservaMasiva($name, $nombre, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
-                                                                $diaFin, $LFin, $HoraFin ));
+                $nombre = $user->name;
+                try {
+                    // Verificar si el correo del usuario es válido antes de enviar la notificación
+                    if (filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+                        $user->notify(new NotificacionReservaMasiva($name, $nombre, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                                                                     $diaFin, $LFin, $HoraFin ));
+                    } else {
+                        // Agregar el correo electrónico inválido al arreglo
+                        $correosInvalidosMasivos[] = $user->email;
+                    }
+                } catch (Exception $e) {
+                     
+                }
             }
-            //Por el momento esta con mi usuario para poner todos solo se debe colocar 
+            //Por el momento está con mi usuario para poner todos solo se debe colocar 
             // $topic = "/topics/PUBLICACIONES";
             $comunicado = new FirebaseNotificationController();
             $comunicado->reservationNotification($name, $diaInicio, $LInicio, $AnoInicio, $HoraInicio, $diaFin, $LFin, $AnoFin, $HoraFin);
         }
-        
+ 
         //CORREO PARA EL DEPARTAMENTO DE PROJECT MANAGER//
         $Project = User::where('id', 31)->first()->name;
         $informar = User::where('id', 31)->first();
         $informar->notify(new notificacionPJ($Project, $name, $request->title, $sala, $ubica, $diaInicio, $LInicio,
-                                             $HoraInicio, $diaFin, $LFin, $HoraFin, $request->engrave, $Participantes,
-                                             $request->chair_loan, $request->proyector,$request->description
+                                            $HoraInicio, $diaFin, $LFin, $HoraFin, $request->engrave, $Participantes,
+                                            $request->chair_loan, $request->proyector,$request->description
         ));
-
+ 
         //CORREO PARA EL DEPARTAMENTO DE RECURSOS HUMANOS PARA MATERIAL (SILLAS)//
         if ($request->chair_loan > 0) {
             //$userIDs =Department::all()->pluck('id'); // IDs DE RECURSOS HUMANOS//
@@ -277,28 +303,90 @@ class ReservationController extends Controller
                 }
             }
             foreach ($users as $userID) {
-                if($userID==6){
-                    $RH= User::where('id', $userID)->first()->name;
-                    $RecursosHumanos = User::where('id', $userID)->first();
-                    $RecursosHumanos->notify(new notificacionRH($RH, $name, $sala, $ubica, $diaInicio,$LInicio,$HoraInicio, 
-                                                                $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
+                if ($userID == 6) {
+                    $RH = User::where('id', $userID)->first();
+                    if ($RH && filter_var($RH->email, FILTER_VALIDATE_EMAIL)) {
+                        $RHName = $RH->name;
+                        try {
+                            $RH->notify(new notificacionRH($RHName, $name, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                                                           $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
+                        } catch (Exception $e) {
+                            $correosInvalidosRecursosHumanos[] = $RH->email;
+                        }
+                    } else {
+                        $correosInvalidosRecursosHumanos[] = $RH ? $RH->email : '';
+                    }
+         
                     break;
-                }                                                 
+                }
             }
             //AQUÍ SE PUEDE AGREGAR EL CORREO DE ALGÚN OTRO COLABORADOR QUE NO SEA DE RH//
-            $AD= User::where('id', 147)->first()->name;
             $ADMINISTRACION = User::where('id', 147)->first();
-            $ADMINISTRACION->notify(new notificacionRH($AD, $name, $sala, $ubica, $diaInicio,$LInicio,$HoraInicio, 
-                                                        $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
+         
+            if ($ADMINISTRACION && filter_var($ADMINISTRACION->email, FILTER_VALIDATE_EMAIL)) {
+                $AD = $ADMINISTRACION->name;
+         
+                try {
+                    $ADMINISTRACION->notify(new notificacionRH($AD, $name, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                                                                $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
+                } catch (Exception $e) {
+                    $correosInvalidosRecursosHumanos[] = $ADMINISTRACION->email;
+                }
+            } else {
+                $correosInvalidosRecursosHumanos[] = $ADMINISTRACION ? $ADMINISTRACION->email : '';
+            }
         }
+ 
         //CORREO PARA EL DEPARTAMENTO DE SISTEMAS PARA MATERIAL (PROYECTORES)//
         if ($request->proyector > 0) {
-            $SISTEMAS =User::where('id', 127)->first()->name;
-            $DS =User::where('id', 127)->first();
-
-            $DS->notify(new  notificacionSistemas ($SISTEMAS, $name, $sala, $ubica,$diaInicio,$LInicio,$HoraInicio, 
-                                                   $diaFin, $LFin, $HoraFin, $request->proyector, $request->description));
+            $SISTEMAS = User::where('id', 127)->first();
+         
+            if ($SISTEMAS && filter_var($SISTEMAS->email, FILTER_VALIDATE_EMAIL)) {
+                $DS = $SISTEMAS->name;
+         
+                try {
+                    $SISTEMAS->notify(new notificacionSistemas($DS, $name, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                                                        $diaFin, $LFin, $HoraFin, $request->proyector, $request->description));
+                } catch (Exception $e) {
+                    $correosInvalidosSistemas[] = $SISTEMAS->email;
+                }
+            } else {
+                $correosInvalidosSistemas[] = $SISTEMAS ? $SISTEMAS->email : '';
+            }
         }
+ 
+        $mensajeInvalidos = '';
+ 
+        if (!empty($correosInvalidosInvitados)) {
+            $mensajeInvalidos .= "Los siguientes emails de los invitados son incorrectos: " . implode(', ', $correosInvalidosInvitados). ', por favor comunicate con ellos para avisarles acerca de la reunión';
+        }
+         
+        if (!empty($correosInvalidosMasivos)) {
+            if (!empty($mensajeInvalidos)) {
+                $mensajeInvalidos .= ". ";
+            }
+            $mensajeInvalidos .= "Los siguientes emails son inválidos: " . implode(', ', $correosInvalidosMasivos). ", a ellos no les llegará la notificación de que se reservo toda la sala";
+        }
+         
+        if (!empty($correosInvalidosSistemas)) {
+            if (!empty($mensajeInvalidos)) {
+                $mensajeInvalidos .= ". "; // Agregar un salto de línea si ya hay un mensaje
+            }
+            $mensajeInvalidos .= "El email del área de Sistemas es incorrecto: " . implode(', ', $correosInvalidosSistemas). ', es importante que te comuniques con el encargado del área para solicitar el proyector';
+        }
+         
+        if (!empty($correosInvalidosRecursosHumanos)) {
+            if (!empty($mensajeInvalidos)) {
+                 $mensajeInvalidos .= ". "; // Agregar un salto de línea si ya hay un mensaje
+            }
+            $mensajeInvalidos .= "Los siguientes emails de RH son incorrectos: " . implode(', ', $correosInvalidosRecursosHumanos). ", comunicate con RH para solicitar las sillas.";
+        }
+         
+        // Mostrar el mensaje de sesión si hay correos electrónicos inválidos
+        if (!empty($mensajeInvalidos)) {
+            return redirect()->back()->with('message2', $mensajeInvalidos);
+        }
+ 
         return redirect()->back()->with('message', "Reservación creada correctamente.");
     }
     //////////////////////////////////////////////FUNCIÓN PARA EDITAR/////////////////////////////////////////////////
@@ -487,12 +575,29 @@ class ReservationController extends Controller
             $nombres[] = $nombre;  
             $guest= implode(',',$nombres);
         }
+
+        $correosInvalidosEdit = [];
+        $correosInvalidosMasivosEdit = [];
+        $correosInvalidosRecursosHumanos = [];
+        $correosInvalidosSistemas=[];
+
         //CORREO PARA LOS INVIDATOS DE LA REUNIÓN//
-        foreach($array as $invitado){
-            $nombre= User::where('id', $invitado)->first()->name;
-            $notificacion = User::where('id', $invitado)->first();
-            $notificacion->notify(new NotificacionEdit ($name, $nombre, $diaInicio,$LInicio,$HoraInicio, $diaFin, $LFin, 
-                                                        $HoraFin, $ubica, $names, $request->description));
+        foreach ($array as $invitado) {
+            $user = User::where('id', $invitado)->first();
+
+            if ($user && filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+                $nombre = $user->name;
+                
+                try {
+                    $user->notify(new NotificacionEdit($name, $nombre, $diaInicio, $LInicio, $HoraInicio, $diaFin, $LFin, 
+                                               $HoraFin, $ubica, $names, $request->description));
+                                            
+                } catch (Exception $e) {
+                    $correosInvalidosEdit[] = $user->email;
+                }
+            } else {
+                $correosInvalidosEdit[] = $user ? $user->email : '';
+            }
         }
 
         ///SON PARA LOS CORREOS MASIVOS///
@@ -500,14 +605,24 @@ class ReservationController extends Controller
         if ($request->reservation == 'Sí') {
             $users = User::where('status', 1)->get();
             foreach ($users as $user) {
-                    $nombre = $user->name;
-                    $user->notify(new NotificacionReservaMasivaEdit($name, $nombre, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
-                                                                $diaFin, $LFin, $HoraFin ));
+                if (filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+                     $nombre = $user->name;
+                    try {
+                        $user->notify(new NotificacionReservaMasivaEdit($name, $nombre, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                                                                $diaFin, $LFin, $HoraFin));
+                    } catch (Exception $e) {
+                        $correosInvalidosMasivosEdit[] = $user->email;
+                    }
+                
+                } else {
+                    $correosInvalidosMasivosEdit[] = $user->email;
+                }
             }
+
             //Por el momento esta con mi usuario para poner todos solo se debe colocar 
             // $topic = "/topics/PUBLICACIONES";
             $comunicado = new FirebaseNotificationController();
-            $comunicado->reservationNotificationedit($name, $diaInicio, $LInicio,$AnoInicio,$HoraInicio, $diaFin, $LFin,$AnoFin, $HoraFin);
+            $comunicado->reservationNotificationedit($name, $diaInicio, $LInicio, $AnoInicio, $HoraInicio, $diaFin, $LFin, $AnoFin, $HoraFin);
         }
 
         //CORREO PARA EL DEPARTAMENTO DE PROJECT MANAGER//
@@ -529,29 +644,91 @@ class ReservationController extends Controller
                     $users["{$emp->user->id}"] = $emp->user->id;
                 }
             }
-
             foreach ($users as $userID) {
-                if ($userID == 6) { // RESTRICCION PARA ENVIAR EL CORREO SOLO A DENISSE//
-                    $RH = User::where('id', $userID)->first()->name;
-                    $RecursosHumanos = User::where('id', $userID)->first();
-                    $RecursosHumanos->notify(new notificacionRHEdit($RH, $name, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, $diaFin, $LFin, 
-                                                                    $HoraFin, $request->chair_loan, $request->description));
-                    break; // Terminar el bucle después de enviar el correo al ID 6
+                if ($userID == 6) {
+                    $RH = User::where('id', $userID)->first();
+        
+                    if ($RH && filter_var($RH->email, FILTER_VALIDATE_EMAIL)) {
+                        $RHName = $RH->name;
+        
+                        try {
+                            $RH->notify(new notificacionRHEdit($RHName, $name, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                                                           $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
+                        } catch (Exception $e) {
+                            $correosInvalidosRecursosHumanos[] = $RH->email;
+                        }
+                    } else {
+                        $correosInvalidosRecursosHumanos[] = $RH ? $RH->email : '';
+                    }
+        
+                    break;
                 }
             }
             //AQUÍ SE PUEDE AGREGAR EL CORREO DE ALGÚN OTRO COLABORADOR QUE NO SEA DE RH//
-            $AD= User::where('id', 147)->first()->name;
             $ADMINISTRACION = User::where('id', 147)->first();
-            $ADMINISTRACION->notify(new notificacionRHEdit($AD, $name, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, $diaFin, $LFin, 
-                                                           $HoraFin, $request->chair_loan, $request->description));
+        
+            if ($ADMINISTRACION && filter_var($ADMINISTRACION->email, FILTER_VALIDATE_EMAIL)) {
+                $AD = $ADMINISTRACION->name;
+        
+                try {
+                    $ADMINISTRACION->notify(new notificacionRHEdit($AD, $name, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                                                                $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
+                } catch (Exception $e) {
+                    $correosInvalidosRecursosHumanos[] = $ADMINISTRACION->email;
+                }
+            } else {
+                $correosInvalidosRecursosHumanos[] = $ADMINISTRACION ? $ADMINISTRACION->email : '';
+            }
         }
 
         //CORREO PARA EL DEPARTAMENTO DE SISTEMAS PARA MATERIAL (PROYECTORES)//
         if ($request->proyector > 0) {
-            $SISTEMAS =User::where('id', 127)->first()->name;
-            $DS =User::where('id', 127)->first();
-            $DS->notify(new  notificacionSistemasEdit ($SISTEMAS, $name, $names, $ubica,$diaInicio,$LInicio,$HoraInicio, $diaFin, $LFin, 
-                                                       $HoraFin, $request->proyector, $request->description));
+            $SISTEMAS = User::where('id', 127)->first();
+        
+            if ($SISTEMAS && filter_var($SISTEMAS->email, FILTER_VALIDATE_EMAIL)) {
+                $DS = $SISTEMAS->name;
+        
+                try {
+                    $SISTEMAS->notify(new notificacionSistemasEdit($DS, $name, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                                                         $diaFin, $LFin, $HoraFin, $request->proyector, $request->description));
+                } catch (Exception $e) {
+                    $correosInvalidosSistemas[] = $SISTEMAS->email;
+                }
+            } else {
+                $correosInvalidosSistemas[] = $SISTEMAS ? $SISTEMAS->email : '';
+            }
+        }
+
+        $mensajeInvalidos = '';
+
+        if (!empty($correosInvalidosEdit)) {
+            $mensajeInvalidos .= "Los siguientes emails de los invitados son incorrectos: " . implode(', ', $correosInvalidosEdit). '; por favor comunicate con el área de soporte.';
+        }
+        
+        if (!empty($correosInvalidosMasivosEdit)) {
+            if (!empty($mensajeInvalidos)) {
+                $mensajeInvalidos .= ". ";
+            }
+            $mensajeInvalidos .= "Los siguientes emails son inválidos: " . implode(', ', $correosInvalidosMasivosEdit). "; por favor comunicate con el área de soporte.";
+        }
+        
+        if (!empty($correosInvalidosSistemas)) {
+            if (!empty($mensajeInvalidos)) {
+                $mensajeInvalidos .= ". ";
+            }
+            $mensajeInvalidos .= "El email del área de Sistemas es incorrecto: " . implode(', ', $correosInvalidosSistemas). ', es importante que te comuniques con el encargado del área para solicitar el proyector';
+        }
+        
+        if (!empty($correosInvalidosRecursosHumanos)) {
+            if (!empty($mensajeInvalidos)) {
+                $mensajeInvalidos .= ". "; 
+            }
+            $mensajeInvalidos .= "Los siguientes emails de RH son incorrectos: " . implode(', ', $correosInvalidosRecursosHumanos). ", comunicate con RH para solicitar las sillas.";
+        }
+        
+        // Mostrar el mensaje de sesión si hay correos electrónicos inválidos
+        if (!empty($mensajeInvalidos)) {
+            return redirect()->back()->with('message2', $mensajeInvalidos);
         }
 
         return redirect()->back()->with('message2', "Evento editado correctamente.");
