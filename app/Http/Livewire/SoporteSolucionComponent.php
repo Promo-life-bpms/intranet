@@ -21,7 +21,7 @@ class SoporteSolucionComponent extends Component
 {
     use WithPagination;
     public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes, $usuario_reasignacion, $tiempo, $estrellas,
-        $comments, $prioridad, $time_special,$especial,$prioridadID,$nombre,$apellido,$departamento;
+        $comments, $prioridad, $time_special,$especial,$prioridadID,$nombre,$apellido,$departamento,$status_id;
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['ocultarBoton'];
 
@@ -43,6 +43,7 @@ class SoporteSolucionComponent extends Component
             'all_tickets' => $all_tickets,
         ], compact('users', 'ticketReasignado', 'priority'));
     }
+
     public function enProceso($id)
     {
 
@@ -71,6 +72,7 @@ class SoporteSolucionComponent extends Component
         // $support_solution= new FirebaseNotificationController();
         // $support_solution->supportInProgress($actualizar_status->name,$user->id);
     }
+
     public function verTicket($id)
     {
 
@@ -91,6 +93,7 @@ class SoporteSolucionComponent extends Component
         $this->name = $ticket->name;
         $this->data = $ticket->data;
         $this->categoria = $ticket->category->name;
+        $this->status_id=$ticket->status_id;
         $this->dispatchBrowserEvent('cargar');
         
     }
@@ -139,7 +142,6 @@ class SoporteSolucionComponent extends Component
         // $support_solution=new FirebaseNotificationController();
         // $support_solution->supportSolution($ticket->name,$usuario->id);
     }
-
 
     public function mensaje()
     {
@@ -222,12 +224,11 @@ class SoporteSolucionComponent extends Component
         // $support_reassignment->supportReassignment(auth()->user()->name,$user->id);
     }
 
-    
     public function time()
     {
 
         $ticket = Ticket::find($this->ticket_id);
-        $usuario = $ticket->user;
+        
 
         $this->validate([
             'tiempo' => 'required'
@@ -235,7 +236,8 @@ class SoporteSolucionComponent extends Component
 
         $ticket->update(
             [
-                'priority_id' => $this->tiempo
+                'priority_id' => $this->tiempo,
+                'status_id'=>2
             ]
         );
 
@@ -247,7 +249,6 @@ class SoporteSolucionComponent extends Component
         ]);
         $this->dispatchBrowserEvent('Tiempo');
     }
-
 
     public function special()
     {
@@ -273,8 +274,6 @@ class SoporteSolucionComponent extends Component
         $this->time_special='';
     }
 
-
-    //Agregando funcion finalizar ticket en soporte_solucion
     public function finalizarTicket($id)
     {
         $actualizar_status = Ticket::find($id);
@@ -295,5 +294,6 @@ class SoporteSolucionComponent extends Component
         );
                
     }
+
 }
 
