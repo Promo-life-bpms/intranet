@@ -362,86 +362,86 @@ class RhController extends Controller
             foreach($users as $user){
                
                 if($user->userDetails !=null && $user->employee->position->department->name == $department->name){
-                    $admission = explode('-', $user->userDetails->date_down);
-                    $year = $admission[0];
-                    $mont = $admission[1];
 
-                    if($user->userDownMotive->growth_salary == true){
-                        $growth_salary = $growth_salary + 1;
-                    }
-                    
-                    if($user->userDownMotive->growth_promotion == true){
-                            $growth_promotion = $growth_promotion + 1;
-                    }
-
-                    if($user->userDownMotive->growth_activity == true){
-                        $growth_activity = $growth_activity + 1;
-                    }
-
-                    if($user->userDownMotive->climate_partnet == true){
-                        $climate_partnet = $climate_partnet + 1;
-                    }
-                    
-                    if($user->userDownMotive->climate_manager == true){
-                        $climate_manager = $climate_manager + 1;
-                    }
-
-                    if($user->userDownMotive->climate_boss == true){
-                        $climate_boss = $climate_boss + 1;
-                    }
-
-                    if($user->userDownMotive->psicosocial_workloads == true){
-                        $psicosocial_workloads = $psicosocial_workloads + 1;
-                    }
-                    
-                    if($user->userDownMotive->psicosocial_appreciation == true){
-                        $psicosocial_appreciation = $psicosocial_appreciation + 1;
-                    }
-
-                    if($user->userDownMotive->psicosocial_violence == true){
-                        $psicosocial_violence = $psicosocial_violence + 1;
-                    }
-
-                    if($user->userDownMotive->psicosocial_workday == true){
-                        $psicosocial_workday = $psicosocial_workday + 1;
-                    }
-
-                    if($user->userDownMotive->demographics_distance == true){
-                        $demographics_distance = $demographics_distance + 1;
-                    }
-                    
-                    if($user->userDownMotive->demographics_physical == true){
-                        $demographics_physical = $demographics_physical + 1;
-                    }
-
-                    if($user->userDownMotive->demographics_personal == true){
-                        $demographics_personal = $demographics_personal + 1;
-                    }
+                    if(isset( $user->userDownMotive->growth_salary)){
+                        if($user->userDownMotive->growth_salary == true){
+                            $growth_salary = $growth_salary + 1;
+                        }
                         
-                    if($user->userDownMotive->demographics_school == true){
-                        $demographics_school = $demographics_school + 1;
-                    }
-
-                    if($user->userDownMotive->health_personal == true){
-                        $health_personal = $health_personal + 1;
+                        if($user->userDownMotive->growth_promotion == true){
+                                $growth_promotion = $growth_promotion + 1;
+                        }
+    
+                        if($user->userDownMotive->growth_activity == true){
+                            $growth_activity = $growth_activity + 1;
+                        }
+    
+                        if($user->userDownMotive->climate_partnet == true){
+                            $climate_partnet = $climate_partnet + 1;
+                        }
+                        
+                        if($user->userDownMotive->climate_manager == true){
+                            $climate_manager = $climate_manager + 1;
+                        }
+    
+                        if($user->userDownMotive->climate_boss == true){
+                            $climate_boss = $climate_boss + 1;
+                        }
+    
+                        if($user->userDownMotive->psicosocial_workloads == true){
+                            $psicosocial_workloads = $psicosocial_workloads + 1;
+                        }
+                        
+                        if($user->userDownMotive->psicosocial_appreciation == true){
+                            $psicosocial_appreciation = $psicosocial_appreciation + 1;
+                        }
+    
+                        if($user->userDownMotive->psicosocial_violence == true){
+                            $psicosocial_violence = $psicosocial_violence + 1;
+                        }
+    
+                        if($user->userDownMotive->psicosocial_workday == true){
+                            $psicosocial_workday = $psicosocial_workday + 1;
+                        }
+    
+                        if($user->userDownMotive->demographics_distance == true){
+                            $demographics_distance = $demographics_distance + 1;
+                        }
+                        
+                        if($user->userDownMotive->demographics_physical == true){
+                            $demographics_physical = $demographics_physical + 1;
+                        }
+    
+                        if($user->userDownMotive->demographics_personal == true){
+                            $demographics_personal = $demographics_personal + 1;
+                        }
+                            
+                        if($user->userDownMotive->demographics_school == true){
+                            $demographics_school = $demographics_school + 1;
+                        }
+    
+                        if($user->userDownMotive->health_personal == true){
+                            $health_personal = $health_personal + 1;
+                        }
+                        
+                        if($user->userDownMotive->health_familiar == true){
+                            $health_familiar = $health_familiar + 1;
+                        }
+    
+    
+                        if($user->userDownMotive->other_motive != null){
+                            $other_motive = $other_motive + 1;
+                        }
+            
+                        if($start == null && $end == null){
+                            $total_users = $total_users + 1;
+                            $type = "No filtrada";
+                        }elseif($user->userDetails != null && $user->userDetails->date_down >= $start && $user->userDetails->date_down <= $end){ 
+                            $total_users = $total_users + 1;
+                            $type = "Filtrada";
+                        }
                     }
                     
-                    if($user->userDownMotive->health_familiar == true){
-                        $health_familiar = $health_familiar + 1;
-                    }
-
-
-                    if($user->userDownMotive->other_motive != null){
-                        $other_motive = $other_motive + 1;
-                    }
-        
-                    if($start == null && $end == null){
-                        $total_users = $total_users + 1;
-                        $type = "No filtrada";
-                    }elseif($user->userDetails != null && $user->userDetails->date_down >= $start && $user->userDetails->date_down <= $end){ 
-                        $total_users = $total_users + 1;
-                        $type = "Filtrada";
-                    }
                 }
             }
 
