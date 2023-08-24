@@ -495,6 +495,7 @@
                                     canSelected = true
                                     break;
                             }
+
                             /*     if (tipoSolicitud == 'Solicitar vacaciones') {
                                     if (daysAvailablesToTake > 0) {
                                         if (vacationsExpirations.length == 2) {

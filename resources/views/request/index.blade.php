@@ -73,7 +73,6 @@
                                             <div class="modal-body text-left">
                                                 <p class="m-0"><b> Dias ausente:</b>
                                                     @foreach ($request->requestdays as $day)
-                                                        {{ $request->requestdays }}
                                                         @php
                                                             $dayFormater = \Carbon\Carbon::parse($day->start);
                                                         @endphp

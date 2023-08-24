@@ -75,6 +75,7 @@ class RequestController extends Controller
     {
         $myrequests = auth()->user()->employee->requestDone()->orderBy('created_at', "DESC")->get();
 
+        //dd($day);
 
         return view('request.index', compact('myrequests'));
     }
@@ -266,7 +267,7 @@ class RequestController extends Controller
 
         $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
 
-        dd($daysSelected);
+
         return view('request.edit', compact('noworkingdays', 'vacations', 'daysSelected', 'request', 'dataVacations'));
     }
 
