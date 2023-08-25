@@ -18,127 +18,125 @@
                         <th scope="col">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>   
-                    @if (auth()->user()->id === 127)                    
-                    @foreach ($all_tickets as $tickets)
-                        <tr>
-                            <th scope="row">{{ $loop->iteration }}</th>
-                            <td>{{ $tickets->user->name }} {{ $tickets->user->lastname }}</td>
-                            <td>{{ $tickets->name }}</td>
-                            <td class="col-2">{{ $tickets->category->name }}</td>
-                            <td class="col-2">
-                                @if ($tickets->status->name == 'Resuelto')
-                                    <div class="alert-sm alert-success rounded-3" role="alert">
-                                        {{ $tickets->status->name }}</div>
-                                @elseif ($tickets->status->name == 'Creado')
-                                    <div class="alert-sm alert-info rounded-3" role="alert">
-                                        {{ $tickets->status->name }}</div>
-                                @elseif ($tickets->status->name == 'En proceso')
-                                    <div class="alert-sm alert-primary rounded-3" role="alert">
-                                        {{ $tickets->status->name }}</div>
-                                @elseif ($tickets->status->name == 'Ticket Cerrado')
-                                    <div class="alert-sm alert-warning rounded-3" role="alert">
-                                        {{ $tickets->status->name }}</div>
-                                @endif
-                            </td>
-                            <td>
-                                @if ($tickets->status_id)
-                                    @if ($tickets->status_id === 4)
-                                        <button data-bs-toggle="modal" data-bs-target="#ModalAgregar{{ $tickets->id }}"
-                                            type="button" class="btn btn-success btn-sm "
-                                            wire:click="verTicket({{ $tickets->id }})"style="background: rgb(0, 128, 128)" ><i
-                                                class="bi bi-eye"></i></button>
-                                    @else
-                                        <button data-bs-toggle="modal" data-bs-target="#ModalAgregar"
-                                            type="button" class="btn btn-sm "
-                                            wire:click="verTicket({{ $tickets->id }})" style="background: rgb(0, 128, 128)"><i
-                                                class="bi bi-eye" style="color: aliceblue"></i></button>
-                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#Modalasignacion"
-                                            wire:click="verTicket({{ $tickets->id }})">
-                                            <i class="bi bi-person-fill"></i>
-                                        </button>
-                                        {{-- <button id="btnModalPrioridad" type="button" class="btn btn-info btn-sm"
+                <tbody>
+                    @if (auth()->user()->id === 127)
+                        @foreach ($all_tickets as $tickets)
+                            <tr>
+                                <th scope="row">{{ $tickets->id }}</th>
+                                <td>{{ $tickets->user->name }} {{ $tickets->user->lastname }}</td>
+                                <td>{{ $tickets->name }}</td>
+                                <td class="col-2">{{ $tickets->category->name }}</td>
+                                <td class="col-2">
+                                    @if ($tickets->status->name == 'Resuelto')
+                                        <div class="alert-sm alert-success rounded-3" role="alert">
+                                            {{ $tickets->status->name }}</div>
+                                    @elseif ($tickets->status->name == 'Creado')
+                                        <div class="alert-sm alert-info rounded-3" role="alert">
+                                            {{ $tickets->status->name }}</div>
+                                    @elseif ($tickets->status->name == 'En proceso')
+                                        <div class="alert-sm alert-primary rounded-3" role="alert">
+                                            {{ $tickets->status->name }}</div>
+                                    @elseif ($tickets->status->name == 'Ticket Cerrado')
+                                        <div class="alert-sm alert-warning rounded-3" role="alert">
+                                            {{ $tickets->status->name }}</div>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($tickets->status_id)
+                                        @if ($tickets->status_id === 4)
+                                            <button data-bs-toggle="modal"
+                                                data-bs-target="#ModalAgregar{{ $tickets->id }}" type="button"
+                                                class="btn btn-success btn-sm "
+                                                wire:click="verTicket({{ $tickets->id }})"style="background: rgb(0, 128, 128)"><i
+                                                    class="bi bi-eye"></i></button>
+                                        @else
+                                            <button data-bs-toggle="modal" data-bs-target="#ModalAgregar" type="button"
+                                                class="btn btn-sm " wire:click="verTicket({{ $tickets->id }})"
+                                                style="background: rgb(0, 128, 128)"><i class="bi bi-eye"
+                                                    style="color: aliceblue"></i></button>
+                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#Modalasignacion"
+                                                wire:click="verTicket({{ $tickets->id }})">
+                                                <i class="bi bi-person-fill"></i>
+                                            </button>
+                                            {{-- <button id="btnModalPrioridad" type="button" class="btn btn-info btn-sm"
                                             data-bs-toggle="modal" data-bs-target="#Modalprioridad{{ $tickets->id }}"
                                             wire:click="verTicket({{ $tickets->id }})">
                                             <i class="bi bi-clock"></i>
                                         </button> --}}
-                                        <button type="button" class="btn  btn-sm"
-                                        onclick="finalizar({{ $tickets->id }})" style="background: rgb(241, 196, 15 )"><i
-                                            class="bi bi-check-square" style="color: aliceblue"  ></i></button>
+                                            <button type="button" class="btn  btn-sm"
+                                                onclick="finalizar({{ $tickets->id }})"
+                                                style="background: rgb(241, 196, 15 )"><i class="bi bi-check-square"
+                                                    style="color: aliceblue"></i></button>
+                                        @endif
                                     @endif
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
+                                </td>
+                            </tr>
+                        @endforeach
                 </tbody>
             </table>
-                    @else
-                    @foreach ($solucion as $tickets)
-                        <tr>
-                            <th scope="row">{{ $loop->iteration }}</th>
-                            <td>{{ $tickets->user->name }} {{ $tickets->user->lastname }}</td>
-                            <td>{{ $tickets->name }}</td>
-                            <td class="col-2">{{ $tickets->category->name }}</td>
-                            <td class="col-2">
-                                @if ($tickets->status->name == 'Resuelto')
-                                    <div class="alert-sm alert-success rounded-3" role="alert">
-                                        {{ $tickets->status->name }}</div>
-                                @elseif ($tickets->status->name == 'Creado')
-                                    <div class="alert-sm alert-info rounded-3" role="alert">
-                                        {{ $tickets->status->name }}</div>
-                                @elseif ($tickets->status->name == 'En proceso')
-                                    <div class="alert-sm alert-primary rounded-3" role="alert">
-                                        {{ $tickets->status->name }}</div>
-                                @elseif ($tickets->status->name == 'Ticket Cerrado')
-                                    <div class="alert-sm alert-warning rounded-3" role="alert">
-                                        {{ $tickets->status->name }}</div>
-                                @endif
-                            </td>
-                            <td>
-                                @if ($tickets->status_id)
-                                    @if ($tickets->status_id === 4)
-                                    <button data-bs-toggle="modal" data-bs-target="#ModalAgregar"
-                                        type="button" class="btn btn-success btn-sm " style="background: rgb(0, 128, 128)"
-                                        wire:click="verTicket({{ $tickets->id }})"><i
-                                            class="bi bi-eye"></i></button>
-                                    @else
-                                    {{-- <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
+        @else
+            @foreach ($solucion as $tickets)
+                <tr>
+                    <th scope="row">{{ $tickets->id }}</th>
+                    <td>{{ $tickets->user->name }} {{ $tickets->user->lastname }}</td>
+                    <td>{{ $tickets->name }}</td>
+                    <td class="col-2">{{ $tickets->category->name }}</td>
+                    <td class="col-2">
+                        @if ($tickets->status->name == 'Resuelto')
+                            <div class="alert-sm alert-success rounded-3" role="alert">
+                                {{ $tickets->status->name }}</div>
+                        @elseif ($tickets->status->name == 'Creado')
+                            <div class="alert-sm alert-info rounded-3" role="alert">
+                                {{ $tickets->status->name }}</div>
+                        @elseif ($tickets->status->name == 'En proceso')
+                            <div class="alert-sm alert-primary rounded-3" role="alert">
+                                {{ $tickets->status->name }}</div>
+                        @elseif ($tickets->status->name == 'Ticket Cerrado')
+                            <div class="alert-sm alert-warning rounded-3" role="alert">
+                                {{ $tickets->status->name }}</div>
+                        @endif
+                    </td>
+                    <td>
+                        @if ($tickets->status_id)
+                            @if ($tickets->status_id === 4)
+                                <button data-bs-toggle="modal" data-bs-target="#ModalAgregar" type="button"
+                                    class="btn btn-success btn-sm " style="background: rgb(0, 128, 128)"
+                                    wire:click="verTicket({{ $tickets->id }})"><i class="bi bi-eye"></i></button>
+                            @else
+                                {{-- <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
                                         type="button" class="btn btn-success btn-sm "
                                         wire:click="verTicket({{ $tickets->id }})"><i
                                         class="bi bi-eye"></i></button> --}}
 
-                                        <button data-bs-toggle="modal" data-bs-target="#ModalAgregar"
-                                        type="button" class="btn btn-success btn-sm " style="background: rgb(0, 128, 128)"
-                                        wire:click="verTicket({{ $tickets->id }})"><i
-                                            class="bi bi-eye"></i></button>
+                                <button data-bs-toggle="modal" data-bs-target="#ModalAgregar" type="button"
+                                    class="btn btn-success btn-sm " style="background: rgb(0, 128, 128)"
+                                    wire:click="verTicket({{ $tickets->id }})"><i class="bi bi-eye"></i></button>
 
-                                        {{-- <button id="btnModalPrioridad" type="button" class="btn btn-info btn-sm"
+                                {{-- <button id="btnModalPrioridad" type="button" class="btn btn-info btn-sm"
                                                 data-bs-toggle="modal" data-bs-target="#Modalprioridad"
                                                 wire:click="verTicket({{ $tickets->id }})">
                                                 <i class="bi bi-clock"></i>                                        
                                         </button> --}}
-                                      
-                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#Modalasignacion"
-                                                wire:click="verTicket({{ $tickets->id }})">
-                                                <i class="bi bi-person-fill"></i>
-                                         </button>
-                                        <button type="button" class="btn btn-warning btn-sm"
-                                        onclick="finalizar({{ $tickets->id }})" style="background: rgb(241, 196, 15 )"><i
-                                            class="bi bi-check-square" style="color: aliceblue" ></i></button>
 
-                                    @endif
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#Modalasignacion" wire:click="verTicket({{ $tickets->id }})">
+                                    <i class="bi bi-person-fill"></i>
+                                </button>
+                                <button type="button" class="btn btn-warning btn-sm"
+                                    onclick="finalizar({{ $tickets->id }})" style="background: rgb(241, 196, 15 )"><i
+                                        class="bi bi-check-square" style="color: aliceblue"></i></button>
+                            @endif
+                        @endif
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
             </table>
             <div class="d-flex justify-content-center">
                 {{ $solucion->links() }}
             </div>
-                @endif                    
+            @endif
         </div>
     </div>
 
@@ -150,12 +148,13 @@
 
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation" wire:ignore>
-                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
-                                type="button" role="tab" aria-controls="home" aria-selected="true">Ticket</button>
+                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                                data-bs-target="#home" type="button" role="tab" aria-controls="home"
+                                aria-selected="true">Ticket</button>
                         </li>
                         <li class="nav-item" role="presentation" wire:ignore>
-                            <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial"
-                                type="button" role="tab" aria-controls="historial"
+                            <button class="nav-link" id="historial-tab" data-bs-toggle="tab"
+                                data-bs-target="#historial" type="button" role="tab" aria-controls="historial"
                                 aria-selected="false">Historial</button>
                         </li>
                         <li class="nav-item" role="presentation" wire:ignore>
@@ -173,88 +172,94 @@
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body"> 
+                <div class="modal-body">
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel"
-                            aria-labelledby="home-tab" wire:ignore.self>                                                    
+                            aria-labelledby="home-tab" wire:ignore.self>
                             <form method="POST">
-                                @csrf                                                                                                                                  
-                                        <p><span class="fw-bold ">Usuario :</span> <span
-                                            class=""> {{ $nombre }} {{ $apellido }}</span>
+                                @csrf
 
-                                            @if ($status_id === 4)                                                
-                                            @else
+                                <p><span class="fw-bold ">Creado :</span> <span class="">
+                                        {{ $ticket_creado }}</span>
+                                        @if ($status_id === 4)
+                                        @else
                                             <button id="btnModalPrioridad" type="button" class="btn btn-info btn-sm"
-                                                data-bs-toggle="modal" data-bs-target="#Modalprioridad{{ $ticket_id }}  "
-                                                wire:click="verTicket({{ $ticket_id }})"> <i class="bi bi-clock"></i>                                        
-                                            </button>                                            
-                                            @endif
-                                        </p>
-                                                                                                    
-            
-                                         <p><span class="fw-bold ">Departamento :</span> <span
-                                            class="">{{$departamento}}</span>
-                                         </p>
-        
-                                        <p><span class="fw-bold ">Categoría :</span> <span
-                                                class="">{{ $categoria }}</span></p>
-        
-                                
-                                    
-                                    @if ($prioridad == '00:00:00')
-                                    @elseif ($prioridad == '01:00:00' || $prioridad == '03:00:00' || $prioridad == '05:00:00')
-                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                                    class="badge bg-info text-dark">{{ $prioridad }}</span></span></p>
-                                    @endif
-    
-                                    @if ($especial)
-                                        @if ($especial == '24:00:00')
-                                            <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                                        class="badge bg-info text-dark">1 día</span></span></p>
-                                        @elseif ($especial == '48:00:00')
-                                            <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                                        class="badge bg-info text-dark">2 días</span></span></p>
-                                        @elseif ($especial == '72:00:00')
-                                            <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                                        class="badge bg-info text-dark">3 días</span></span></p>
-                                        @elseif ($especial == '96:00:00')
-                                            <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                                        class="badge bg-info text-dark">4 días</span></span></p>
-                                        @elseif ($especial == '120:00:00')
-                                         <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                        class="badge bg-info text-dark">5 días</span></span></p>
-                                        @elseif ($especial == '01:00:00')
-                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                        class="badge bg-info text-dark">1 hora</span></span></p>
-                                        @elseif ($especial == '02:00:00')
-                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                        class="badge bg-info text-dark">2 horas</span></span></p>
-                                        @elseif ($especial == '03:00:00')
-                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                        class="badge bg-info text-dark">3 horas</span></span></p>
-                                        @elseif ($especial == '04:00:00')
-                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                        class="badge bg-info text-dark">4 horas</span></span></p>
-                                        @elseif ($especial == '05:00:00')
-                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                        class="badge bg-info text-dark">4 horas</span></span></p>
-                                        @elseif ($especial == '06:00:00')
-                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                        class="badge bg-info text-dark">6 horas</span></span></p>
-                                        @elseif ($especial == '07:00:00')
-                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                        class="badge bg-info text-dark">7 horas</span></span></p>
-                                        @elseif ($especial == '08:00:00')
-                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                        class="badge bg-info text-dark">8 horas</span></span></p>
-                                        @elseif ($especial == '09:00:00')
-                                       <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
-                                        class="badge bg-info text-dark">9 horas</span></span></p>
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#Modalprioridad{{ $ticket_id }}  "
+                                                wire:click="verTicket({{ $ticket_id }})"> <i class="bi bi-clock"></i>
+                                            </button>
                                         @endif
+                                </p>
+
+
+                                <p><span class="fw-bold ">Usuario :</span> <span class=""> {{ $nombre }}
+                                        {{ $apellido }}</span>                                 
+                                </p>
+
+
+                                <p><span class="fw-bold ">Departamento :</span> <span
+                                        class="">{{ $departamento }}</span>
+                                </p>
+
+                                <p><span class="fw-bold ">Categoría :</span> <span
+                                        class="">{{ $categoria }}</span></p>
+
+
+
+                                @if ($prioridad == '00:00:00')
+                                @elseif ($prioridad == '01:00:00' || $prioridad == '03:00:00' || $prioridad == '05:00:00')
+                                    <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                class="badge bg-info text-dark">{{ $prioridad }}</span></span></p>
+                                @endif
+
+                                @if ($especial)
+                                    @if ($especial == '24:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">1 día</span></span></p>
+                                    @elseif ($especial == '48:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">2 días</span></span></p>
+                                    @elseif ($especial == '72:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">3 días</span></span></p>
+                                    @elseif ($especial == '96:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">4 días</span></span></p>
+                                    @elseif ($especial == '120:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">5 días</span></span></p>
+                                    @elseif ($especial == '01:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">1 hora</span></span></p>
+                                    @elseif ($especial == '02:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">2 horas</span></span></p>
+                                    @elseif ($especial == '03:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">3 horas</span></span></p>
+                                    @elseif ($especial == '04:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">4 horas</span></span></p>
+                                    @elseif ($especial == '05:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">4 horas</span></span></p>
+                                    @elseif ($especial == '06:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">6 horas</span></span></p>
+                                    @elseif ($especial == '07:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">7 horas</span></span></p>
+                                    @elseif ($especial == '08:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">8 horas</span></span></p>
+                                    @elseif ($especial == '09:00:00')
+                                        <p><span class="fw-bold">Tiempo estimado a ser resuelto: <span
+                                                    class="badge bg-info text-dark">9 horas</span></span></p>
                                     @endif
-    
-                                    <p><span class="fw-bold  ">Descripción:</span></p>
-                              
+                                @endif
+
+                                <p><span class="fw-bold  ">Descripción:</span></p>
+
 
                                 <div class="container">
                                     <p>{!! $data !!}</p>
@@ -406,7 +411,7 @@
 
                                                         <div class="card-body rounded-3  shadow " id="historial">
                                                             <div class="float-end text-dark">
-                                                                ({{ $cambio->created_at->diffForHumans()}})
+                                                                ({{ $cambio->created_at->diffForHumans() }})
                                                             </div>
                                                             <h4 class="card-title  text-green">{{ $cambio->type }}
                                                             </h4>
@@ -886,8 +891,8 @@
         </div>
     </div>
 
-    <div wire:ignore.self class="modal fade" id="Modalprioridad{{$ticket_id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true" data-bs-backdrop="static">
+    <div wire:ignore.self class="modal fade" id="Modalprioridad{{ $ticket_id }}" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1114,7 +1119,7 @@
                 title: 'mensaje enviado correctamente',
                 showConfirmButton: false,
                 timer: 1500
-            })            
+            })
             ckeEditorMensaje.setData("");
         });
 
@@ -1191,7 +1196,7 @@
                         ckeEditorMensaje.model.document.on('change', () => {
                             const content = ckeEditorMensaje.getData();
                             @this.mensajes = content
-                            console.log(content); 
+                            console.log(content);
                         });
                     })
                     .catch(error => {
@@ -1224,7 +1229,7 @@
             }
 
         }
-        
+
 
         function finalizar(id) {
             Swal.fire({

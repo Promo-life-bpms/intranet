@@ -25,7 +25,7 @@ class ListadoTicketsComponent extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $ticket_id, $name, $categoria, $data, $categorias, $actualizar_status, $ticket_solucion, $mensaje, $mensajes, $user, $score, $comments, $prioridad, $estrellas,
-    $especial;
+        $especial;
 
     public function render()
     {
@@ -48,30 +48,74 @@ class ListadoTicketsComponent extends Component
             ]
         );
 
+        // $category = Categoria::find((int) $this->categoria);
+        // $usuarios = $category->usuarios;
+        // $cantidadTicketsMenor = null;
+        // $usuariosConMenosTickets = [];
+
+        // // Encontrar usuarios con menos tickets
+        // foreach ($usuarios as $usuario) {
+        //     $cantidadTickets = $usuario->tickets->count();
+
+        //     if ($cantidadTicketsMenor === null || $cantidadTickets < $cantidadTicketsMenor) {
+        //         $cantidadTicketsMenor = $cantidadTickets;
+        //         $usuariosConMenosTickets = [$usuario];
+        //     } elseif ($cantidadTickets === $cantidadTicketsMenor) {
+        //         $usuariosConMenosTickets[] = $usuario;
+        //     }
+        // }
+
+        // if (count($usuariosConMenosTickets) > 0) {
+        //     // Elegir un usuario al azar entre aquellos con menos tickets
+        //     $usuarioConMenosTickets = $usuariosConMenosTickets[array_rand($usuariosConMenosTickets)];
+        // } else {
+        //     // Elegir un usuario al azar si no se encuentran usuarios
+        //     $usuarioConMenosTickets = $usuarios->random();
+        // }
+
         $category = Categoria::find((int) $this->categoria);
         $usuarios = $category->usuarios;
-        $cantidadTicketsMenor = null;
-        $usuariosConMenosTickets = [];
+        $usuarioConMenosTickets = null;
 
-        // Encontrar usuarios con menos tickets
+        // Verificar si el usuario con ID 127 está entre los usuarios relacionados
         foreach ($usuarios as $usuario) {
-            $cantidadTickets = $usuario->tickets->count();
-
-            if ($cantidadTicketsMenor === null || $cantidadTickets < $cantidadTicketsMenor) {
-                $cantidadTicketsMenor = $cantidadTickets;
-                $usuariosConMenosTickets = [$usuario];
-            } elseif ($cantidadTickets === $cantidadTicketsMenor) {
-                $usuariosConMenosTickets[] = $usuario;
+            if ($usuario->id === 127) {
+                $usuarioConMenosTickets = $usuario;
+                break; // Salir del bucle una vez que se encuentra el usuario con ID 127
             }
         }
 
-        if (count($usuariosConMenosTickets) > 0) {
-            // Elegir un usuario al azar entre aquellos con menos tickets
-            $usuarioConMenosTickets = $usuariosConMenosTickets[array_rand($usuariosConMenosTickets)];
-        } else {
-            // Elegir un usuario al azar si no se encuentran usuarios
-            $usuarioConMenosTickets = $usuarios->random();
+        // Si no se encontró el usuario con ID 127, encontrar al usuario con menos tickets
+        if ($usuarioConMenosTickets === null) {
+            $cantidadTicketsMenor = null;
+            $usuariosConMenosTickets = [];
+
+            // Encontrar usuarios con menos tickets
+            foreach ($usuarios as $usuario) {
+                $cantidadTickets = $usuario->tickets->count();
+
+                if ($cantidadTicketsMenor === null || $cantidadTickets < $cantidadTicketsMenor) {
+                    $cantidadTicketsMenor = $cantidadTickets;
+                    $usuariosConMenosTickets = [$usuario];
+                } elseif ($cantidadTickets === $cantidadTicketsMenor) {
+                    $usuariosConMenosTickets[] = $usuario;
+                }
+            }
+
+            if (count($usuariosConMenosTickets) > 0) {
+                // Elegir un usuario al azar entre aquellos con menos tickets
+                $usuarioConMenosTickets = $usuariosConMenosTickets[array_rand($usuariosConMenosTickets)];
+            } else {
+                // Elegir un usuario al azar si no se encuentran usuarios con menos tickets
+                $usuarioConMenosTickets = $usuarios->random();
+            }
         }
+
+        // Ahora, $usuarioConMenosTickets contendrá al usuario con ID 127 si existe,
+        // de lo contrario, contendrá al usuario con menos tickets.
+
+
+
 
         $ticket = Ticket::create([
             'name' => $this->name,
@@ -206,7 +250,7 @@ class ListadoTicketsComponent extends Component
     public function verTicket($id)
     {
         $ticket = Ticket::find($id);
-        $this->especial=$ticket->special;
+        $this->especial = $ticket->special;
         $this->estrellas = $ticket->score;
         $this->prioridad = $ticket->priority->time;
         $this->mensajes = $ticket;
@@ -298,7 +342,7 @@ class ListadoTicketsComponent extends Component
 
         $category = Categoria::find($ticket->category_id);
         $this->dispatchBrowserEvent('Encuesta');
-        $this->score='';
-        $this->comments='';
+        $this->score = '';
+        $this->comments = '';
     }
 }

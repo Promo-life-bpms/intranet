@@ -21,7 +21,7 @@ class SoporteSolucionComponent extends Component
 {
     use WithPagination;
     public $ticket_id, $name, $categoria, $data, $categorias, $description, $mensaje, $status, $historial, $usuario, $mensajes, $usuario_reasignacion, $tiempo, $estrellas,
-        $comments, $prioridad, $time_special,$especial,$prioridadID,$nombre,$apellido,$departamento,$status_id;
+        $comments, $prioridad, $time_special,$especial,$prioridadID,$nombre,$apellido,$departamento,$status_id,$ticket_creado;
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['ocultarBoton'];
 
@@ -36,7 +36,7 @@ class SoporteSolucionComponent extends Component
             ->get();
         $ticketReasignado = Ticket::where('support_id', auth()->user()->id)->get();
 
-        $all_tickets=Ticket::all();
+        $all_tickets=Ticket::whereIn('support_id',[127,155])->get();       
         return view('livewire.soporte-solucion-component', 
         [
             'solucion' => Ticket::where('support_id', auth()->user()->id)->orderBy('created_at', 'desc')->simplePaginate(15),
@@ -85,6 +85,7 @@ class SoporteSolucionComponent extends Component
         $this->nombre=$ticket->user->name;
         $this->apellido=$ticket->user->lastname;
         $this->usuario = $ticket->user;
+        $this->ticket_creado=$ticket->created_at;
         $this->departamento=$ticket->user->employee->position->department->name;
         $this->status = $ticket;
         $this->historial = $ticket;

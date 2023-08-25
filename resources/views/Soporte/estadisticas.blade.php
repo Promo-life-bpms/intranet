@@ -86,19 +86,27 @@
                 <div class="row row-cols-1 row-cols-md-2 g-2 g-md-3">
                     <div class="col">
                         <div class="card shadow card-total">
-                            <h6 class="text-center">Categoría</h6>
+                            <h6 class="text-center">Resueltos por Categoría</h6>
                         </div>
                         <canvas id="Categoria" height="200"></canvas>
                     </div>
+
                     <div class="col">
                         <div class="card shadow card-total">
-                            <h6 class="text-center">Mes</h6>
+                            <h6 class="text-center">Recibidos por categoria</h6>
+                        </div>
+                        <canvas id="CategoriaRecibidos" height="200"></canvas>
+                    </div>
+
+                    <div class="col">
+                        <div class="card shadow card-total">
+                            <h6 class="text-center">Resultos por Mes</h6>
                         </div>
                         <canvas id="Poraño" height="200"></canvas>
                     </div>
                     <div class="col">
                         <div class="card shadow card-total">
-                            <h6 class="text-center">Agente de soporte</h6>
+                            <h6 class="text-center">Recibidos por Agente de soporte</h6>
                         </div>
                         <canvas id="TicketsRecibidos" height="200"></canvas>
                     </div>
@@ -127,6 +135,7 @@
                         </div>
                         <canvas id="especiales" height="200"></canvas>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -332,6 +341,38 @@
                     }]
                 },
 
+            });
+        });
+
+
+        document.addEventListener('livewire:load', function() {
+            var ctx = document.getElementById('CategoriaRecibidos').getContext('2d');
+
+            var nombres=@json($labels);
+            var datos = @json($conteo_ticketsCategoria);
+
+            var backgroundColors = [];
+            var borderColors = [];
+
+            for (var i = 0; i < nombres.length; i++) {
+                var colorIndex = i % 5;
+                backgroundColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8'][colorIndex]);
+                borderColors.push(['#00539C', '#EEA47F', '#EE7F7F', '#006EAD', '#F5C2A8', '#FFADAD'][colorIndex]);
+            }
+
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels:nombres,
+                    datasets: [{
+                        label: 'Categorías',
+                        data: datos,
+                        backgroundColor:backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {}
             });
         });
 

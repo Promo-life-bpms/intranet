@@ -116,6 +116,12 @@ class SoporteController extends Controller
             $ticketsPorMes[] = $monthTickets->count();
         }
 
+        //tickets recibidos por categoria de
+        foreach($category as $categoria){
+            $tickets_porCategoria=Ticket::where('category_id', $categoria)->count();
+            $conteo_ticketsCategoria[]=$tickets_porCategoria;
+        }
+
         $ticketsResueltos = Ticket::where('status_id', 4)->count();
         $ticketsEnProceso = Ticket::where('status_id', 2)->count();
         $ticketsCreados = Ticket::all()->count();
@@ -138,7 +144,8 @@ class SoporteController extends Controller
             'ticketsPriority',
             'califications',
             'TotalEstrellas',
-            'Ticket_especial'
+            'Ticket_especial',
+            'conteo_ticketsCategoria'
         ));
     }
 

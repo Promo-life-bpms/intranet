@@ -22,7 +22,8 @@
                 <tbody>
                     @foreach ($tickets as $ticket)
                         <tr>
-                            <th scope="row">{{ $loop->iteration }}</th>
+                            {{-- <th scope="row">{{ $loop->iteration }}</th> --}}
+                            <th scope="row">{{$ticket->id }}</th>
                             <td>{{ $ticket->name }}</td>
                             <td class="col-2">{{ $ticket->category->name }}</td>
                             <td class="col-2">
