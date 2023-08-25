@@ -81,16 +81,15 @@ class ListadoTicketsComponent extends Component
         foreach ($usuarios as $usuario) {
             if ($usuario->id === 127) {
                 $usuarioConMenosTickets = $usuario;
-                break; // Salir del bucle una vez que se encuentra el usuario con ID 127
+                break;
             }
         }
 
-        // Si no se encontró el usuario con ID 127, encontrar al usuario con menos tickets
+   
         if ($usuarioConMenosTickets === null) {
             $cantidadTicketsMenor = null;
             $usuariosConMenosTickets = [];
 
-            // Encontrar usuarios con menos tickets
             foreach ($usuarios as $usuario) {
                 $cantidadTickets = $usuario->tickets->count();
 
@@ -103,18 +102,13 @@ class ListadoTicketsComponent extends Component
             }
 
             if (count($usuariosConMenosTickets) > 0) {
-                // Elegir un usuario al azar entre aquellos con menos tickets
+                
                 $usuarioConMenosTickets = $usuariosConMenosTickets[array_rand($usuariosConMenosTickets)];
             } else {
-                // Elegir un usuario al azar si no se encuentran usuarios con menos tickets
+                
                 $usuarioConMenosTickets = $usuarios->random();
             }
         }
-
-        // Ahora, $usuarioConMenosTickets contendrá al usuario con ID 127 si existe,
-        // de lo contrario, contendrá al usuario con menos tickets.
-
-
 
 
         $ticket = Ticket::create([

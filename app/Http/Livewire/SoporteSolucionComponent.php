@@ -36,11 +36,15 @@ class SoporteSolucionComponent extends Component
             ->get();
         $ticketReasignado = Ticket::where('support_id', auth()->user()->id)->get();
 
-        $all_tickets=Ticket::whereIn('support_id',[127,155])->get();       
+        $all_tickets=Ticket::whereIn('support_id',[127,155])->get();
+        
+        $all_Support_tickets=Ticket::all();
+
         return view('livewire.soporte-solucion-component', 
         [
             'solucion' => Ticket::where('support_id', auth()->user()->id)->orderBy('created_at', 'desc')->simplePaginate(15),
             'all_tickets' => $all_tickets,
+            'all_Support_tickets'=>$all_Support_tickets
         ], compact('users', 'ticketReasignado', 'priority'));
     }
 
