@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
 
 class RequestController extends Controller
 {
@@ -73,14 +74,24 @@ class RequestController extends Controller
     public function index(Request $request)
     {
         $myrequests = auth()->user()->employee->requestDone()->orderBy('created_at', "DESC")->get();
+
+        //dd($day);
+
         return view('request.index', compact('myrequests'));
     }
 
     public function create()
     {
+
         // Eliminar los dias selecionados con anterioridad qie no estan ligados a un request
         auth()->user()->daysSelected()->delete();
         // Obtener dias no laborables
+        $daysWithAsuntosEscolares = RequestCalendar::join('requests', 'request_calendars.requests_id', 'requests.id')->where('employee_id', auth()->user()->id)
+            ->where('type_request', 'Atencion de asuntos personales')
+            ->select('request_calendars.start')
+            ->count();
+
+        // dd($daysWithAsuntosEscolares);
         $noworkingdays = NoWorkingDays::orderBy('day')->get();
         // Obtener dias de vacaciones
         $vacations = auth()->user()->employee->take_expired_vacation ? auth()->user()->vacationsComplete()->sum('dv') : auth()->user()->vacationsAvailables()->sum('dv');
@@ -100,7 +111,7 @@ class RequestController extends Controller
         }
 
 
-        return view('request.create', compact('noworkingdays', 'vacations', 'dataVacations', 'users'));
+        return view('request.create', compact('noworkingdays', 'vacations', 'dataVacations', 'users', 'daysWithAsuntosEscolares'));
     }
 
     public function store(Request $request)
@@ -125,14 +136,26 @@ class RequestController extends Controller
             return back()->with('message', 'No puedes crear solicitudes por que no agregaste dias en el calendario');
         }
         $payment = '';
-        if ($request->type_request == "Solicitar vacaciones") {
+        /*  if ($request->type_request == "Solicitar vacaciones") {
             $payment = 'A cuenta de vacaciones';
         } else {
             $payment = 'Descontar Tiempo/Dia';
+        } */
+        switch ($request->type_request) {
+            case 'Solicitar vacaciones':
+                $payment = 'A cuenta de vacaciones';
+                break;
+            case 'Salir durante la jornada':
+                $payment = 'Descontar Tiempo/Dia';
+                break;
+            case 'Faltar a sus labores':
+                $payment = 'Descontar Tiempo/Dia';
+                break;
+            default:
+                $payment = 'Permiso especial';
+                break;
         }
-
         $user = auth()->user();
-
         $req = new ModelsRequest();
         $req->employee_id = $user->employee->id;
         $req->type_request = $request->type_request;
@@ -140,11 +163,51 @@ class RequestController extends Controller
         $req->reason = $request->reason;
         $req->start = $request->start;
         $req->end = $request->end;
+        if ($req->opcion == null) {
+            $req->opcion = null;
+        } else {
+            $req->opcion = $request->opcion;
+        }
+        $req->opcion = $request->opcion;
+        $req->doc_permiso = $request->imagenes;
         $req->reveal_id = $request->reveal;
 
         $req->direct_manager_id = $user->employee->jefe_directo_id;
         $req->direct_manager_status = "Pendiente";
         $req->human_resources_status = "Pendiente";
+
+        $imagenes = $request->file('file');
+        $namesImagenes = [];
+        // $pathLogo = null;
+        if ($imagenes == null) {
+            $imagenes = null;
+        } else {
+
+            foreach ($imagenes as $imagen) {
+
+                $n = $imagen->getClientOriginalName();
+                // dd($n);
+                $nombreImagen = time() . ' ' . Str::slug($n);
+                // $pathLogo = 'storage/archivos/' . $nombreImagen;
+                $imagen->move(public_path('storage/archivos'), $nombreImagen);
+
+                array_push($namesImagenes, 'storage/archivos/' . $nombreImagen);
+            }  # code...
+
+        }
+
+        foreach ($namesImagenes as $nameImagen) {
+
+
+            $req->doc_permiso = $nameImagen;
+        }
+
+        if ($req->doc_permiso == null) {
+            $req->doc_permiso = null;
+        } else {
+            $req->doc_permiso = $nameImagen;
+        }
+
 
         $req->save();
 
@@ -152,18 +215,44 @@ class RequestController extends Controller
         $user->daysSelected()->update(['requests_id' => $req->id]);
 
         // Enviar notificacion
-        $communique_notification = new FirebaseNotificationController();
+        /*   $communique_notification = new FirebaseNotificationController();
         $communique_notification->createRequest(strval($user->id));
         $communique_notification->sendToManager(strval($req->direct_manager_id));
 
 
         $userReceiver = Employee::find($req->direct_manager_id)->user;
         event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
-        $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
- 
+        $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname)); */
+
         return redirect()->action([RequestController::class, 'index']);
     }
+    public function cargarArchivo(Request $request, ModelsRequest $modelRequest)
+    {
 
+
+        $verModelo = ModelsRequest::where('id', $request->id)->first();
+
+        if ($request->hasFile('archivo')) {
+            $archivo = $request->file('archivo');
+            $nombreArchivo = $archivo->getClientOriginalName();
+            $nombreImagen = time() . ' ' . Str::slug($nombreArchivo);
+            $archivo->move(public_path('storage/archivos'), $nombreImagen);
+
+            if ($verModelo->doc_permiso == null) {
+                $verModelo->update([
+                    'doc_permiso' => 'storage/archivos/' . $nombreImagen
+                ]);
+            }
+            $verModelo->save();
+        }
+
+
+
+
+        return redirect()->action([RequestController::class, 'index']);
+
+        // Redirige de nuevo a donde sea apropiado
+    }
     public function edit(ModelsRequest $request)
     {
         auth()->user()->daysSelected()->delete();
@@ -177,6 +266,7 @@ class RequestController extends Controller
         }
 
         $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
+
 
         return view('request.edit', compact('noworkingdays', 'vacations', 'daysSelected', 'request', 'dataVacations'));
     }
@@ -262,6 +352,7 @@ class RequestController extends Controller
         $requests = ModelsRequest::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->whereRaw('DATE(created_at) >= ?', [$request->start])->whereRaw('DATE(created_at) <= ?', [$request->end])->get();
 
         $start = $request->start;
+
         $end = $request->end;
 
         return view('request.filter', compact('requests', 'requestDays', 'start', 'end'));

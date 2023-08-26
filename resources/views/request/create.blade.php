@@ -38,7 +38,7 @@
             $ingreso = \Carbon\Carbon::parse(auth()->user()->employee->date_admission);
             $diff = $ingreso->diffInMonths(now());
             if ($vacations > 0 && $diff > 5) {
-                $opc = ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones'];
+                $opc = ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones', 'Fallecimiento de familiar directo' => 'Fallecimiento de familiar directo', 'Matrimonio del colaborador' => 'Matrimonio del colaborador', 'Motivos academicas/escolares' => 'Motivos académicos/escolares', 'Atencion de asuntos personales' => 'Atencion de asuntos personales'];
             } else {
                 $opc = ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores'];
             }
@@ -62,6 +62,7 @@
                                     disponibles que debes tomar lo mas pronto posible.</p>
                             @endif --}}
                             <br>
+
                             @foreach ($dataVacations as $item)
                                 @if ($item->dv > 0)
                                     @php
@@ -94,7 +95,7 @@
                     {{ session('message') }}
                 </div>
             @endif
-            {!! Form::open(['route' => 'request.store']) !!}
+            {!! Form::open(['route' => 'request.store', 'enctype' => 'multipart/form-data']) !!}
             <div class="row">
                 <div class=" col-md-6">
 
@@ -142,8 +143,54 @@
                                     {!! Form::label('end', 'Ingreso (opcional) ') !!}
                                     {!! Form::time('end', null, ['class' => 'form-control']) !!}
                                 </div>
+
+                            </div>
+
+                            <div class="mb-2 form-group" id="opciones" style="display: none;">
+                                {{--  --}}
+                                {!! Form::label('opcion', 'Selecciona una opcion') !!}
+                                <div class="form-check">
+                                    {!! Form::radio('opcion', 'Conyuge', false, ['class' => 'form-check-input']) !!}
+                                    {!! Form::label('opcion1', 'Conyuge', ['class' => 'form-check-label']) !!}
+                                </div>
+                                <div class="form-check">
+                                    {!! Form::radio('opcion', 'Hijos', false, ['class' => 'form-check-input']) !!}
+                                    {!! Form::label('opcion2', 'Hijos', ['class' => 'form-check-label']) !!}
+                                </div>
+                                <div class="form-check">
+                                    {!! Form::radio('opcion', 'Padres', false, ['class' => 'form-check-input']) !!}
+                                    {!! Form::label('opcion2', 'Padres', ['class' => 'form-check-label']) !!}
+                                </div>
+                                <div class="form-check">
+                                    {!! Form::radio('opcion', 'Hermanos', false, ['class' => 'form-check-input']) !!}
+                                    {!! Form::label('opcion2', 'Hermanos', ['class' => 'form-check-label']) !!}
+                                </div>
+                                @error('reason')
+                                    <small>
+                                        <font color="red"> {{ $message }} </font>
+                                    </small>
+                                @enderror
+                            </div>
+                            <div class="mb-2 form-group" id="opcional" style="display: none;">
+
+                                {!! Form::label('opcion', 'Selecciona ') !!}
+                                <div class="form-check">
+                                    {!! Form::radio('opcion', 'Hijo(a)', false, ['class' => 'form-check-input']) !!}
+                                    {!! Form::label('opcion1', 'Hijo(a)', ['class' => 'form-check-label']) !!}
+                                </div>
+                                <div class="form-check">
+                                    {!! Form::radio('opcion', 'Colaborador(a)', false, ['class' => 'form-check-input']) !!}
+                                    {!! Form::label('opcion2', 'Colaborador(a)', ['class' => 'form-check-label']) !!}
+                                </div>
+
+                                @error('opcion')
+                                    <small>
+                                        <font color="red"> {{ $message }} </font>
+                                    </small>
+                                @enderror
                             </div>
                             <div class="mb-2 form-group">
+
                                 {!! Form::label('reason', '¿Cual es la razon de tu ausencia? (Obligatorio)') !!}
                                 <textarea name="reason" cols="30" rows="4" class="form-control"
                                     placeholder="Ingrese las razones de tu ausencia"></textarea>
@@ -153,6 +200,18 @@
                                     </small>
                                 @enderror
                             </div>
+                            <div class="mb-2 form-group">
+
+                                {!! Form::label('file', 'Anexa tu justificante: (opcional)') !!}
+                                {!! Form::file('file[]', ['class' => 'form-control', 'multiple' => 'multiple']) !!}
+
+                                @error('reason')
+                                    <small>
+                                        <font color="red"> {{ $message }} </font>
+                                    </small>
+                                @enderror
+                            </div>
+
                             <div class="mb-2 form-group">
                                 <label for="">¿Quien sera el responsable de atender tus pendientes?</label>
                                 {!! Form::select('reveal', $users, null, ['class' => 'form-control', 'placeholder' => 'Seleccione...']) !!}
@@ -182,6 +241,7 @@
             </div>
             {!! Form::close() !!}
         </div>
+
     </div>
 @stop
 
@@ -228,23 +288,22 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript">
         jQuery(document).ready(function() {
+
             // Constantes
-            const request_time = document.getElementById('request_time');
-            const SITEURL = "{{ url('/') }}";
             let noworkingdays = @json($noworkingdays);
+            const SITEURL = "{{ url('/') }}";
+            //  Dias totales de vacaciones
+            let daysAvailablesToTake = {{ $vacations }};
+            // Dias ordenados por periodo y expiracion
+            let dataVacations = @json($dataVacations);
+
+            const request_time = document.getElementById('request_time');
             let dateActual = moment().format('YYYY-MM-DD');
             // Mensaje de los dias disponibles del usuario
             const diasDisponiblesEl = document.querySelector('#diasDisponiblesEl')
-            //  Dias totales de vacaciones
-            let daysAvailablesToTake = {{ $vacations }};
             let tipoSolicitud = '';
-            // Dias ordenados por periodo y expiracion
-            let dataVacations = @json($dataVacations);
             // Selector del div del calendario
             const calendarEl = document.getElementById('calendar');
-
-            // Dias Seleccionados si guardarse en la DB
-            let daysSelecteds = new Set();
 
             // Asignacion del token a AJAX
             $.ajaxSetup({
@@ -253,32 +312,6 @@
                 }
             });
 
-            // Mostrar u ocultar los campos de hora de salida y entrada en el select de tipo de solicitud
-            jQuery('select[name="type_request"]').on('change', function() {
-                const id = jQuery(this).val();
-                tipoSolicitud = id
-                data = {}
-                if (id == "Solicitar vacaciones") {
-                    data.name = 'A cuenta de vacaciones';
-                    data.display = 'false';
-                } else if (id == "Salir durante la jornada") {
-                    data.name = 'Descontar Tiempo/Dia';
-                    data.display = 'true';
-                } else {
-                    data.name = 'Descontar Tiempo/Dia';
-                    data.display = 'false';
-                }
-
-                if (data.display == "false") {
-                    $('#request_time').addClass("d-none");
-                    $('#request_time').removeClass("d-flex");
-                } else {
-                    $('#request_time').addClass("d-flex");
-                    $('#request_time').removeClass("d-none");
-                }
-                $('.formaPago').val('');
-                $('.formaPago').val(data.name)
-            });
 
             // Asignacion de los dias no laborales
             let events = []
@@ -307,6 +340,10 @@
                 }
             })
 
+            let arrayDeMuerte = [];
+            let arrayDeMatrimonio = [];
+            let arrayDeAtencion = [];
+
             var calendar = $('#calendar').fullCalendar({
                 editable: true,
                 events: SITEURL + "/event",
@@ -331,6 +368,7 @@
                     let check = false;
                     //Valida si selecciona un dia no laborable
                     const dates = start.format('YYYY-MM-DD');
+
                     events.forEach(function(e) {
                         console.log(start);
                         if (dates == e.start) {
@@ -363,54 +401,146 @@
                             displayInfo('No se puede seleccionar fin de semana');
                             return false;
                         } else {
-                            var start = $.fullCalendar.formatDate(start, "Y-MM-DD");
-                            var end = $.fullCalendar.formatDate(end, "Y-MM-DD");
+                            var start = $.fullCalendar.formatDate(start, "YYYY-MM-DD");
+                            var end = $.fullCalendar.formatDate(end, "YYYY-MM-DD");
+
                             let canSelected = false;
+
                             let dataVacationsSelected = null;
-                            if (tipoSolicitud == 'Solicitar vacaciones') {
-                                if (daysAvailablesToTake > 0) {
-                                    if (vacationsExpirations.length == 2) {
-                                        if (start <= vacationsExpirations[0].cutoff_date && start <=
-                                            vacationsExpirations[1].cutoff_date) {
-                                            if (vacationsExpirations[0].dv > 0) {
-                                                canSelected = true
-                                                dataVacationsSelected = 0
-                                            } else if (vacationsExpirations[1].dv > 0) {
-                                                canSelected = true
-                                                dataVacationsSelected = 1
-                                            } else {
-                                                canSelected = false
-                                            }
-                                        } else if (start > vacationsExpirations[0].cutoff_date &&
-                                            start <=
-                                            vacationsExpirations[1].cutoff_date) {
-                                            if (vacationsExpirations[1].dv > 0) {
-                                                canSelected = true
-                                                dataVacationsSelected = 1
-                                            } else {
+
+                            const maxDays = 5;
+
+                            const maxDaysPerYear = 3;
+                            let daysWithAsuntosEscolares = {{ $daysWithAsuntosEscolares }};
+
+                            console.log(daysWithAsuntosEscolares);
+                            switch (tipoSolicitud) {
+                                case 'Solicitar vacaciones':
+
+                                    if (daysAvailablesToTake > 0) {
+                                        if (vacationsExpirations.length == 2) {
+                                            if (start <= vacationsExpirations[0].cutoff_date && start <=
+                                                vacationsExpirations[1].cutoff_date) {
+                                                if (vacationsExpirations[0].dv > 0) {
+                                                    canSelected = true
+                                                    dataVacationsSelected = 0
+                                                } else if (vacationsExpirations[1].dv > 0) {
+                                                    canSelected = true
+                                                    dataVacationsSelected = 1
+                                                } else {
+                                                    canSelected = false
+                                                }
+                                            } else if (start > vacationsExpirations[0].cutoff_date &&
+                                                start <=
+                                                vacationsExpirations[1].cutoff_date) {
+                                                if (vacationsExpirations[1].dv > 0) {
+                                                    canSelected = true
+                                                    dataVacationsSelected = 1
+                                                } else {
+                                                    displayAlert('No puedes seleccionar este dia')
+                                                }
+                                            } else if (start > vacationsExpirations[0].cutoff_date) {
                                                 displayAlert('No puedes seleccionar este dia')
                                             }
-                                        } else if (start > vacationsExpirations[0].cutoff_date) {
-                                            displayAlert('No puedes seleccionar este dia')
+                                        } else {
+                                            if (start <= vacationsExpirations[0].cutoff_date) {
+                                                if (vacationsExpirations[0].dv > 0) {
+                                                    canSelected = true
+                                                    dataVacationsSelected = 0
+                                                } else {
+                                                    canSelected = false
+                                                }
+                                            } else if (start > vacationsExpirations[0].cutoff_date) {
+                                                displayAlert('No puedes seleccionar este dia')
+                                            }
                                         }
                                     } else {
-                                        if (start <= vacationsExpirations[0].cutoff_date) {
-                                            if (vacationsExpirations[0].dv > 0) {
-                                                canSelected = true
-                                                dataVacationsSelected = 0
-                                            } else {
-                                                canSelected = false
+                                        displayError('No tienes dias disponibles')
+                                    }
+                                    break;
+                                case 'Fallecimiento de familiar directo':
+                                    if (arrayDeMuerte.length < maxDays) {
+                                        arrayDeMuerte.push(start)
+                                        canSelected = true;
+                                    } else {
+                                        canSelected = false
+                                        displayError('No puedes seleccionar más de 5 días');
+                                    }
+                                    console.log(arrayDeMuerte);
+                                    break;
+                                case 'Matrimonio del colaborador':
+                                    if (arrayDeMatrimonio.length < maxDays) {
+                                        arrayDeMatrimonio.push(start)
+                                        canSelected = true;
+                                    } else {
+                                        canSelected = false
+                                        displayError('No puedes seleccionar más de 5 días');
+                                    }
+                                    console.log(arrayDeMatrimonio);
+                                    break;
+                                case 'Atencion de asuntos personales':
+                                    let dp = maxDaysPerYear - (daysWithAsuntosEscolares == null ? 0 :
+                                        daysWithAsuntosEscolares)
+                                    if (arrayDeAtencion.length < dp) {
+                                        arrayDeAtencion.push(start)
+                                        canSelected = true;
+                                    } else {
+                                        canSelected = false
+                                        displayError('No puedes seleccionar más de 3 días');
+                                    }
+
+                                    break;
+                                default:
+
+                                    canSelected = true
+                                    break;
+                            }
+
+                            /*     if (tipoSolicitud == 'Solicitar vacaciones') {
+                                    if (daysAvailablesToTake > 0) {
+                                        if (vacationsExpirations.length == 2) {
+                                            if (start <= vacationsExpirations[0].cutoff_date && start <=
+                                                vacationsExpirations[1].cutoff_date) {
+                                                if (vacationsExpirations[0].dv > 0) {
+                                                    canSelected = true
+                                                    dataVacationsSelected = 0
+                                                } else if (vacationsExpirations[1].dv > 0) {
+                                                    canSelected = true
+                                                    dataVacationsSelected = 1
+                                                } else {
+                                                    canSelected = false
+                                                }
+                                            } else if (start > vacationsExpirations[0].cutoff_date &&
+                                                start <=
+                                                vacationsExpirations[1].cutoff_date) {
+                                                if (vacationsExpirations[1].dv > 0) {
+                                                    canSelected = true
+                                                    dataVacationsSelected = 1
+                                                } else {
+                                                    displayAlert('No puedes seleccionar este dia')
+                                                }
+                                            } else if (start > vacationsExpirations[0].cutoff_date) {
+                                                displayAlert('No puedes seleccionar este dia')
                                             }
-                                        } else if (start > vacationsExpirations[0].cutoff_date) {
-                                            displayAlert('No puedes seleccionar este dia')
+                                        } else {
+                                            if (start <= vacationsExpirations[0].cutoff_date) {
+                                                if (vacationsExpirations[0].dv > 0) {
+                                                    canSelected = true
+                                                    dataVacationsSelected = 0
+                                                } else {
+                                                    canSelected = false
+                                                }
+                                            } else if (start > vacationsExpirations[0].cutoff_date) {
+                                                displayAlert('No puedes seleccionar este dia')
+                                            }
                                         }
+                                    } else {
+                                        displayError('No tienes dias disponibles')
                                     }
                                 } else {
-                                    displayError('No tienes dias disponibles')
-                                }
-                            } else {
-                                canSelected = true
-                            }
+                                    canSelected = true
+                                } */
+
                             if (canSelected) {
                                 $.ajax({
                                     url: SITEURL + "/fullcalenderAjax",
@@ -495,6 +625,16 @@
                                     dataVacationsSelected = 0
                                 }
                             }
+                            if (tipoSolicitud == 'Fallecimiento de familiar directo') {
+                                arrayDeMuerte = arrayDeMuerte.filter(date => date != start)
+                            }
+                            if (tipoSolicitud == 'Matrimonio del colaborador') {
+                                arrayDeMatrimonio = arrayDeMatrimonio.filter(date => date !=
+                                    start)
+                            }
+                            if (tipoSolicitud == 'Atencion de asuntos personales') {
+                                arrayDeAtencion = arrayDeAtencion.filter(date => date != start)
+                            }
                             $.ajax({
                                 type: "POST",
                                 url: SITEURL + '/fullcalenderAjax',
@@ -520,7 +660,59 @@
                 },
 
             });
+            // Mostrar u ocultar los campos de hora de salida y entrada en el select de tipo de solicitud
+            jQuery('select[name="type_request"]').on('change', function() {
+                const id = jQuery(this).val();
+                tipoSolicitud = id
+                data = {}
+                if (id == "Solicitar vacaciones") {
+                    data.name = 'A cuenta de vacaciones';
+                    data.display = 'false';
+                } else if (id == "Salir durante la jornada") {
+                    data.name = 'Descontar Tiempo/Dia';
+                    data.display = 'true';
+
+                } else if (id == 'Faltar a sus labores') {
+                    data.name = 'Descontar Tiempo/Dia';
+                    data.display = 'false';
+                } else {
+                    data.name = 'Permiso especial';
+                    data.display = 'false';
+
+                }
+
+                if (data.display == "false") {
+                    $('#request_time').addClass("d-none");
+                    $('#request_time').removeClass("d-flex");
+                } else {
+                    $('#request_time').addClass("d-flex");
+                    $('#request_time').removeClass("d-none");
+                }
+                $('.formaPago').val('');
+                $('.formaPago').val(data.name)
+            });
+
+
+            // Show/hide the "Fallecimiento de familiar directo" radio buttons based on selection
+            jQuery('select[name="type_request"]').on('change', function() {
+                const selectedOption = jQuery(this).val();
+
+                // Show the radio buttons if "Fallecimiento de familiar directo" is selected
+                if (selectedOption === 'Fallecimiento de familiar directo') {
+                    $('#opciones').show();
+                } else {
+                    // Hide the radio buttons for other options
+                    $('#opciones').hide();
+                }
+                if (selectedOption === 'Motivos academicas/escolares') {
+                    $('#opcional').show();
+                } else {
+                    // Hide the radio buttons for other options
+                    $('#opcional').hide();
+                }
+            });
         });
+
 
         function displayMessage(message) {
             toastr.success(message, 'Solicitud');
