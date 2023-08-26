@@ -37,10 +37,16 @@
             $opc = [];
             $ingreso = \Carbon\Carbon::parse(auth()->user()->employee->date_admission);
             $diff = $ingreso->diffInMonths(now());
+            $opc = [
+                'Salir durante la jornada' => 'Salir durante la jornada',
+                'Faltar a sus labores' => 'Faltar a sus labores',
+                'Fallecimiento de familiar directo' => 'Fallecimiento de familiar directo',
+                'Matrimonio del colaborador' => 'Matrimonio del colaborador',
+                'Motivos academicas/escolares' => 'Motivos académicos/escolares',
+                'Atencion de asuntos personales' => 'Atencion de asuntos personales',
+            ];
             if ($vacations > 0 && $diff > 5) {
-                $opc = ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores', 'Solicitar vacaciones' => 'Solicitar vacaciones', 'Fallecimiento de familiar directo' => 'Fallecimiento de familiar directo', 'Matrimonio del colaborador' => 'Matrimonio del colaborador', 'Motivos academicas/escolares' => 'Motivos académicos/escolares', 'Atencion de asuntos personales' => 'Atencion de asuntos personales'];
-            } else {
-                $opc = ['Salir durante la jornada' => 'Salir durante la jornada', 'Faltar a sus labores' => 'Faltar a sus labores'];
+                $opc['Solicitar vacaciones'] = 'Solicitar vacaciones';
             }
         @endphp
         <div class="card-body">
@@ -90,11 +96,6 @@
                     @endif
                 </div>
             </div>
-            @if (session('message'))
-                <div class="alert alert-danger">
-                    {{ session('message') }}
-                </div>
-            @endif
             {!! Form::open(['route' => 'request.store', 'enctype' => 'multipart/form-data']) !!}
             <div class="row">
                 <div class=" col-md-6">
@@ -107,11 +108,6 @@
                                 @error('type_request')
                                     <small>
                                         <font color="red"> *Este campo es requerido* </font>
-                                    </small>
-                                @enderror
-                                @error('start')
-                                    <small>
-                                        <font color="red"> *La hora de salida es requerida* </font>
                                     </small>
                                 @enderror
                             </div>
@@ -128,7 +124,8 @@
                                     </small>
                                 @enderror
                             </div>
-                            <div class="d-none flex-row form-group" id="request_time">
+                            <div class="{{ old('type_request') == 'Salir durante la jornada' ? '' : 'd-none' }} flex-row form-group"
+                                id="request_time">
                                 <div class="w-50 mr-1">
                                     {!! Form::label('start', 'Salida') !!}
                                     {!! Form::time('start', null, ['class' => 'form-control']) !!}
@@ -142,11 +139,16 @@
                                 <div class="w-50 ml-1">
                                     {!! Form::label('end', 'Ingreso (opcional) ') !!}
                                     {!! Form::time('end', null, ['class' => 'form-control']) !!}
+                                    @error('end')
+                                        <small>
+                                            <font color="red"> *Este campo es requerido si la salida no tiene un valor* </font>
+                                        </small>
+                                    @enderror
                                 </div>
 
                             </div>
 
-                            <div class="mb-2 form-group" id="opciones" style="display: none;">
+                            <div class="mb-2 form-group" id="opciones" style="{{old('type_request') == 'Fallecimiento de familiar directo' ? "":"display: none;" }}">
                                 {{--  --}}
                                 {!! Form::label('opcion', 'Selecciona una opcion') !!}
                                 <div class="form-check">
@@ -165,13 +167,13 @@
                                     {!! Form::radio('opcion', 'Hermanos', false, ['class' => 'form-check-input']) !!}
                                     {!! Form::label('opcion2', 'Hermanos', ['class' => 'form-check-label']) !!}
                                 </div>
-                                @error('reason')
+                                @error('opcion')
                                     <small>
-                                        <font color="red"> {{ $message }} </font>
+                                        <font color="red"> *Este campo es requerido* </font>
                                     </small>
                                 @enderror
                             </div>
-                            <div class="mb-2 form-group" id="opcional" style="display: none;">
+                            <div class="mb-2 form-group" id="opcional"  style="{{old('type_request') == 'Motivos academicas/escolares' ? "":"display: none;" }}">
 
                                 {!! Form::label('opcion', 'Selecciona ') !!}
                                 <div class="form-check">
@@ -185,31 +187,25 @@
 
                                 @error('opcion')
                                     <small>
-                                        <font color="red"> {{ $message }} </font>
+                                        <font color="red"> *Este campo es requerido* </font>
                                     </small>
                                 @enderror
                             </div>
                             <div class="mb-2 form-group">
-
                                 {!! Form::label('reason', '¿Cual es la razon de tu ausencia? (Obligatorio)') !!}
                                 <textarea name="reason" cols="30" rows="4" class="form-control"
-                                    placeholder="Ingrese las razones de tu ausencia"></textarea>
+                                    placeholder="Ingrese las razones de tu ausencia">{{old("reason")}}</textarea>
                                 @error('reason')
                                     <small>
-                                        <font color="red"> {{ $message }} </font>
+                                        <font color="red"> *Este campo es requerido* </font>
                                     </small>
                                 @enderror
                             </div>
                             <div class="mb-2 form-group">
 
                                 {!! Form::label('file', 'Anexa tu justificante: (opcional)') !!}
-                                {!! Form::file('file[]', ['class' => 'form-control', 'multiple' => 'multiple']) !!}
+                                {!! Form::file('archivos_permiso[]', ['class' => 'form-control', 'multiple' => 'multiple']) !!}
 
-                                @error('reason')
-                                    <small>
-                                        <font color="red"> {{ $message }} </font>
-                                    </small>
-                                @enderror
                             </div>
 
                             <div class="mb-2 form-group">

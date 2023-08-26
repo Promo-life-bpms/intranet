@@ -18,6 +18,7 @@ use App\Models\Vacations;
 use App\Notifications\AlertRequestToAuth;
 use App\Notifications\AlertRequestToRH;
 use App\Notifications\CreateRequestNotification;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -124,23 +125,23 @@ class RequestController extends Controller
             'type_request' => 'required',
             'reason' => 'required|max:255',
             'reveal' => 'required',
+            'opcion' => 'required_if:type_request,==,Fallecimiento de familiar directo',
+            'opcion' => 'required_if:type_request,==,Motivos academicas/escolares',
         ]);
-
-        if ($request->type_request === "Salir durante la jornada") {
-            if ($request->start === null && $request->end === null) {
-                return back()->with('message', 'Especifica la hora de tu salida o entrada');
-            }
+        if ($request->type_request == "Salir durante la jornada") {
+            $request->validate([
+                'start' => "required_if:end,==,null",
+                "end" => "required_if:start,==,null",
+            ]);
         }
+
         //Valida que el usuario no envie solicitudes sin dias asignados
         if (count(auth()->user()->daysSelected) <= 0) {
             return back()->with('message', 'No puedes crear solicitudes por que no agregaste dias en el calendario');
         }
+        // Limpiar Informacion
+        $type_request = $request->type_request;
         $payment = '';
-        /*  if ($request->type_request == "Solicitar vacaciones") {
-            $payment = 'A cuenta de vacaciones';
-        } else {
-            $payment = 'Descontar Tiempo/Dia';
-        } */
         switch ($request->type_request) {
             case 'Solicitar vacaciones':
                 $payment = 'A cuenta de vacaciones';
@@ -155,101 +156,96 @@ class RequestController extends Controller
                 $payment = 'Permiso especial';
                 break;
         }
+        $start = $request->start;
+        $end = $request->end;
+        $opcion = $request->opcion;
+        $reason = $request->reason;
+        $docPermiso =  [];
+        $archivos = $request->file('archivos_permiso');
+        if ($archivos != null) {
+            foreach ($archivos as $archivo) {
+                $n = $archivo->getClientOriginalName();
+                $nombreImagen = time() . ' ' . Str::slug($n) . "." . $archivo->getClientOriginalExtension();
+                $archivo->move(public_path('storage/archivosPermisos'), $nombreImagen);
+                array_push($docPermiso, $nombreImagen);
+            }
+        }
+        $reveal_id = $request->reveal;
+        $direct_manager_id = auth()->user()->employee->jefe_directo_id;
+        $direct_manager_status = "Pendiente";
+        $human_resources_status = "Pendiente";
+        $employee_id = auth()->user()->employee->id;
+        $visible = true;
+
+        $data = [
+            'type_request' => $type_request,
+            'payment' => $payment,
+            'start' => $start,
+            'end' => $end,
+            'opcion' => $opcion,
+            'reason' => $reason,
+            'doc_permiso' => count($docPermiso) > 0 ? implode(',', $docPermiso) : null,
+            'reveal_id' => $reveal_id,
+            'direct_manager_id' => $direct_manager_id,
+            'direct_manager_status' => $direct_manager_status,
+            'human_resources_status' => $human_resources_status,
+            'employee_id' => $employee_id,
+            'visible' => $visible,
+        ];
+
+
+        // Crear la solicitud
+        $req = ModelsRequest::create($data);
+
         $user = auth()->user();
-        $req = new ModelsRequest();
-        $req->employee_id = $user->employee->id;
-        $req->type_request = $request->type_request;
-        $req->payment = $payment;
-        $req->reason = $request->reason;
-        $req->start = $request->start;
-        $req->end = $request->end;
-        if ($req->opcion == null) {
-            $req->opcion = null;
-        } else {
-            $req->opcion = $request->opcion;
-        }
-        $req->opcion = $request->opcion;
-        $req->doc_permiso = $request->imagenes;
-        $req->reveal_id = $request->reveal;
-
-        $req->direct_manager_id = $user->employee->jefe_directo_id;
-        $req->direct_manager_status = "Pendiente";
-        $req->human_resources_status = "Pendiente";
-
-        $imagenes = $request->file('file');
-        $namesImagenes = [];
-        // $pathLogo = null;
-        if ($imagenes == null) {
-            $imagenes = null;
-        } else {
-
-            foreach ($imagenes as $imagen) {
-
-                $n = $imagen->getClientOriginalName();
-                // dd($n);
-                $nombreImagen = time() . ' ' . Str::slug($n);
-                // $pathLogo = 'storage/archivos/' . $nombreImagen;
-                $imagen->move(public_path('storage/archivos'), $nombreImagen);
-
-                array_push($namesImagenes, 'storage/archivos/' . $nombreImagen);
-            }  # code...
-
-        }
-
-        foreach ($namesImagenes as $nameImagen) {
-
-
-            $req->doc_permiso = $nameImagen;
-        }
-
-        if ($req->doc_permiso == null) {
-            $req->doc_permiso = null;
-        } else {
-            $req->doc_permiso = $nameImagen;
-        }
-
-
-        $req->save();
-
         //Actualizar el request de los dias seleccionados
         $user->daysSelected()->update(['requests_id' => $req->id]);
 
         // Enviar notificacion
-        /*   $communique_notification = new FirebaseNotificationController();
-        $communique_notification->createRequest(strval($user->id));
-        $communique_notification->sendToManager(strval($req->direct_manager_id));
+        try {
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->createRequest(strval($user->id));
+            $communique_notification->sendToManager(strval($req->direct_manager_id));
 
-
-        $userReceiver = Employee::find($req->direct_manager_id)->user;
-        event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
-        $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname)); */
-
-        return redirect()->action([RequestController::class, 'index']);
+            $userReceiver = Employee::find($req->direct_manager_id)->user;
+            event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
+            $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
+        } catch (Exception $th) {
+        }
+        return redirect()->action([RequestController::class, 'index'])->with('message', 'Se creo la solicitud correctamente');
     }
+
     public function cargarArchivo(Request $request, ModelsRequest $modelRequest)
     {
+        $request->validate([
+            'archivos_permiso' => 'required|max:10000',
+        ]);
 
-
-        $verModelo = ModelsRequest::where('id', $request->id)->first();
-
-        if ($request->hasFile('archivo')) {
-            $archivo = $request->file('archivo');
-            $nombreArchivo = $archivo->getClientOriginalName();
-            $nombreImagen = time() . ' ' . Str::slug($nombreArchivo);
-            $archivo->move(public_path('storage/archivos'), $nombreImagen);
-
-            if ($verModelo->doc_permiso == null) {
-                $verModelo->update([
-                    'doc_permiso' => 'storage/archivos/' . $nombreImagen
-                ]);
+        // Eliminar los archivos anteriores
+        if ($modelRequest->doc_permiso != null) {
+            $docPermisosAnteriores =  explode(',', $modelRequest->doc_permiso);
+            foreach ($docPermisosAnteriores as $docPermisoAnterior) {
+                if ($docPermisoAnterior != null) {
+                    unlink(public_path('storage/archivosPermisos/' . $docPermisoAnterior));
+                }
             }
-            $verModelo->save();
+        }
+        $docPermiso =  [];
+        $archivos = $request->file('archivos_permiso');
+        if ($archivos != null) {
+            foreach ($archivos as $archivo) {
+                $n = $archivo->getClientOriginalName();
+                $nombreImagen = time() . ' ' . Str::slug($n) . "." . $archivo->getClientOriginalExtension();
+                $archivo->move(public_path('storage/archivosPermisos'), $nombreImagen);
+                array_push($docPermiso, $nombreImagen);
+            }
         }
 
+        $modelRequest->update([
+            'doc_permiso' => count($docPermiso) > 0 ? implode(',', $docPermiso) : null,
+        ]);
 
-
-
-        return redirect()->action([RequestController::class, 'index']);
+        return redirect()->action([RequestController::class, 'index'])->with('message', 'Se cargaron los archivos correctamente');
 
         // Redirige de nuevo a donde sea apropiado
     }

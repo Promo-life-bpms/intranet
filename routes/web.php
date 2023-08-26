@@ -104,7 +104,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     // Permisos y Vacaciones
     //Cargar archivo en solicitudes de permiso
-    Route::post('/cargar-archivo', [RequestController::class ,'cargarArchivo'])->name('cargarArchivo');
+    Route::post('/cargar-archivo/{modelRequest}', [RequestController::class ,'cargarArchivo'])->name('cargarArchivo');
 
     // Aniversarios y cumpleaños0
     Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
