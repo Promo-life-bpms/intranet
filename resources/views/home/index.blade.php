@@ -289,7 +289,7 @@
                                     <div class="carousel-caption d-none d-md-block">
                                         <span class="aniversary-text">{{ $employee->name }}</span>
                                         <br>
-                                        <div class="d-flex justify-content-center align-items-center ">
+                                        <div class="d-flex justify-content-center align-items-center">
                                             <p class="card-text m-0 mx-1 aniversary-text">{{ $employee->star }}</p>
                                             <div style="width: 30px;" class="mx-1 aniversary-text">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
