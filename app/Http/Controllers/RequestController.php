@@ -74,11 +74,7 @@ class RequestController extends Controller
     // Pantalla Inicial
     public function index(Request $request)
     {
-        $myrequests = auth()->user()->employee->requestDone()->orderBy('created_at', "DESC")->get();
-
-        //dd($day);
-
-        return view('request.index', compact('myrequests'));
+        return view('request.index');
     }
 
     public function create()
@@ -107,7 +103,8 @@ class RequestController extends Controller
         $users = [];
         foreach ($data as $dat) {
             foreach ($dat->getEmployees as $emp) {
-                $users["{$emp->user->id}"] = $emp->user->name;
+                if ($emp->user->status == 1)
+                    $users["{$emp->user->id}"] = $emp->user->name." ".$emp->user->lastname;
             }
         }
 
@@ -215,40 +212,6 @@ class RequestController extends Controller
         return redirect()->action([RequestController::class, 'index'])->with('message', 'Se creo la solicitud correctamente');
     }
 
-    public function cargarArchivo(Request $request, ModelsRequest $modelRequest)
-    {
-        $request->validate([
-            'archivos_permiso' => 'required|max:10000',
-        ]);
-
-        // Eliminar los archivos anteriores
-        if ($modelRequest->doc_permiso != null) {
-            $docPermisosAnteriores =  explode(',', $modelRequest->doc_permiso);
-            foreach ($docPermisosAnteriores as $docPermisoAnterior) {
-                if ($docPermisoAnterior != null) {
-                    unlink(public_path('storage/archivosPermisos/' . $docPermisoAnterior));
-                }
-            }
-        }
-        $docPermiso =  [];
-        $archivos = $request->file('archivos_permiso');
-        if ($archivos != null) {
-            foreach ($archivos as $archivo) {
-                $n = $archivo->getClientOriginalName();
-                $nombreImagen = time() . ' ' . Str::slug($n) . "." . $archivo->getClientOriginalExtension();
-                $archivo->move(public_path('storage/archivosPermisos'), $nombreImagen);
-                array_push($docPermiso, $nombreImagen);
-            }
-        }
-
-        $modelRequest->update([
-            'doc_permiso' => count($docPermiso) > 0 ? implode(',', $docPermiso) : null,
-        ]);
-
-        return redirect()->action([RequestController::class, 'index'])->with('message', 'Se cargaron los archivos correctamente');
-
-        // Redirige de nuevo a donde sea apropiado
-    }
     public function edit(ModelsRequest $request)
     {
         auth()->user()->daysSelected()->delete();
