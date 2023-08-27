@@ -163,7 +163,7 @@
                                 <a class="dropdown-item" href="{{ route('rh.postulants') }}">
                                     <span>Generar alta</span>
                                 </a>
-                            </li> 
+                            </li>
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('rh.dropUser') }}">
@@ -211,7 +211,7 @@
                         <span>Reserva de la sala recreativa</span>
                     </a>
                 </li>
-                
+
                 @if (!auth()->user()->hasRole('becario'))
                     <li class="sidebar-item  has-sub {{ request()->is('request') ? 'active' : '' }}">
                         <a href="{{ route('request.index') }}" class='sidebar-link'>
@@ -322,6 +322,12 @@
                     </a>
                 </li>
 
+             {{--    <li class="sidebar-item {{ request()->is('soporte') ? 'active' : '' }}">
+                    <a href="{{ route('soporte') }}" class='sidebar-link'>
+                        <i class="fa fa-wrench" aria-hidden="true"></i>
+                        <span>Soporte</span>
+                    </a>
+                </li> --}}
                 <li class="sidebar-item has-sub {{ request()->is('soporte') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="fa fa-wrench" aria-hidden="true"></i>

@@ -10,10 +10,7 @@ use App\Http\Controllers\CommuniqueController;
 use App\Http\Controllers\ManualController;
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\BoardroomController;
-use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
-use App\Http\Controllers\WorkController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\DirectoryController;
 use App\Http\Controllers\UserController;
@@ -28,24 +25,15 @@ use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FirebaseNotificationController;
 use App\Http\Controllers\HumanResources\RhController;
-use App\Http\Controllers\FullCalenderController;
-
 use App\Http\Controllers\HumanResources\ScanDocumentsController;
 use App\Http\Controllers\HumanResources\UserDetails;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
-use App\Http\Controllers\PruebaController;
 use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\Soporte\SoporteController;
-use App\Http\Controllers\SoporteSolucionController;
-use App\Http\Livewire\SoporteSolucionComponent;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Systems\DevicesController;
-use App\Models\Message;
-use App\Models\RequestCalendar;
-use App\Models\User;
-use App\Models\Vacations;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -85,7 +73,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('sendAccess/{user}', [UserController::class, 'sendAccessPerUser'])->name('user.sendAccessUnit');
         Route::get('user-details/{user_id}', [UserController::class, 'userDetails'])->name('user.userDetails');
         Route::post('update-user-details/', [UserController::class, 'updateUserDetails'])->name('user.updateUserDetails');
-
     });
 
     // Inicio
@@ -102,8 +89,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('company/getPosition/{id}', [CompanyController::class, 'getPositions']);
     Route::get('company/getEmployeesByOrganization/{organization}', [CompanyController::class, 'getEmployeesByOrganization']);
     Route::get('company/getEmployeesByDepartment/{department}', [CompanyController::class, 'getEmployeesByDepartment']);
-
-    // Permisos y Vacaciones
 
     // Aniversarios y cumpleaños0
     Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
@@ -234,9 +219,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/solution', [SoporteController::class, 'solucion'])->middleware('role:systems')->name('solucion');
         Route::get('/admin', [SoporteController::class, 'admin'])->middleware('role:systems')->name('admin');
         Route::get('/statistics', [SoporteController::class, 'estadisticas'])->name('estadisticas');
-        Route::post('editor/image_upload',[SoporteController::class,'upload'])->name('upload');
-        Route::post('/statistics/filter/',[SoporteController::class,'filterTicket'])->name('filter.estadisticas');
-       
+        Route::post('editor/image_upload', [SoporteController::class, 'upload'])->name('upload');
+        Route::post('/statistics/filter/', [SoporteController::class, 'filterTicket'])->name('filter.estadisticas');
     });
 
 
@@ -297,23 +281,22 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/firebase/birthday-notification', [FirebaseNotificationController::class, 'birthdaySpecificNotificationPost'])->name('firebase.birthday');
 
 
-    
-    
-    //sala recreativa//  
+
+
+    //sala recreativa//
     //ruta para reservación//
-    Route::get('/reservation/creative/',[ReservationController::class,'index'])->name('reservation.creative');
+    Route::get('/reservation/creative/', [ReservationController::class, 'index'])->name('reservation.creative');
     Route::get('/dropdownlist/Position/{id}', [ReservationController::class, 'Positions']);
-    Route::get('/reservation/view/',[ReservationController::class,'view'])->name('reservation.view');   
-    Route::get('/reservation/nom/',[ReservationController::class,'mostrarNombre'])->name('reservation.nom');   
-    Route::get('/reservation/view/edit/',[ReservationController::class,'edit'])->name('reservation.view.edit');  
-    Route::post('/reservation/creative/create', [ReservationController::class, 'store'])->name('reserviton.creative.create'); 
+    Route::get('/reservation/view/', [ReservationController::class, 'view'])->name('reservation.view');
+    Route::get('/reservation/nom/', [ReservationController::class, 'mostrarNombre'])->name('reservation.nom');
+    Route::get('/reservation/view/edit/', [ReservationController::class, 'edit'])->name('reservation.view.edit');
+    Route::post('/reservation/creative/create', [ReservationController::class, 'store'])->name('reserviton.creative.create');
     Route::put('/reservation/creative/', [ReservationController::class, 'update'])->name('reserviton.creative.update');
     Route::post('/reservation/creative/delete/', [ReservationController::class, 'destroy'])->name('reserviton.creative.delete');
 
     //Firebase
     Route::post('/firebase/reservation/creative', [FirebaseNotificationController::class, 'reservationNotification'])->name('firebase.reservation.creative');
-
-   });
+});
 
 Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
 Route::get('vacations/sendRemembers/', [VacationsController::class, 'sendRemembers'])->name('admin.vacations.sendRemembers');
