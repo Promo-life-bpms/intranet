@@ -38,7 +38,7 @@
             $ingreso = \Carbon\Carbon::parse(auth()->user()->employee->date_admission);
             $diff = $ingreso->diffInMonths(now());
             $opc = [
-                'Salir durante la jornada' => 'Salir durante la jornada',
+                'Salir durante la jornada' => 'Ausencia durante la jornada',
                 'Faltar a sus labores' => 'Faltar a sus labores',
                 'Fallecimiento de familiar directo' => 'Fallecimiento de familiar directo',
                 'Matrimonio del colaborador' => 'Matrimonio del colaborador',
@@ -124,10 +124,12 @@
                                     </small>
                                 @enderror
                             </div>
-                            <div class="{{ old('type_request') == 'Salir durante la jornada' ? '' : 'd-none' }} flex-row form-group"
+                            <div class="{{ old('type_request') == 'Salir durante la jornada' ? '' : 'd-none' }}"
                                 id="request_time">
-                                <div class="w-50 mr-1">
+                                <div class="form-group">
                                     {!! Form::label('start', 'Salida') !!}
+                                    <br>
+                                    <span>Llenar unicamente en caso de retirarse</span>
                                     {!! Form::time('start', null, ['class' => 'form-control']) !!}
                                     @error('start')
                                         <small>
@@ -135,20 +137,22 @@
                                         </small>
                                     @enderror
                                 </div>
-
-                                <div class="w-50 ml-1">
-                                    {!! Form::label('end', 'Ingreso (opcional) ') !!}
+                                <div class="form-group">
+                                    {!! Form::label('end', 'Ingreso o Reingreso') !!}
+                                    <br>
+                                    <span>Usar en caso de ingresar despues de las 8:00, o de regresar despues de una salida</span>
                                     {!! Form::time('end', null, ['class' => 'form-control']) !!}
                                     @error('end')
                                         <small>
-                                            <font color="red"> *Este campo es requerido si la salida no tiene un valor* </font>
+                                            <font color="red"> *Este campo es requerido si la salida no tiene un valor*
+                                            </font>
                                         </small>
                                     @enderror
                                 </div>
-
                             </div>
 
-                            <div class="mb-2 form-group" id="opciones" style="{{old('type_request') == 'Fallecimiento de familiar directo' ? "":"display: none;" }}">
+                            <div class="mb-2 form-group" id="opciones"
+                                style="{{ old('type_request') == 'Fallecimiento de familiar directo' ? '' : 'display: none;' }}">
                                 {{--  --}}
                                 {!! Form::label('opcion', 'Selecciona una opcion') !!}
                                 <div class="form-check">
@@ -173,7 +177,8 @@
                                     </small>
                                 @enderror
                             </div>
-                            <div class="mb-2 form-group" id="opcional"  style="{{old('type_request') == 'Motivos academicas/escolares' ? "":"display: none;" }}">
+                            <div class="mb-2 form-group" id="opcional"
+                                style="{{ old('type_request') == 'Motivos academicas/escolares' ? '' : 'display: none;' }}">
 
                                 {!! Form::label('opcion', 'Selecciona ') !!}
                                 <div class="form-check">
@@ -194,7 +199,7 @@
                             <div class="mb-2 form-group">
                                 {!! Form::label('reason', '¿Cual es la razon de tu ausencia? (Obligatorio)') !!}
                                 <textarea name="reason" cols="30" rows="4" class="form-control"
-                                    placeholder="Ingrese las razones de tu ausencia">{{old("reason")}}</textarea>
+                                    placeholder="Ingrese las razones de tu ausencia">{{ old('reason') }}</textarea>
                                 @error('reason')
                                     <small>
                                         <font color="red"> *Este campo es requerido* </font>
@@ -679,9 +684,9 @@
 
                 if (data.display == "false") {
                     $('#request_time').addClass("d-none");
-                    $('#request_time').removeClass("d-flex");
+                    $('#request_time').removeClass("d-block");
                 } else {
-                    $('#request_time').addClass("d-flex");
+                    $('#request_time').addClass("d-block");
                     $('#request_time').removeClass("d-none");
                 }
                 $('.formaPago').val('');
