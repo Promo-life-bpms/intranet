@@ -10,10 +10,7 @@ use App\Http\Controllers\CommuniqueController;
 use App\Http\Controllers\ManualController;
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\BoardroomController;
-use App\Http\Controllers\FolderController;
 use App\Http\Controllers\RequestController;
-use App\Http\Controllers\WorkController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\DirectoryController;
 use App\Http\Controllers\UserController;
@@ -28,24 +25,15 @@ use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FirebaseNotificationController;
 use App\Http\Controllers\HumanResources\RhController;
-use App\Http\Controllers\FullCalenderController;
-
 use App\Http\Controllers\HumanResources\ScanDocumentsController;
 use App\Http\Controllers\HumanResources\UserDetails;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
-use App\Http\Controllers\PruebaController;
 use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\Soporte\SoporteController;
-use App\Http\Controllers\SoporteSolucionController;
-use App\Http\Livewire\SoporteSolucionComponent;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Systems\DevicesController;
-use App\Models\Message;
-use App\Models\RequestCalendar;
-use App\Models\User;
-use App\Models\Vacations;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -101,10 +89,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('company/getPosition/{id}', [CompanyController::class, 'getPositions']);
     Route::get('company/getEmployeesByOrganization/{organization}', [CompanyController::class, 'getEmployeesByOrganization']);
     Route::get('company/getEmployeesByDepartment/{department}', [CompanyController::class, 'getEmployeesByDepartment']);
-
-    // Permisos y Vacaciones
-    //Cargar archivo en solicitudes de permiso
-    Route::post('/cargar-archivo', [RequestController::class ,'cargarArchivo'])->name('cargarArchivo');
 
     // Aniversarios y cumpleaños0
     Route::get('/aniversary/aniversary', [AniversaryController::class, 'aniversary'])->name('aniversary');
