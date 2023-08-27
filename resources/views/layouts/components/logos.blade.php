@@ -23,7 +23,7 @@
             {{-- <notification-bell></notification-bell> --}}
             {{-- <chat-component :authId="{{ auth()->user()->id }}"></chat-component> --}}
             @livewire('notify-component')
-            {{-- @livewire('chat-component') --}}
+            @livewire('chat-component')
 
             {{-- <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false"> --}}
