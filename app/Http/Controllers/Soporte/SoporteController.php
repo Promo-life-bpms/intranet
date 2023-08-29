@@ -153,8 +153,8 @@ class SoporteController extends Controller
     public function filterTicket(Request $request)
     {
 
-        $startDate = $request->startDate;
-        $endDate = $request->endDate;
+        $startDate = \Carbon\Carbon::parse($request->startDate)->startOfDay();
+        $endDate = \Carbon\Carbon::parse($request->endDate)->endOfDay();
         $califications = [5, 4, 3, 2, 1];
         $labels = [];
         $meses = [];
@@ -166,7 +166,7 @@ class SoporteController extends Controller
         $ticketCounts = [];
         $totalTicket = [];
 
-
+       
         $usuarios = User::has('tickets')->get();
         $name = $usuarios->pluck('name')->toArray();
         $totalTicket = [];

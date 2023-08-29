@@ -33,7 +33,7 @@ class ListadoTicketsComponent extends Component
         $this->categorias = Categoria::where('status', true)->get();
         return view('livewire.listado-tickets-component', [
 
-            'tickets' => Ticket::where('user_id', auth()->id())->orderBy('id')->paginate(15)
+            'tickets' => Ticket::where('user_id', auth()->id())->orderBy('created_at', 'desc')->paginate(10)
         ]);
     }
 

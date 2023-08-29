@@ -900,6 +900,7 @@
             </div>
         </div>
     </div>
+
     <script>
         let ckEditorCreate, ckEditorEdit, ckEditorMensaje;
 
@@ -1101,9 +1102,11 @@
                         'Finalizado ',
                         'El ticket a sido finalizado',
                         'success'
+
                     )
+                  
                 } else {
-                    return;
+                    
                 }
 
             })

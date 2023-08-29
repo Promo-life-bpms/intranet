@@ -34,12 +34,13 @@ class SoporteSolucionComponent extends Component
             ->where('roles.name', '=', 'systems')
             ->select('users.*')
             ->get();
+            
         $ticketReasignado = Ticket::where('support_id', auth()->user()->id)->get();
-
-        $all_tickets=Ticket::whereIn('support_id',[127,155])->get();
+        //traer todos los tickets del usuario con el id 127 y 155 
+        $all_tickets=Ticket::whereIn('support_id',[127,155])->paginate(10);
+        //trae todos los tickets creado  
+        $all_Support_tickets=Ticket::paginate(10);
         
-        $all_Support_tickets=Ticket::all();
-
         return view('livewire.soporte-solucion-component', 
         [
             'solucion' => Ticket::where('support_id', auth()->user()->id)->orderBy('created_at', 'desc')->simplePaginate(15),
@@ -72,7 +73,7 @@ class SoporteSolucionComponent extends Component
             'status' => $actualizar_status->status->name
         ];
 
-        $user->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
+        // $user->notify(new StatusEnProcesoSoporteNotification($notificacionEnProceso));
         // $support_solution= new FirebaseNotificationController();
         // $support_solution->supportInProgress($actualizar_status->name,$user->id);
     }

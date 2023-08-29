@@ -75,8 +75,12 @@
                         @endforeach
                 </tbody>
             </table>
-        @else
-            @foreach ($solucion as $tickets)
+            <div class="d-flex justify-content-center">
+                {{ $all_tickets->links() }}
+            </div>
+
+        @elseif(auth()->user()->id === 31)  
+            @foreach ($all_Support_tickets as $tickets)
                 <tr>
                     <th scope="row">{{ $tickets->id }}</th>
                     <td>{{ $tickets->user->name }} {{ $tickets->user->lastname }}</td>
@@ -134,8 +138,69 @@
             </tbody>
             </table>
             <div class="d-flex justify-content-center">
-                {{ $solucion->links() }}
+                {{ $all_Support_tickets->links() }}
             </div>
+            @else
+            @foreach ($solucion as $tickets)
+            <tr>
+                <th scope="row">{{ $tickets->id }}</th>
+                <td>{{ $tickets->user->name }} {{ $tickets->user->lastname }}</td>
+                <td>{{ $tickets->name }}</td>
+                <td class="col-2">{{ $tickets->category->name }}</td>
+                <td class="col-2">
+                    @if ($tickets->status->name == 'Resuelto')
+                        <div class="alert-sm alert-success rounded-3" role="alert">
+                            {{ $tickets->status->name }}</div>
+                    @elseif ($tickets->status->name == 'Creado')
+                        <div class="alert-sm alert-info rounded-3" role="alert">
+                            {{ $tickets->status->name }}</div>
+                    @elseif ($tickets->status->name == 'En proceso')
+                        <div class="alert-sm alert-primary rounded-3" role="alert">
+                            {{ $tickets->status->name }}</div>
+                    @elseif ($tickets->status->name == 'Ticket Cerrado')
+                        <div class="alert-sm alert-warning rounded-3" role="alert">
+                            {{ $tickets->status->name }}</div>
+                    @endif
+                </td>
+                <td>
+                    @if ($tickets->status_id)
+                        @if ($tickets->status_id === 4)
+                            <button data-bs-toggle="modal" data-bs-target="#ModalAgregar" type="button"
+                                class="btn btn-success btn-sm " style="background: rgb(0, 128, 128)"
+                                wire:click="verTicket({{ $tickets->id }})"><i class="bi bi-eye"></i></button>
+                        @else
+                            {{-- <button onclick="atender({{ $tickets->id }}, {{ $tickets->status_id }})"
+                                    type="button" class="btn btn-success btn-sm "
+                                    wire:click="verTicket({{ $tickets->id }})"><i
+                                    class="bi bi-eye"></i></button> --}}
+
+                            <button data-bs-toggle="modal" data-bs-target="#ModalAgregar" type="button"
+                                class="btn btn-success btn-sm " style="background: rgb(0, 128, 128)"
+                                wire:click="verTicket({{ $tickets->id }})"><i class="bi bi-eye"></i></button>
+
+                            {{-- <button id="btnModalPrioridad" type="button" class="btn btn-info btn-sm"
+                                            data-bs-toggle="modal" data-bs-target="#Modalprioridad"
+                                            wire:click="verTicket({{ $tickets->id }})">
+                                            <i class="bi bi-clock"></i>                                        
+                                    </button> --}}
+
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#Modalasignacion" wire:click="verTicket({{ $tickets->id }})">
+                                <i class="bi bi-person-fill"></i>
+                            </button>
+                            <button type="button" class="btn btn-warning btn-sm"
+                                onclick="finalizar({{ $tickets->id }})" style="background: rgb(241, 196, 15 )"><i
+                                    class="bi bi-check-square" style="color: aliceblue"></i></button>
+                        @endif
+                    @endif
+                </td>
+            </tr>
+        @endforeach
+        </tbody>
+        </table>
+        <div class="d-flex justify-content-center">
+            {{ $solucion->links() }}
+        </div>
             @endif
         </div>
     </div>
@@ -191,6 +256,7 @@
                                         @endif
                                 </p>
 
+                                <p id="demo"></p>
 
                                 <p><span class="fw-bold ">Usuario :</span> <span class=""> {{ $nombre }}
                                         {{ $apellido }}</span>                                 
@@ -1270,6 +1336,9 @@
             //JQERY
             $('#timeInput').toggleClass('d-none');
         }
-    </script>
 
+        
+
+    </script>
+ 
 </div>

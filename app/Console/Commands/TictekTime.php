@@ -24,7 +24,7 @@ class TictekTime extends Command
      *
      * @var string
      */
-    protected $description = 'Checando tiempo de ticket';
+    protected $description = 'Encuesta';
 
     /**
      * Create a new command instance.
