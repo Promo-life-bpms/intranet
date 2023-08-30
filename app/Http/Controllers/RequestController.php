@@ -18,10 +18,12 @@ use App\Models\Vacations;
 use App\Notifications\AlertRequestToAuth;
 use App\Notifications\AlertRequestToRH;
 use App\Notifications\CreateRequestNotification;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
 
 class RequestController extends Controller
 {
@@ -72,15 +74,21 @@ class RequestController extends Controller
     // Pantalla Inicial
     public function index(Request $request)
     {
-        $myrequests = auth()->user()->employee->requestDone()->orderBy('created_at', "DESC")->get();
-        return view('request.index', compact('myrequests'));
+        return view('request.index');
     }
 
     public function create()
     {
+
         // Eliminar los dias selecionados con anterioridad qie no estan ligados a un request
         auth()->user()->daysSelected()->delete();
         // Obtener dias no laborables
+        $daysWithAsuntosEscolares = RequestCalendar::join('requests', 'request_calendars.requests_id', 'requests.id')->where('employee_id', auth()->user()->id)
+            ->where('type_request', 'Atencion de asuntos personales')
+            ->select('request_calendars.start')
+            ->count();
+
+        // dd($daysWithAsuntosEscolares);
         $noworkingdays = NoWorkingDays::orderBy('day')->get();
         // Obtener dias de vacaciones
         $vacations = auth()->user()->employee->take_expired_vacation ? auth()->user()->vacationsComplete()->sum('dv') : auth()->user()->vacationsAvailables()->sum('dv');
@@ -95,12 +103,13 @@ class RequestController extends Controller
         $users = [];
         foreach ($data as $dat) {
             foreach ($dat->getEmployees as $emp) {
-                $users["{$emp->user->id}"] = $emp->user->name;
+                if ($emp->user->status == 1)
+                    $users["{$emp->user->id}"] = $emp->user->name." ".$emp->user->lastname;
             }
         }
 
 
-        return view('request.create', compact('noworkingdays', 'vacations', 'dataVacations', 'users'));
+        return view('request.create', compact('noworkingdays', 'vacations', 'dataVacations', 'users', 'daysWithAsuntosEscolares'));
     }
 
     public function store(Request $request)
@@ -113,55 +122,94 @@ class RequestController extends Controller
             'type_request' => 'required',
             'reason' => 'required|max:255',
             'reveal' => 'required',
+            'opcion' => 'required_if:type_request,==,Fallecimiento de familiar directo',
+            'opcion' => 'required_if:type_request,==,Motivos academicas/escolares',
         ]);
-
-        if ($request->type_request === "Salir durante la jornada") {
-            if ($request->start === null && $request->end === null) {
-                return back()->with('message', 'Especifica la hora de tu salida o entrada');
-            }
+        if ($request->type_request == "Salir durante la jornada") {
+            $request->validate([
+                'start' => "required_if:end,==,null",
+                "end" => "required_if:start,==,null",
+            ]);
         }
+
         //Valida que el usuario no envie solicitudes sin dias asignados
         if (count(auth()->user()->daysSelected) <= 0) {
             return back()->with('message', 'No puedes crear solicitudes por que no agregaste dias en el calendario');
         }
+        // Limpiar Informacion
+        $type_request = $request->type_request;
         $payment = '';
-        if ($request->type_request == "Solicitar vacaciones") {
-            $payment = 'A cuenta de vacaciones';
-        } else {
-            $payment = 'Descontar Tiempo/Dia';
+        switch ($request->type_request) {
+            case 'Solicitar vacaciones':
+                $payment = 'A cuenta de vacaciones';
+                break;
+            case 'Salir durante la jornada':
+                $payment = 'Descontar Tiempo/Dia';
+                break;
+            case 'Faltar a sus labores':
+                $payment = 'Descontar Tiempo/Dia';
+                break;
+            default:
+                $payment = 'Permiso especial';
+                break;
         }
+        $start = $request->start;
+        $end = $request->end;
+        $opcion = $request->opcion;
+        $reason = $request->reason;
+        $docPermiso =  [];
+        $archivos = $request->file('archivos_permiso');
+        if ($archivos != null) {
+            foreach ($archivos as $archivo) {
+                $n = $archivo->getClientOriginalName();
+                $nombreImagen = time() . ' ' . Str::slug($n) . "." . $archivo->getClientOriginalExtension();
+                $archivo->move(public_path('storage/archivosPermisos'), $nombreImagen);
+                array_push($docPermiso, $nombreImagen);
+            }
+        }
+        $reveal_id = $request->reveal;
+        $direct_manager_id = auth()->user()->employee->jefe_directo_id;
+        $direct_manager_status = "Pendiente";
+        $human_resources_status = "Pendiente";
+        $employee_id = auth()->user()->employee->id;
+        $visible = true;
+
+        $data = [
+            'type_request' => $type_request,
+            'payment' => $payment,
+            'start' => $start,
+            'end' => $end,
+            'opcion' => $opcion,
+            'reason' => $reason,
+            'doc_permiso' => count($docPermiso) > 0 ? implode(',', $docPermiso) : null,
+            'reveal_id' => $reveal_id,
+            'direct_manager_id' => $direct_manager_id,
+            'direct_manager_status' => $direct_manager_status,
+            'human_resources_status' => $human_resources_status,
+            'employee_id' => $employee_id,
+            'visible' => $visible,
+        ];
+
+
+        // Crear la solicitud
+        $req = ModelsRequest::create($data);
 
         $user = auth()->user();
-
-        $req = new ModelsRequest();
-        $req->employee_id = $user->employee->id;
-        $req->type_request = $request->type_request;
-        $req->payment = $payment;
-        $req->reason = $request->reason;
-        $req->start = $request->start;
-        $req->end = $request->end;
-        $req->reveal_id = $request->reveal;
-
-        $req->direct_manager_id = $user->employee->jefe_directo_id;
-        $req->direct_manager_status = "Pendiente";
-        $req->human_resources_status = "Pendiente";
-
-        $req->save();
-
         //Actualizar el request de los dias seleccionados
         $user->daysSelected()->update(['requests_id' => $req->id]);
 
         // Enviar notificacion
-        $communique_notification = new FirebaseNotificationController();
-        $communique_notification->createRequest(strval($user->id));
-        $communique_notification->sendToManager(strval($req->direct_manager_id));
+        try {
+            $communique_notification = new FirebaseNotificationController();
+            $communique_notification->createRequest(strval($user->id));
+            $communique_notification->sendToManager(strval($req->direct_manager_id));
 
-
-        $userReceiver = Employee::find($req->direct_manager_id)->user;
-        event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
-        $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
- 
-        return redirect()->action([RequestController::class, 'index']);
+            $userReceiver = Employee::find($req->direct_manager_id)->user;
+            event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
+            $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
+        } catch (Exception $th) {
+        }
+        return redirect()->action([RequestController::class, 'index'])->with('message', 'Se creo la solicitud correctamente');
     }
 
     public function edit(ModelsRequest $request)
@@ -177,6 +225,7 @@ class RequestController extends Controller
         }
 
         $daysSelected = RequestCalendar::where('requests_id', $request->id)->get();
+
 
         return view('request.edit', compact('noworkingdays', 'vacations', 'daysSelected', 'request', 'dataVacations'));
     }
@@ -262,6 +311,7 @@ class RequestController extends Controller
         $requests = ModelsRequest::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada')->whereRaw('DATE(created_at) >= ?', [$request->start])->whereRaw('DATE(created_at) <= ?', [$request->end])->get();
 
         $start = $request->start;
+
         $end = $request->end;
 
         return view('request.filter', compact('requests', 'requestDays', 'start', 'end'));
