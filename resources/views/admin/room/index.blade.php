@@ -61,9 +61,9 @@
                                     <div class="form-group">
                                         {!!Form::label('reservation', 'Reservar toda la sala:')!!}
                                         <br>
-                                        {{ Form::radio('reservation', 'Sí', null, ['id' => 'reservation_si']) }}
+                                        {{ Form::radio('reservation', 'Sí', null, ['class' => 'radio-button-style form-check-input','id' => 'reservation_si']) }}
                                         {{ Form::label('reservation_si', 'Sí') }}
-                                        {{ Form::radio('reservation', 'No', null, ['id' => 'reservation_no', 'checked' => !$esGerente]) }}
+                                        {{ Form::radio('reservation', 'No', null, ['class' => 'radio-button-style form-check-input','id' => 'reservation_no', 'checked' => !$esGerente]) }}
                                         {{ Form::label('reservation_no', 'No') }}
                                         @error('reservation')
                                             <small>
@@ -209,10 +209,10 @@
                                     <div class="form-group">
                                         {!! Form::label('engrave', 'Grabar reunión:') !!}
                                         <br>
-                                        {{ Form::checkbox('engrave', 'Sí', null, ['class' => 'single-checkbox', 'id' => 'engrave-checkbox']) }}
+                                        {{ Form::checkbox('engrave', 'Sí', null, ['class' => 'single-checkbox checkbox-margin form-check-input', 'id' => 'engrave-checkbox']) }}
                                         {{ Form::label('engrave_si', 'Sí') }}
                                         <br>
-                                        {{ Form::checkbox('engrave', 'No', null, ['class' => 'single-checkbox', 'id' => 'no-engrave-checkbox']) }}
+                                        {{ Form::checkbox('engrave', 'No', null, ['class' => 'single-checkbox checkbox-margin form-check-input', 'id' => 'no-engrave-checkbox']) }}
                                         {{ Form::label('engrave_no', 'No') }}
                                         @error('engrave')
                                             <small>
@@ -262,7 +262,7 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Editar evento</h1>
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modificar evento</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
 
@@ -299,9 +299,9 @@
                                             <div class="form-group">
                                                 {!! Form::label('reservation', 'Reservar toda la sala:') !!}
                                                 <br>
-                                                {{ Form::radio('reservation', 'Sí', $evento->reservation == 'Sí', ['id' => 'reservation_si']) }}
+                                                {{ Form::radio('reservation', 'Sí', $evento->reservation == 'Sí', ['class' => 'radio-button-style form-check-input','id' => 'reservation_si']) }}
                                                 {{ Form::label('reservation_si', 'Sí') }}
-                                                {{ Form::radio('reservation', 'No', $evento->reservation == 'No', ['id' => 'reservation_no']) }}
+                                                {{ Form::radio('reservation', 'No', $evento->reservation == 'No', ['class' => 'radio-button-style form-check-input','id' => 'reservation_no']) }}
                                                 {{ Form::label('reservation_no', 'No') }}
                                                 @error('reservation')
                                                     <small>
@@ -445,10 +445,10 @@
                                             <div class="form-group">
                                                 {!! Form::label('engrave', 'Grabar reunión:') !!}
                                                 <br>
-                                                {{ Form::radio('engrave', 'Sí', $evento->engrave == 'Sí', ['class' => 'single-checkbox', 'id' => 'engrave-checkbox-' . $evento->id, 'onclick' => 'toggleGrabarDiv(' . $evento->id . ')']) }}         
+                                                {{ Form::radio('engrave', 'Sí', $evento->engrave == 'Sí', ['class' => 'single-checkbox checkbox-margin form-check-input', 'id' => 'engrave-checkbox-' . $evento->id, 'onclick' => 'toggleGrabarDiv(' . $evento->id . ')']) }}         
                                                 {{ Form::label('engrave_si', 'Sí') }}
                                                 <br>
-                                                {{ Form::radio('engrave', 'No', $evento->engrave == 'No', ['class' => 'single-checkbox', 'id' => 'engrave-checkbox-no-' . $evento->id, 'onclick' => 'toggleGrabarDiv(' . $evento->id . ')']) }}
+                                                {{ Form::radio('engrave', 'No', $evento->engrave == 'No', ['class' => 'single-checkbox checkbox-margin form-check-input', 'id' => 'engrave-checkbox-no-' . $evento->id, 'onclick' => 'toggleGrabarDiv(' . $evento->id . ')']) }}
                                                 {{ Form::label('engrave_no', 'No') }}
                                                 @error('engrave')
                                                     <small>
@@ -459,6 +459,7 @@
                                             </div>
                                         </div>
                                     </div>
+
 
                                     <div id="grabar-{{ $evento->id }}" style="display: {{ $evento->engrave == 'Sí' ? 'block' : 'none' }}">
                                         Sí deseas que tu reunión se grabe debes crear tu reserva con cinco días de anticipación.
@@ -563,7 +564,9 @@
                                                 <b>Se solicitó grabar la reunión: </b>
                                                 {{($evento->engrave.'.')}}
                                                 <br>
-                                                <b>Nota: Sí deseas grabar tu reunión debes crear tu reservación con cinco días de anticipación.</b>
+                                                @if($evento->engrave=='Sí')
+                                                    <b>Nota: Sí deseas grabar tu reunión debes crear tu reservación con cinco días de anticipación.</b>
+                                                @endif
                                             </p>
                                         </div>
                                         
@@ -572,8 +575,7 @@
                                                 <b>Reservo toda la sala:</b> {{($evento->reservation.'.')}}
                                                 <br>
                                                 @if($evento->reservation=='Sí')
-                                                <b>Nota:En este horario no podrás acceder ni reservar la sala recreativa, esto incluye a los cubículos y solo el 
-                                                        personal autorizado puede acceder a ella.
+                                                <b>Nota:En este horario no podrás acceder ni reservar la sala recreativa, esto incluye a los cubículos.
                                                 </b>
                                                 @endif
                                             </p>
@@ -593,8 +595,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-
+    
     <script>
         $('.form-delete').submit(function(e) {
             e.preventDefault();
@@ -614,6 +615,7 @@
             })
         });
     </script>
+    
     <script>
         function submitForm() {
             // Obtener los valores de los campos que deseas verificar
@@ -623,12 +625,20 @@
             const end = document.querySelector('input[name="end"]').value;
             const description = document.querySelector('textarea[name="description"]').value;
             const engrave = document.querySelector('input[name="engrave"]').value;
-            const reservation  = document.querySelector('input[name="reservation"]').value;
-
+            const reservation = document.querySelector('input[name="reservation"]').value;
+    
             // Verificar si los campos obligatorios están vacíos
             if (!title || !id_sala || !start || !end || !description || !engrave || !reservation) {
-                // Mostrar la alerta
-                alert("No se creó la reservación. Por favor, asegúrate de completar todos los campos del formulario.");
+                // Mostrar SweetAlert en lugar de la alerta nativa
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Campos incompletos',
+                    text: 'No se creó la reservación. Por favor, asegúrate de completar todos los campos del formulario.'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload(); // Recargar la página después de que el usuario confirme el SweetAlert
+                    }
+                });
                 return false; // Evitar que el formulario se envíe
             }
         }
@@ -645,10 +655,18 @@
             const engrave = document.querySelector('input[name="engrave"]').value;
             
             // Verificar si los campos obligatorios están vacíos
-            if (!title || !id_sala || !start || !end || !description || !engrave) {
-                // Mostrar la alerta
-                alert("Asegúrate de completar todos los campos del formulario de lo contrario no se editará el evento. Sí lo realizaste ignora el mensaje.");
-                return false; // Evitar que el formulario se envíe
+            if (!title || !id_sala || !start || !end || !description || !engrave ) {
+
+                Swal.fire({
+                icon: 'warning',
+                title: '¿Tus campos están completos?',
+                text: "Asegúrate de completar todos los campos del formulario de lo contrario no se editará el evento. Sí lo realizaste ignora el mensaje."
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload(); // Recargar la página después de que el usuario confirme el SweetAlert
+                }
+            });
+            return false; // Evitar que el formulario se envíe
             }
         }
     </script>
@@ -1129,23 +1147,25 @@
             var selectSala = document.querySelector('select[name="id_sala"]');
             var disclaimer = document.getElementById('disclaimer');
             reservationSi.checked = false; // Desmarcar el radio button 'Sí'
-
+            
             reservationSi.addEventListener('change', function() {
                 salasDiv.style.display = (this.checked && this.value === 'Sí') ? 'none' : 'block';
                 disclaimer.style.display = (this.checked && this.value === 'Sí') ? 'block' : 'none';
 
                 if (this.checked && this.value === 'Sí') {
                     selectSala.value = selectSala.querySelector('option:not([disabled])').value;
-                    alert('Reservará toda la sala');
+                    Swal.fire({
+                        title: '¡Reservará toda la sala!',
+                        icon: 'warning'
+                    });
                 } else {
                     selectSala.value = '';
                 }
             });
-
+            
             reservationNo.addEventListener('change', function() {
                 salasDiv.style.display = (this.checked && this.value === 'No') ? 'block' : 'none';
                 disclaimer.style.display = 'none';
-                
                 if (this.checked && this.value === 'No') {
                     selectSala.value = '';
                 }

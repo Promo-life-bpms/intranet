@@ -100,7 +100,8 @@ class ReservationController extends Controller
             'description' => 'required',
             'engrave' => 'required',
             'reservation' => 'required',
-            'id_sala'=> 'required'
+            'id_sala'=> 'required',
+            'guest'=> 'required|array|min:1'
         ]);
         
         //dd($request->reservation);
@@ -199,7 +200,7 @@ class ReservationController extends Controller
 
         //OBTENCIÓN DE INFORMACIÓN PARA ENVIAR LOS CORREOS//
         //LE DAMOS FORMATO A LAS FECHAS//
-        setlocale(LC_TIME, 'es_ES');
+        /*setlocale(LC_TIME, 'es_ES');
         $diaInicio = Carbon::parse($request->start)->format('d');
         $MesInicio = Carbon::parse($request->start)->format('m');
         $AnoInicio = Carbon::parse($request->start)->format('Y');
@@ -385,7 +386,7 @@ class ReservationController extends Controller
         // Mostrar el mensaje de sesión si hay correos electrónicos inválidos
         if (!empty($mensajeInvalidos)) {
             return redirect()->back()->with('message2', $mensajeInvalidos);
-        }
+        }*/
  
         return redirect()->back()->with('message', "Reservación creada correctamente.");
     }
@@ -541,7 +542,7 @@ class ReservationController extends Controller
 
         //OBTENCIÓN DE INFORMACIÓN PARA ENVIAR LOS CORREOS//
         //LE DAMOS FORMATO A LAS FECHAS//
-        setlocale(LC_TIME, 'es_ES');
+        /*setlocale(LC_TIME, 'es_ES');
         $diaInicio= Carbon::parse($request->start)->format('d');
         $MesInicio = Carbon::parse($request->start)->format('m');
         $AnoInicio = Carbon::parse($request->start)->format('Y');
@@ -729,7 +730,7 @@ class ReservationController extends Controller
         // Mostrar el mensaje de sesión si hay correos electrónicos inválidos
         if (!empty($mensajeInvalidos)) {
             return redirect()->back()->with('message2', $mensajeInvalidos);
-        }
+        }*/
 
         return redirect()->back()->with('message2', "Evento editado correctamente.");
     }

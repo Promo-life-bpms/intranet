@@ -146,7 +146,7 @@
             <!-- Cumpleanos del mes  -->
             <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;">
-                <h4 class="d-flex justify-content-center">Cumpleaños del Mes</h4>
+                <h4 class="d-flex justify-content-center">Cumpleaños del mes</h4>
                 <div class="row">
                     <div class="col">
                         <div id="carousel2" class="carousel slide carousel-fade" data-bs-ride="carousel"
@@ -155,7 +155,7 @@
 
                                 @if (count($employeesBirthday) == 0)
                                     <div class="carousel-item active">
-                                        <p>Sin Cumpleaños disponibles</p>
+                                        <p class="text-center">Sin cumpleaños disponibles.</p>
                                     </div>
                                 @else
                                     @foreach ($employeesBirthday as $employee)
@@ -201,7 +201,7 @@
             <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;"
                 style="border-radius:20px;">
-                <h4 class="d-flex justify-content-center text-center">¡Gracias por un año mas con nosotros!</h4>
+                <h4 class="d-flex justify-content-center text-center">¡Gracias por un año más con nosotros!</h4>
 
                 <div class="row">
                     <div class="col">
@@ -211,7 +211,7 @@
 
                                 @if (count($employeesAniversary) == 0)
                                     <div class="carousel-item active">
-                                        <p>Sin Aniversarios disponibles</p>
+                                        <p class="text-center">Sin aniversarios disponibles.</p>
                                     </div>
                                 @else
                                     @foreach ($employeesAniversary as $employee)
@@ -265,7 +265,7 @@
             <!--  Empleado del mes  -->
             <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;">
-                <h4>Empleado del Mes de la Evaluacion 360</h4>
+                <h4 class="d-flex justify-content-center text-center">Empleado del mes de la Evaluación 360</h4>
                 <br>
                 <div id="carousel4" class="carousel slide carousel-fade" data-bs-ride="carousel"
                     data-bs-interval="15000">
@@ -273,7 +273,7 @@
 
                         @if (count($monthEmployeeController) == 0)
                             <div class="carousel-item active">
-                                <p>Sin Informacion disponible</p>
+                                <p class="text-center">Sin información disponible.</p>
                             </div>
                         @else
                             @foreach ($monthEmployeeController as $employee)
@@ -322,7 +322,7 @@
             <!-- Ausencias -->
             <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; border-radius:20px;">
-                <h4 class="d-flex justify-content-center text-center">Ausencias del Dia de Hoy</h4>
+                <h4 class="d-flex justify-content-center text-center">Ausencias del día de hoy</h4>
                 @if (count($empleadosAusentes) > 0)
                     <table class="table">
                         <thead>
@@ -353,14 +353,48 @@
                         </tbody>
                     </table>
                 @else
-                    <p>No tenemos ausencias registradas</p>
+                    <p class="text-center">No tenemos ausencias registradas.</p>
                 @endif
 
             </div>
+
+            <!-- EVENTOS -->
+            <div class="card p-4" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; border-radius: 20px;">
+                <h4 class="d-flex justify-content-center text-center">Eventos del día</h4>
+                @if (count($EventosDelDia) > 0)
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="background-color: #e6f7ff;">
+                            <thead>
+                                <tr>
+                                    <th>Evento</th>
+                                    <th>Inicio</th>
+                                    <th>Final</th>
+                                    <th>Sala</th>
+                                    <th>Locación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($EventosDelDia as $item)
+                                    <tr>
+                                        <td>{{ $item->title }}</td>
+                                        <td>{{ $item->start }}</td>
+                                        <td>{{ $item->end }}</td>
+                                        <td>{{ $item->boordroms->name }}</td>
+                                        <td>{{ $item->boordroms->location}}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <p class="text-center">No hay reservaciones en la "Sala Recreativa" el día de hoy.</p>
+                @endif
+            </div> 
+
             <!-- Vacaciones porximas  -->
             <div class="card p-4"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; border-radius:20px;">
-                <h4 class="d-flex justify-content-center text-center">Proximas Vacaciones</h4>
+                <h4 class="d-flex justify-content-center text-center">Próximas vacaciones</h4>
                 @if (count($proximasVacaciones) > 0)
                     <table class="table">
                         <thead>
@@ -399,7 +433,7 @@
                         </tbody>
                     </table>
                 @else
-                    <p>No tenemos vacaciones proximas registradas</p>
+                    <p class="text-center">No tenemos vacaciones próximas registradas.</p>
                 @endif
             </div>
         </div>

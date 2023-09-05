@@ -8,6 +8,7 @@ use App\Models\Events;
 use App\Models\NoWorkingDays;
 use App\Models\Publications;
 use App\Models\Request as ModelsRequest;
+use App\Models\Reservation;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -105,7 +106,13 @@ class HomeController extends Controller
         $url3 = env("URL_CATALOGO", "https://catalogodeproductos.promolife.online");
         $routeCatalogo = "https://cotizador.promolife.lat/";
 
-        return view('home.index', compact('proximasVacaciones', 'employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController', 'publications', 'date', 'empleadosAusentes', 'routeCatalogo'));
+        //Traemos todos los eventos del día//
+        $now = Carbon::now()->format('Y-m-d');
+        $EventosDelDia =Reservation::whereDate('start', $now)
+                                   ->whereDate('end', $now)
+                                   ->get();
+
+        return view('home.index', compact('proximasVacaciones', 'employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController', 'publications', 'date', 'empleadosAusentes', 'routeCatalogo', 'EventosDelDia'));
     }
 
 
