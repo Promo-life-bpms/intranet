@@ -3,7 +3,7 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Dias no laborales</h3>
+            <h3>Días no laborales</h3>
             <a href="{{ route('admin.noworkingdays.create') }} " type="button" class="btn btn-success">Agregar</a>
         </div>
     </div>
@@ -13,7 +13,7 @@
             <thead>
                 <tr>
                     <th scope="col"># </th>
-                    <th scope="col">Dia</th>
+                    <th scope="col">Día</th>
                     <th scope="col">Festividad</th>
                     <th scope="col">Empresa</th>
                     <th style="width: 20%" scope="col">Opciones</th>
@@ -60,7 +60,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, eliminar!',
+                confirmButtonText: '¡Sí, eliminar!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {

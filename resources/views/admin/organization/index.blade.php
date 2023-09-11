@@ -3,7 +3,7 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Organizacion</h3>
+            <h3>Organización</h3>
         </div>
     </div>
     <div class="card-body">
@@ -22,7 +22,7 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Nombre</th>
-                                <th scope="col">Area</th>
+                                <th scope="col">Área</th>
                                 <th scope="col">Opciones</th>
                             </tr>
                         </thead>
@@ -138,7 +138,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalEmpresaLabel">Agregar Empresa</h5>
+                    <h5 class="modal-title" id="modalEmpresaLabel">Agregar empresa</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 {!! Form::open(['route' => 'admin.organization.store']) !!}
@@ -152,8 +152,8 @@
 
                     <div class="row mt-4">
                         <div class="col">
-                            {!! Form::label('description_company', 'Direccion de la empresa') !!}
-                            {!! Form::text('description_company', null, ['class' => 'form-control', 'placeholder' => 'Ingrese la direccion de la empresa']) !!}
+                            {!! Form::label('description_company', 'Dirección de la empresa') !!}
+                            {!! Form::text('description_company', null, ['class' => 'form-control', 'placeholder' => 'Ingrese la dirección de la empresa']) !!}
                         </div>
 
                     </div>
@@ -198,7 +198,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalPuestoLabel">Crear Puesto</h5>
+                    <h5 class="modal-title" id="modalPuestoLabel">Crear puesto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 {!! Form::open(['route' => 'admin.position.store']) !!}
@@ -243,7 +243,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, eliminar!',
+                confirmButtonText: '¡Sí, eliminar!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {

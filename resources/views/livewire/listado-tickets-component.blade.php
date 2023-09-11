@@ -15,7 +15,7 @@
                         <th scope="col">ID</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Categoría</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Estatus</th>
                         <th scope="col">Acciones</th>
                     </tr>
                 </thead>
@@ -98,7 +98,7 @@
                         <div class="mb-3">
                             <label for="Problema" class="form-label">Problema a resolver</label>
                             <input type="text"
-                                class="form-control input-lg @error('name') is-invalid @enderror "placeholder="ingresa el problema a resolver"
+                                class="form-control input-lg @error('name') is-invalid @enderror "placeholder="Ingresa el problema a resolver"
                                 name="name" wire:model="name" value="{{ old('name') }}">
                             @error('name')
                                 <span class="invalid-feedback">
@@ -164,7 +164,7 @@
                         <div class="mb-3">
                             <label for="Problema" class="form-label ">Problema a resolver</label>
                             <input type="text" class="form-control input-lg @error('name') is-invalid @enderror "
-                                placeholder="ingresa el problema a resolver" name="name" wire:model="name"
+                                placeholder="Ingresa el problema a resolver" name="name" wire:model="name"
                                 value="{{ old('name') }}">
                             @error('name')
                                 <span class="invalid-feedback">

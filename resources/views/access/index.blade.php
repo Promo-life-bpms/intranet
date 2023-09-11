@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-md-4 col-lg-3 col-xl-3">
                 <div class="card text-dark bg-light rounded shadow p-4">
-                    <img src="{{ asset('/img/course.png') }}" style="width: 100%; height:120px;  object-fit: contain;"
+                    <img src="{{ asset('/img/course.png') }}" style="width: 100%; height:130px;  object-fit: contain;"
                         class="card-img-top" alt="imagen">
                     <div class="card-body" style="padding-top:0; padding-bottom:0">
                         <h5 class="card-title text-center">Cursos</h5>
@@ -24,7 +24,7 @@
             <div class="col-md-4 col-lg-3 col-xl-3">
                 <div class="card text-dark bg-light rounded shadow p-4">
                     <img src="{{ asset('/img/task-clipboard.png') }}"
-                        style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
+                        style="width: 100%; height:130px;  object-fit: contain;" class="card-img-top" alt="imagen">
                     <div class="card-body" style="padding-top:0; padding-bottom:0">
                         <h5 class="card-title text-center">Task Manager</h5>
                         <a href="{{ $routeTaskManager }}" style="width: 100%" target="_blank"
@@ -36,7 +36,7 @@
             <div class="col-md-4 col-lg-3 col-xl-3">
                 <div class="card text-dark bg-light rounded shadow p-4">
                     <img src="https://www.odoo.com/web/image/website/1/social_default_image?unique=ffdde0a"
-                        style="width: 100%; height:120px;  object-fit: contain;" class="card-img-top" alt="imagen">
+                        style="width: 100%; height:130px;  object-fit: contain;" class="card-img-top" alt="imagen">
                     <div class="card-body" style="padding-top:0; padding-bottom:0">
                         <h5 class="card-title text-center">ODOO</h5>
                         <a href="https://promolife.vde-suite.com:8030/web/login" style="width: 100%" target="_blank"
@@ -47,7 +47,7 @@
 
             <div class="col-md-4 col-lg-3 col-xl-3">
                 <div class="card text-dark bg-light rounded shadow p-4">
-                    <img src="{{ asset('/img/evaluacion.png') }}" style="width: 100%; height:120px;  object-fit: contain;"
+                    <img src="{{ asset('/img/evaluacion.png') }}" style="width: 100%; height:130px;  object-fit: contain;"
                         class="card-img-top" alt="imagen">
                     <div class="card-body" style="padding-top:0; padding-bottom:0">
                         <h5 class="card-title text-center">Evaluación 360</h5>
@@ -59,7 +59,7 @@
 
             <div class="col-md-4 col-lg-3 col-xl-3">
                 <div class="card text-dark bg-light rounded shadow p-4">
-                    <img src="{{ asset('/img/nom.png') }}" style="width: 100%; height:120px;  object-fit: contain;"
+                    <img src="{{ asset('/img/nom.png') }}" style="width: 100%; height:130px;  object-fit: contain;"
                         class="card-img-top" alt="imagen">
                     <div class="card-body" style="padding-top:0; padding-bottom:0">
                         <h5 class="card-title text-center">NOM 035</h5>
@@ -71,7 +71,7 @@
 
             <div class="col-md-4 col-lg-3 col-xl-3">
                 <div class="card text-dark bg-light rounded shadow p-4">
-                    <img src="{{ asset('/img/connect.png') }}" style="width: 100%; height:120px;  object-fit: contain;"
+                    <img src="{{ asset('/img/connect.png') }}" style="width: 100%; height:130px;  object-fit: contain;"
                         class="card-img-top" alt="imagen">
                     <div class="card-body" style="padding-top:0; padding-bottom:0">
                         <h5 class="card-title text-center">Promo Connect</h5>
@@ -83,7 +83,7 @@
 
             <div class="col-md-4 col-lg-3 col-xl-3">
                 <div class="card text-dark bg-light rounded shadow p-4">
-                    <img src="{{ asset('/img/tickets.png') }}" style="width: 100%; height:120px;  object-fit: contain;"
+                    <img src="{{ asset('/img/tickets.png') }}" style="width: 100%; height:109px;  object-fit: contain;"
                         class="card-img-top" alt="imagen">
                     <div class="card-body" style="padding-top:0; padding-bottom:0">
                         <h5 class="card-title text-center">Sistema de Diseño</h5>
@@ -95,7 +95,7 @@
 
             <div class="col-md-4 col-lg-3 col-xl-3">
                 <div class="card text-dark bg-light rounded shadow p-4">
-                    <img src="{{ asset('/img/powerbi.png') }}" style="width: 100%; height:120px;  object-fit: contain;"
+                    <img src="{{ asset('/img/powerbi.png') }}" style="width: 100%; height:130px;  object-fit: contain;"
                         class="card-img-top" alt="imagen">
                     <div class="card-body" style="padding-top:0; padding-bottom:0">
                         <h5 class="card-title text-center">Power BI</h5>
@@ -158,7 +158,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, eliminar!',
+                confirmButtonText: '¡Sí, eliminar!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {

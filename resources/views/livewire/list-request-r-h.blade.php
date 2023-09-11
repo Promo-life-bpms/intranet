@@ -38,7 +38,7 @@
                         <th scope="col">Tipo</th>
                         <th scope="col">Aprobado por</th>
                         <th scope="col">Estado</th>
-                        <th scope="col">Fecha de Actualizacion</th>
+                        <th scope="col">Fecha de Actualización</th>
                         <th scope="col">Opciones</th>
                     </tr>
                 </thead>
@@ -92,11 +92,11 @@
                                                                         ->sum('dv')
                                                                     : 0);
                                                         @endphp
-                                                        <p class="m-0">Dias de vacaciones diponibles: <b
+                                                        <p class="m-0">Días de vacaciones diponibles: <b
                                                                 id="diasDisponiblesEl">
                                                                 {{ $vacations }} </b> </p>
                                                         @if ($request->employee->user->employee->take_expired_vacation)
-                                                            <p class="m-0"><b>{{ $vacationsExpired }} </b> dias
+                                                            <p class="m-0"><b>{{ $vacationsExpired }} </b> días
                                                                 disponibles
                                                                 que estan por expirar. </p>
                                                         @endif
@@ -105,7 +105,7 @@
                                                                 @php
                                                                     $dayFormater = \Carbon\Carbon::parse($item->cutoff_date);
                                                                 @endphp
-                                                                <p class="m-0"><b>{{ $item->dv }} </b> dias
+                                                                <p class="m-0"><b>{{ $item->dv }} </b> días
                                                                     disponibles
                                                                     hasta el
                                                                     <b>
@@ -119,12 +119,12 @@
                                                         <table class="table">
                                                             <tbody>
                                                                 <tr>
-                                                                    <th style="vertical-align: middle">Tipo de Solicitud
+                                                                    <th style="vertical-align: middle">Tipo de solicitud
                                                                     </th>
                                                                     <td>{{ $request->type_request }}
                                                                     </td>
                                                                 <tr>
-                                                                    <th style="vertical-align: middle">Dias Ausente</th>
+                                                                    <th style="vertical-align: middle">Días ausente</th>
                                                                     <td>
                                                                         @php
                                                                             $days = [];
@@ -165,7 +165,7 @@
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th style="vertical-align: middle">Tipo de Pago</th>
+                                                                    <th style="vertical-align: middle">Tipo de pago</th>
                                                                     <td>{{ $request->payment }}</td>
                                                                 </tr>
                                                                 <tr>
@@ -195,8 +195,8 @@
                                                         <table class="table">
                                                             <tbody>
                                                                 <tr>
-                                                                    <th style="vertical-align: middle">Estado Jefe
-                                                                        Directo
+                                                                    <th style="vertical-align: middle">Estado jefe
+                                                                        directo
                                                                     </th>
                                                                     <td>{{ $request->direct_manager_status }}</td>
                                                                 </tr>
@@ -250,7 +250,7 @@
                                                                 @endif
                                                                 <tr>
                                                                     <th style="vertical-align: middle">Fecha de
-                                                                        Creacion</th>
+                                                                        creación</th>
                                                                     <td>{{ $request->created_at->format('d/M/Y') }}
                                                                     </td>
                                                                 </tr>
@@ -286,9 +286,9 @@
                         <th scope="col"># </th>
                         <th scope="col">Solicitante</th>
                         <th scope="col">Tipo</th>
-                        <th scope="col">Jefe Directo</th>
+                        <th scope="col">Jefe directo</th>
                         <th scope="col">Estado</th>
-                        <th scope="col">Fecha de Actualizacion</th>
+                        <th scope="col">Fecha de actualización</th>
                         <th scope="col">Opciones</th>
                     </tr>
                 </thead>
@@ -342,11 +342,11 @@
                                                                         ->sum('dv')
                                                                     : 0);
                                                         @endphp
-                                                        <p class="m-0">Dias de vacaciones diponibles: <b
+                                                        <p class="m-0">Días de vacaciones diponibles: <b
                                                                 id="diasDisponiblesEl">
                                                                 {{ $vacations }} </b> </p>
                                                         @if ($request->employee->user->employee->take_expired_vacation)
-                                                            <p class="m-0"><b>{{ $vacationsExpired }} </b> dias
+                                                            <p class="m-0"><b>{{ $vacationsExpired }} </b> días
                                                                 disponibles
                                                                 que estan por expirar. </p>
                                                         @endif
@@ -355,7 +355,7 @@
                                                                 @php
                                                                     $dayFormater = \Carbon\Carbon::parse($item->cutoff_date);
                                                                 @endphp
-                                                                <p class="m-0"><b>{{ $item->dv }} </b> dias
+                                                                <p class="m-0"><b>{{ $item->dv }} </b> días
                                                                     disponibles
                                                                     hasta el
                                                                     <b>
@@ -370,12 +370,12 @@
                                                             <tbody>
                                                                 <tr>
                                                                     <th style="vertical-align: middle">Tipo de
-                                                                        Solicitud
+                                                                        solicitud
                                                                     </th>
                                                                     <td>{{ $request->type_request }}
                                                                     </td>
                                                                 <tr>
-                                                                    <th style="vertical-align: middle">Dias Ausente
+                                                                    <th style="vertical-align: middle">Días Ausente
                                                                     </th>
                                                                     <td>
                                                                         @php
@@ -417,7 +417,7 @@
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th style="vertical-align: middle">Tipo de Pago
+                                                                    <th style="vertical-align: middle">Tipo de pago
                                                                     </th>
                                                                     <td>{{ $request->payment }}</td>
                                                                 </tr>
@@ -448,8 +448,8 @@
                                                         <table class="table">
                                                             <tbody>
                                                                 <tr>
-                                                                    <th style="vertical-align: middle">Estado Jefe
-                                                                        Directo
+                                                                    <th style="vertical-align: middle">Estado jefe
+                                                                        directo
                                                                     </th>
                                                                     <td>{{ $request->direct_manager_status }}</td>
                                                                 </tr>
@@ -504,7 +504,7 @@
                                                                 @endif
                                                                 <tr>
                                                                     <th style="vertical-align: middle">Fecha de
-                                                                        Creacion</th>
+                                                                        creación</th>
                                                                     <td>{{ $request->created_at->format('d/M/Y') }}
                                                                     </td>
                                                                 </tr>

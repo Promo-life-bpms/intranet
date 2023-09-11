@@ -55,7 +55,7 @@
         <div class="sidebar-menu">
             <ul class="menu" style="margin-bottom:40px">
                 @role('admin')
-                    <li class="sidebar-title">Administrador</li>
+                    <li class="sidebar-title text-center">Administrador</li>
                     <li class="sidebar-item has-sub {{ request()->is('admin') ? 'active' : '' }}">
 
                         <a href="{{ route('admin.users.index') }}" class='sidebar-link'>
@@ -67,7 +67,7 @@
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.organization.index') }}">
-                                    <span>Organizacion</span>
+                                    <span>Organización</span>
                                 </a>
                             </li>
                             <li class="submenu-item ">
@@ -85,11 +85,11 @@
                     </li>
                 @endrole
                 @role('rh')
-                    <li class="sidebar-title">Gestion y RH</li>
+                    <li class="sidebar-title text-center">Gestión y RH</li>
                     <li class="sidebar-item has-sub">
                         <a href="#" class='sidebar-link'>
                             <i class="fa fa-users" aria-hidden="true"></i>
-                            <span>Gestion </span>
+                            <span>Gestión </span>
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
@@ -100,7 +100,7 @@
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.noworkingdays.index') }}">
-                                    <span>Dias no laborales</span>
+                                    <span>Días no laborales</span>
                                 </a>
                             </li>
 
@@ -120,7 +120,7 @@
                     <li class="sidebar-item has-sub">
                         <a href="#" class='sidebar-link'>
                             <i class="fa fa-users" aria-hidden="true"></i>
-                            <span>Vacaciones </span>
+                            <span>Vacaciones</span>
                             <span
                                 class="badge bg-secondary">{{ count(App\Models\Request::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Pendiente')->get()) }}
                             </span>
@@ -142,7 +142,7 @@
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">
-                                    <span>Vacaciones Disponibles</span>
+                                    <span>Vacaciones disponibles</span>
                                 </a>
                             </li>
                         </ul>
@@ -156,7 +156,7 @@
                         <ul class="submenu ">
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('rh.stadistics') }}">
-                                    <span>Estadisticas</span>
+                                    <span>Estadísticas</span>
                                 </a>
                             </li>
                             <li class="submenu-item ">
@@ -173,7 +173,7 @@
                         </ul>
                     </li>
                 @endrole('rh')
-                <li class="sidebar-title">Menu</li>
+                <li class="sidebar-title text-center">Menú</li>
                 <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
                     <a href="{{ route('home') }}" class='sidebar-link'>
                         <i class="bi bi-house-door-fill"></i>
@@ -311,7 +311,7 @@
                 <li class="sidebar-item {{ request()->is('manual') ? 'active' : '' }}">
                     <a href="{{ route('manual.index') }}" class='sidebar-link'>
                         <i class="fa fa-book" aria-hidden="true"></i>
-                        <span>Politicas y Procedimientos</span>
+                        <span>Políticas y Procedimientos</span>
                     </a>
                 </li>
 
@@ -336,8 +336,7 @@
                      <ul class="submenu ">
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{route('soporte')}}">
-                                <span>Pedir Soporte
-                                </span>
+                                <span>Pedir Soporte</span>
                             </a>
                         </li>
                         @role('systems')
@@ -349,7 +348,7 @@
 
                         <li class="submenu-item ">
                             <a class="dropdown-item" href="{{ route('solucion') }}">
-                                <span>Soporte Solucion</span>
+                                <span>Soporte Solución</span>
                             </a>
                         </li>
                         <li class="submenu-item ">

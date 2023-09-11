@@ -30,7 +30,7 @@
                     <div class="row mt-4">
                         <div class="col-12">
                             <div class="mb-2 form-group">
-                                {!! Form::label('image', 'Imagen') !!}
+                                {!! Form::label('image', 'Imágen') !!}
                                 {!! Form::file('image',  ['class' => 'form-control']) !!}
                                 @error('image')
                                     <small>
@@ -69,11 +69,11 @@
                 <div class="col-md-5">
                     <div class="row mb-3">
                         <div class="form-group col-md-6 ">
-                            {!! Form::label('companies', 'Enviar a empresa especifica:') !!}
+                            {!! Form::label('companies', 'Enviar a empresa específica:') !!}
                             @foreach ($companies as $company)
                                 <div>
                                     <label>
-                                        {!! Form::checkbox('companies[]', $company->id, null, ['class' => 'mr-4']) !!}
+                                        {!! Form::checkbox('companies[]', $company->id, null, ['class' => 'single-checkbox checkbox-margin form-check-input']) !!}
                                         {{ $company->name_company }}
                                     </label>
                                 </div>
@@ -81,11 +81,11 @@
                         </div>
 
                         <div class="form-group col-md-6 ">
-                            {!! Form::label('departments', 'Enviar a departamento especifico:') !!}
+                            {!! Form::label('departments', 'Enviar a departamento específico:') !!}
                             @foreach ($departments as $department)
                                 <div>
                                     <label>
-                                        {!! Form::checkbox('departments[]', $department->id, null, ['class' => 'mr-4']) !!}
+                                        {!! Form::checkbox('departments[]', $department->id, null, ['class' => 'single-checkbox checkbox-margin form-check-input']) !!}
                                         {{ $department->name }}
                                     </label>
                                 </div>
