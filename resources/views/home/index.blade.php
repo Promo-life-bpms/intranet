@@ -33,7 +33,7 @@
                                 </div>
                             @endif
                             <textarea id="exampleFormControlTextarea1" class="form-control" name="content_publication" style="height: 55px"
-                                placeholder="¿Que estas pensando?"></textarea>
+                                placeholder="¿Qué estás pensando?"></textarea>
                             <div class="collapse" id="collapseExample">
                                 <div class="form-group" id="itemsElement">
                                     <label for="imagen">

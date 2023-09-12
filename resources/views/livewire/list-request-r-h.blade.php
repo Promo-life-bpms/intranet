@@ -375,7 +375,7 @@
                                                                     <td>{{ $request->type_request }}
                                                                     </td>
                                                                 <tr>
-                                                                    <th style="vertical-align: middle">Días Ausente
+                                                                    <th style="vertical-align: middle">Días ausente
                                                                     </th>
                                                                     <td>
                                                                         @php

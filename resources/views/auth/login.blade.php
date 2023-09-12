@@ -10,7 +10,7 @@
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="form-group position-relative has-icon-left mb-4">
-                    <input type="email" class="form-control form-control-xl  @error('email') is-invalid @enderror"
+                    <input type="email" class="form-control form-control-xl  @error('email') is-invalid @enderror text-center"
                         name="email" placeholder="Email" value="{{ old('email') }}" required autocomplete="email"
                         autofocus>
                     <div class="form-control-icon">
@@ -24,7 +24,7 @@
                     @enderror
                 </div>
                 <div class="form-group position-relative has-icon-left mb-4">
-                    <input type="password" class="form-control form-control-xl @error('password') is-invalid @enderror"
+                    <input type="password" class="form-control form-control-xl @error('password') is-invalid @enderror text-center"
                         placeholder="Password" name="password" required autocomplete="current-password">
                     <div class="form-control-icon">
                         <i class="bi bi-shield-lock"></i>

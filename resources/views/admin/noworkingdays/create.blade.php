@@ -2,14 +2,14 @@
 
 @section('content')
     <div class="card-header">
-        <h3>Crear Día</h3>
+        <h3>Crear día</h3>
     </div>
     <div class="card-body">
         {!! Form::open(['route' => 'admin.noworkingdays.store']) !!}
         <div class="row ">
             <div class="form-group col-6">
-                {!! Form::label('day', 'Seleccionar Día') !!}
-                {!! Form::date('day', null, ['class' => 'form-control', 'placeholder' => 'Selecciona Día']) !!}
+                {!! Form::label('day', 'Seleccionar día') !!}
+                {!! Form::date('day', null, ['class' => 'form-control', 'placeholder' => 'Selecciona día']) !!}
                 @error('day')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -30,7 +30,7 @@
             </div>
 
             <div class="form-group col mt-4">
-                {!! Form::label('reason', 'Celebreación') !!}
+                {!! Form::label('reason', 'Celebración') !!}
                 {!!Form::text('reason',null,['class' => 'form-control', 'placeholder' => 'Ingrese la descripción de la celebración']) !!}
                 @error('reason')
                     <small>

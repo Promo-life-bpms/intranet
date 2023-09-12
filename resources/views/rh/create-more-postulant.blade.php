@@ -108,8 +108,8 @@
                 </div>
 
                 <div class="col-sm ">
-                    {!! Form::label('gender', 'Genero',  ['class'=>'required']) !!}
-                    {!! Form::select('gender',  ['Femenino' => 'Femenino', 'Masculino' => 'Masculino', 'Otro' => 'Otro'], $postulant->gender , ['class' => 'form-control', 'placeholder' => 'Seleccione el genero']) !!}
+                    {!! Form::label('gender', 'Género',  ['class'=>'required']) !!}
+                    {!! Form::select('gender',  ['Femenino' => 'Femenino', 'Masculino' => 'Masculino', 'Otro' => 'Otro'], $postulant->gender , ['class' => 'form-control', 'placeholder' => 'Seleccione el género']) !!}
                     @error('gender')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>
@@ -228,8 +228,8 @@
             <div class="row form-group">
              
                 <div class="col-sm ">
-                    {!! Form::label('delegation', 'Delegacion o municipio',  ['class'=>'required']) !!}
-                    {!! Form::text('delegation', $postulant->delegation, ['class' => 'form-control', 'placeholder' => 'Ingrese la delegacion o municipio']) !!}
+                    {!! Form::label('delegation', 'Delegación o municipio',  ['class'=>'required']) !!}
+                    {!! Form::text('delegation', $postulant->delegation, ['class' => 'form-control', 'placeholder' => 'Ingrese la delegación o municipio']) !!}
                     @error('delegation')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>
@@ -240,7 +240,7 @@
 
                 <div class="col-sm ">
                     {!! Form::label('postal_code', 'CP', ['class' => 'required']) !!}
-                    {!! Form::text('postal_code', $postulant->postal_code , ['class' => 'form-control', 'placeholder' => 'Ingrese la codigo postal']) !!}
+                    {!! Form::text('postal_code', $postulant->postal_code , ['class' => 'form-control', 'placeholder' => 'Ingrese la código postal']) !!}
                     @error('postal_code')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>
@@ -251,7 +251,7 @@
 
                 <div class="col-sm ">
                     {!! Form::label('fiscal_postal_code', 'CP fiscal', ['class' => 'required']) !!}
-                    {!! Form::text('fiscal_postal_code', $postulant->fiscal_postal_code, ['class' => 'form-control', 'placeholder' => 'Ingrese el codigo postal fiscal']) !!}
+                    {!! Form::text('fiscal_postal_code', $postulant->fiscal_postal_code, ['class' => 'form-control', 'placeholder' => 'Ingrese el código postal fiscal']) !!}
                     @error('fiscal_postal_code')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>
@@ -265,8 +265,8 @@
             <div class="row form-group">
 
                 <div class="col-sm ">
-                    {!! Form::label('home_phone', 'Telefono de casa', ['class' => 'required']) !!}
-                    {!! Form::number('home_phone', $postulant->home_phone, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de telefono de casa']) !!}
+                    {!! Form::label('home_phone', 'Teléfono de casa', ['class' => 'required']) !!}
+                    {!! Form::number('home_phone', $postulant->home_phone, ['class' => 'form-control', 'placeholder' => 'Ingrese el número de teléfono de casa']) !!}
                     @error('home_phones')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>
@@ -287,8 +287,8 @@
                 </div>
 
                 <div class="col-sm ">
-                    {!! Form::label('house_characteristics', 'Caracteristicas de la casa', ['class' => 'required']) !!}
-                    {!! Form::text('house_characteristics', $postulant->house_characteristics, ['class' => 'form-control', 'placeholder' => 'Ingrese las caracteristicas de la casa']) !!}
+                    {!! Form::label('house_characteristics', 'Características de la casa', ['class' => 'required']) !!}
+                    {!! Form::text('house_characteristics', $postulant->house_characteristics, ['class' => 'form-control', 'placeholder' => 'Ingrese las características de la casa']) !!}
                     @error('house_characteristics')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>
@@ -317,7 +317,7 @@
 
                 <div class="col-sm ">
                     {!! Form::label('contract_duration', 'Duración contrato', ['class' => 'required']) !!}
-                    {!! Form::select('contract_duration', ['indefinido' => 'Tiempo indefinido','3' => '3 Meses'], $postulant->contract_duration,['class' => 'form-control', 'placeholder' => 'Selecciona duracion']) !!}
+                    {!! Form::select('contract_duration', ['indefinido' => 'Tiempo indefinido','3' => '3 Meses'], $postulant->contract_duration,['class' => 'form-control', 'placeholder' => 'Selecciona duración']) !!}
                     @error('contract_duration')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>
@@ -435,7 +435,7 @@
 
                 <div class="col-sm col-md-8">
                     {!! Form::label('card_number', 'N° tarjeta/cuenta') !!}
-                    {!! Form::text('card_number', $postulant->card_number, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de cuenta']) !!}
+                    {!! Form::text('card_number', $postulant->card_number, ['class' => 'form-control', 'placeholder' => 'Ingrese el número de cuenta']) !!}
                 </div>
                 
             </div>
@@ -443,13 +443,13 @@
            
             <div class="row form-group">
                 <div class="col-sm col-md-4">
-                    {!! Form::label('infonavit_credit', 'Credito infonavit') !!}
+                    {!! Form::label('infonavit_credit', 'Crédito infonavit') !!}
                     {!! Form::select('infonavit_credit', ['si' => 'Si', 'no' => 'No'], $postulant->infonavit_credit, ['class' => 'form-control','placeholder' => 'Seleccionar']) !!}
                 </div>
 
                 <div class="col-sm col-md-8">
-                    {!! Form::label('factor_credit_number', 'N° credito factor') !!}
-                    {!! Form::text('factor_credit_number', $postulant->factor_credit_number, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de credito factor']) !!}
+                    {!! Form::label('factor_credit_number', 'N° crédito factor') !!}
+                    {!! Form::text('factor_credit_number', $postulant->factor_credit_number, ['class' => 'form-control', 'placeholder' => 'Ingrese el número de crédito factor']) !!}
                 </div>
                 
             </div>
@@ -461,8 +461,8 @@
                 </div>
 
                 <div class="col-sm col-md-8">
-                    {!! Form::label('discount_credit_number', 'N° credito descuento') !!}
-                    {!! Form::text('discount_credit_number',  $postulant->discount_credit_number, ['class' => 'form-control', 'placeholder' => 'Ingrese el numero de credito descuento']) !!}
+                    {!! Form::label('discount_credit_number', 'N° crédito descuento') !!}
+                    {!! Form::text('discount_credit_number',  $postulant->discount_credit_number, ['class' => 'form-control', 'placeholder' => 'Ingrese el número de crédito descuento']) !!}
                 </div>
             </div>
 
