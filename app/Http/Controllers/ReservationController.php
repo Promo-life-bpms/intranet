@@ -100,7 +100,8 @@ class ReservationController extends Controller
             'description' => 'required',
             'engrave' => 'required',
             'reservation' => 'required',
-            'id_sala'=> 'required'
+            'id_sala'=> 'required',
+            'guest'=> 'required|array|min:1'
         ]);
         
         //dd($request->reservation);

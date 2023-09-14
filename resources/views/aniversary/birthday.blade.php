@@ -37,7 +37,7 @@
                                 <form method="POST" action="{{ route('firebase.birthday',['user_id' => $employee->user->id, 'name' => $employee->user->name]) }}">
                                     @csrf
                                     <button type="submit"
-                                        class="btn btn-primary ">Enviar felicitación</button>.
+                                        class="btn btn-primary ">Enviar felicitación</button>
                                 </form>
                             </div>
                         @endrole('admin')
@@ -48,7 +48,7 @@
                             <form method="POST" action="{{ route('firebase.birthday',['user_id' => $employee->user->id, 'name' => $employee->user->name]) }}">
                                     @csrf
                                     <button type="submit"
-                                        class="btn btn-primary ">Enviar felicitación</button>.
+                                        class="btn btn-primary ">Enviar felicitación</button>
                                 </form>
                             </div>
                         @endrole('rh')

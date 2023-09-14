@@ -6,7 +6,7 @@
                 <th scope="col">Solicitante</th>
                 <th scope="col">Tipo</th>
                 <th scope="col">Estado</th>
-                <th scope="col">Fecha de Creacion</th>
+                <th scope="col">Fecha de creación</th>
                 <th scope="col">Opciones</th>
             </tr>
         </thead>
@@ -24,7 +24,7 @@
                     </td>
                     <td class="text-center">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#modalDetails{{ $request->id }}">
+                            data-bs-target="#modalDetails{{ $request->id }}"><i class="fa fa-fw fa-eye"></i>
                             Ver Detalles
                         </button>
                         <!-- Modal -->
@@ -45,11 +45,11 @@
                                                 <table class="table">
                                                     <tbody>
                                                         <tr>
-                                                            <th style="vertical-align: middle">Tipo de Solicitud</th>
+                                                            <th style="vertical-align: middle">Tipo de solicitud</th>
                                                             <td>{{ $request->type_request }}
                                                             </td>
                                                         <tr>
-                                                            <th style="vertical-align: middle">Dias Ausente</th>
+                                                            <th style="vertical-align: middle">Días Ausente</th>
                                                             <td>
                                                                 @php
                                                                     $days = [];
@@ -118,7 +118,7 @@
                                                 <table class="table">
                                                     <tbody>
                                                         <tr>
-                                                            <th style="vertical-align: middle">Estado Jefe Directo
+                                                            <th style="vertical-align: middle">Estado jefe directo
                                                             </th>
                                                             <td>{{ $request->direct_manager_status }}</td>
                                                         </tr>
@@ -169,7 +169,7 @@
                                                             </tr>
                                                         @endif
                                                         <tr>
-                                                            <th style="vertical-align: middle">Fecha de Creacion</th>
+                                                            <th style="vertical-align: middle">Fecha de creación</th>
                                                             <td>{{ $request->created_at->format('d/M/Y') }}</td>
                                                         </tr>
                                                     </tbody>

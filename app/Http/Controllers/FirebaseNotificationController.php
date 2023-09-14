@@ -409,7 +409,7 @@ class FirebaseNotificationController extends Controller
             ]
         );
 
-        return back()->with('message', 'Felicitacion enviada correctamente');
+        return back()->with('message', 'Felicitación enviada correctamente');
 
 
     }

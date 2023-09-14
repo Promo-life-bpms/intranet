@@ -30,7 +30,7 @@
 
         <div class="row">
             <div class="col form-group">
-                {!! Form::label('img', 'Imagen (opcional') !!}
+                {!! Form::label('img', 'Imágen (opcional)') !!}
                 {!! Form::file('img', ['class' => 'form-control', 'placeholder' => 'Ingrese el archivo']) !!}
             </div>
         </div>

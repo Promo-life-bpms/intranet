@@ -13,7 +13,7 @@
         {!! Form::open(['route' => 'admin.users.store', 'enctype' => 'multipart/form-data']) !!}
         <div class="row">
             <div class="col-md-4">
-                <p>Informacion Personal</p>
+                <p style="font-size: 24px; font-weight: bold;">Información personal</p>
                 <div class="form-group">
                     {!! Form::label('name', 'Nombre') !!}
                     {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
@@ -46,12 +46,12 @@
                 </div>
                 <div class="form-group">
                     <div class="mb-2 form-group">
-                        {!! Form::label('image', 'Imagen de usuario') !!}
+                        {!! Form::label('image', 'Imágen de Usuario') !!}
                         {!! Form::file('image', ['class' => 'form-control']) !!}
                     </div>
                 </div>
                 <div class="form-group">
-                    {!! Form::label('birthday_date', 'Fecha de Cumpleaños') !!}
+                    {!! Form::label('birthday_date', 'Fecha de cumpleaños') !!}
                     {!! Form::date('birthday_date', null, ['class' => 'form-control']) !!}
                     @error('birthday_date')
                         <small>
@@ -62,9 +62,9 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <p>Informacion Complemetaria</p>
+                <p style="font-size: 24px; font-weight: bold;">Información complementaria</p>
                 <div class="form-group">
-                    {!! Form::label('date_admission', 'Fecha de Ingreso') !!}
+                    {!! Form::label('date_admission', 'Fecha de ingreso') !!}
                     {!! Form::date('date_admission', null, ['class' => 'form-control']) !!}
                     @error('date_admission')
                         <small>
@@ -102,7 +102,7 @@
                     @enderror
                 </div>
                 <div class="form-group">
-                    {!! Form::label('jefe_directo_id', 'Jefe Directo') !!}
+                    {!! Form::label('jefe_directo_id', 'Jefe directo') !!}
                     {!! Form::select('jefe_directo_id', $manager, null, [
                         'class' => 'form-control',
                         'placeholder' => 'Selecciona jefe directo ',
@@ -117,13 +117,13 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <p>Empresas y Roles que maneja</p>
+                <p style="font-size: 24px; font-weight: bold;">Empresas y Roles que maneja</p>
                 <div class="form-group ">
                     {!! Form::label('empresas', 'Empresas a las que pertenece') !!}
                     @foreach ($companies as $company)
                         <div>
                             <label>
-                                {!! Form::checkbox('companies[]', $company->id, null, ['class' => 'mr-4']) !!}
+                                {!! Form::checkbox('companies[]', $company->id, null, ['class' => 'single-checkbox checkbox-margin form-check-input']) !!}
                                 {{ $company->name_company }}
                             </label>
                         </div>
@@ -140,7 +140,7 @@
                     @foreach ($roles as $role)
                         <div>
                             <label>
-                                {!! Form::checkbox('roles[]', $role->id, null, ['class' => 'mr-4']) !!}
+                                {!! Form::checkbox('roles[]', $role->id, null, ['class' => 'single-checkbox checkbox-margin form-check-input']) !!}
                                 {{ $role->display_name }}
                             </label>
                         </div>

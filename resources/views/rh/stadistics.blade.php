@@ -14,7 +14,7 @@ define('SUB_COLU', 'col-4 p-2');
 ?>
 
 <div class="card-header p-0">
-    <h1 class="fs-3">Altas y bajas</h1>
+    <h1 class="fs-3">Altas y Bajas</h1>
     <div class="card-body p-0">
         <div class="d-flex flex-row-reverse">
             <!-- <form class="form-delete" action="/rh/drop-user" method="GET">
@@ -97,7 +97,7 @@ define('SUB_COLU', 'col-4 p-2');
             <div class="card card-total">
                 <div class="card-body">
                     <h5 class="card-title">TOTAL EMPLEADOS</h5>
-                    <p id="total_employee" class="card-text" style="color:#000080">{{$totalEmpleados->total}}</p>
+                    <p id="total_employee" class="card-text" style="color:#000080; font-weight: bold;">{{$totalEmpleados->total}}</p>
                 </div>
             </div>
         </div>
@@ -106,7 +106,7 @@ define('SUB_COLU', 'col-4 p-2');
             <div class="card card-total ">
                 <div class="card-body">
                     <h5 class="card-title">NUEVOS INGRESOS</h5>
-                    <p id="total_new_users" class="card-text" style="color:#308446">{{$nuevosingresos->total}} </p>
+                    <p id="total_new_users" class="card-text" style="color:#308446; font-weight: bold;">{{$nuevosingresos->total}} </p>
                 </div>
             </div>
         </div>
@@ -116,7 +116,7 @@ define('SUB_COLU', 'col-4 p-2');
             <div class="card card-total">
                 <div class="card-body">
                     <h5 class="card-title">BAJAS</h5>
-                    <p id="total_downs" class="card-text" style="color:#FF0000">{{$bajas->total}} </p>
+                    <p id="total_downs" class="card-text" style="color:#FF0000; font-weight: bold;">{{$bajas->total}} </p>
                 </div>
             </div>
         </div>        

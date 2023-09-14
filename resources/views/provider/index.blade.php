@@ -15,7 +15,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
-                                {{ __('Catalogo de Proveedores') }}
+                                {{ __('Catálogo de Proveedores') }}
                             </span>
 
                             <div class="float-right">
@@ -44,13 +44,12 @@
                                 <thead class="thead">
                                     <tr>
                                         <th>No</th>
-
                                         <th>Nombre</th>
                                         <th>Palabra clave</th>
                                         <th>Producto o Servicio</th>
                                         <th>Contacto</th>
-                                        <th>Position</th>
-                                        <th>Telefono de Oficina </th>
+                                        <th>Posición</th>
+                                        <th>Teléfono de Oficina </th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -58,7 +57,6 @@
                                     @foreach ($providers as $provider)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-
                                             <td>{{ $provider->name }}</td>
                                             <td>{{ $provider->service }}</td>
                                             <td>{{ $provider->type }}</td>
@@ -70,7 +68,7 @@
                                                     method="POST">
                                                     <a class="btn btn-sm btn-primary "
                                                         href="{{ route('providers.show', $provider->id) }}"><i
-                                                            class="fa fa-fw fa-eye"></i> Ver Informacion</a>
+                                                            class="fa fa-fw fa-eye"></i> Ver Información</a>
                                                     @role('admin')
                                                         <a class="btn btn-sm btn-success"
                                                             href="{{ route('providers.edit', $provider->id) }}"><i

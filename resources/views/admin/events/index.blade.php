@@ -18,8 +18,8 @@
                 <tr>
                     <th class="number" scope="col"># </th>
                     <th scope="col">Evento</th>
-                    <th scope="col">Descripcion</th>
-                    <th scope="col">Fecha Inicio</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Fecha inicio</th>
                     <th scope="col">Evento creado por</th>
                     <th style="max-width: 20%"  scope="col">Opciones</th>
                 </tr>
@@ -77,7 +77,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, eliminar!',
+                confirmButtonText: '¡Sí, eliminar!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
