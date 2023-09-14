@@ -14,9 +14,9 @@
                     <tr>
                         <th scope="col"># </th>
                         <th scope="col">Título</th>
-                        <th scope="col">Imagen</th>
+                        <th scope="col">Imágen</th>
                         <th scope="col">Archivo</th>
-                        <th style="width: 50%" scope="col">Descripcion</th>
+                        <th style="width: 50%" scope="col">Descripción</th>
                         <th scope="col">Opciones</th>
                     </tr>
                 </thead>
@@ -48,7 +48,6 @@
                                     @method('delete')
                                     <button type="submit" class="btn btn-danger">Borrar</button>
                                 </form>
-    
                             </td>
                         </tr>
                     @endforeach
@@ -76,7 +75,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, eliminar!',
+                confirmButtonText: '¡Sí, eliminar!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {

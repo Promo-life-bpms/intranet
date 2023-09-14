@@ -59,7 +59,7 @@
         Estás a un paso de dar de alta al colaborador en el sistema, confirma la información y rellena los campos faltantes (*).
     </div>
     <br>
-    <h5>Información de Ingreso</h5>
+    <h5>Información de ingreso</h5>
     <br>
     {!! Form::open(['route' => 'rh.storeUpPostulant', 'enctype' => 'multipart/form-data']) !!}
 
@@ -80,7 +80,7 @@
                 
             <div class="col-sm">
                 {!! Form::label('lastname', 'Apellidos') !!}
-                {!! Form::text('lastname', $postulant->lastname, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
+                {!! Form::text('lastname', $postulant->lastname, ['class' => 'form-control', 'placeholder' => 'Ingrese los apellidos de usuario']) !!}
                 @error('lastname')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -105,7 +105,7 @@
         <div class="row form-group">
             <div class="col-sm">
                 {!! Form::label('email', 'Correo electrónico') !!}
-                {!! Form::text('email', $postulant->email, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::text('email', $postulant->email, ['class' => 'form-control','placeholder' => 'Ingrese el correo electrónico']) !!}
                 @error('email')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -116,7 +116,7 @@
 
             <div class="col-sm">
                 {!! Form::label('birthdate', 'Fecha de nacimiento') !!}
-                {!! Form::date('birthdate', $postulant->birthdate, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::date('birthdate', $postulant->birthdate, ['class' => 'form-control','placeholder' => 'Ingrese la fecha de nacimiento']) !!}
                 @error('birthdate')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -131,7 +131,7 @@
         <div class="row form-group">
             <div class="col-sm">
                 {!! Form::label('company_id', 'Empresa') !!}
-                {!! Form::select('company_id',$companies , $postulant->company_id, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::select('company_id',$companies , $postulant->company_id, ['class' => 'form-control','placeholder' => 'Seleccione la empresa...']) !!}
                 @error('company_id')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -142,7 +142,7 @@
 
             <div class="col-sm">
                 {!! Form::label('department_id', 'Departamento') !!}
-                {!! Form::select('department_id', $departments, $postulant->department_id, ['class' => 'form-control','placeholder' => 'Selecciona Departamento']) !!}
+                {!! Form::select('department_id', $departments, $postulant->department_id, ['class' => 'form-control','placeholder' => 'Seleccione el departamento...']) !!}
                 @error('department_id')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -153,7 +153,7 @@
 
             <div class="col-sm">
                 {!! Form::label('jefe_directo_id', 'Jefe Directo', ['class' => 'required']) !!}
-                {!! Form::select('jefe_directo_id', $users, null, ['class' => 'form-control','placeholder' => 'Selecciona jefe directo ']) !!}
+                {!! Form::select('jefe_directo_id', $users, null, ['class' => 'form-control','placeholder' => 'Seleccione el jefe directo...']) !!}
                 @error('jefe_directo_id')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>

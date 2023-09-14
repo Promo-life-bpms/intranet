@@ -67,7 +67,7 @@
         ]) !!}
         <div class="row">
             <div class="col-md-4">
-                <p>Informacion Personal</p>
+                <p style="font-size: 24px; font-weight: bold;">Información personal</p>
                 <div class="form-group">
                     {!! Form::label('name', 'Nombre') !!}
                     {!! Form::text('name', $user->name, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
@@ -116,7 +116,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <p>Informacion Complemetaria</p>
+                <p style="font-size: 24px; font-weight: bold;">Información complementaria</p>
                 <div class="form-group">
                     {!! Form::label('date_admission', 'Fecha de Ingreso') !!}
                     {!! Form::date('date_admission', $user->employee->date_admission, ['class' => 'form-control']) !!}
@@ -177,7 +177,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <p>Empresas y Roles que maneja</p>
+                <p style="font-size: 24px; font-weight: bold;">Empresas y Roles que maneja</p>
                 <div class="form-group  ">
                     {!! Form::label('empresas', 'Empresas a las que pertenece') !!}
                     @foreach ($companies as $company)
@@ -194,7 +194,7 @@
                                     @break
                                 @endif
                             @endforeach
-                            {!! Form::checkbox('companies[]', $company->id, $checked, ['class' => 'mr-4']) !!}
+                            {!! Form::checkbox('companies[]', $company->id, $checked, ['class' => 'single-checkbox checkbox-margin form-check-input']) !!}
                             {{ $company->name_company }}
                         </label>
                     </div>
@@ -211,7 +211,7 @@
                 @foreach ($roles as $role)
                     <div>
                         <label>
-                            {!! Form::checkbox('roles[]', $role->id, null, ['class' => 'mr-4']) !!}
+                            {!! Form::checkbox('roles[]', $role->id, null, ['class' => 'single-checkbox checkbox-margin form-check-input']) !!}
                             {{ $role->display_name }}
                         </label>
                     </div>

@@ -12,7 +12,7 @@
                         <th scope="col">ID</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Categoría</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Estatus</th>
                         <th scope="col">Acciones</th>
                     </tr>
                 </thead>

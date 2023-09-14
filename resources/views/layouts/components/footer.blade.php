@@ -4,7 +4,7 @@
             <p>2021 &copy; BH - PromoLife</p>
         </div>
         <div class="float-end">
-            <p>Version 0.0.1a</p>
+            <p>Versión 0.0.1a</p>
         </div>
     </div>
 </footer>

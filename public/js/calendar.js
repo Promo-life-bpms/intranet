@@ -37,35 +37,37 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         ////NOS ABRE EL MODAL PARA REGISTRAR///
         dateClick: function(info) {
-          //Obtenemos la fecha actual//
+          // Obtenemos la fecha actual
           var actual = new Date();
-          //Formateamos le fecha//
+          // Formateamos la fecha actual
           var año = actual.getFullYear();
           var mes = ('0' + (actual.getMonth() + 1)).slice(-2); // Los meses van de 0 a 11
           var dia = ('0' + actual.getDate()).slice(-2);
-          //Unimos el formato//
+          // Unimos el formato
           var fechaFormateada = año + '-' + mes + '-' + dia;
-
-          //Formateamos le fecha de info.date//
+      
+          // Formateamos la fecha de info.date
           var date = info.date;
-          //Formateamos le fecha//
+          // Formateamos la fecha
           var añod = date.getFullYear();
           var mesd = ('0' + (date.getMonth() + 1)).slice(-2); // Los meses van de 0 a 11
           var diad = ('0' + date.getDate()).slice(-2);
-          //Unimos el formato//
+          // Unimos el formato
           var infodateFormateada = añod + '-' + mesd + '-' + diad;
-
-          if(infodateFormateada >= fechaFormateada){
-            info.dayEl.style.backgroundColor = '#9DD6AD';
-            $("#evento").modal("show");
-            //document.getElementById("start").innerHTML= info.dateStr;
-          }
-          else{
+      
+          if (infodateFormateada >= fechaFormateada) {
+              info.dayEl.style.backgroundColor = '#9DD6AD';
+              $("#evento").modal("show");
+          } else {
             info.dayEl.style.backgroundColor = '#FFBFAF';
-            alert("Error: No se puede crear una reservación de una sala en una fecha pasada.");
+            Swal.fire({
+              title: "¡Error!",
+              text: "No puedes crear una reservación de una sala en una fecha pasada.",
+              icon: "error"
+            });
           }
         },
-        
+
         ////NOS DIRA CUANTOS EVENTOS PODEMOS APILAR EN LA VISTA PRINCIPAL DEL CALENDARIO////
         dayMaxEventRows: true,
         views: {

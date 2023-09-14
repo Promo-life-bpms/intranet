@@ -3,8 +3,8 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="auth-title">Intranet Corporativa BH - PL</h3>
-            <p class="auth-subtitle mb-5">Inicie sesión con los datos que se le proporcionaron.</p>
+            <h3 class="auth-title text-center">Intranet Corporativa BH - PL</h3>
+            <p class="auth-subtitle mb-5 text-center">Inicie sesión con los datos que se le proporcionaron.</p>
         </div>
         <div class="card-body">
             <form method="POST" action="{{ route('login') }}">

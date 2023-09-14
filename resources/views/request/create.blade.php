@@ -4,7 +4,7 @@
     <div class="card">
         <div class="card-header">
             <div class="d-flex justify-content-between">
-                <h3>Solicitar un Permiso</h3>
+                <h3 >Solicitar un permiso</h3>
                 <div>
                     <!-- Button trigger modal -->
                     {{-- <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -77,17 +77,17 @@
                                     @endphp
                                     <p class="m-0">Tienes <b>{{ $item->dv }} </b> días disponibles
                                         {!! $item->period == 1
-                                            ? 'de tu periodo actual y estos dias vencen el <b>' . $fecha . '</b>.'
-                                            : 'de tu periodo anterior que vencen el <b>' . $fecha . '</b>.' !!}
+                                            ? 'de tu período actual y estos días vencen el <b>' . $fecha . '</b>.'
+                                            : 'de tu período anterior que vencen el <b>' . $fecha . '</b>.' !!}
                                     </p>
                                 @endif
                             @endforeach
                         @else
-                            <p style="font-size: 20px">No tienes dias de Vacaciones Disponibles</p>
+                            <p style="font-size: 20px">No tienes días de vacaciones disponibles</p>
                         @endif
                     @else
                         <p style="font-size: 20px">No puedes seleccionar vacaciones. Consulta con RRHH para resolver
-                            esta situacion</p>
+                            esta situación</p>
                     @endif
                     @if ($diff < 6)
                         <p class="m-0 my-2 text-danger">¡Sin embargo, podras solicitar vacaciones 6 meses después de
@@ -99,12 +99,11 @@
             {!! Form::open(['route' => 'request.store', 'enctype' => 'multipart/form-data']) !!}
             <div class="row">
                 <div class=" col-md-6">
-
                     <div class="card shadow h-100">
                         <div class="card-body">
                             <div class="form-group">
-                                {!! Form::label('type_request', '¿Cual es el tipo de solicitud? (Obligatorio)') !!}
-                                {!! Form::select('type_request', $opc, null, ['class' => 'form-control', 'placeholder' => 'Seleccione opcion']) !!}
+                                {!! Form::label('type_request', '¿Cúal es el tipo de solicitud? (Obligatorio)') !!}
+                                {!! Form::select('type_request', $opc, null, ['class' => 'form-control', 'placeholder' => 'Seleccione opción']) !!}
                                 @error('type_request')
                                     <small>
                                         <font color="red"> *Este campo es requerido* </font>
@@ -112,7 +111,7 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                {!! Form::label('payment', 'Forma de Pago (Esta asignacion es automatica)') !!}
+                                {!! Form::label('payment', 'Forma de pago (Esta asignación es automática)') !!}
                                 {!! Form::text('payment', '', [
                                     'class' => 'form-control formaPago',
                                     'placeholder' => 'Forma de Pago',
@@ -197,7 +196,7 @@
                                 @enderror
                             </div>
                             <div class="mb-2 form-group">
-                                {!! Form::label('reason', '¿Cual es la razon de tu ausencia? (Obligatorio)') !!}
+                                {!! Form::label('reason', '¿Cúal es la razón de tu ausencia? (Obligatorio)') !!}
                                 <textarea name="reason" cols="30" rows="4" class="form-control"
                                     placeholder="Ingrese las razones de tu ausencia">{{ old('reason') }}</textarea>
                                 @error('reason')
@@ -214,7 +213,7 @@
                             </div>
 
                             <div class="mb-2 form-group">
-                                <label for="">¿Quien sera el responsable de atender tus pendientes?</label>
+                                <label for="">¿Quién será el responsable de atender tus pendientes?</label>
                                 {!! Form::select('reveal', $users, null, ['class' => 'form-control', 'placeholder' => 'Seleccione...']) !!}
                                 @error('reveal')
                                     <small>
@@ -229,7 +228,7 @@
                     <div class="card shadow  h-100">
                         <div class="card-body">
                             <div class="mb-2 form-group">
-                                {!! Form::label('days', 'Selecciona los dias que no te presentas a la oficina') !!}
+                                {!! Form::label('days', 'Selecciona los días que no te presentarás a la oficina') !!}
                                 <p class="mt'5"></p>
                                 <div class="days" id='calendar'></div>
                             </div>

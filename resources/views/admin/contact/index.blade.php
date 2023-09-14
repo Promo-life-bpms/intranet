@@ -3,7 +3,7 @@
 @section('content')
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h3>Directorio telefonico y correos</h3>
+            <h3>Directorio telefónico y correos</h3>
             @role('systems')
                 {!! Form::open(['route' => 'contacts.export']) !!}
                     {!! Form::submit('Exportar', ['class' => 'btn btn-success']) !!}
@@ -38,7 +38,7 @@
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
                             <th scope="col">Departamento</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>
@@ -85,7 +85,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>
@@ -131,7 +131,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>
@@ -176,7 +176,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>
@@ -221,7 +221,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>
@@ -267,7 +267,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>
@@ -313,7 +313,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>
@@ -359,7 +359,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>
@@ -405,7 +405,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>
@@ -452,7 +452,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>
@@ -498,7 +498,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>
@@ -544,7 +544,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>
@@ -590,7 +590,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellidos</th>
-                            <th scope="col">Numero</th>
+                            <th scope="col">Número</th>
                             <th scope="col">Promolife</th>
                             <th scope="col">BH-Trademarket</th>
                             <th scope="col">Trademarket</th>

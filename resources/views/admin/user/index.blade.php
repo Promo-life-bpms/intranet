@@ -10,8 +10,8 @@
         <div class="d-flex justify-content-between">
             <h3>Lista de usuarios</h3>
             <div>
-                <a href="{{ route('admin.user.exportUsuarios') }}" type="button" class="btn btn-info">Descargar Informacion de
-                    los Usuarios</a>
+                <a href="{{ route('admin.user.exportUsuarios') }}" type="button" class="btn btn-info">Descargar información de
+                    los usuarios</a>
                 <a href="{{ route('admin.users.create') }}" type="button" class="btn btn-success">Agregar</a>
             </div>
         </div>
@@ -22,10 +22,10 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Nombre y correo</th>
-                        <th scope="col" class="text-center">Fecha de Ingreso</th>
+                        <th scope="col">Nombre y Correo</th>
+                        <th scope="col" class="text-center">Fecha de ingreso</th>
                         <th scope="col" class="text-center">Cumpleaños</th>
-                        <th scope="col">Jefe Directo</th>
+                        <th scope="col">Jefe directo</th>
                         <th scope="col">Rol</th>
                         <th scope="col">Opciones</th>
                     </tr>
@@ -500,7 +500,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, eliminar!',
+                confirmButtonText: '¡Sí, eliminar!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -518,7 +518,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, resetar acesso!',
+                confirmButtonText: '¡Sí, resetar acesso!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {

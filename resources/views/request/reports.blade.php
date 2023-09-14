@@ -7,7 +7,7 @@
 
             <div class="d-flex justify-content-end">
                 <button type="button" class="btn btn-primary pl-4" data-bs-toggle="modal" data-bs-target="#modalBusquedaDia">
-                    Buscar por fechas de aucencia
+                    Buscar por Fechas de ausencia
                 </button>
 
                 {!! Form::open(['route' => 'request.export']) !!}
@@ -28,7 +28,7 @@
                         <th scope="col">Solicitante</th>
                         <th scope="col">Tipo</th>
                         <th scope="col">Pago</th>
-                        <th scope="col">Fechas ausencia</th>
+                        <th scope="col">Fechas de ausencia</th>
                         <th scope="col">Tiempo</th>
                         <th scope="col">Motivo</th>
                         <th scope="col">Vacaciones disponibles</th>
@@ -78,7 +78,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalBusquedaLabel">Realizar Búsqueda</h5>
+                    <h5 class="modal-title" id="modalBusquedaLabel">Realizar búsqueda</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 {!! Form::open(['route' => 'request.filter']) !!}
@@ -120,7 +120,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalBusquedaLabel">Realizar Búsqueda</h5>
+                    <h5 class="modal-title" id="modalBusquedaLabel">Realizar búsqueda</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 {!! Form::open(['route' => 'request.filter.data']) !!}
@@ -802,7 +802,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '¡Si, eliminar!',
+                confirmButtonText: '¡Sí, eliminar!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {

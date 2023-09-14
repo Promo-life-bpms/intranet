@@ -6,7 +6,7 @@
             <a  href="{{ route('rh.postulants') }}">
                 <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
             </a>
-            <h3 style="margin-left:16px;" class="separator">Alta de Candidato</h3> 
+            <h3 style="margin-left:16px;" class="separator">Alta de candidato</h3> 
         </div>
     </div>
     <div class="card-body">
@@ -145,7 +145,7 @@
 
             <div class="col-sm">
                 {!! Form::label('phone', 'Celular', ['class' => 'required']) !!}
-                {!! Form::text('phone', null, ['class' => 'form-control','placeholder' => 'Ingrese el numero de telefono celular']) !!}
+                {!! Form::text('phone', null, ['class' => 'form-control','placeholder' => 'Ingrese el número de teléfono celular']) !!}
                 @error('phone')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -155,8 +155,8 @@
             </div>
 
             <div class="col-sm">
-                {!! Form::label('message_phone', 'Telefono de recados', ['class' => 'required']) !!}
-                {!! Form::text('message_phone', null, ['class' => 'form-control','placeholder' => 'Ingrese el numero de recados']) !!}
+                {!! Form::label('message_phone', 'Teléfono de recados', ['class' => 'required']) !!}
+                {!! Form::text('message_phone', null, ['class' => 'form-control','placeholder' => 'Ingrese el número de recados']) !!}
                 @error('message_phone')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
