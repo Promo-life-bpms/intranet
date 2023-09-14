@@ -6,7 +6,7 @@
             <a  href="{{ route('rh.postulants') }}">
                 <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
             </a>
-            <h3 style="margin-left:16px;" class="separator">Alta de Candidato</h3> 
+            <h3 style="margin-left:16px;" class="separator">Alta de candidato</h3> 
         </div>
     </div>
     <div class="card-body">

@@ -82,7 +82,7 @@
                 Una vez recibidos los documentos, es necesario llenar la siguiente información para la generación del <b>Kit Legal de Ingreso</b>.
             </div>
             <br>
-            <h5>Información Adicional</h5>
+            <h5>Información adicional</h5>
             <div class="row form-group">
 
                 <div class="col-sm ">
@@ -240,7 +240,7 @@
 
                 <div class="col-sm ">
                     {!! Form::label('postal_code', 'CP', ['class' => 'required']) !!}
-                    {!! Form::text('postal_code', $postulant->postal_code , ['class' => 'form-control', 'placeholder' => 'Ingrese la código postal']) !!}
+                    {!! Form::text('postal_code', $postulant->postal_code , ['class' => 'form-control', 'placeholder' => 'Ingrese el código postal']) !!}
                     @error('postal_code')
                         <small>
                             <font color="red"> *Este campo es requerido* </font>
@@ -301,7 +301,7 @@
 
             <br><br>
 
-            <h5>Detalles de Ingreso</h5>
+            <h5>Detalles de ingreso</h5>
             <div class="row form-group">
 
                 <div class="col-sm ">
@@ -425,7 +425,7 @@
            </div>
             <br><br>
 
-            <h5>Información Bancaria (opcional)</h5>
+            <h5>Información bancaria (opcional)</h5>
 
             <div class="row form-group">
                 <div class="col-sm col-md-4">

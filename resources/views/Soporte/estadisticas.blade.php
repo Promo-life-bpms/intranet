@@ -22,7 +22,7 @@
                     @enderror
                     </div>
                     <div class="form-group me-4">
-                        <label><b>Fecha de Termino :</b></label>
+                        <label><b>Fecha de termino :</b></label>
                         <input type="date" name="endDate" class="form-control  " value="{{ $endDate }}">
                         @error('endDate')
                         <span>
@@ -105,7 +105,7 @@
                     <div class="col">
                         <div class="card shadow card-total">
                             <h6 class="text-center">
-                               Peticiones de Usuarios</h6>
+                               Peticiones de usuarios</h6>
                         </div>
                         <canvas id="porUsuario" height="200"></canvas>
                     </div>

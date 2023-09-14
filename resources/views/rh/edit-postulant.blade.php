@@ -10,12 +10,12 @@
                     <a  href="{{ route('rh.noSelectedPostulant') }}">
                         <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
                     </a>
-                    <h3 style="margin-left:16px;" class="separator">Detalles de Candidato </h3> 
+                    <h3 style="margin-left:16px;" class="separator">Detalles de candidato </h3> 
                 @else
                     <a  href="{{ route('rh.postulants') }}">
                         <i class="fa fa-arrow-left fa-2x arrouw-back" aria-hidden="true"></i> 
                     </a>
-                    <h3 style="margin-left:16px;" class="separator">Alta de Candidato </h3> 
+                    <h3 style="margin-left:16px;" class="separator">Alta de candidato </h3> 
                 @endif
                 
             </div>
@@ -27,7 +27,7 @@
                         method="GET">
                         @csrf
                         <button type="submit" class="btn btn-primary"> 
-                            Recepcion de Documentos
+                            Recepción de Documentos
                             <i class="ms-2 fa fa-arrow-right" aria-hidden="true"></i>
                         </button>
                     </form>
@@ -85,10 +85,10 @@
         
         {!! Form::model($postulant, ['route' => ['rh.updatePostulant', $postulant], 'method' => 'put','enctype' => 'multipart/form-data']) !!}
 
-        <h5>Información Personal</h5>
+        <h5>Información personal</h5>
         <p></p>
         <div class="row form-group">
-            {!! Form::text('postulant_id', $postulant->id, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario', 'hidden']) !!}
+            {!! Form::text('postulant_id', $postulant->id, ['class' => 'form-control', 'hidden']) !!}
 
             <div class="col-sm">
                 {!! Form::label('name', 'Nombre', ['class' => 'required']) !!}
@@ -103,7 +103,7 @@
                 
             <div class="col-sm">
                 {!! Form::label('lastname', 'Apellidos', ['class' => 'required']) !!}
-                {!! Form::text('lastname', null, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de usuario']) !!}
+                {!! Form::text('lastname', null, ['class' => 'form-control', 'placeholder' => 'Ingrese los apellidos del usuario']) !!}
                 @error('lastname')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -128,7 +128,7 @@
         <div class="row form-group">
             <div class="col-sm">
                 {!! Form::label('birthdate', 'Fecha de nacimiento', ['class' => 'required']) !!}
-                {!! Form::date('birthdate', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::date('birthdate', null, ['class' => 'form-control','placeholder' => 'Ingrese la fecha de nacimiento del usuario']) !!}
                 @error('birthdate')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -139,7 +139,7 @@
 
             <div class="col-sm">
                 {!! Form::label('nss', 'NSS', ['class' => 'required']) !!}
-                {!! Form::text('nss', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::text('nss', null, ['class' => 'form-control','placeholder' => 'Ingrese el NSS del usuario']) !!}
                 @error('nss')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -150,7 +150,7 @@
 
             <div class="col-sm">
                 {!! Form::label('curp', 'CURP', ['class' => 'required']) !!}
-                {!! Form::text('curp', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::text('curp', null, ['class' => 'form-control','placeholder' => 'Ingrese el CURP del usuario']) !!}
                 @error('curp')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -163,7 +163,7 @@
         <div class="row form-group">
             <div class="col-sm">
                 {!! Form::label('full_address', 'Domicilio completo', ['class' => 'required']) !!}
-                {!! Form::text('full_address', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::text('full_address', null, ['class' => 'form-control','placeholder' => 'Ingrese el domicilio completo del usuario']) !!}
                 @error('full_address')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -174,7 +174,7 @@
 
             <div class="col-sm">
                 {!! Form::label('phone', 'Celular', ['class' => 'required']) !!}
-                {!! Form::text('phone', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::number('phone', null, ['class' => 'form-control','placeholder' => 'Ingrese el número celular del usuario']) !!}
                 @error('phone')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -184,8 +184,8 @@
             </div>
 
             <div class="col-sm">
-                {!! Form::label('message_phone', 'Telefono de recados', ['class' => 'required']) !!}
-                {!! Form::text('message_phone', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::label('message_phone', 'Teléfono de recados', ['class' => 'required']) !!}
+                {!! Form::number('message_phone', null, ['class' => 'form-control','placeholder' => 'Ingrese el número de teléfono']) !!}
                 @error('message_phone')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>
@@ -199,13 +199,13 @@
         <div class="row form-group">
             <div class="col-sm">
                 {!! Form::label('cv', 'Adjuntar CV') !!}
-                {!! Form::file('cv',  ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::file('cv',  ['class' => 'form-control','placeholder' => 'Ingrese el CV del usuario (opcional)']) !!}
               
             </div>
 
             <div class="col-sm">
                 {!! Form::label('email', 'Correo electrónico', ['class' => 'required']) !!}
-                {!! Form::text('email', null, ['class' => 'form-control','placeholder' => 'Selecciona status de postulante']) !!}
+                {!! Form::text('email', null, ['class' => 'form-control','placeholder' => 'Ingrese el correo electrónico del usuario']) !!}
                 @error('email')
                     <small>
                         <font color="red"> *Este campo es requerido* </font>

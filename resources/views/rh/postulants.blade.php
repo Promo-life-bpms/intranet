@@ -33,7 +33,7 @@
                         <th scope="col">Nombre</th>
                         <th scope="col">Información de contacto</th>
                         <th scope="col">Vacante</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Estatus</th>
                         <th scope="col">Opciones</th>
                     </tr>
                 </thead>
