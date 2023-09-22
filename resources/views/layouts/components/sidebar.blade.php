@@ -55,7 +55,7 @@
         <div class="sidebar-menu">
             <ul class="menu" style="margin-bottom:40px">
                 @role('admin')
-                    <li class="sidebar-title text-center">Administrador</li>
+                    <li class="sidebar-title">Administrador</li>
                     <li class="sidebar-item has-sub {{ request()->is('admin') ? 'active' : '' }}">
 
                         <a href="{{ route('admin.users.index') }}" class='sidebar-link'>
@@ -85,7 +85,7 @@
                     </li>
                 @endrole
                 @role('rh')
-                    <li class="sidebar-title text-center">Gestión y RH</li>
+                    <li class="sidebar-title">Gestión y RH</li>
                     <li class="sidebar-item has-sub">
                         <a href="#" class='sidebar-link'>
                             <i class="fa fa-users" aria-hidden="true"></i>
@@ -173,7 +173,7 @@
                         </ul>
                     </li>
                 @endrole('rh')
-                <li class="sidebar-title text-center">Menú</li>
+                <li class="sidebar-title">Menú</li>
                 <li class="sidebar-item {{ request()->is('home') ? 'active' : '' }}">
                     <a href="{{ route('home') }}" class='sidebar-link'>
                         <i class="bi bi-house-door-fill"></i>
