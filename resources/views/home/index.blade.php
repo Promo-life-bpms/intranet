@@ -324,48 +324,44 @@
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; border-radius:20px;">
                 <h4 class="d-flex justify-content-center text-center">Ausencias del día de hoy</h4>
                 @if (count($empleadosAusentes) > 0)
-                    <table class="table table-bordered ">
-                        <thead>
-                            <tr>
-                                <td>
-                                    Colaborador
-                                </td>
-                                <td>
-                                    Responsable
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($empleadosAusentes as $item)
-                                <tr>
-                                    <td>
-                                        {{ $item->name . ' ' . $item->lastname }}
-                                    </td>
-                                    <td>
-                                        @if ($item->reveal != '')
-                                            {{ $item->reveal }}
-                                        @else
-                                            No Disponible
-                                        @endif
-                                    </td>
+                    <div class="table-responsive" style="border-radius:10px;">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr style="background-color: #DCDCDC" class="text-center">
+                                    <th>Colaborador</th>
+                                    <th>Responsable</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($empleadosAusentes as $item)
+                                    <tr>
+                                        <td>{{ $item->name . ' ' . $item->lastname }}</td>
+                                        
+                                        <td>
+                                            @if ($item->reveal != '')
+                                                {{ $item->reveal }}
+                                            @else
+                                                No Disponible
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 @else
                     <p class="text-center">No tenemos ausencias registradas.</p>
                 @endif
-
             </div>
 
             <!-- EVENTOS -->
             <div class="card p-4" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; border-radius: 20px;">
                 <h4 class="d-flex justify-content-center text-center">Eventos del día</h4>
                 @if (count($EventosDelDia) > 0)
-                    <div class="table-responsive">
-                        <table class="table table-bordered" style="background-color: #e6f7ff;">
+                    <div class="table-responsive" style="border-radius:10px;">
+                        <table class="table table-bordered">
                             <thead>
-                                <tr>
+                                <tr style="background-color: #DCDCDC" class="text-center">
                                     <th>Evento</th>
                                     <th>Inicio</th>
                                     <th>Final</th>
@@ -392,52 +388,47 @@
             </div> 
 
             <!-- Vacaciones porximas  -->
-            <div class="card p-4"
+            <div class="card p-4" 
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; border-radius:20px;">
                 <h4 class="d-flex justify-content-center text-center">Próximas vacaciones</h4>
                 @if (count($proximasVacaciones) > 0)
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <td>
-                                    Colaborador
-                                </td>
-                                <td>
-                                    Responsable
-                                </td>
-                                <td>
-                                    Fechas ausente
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($proximasVacaciones as $item)
-                                <tr>
-                                    <td>
-                                        {{ $item->employee->user->name . ' ' . $item->employee->user->lastname }}
-                                    </td>
-                                    <td>
-                                        @if ($item->reveal)
-                                            {{ $item->reveal->name . ' ' . $item->reveal->lastname }}
-                                        @else
-                                            No Disponible
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @foreach ($item->requestdays as $day)
-                                            {{ $day->start }}
-                                        @endforeach
-                                    </td>
+                    <div class="table-responsive" style="border-radius:10px;">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr style="background-color: #DCDCDC;" class="text-center">
+                                    <th>Colaborador</th>
+                                    <th>Responsable</th>
+                                    <th>Fechas ausente</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($proximasVacaciones as $item)
+                                    <tr>
+                                        <td>
+                                            {{ $item->employee->user->name . ' ' . $item->employee->user->lastname }}
+                                        </td>
+                                        <td>
+                                            @if ($item->reveal)
+                                                {{ $item->reveal->name . ' ' . $item->reveal->lastname }}
+                                            @else
+                                                No Disponible
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @foreach ($item->requestdays as $day)
+                                                {{ $day->start }}
+                                            @endforeach
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 @else
                     <p class="text-center">No tenemos vacaciones próximas registradas.</p>
                 @endif
             </div>
         </div>
-
     </div>
 @stop
 
