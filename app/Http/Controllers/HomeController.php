@@ -106,13 +106,21 @@ class HomeController extends Controller
         $url3 = env("URL_CATALOGO", "https://catalogodeproductos.promolife.online");
         $routeCatalogo = "https://cotizador.promolife.lat/";
 
-        //Traemos todos los eventos del día//
-        $now = Carbon::now()->format('Y-m-d');
-        $EventosDelDia =Reservation::whereDate('start', $now)
-                                   ->whereDate('end', $now)
-                                   ->get();
+        // Obtener la fecha actual
+        $now = Carbon::now();
+        
+        // Calcular la fecha de hoy, mañana y pasado mañana
+        $today = $now->format('Y-m-d');
+        $tomorrow = $now->addDay()->format('Y-m-d');
+        $dayAfterTomorrow = $now->addDay()->format('Y-m-d');
 
-        return view('home.index', compact('proximasVacaciones', 'employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController', 'publications', 'date', 'empleadosAusentes', 'routeCatalogo', 'EventosDelDia'));
+        // Consultar eventos para los próximos tres días
+        $EventosProximosDias = Reservation::whereDate('start', '>=', $today)
+                                            ->whereDate('start', '<=', $dayAfterTomorrow)
+                                            ->orderBy('start', 'asc') 
+                                            ->get();
+
+        return view('home.index', compact('proximasVacaciones', 'employeesBirthday', 'employeesAniversary', 'noworkingdays', 'eventos', 'communiquesImage', 'monthEmployeeController', 'publications', 'date', 'empleadosAusentes', 'routeCatalogo', 'EventosProximosDias'));
     }
 
 
