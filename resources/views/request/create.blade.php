@@ -4,7 +4,7 @@
     <div class="card">
         <div class="card-header">
             <div class="d-flex justify-content-between">
-                <h3 >Solicitar un permiso</h3>
+                <h3>Solicitar un permiso</h3>
                 <div>
                     <!-- Button trigger modal -->
                     {{-- <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -44,6 +44,7 @@
                 'Matrimonio del colaborador' => 'Matrimonio del colaborador',
                 'Motivos academicas/escolares' => 'Motivos académicos/escolares',
                 'Atencion de asuntos personales' => 'Atencion de asuntos personales',
+                'Permiso de Paternidad' => 'Permiso de Paternidad',
             ];
             if ($vacations > 0 && $diff > 5) {
                 $opc['Solicitar vacaciones'] = 'Solicitar vacaciones';
@@ -139,7 +140,8 @@
                                 <div class="form-group">
                                     {!! Form::label('end', 'Ingreso o Reingreso') !!}
                                     <br>
-                                    <span>Usar en caso de ingresar despues de las 8:00, o de regresar despues de una salida</span>
+                                    <span>Usar en caso de ingresar despues de las 8:00, o de regresar despues de una
+                                        salida</span>
                                     {!! Form::time('end', null, ['class' => 'form-control']) !!}
                                     @error('end')
                                         <small>
@@ -343,6 +345,7 @@
             let arrayDeMuerte = [];
             let arrayDeMatrimonio = [];
             let arrayDeAtencion = [];
+            let arrayDePartenidad = [];
 
             var calendar = $('#calendar').fullCalendar({
                 editable: true,
@@ -490,6 +493,16 @@
                                     }
 
                                     break;
+                                    case 'Permiso de Paternidad':
+                                    if (arrayDePartenidad.length < maxDays) {
+                                        arrayDePartenidad.push(start)
+                                        canSelected = true;
+                                    } else {
+                                        canSelected = false
+                                        displayError('No puedes seleccionar más de 5 días');
+                                    }
+                                    console.log(arrayDeMatrimonio);
+                                    break;
                                 default:
 
                                     canSelected = true
@@ -635,6 +648,12 @@
                             if (tipoSolicitud == 'Atencion de asuntos personales') {
                                 arrayDeAtencion = arrayDeAtencion.filter(date => date != start)
                             }
+                            if (tipoSolicitud == 'Permiso de Paternidad') {
+
+                                arrayDePartenidad = arrayDePartenidad.filter(date => date !=
+                                    start)
+                            }
+
                             $.ajax({
                                 type: "POST",
                                 url: SITEURL + '/fullcalenderAjax',
