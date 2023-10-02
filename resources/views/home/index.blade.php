@@ -357,7 +357,7 @@
             <!-- EVENTOS -->
             <div class="card p-4" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; border-radius: 20px;">
                 <h4 class="d-flex justify-content-center text-center">Eventos del día</h4>
-                @if (count($EventosDelDia) > 0)
+                @if (count($EventosProximosDias) > 0)
                     <div class="table-responsive" style="border-radius:10px;">
                         <table class="table table-bordered">
                             <thead>
@@ -370,7 +370,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($EventosDelDia as $item)
+                                @foreach ($EventosProximosDias as $item)
                                     <tr>
                                         <td>{{ $item->title }}</td>
                                         <td>{{ $item->start }}</td>
