@@ -18,6 +18,7 @@ class NotificacionSalas extends Notification
      */
 
     public $emisor_name;
+    public $emisor_lastname;
     public $receptor_name;
     public $diainicio;
     public $mesinicio;
@@ -28,10 +29,11 @@ class NotificacionSalas extends Notification
     public $locacion;
     public $nombre_sala;
     public $description;
-    public function __construct($emisor_name, $receptor_name, $diainicio, $mesinicio, $horainicio, 
+    public function __construct($emisor_name,$emisor_lastname, $receptor_name, $diainicio, $mesinicio, $horainicio, 
                                 $diafin, $mesfin, $horafin, $locacion, $nombre_sala, $description)
     {
         $this->emisor_name=$emisor_name;
+        $this->emisor_lastname=$emisor_lastname;
         $this->receptor_name=$receptor_name;
         $this->diainicio=$diainicio;
         $this->mesinicio=$mesinicio;
@@ -66,6 +68,7 @@ class NotificacionSalas extends Notification
         return (new MailMessage)
                     ->markdown('mail.reservation.Invitacion',[
                         'emisor_name'=>$this->emisor_name,
+                        'emisor_lastname'=>$this->emisor_lastname,
                         'diainicio'=>$this->diainicio,
                         'mesinicio'=>$this->mesinicio,
                         'horainicio'=>$this->horainicio,

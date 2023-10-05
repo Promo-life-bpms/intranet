@@ -1,7 +1,7 @@
 @component('mail::message')
 # ¡Buen día, {{$receptor}}!
 
-<h2> {{$dueño}} ha modificado la reunión, por lo cual la sala recreativa y los cubílucos no se podrán reservar en ese horario. </h2>
+<h2> {{$dueño}} {{$dueño_lastname}} ha modificado la reunión, por lo cual la sala recreativa y los cubílucos no se podrán reservar en ese horario. </h2>
 
 La información de la reservación es la siguiente:
 

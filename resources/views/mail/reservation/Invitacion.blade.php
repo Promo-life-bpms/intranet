@@ -1,7 +1,8 @@
 @component('mail::message')
+
 # ¡Buen día, {{$receptor_name}}!
 
-<h2> {{$emisor_name}} te ha invitado a una reunión. </h2>
+<h2> {{$emisor_name}} {{$emisor_lastname}}te ha invitado a una reunión. </h2>
 
 La reunión será en el(la): "{{$nombre_sala}}" que está ubicado(a) en: "{{$locacion}}".
 

@@ -17,6 +17,7 @@ class NotificacionReservaMasivaEdit extends Notification
      * @return void
      */
     public $dueño;
+    public $dueño_lastname;
     public $receptor;
     public $nombre_sala;
     public $ubicacion;
@@ -26,10 +27,11 @@ class NotificacionReservaMasivaEdit extends Notification
     public $diafin;
     public $mesfin;
     public $horafin;
-    public function __construct($dueño, $receptor, $nombre_sala, $ubicacion,$diainicio, $mesinicio, $horainicio,  
+    public function __construct($dueño, $dueño_lastname,$receptor, $nombre_sala, $ubicacion,$diainicio, $mesinicio, $horainicio,  
                                 $diafin, $mesfin, $horafin)
     {
         $this->dueño=$dueño;
+        $this->dueño_lastname=$dueño_lastname;
         $this->receptor=$receptor;
         $this->nombre_sala=$nombre_sala;
         $this->ubicacion=$ubicacion;
@@ -63,6 +65,7 @@ class NotificacionReservaMasivaEdit extends Notification
         return (new MailMessage)
                     ->markdown('mail.reservation.AvisoMasivoEdit',[
                         'dueño'=>$this->dueño,
+                        'dueño_lastname'=>$this->dueño_lastname,
                         'receptor'=>$this->receptor,
                         'nombre_sala'=>$this->nombre_sala,
                         'ubicacion'=>$this->ubicacion,

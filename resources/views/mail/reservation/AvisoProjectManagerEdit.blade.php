@@ -1,8 +1,7 @@
 @component('mail::message')
 # ¡Buen día, Ing. {{$PM}}!
 
-
-<h2> {{$dueño}} ha modificado la reunión. </h2>
+<h2> {{$dueño}} {{$dueño_lastname}} ha modificado la reunión. </h2>
 
 <h2> La información de la reunión es la siguiente: </h2>
 

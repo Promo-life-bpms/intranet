@@ -19,6 +19,7 @@ class notificacionPJ extends Notification
 
     public $PM;
     public $dueño;
+    public $lastname_dueño;
     public $title;
     public $nombre_sala;
     public $ubicacion;
@@ -33,12 +34,13 @@ class notificacionPJ extends Notification
     public $cantidadSillas;
     public $cantidadProjectores;
     public $description;
-    public function __construct($PM, $dueño, $title, $nombre_sala, $ubicacion,  $diainicio, $mesinicio, $horainicio, 
+    public function __construct($PM, $dueño, $lastname_dueño,$title, $nombre_sala, $ubicacion,  $diainicio, $mesinicio, $horainicio, 
                                 $diafin, $mesfin, $horafin, $engrave,$invitados, $cantidadSillas, $cantidadProjectores, 
                                 $description)
     {
         $this->PM=$PM;
         $this->dueño=$dueño;
+        $this->lastname_dueño=$lastname_dueño;
         $this->title=$title;
         $this->nombre_sala=$nombre_sala;
         $this->ubicacion=$ubicacion;
@@ -78,6 +80,7 @@ class notificacionPJ extends Notification
                     ->markdown('mail.reservation.AvisoProjectManager',[
                         'PM'=>$this->PM,
                         'dueño'=>$this->dueño,
+                        'lastname_dueño' =>$this->lastname_dueño,
                         'title'=>$this->title,
                         'nombre_sala'=>$this->nombre_sala,
                         'ubicacion'=>$this->ubicacion,

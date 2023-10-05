@@ -18,6 +18,7 @@ class notificacionRH extends Notification
      */
     public $RH;
     public $dueño;
+    public $lastname_dueño;
     public $nombre_sala;
     public $ubicacion;
     public $diainicio;
@@ -28,11 +29,12 @@ class notificacionRH extends Notification
     public $horafin;
     public $cantidadSillas;
     public $description;
-    public function __construct($RH,$dueño,$nombre_sala, $ubicacion, $diainicio, $mesinicio, $horainicio,  
+    public function __construct($RH,$dueño,$lastname_dueño,$nombre_sala, $ubicacion, $diainicio, $mesinicio, $horainicio,  
                                 $diafin, $mesfin, $horafin,$cantidadSillas,$description)
     {
         $this->RH=$RH;
         $this->dueño=$dueño;
+        $this->lastname_dueño=$lastname_dueño;
         $this->nombre_sala=$nombre_sala;
         $this->ubicacion=$ubicacion;
         $this->diainicio=$diainicio;
@@ -68,6 +70,7 @@ class notificacionRH extends Notification
                     ->markdown('mail.reservation.MaterialRH',[
                         'RH'=>$this->RH,
                         'dueño'=>$this->dueño,
+                        '$lastname_dueño'=>$this->lastname_dueño,
                         'nombre_sala'=>$this->nombre_sala,
                         'ubicacion'=>$this->ubicacion,
                         'diainicio'=>$this->diainicio,

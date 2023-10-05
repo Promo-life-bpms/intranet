@@ -219,6 +219,7 @@ class ReservationController extends Controller
 
         //AUTENTIFICAMOS AL USUARIO PERO CON SU NOMBRE//
         $name = auth()->user()->name;
+        $lastname = auth()->user()->lastname;
 
         //CONVERTIMOS EL REQUEST EN CADENA//
         $Participantes = implode(','.' ',$request->guest);
@@ -245,7 +246,7 @@ class ReservationController extends Controller
                 try {
                     // Verificar si el correo del usuario es válido antes de enviar la notificación
                     if (filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
-                        $user->notify(new NotificacionSalas($name, $nombreUsuario, $diaInicio, $LInicio, $HoraInicio, $diaFin, $LFin,
+                        $user->notify(new NotificacionSalas($name,$lastname,$nombreUsuario, $diaInicio, $LInicio, $HoraInicio, $diaFin, $LFin,
                                                             $HoraFin, $ubica, $sala, $request->description));
                     } else {
                         // Agregar el correo electrónico inválido al arreglo
@@ -267,7 +268,7 @@ class ReservationController extends Controller
                 try {
                     // Verificar si el correo del usuario es válido antes de enviar la notificación
                     if (filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
-                        $user->notify(new NotificacionReservaMasiva($name, $nombre, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                        $user->notify(new NotificacionReservaMasiva($name,$lastname,$nombre, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                                      $diaFin, $LFin, $HoraFin ));
                     } else {
                         // Agregar el correo electrónico inválido al arreglo
@@ -286,7 +287,7 @@ class ReservationController extends Controller
         //CORREO PARA EL DEPARTAMENTO DE PROJECT MANAGER//
         $Project = User::where('id', 31)->first()->name;
         $informar = User::where('id', 31)->first();
-        $informar->notify(new notificacionPJ($Project, $name, $request->title, $sala, $ubica, $diaInicio, $LInicio,
+        $informar->notify(new notificacionPJ($Project, $name,$lastname,$request->title, $sala, $ubica, $diaInicio, $LInicio,
                                             $HoraInicio, $diaFin, $LFin, $HoraFin, $request->engrave, $Participantes,
                                             $request->chair_loan, $request->proyector,$request->description
         ));
@@ -309,7 +310,7 @@ class ReservationController extends Controller
                     if ($RH && filter_var($RH->email, FILTER_VALIDATE_EMAIL)) {
                         $RHName = $RH->name;
                         try {
-                            $RH->notify(new notificacionRH($RHName, $name, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                            $RH->notify(new notificacionRH($RHName, $name, $lastname,$sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                            $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
                         } catch (Exception $e) {
                             $correosInvalidosRecursosHumanos[] = $RH->email;
@@ -328,7 +329,7 @@ class ReservationController extends Controller
                 $AD = $ADMINISTRACION->name;
          
                 try {
-                    $ADMINISTRACION->notify(new notificacionRH($AD, $name, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                    $ADMINISTRACION->notify(new notificacionRH($AD, $name, $lastname,$sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                                 $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
                 } catch (Exception $e) {
                     $correosInvalidosRecursosHumanos[] = $ADMINISTRACION->email;
@@ -346,7 +347,7 @@ class ReservationController extends Controller
                 $DS = $SISTEMAS->name;
          
                 try {
-                    $SISTEMAS->notify(new notificacionSistemas($DS, $name, $sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                    $SISTEMAS->notify(new notificacionSistemas($DS, $name,$lastname,$sala, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                         $diaFin, $LFin, $HoraFin, $request->proyector, $request->description));
                 } catch (Exception $e) {
                     $correosInvalidosSistemas[] = $SISTEMAS->email;
@@ -562,6 +563,7 @@ class ReservationController extends Controller
 
         //AUTWNTIFICAMOS AL USUARIO POR SU NOMBRE//
         $name= auth()->user()->name;
+        $lastname = auth()->user()->lastname;
 
         //CREAMOS UN ARREGLO PARA OBTENER LOS DATOS NECESARIOS DEL GUEST//
         $invitadospos = DB::table('reservations')
@@ -590,7 +592,7 @@ class ReservationController extends Controller
                 $nombre = $user->name;
                 
                 try {
-                    $user->notify(new NotificacionEdit($name, $nombre, $diaInicio, $LInicio, $HoraInicio, $diaFin, $LFin, 
+                    $user->notify(new NotificacionEdit($name, $nombre, $lastname,$diaInicio, $LInicio, $HoraInicio, $diaFin, $LFin, 
                                                $HoraFin, $ubica, $names, $request->description));
                                             
                 } catch (Exception $e) {
@@ -609,7 +611,7 @@ class ReservationController extends Controller
                 if (filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
                      $nombre = $user->name;
                     try {
-                        $user->notify(new NotificacionReservaMasivaEdit($name, $nombre, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                        $user->notify(new NotificacionReservaMasivaEdit($name, $lastname,$nombre, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                                 $diaFin, $LFin, $HoraFin));
                     } catch (Exception $e) {
                         $correosInvalidosMasivosEdit[] = $user->email;
@@ -629,7 +631,7 @@ class ReservationController extends Controller
         //CORREO PARA EL DEPARTAMENTO DE PROJECT MANAGER//
         $Project =User::where('id', 31)->first()->name;
         $informar =User::where('id', 31)->first();
-        $informar->notify(new notificacionPJEdit ($Project, $name, $request->title, $names,$ubica,$diaInicio,$LInicio,$HoraInicio, 
+        $informar->notify(new notificacionPJEdit ($Project, $name, $lastname,$request->title, $names,$ubica,$diaInicio,$LInicio,$HoraInicio, 
                                                   $diaFin, $LFin, $HoraFin,$request->engrave,$guest, $request->chair_loan, 
                                                   $request->proyector,$request->description));
                                                   
@@ -653,7 +655,7 @@ class ReservationController extends Controller
                         $RHName = $RH->name;
         
                         try {
-                            $RH->notify(new notificacionRHEdit($RHName, $name, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                            $RH->notify(new notificacionRHEdit($RHName, $name, $lastname,$names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                            $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
                         } catch (Exception $e) {
                             $correosInvalidosRecursosHumanos[] = $RH->email;
@@ -672,7 +674,7 @@ class ReservationController extends Controller
                 $AD = $ADMINISTRACION->name;
         
                 try {
-                    $ADMINISTRACION->notify(new notificacionRHEdit($AD, $name, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                    $ADMINISTRACION->notify(new notificacionRHEdit($AD, $name, $lastname,$names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                                 $diaFin, $LFin, $HoraFin, $request->chair_loan, $request->description));
                 } catch (Exception $e) {
                     $correosInvalidosRecursosHumanos[] = $ADMINISTRACION->email;
@@ -690,7 +692,7 @@ class ReservationController extends Controller
                 $DS = $SISTEMAS->name;
         
                 try {
-                    $SISTEMAS->notify(new notificacionSistemasEdit($DS, $name, $names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
+                    $SISTEMAS->notify(new notificacionSistemasEdit($DS, $name, $lastname,$names, $ubica, $diaInicio, $LInicio, $HoraInicio, 
                                                          $diaFin, $LFin, $HoraFin, $request->proyector, $request->description));
                 } catch (Exception $e) {
                     $correosInvalidosSistemas[] = $SISTEMAS->email;

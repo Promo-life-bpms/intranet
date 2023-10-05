@@ -19,6 +19,7 @@ class notificacionSistemasEdit extends Notification
 
     public $Sistemas;
     public $dueño;
+    public $dueño_lastname;
     public $nombre_sala;
     public $ubicacion;
     public $diainicio;
@@ -29,11 +30,12 @@ class notificacionSistemasEdit extends Notification
     public $horafin;
     public $cantidadProyectores;
     public $description;
-    public function __construct($Sistemas, $dueño, $nombre_sala, $ubicacion, $diainicio, $mesinicio, $horainicio,  
+    public function __construct($Sistemas, $dueño, $dueño_lastname,$nombre_sala, $ubicacion, $diainicio, $mesinicio, $horainicio,  
                                 $diafin, $mesfin, $horafin, $cantidadProyectores, $description)
     {
         $this->Sistemas=$Sistemas;
         $this->dueño=$dueño;
+        $this->dueño_lastname=$dueño_lastname;
         $this->nombre_sala=$nombre_sala;
         $this->ubicacion=$ubicacion;
         $this->diainicio=$diainicio;
@@ -69,6 +71,7 @@ class notificacionSistemasEdit extends Notification
                     ->markdown('mail.reservation.MaterialSistemasEdit',[
                         'Sistemas'=>$this->Sistemas,
                         'dueño'=>$this->dueño,
+                        'dueño_lastname'=>$this->dueño_lastname,
                         'nombre_sala'=>$this->nombre_sala,
                         'ubicacion'=>$this->ubicacion,
                         'diainicio'=>$this->diainicio,
