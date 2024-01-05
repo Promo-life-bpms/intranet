@@ -131,6 +131,11 @@ class VacationsController extends Controller
         return Excel::download(new VacationsExport, 'vacaciones.xlsx');
     }
 
+    // Funciones para el calculo de vacaciones
+    /**
+     * Actualiza la información de las vacaciones para todos los usuarios activos.
+     * Calcula y actualiza las vacaciones para cada usuario en función de su antigüedad.
+     */
     public function updateInformationVacations()
     {
         $users = User::where('status', 1)->get();
@@ -187,6 +192,7 @@ class VacationsController extends Controller
         } else {
             return 3;
         }
+        // Lógica para calcular el estado de las vacaciones según la fecha actual.
     }
 
     function obtenerDiasVacaciones($antiguedad, $fecha_fin, $actual = false)
@@ -233,6 +239,11 @@ class VacationsController extends Controller
         return $str;
     }
 
+    /**
+     * Envía recordatorios a los usuarios respecto a sus vacaciones.
+     *
+     * @return void
+     */
     public function sendRemembers()
     {
         $users =  User::where('status', 1)->get();

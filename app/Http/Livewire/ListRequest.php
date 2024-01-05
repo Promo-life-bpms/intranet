@@ -15,16 +15,41 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * Clase ListRequest
+ *
+ * Esta clase es responsable de manejar la lista de solicitudes y las acciones de autorizar y rechazar una solicitud.
+ * Utiliza la paginación para mostrar las solicitudes en grupos de 10.
+ */
 class ListRequest extends Component
 {
     use WithPagination;
 
+    /**
+     * Método render
+     *
+     * Este método renderiza la vista de la lista de solicitudes.
+     * Obtiene las solicitudes del usuario autenticado y las ordena por fecha de creación descendente.
+     * Utiliza la paginación simple para mostrar 10 solicitudes por página.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         $requests = auth()->user()->employee->requestToAuth()->orderBy('created_at', 'DESC')->simplePaginate(10);
         return view('livewire.list-request', ['requests' => $requests]);
     }
 
+    /**
+     * Método autorizar
+     *
+     * Este método se utiliza para autorizar una solicitud.
+     * Actualiza el estado de la solicitud a "Aprobada".
+     * Envía notificaciones al usuario solicitante y al departamento de recursos humanos.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return int
+     */
     public function autorizar(Request $request)
     {
         $request->direct_manager_status = "Aprobada";
@@ -52,6 +77,18 @@ class ListRequest extends Component
         }
         return 1;
     }
+
+    /**
+     * Método rechazar
+     *
+     * Este método se utiliza para rechazar una solicitud.
+     * Actualiza el estado de la solicitud a "Rechazada".
+     * Guarda los días de la solicitud rechazada en una tabla separada.
+     * Envía notificaciones al usuario solicitante.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return int
+     */
     public function rechazar(Request $request)
     {
         $request->direct_manager_status = "Rechazada";
@@ -78,6 +115,15 @@ class ListRequest extends Component
         return 1;
     }
 
+    /**
+     * Método auth
+     *
+     * Este método se utiliza para autenticar al usuario.
+     * Despacha un evento de navegador para mostrar una alerta.
+     *
+     * @param int $id
+     * @return void
+     */
     public function auth($id)
     {
         $this->dispatchBrowserEvent('swal', ['id' => $id]);

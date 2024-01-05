@@ -11,12 +11,25 @@ use App\Notifications\RHResponseRequestNotification;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * Clase ListRequestRH
+ *
+ * Esta clase es responsable de manejar la lista de solicitudes de recursos humanos.
+ * Contiene métodos para renderizar la vista, autorizar y rechazar solicitudes.
+ */
 class ListRequestRH extends Component
 {
     use WithPagination;
     public $searchName, $searchStatus;
+
+    /**
+     * Renderiza la vista de la lista de solicitudes de recursos humanos.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function render()
     {
+        // Código para obtener las solicitudes de recursos humanos y las solicitudes sin autorización
         $user = '%' . $this->searchName . '%';
         $status = $this->searchStatus;
         $operadorStatus = '=';
@@ -46,13 +59,19 @@ class ListRequestRH extends Component
         ]);
     }
 
+    /**
+     * Autoriza una solicitud de recursos humanos.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return int
+     */
     public function autorizar(Request $request)
     {
         if ($request->human_resources_status !== "Pendiente") {
             return 3;
         }
         $request->human_resources_status = "Aprobada";
-        
+
         if ($request->type_request == "Solicitar vacaciones") {
             $user = Employee::find($request->employee_id)->user;
             $totalDiasSolicitados = count($request->requestdays);
@@ -81,7 +100,7 @@ class ListRequestRH extends Component
             }
         }
         $request->save();
-        $user = auth()->user();        
+        $user = auth()->user();
         $userReceiver = Employee::find($request->employee_id)->user;
         //Notificaciones
         $communique_notification = new FirebaseNotificationController();
@@ -91,6 +110,12 @@ class ListRequestRH extends Component
         return 1;
     }
 
+    /**
+     * Rechaza una solicitud de recursos humanos.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return int
+     */
     public function rechazar(Request $request)
     {
         if ($request->human_resources_status !== "Pendiente") {

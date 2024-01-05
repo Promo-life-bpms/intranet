@@ -120,7 +120,7 @@ class RequestController extends Controller
 
         $request->validate([
             'type_request' => 'required',
-            'reason' => 'required|max:255',
+            'reason' => 'required|max:400',
             'reveal' => 'required',
             'opcion' => 'required_if:type_request,==,Fallecimiento de familiar directo',
             'opcion' => 'required_if:type_request,==,Motivos academicas/escolares',
