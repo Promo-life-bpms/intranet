@@ -74,7 +74,7 @@ class NotificacionReservaMasivaEdit extends Notification
                         'horafin'=>$this->horafin,
                     ])
                     ->subject('AVISO IMPORTANTE')
-                    ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
+                    ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
     /**
      * Get the array representation of the notification.

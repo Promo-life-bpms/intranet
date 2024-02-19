@@ -78,7 +78,7 @@ class NotificacionSalas extends Notification
                         'description'=>$this->description,
                     ])
                     ->subject('TE HAN INVITADO A UNA REUNIÓN')
-                    ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
+                    ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
 
     /**

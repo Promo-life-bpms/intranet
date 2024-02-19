@@ -44,7 +44,7 @@ class TakeVacationsNotification extends Notification
         return (new MailMessage)
             ->markdown('mail.takeVacations.take', ['url' => url('/'), 'data' => $this->data])
             ->subject('Queda Poco Tiempo para Disfrutar de tus Vacaciones')
-            ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
+            ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
 
     /**

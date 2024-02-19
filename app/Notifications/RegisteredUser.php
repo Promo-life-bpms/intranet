@@ -43,7 +43,7 @@ class RegisteredUser extends Notification
         return (new MailMessage)
             ->markdown('mail.registered.user', ['url' => url('/'), 'data' => $this->data])
             ->subject('Usuario Registrado al sistema Intranet Corporativa BH - PL')
-            ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
+            ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
 
     /**

@@ -43,7 +43,7 @@ class InfoRemembersAdmin extends Notification
         return (new MailMessage)
             ->markdown('mail.takeVacations.sendAdmin', ['url' => url('/'), 'data' => $this->data])
             ->subject('Recordatorios Enviados')
-            ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
+            ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
 
     /**

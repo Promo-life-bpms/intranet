@@ -93,7 +93,7 @@ class notificacionPJEdit extends Notification
                         'description'=>$this->description,
                     ])
                     ->subject('HAN MODIFICADO LA RESERVACIÓN')
-                    ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
+                    ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
 
     /**
