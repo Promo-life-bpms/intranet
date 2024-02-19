@@ -77,7 +77,7 @@ class NotificacionEdit extends Notification
                         'description'=>$this->description,
                     ])
                     ->subject('EDITARON LA REUNIÓN, ECHALE UN VISTAZO')
-                    ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
+                    ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
 }
 
     /**

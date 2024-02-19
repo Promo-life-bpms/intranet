@@ -45,7 +45,7 @@ class StatuSoporteFinalizadoNotification extends Notification
         return (new MailMessage)
             ->markdown('mail.soporte.soporteMailStatus', ["data" => $this->data])
             ->subject('Ticket de soporte recibido')
-            ->from('correo@gmail.com');
+            ->from('adminportales@promolife.com.mx');
     }
 
     /**

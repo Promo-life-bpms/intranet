@@ -81,7 +81,7 @@ class notificacionRHEdit extends Notification
                         'description'=>$this->description,
                     ])
                     ->subject('HAN EDITADO LA SOLICITUD DE MATERIAL (SILLAS)')
-                    ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
+                    ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
 
     /**

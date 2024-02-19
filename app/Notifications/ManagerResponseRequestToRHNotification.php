@@ -53,7 +53,7 @@ class ManagerResponseRequestToRHNotification extends Notification
                 'user_name' => $this->user_name,
             ])
             ->subject('Autorizacion de un Jefe Directo')
-            ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
+            ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
 
     /**

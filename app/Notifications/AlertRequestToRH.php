@@ -39,7 +39,7 @@ class AlertRequestToRH extends Notification
                 'url' => url('/')
             ])
             ->subject('Tienes solicitudes pendientes')
-            ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
+            ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
 
     /**

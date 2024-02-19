@@ -80,7 +80,7 @@ class notificacionRH extends Notification
                         'description'=>$this->description,
         ])
         ->subject('HAN SOLICITADO MATERIAL (SILLAS)')
-        ->from('admin@intranet.promolife.lat', 'Intranet Corporativa BH - PL');
+        ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
 
     /**
