@@ -9,17 +9,19 @@
             <table class="table text-center">
                 <thead>
                     <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Categoría</th>
-                        <th scope="col">Estatus</th>
-                        <th scope="col">Acciones</th>
+                        <th scope="col" style="width: 5%;">ID</th>
+                        <th scope="col" style="width: 20%;">Usuario</th>
+                        <th scope="col" style="width: 20%;">Error</th>
+                        <th scope="col" style="width: 20%;">Categoría</th>
+                        <th scope="col" style="width: 10%;">Estatus</th>
+                        <th scope="col" style="width: 20%;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($solucion as $tickets)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
+                            <td>{{ $tickets->user->name . ' ' .  $tickets->user->lastname }}</td>
                             <td>{{ $tickets->name }}</td>
                             <td class="col-2">{{ $tickets->category->name }}</td>
                             <td class="col-2">

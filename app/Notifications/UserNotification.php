@@ -44,6 +44,7 @@ class UserNotification extends Notification
         return (new MailMessage)
             ->line('The introduction to the notification.')
             ->action('Notification Action', url('/'))
+            ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL | Soporte')
             ->line('Thank you for using our application!');
     }
 
