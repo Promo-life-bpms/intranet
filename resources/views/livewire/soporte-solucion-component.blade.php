@@ -18,7 +18,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($solucion->reverse() as $tickets)
+                    @foreach ($solucion as $tickets)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $tickets->user->name . ' ' .  $tickets->user->lastname }}</td>

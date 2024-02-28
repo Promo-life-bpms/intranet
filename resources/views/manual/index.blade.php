@@ -62,7 +62,7 @@
                             <img src="{{ asset($man->img )}}"
                             style="width: 100%; margin-top:10px; height:120px; object-fit: contain;" class="card-img-top" alt="imagen">
                             <div class="card-body" style="padding-top:0; padding-bottom:0">
-                                <p class="card-title text-center" style=" white-space: wrap; margin-top:10px;  margin-bottom:5px;">
+                                <p class="card-title text-center" style=" white-space: wrap; margin-top:10px;  margin-bottom:5px; font-size:16px;">
                                     {{ $man->name }}</p>
                                 <a href="{{ $man->file}}" style="width: 100%" target="_blank" class="btn btn-primary mb-2">ABRIR</a>
                             </div>
