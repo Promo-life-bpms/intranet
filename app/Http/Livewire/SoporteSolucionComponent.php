@@ -35,9 +35,7 @@ class SoporteSolucionComponent extends Component
             ->get();
 
         $ticketReasignado = Ticket::where('support_id', auth()->user()->id)->get();
-        return view('livewire.soporte-solucion-component', [
-
-            'solucion' => Ticket::where('support_id', auth()->user()->id)->simplePaginate(15)
+        return view('livewire.soporte-solucion-component', ['solucion' => Ticket::where('support_id', auth()->user()->id)->orderBy('created_at', 'desc')->paginate(15)
         ], compact('users', 'ticketReasignado', 'priority'));
     }
     public function enProceso($id)
