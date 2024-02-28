@@ -48,7 +48,7 @@ class SoporteNotification extends Notification
         return (new MailMessage)
                     ->markdown('mail.soporte.soporteMail',["data"=>$this->data])
                     ->subject('Ticket de soporte recibido')
-                    ->from(auth()->user()->email);
+                    ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL | Soporte');
     }
 
     /**
