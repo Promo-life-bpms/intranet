@@ -1,6 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
+
+    @php
+    $opc = [];
+    $ingreso = \Carbon\Carbon::parse(auth()->user()->employee->date_admission);
+    $diff = $ingreso->diffInMonths(now());
+    $opc = [
+        'Salir durante la jornada' => 'Ausencia durante la jornada',
+        'Faltar a sus labores' => 'Faltar a sus labores',
+        'Fallecimiento de familiar directo' => 'Fallecimiento de familiar directo',
+        'Matrimonio del colaborador' => 'Matrimonio del colaborador',
+        'Motivos academicas/escolares' => 'Motivos académicos/escolares',
+        'Atencion de asuntos personales' => 'Atencion de asuntos personales',
+        'Permiso de Paternidad' => 'Permiso de Paternidad',
+    ];
+    if ($vacations > 0 && $diff > 5) {
+        $opc['Solicitar vacaciones'] = 'Solicitar vacaciones';
+    }
+    @endphp
     <div class="card">
         <div class="card-header">
             <div class="d-flex justify-content-between">
@@ -33,23 +51,7 @@
                 </div>
             </div>
         </div>
-        @php
-            $opc = [];
-            $ingreso = \Carbon\Carbon::parse(auth()->user()->employee->date_admission);
-            $diff = $ingreso->diffInMonths(now());
-            $opc = [
-                'Salir durante la jornada' => 'Ausencia durante la jornada',
-                'Faltar a sus labores' => 'Faltar a sus labores',
-                'Fallecimiento de familiar directo' => 'Fallecimiento de familiar directo',
-                'Matrimonio del colaborador' => 'Matrimonio del colaborador',
-                'Motivos academicas/escolares' => 'Motivos académicos/escolares',
-                'Atencion de asuntos personales' => 'Atencion de asuntos personales',
-                'Permiso de Paternidad' => 'Permiso de Paternidad',
-            ];
-            if ($vacations > 0 && $diff > 5) {
-                $opc['Solicitar vacaciones'] = 'Solicitar vacaciones';
-            }
-        @endphp
+     
         <div class="card-body">
             <div class="card shadow text-center">
                 <div class="card-body">
@@ -95,8 +97,21 @@
                             tu contratación!
                         </p>
                     @endif
+
+
+                <div class="mb-4 form-group" id="escolares" style="{{ old('type_request') == 'Permiso de Paternidad' ? '' : 'display: none;' }}">
+                    <b style="color:red;">Solo puedes utilizarlo 6 meses despues de tu ingreso y no deben ser días continuos</b> 
                 </div>
+             
+
+                <div class="mb-4 form-group" id="paternidad" style="{{ old('type_request') == 'Motivos academicas/escolares' ? '' : 'display: none;' }}">
+                    <b style="color:red;">Solo puedes tomar 5 días y pueden ser continuos</b> 
+                </div>
+            
             </div>
+        </div>
+
+
             {!! Form::open(['route' => 'request.store', 'enctype' => 'multipart/form-data']) !!}
             <div class="row">
                 <div class=" col-md-6">
@@ -723,11 +738,20 @@
                     // Hide the radio buttons for other options
                     $('#opciones').hide();
                 }
-                if (selectedOption === 'Motivos academicas/escolares') {
+                if (selectedOption === 'Motivos academicas/escolares' || selectedOption === 'Fallecimiento de familiar directo' || selectedOption === 'Matrimonio del colaborador'  || selectedOption === 'Atencion de asuntos personales') {
                     $('#opcional').show();
+                    $('#escolares').show();
                 } else {
                     // Hide the radio buttons for other options
-                    $('#opcional').hide();
+                    $('#escolares').hide();
+                    $('#opcional').show();
+                }
+                
+                if (selectedOption === 'Permiso de Paternidad') {
+                    $('#paternidad').show();
+                } else {
+                    // Hide the radio buttons for other options
+                    $('#paternidad').hide();
                 }
             });
         });
