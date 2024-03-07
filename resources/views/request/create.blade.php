@@ -100,12 +100,12 @@
 
 
                 <div class="mb-4 form-group" id="escolares" style="{{ old('type_request') == 'Permiso de Paternidad' ? '' : 'display: none;' }}">
-                    <b style="color:red;">Solo puedes utilizarlo 6 meses despues de tu ingreso y no deben ser días continuos</b> 
+                    <b style="color:red;">Importante: solo puedes utilizarlo 6 meses despues de tu ingreso y no deben ser días continuos</b> 
                 </div>
              
 
                 <div class="mb-4 form-group" id="paternidad" style="{{ old('type_request') == 'Motivos academicas/escolares' ? '' : 'display: none;' }}">
-                    <b style="color:red;">Solo puedes tomar 5 días y pueden ser continuos</b> 
+                    <b style="color:red;">Importante: solo puedes tomar 5 días y pueden ser continuos</b> 
                 </div>
             
             </div>
