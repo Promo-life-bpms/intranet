@@ -264,6 +264,15 @@
                                                         data-bs-dismiss="modal">Aceptar - Rechazar
                                                     </button>
                                                 @endif
+
+                                                @if ($request->human_resources_status == 'Aprobada' || $request->human_resources_status == 'Rechazada')
+
+                                                    <p>Esta solicitud ya fue <b>aprobada o rechazada</b>, ¿Deseas modificarla?</p>
+                                                    <button class="btn btn-danger" onclick="auth({{ $request->id }})"
+                                                        data-bs-dismiss="modal">Aceptar - Rechazar
+                                                    </button>
+                                                @endif
+
                                             </div>
                                         </div>
                                     </div>
@@ -533,6 +542,8 @@
                 confirmButtonText: 'Aceptar',
                 denyButtonText: `Rechazar`,
             }).then((result) => {
+                console.log('resultttttt')
+                console.log(result)
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     let respuesta = @this.autorizar(id)
@@ -552,10 +563,12 @@
                             Swal.fire('¡Error al autorizar!', '', 'error')
                         });
                 } else if (result.isDenied) {
+                    console.log('rechazadaaaaaa')
                     let respuesta = @this.rechazar(id)
                     respuesta
                         .then((response) => {
                             console.log(response);
+                            console.log(response.body)
                             if (response == 1) {
                                 Swal.fire('La solicitud de ha rechazado correctamente', '', 'success')
                             }

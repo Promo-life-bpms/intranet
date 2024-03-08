@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\Request;
 use App\Models\RequestRejected;
 use App\Notifications\RHResponseRequestNotification;
+use Exception;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -67,9 +68,9 @@ class ListRequestRH extends Component
      */
     public function autorizar(Request $request)
     {
-        if ($request->human_resources_status !== "Pendiente") {
+        /* if ($request->human_resources_status !== "Pendiente") {
             return 3;
-        }
+        } */
         $request->human_resources_status = "Aprobada";
 
         if ($request->type_request == "Solicitar vacaciones") {
@@ -105,8 +106,14 @@ class ListRequestRH extends Component
         //Notificaciones
         $communique_notification = new FirebaseNotificationController();
         $communique_notification->sendApprovedRequest($userReceiver->id);
-        event(new RHResponseRequestEvent($request->type_request, $request->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $request->human_resources_status));
-        $userReceiver->notify(new RHResponseRequestNotification($request->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $request->human_resources_status));
+
+        try {
+            event(new RHResponseRequestEvent($request->type_request, $request->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $request->human_resources_status));
+            $userReceiver->notify(new RHResponseRequestNotification($request->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $request->human_resources_status));
+        } catch (Exception $e) {
+           
+        }
+        
         return 1;
     }
 
@@ -118,9 +125,9 @@ class ListRequestRH extends Component
      */
     public function rechazar(Request $request)
     {
-        if ($request->human_resources_status !== "Pendiente") {
+        /* if ($request->human_resources_status !== "Pendiente") {
             return 3;
-        }
+        } */
         $request->human_resources_status = "Rechazada";
         $requestCalendar = $request->requestdays;
         foreach ($requestCalendar as $calendar) {
@@ -139,8 +146,14 @@ class ListRequestRH extends Component
         //Notificaciones
         $communique_notification = new FirebaseNotificationController();
         $communique_notification->sendRejectedRequest($userReceiver->id);
-        event(new RHResponseRequestEvent($request->type_request, $request->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $request->human_resources_status));
-        $userReceiver->notify(new RHResponseRequestNotification($request->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $request->human_resources_status));
+
+        try {
+            event(new RHResponseRequestEvent($request->type_request, $request->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname, $request->human_resources_status));
+            $userReceiver->notify(new RHResponseRequestNotification($request->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname, $request->human_resources_status));
+        } catch (Exception $e) {
+            
+        }
+    
         return 1;
     }
 }
