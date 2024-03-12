@@ -744,7 +744,7 @@
                 } else {
                     // Hide the radio buttons for other options
                     $('#escolares').hide();
-                    $('#opcional').show();
+                    $('#opcional').hide();
                 }
                 
                 if (selectedOption === 'Permiso de Paternidad') {
