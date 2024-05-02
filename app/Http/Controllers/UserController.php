@@ -147,7 +147,14 @@ class UserController extends Controller
         $departments  = Department::pluck('name', 'id')->toArray();
         $positions  = Position::pluck('name', 'id')->toArray();
         $companies = Company::all();
-        $manager = User::all()->pluck('name', 'id');
+        $manager = DB::table('users')->select('users.id', 'users.name')->where('users.status', 1)
+                                    ->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
+                                    ->whereNotIn('role_user.role_id', [7])
+                                    ->distinct()
+                                    ->pluck('name', 'id');
+
+
+        //$manager = User::all()->pluck('name', 'id');
         return view('admin.user.edit', compact('roles', 'employees', 'departments', 'positions', 'companies', 'user', 'manager'));
     }
 

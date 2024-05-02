@@ -96,18 +96,21 @@ class RequestController extends Controller
         if ($vacations == null) {
             $vacations = 0;
         }
-
         $dep = auth()->user()->employee->position->department;
-        $positions = Position::all()->where("department_id", $dep)->pluck("name", "id");
+        $positions = Position::where("department_id", $dep)->pluck("name", "id");
         $data = $dep->positions;
         $users = [];
+
         foreach ($data as $dat) {
             foreach ($dat->getEmployees as $emp) {
-                if ($emp->user->status == 1)
-                    $users["{$emp->user->id}"] = $emp->user->name." ".$emp->user->lastname;
+                if ($emp->user->status == 1) {
+                    $roles = DB::table('role_user')->where('user_id', $emp->user->id)->pluck('role_id');
+                    if (!$roles->contains(7)) {
+                        $users[$emp->user->id] = $emp->user->name . " " . $emp->user->lastname;
+                    }
+                }
             }
         }
-
 
         return view('request.create', compact('noworkingdays', 'vacations', 'dataVacations', 'users', 'daysWithAsuntosEscolares'));
     }
@@ -199,7 +202,7 @@ class RequestController extends Controller
         $user->daysSelected()->update(['requests_id' => $req->id]);
 
         // Enviar notificacion
-        try {
+        /*try {
             $communique_notification = new FirebaseNotificationController();
             $communique_notification->createRequest(strval($user->id));
             $communique_notification->sendToManager(strval($req->direct_manager_id));
@@ -208,7 +211,7 @@ class RequestController extends Controller
             event(new CreateRequestEvent($req->type_request, $req->direct_manager_id,  $user->id,  $user->name . ' ' . $user->lastname));
             $userReceiver->notify(new CreateRequestNotification($req->type_request, $user->name . ' ' . $user->lastname, $userReceiver->name . ' ' . $userReceiver->lastname));
         } catch (Exception $th) {
-        }
+        }*/
         return redirect()->action([RequestController::class, 'index'])->with('message', 'Se creo la solicitud correctamente');
     }
 
@@ -359,7 +362,7 @@ class RequestController extends Controller
     }
 
     // Recordar las solicitudes que estan pendientes a los jefes directos y a rh
-    public function alertPendient()
+    /*public function alertPendient()
     {
         $request = ModelsRequest::where('direct_manager_status', 'Pendiente')->get();
         $requestRH = ModelsRequest::where('direct_manager_status', '=', 'Aprobada')->where('human_resources_status', 'Pendiente')->get();
@@ -376,5 +379,5 @@ class RequestController extends Controller
                 $userRH->notify(new AlertRequestToRH());
             }
         }
-    }
+    }*/
 }
