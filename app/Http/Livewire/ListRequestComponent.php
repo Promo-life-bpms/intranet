@@ -8,19 +8,40 @@ use Livewire\WithPagination;
 use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 
+/**
+ * Clase ListRequestComponent.
+ *
+ * Componente de Livewire que maneja la lista de solicitudes.
+ */
 class ListRequestComponent extends Component
 {
     use WithPagination, WithFileUploads;
     protected $paginationTheme = 'bootstrap';
 
+    /**
+     * @var ModelRequest $request La solicitud actual.
+     * @var array $archivos_permiso Los archivos de permiso.
+     * @var bool $editarJustificante Indica si se está editando el justificante.
+     */
     public $request, $archivos_permiso, $editarJustificante;
 
+    /**
+     * Renderiza el componente.
+     *
+     * @return \Illuminate\View\View La vista del componente.
+     */
     public function render()
     {
         $myrequests = auth()->user()->employee->requestDone()->orderBy('created_at', "DESC")->paginate(10);
         return view('livewire.list-request-component', ['myrequests' => $myrequests]);
     }
 
+    /**
+     * Elimina una solicitud.
+     *
+     * @param ModelRequest $request La solicitud a eliminar.
+     * @return void
+     */
     public function deleteRequest(ModelRequest $request)
     {
         $request->visible = false;
@@ -28,7 +49,12 @@ class ListRequestComponent extends Component
         session()->flash('message', 'Solicitud Eliminada Correctamente.');
     }
 
-    // ver detalle de la solicitud
+    /**
+     * Muestra los detalles de una solicitud.
+     *
+     * @param ModelRequest $request La solicitud a mostrar.
+     * @return void
+     */
     public function showRequest(ModelRequest $request)
     {
         $this->request = $request;
@@ -36,6 +62,12 @@ class ListRequestComponent extends Component
         $this->dispatchBrowserEvent('showRequest');
     }
 
+    /**
+     * Sube el justificante de una solicitud.
+     *
+     * @param ModelRequest $modelRequest La solicitud a la que se subirá el justificante.
+     * @return void
+     */
     public function subirJustificante(ModelRequest $modelRequest)
     {
         $this->validate([
@@ -72,7 +104,11 @@ class ListRequestComponent extends Component
         // Redirige de nuevo a donde sea apropiado
     }
 
-    //cambiarEditarJustificante
+    /**
+     * Cambia el estado de la variable $editarJustificante.
+     *
+     * @return void
+     */
     public function cambiarEditarJustificante()
     {
         $this->editarJustificante = !$this->editarJustificante;

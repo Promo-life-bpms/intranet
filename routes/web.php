@@ -298,11 +298,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/firebase/reservation/creative', [FirebaseNotificationController::class, 'reservationNotification'])->name('firebase.reservation.creative');
 });
 
-Route::get('vacations/updateExpiration/', [VacationsController::class, 'updateExpiration'])->name('admin.vacations.updateExpiration');
+// Enviar recordatorios de vacaciones (admin)
 Route::get('vacations/sendRemembers/', [VacationsController::class, 'sendRemembers'])->name('admin.vacations.sendRemembers');
+
+// Alertar solicitudes pendientes
 Route::get('request/alertRequesPendients/', [RequestController::class, 'alertPendient']);
 
-
-Route::get('vacations/updatePeriods/', [VacationsController::class, 'updatePeriods']);
+// Actualizar información de vacaciones
 Route::get('vacations/updateInformationVacations', [VacationsController::class, 'updateInformationVacations']);
+
 Route::get('vacations/obtenerInformacionDeLosUsuarios', [VacationsController::class, 'obtenerInformacionDeLosUsuarios']);
