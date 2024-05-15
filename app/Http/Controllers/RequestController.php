@@ -290,7 +290,10 @@ class RequestController extends Controller
     {
         $vacations = Vacations::all();
         $requestDays = RequestCalendar::all();
-        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada');
+        $ids = User::where('status', 1)->pluck('id');
+        $requests = ModelsRequest::whereIn('employee_id', $ids)->where('direct_manager_status', 'Aprobada')
+                                            ->where('human_resources_status', 'Aprobada')->get();
+
         return view('request.reports', compact('requests', 'requestDays', 'vacations'));
     }
 
