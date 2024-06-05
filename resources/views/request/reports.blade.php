@@ -62,7 +62,13 @@
                                 @endif
                             </td>
                             <td>{{ $request->reason }}</td>
-                            <td>{{ $request->employee->user->vacation->dv }} </td>
+                            <td>
+                                @if ($request->employee->user->vacation)
+                                    {{ $request->employee->user->vacation->dv }}
+                                @else
+                                    No disponible
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
 

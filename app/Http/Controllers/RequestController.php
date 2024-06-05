@@ -96,18 +96,21 @@ class RequestController extends Controller
         if ($vacations == null) {
             $vacations = 0;
         }
-
         $dep = auth()->user()->employee->position->department;
-        $positions = Position::all()->where("department_id", $dep)->pluck("name", "id");
+        $positions = Position::where("department_id", $dep)->pluck("name", "id");
         $data = $dep->positions;
         $users = [];
+
         foreach ($data as $dat) {
             foreach ($dat->getEmployees as $emp) {
-                if ($emp->user->status == 1)
-                    $users["{$emp->user->id}"] = $emp->user->name." ".$emp->user->lastname;
+                if ($emp->user->status == 1) {
+                    $roles = DB::table('role_user')->where('user_id', $emp->user->id)->pluck('role_id');
+                    if (!$roles->contains(7)) {
+                        $users[$emp->user->id] = $emp->user->name . " " . $emp->user->lastname;
+                    }
+                }
             }
         }
-
 
         return view('request.create', compact('noworkingdays', 'vacations', 'dataVacations', 'users', 'daysWithAsuntosEscolares'));
     }
@@ -287,7 +290,10 @@ class RequestController extends Controller
     {
         $vacations = Vacations::all();
         $requestDays = RequestCalendar::all();
-        $requests = ModelsRequest::all()->where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Aprobada');
+        $ids = User::where('status', 1)->pluck('id');
+        $requests = ModelsRequest::whereIn('employee_id', $ids)->where('direct_manager_status', 'Aprobada')
+                                            ->where('human_resources_status', 'Aprobada')->get();
+
         return view('request.reports', compact('requests', 'requestDays', 'vacations'));
     }
 
