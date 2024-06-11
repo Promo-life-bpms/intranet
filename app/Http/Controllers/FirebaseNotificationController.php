@@ -70,7 +70,6 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-
     }
 
     public function createRequest($applicant_id)
@@ -129,7 +128,7 @@ class FirebaseNotificationController extends Controller
                  ],
                  'body' => json_encode($body_manager),
              ]
-         );
+         ); 
 
     }
 
@@ -195,7 +194,6 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-
     }
 
 
@@ -226,7 +224,6 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-
     }
 
 
@@ -347,7 +344,6 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-
     }
 
     public function birthdaySpecificNotification($user_id, $name)
@@ -377,7 +373,6 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-
     }
 
     public function birthdaySpecificNotificationPost(Request $request)
@@ -410,8 +405,6 @@ class FirebaseNotificationController extends Controller
         );
 
         return back()->with('message', 'Felicitación enviada correctamente');
-
-
     }
 
 //NOTIFICACIONES USUARIO A SOPORTE
@@ -554,7 +547,7 @@ class FirebaseNotificationController extends Controller
                  ],
                  'body' => json_encode($body),
              ]
-         );
+         ); 
     }
 
     public function supportSolution($ticket,$user_id)
@@ -638,7 +631,7 @@ class FirebaseNotificationController extends Controller
                  ],
                  'body' => json_encode($body),
              ]
-         );
+         ); 
     }
 
     public function reservationNotification($user, $diaInicio, $LInicio,$AnoInicio,$HoraInicio, $diaFin, $LFin,$AnoFin, $HoraFin)
@@ -668,7 +661,7 @@ class FirebaseNotificationController extends Controller
                 ],
                 'body' => json_encode($body),
             ]
-        );
+        ); 
         
     }
 
@@ -700,6 +693,5 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-        
     }
 }
