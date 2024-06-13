@@ -288,15 +288,19 @@ class RequestController extends Controller
 
     public function reportRequest()
     {
-        $vacations = Vacations::all();
-        $requestDays = RequestCalendar::all();
+        //$vacations = Vacations::all();
+        $vacations = DB::table('vacations_availables')->get();
+        //dd($vacations);
+        //$requestDays = RequestCalendar::all();
+        $requestDays = DB::table('request_calendars')->get();
+        //dd($requestDays);
         $ids = User::where('status', 1)->pluck('id');
         $requests = ModelsRequest::whereIn('employee_id', $ids)->where('direct_manager_status', 'Aprobada')
                                             ->where('human_resources_status', 'Aprobada')->get();
 
         return view('request.reports', compact('requests', 'requestDays', 'vacations'));
     }
-
+    
     //Vista de excel a exportar
     public function exportAll()
     {
