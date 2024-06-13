@@ -190,8 +190,8 @@ class ReservationController extends Controller
         $evento->end = $request->end;
         $evento->guest = $invitados;
         $evento->engrave = $request->engrave;
-        $evento->chair_loan = $request->chair_loan;
-        $evento->proyector = $request->proyector;
+        $evento->chair_loan = $request->chair_loan ?? 0;
+        $evento->proyector = $request->proyector ?? 0;
         $evento->description = $request->description;
         $evento->reservation = $request->reservation;
         $evento->id_usuario = $user->id;
@@ -492,8 +492,8 @@ class ReservationController extends Controller
                 'end' => $request->end,
                 'guest' => $invitados,
                 'engrave' => $request->engrave,
-                'chair_loan' => $request->chair_loan,
-                'proyector' => $request->proyector,
+                'chair_loan' => $request->chair_loan ?? 0,
+                'proyector' => $request->proyector ?? 0,
                 'description' => $request->description,
                 'reservation' => $request->reservation,
                 'id_sala' => $request->id_sala
@@ -533,8 +533,8 @@ class ReservationController extends Controller
             'end' => $request->end,
             'guest' => $invitados,
             'engrave' => $request->engrave,
-            'chair_loan' => $request->chair_loan,
-            'proyector' => $request->proyector,
+            'chair_loan' => $request->chair_loan ?? 0,
+            'proyector' => $request->proyector ?? 0,
             'description' => $request->description,
             'reservation' => $request->reservation,
             'id_sala' => $request->id_sala
