@@ -296,7 +296,7 @@ class RequestController extends Controller
         //dd($requestDays);
         $ids = User::where('status', 1)->pluck('id');
         $requests = ModelsRequest::whereIn('employee_id', $ids)->where('direct_manager_status', 'Aprobada')
-                                            ->where('human_resources_status', 'Aprobada')->get();
+                                            ->where('human_resources_status', 'Aprobada')->orderBy('created_at', 'desc')->get();
 
         return view('request.reports', compact('requests', 'requestDays', 'vacations'));
     }
