@@ -43,7 +43,7 @@
                             <td>{{ $request->type_request }}</td>
                             <td>{{ $request->payment }}</td>
                             <td>
-                                @foreach ($requestDays as $requestDay)
+                                @foreach ($request->requestDays as $requestDay)
                                     @if ($request->id == $requestDay->requests_id)
                                         {{ $requestDay->start }} ,
                                     @endif
