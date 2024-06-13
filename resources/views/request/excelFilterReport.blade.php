@@ -19,7 +19,7 @@
                 <td>{{ $request->type_request }}</td>
                 <td>{{ $request->payment }}</td>
                 <td>
-                    @foreach ($requestDays as $requestDay)
+                    @foreach ($request->requestDays as $requestDay)
                         @if ($request->id == $requestDay->requests_id)
                             {{ $requestDay->start }} ,
 
@@ -39,7 +39,13 @@
                     @endif
                 </td>
                 <td>{{ $request->reason }}</td>
-                <td>{{ $request->employee->user->vacation->dv }} </td>
+                <td>
+                    @if ($request->employee->user->vacation)
+                        {{ $request->employee->user->vacation->dv }}
+                    @else
+                        No disponible
+                    @endif
+                </td>
             </tr>
         @endforeach
 
