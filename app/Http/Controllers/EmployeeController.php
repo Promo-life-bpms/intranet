@@ -21,7 +21,9 @@ class EmployeeController extends Controller
         $users = [];
         foreach ($data as $dat) {
             foreach ($dat->getEmployees as $emp) {
-                $users["{$emp->user->id}"] = $emp->user->name;
+                if($emp->user->status == 1){
+                    $users["{$emp->user->id}"] = $emp->user->name . ' ' . $emp->user->lastname;
+                }
             }
         }
         return response()->json(['positions' => $positions, 'users' => $users,]);
