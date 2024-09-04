@@ -31,10 +31,11 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
+use App\Http\Controllers\RequestTypeController;
 use App\Http\Controllers\Soporte\SoporteController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Systems\DevicesController;
-
+use App\Http\Controllers\VacationRequestController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -147,6 +148,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('request/dataFilter', [RequestController::class, 'getDataFilter'])->name('request.export.filterdata');;
     Route::get('request/reports', [RequestController::class, 'reportRequest'])->middleware('role:rh')->name('request.reportRequest');
     Route::post('fullcalenderAjax', [RequestController::class, 'ajax']);
+
+    ///////////////////////////VACACIONES///////////////////////////////////////////////
+    Route::get('create/solicitud/permiso/o/vacaciones', [VacationRequestController::class, 'CreatePurchase']);
+    Route::get('prueba/info', [VacationRequestController::class, 'CreateVacationRequest']);
+    Route::post('create/request/type', [RequestTypeController::class, 'store'])->name('create.request.type');
+
+    
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
     Route::get('manager/getPosition/{id}', [ManagerController::class, 'getPosition']);
