@@ -494,7 +494,8 @@ class ApiController extends Controller
         $employee = Employee::all()->where('user_id', $user_id);
 
         if ($token != null || $token != "") {
-            $date = date("G:i:s", strtotime($request->start));
+            $date = DateTime::createFromFormat('U', $request->start);
+            $start = $date->format('H:i:s');
             $manager = "";
             foreach ($employee as $emp) {
                 $manager = $emp->jefe_directo_id;
@@ -505,7 +506,7 @@ class ApiController extends Controller
             $req->type_request = $request->typeRequest;
             $req->payment = $request->payment;
             $req->reason = $request->reason;
-            $req->start = $date;
+            $req->start = $start;
             $req->end = null;
             $req->direct_manager_id = $manager;
             $req->direct_manager_status = "Pendiente";
@@ -514,23 +515,18 @@ class ApiController extends Controller
             $req->save();
 
             $days = collect($request->days);
-            $daySelected = str_replace(array('["', '"]'), '', $days);
-            $tag_array = explode(',', $daySelected);
-
-            foreach ($tag_array as $day) {
-                $daySelected2 = str_replace(array('[', ']'), '', $day);
-
-                $dayInt = intval($daySelected2);
-
-                $date = DateTime::createFromFormat('dmY', $dayInt);
-
-                $request_calendar = new RequestCalendar();
-                $request_calendar->title = "Día seleccionado";
-                $request_calendar->start =  $date->format('Y-m-d');
-                $request_calendar->end = $date->format('Y-m-d');
-                $request_calendar->users_id = $user_id;
-                $request_calendar->requests_id = $req->id;
-                $request_calendar->save();
+            foreach ($days as $day) {
+                $dayInt = intval($day);
+                $date = DateTime::createFromFormat('U', $dayInt);
+                if ($date !== false) {
+                    $request_calendar = new RequestCalendar();
+                    $request_calendar->title = "Día seleccionado";
+                    $request_calendar->start = $date->format('Y-m-d');
+                    $request_calendar->end = $date->format('Y-m-d');
+                    $request_calendar->users_id = $user_id;
+                    $request_calendar->requests_id = $req->id;
+                    $request_calendar->save();
+                }
             }
             $data_send = [
                 "id" => $req->id,
@@ -538,7 +534,7 @@ class ApiController extends Controller
                 "direct_manager_status" => "Pendiente",
                 "human_resources_status" => "Pendiente"
             ];
-
+            
             $notification = new Notification();
             $notification->id = $req->id;
             $notification->type = "App\Notifications\RequestNotification";

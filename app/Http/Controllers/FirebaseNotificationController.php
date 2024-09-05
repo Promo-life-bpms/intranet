@@ -10,7 +10,7 @@ class FirebaseNotificationController extends Controller
 {
     public function publication($user, $message)
     {
-        $title ='Nueva Publicación';
+        /* $title ='Nueva Publicación';
         $body = '¡'. $user. ' ha realizado una nueva publicación!. ' . $message;
         $topic = "/topics/PUBLICACIONES";
 
@@ -34,13 +34,13 @@ class FirebaseNotificationController extends Controller
                 ],
                 'body' => json_encode($body),
             ]
-        );
+        ); */
 
     }
 
     public function communique($title_message,$message)
     {
-        $title = $title_message;
+       /*  $title = $title_message;
         if($message == '.'){
             $body = '¡Se ha realizado un nuevo comunicado!. ' ;
         }else{
@@ -69,13 +69,13 @@ class FirebaseNotificationController extends Controller
                 ],
                 'body' => json_encode($body),
             ]
-        );
+        ); */
     }
 
     public function createRequest($applicant_id)
     {
         //Notificacion del que crea la solicitud
-        $title = 'Solicitud enviada';
+        /* $title = 'Solicitud enviada';
         $body = '¡Tu solicitud ha sido enviada, le notificaremos a tu jefe directo para su aprobación!. ' ;
         $topic = '/topics'.'/'. strval($applicant_id) ;
         $client = new Client(['verify' => false]);
@@ -99,13 +99,13 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-
+ */
     }
 
     public function sendToManager($manager_id)
     {
          //Notificacion para el jefe directo
-         $title_manager = 'Nueva solicitud';
+        /*  $title_manager = 'Nueva solicitud';
          $body_manager = '¡Haz recibido una nueva solicitud de un colaborador!' ;
          $topic_manager = '/topics'.'/'. strval($manager_id) ;
          $client_manager = new Client(['verify' => false]);
@@ -128,13 +128,13 @@ class FirebaseNotificationController extends Controller
                  ],
                  'body' => json_encode($body_manager),
              ]
-         ); 
+         );  */
 
     }
 
     public function sendToRh()
     {
-        $usersRH =  Role::where('name', 'rh')->first()->users;
+       /*  $usersRH =  Role::where('name', 'rh')->first()->users;
         foreach ($usersRH as $user) {
 
             //Notificacion del que crea la solicitud
@@ -163,14 +163,14 @@ class FirebaseNotificationController extends Controller
                 ]
             );
 
-        }
+        } */
 
     }
 
     public function sendApprovedRequest($user_id)
     {
         //Notificacion del que crea la solicitud
-        $title = '¡Solicitud Aprobada!';
+        /* $title = '¡Solicitud Aprobada!';
         $body = 'Tu solicitud ha sido aprobada, visita la sección de solicitudes para ver mas detalles' ;
         $topic = '/topics'.'/'. strval($user_id)   ;
         $client = new Client(['verify' => false]);
@@ -193,14 +193,14 @@ class FirebaseNotificationController extends Controller
                 ],
                 'body' => json_encode($body),
             ]
-        );
+        ); */
     }
 
 
     public function sendRejectedRequest($user_id)
     {
         //Notificacion del que crea la solicitud
-        $title = '¡Solicitud Rechazada!';
+        /* $title = '¡Solicitud Rechazada!';
         $body = 'Tu solicitud ha sido rechazada, verifica la información e intenta nuevamente.' ;
         $topic = '/topics'.'/'. strval($user_id)   ;
         $client = new Client(['verify' => false]);
@@ -223,14 +223,14 @@ class FirebaseNotificationController extends Controller
                 ],
                 'body' => json_encode($body),
             ]
-        );
+        ); */
     }
 
 
     public function likePublication($user_id)
     {
         //Notificacion del que crea la solicitud
-        $title = 'Publicación';
+        /* $title = 'Publicación';
         $body = 'Haz recibido un nuevo me gusta en tu publicación.' ;
         $topic = '/topics'.'/'. strval($user_id)   ;
         $client = new Client(['verify' => false]);
@@ -254,13 +254,13 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-
+ */
     }
 
     public function commentaryPublication($user_id, $user_name)
     {
         //Notificacion del que crea la solicitud
-        $title = 'Publicación';
+        /* $title = 'Publicación';
         $body = strval($user_name)  . 'ha comentado tu publicación.' ;
         $topic = '/topics'.'/'. strval($user_id)   ;
         $client = new Client(['verify' => false]);
@@ -284,13 +284,13 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-
+ */
     }
 
     public function globalNotification($title, $message)
     {
         //Notificacion del que crea la solicitud
-        $title = strval($title);
+       /*  $title = strval($title);
         $body = strval($message);
         $topic = '/topics/GLOBAL' ;
         $client = new Client(['verify' => false]);
@@ -314,13 +314,13 @@ class FirebaseNotificationController extends Controller
                 'body' => json_encode($body),
             ]
         );
-
+ */
     }
 
     public function birthdayNotification($name)
     {
         //Notificacion del que crea la solicitud
-        $title = 'Cumpleaños';
+        /* $title = 'Cumpleaños';
         $body = 'Hoy es el cumpleaños de  '. $name  ;
         $topic = '/topics/GLOBAL' ;
         $client = new Client(['verify' => false]);
@@ -343,13 +343,13 @@ class FirebaseNotificationController extends Controller
                 ],
                 'body' => json_encode($body),
             ]
-        );
+        ); */
     }
 
     public function birthdaySpecificNotification($user_id, $name)
     {
         //Notificacion del que crea la solicitud
-        $title = '¡Feliz cumpleaños!';
+        /* $title = '¡Feliz cumpleaños!';
         $body = 'Felicidades '. $name .' te deseamos un excelente día!' ;
         $topic = '/topics'. '/'.strval($user_id);
         $client = new Client(['verify' => false]);
@@ -372,14 +372,14 @@ class FirebaseNotificationController extends Controller
                 ],
                 'body' => json_encode($body),
             ]
-        );
+        ); */
     }
 
     public function birthdaySpecificNotificationPost(Request $request)
     {
 
         //Notificacion del que crea la solicitud
-        $title = '¡Feliz cumpleaños!';
+        /* $title = '¡Feliz cumpleaños!';
         $body = 'Felicidades '. $request->name .' te deseamos un excelente día!' ;
         $topic = '/topics'. '/'.strval($request->user_id);
         $client = new Client(['verify' => false]);
@@ -404,14 +404,14 @@ class FirebaseNotificationController extends Controller
             ]
         );
 
-        return back()->with('message', 'Felicitación enviada correctamente');
+        return back()->with('message', 'Felicitación enviada correctamente'); */
     }
 
 //NOTIFICACIONES USUARIO A SOPORTE
     public function supportNotification($user,$ticket,$user_id)
     {
 
-        $title = '¡Haz recibido un ticket!';
+        /* $title = '¡Haz recibido un ticket!';
         $body = '¡'. $user. ' Te ha enviado un ticket ! : ' . $ticket ;
         $topic = '/topics'. '/'.strval($user_id);
         $client = new Client(['verify' => false]);
@@ -433,13 +433,13 @@ class FirebaseNotificationController extends Controller
                 ],
                 'body' => json_encode($body),
             ]
-        );
+        ); */
     }
 
     public function supportEditNotification($user,$ticket,$user_id)
     {
 
-         $title = '¡Edito ticket!';
+         /* $title = '¡Edito ticket!';
          $body = '¡'. $user. ' Edito el ticket : ' . $ticket ;
          $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
@@ -461,13 +461,13 @@ class FirebaseNotificationController extends Controller
                  ],
                  'body' => json_encode($body),
              ]
-         );
+         ); */
     }
 
     public function supportFinishedTicket($user,$ticket,$user_id)
     {
 
-         $title = '!Ticket Finalizado!';
+        /*  $title = '!Ticket Finalizado!';
          $body =  $user. ' Finalizo el ticket : ' . $ticket ;
          $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
@@ -489,13 +489,13 @@ class FirebaseNotificationController extends Controller
                  ],
                  'body' => json_encode($body),
              ]
-         );
+         ); */
     }
 
     public function supportMessage($user,$ticket,$user_id)
     {
 
-         $title = '¡Mensaje!';
+       /*   $title = '¡Mensaje!';
          $body = '¡'. $user. ' Envio un mensaje en el ticket : ' . $ticket ;
          $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
@@ -517,7 +517,7 @@ class FirebaseNotificationController extends Controller
                  ],
                  'body' => json_encode($body),
              ]
-         );
+         ); */
     }
 
 
@@ -525,7 +525,7 @@ class FirebaseNotificationController extends Controller
     public function supportInProgress($ticket,$user_id)
     {
 
-         $title = '¡En proceso!';
+        /*  $title = '¡En proceso!';
          $body = ' Ticket : ' . $ticket ;
          $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
@@ -547,13 +547,13 @@ class FirebaseNotificationController extends Controller
                  ],
                  'body' => json_encode($body),
              ]
-         ); 
+         );  */
     }
 
     public function supportSolution($ticket,$user_id)
     {
 
-         $title = '¡Solución recibida!';
+        /*  $title = '¡Solución recibida!';
          $body = 'En el Ticket : ' . $ticket ;
          $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
@@ -575,13 +575,13 @@ class FirebaseNotificationController extends Controller
                  ],
                  'body' => json_encode($body),
              ]
-         );
+         ); */
     }
 
     public function supportReassignment($ticket,$user_id)
     {
 
-         $title = '¡Ticket!';
+        /*  $title = '¡Ticket!';
          $body = '!' . $ticket .'Te asigno un ticket';
          $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
@@ -603,13 +603,13 @@ class FirebaseNotificationController extends Controller
                  ],
                  'body' => json_encode($body),
              ]
-         );
+         ); */
     }
 
     public function supportMessageUser($user,$ticket,$user_id)
     {
 
-         $title = '¡Mensaje!';
+        /*  $title = '¡Mensaje!';
          $body = $user.'Te envio un mensaje en el ticket :'.$ticket ;
          $topic = '/topics'. '/'.strval($user_id);
          $client = new Client(['verify' => false]);
@@ -631,12 +631,12 @@ class FirebaseNotificationController extends Controller
                  ],
                  'body' => json_encode($body),
              ]
-         ); 
+         );  */
     }
 
     public function reservationNotification($user, $diaInicio, $LInicio,$AnoInicio,$HoraInicio, $diaFin, $LFin,$AnoFin, $HoraFin)
     {
-        $title ='Reservación de la sala recreativa';
+       /*  $title ='Reservación de la sala recreativa';
         $body = '¡'. $user. ' ha reservado toda la sala recreativa! La reunión será el día '. $diaInicio . ' de '. $LInicio .' del '. $AnoInicio . ' a las '. $HoraInicio .' y finalizará el día '. 
         $diaFin.' de '. $LFin.' del '. $AnoFin . ' a las '. $HoraFin.'. Por lo tanto en este horario no se podrá reservar la sala ni los cubículos. ';
         $topic = '/topics/COMUNICADOS';
@@ -661,13 +661,13 @@ class FirebaseNotificationController extends Controller
                 ],
                 'body' => json_encode($body),
             ]
-        ); 
+        );  */
         
     }
 
     public function reservationNotificationedit($user, $diaInicio, $LInicio,$AnoInicio,$HoraInicio, $diaFin, $LFin,$AnoFin, $HoraFin)
     {
-        $title ='Reservación de la sala recreativa';
+        /* $title ='Reservación de la sala recreativa';
         $body = '¡'. $user. ' ha modificado la reservación! La reunión será el día '. $diaInicio . ' de '. $LInicio .' del '. $AnoInicio . ' a las '. $HoraInicio .' y finalizará el día '. 
         $diaFin.' de '. $LFin.' del '. $AnoFin . ' a las '. $HoraFin.'. Por lo tanto en este horario no se podrá reservar la sala ni los cubículos. ';
         $topic = '/topics/COMUNICADOS'; 
@@ -692,6 +692,6 @@ class FirebaseNotificationController extends Controller
                 ],
                 'body' => json_encode($body),
             ]
-        );
-    }
+        );*/
+    } 
 }
