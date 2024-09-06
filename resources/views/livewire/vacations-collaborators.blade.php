@@ -344,14 +344,15 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="miFormulario">
+                    <form id="miFormulario" action="create/vacation/or/leave/request" method="POST">
+                        @csrf
                         <div class="mt-2" id="dynamicContentEncabezado">
                             <!-- Aquí se va a cambiar el contenido según la tarjeta seleccionada -->
                         </div>
 
                         <div class="d-flex justify-content-between">
                             <div class="mr-2">
-                                <span class="mt-3">Selecciona los días de ausencia</span>
+                                <span class="mt-2">Selecciona los días de ausencia</span>
                                 <div class="mt-2" id='calendario'></div>
                             </div>
                             <div class="mt-5">
@@ -362,15 +363,15 @@
                                 <div class="mt-3">
                                     <span>Anexa tu justificación (opcional)</span>
                                     <div class="mt-1">
-                                        <input type="file" class="form-control-file" id="file"
-                                            name="file">
+                                        <input type="file" class="form-control-file" id="archivos"
+                                            name="archivos">
                                     </div>
                                 </div>
 
                                 <div class="mt-3">
                                     <span>¿Quien atenderá tus pendientes?</span>
                                     <select class="form-select mt-1" aria-label="Default select example"
-                                        id='encargado' name="encargado" required>
+                                        id='reveal_id' name="reveal_id" required>
                                         <option value="0" selected>Seleccione una opción</option>
                                         <option value="1">One</option>
                                         <option value="2">Two</option>
@@ -636,7 +637,7 @@
         document.getElementById('modalTitle').innerText = 'Vacaciones';
         // Cambia el contenido dinámico
         document.getElementById('dynamicContentEncabezado').innerHTML = `
-            <textarea placeholder="Motivo" class="form-control" id="motivo" name="motivo" rows="3" required></textarea>
+            <textarea placeholder="details" class="form-control" id="details" name="details" rows="3" required></textarea>
         `;
 
         document.getElementById('dynamicContentFormaPago').innerHTML = `
@@ -692,7 +693,7 @@
                         </div>
                     </div>
 
-                    <textarea placeholder="Motivo" class="form-control" id="motivo" name="motivo" rows="3" required></textarea>
+                    <textarea placeholder="details" class="form-control" id="details" name="details" rows="3" required></textarea>
                 </div>
             </div>
         `;
@@ -745,7 +746,7 @@
         // Cambia el título del modal
         document.getElementById('modalTitle').innerText = 'Paternidad';
         document.getElementById('dynamicContentEncabezado').innerHTML = `
-            <textarea placeholder="Motivo" class="form-control" id="motivo" name="motivo" rows="3" required></textarea>
+            <textarea placeholder="details" class="form-control" id="details" name="details" rows="3" required></textarea>
         `;
 
         // Cambia el contenido dinámico
@@ -764,7 +765,7 @@
         // Cambia el título del modal
         document.getElementById('modalTitle').innerText = 'Incapacidad';
         document.getElementById('dynamicContentEncabezado').innerHTML = `
-            <textarea placeholder="Motivo" class="form-control" id="motivo" name="motivo" rows="3" required></textarea>
+            <textarea placeholder="details" class="form-control" id="details" name="details" rows="3" required></textarea>
             <span style="color: red"> Nota: Si aún no tienes el justificante, puedes
                 anexarlo al recibirlo. Es obligatorio presentarlo; de lo contrario, se descontarán los dias
                 de tus vacaciones.</span>        `;
@@ -882,7 +883,7 @@
                         </div>
 
                         <div>
-                            <textarea placeholder="Motivo" class="form-control" id="motivo" name="motivo" rows="3" required></textarea>
+                            <textarea placeholder="details" class="form-control" id="details" name="details" rows="3" required></textarea>
                         </div>     `;
 
         // Cambia el contenido dinámico
@@ -926,61 +927,151 @@
     });
 
 
+    // document.getElementById('miFormulario').addEventListener('submit', function(event) {
+    //     event.preventDefault(); // Evita el envío del formulario hasta validar todo
+    //     console.log('Formulario enviado');
+    //     var selectEncargado = document.getElementById('reveal_id');
+    //     if (!selectEncargado || selectEncargado.value === "0") {
+    //         alert('Selecciona un reveal_id');
+    //         document.getElementById('dynamicContentFormaPago').appendChild(alerta);
+    //         return; // Detiene el proceso si no se ha seleccionado un reveal_id
+    //     }
+
+    //     // Habilita el campo de forma de pago
+    //     document.getElementById('forma_pago').disabled = false;
+
+    //     // Crear un objeto FormData para capturar los datos del formulario
+    //     const formData = new FormData(this);
+
+    //     // Convertir los datos del formulario en un objeto simple para mostrarlo en la consola
+    //     const formObject = {};
+    //     formData.forEach((value, key) => {
+    //         formObject[key] = value;
+    //     });
+
+    //     // Agregar los días seleccionados al objeto
+    //     formObject['dias'] = selectedDays;
+
+    //     // Mostrar los datos en la consola
+    //     // console.log('Datos del formulario:', formObject);
+
+    //     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+
+    //     $.ajax({
+    //         url: 'create/vacation/or/leave/request',
+    //         type: 'POST',
+    //         data: {
+    //             _token: '{{ csrf_token() }}', // Agrega el token CSRF para protección contra CSRF
+    //             details: 'details',
+    //             reveal_id: 1,
+    //             dates: ['2024-10-01']
+    //         },
+    //         success: function(response) {
+    //             console.log(response);
+    //             $('#modaTarjetas').modal('hide');
+    //             // location.reload();
+    //         },
+    //         error: function(xhr, status, error) {
+    //             // Manejar errores (opcional)
+    //             console.error(xhr.responseText);
+    //         }
+    //     })
+
+    //     // Aquí puedes enviar el formulario si todo está bien (con un fetch o AJAX)
+    // });
+
+    // document.getElementById('miFormulario').addEventListener('submit', function(event) {
+    //     event.preventDefault(); // Evita el envío del formulario hasta validar todo
+    //     console.log('Formulario enviado');
+    //     var selectEncargado = document.getElementById('reveal_id');
+    //     if (!selectEncargado || selectEncargado.value === "0") {
+    //         alert('Selecciona un reveal_id');
+    //         document.getElementById('dynamicContentFormaPago').appendChild(alerta);
+    //         return; // Detiene el proceso si no se ha seleccionado un reveal_id
+    //     }
+
+    //     // Habilita el campo de forma de pago
+    //     document.getElementById('forma_pago').disabled = false;
+
+    //     // Crear un objeto FormData para capturar los datos del formulario
+    //     const formData = new FormData(this);
+
+    //     // Convertir los datos del formulario en un objeto simple
+    //     const formObject = {};
+    //     formData.forEach((value, key) => {
+    //         formObject[key] = value;
+    //     });
+
+    //     // Agregar los días seleccionados al objeto
+    //     formObject['dias'] = selectedDays;
+
+
+    // });
+
+    // document.getElementById('miFormulario').addEventListener('submit', function(event) {
+    //     // Evita el envío del formulario hasta validar todo
+    //     event.preventDefault();
+    //     console.log('Formulario enviado');
+
+    //     var selectEncargado = document.getElementById('reveal_id');
+    //     if (!selectEncargado || selectEncargado.value === "0") {
+    //         alert('Selecciona un reveal_id');
+    //         // Si necesitas mostrar un mensaje de alerta en otro lugar
+    //         document.getElementById('dynamicContentFormaPago').appendChild(alerta);
+    //         return; // Detiene el proceso si no se ha seleccionado un reveal_id
+    //     }
+
+    //     // Habilita el campo de forma de pago
+    //     document.getElementById('forma_pago').disabled = false;
+
+    //     // Crear un objeto FormData para capturar los datos del formulario
+    //     const formData = new FormData(this);
+    //     console.log('formData 1:', formData);
+
+    //     // Convertir los datos del formulario en un objeto simple para mostrarlo en la consola
+    //     const formObject = {};
+    //     formData.forEach((value, key) => {
+    //         console.log('key:', key);
+    //         console.log('value:', value);
+    //         formObject[key] = value;
+    //     });
+
+    //     // Agregar los días seleccionados al objeto
+    //     formObject['dias'] = selectedDays;
+    //     console.log('formData:', formData);
+
+    //     // Puedes agregar más validaciones o manipulaciones aquí si es necesario
+
+    //     // Si todo está bien, puedes enviar el formulario programáticamente
+    //     this.submit(); // Esto envía el formulario
+    // });
+
     document.getElementById('miFormulario').addEventListener('submit', function(event) {
-        event.preventDefault(); // Evita el envío del formulario hasta validar todo
-
+        // Evita el envío del formulario hasta validar todo
+        event.preventDefault();
         console.log('Formulario enviado');
-        var selectEncargado = document.getElementById('encargado');
+
+        var selectEncargado = document.getElementById('reveal_id');
         if (!selectEncargado || selectEncargado.value === "0") {
-            alert('Selecciona un encargado');
-            document.getElementById('dynamicContentFormaPago').appendChild(alerta);
-            return; // Detiene el proceso si no se ha seleccionado un encargado
+            alert('Selecciona un reveal_id');
+            return; // Detiene el proceso si no se ha seleccionado un reveal_id
         }
-
-        // Habilita el campo de forma de pago
-        document.getElementById('forma_pago').disabled = false;
-
+        // Elimina los campos ocultos previamente creados (si existen)
+        document.querySelectorAll('.hidden-input').forEach(input => input.remove());
         // Crear un objeto FormData para capturar los datos del formulario
         const formData = new FormData(this);
+        // Crear un campo oculto para los días seleccionados (array 'selectedDays')
+        const hiddenDates = document.createElement('input');
+        hiddenDates.type = 'hidden';
+        hiddenDates.name = 'dates';
+        hiddenDates.value = //Mandar selectedDays como array
+            JSON.stringify(selectedDays);
+        hiddenDates.classList.add('hidden-input');
+        this.appendChild(hiddenDates);
 
-        // Convertir los datos del formulario en un objeto simple para mostrarlo en la consola
-        const formObject = {};
-        formData.forEach((value, key) => {
-            formObject[key] = value;
-        });
-
-        // Agregar los días seleccionados al objeto
-        formObject['dias'] = selectedDays;
-
-        // Mostrar los datos en la consola
-        // console.log('Datos del formulario:', formObject);
-
-        let data = {
-            details: formObject?.motivo,
-            responsible: parseInt(formObject?.encargado),
-            dates: formObject?.dias,
-            archivo: formObject?.file,
-        }
-
-        console.log('data', data);
-
-        $.ajax({
-            url: 'create/vacation/or/leave/request',
-            type: 'POST',
-            data: data,
-            success: function(response) {
-                console.log(response);
-                $('#modaTarjetas').modal('hide');
-                // location.reload();
-            },
-            error: function(xhr, status, error) {
-                // Manejar errores (opcional)
-                console.error(xhr.responseText);
-            }
-
-         })
-
-        // Aquí puedes enviar el formulario si todo está bien (con un fetch o AJAX)
+        // Si todo está bien, envía el formulario automáticamente
+        this.submit();
     });
 </script>
 
