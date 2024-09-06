@@ -100,7 +100,7 @@ class VacationRequestController extends Controller
             'rh_status' => 'Pendiente'
         ]);
 
-        
+
         foreach ($dates as $dia) {
             VacationDays::create([
                 'day' => $dia,
@@ -110,8 +110,6 @@ class VacationRequestController extends Controller
         }
 
         return back()->with('message', 'Se creo tu solicitud de vacaciones.');
-
-
     }
 
     public function CreateVacationRequest(Request $request)

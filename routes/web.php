@@ -150,7 +150,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('fullcalenderAjax', [RequestController::class, 'ajax']);
 
     ///////////////////////////VACACIONES///////////////////////////////////////////////
-    Route::get('create/vacation/or/leave/request', [VacationRequestController::class, 'CreatePurchase'])->name('create.vacation.or.leave.request');
+    Route::post('create/vacation/or/leave/request', [VacationRequestController::class, 'CreatePurchase'])->name('create.vacation.or.leave.request');
     Route::get('prueba/info', [VacationRequestController::class, 'CreateVacationRequest']);
     Route::post('create/request/type', [RequestTypeController::class, 'store'])->name('create.request.type');
 
