@@ -978,7 +978,7 @@
                 console.error(xhr.responseText);
             }
 
-        // })
+         })
 
         // Aquí puedes enviar el formulario si todo está bien (con un fetch o AJAX)
     });

@@ -152,6 +152,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     ///////////////////////////VACACIONES///////////////////////////////////////////////
     Route::get('create/vacation/or/leave/request', [VacationRequestController::class, 'CreatePurchase'])->name('create.vacation.or.leave.request');
     Route::get('prueba/info', [VacationRequestController::class, 'CreateVacationRequest']);
+    Route::get('info/user/vacation', [VacationRequestController::class, 'InfoUser']);
     Route::post('create/request/type', [RequestTypeController::class, 'store'])->name('create.request.type');
 
 
