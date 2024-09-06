@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Position;
+use App\Models\RequestType;
+use App\Models\User;
 use App\Models\VacationDays;
 use App\Models\VacationRequest;
 use Carbon\Carbon;
@@ -31,22 +33,40 @@ class VacationRequestController extends Controller
             }
         }
 
-        $vacaciones = DB::table('vacation_requests')->where('user_id', $user->id)->where('request_type_id', 1)->get();
+        $vacaciones = DB::table('vacation_requests')->where('user_id', $user->id)->get();
         $solicitudes = [];
-        foreach ($vacaciones as $vacacion){
+        foreach ($vacaciones as $vacacion) {
+            $nameResponsable = User::where('id', $vacacion->reveal_id)->first();
+            $nameManager = User::where('id', $vacacion->direct_manager_id)->first();
+            $typeRequest = RequestType::where('id', $vacacion->request_type_id)->value('type');
+            $Days = VacationDays::where('vacation_request_id', $vacacion->id)->get();
+            $dias = [];
+            foreach ($Days as $Day) {
+                $dias[] = $Day->day;
+            }
+
+            // Ordenar las fechas de la más cercana a la más lejana
+            usort($dias, function ($a, $b) {
+                return strtotime($a) - strtotime($b);
+            });
+
             $solicitudes[] = [
-                'tipo' => 'Vacaciones',
+                'id_request' => $vacacion->id,
+                'tipo' => $typeRequest,
                 'details' => $vacacion->details,
-                'reveal_id' => $vacacion->reveal_id,
-                'direct_manager_id' => $vacacion->direct_manager_id,
+                'reveal_id' => $nameResponsable->name . ' ' . $nameResponsable->lastname,
+                'direct_manager_id' => $nameManager->name . ' ' . $nameManager->lastname,
                 'direct_manager_status' => $vacacion->direct_manager_status,
                 'rh_status' => $vacacion->rh_status,
+                'file' => $vacacion->file == null ? 'No hay justificante' : $vacacion->file,
+                'commentary' => $vacacion->commentary == null ? 'No hay un comentario' : $vacacion->commentary,
+                'days' => $dias,
             ];
         }
 
         dd($solicitudes);
 
-        return view('soporte.vacations-collaborators', compact('users'));
+        return view('soporte.vacations-collaborators', compact('users', 'solicitudes'));
     }
 
     public function CreatePurchase(Request $request)
@@ -126,7 +146,7 @@ class VacationRequestController extends Controller
             'user_id' => $user->id,
             'request_type_id' => 1,
             'file' => $path,
-            'details' => 'Esto es una prueba',
+            'details' => $request->details,
             'reveal_id' => $request->reveal_id,
             'direct_manager_id' => $jefedirecto,
             'direct_manager_status' => 'Pendiente',
@@ -157,13 +177,18 @@ class VacationRequestController extends Controller
                         'waiting' => $restadedv
                     ]);
 
-                   if ($faltan > 0) {
-                        if ($SegundoPeriodo > 0 ) {
+                    if ($faltan > 0) {
+                        if ($SegundoPeriodo > 0) {
                             DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periododos)->update([
                                 'waiting' => $faltan
                             ]);
                         }
-                    }                  
+                    }
+                }
+                if ($diasTotales <= $PrimerPeriodo) {
+                    DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
+                        'waiting' => $diasTotales
+                    ]);
                 }
             } else {
                 dd('No te alcanza precioso');
