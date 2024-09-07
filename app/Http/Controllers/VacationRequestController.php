@@ -8,14 +8,17 @@ use App\Models\User;
 use App\Models\VacationDays;
 use App\Models\VacationRequest;
 use Carbon\Carbon;
+use Doctrine\DBAL\Schema\Index;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class VacationRequestController extends Controller
 {
 
-    public function InfoUser()
+
+    public function index(Request $request)
     {
+
         $user = auth()->user();
         $dep = auth()->user()->employee->position->department;
         $positions = Position::where("department_id", $dep)->pluck("name", "id");
@@ -27,11 +30,17 @@ class VacationRequestController extends Controller
                 if ($emp->user->status == 1) {
                     $roles = DB::table('role_user')->where('user_id', $emp->user->id)->pluck('role_id');
                     if (!$roles->contains(7)) {
-                        $users[$emp->user->id] = $emp->user->name . " " . $emp->user->lastname;
+                        $users[$emp->user->id] = //Guardar el user name , lastname y el id
+                            [
+                                'name' => $emp->user->name . " " . $emp->user->lastname,
+                                'id' => $emp->user->id
+                            ];
                     }
                 }
             }
         }
+
+
 
         $vacaciones = DB::table('vacation_requests')->where('user_id', $user->id)->get();
         $solicitudes = [];
@@ -50,28 +59,86 @@ class VacationRequestController extends Controller
                 return strtotime($a) - strtotime($b);
             });
 
-            $solicitudes[] = [
-                'id_request' => $vacacion->id,
-                'tipo' => $typeRequest,
-                'details' => $vacacion->details,
-                'reveal_id' => $nameResponsable->name . ' ' . $nameResponsable->lastname,
-                'direct_manager_id' => $nameManager->name . ' ' . $nameManager->lastname,
-                'direct_manager_status' => $vacacion->direct_manager_status,
-                'rh_status' => $vacacion->rh_status,
-                'file' => $vacacion->file == null ? 'No hay justificante' : $vacacion->file,
-                'commentary' => $vacacion->commentary == null ? 'No hay un comentario' : $vacacion->commentary,
-                'days' => $dias,
-            ];
+            // Crear un objeto en lugar de un array
+            $solicitud = new \stdClass();
+            $solicitud->id_request = $vacacion->id;
+            $solicitud->tipo = $typeRequest;
+            $solicitud->details = $vacacion->details;
+            $solicitud->reveal_id = $nameResponsable->name . ' ' . $nameResponsable->lastname;
+            $solicitud->direct_manager_id = $nameManager->name . ' ' . $nameManager->lastname;
+            $solicitud->direct_manager_status = $vacacion->direct_manager_status;
+            $solicitud->rh_status = $vacacion->rh_status;
+            $solicitud->file = $vacacion->file == null ? 'No hay justificante' : $vacacion->file;
+            $solicitud->commentary = $vacacion->commentary == null ? 'No hay un comentario' : $vacacion->commentary;
+            $solicitud->days = $dias;
+
+            // Agregar el objeto al array de solicitudes
+            $solicitudes[] = $solicitud;
         }
 
-        dd($solicitudes);
+        // dd($users);
 
-        return view('soporte.vacations-collaborators', compact('users', 'solicitudes'));
+        return view('request.vacations-collaborators', compact('users', 'solicitudes'));
     }
+
+
+    // public function InfoUser()
+    // {
+    //     $user = auth()->user();
+    //     $dep = auth()->user()->employee->position->department;
+    //     $positions = Position::where("department_id", $dep)->pluck("name", "id");
+    //     $data = $dep->positions;
+    //     $users = [];
+
+    //     foreach ($data as $dat) {
+    //         foreach ($dat->getEmployees as $emp) {
+    //             if ($emp->user->status == 1) {
+    //                 $roles = DB::table('role_user')->where('user_id', $emp->user->id)->pluck('role_id');
+    //                 if (!$roles->contains(7)) {
+    //                     $users[$emp->user->id] = $emp->user->name . " " . $emp->user->lastname;
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     $vacaciones = DB::table('vacation_requests')->where('user_id', $user->id)->get();
+    //     $solicitudes = [];
+    //     foreach ($vacaciones as $vacacion) {
+    //         $nameResponsable = User::where('id', $vacacion->reveal_id)->first();
+    //         $nameManager = User::where('id', $vacacion->direct_manager_id)->first();
+    //         $typeRequest = RequestType::where('id', $vacacion->request_type_id)->value('type');
+    //         $Days = VacationDays::where('vacation_request_id', $vacacion->id)->get();
+    //         $dias = [];
+    //         foreach ($Days as $Day) {
+    //             $dias[] = $Day->day;
+    //         }
+
+    //         // Ordenar las fechas de la más cercana a la más lejana
+    //         usort($dias, function ($a, $b) {
+    //             return strtotime($a) - strtotime($b);
+    //         });
+
+    //         $solicitudes[] = [
+    //             'id_request' => $vacacion->id,
+    //             'tipo' => $typeRequest,
+    //             'details' => $vacacion->details,
+    //             'reveal_id' => $nameResponsable->name . ' ' . $nameResponsable->lastname,
+    //             'direct_manager_id' => $nameManager->name . ' ' . $nameManager->lastname,
+    //             'direct_manager_status' => $vacacion->direct_manager_status,
+    //             'rh_status' => $vacacion->rh_status,
+    //             'file' => $vacacion->file == null ? 'No hay justificante' : $vacacion->file,
+    //             'commentary' => $vacacion->commentary == null ? 'No hay un comentario' : $vacacion->commentary,
+    //             'days' => $dias,
+    //         ];
+    //     }
+
+    //     // dd($solicitudes);
+
+    //     return view('soporte.vacations-collaborators', compact('users', 'solicitudes'));
+    // }
 
     public function CreatePurchase(Request $request)
     {
-        //dd($request);
         /* $currentDate = Carbon::now();
         $startOfYear = Carbon::create($currentDate->year, 1, 1);
         $endOfYear = Carbon::create($currentDate->year, 12, 31);

@@ -131,7 +131,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::delete('/vacations/{vacation}', [VacationsController::class, 'destroy'])->middleware('role:rh')->name('admin.vacations.destroy');
     Route::get('vacations/export/', [VacationsController::class, 'export'])->name('admin.vacations.export');
 
-    Route::get('/request', [RequestController::class, 'index'])->name('request.index');
+    // Route::get('/request', [RequestController::class, 'index'])->name('request.index');
+    Route::get('/request', [VacationRequestController::class, 'index'])->name('request.index');
     Route::get('/request/create', [RequestController::class, 'create'])->name('request.create');
     Route::post('/request', [RequestController::class, 'store'])->name('request.store');
     Route::get('/request/{request}/edit', [RequestController::class, 'edit'])->name('request.edit');
