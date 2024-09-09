@@ -199,7 +199,6 @@ class VacationRequestController extends Controller
         $diasTotales = count($datesArray);
         // $diasTotales = 9;
 
-
         $path = '';
         if ($request->hasFile('archivos')) {
             $filenameWithExt = $request->file('archivos')->getClientOriginalName();
@@ -209,7 +208,7 @@ class VacationRequestController extends Controller
             $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
         }
 
-        /*  $Vacaciones = VacationRequest::create([
+        $Vacaciones = VacationRequest::create([
             'user_id' => $user->id,
             'request_type_id' => 1,
             'file' => $path,
@@ -227,7 +226,7 @@ class VacationRequestController extends Controller
                 'vacation_request_id' => $Vacaciones->id,
                 'status' => 0,
             ]);
-        } */
+        }
 
         if (count($Datos) > 1) {
             // Extracción de datos de los dos periodos
