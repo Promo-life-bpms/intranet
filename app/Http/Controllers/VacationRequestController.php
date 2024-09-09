@@ -147,11 +147,11 @@ class VacationRequestController extends Controller
 
         $user = auth()->user();
 
-        /* $request->validate([
+        $request->validate([
             'details' => 'required',
             'reveal_id' => 'required',
             'dates' => 'required'
-        ]); */
+        ]);
 
         if (auth()->user()->employee->jefe_directo_id == null) {
             return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado o no llenaste todos los campos');
