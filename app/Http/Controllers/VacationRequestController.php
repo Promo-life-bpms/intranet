@@ -213,26 +213,6 @@ class VacationRequestController extends Controller
             $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
         }
 
-        $Vacaciones = VacationRequest::create([
-            'user_id' => $user->id,
-            'request_type_id' => 1,
-            'file' => $path,
-            'details' => $request->details,
-            'reveal_id' => $request->reveal_id,
-            'direct_manager_id' => $jefedirecto,
-            'direct_manager_status' => 'Pendiente',
-            'rh_status' => 'Pendiente'
-        ]);
-
-
-        foreach ($datesArray as $dia) {
-            VacationDays::create([
-                'day' => $dia,
-                'vacation_request_id' => $Vacaciones->id,
-                'status' => 0,
-            ]);
-        }
-
         if (count($Datos) > 1) {
             // Extracción de datos de los dos periodos
             $PrimerPeriodo = (int) $Datos[0]['dv'];
@@ -271,10 +251,49 @@ class VacationRequestController extends Controller
                         DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
                             'waiting' => $cercadv
                         ]);
+
+                        $Vacaciones = VacationRequest::create([
+                            'user_id' => $user->id,
+                            'request_type_id' => 1,
+                            'file' => $path,
+                            'details' => $request->details,
+                            'reveal_id' => $request->reveal_id,
+                            'direct_manager_id' => $jefedirecto,
+                            'direct_manager_status' => 'Pendiente',
+                            'rh_status' => 'Pendiente'
+                        ]);
+                
+                
+                        foreach ($datesArray as $dia) {
+                            VacationDays::create([
+                                'day' => $dia,
+                                'vacation_request_id' => $Vacaciones->id,
+                                'status' => 0,
+                            ]);
+                        }
                     } elseif ($cercadv2 <= $SegundoPeriodo) {
                         DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periododos)->update([
                             'waiting' => $cercadv2
                         ]);
+                        $Vacaciones = VacationRequest::create([
+                            'user_id' => $user->id,
+                            'request_type_id' => 1,
+                            'file' => $path,
+                            'details' => $request->details,
+                            'reveal_id' => $request->reveal_id,
+                            'direct_manager_id' => $jefedirecto,
+                            'direct_manager_status' => 'Pendiente',
+                            'rh_status' => 'Pendiente'
+                        ]);
+                
+                
+                        foreach ($datesArray as $dia) {
+                            VacationDays::create([
+                                'day' => $dia,
+                                'vacation_request_id' => $Vacaciones->id,
+                                'status' => 0,
+                            ]);
+                        }
                     } else {
                         return back()->with('message', 'Asegúrate que no tienes vacaciones por autorizar, ya que tienes días disponibles, pero están en espera.');
                     }
@@ -294,6 +313,25 @@ class VacationRequestController extends Controller
                             DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
                                 'waiting' => $restadedv
                             ]);
+                            $Vacaciones = VacationRequest::create([
+                                'user_id' => $user->id,
+                                'request_type_id' => 1,
+                                'file' => $path,
+                                'details' => $request->details,
+                                'reveal_id' => $request->reveal_id,
+                                'direct_manager_id' => $jefedirecto,
+                                'direct_manager_status' => 'Pendiente',
+                                'rh_status' => 'Pendiente'
+                            ]);
+                    
+                    
+                            foreach ($datesArray as $dia) {
+                                VacationDays::create([
+                                    'day' => $dia,
+                                    'vacation_request_id' => $Vacaciones->id,
+                                    'status' => 0,
+                                ]);
+                            }
                         } else {
                             return back()->with('message','Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (1)');
                         }
@@ -308,6 +346,25 @@ class VacationRequestController extends Controller
                                     DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periododos)->update([
                                         'waiting' => $cercadv2
                                     ]);
+                                    $Vacaciones = VacationRequest::create([
+                                        'user_id' => $user->id,
+                                        'request_type_id' => 1,
+                                        'file' => $path,
+                                        'details' => $request->details,
+                                        'reveal_id' => $request->reveal_id,
+                                        'direct_manager_id' => $jefedirecto,
+                                        'direct_manager_status' => 'Pendiente',
+                                        'rh_status' => 'Pendiente'
+                                    ]);
+                            
+                            
+                                    foreach ($datesArray as $dia) {
+                                        VacationDays::create([
+                                            'day' => $dia,
+                                            'vacation_request_id' => $Vacaciones->id,
+                                            'status' => 0,
+                                        ]);
+                                    }
                                 } else {
                                     return back()->with('message','Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (2)');
                                 }
@@ -329,13 +386,31 @@ class VacationRequestController extends Controller
 
             if ($diasTotales > $totalunsoloperido || $Disponibilidad  > $totalunsoloperido) {
                 return back()->with('message','No cuentas con los días solicitados.');
-                //return back()->with('message', 'No cuentas con los días solicitados.');
             }
             if ($diasTotales <= $totalunsoloperido) {
                 if ($diasTotales <= $dvupdate) {
                     DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
                         'waiting' => $dvupdate,
                     ]);
+                    $Vacaciones = VacationRequest::create([
+                        'user_id' => $user->id,
+                        'request_type_id' => 1,
+                        'file' => $path,
+                        'details' => $request->details,
+                        'reveal_id' => $request->reveal_id,
+                        'direct_manager_id' => $jefedirecto,
+                        'direct_manager_status' => 'Pendiente',
+                        'rh_status' => 'Pendiente'
+                    ]);
+            
+            
+                    foreach ($datesArray as $dia) {
+                        VacationDays::create([
+                            'day' => $dia,
+                            'vacation_request_id' => $Vacaciones->id,
+                            'status' => 0,
+                        ]);
+                    }
                 }
                 return back()->with('message', 'Vacaciones actualizadas');
             } else {
