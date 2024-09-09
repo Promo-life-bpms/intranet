@@ -78,7 +78,7 @@ class VacationRequestController extends Controller
 
         // dd($solicitudes);
 
-        return view('soporte.vacations-collaborators', compact('users', 'solicitudes'));
+        return view('request.vacations-collaborators', compact('users', 'solicitudes'));
     }
 
 
@@ -186,18 +186,18 @@ class VacationRequestController extends Controller
             ];
         }
 
-        /*         if (count($Datos) > 1) {
+        if (count($Datos) > 1) {
             $PrimerPeriodo = (int) $Datos[0]['dv'];
             $SegundoPeriodo = (int) $Datos[1]['dv'];
             $totalambosperidos = $PrimerPeriodo + $SegundoPeriodo;
         } elseif (count($Datos) == 1) {
             $totalambosperidos = $Datos[0]['dv'];
         }
- */
-        /* $dates = $request->dates;
+
+        $dates = $request->dates;
         $datesArray = json_decode($dates, true);
-        $diasTotales = count($datesArray); */
-        $diasTotales = 9;
+        $diasTotales = count($datesArray);
+        // $diasTotales = 9;
 
 
         $path = '';
@@ -263,7 +263,7 @@ class VacationRequestController extends Controller
                 if ($diasTotales <= $PrimerPeriodo) {
                     $cercadv = $diasTotales + $primerWaiting;
                     $cercadv2 = $diasTotales + $segundoWaiting;
-                    
+
                     if ($cercadv <= $PrimerPeriodo) {
                         DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
                             'waiting' => $cercadv

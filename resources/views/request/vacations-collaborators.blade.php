@@ -187,7 +187,12 @@
                                             <button class="btn btn-link openModalBtn"
                                                 data-id="{{ $solicitud->id_request }}"
                                                 data-tipo="{{ $solicitud->tipo }}"
+                                                data-details="{{ $solicitud->details }}"
+                                                data-reveal_id="{{ $solicitud->reveal_id }}"
+                                                data-direct_manager_id="{{ $solicitud->direct_manager_id }}"
+                                                data-direct_manager_status="{{ $solicitud->direct_manager_status }}"
                                                 data-statusRh="{{ $solicitud->rh_status }}"
+                                                data-file="{{ $solicitud->file }}"
                                                 data-days="{{ implode(',', $solicitud->days) }}">
                                                 Ver
                                             </button>
@@ -415,127 +420,6 @@
             </div>
         </div>
 
-        <!-- Modal ver solicitud -->
-        {{-- <div class="modal fade bd-example-modal-lg" id="modalVerSolicitud" tabindex="-1" role="dialog"
-            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">Mi solicitud</h5>
-                        <button id="closemodalSolicitud" type="button" class="close" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-6">
-                                    <strong> Tipo de solicitud:</strong>
-                                </div>
-                                <div class="col-5">
-                                    Vacaciones
-                                </div>
-
-                                <div id="editSolcitud" class="col-1 d-flex align-content-center justify-content-center "
-                                    style="border-radius: 25px; background-color: #E58D22; height: 45px; width: 45px; align-items: center; cursor: pointer;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="32" height="32"
-                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
-                                        style="color: white">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6">
-                                    <strong> Tipo de solicitud especifica:</strong>
-                                </div>
-                                <div class="col-6">
-                                    -
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6">
-                                    <strong> Forma de pago:</strong>
-                                </div>
-                                <div class="col-6">
-                                    A cuenta de vacaciones
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6">
-                                    <strong> Fechas de ausencia:</strong>
-                                </div>
-                                <div class="col-6">
-                                    9, 10, 11, 12, 13, 14, 15, 16, 17 de
-                                    agosto del 2024
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6">
-                                    <strong>Tiempo de ausencia:</strong>
-                                </div>
-                                <div class="col-6">
-                                    Tiempo completo
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6">
-                                    <strong> Justificante:</strong>
-                                </div>
-                                <div class="col-6">
-                                    Sin archivos
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-6">
-                                    <strong>Responsable de sus asuntos:</strong>
-                                </div>
-                                <div class="col-6">
-                                    Israel Francisco Perez Medina
-                                </div>
-                            </div>
-
-                            <div>
-                                <strong>Motivo: </strong>
-                                <textarea style="min-width: 100%" placeholder="details" class="form-control" id="details" name="details"
-                                    required></textarea>
-                            </div>
-
-                            <div class="d-flex">
-                                <div class="mr-3">
-                                    <div>
-                                        <span>JEFE DIRECTO</span>
-
-                                    </div>
-                                    <div class="d-flex justify-content-center">
-                                        <span style="padding: 8px 15px;" class="badge bg-success">Aprobado</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div>
-                                        <span>RECURSOS HUMANOS</span>
-                                    </div>
-                                    <div class="d-flex justify-content-center">
-                                        <span style="padding: 8px 15px;"
-                                            class="badge bg-warning text-dark">Pendiente</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-end">
-                                <div>
-                                    <button class="btn btn-danger">Cancelar Solicitud</button>
-                                </div>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
         <div class="modal fade bd-example-modal-lg" id="verSolivitud" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
@@ -547,12 +431,12 @@
                     <div class="modal-bo-dy">
                         {{-- ID de solicitud: <span id="modalSolicitudId"></span> --}}
                         <div class="container">
-                            <div class="row">
+                            <div class="row mt-2">
                                 <div class="col-6">
                                     <strong> Tipo de solicitud:</strong>
                                 </div>
                                 <div class="col-5">
-                                    Vacaciones
+                                    <span id="tipo"></span>
                                 </div>
 
                                 <div id="editSolcitud" class="col-1 d-flex align-content-center justify-content-center "
@@ -565,7 +449,7 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="row mt-2">
+                            <div class="row ">
                                 <div class="col-6">
                                     <strong> Tipo de solicitud especifica:</strong>
                                 </div>
@@ -573,24 +457,23 @@
                                     -
                                 </div>
                             </div>
-                            <div class="row mt-2">
+                            <div class="row mt-3">
                                 <div class="col-6">
                                     <strong> Forma de pago:</strong>
                                 </div>
                                 <div class="col-6">
-                                    A cuenta de vacaciones
+                                    <span id="method-of-payment"></span>
                                 </div>
                             </div>
-                            <div class="row mt-2">
+                            <div class="row mt-3">
                                 <div class="col-6">
                                     <strong> Fechas de ausencia:</strong>
                                 </div>
                                 <div class="col-6">
-                                    9, 10, 11, 12, 13, 14, 15, 16, 17 de
-                                    agosto del 2024
+                                    <span id="days"></span>
                                 </div>
                             </div>
-                            <div class="row mt-2">
+                            <div class="row mt-3">
                                 <div class="col-6">
                                     <strong>Tiempo de ausencia:</strong>
                                 </div>
@@ -598,36 +481,37 @@
                                     Tiempo completo
                                 </div>
                             </div>
-                            <div class="row mt-2">
+                            <div class="row mt-3">
                                 <div class="col-6">
                                     <strong> Justificante:</strong>
                                 </div>
                                 <div class="col-6">
-                                    Sin archivos
+                                    <span id="file"></span>
                                 </div>
                             </div>
-                            <div class="row mt-2">
+                            <div class="row mt-3">
                                 <div class="col-6">
                                     <strong>Responsable de sus asuntos:</strong>
                                 </div>
                                 <div class="col-6">
-                                    Israel Francisco Perez Medina
+                                    <span id="reveal_id_name"></span>
                                 </div>
                             </div>
 
-                            <div>
-                                <strong>Motivo: </strong>
-                                <textarea style="min-width: 100%" placeholder="Motivo" class="form-control" id="details" name="details" required></textarea>
+                            <div class="mt-3">
+                                <strong>Motivo:</strong>
+                                <textarea style="min-width: 100%" class="form-control" id="details_text" name="details_text" required></textarea>
                             </div>
 
-                            <div class="d-flex">
+                            <div class="d-flex mt-3">
                                 <div class="mr-3">
                                     <div>
                                         <span>JEFE DIRECTO</span>
 
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <span style="padding: 8px 15px;" class="badge bg-success">Aprobado</span>
+                                        <span style="padding: 8px 15px;" class="badge"
+                                            id="direct_manager_status"></span>
                                     </div>
                                 </div>
                                 <div>
@@ -635,8 +519,8 @@
                                         <span>RECURSOS HUMANOS</span>
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <span style="padding: 8px 15px;"
-                                            class="badge bg-warning text-dark">Pendiente</span>
+                                        <span style="padding: 8px 15px;" class="badge"
+                                            id="statusRh"> </span>
                                     </div>
                                 </div>
                             </div>
@@ -875,14 +759,72 @@
             button.addEventListener('click', function() {
                 const solicitudId = this.getAttribute('data-id');
                 const tipo = this.getAttribute('data-tipo');
+                const methodOfPayment = tipo === 'Vacaciones' ?
+                    'A cuenta de vacaciones' :
+                    'A cuenta de permisos especiales';
+                const details = this.getAttribute('data-details');
+                const revealId = this.getAttribute('data-reveal_id');
+                const directManagerId = this.getAttribute('data-direct_manager_id');
+                const directManagerStatus = this.getAttribute('data-direct_manager_status');
                 const statusRh = this.getAttribute('data-statusRh');
+                const file = this.getAttribute('data-file');
                 const days = this.getAttribute('data-days');
 
                 // Mostrar los datos en la consola
-                console.log('ID de solicitud: ' + solicitudId);
-                console.log('Tipo: ' + tipo);
-                console.log('Status RH: ' + statusRh);
-                console.log('Días: ' + days);
+                console.log('Solicitud ID:', solicitudId);
+                console.log('Tipo:', tipo);
+                console.log('Detalles:', details);
+                console.log('Reveal ID:', revealId);
+                console.log('Direct Manager ID:', directManagerId);
+                console.log('Direct Manager Status:', directManagerStatus);
+                console.log('Status RH:', statusRh);
+                console.log('File:', file);
+                console.log('Días:', days);
+
+                // Cambiar el contenido del modal
+                document.getElementById('tipo').textContent = tipo;
+                document.getElementById('method-of-payment').textContent = methodOfPayment;
+                document.getElementById('details_text').textContent = details;
+                document.getElementById('reveal_id_name').textContent = revealId;
+                // document.getElementById('direct_manager_id') = directManagerId;
+                document.getElementById('direct_manager_status').textContent = directManagerStatus;
+                document.getElementById('statusRh').textContent = statusRh;
+                document.getElementById('file').textContent = file;
+                document.getElementById('days').textContent = days;
+
+                var statusManegerElement = document.getElementById('direct_manager_status');
+                var statusRhElement = document.getElementById('statusRh');
+
+
+
+
+
+                // Supongamos que 'direct_manager_status' tiene el valor que quieres evaluar
+                if (directManagerStatus === 'Aprobada') {
+                    // Remueve cualquier clase anterior y añade la clase 'bg-success'
+                    statusManegerElement.classList.remove('bg-warning', 'text-dark');
+                    statusManegerElement.classList.add('bg-success'); // Se añade 'bg-success'
+                } else {
+                    // Remueve 'bg-success' y añade otra clase, por ejemplo 'bg-danger'
+                    statusManegerElement.classList.remove('bg-success');
+                    statusManegerElement.classList.add('bg-warning', 'text-dark');
+                }
+
+                if (statusRh === 'Aprobada') {
+                    // Remueve cualquier clase anterior y añade la clase 'bg-success'
+                    statusRhElement.classList.remove('bg-warning', 'text-dark');
+                    statusRhElement.classList.add('bg-success'); // Se añade 'bg-success'
+                } else {
+                    // Remueve 'bg-success' y añade otra clase, por ejemplo 'bg-danger'
+                    statusRhElement.classList.remove('bg-success');
+                    statusRhElement.classList.add('bg-warning', 'text-dark');
+                }
+
+
+                // Puedes también establecer el texto si lo deseas
+                // statusElement.textContent = directManagerStatus;
+
+
 
                 // Muestra el modal (debes tenerlo en tu HTML)
                 const modal = new bootstrap.Modal(document.getElementById('verSolivitud'));
