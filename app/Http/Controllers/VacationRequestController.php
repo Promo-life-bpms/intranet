@@ -199,6 +199,11 @@ class VacationRequestController extends Controller
         $diasTotales = count($datesArray);
         // $diasTotales = 9;
 
+        if($diasTotales > $totalambosperidos){
+            return back()->with('message', 'No cuentas con días suficientes');
+        }
+        
+
         $path = '';
         if ($request->hasFile('archivos')) {
             $filenameWithExt = $request->file('archivos')->getClientOriginalName();
@@ -253,9 +258,8 @@ class VacationRequestController extends Controller
             $prueba = $Disponibilidad1 + $Disponibilidad2;
 
             if ($diasTotales > $totalAmbosPeriodos) {
-                return 'No cuentas con los días solicitados.';
+                return  back()->with('message','No cuentas con los días solicitados.');
             }
-
 
             if ($diasTotales <= $totalAmbosPeriodos) {
                 // Caso donde los días solicitados están dentro del primer periodo
@@ -272,9 +276,9 @@ class VacationRequestController extends Controller
                             'waiting' => $cercadv2
                         ]);
                     } else {
-                        return 'Asegúrate que no tienes vacaciones por autorizar, ya que tienes días disponibles, pero están en espera. yogui';
+                        return back()->with('message', 'Asegúrate que no tienes vacaciones por autorizar, ya que tienes días disponibles, pero están en espera.');
                     }
-                    return 'Vacaciones actualizadas correctamente. 1';
+                    return back()->with('message','Vacaciones actualizadas correctamente. 1');
                 }
 
                 // Caso donde los días solicitados están en ambos periodos
@@ -291,27 +295,27 @@ class VacationRequestController extends Controller
                                 'waiting' => $restadedv
                             ]);
                         } else {
-                            return 'Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (1)';
+                            return back()->with('message','Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (1)');
                         }
 
                         if ($faltan > 0) {
                             if ($SegundoPeriodo > 0) {
                                 if ($faltan <= $SegundoPeriodo) {
                                     if ($segundoWaiting == $SegundoPeriodo || $segundoWaiting > $SegundoPeriodo) {
-                                        return 'No tienes mas días';
+                                        return  back()->with('No tienes mas días');
                                     }
                                     $cercadv2 = $faltan + $segundoWaiting;
                                     DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periododos)->update([
                                         'waiting' => $cercadv2
                                     ]);
                                 } else {
-                                    return 'Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (2)';
+                                    return back()->with('message','Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (2)');
                                 }
                             }
                         }
-                        return 'Vacaciones actualizadas correctamente.';
+                        return back()->with('message','Vacaciones actualizadas correctamente.');
                     } else {
-                        return 'No te alcanza para los días solicitados.';
+                        return  back()->with('message','No te alcanza para los días solicitados.');
                     }
                 }
             }
@@ -324,17 +328,16 @@ class VacationRequestController extends Controller
             $Disponibilidad = $primerWaiting + $primerDaysEnjoyed;
 
             if ($diasTotales > $totalunsoloperido || $Disponibilidad  > $totalunsoloperido) {
-                return 'No cuentas con los días solicitados.';
+                return back()->with('message','No cuentas con los días solicitados.');
                 //return back()->with('message', 'No cuentas con los días solicitados.');
             }
-
             if ($diasTotales <= $totalunsoloperido) {
                 if ($diasTotales <= $dvupdate) {
                     DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
                         'waiting' => $dvupdate,
                     ]);
                 }
-                return 'ya quedo';
+                return back()->with('message', 'Vacaciones actualizadas');
             } else {
                 return 0;
             }
