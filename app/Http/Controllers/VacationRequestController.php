@@ -76,7 +76,7 @@ class VacationRequestController extends Controller
             $solicitudes[] = $solicitud;
         }
 
-        // dd($users);
+        // dd($solicitudes);
 
         return view('request.vacations-collaborators', compact('users', 'solicitudes'));
     }

@@ -1,6 +1,7 @@
 <div>
     {{-- Because she competes with no one, no one can compete with her. --}}
     <h3 class="mb-4">Permisos y Vacaciones</h3>
+
     <div class="d-flex mb-4">
         <div id="openModalVacaciones" style="width: 18%;">
             <div class="tarjeta hover-tarjeta" style="border-bottom: 10px solid var(--color-target-1);">
@@ -925,127 +926,6 @@
             }
         }
     });
-
-
-    // document.getElementById('miFormulario').addEventListener('submit', function(event) {
-    //     event.preventDefault(); // Evita el envío del formulario hasta validar todo
-    //     console.log('Formulario enviado');
-    //     var selectEncargado = document.getElementById('reveal_id');
-    //     if (!selectEncargado || selectEncargado.value === "0") {
-    //         alert('Selecciona un reveal_id');
-    //         document.getElementById('dynamicContentFormaPago').appendChild(alerta);
-    //         return; // Detiene el proceso si no se ha seleccionado un reveal_id
-    //     }
-
-    //     // Habilita el campo de forma de pago
-    //     document.getElementById('forma_pago').disabled = false;
-
-    //     // Crear un objeto FormData para capturar los datos del formulario
-    //     const formData = new FormData(this);
-
-    //     // Convertir los datos del formulario en un objeto simple para mostrarlo en la consola
-    //     const formObject = {};
-    //     formData.forEach((value, key) => {
-    //         formObject[key] = value;
-    //     });
-
-    //     // Agregar los días seleccionados al objeto
-    //     formObject['dias'] = selectedDays;
-
-    //     // Mostrar los datos en la consola
-    //     // console.log('Datos del formulario:', formObject);
-
-    //     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-
-    //     $.ajax({
-    //         url: 'create/vacation/or/leave/request',
-    //         type: 'POST',
-    //         data: {
-    //             _token: '{{ csrf_token() }}', // Agrega el token CSRF para protección contra CSRF
-    //             details: 'details',
-    //             reveal_id: 1,
-    //             dates: ['2024-10-01']
-    //         },
-    //         success: function(response) {
-    //             console.log(response);
-    //             $('#modaTarjetas').modal('hide');
-    //             // location.reload();
-    //         },
-    //         error: function(xhr, status, error) {
-    //             // Manejar errores (opcional)
-    //             console.error(xhr.responseText);
-    //         }
-    //     })
-
-    //     // Aquí puedes enviar el formulario si todo está bien (con un fetch o AJAX)
-    // });
-
-    // document.getElementById('miFormulario').addEventListener('submit', function(event) {
-    //     event.preventDefault(); // Evita el envío del formulario hasta validar todo
-    //     console.log('Formulario enviado');
-    //     var selectEncargado = document.getElementById('reveal_id');
-    //     if (!selectEncargado || selectEncargado.value === "0") {
-    //         alert('Selecciona un reveal_id');
-    //         document.getElementById('dynamicContentFormaPago').appendChild(alerta);
-    //         return; // Detiene el proceso si no se ha seleccionado un reveal_id
-    //     }
-
-    //     // Habilita el campo de forma de pago
-    //     document.getElementById('forma_pago').disabled = false;
-
-    //     // Crear un objeto FormData para capturar los datos del formulario
-    //     const formData = new FormData(this);
-
-    //     // Convertir los datos del formulario en un objeto simple
-    //     const formObject = {};
-    //     formData.forEach((value, key) => {
-    //         formObject[key] = value;
-    //     });
-
-    //     // Agregar los días seleccionados al objeto
-    //     formObject['dias'] = selectedDays;
-
-
-    // });
-
-    // document.getElementById('miFormulario').addEventListener('submit', function(event) {
-    //     // Evita el envío del formulario hasta validar todo
-    //     event.preventDefault();
-    //     console.log('Formulario enviado');
-
-    //     var selectEncargado = document.getElementById('reveal_id');
-    //     if (!selectEncargado || selectEncargado.value === "0") {
-    //         alert('Selecciona un reveal_id');
-    //         // Si necesitas mostrar un mensaje de alerta en otro lugar
-    //         document.getElementById('dynamicContentFormaPago').appendChild(alerta);
-    //         return; // Detiene el proceso si no se ha seleccionado un reveal_id
-    //     }
-
-    //     // Habilita el campo de forma de pago
-    //     document.getElementById('forma_pago').disabled = false;
-
-    //     // Crear un objeto FormData para capturar los datos del formulario
-    //     const formData = new FormData(this);
-    //     console.log('formData 1:', formData);
-
-    //     // Convertir los datos del formulario en un objeto simple para mostrarlo en la consola
-    //     const formObject = {};
-    //     formData.forEach((value, key) => {
-    //         console.log('key:', key);
-    //         console.log('value:', value);
-    //         formObject[key] = value;
-    //     });
-
-    //     // Agregar los días seleccionados al objeto
-    //     formObject['dias'] = selectedDays;
-    //     console.log('formData:', formData);
-
-    //     // Puedes agregar más validaciones o manipulaciones aquí si es necesario
-
-    //     // Si todo está bien, puedes enviar el formulario programáticamente
-    //     this.submit(); // Esto envía el formulario
-    // });
 
     document.getElementById('miFormulario').addEventListener('submit', function(event) {
         // Evita el envío del formulario hasta validar todo

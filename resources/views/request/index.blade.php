@@ -2,5 +2,5 @@
 
 @section('content')
     {{-- @livewire('list-request-component') --}}
-    @livewire('vacations-collaborators')
+    {{-- @livewire('vacations-collaborators') --}}
 @stop
