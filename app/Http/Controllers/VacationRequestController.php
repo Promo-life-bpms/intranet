@@ -499,8 +499,72 @@ class VacationRequestController extends Controller
         }
 
         $InfoSolicitudesUsuario = json_encode($InfoSolicitud);
-        dd($InfoSolicitud);
+
         return view('request.authorize', compact('InfoSolicitud', 'InfoSolicitudesUsuario')); 
+    }
+
+    public function authorizeRequestRH()
+    {
+        $user = auth()->user();
+
+        $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->get();
+    
+        $InfoSolicitud = [];
+        foreach ($Solicitudes as $Solicitud) {
+            $nameUser = User::where('id', $Solicitud->user_id)->first();
+            $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
+            $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
+            $Reveal = User::where('id', $Solicitud->reveal_id)->first();
+
+            $dias = [];
+            foreach ($Days as $Day) {
+                $dias[] = $Day->day;
+            }
+
+            // Ordenar las fechas de la más cercana a la más lejana
+            usort($dias, function ($a, $b) {
+                return strtotime($a) - strtotime($b);
+            });
+
+            $fechaActual = Carbon::now();
+            $Vacaciones = DB::table('vacations_availables')
+                ->where('users_id', $Solicitud->user_id)
+                ->where('cutoff_date', '>=', $fechaActual)
+                ->orderBy('cutoff_date', 'asc')
+                ->get();
+            $Datos = [];
+            foreach ($Vacaciones as $vaca) {
+                $Datos[] = [
+                    'dv' => $vaca->dv,
+                    'cutoff_date' => $vaca->cutoff_date,
+                ];
+            }
+
+            $InfoSolicitud[] = [
+                'image' => $nameUser->image,
+                'created_at' => $Solicitud->created_at,
+                'id' => $Solicitud->id,
+                'name' => $nameUser->name . ' ' . $nameUser->lastname,
+                'current_vacation' => $Datos[0]['dv'],
+                'current_vacation_expiration' => $Datos[0]['cutoff_date'],
+                'next_vacation' =>  empty($Datos[1]['dv']) ? null :$Datos[1]['dv'],
+                'expiration_of_next_vacation' => empty($Datos[1]['cutoff_date']) ? null : $Datos[1]['cutoff_date'],
+                'direct_manager_status' => $Solicitud->direct_manager_status,
+                'rh_status' => $Solicitud->rh_status,
+                'request_type' => $RequestType->type,
+                'specific_type' => $RequestType->type == 1 ?: '-',
+                'days_absent' => $dias,
+                'method_of_payment' => $RequestType->type == 1 ?: 'A cuenta de vacaciones',
+                'time' => $RequestType->type == 1 ?: 'Tiempo completo',
+                'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
+                'file' => $Solicitud->file == null ? null : $Solicitud->file
+            ];
+        }
+
+        $InfoSolicitudesUsuario = json_encode($InfoSolicitud);
+
+        return view('request.reports', compact('InfoSolicitud', 'InfoSolicitudesUsuario')); 
+
     }
 
     public function AuthorizePermissionBoss(Request $request)
