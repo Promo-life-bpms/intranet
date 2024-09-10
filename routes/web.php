@@ -152,6 +152,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     ///////////////////////////VACACIONES///////////////////////////////////////////////
     Route::post('create/vacation/or/leave/request', [VacationRequestController::class, 'CreatePurchase'])->name('create.vacation.or.leave.request');
+    Route::get('request/by/direct/boss', [VacationRequestController::class, 'RequestBoss'])->name('request.by.direct.boss');
     Route::post('authorize/leave/by/direct/boss', [VacationRequestController::class, 'AuthorizePermissionBoss'])->name('authorize.leave.by.direct.boss');
     Route::post('reject/leave/by/direct/boss/', [VacationRequestController::class, 'RejectPermissionBoss'])->name('reject.leave.by.direct.boss');
     Route::post('authorization/by/human/resources', [VacationRequestController::class, 'AuthorizePermissionHumanResources'])->name('authorization.by.human.resources');
