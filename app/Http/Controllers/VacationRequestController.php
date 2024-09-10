@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use App\Models\Position;
 use App\Models\RequestType;
 use App\Models\User;
@@ -104,28 +105,26 @@ class VacationRequestController extends Controller
             $totalvacaciones = $Datos[0]['days_availables'] + $Datos[1]['days_availables'];
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'] + $Datos[1]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
-            $fechasperidos = [
-                'fecha_expiracion_actual' => $Datos[0]['cutoff_date'],
-                'vacaciones_actuales' => $Datos[0]['dv'],
-                'fecha_expiracion_entrante' => $Datos[1]['cutoff_date'],
-                'vacaciones_entrantes' => $Datos[1]['dv'],
-            ];
-            $infoperidos = json_encode($fechasperidos);
+            $fecha_expiracion_actual = $Datos[0]['cutoff_date'];
+            $vacaciones_actuales = $Datos[0]['dv'];
+            $fecha_expiracion_entrante = $Datos[1]['cutoff_date'];
+            $vacaciones_entrantes = $Datos[1]['dv'];
+    
+
         } elseif (count($Datos) == 1) {
             $diasreservados = $Datos[0]['waiting'];
             $diasdisponibles = $Datos[0]['dv'];
             $totalvacaciones = $Datos[0]['days_availables'];
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
-            $fechasperidos = [
-                'fecha_expiracion_actual' => $Datos[0]['cutoff_date'],
-                'vacaciones_actuales' => $Datos[0]['dv'],
-            ];
-            $infoperidos = json_encode($fechasperidos);
+            $fecha_expiracion_actual = $Datos[0]['cutoff_date'];
+            $vacaciones_actuales = $Datos[0]['dv'];
+            $fecha_expiracion_entrante = 'Aún no se genera';
+            $vacaciones_entrantes = 'Aún no hay vacaciones entrantes';
         }
 
         
-        return view('request.vacations-collaborators', compact('users', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas'));
+        return view('request.vacations-collaborators', compact('users', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes'));
     }
 
     public function CreatePurchase(Request $request)
@@ -439,6 +438,14 @@ class VacationRequestController extends Controller
         }
 
         return back()->with('message', 'Se creo tu solicitud de vacaciones.');
+    }
+
+    public function RequestBoss(){
+        $user = auth()->user();
+
+        $HeIsBossOf = Employee::where('jefe_directo_id', $user->id)->pluck('user_id');
+        dd($HeIsBossOf);
+
     }
 
     public function AuthorizePermissionBoss(Request $request)
