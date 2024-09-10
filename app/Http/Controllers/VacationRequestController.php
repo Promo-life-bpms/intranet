@@ -93,7 +93,8 @@ class VacationRequestController extends Controller
                 'days_enjoyed' => $vaca->days_enjoyed,
                 'waiting' => $vaca->waiting,
                 'days_enjoyed' => $vaca->days_enjoyed,
-                'days_availables' => $vaca->days_availables
+                'days_availables' => $vaca->days_availables,
+                'cutoff_date' => $vaca->cutoff_date,
             ];
         }
 
@@ -103,14 +104,27 @@ class VacationRequestController extends Controller
             $totalvacaciones = $Datos[0]['days_availables'] + $Datos[1]['days_availables'];
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'] + $Datos[1]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
+            $fechasperidos = [
+                'fecha_expiracion_actual' => $Datos[0]['cutoff_date'],
+                'vacaciones_actuales' => $Datos[0]['dv'],
+                'fecha_expiracion_entrante' => $Datos[1]['cutoff_date'],
+                'vacaciones_entrantes' => $Datos[1]['dv'],
+            ];
+            $infoperidos = json_encode($fechasperidos);
         } elseif (count($Datos) == 1) {
             $diasreservados = $Datos[0]['waiting'];
             $diasdisponibles = $Datos[0]['dv'];
             $totalvacaciones = $Datos[0]['days_availables'];
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
+            $fechasperidos = [
+                'fecha_expiracion_actual' => $Datos[0]['cutoff_date'],
+                'vacaciones_actuales' => $Datos[0]['dv'],
+            ];
+            $infoperidos = json_encode($fechasperidos);
         }
 
+        
         return view('request.vacations-collaborators', compact('users', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas'));
     }
 
@@ -245,8 +259,7 @@ class VacationRequestController extends Controller
                             $nuevodv = $diasTotales - $proxdv;
                             $newdv = $primerWaiting + $nuevodv;
                             $prodv = $proxdv + $segundoWaiting;
-                            if($newdv <= $PrimerPeriodo && $prodv  <= $SegundoPeriodo)
-                            {
+                            if ($newdv <= $PrimerPeriodo && $prodv  <= $SegundoPeriodo) {
                                 DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
                                     'waiting' => $newdv
                                 ]);
@@ -263,7 +276,7 @@ class VacationRequestController extends Controller
                                     'direct_manager_status' => 'Pendiente',
                                     'rh_status' => 'Pendiente'
                                 ]);
-                    
+
                                 foreach ($datesArray as $dia) {
                                     VacationDays::create([
                                         'day' => $dia,
@@ -271,8 +284,6 @@ class VacationRequestController extends Controller
                                         'status' => 0,
                                     ]);
                                 }
-                                
-
                             }
                         }
                     } else {
@@ -313,8 +324,7 @@ class VacationRequestController extends Controller
                                     'status' => 0,
                                 ]);
                             }
-                        }elseif($SegundoPeriodo > 0 && $PrimerPeriodo == 0 && ($segundoWaiting + $diasTotales) <= $SegundoPeriodo)
-                        {
+                        } elseif ($SegundoPeriodo > 0 && $PrimerPeriodo == 0 && ($segundoWaiting + $diasTotales) <= $SegundoPeriodo) {
                             $prueba = $diasTotales + $segundoWaiting;
                             DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periododos)->update([
                                 'waiting' => $prueba
@@ -329,7 +339,7 @@ class VacationRequestController extends Controller
                                 'direct_manager_status' => 'Pendiente',
                                 'rh_status' => 'Pendiente'
                             ]);
-                
+
                             foreach ($datesArray as $dia) {
                                 VacationDays::create([
                                     'day' => $dia,
@@ -337,7 +347,7 @@ class VacationRequestController extends Controller
                                     'status' => 0,
                                 ]);
                             }
-                        }else {
+                        } else {
                             return back()->with('message', 'Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (1)');
                         }
 
@@ -431,28 +441,82 @@ class VacationRequestController extends Controller
         return back()->with('message', 'Se creo tu solicitud de vacaciones.');
     }
 
-    public function AuthorizePermissionBoss($id)
+    public function AuthorizePermissionBoss(Request $request)
     {
         $user = auth()->user();
 
-        /* $request->validate([
+        $request->validate([
             'id' => 'required',
-        ]); */
+        ]);
 
-        DB::table('vacation_requests')->where('id', $id)->update([
+        $IsBoss = VacationRequest::where('id', $request->id)->value('direct_manager_id');
+        if($IsBoss != $user->id){
+            dd('Solo su jefe directo puede autorizar la solicitud');
+            //return back()->with('message', 'Solo su jefe directo puede autorizar la solicitud');
+        }
+
+        DB::table('vacation_requests')->where('id', $request->id)->update([
             'direct_manager_status' => 'Aprobada'
         ]);
 
-        DB::table('vacation_days')->where('vacation_request_id', $id)->update([
+        dd('Solicitud aprobada exitosamente.');
+        //return back()->with('message', 'Solicitud aprobada exitosamente.');
+    }
+
+    public function RejectPermissionBoss(Request $request)
+    {
+        $user = auth()->user();
+
+        $request->validate([
+            'id' => 'required',
+        ]);
+
+        $solicitud = VacationRequest::where('id', $request->id)->first();
+        if($solicitud->direct_manager_id != $user->id){
+            dd('Solo su jefe directo puede rechazar la solicitud');
+            //return back()->with('message', 'Solo su jefe directo puede autorizar la solicitud');
+        }
+
+        if($solicitud->direct_manager_status == 'Aprobada')
+        {
+            dd('La solicitud ya fue aprobada, por lo tanto ya no puede ser rechazada.');
+            //return redirect()->with('message', 'La solicitud ya fue aprobada, por lo tanto ya no puede ser rechazada.');
+        }
+
+        DB::table('vacation_requests')->where('id', $request->id)->update([
+            'direct_manager_status' => 'Rechazada'
+        ]);
+
+        dd('Solicitud rechazada exitosamente.');
+        //return back()->with('message', 'Solicitud rechazada exitosamente.');
+
+    }
+
+    public function AuthorizePermissionHumanResources(Request $request)
+    {
+        $user = auth()->user();
+
+        $request->validate([
+            'id' => 'required',
+        ]);
+
+        $Solicitud = DB::table('vacation_requests')->where('id', $request->id)->first();
+        if($Solicitud->direct_manager_status == 'Pendiente' || $Solicitud->direct_manager_status == 'Rechazada'){
+            dd('La solicitud se encuentra Pendiente o fue Rechazada por su jefe directo.');
+            //return back()->with('message', 'La solicitud se encuentra Pendiente o fue Rechazada por su jefe directo.');
+        }
+
+        DB::table('vacation_requests')->where('id', $request->id)->update([
+            'rh_status' => 'Aprobada'
+        ]);
+
+        DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
             'status' => 1
         ]);
 
-
-        $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
-        $fechaIngreso = Carbon::parse($Ingreso->date_admission);
         $fechaActual = Carbon::now();
         $Vacaciones = DB::table('vacations_availables')
-            ->where('users_id', $user->id)
+            ->where('users_id', $Solicitud->user_id)
             ->where('cutoff_date', '>=', $fechaActual)
             ->orderBy('cutoff_date', 'asc')
             ->get();
@@ -469,8 +533,8 @@ class VacationRequestController extends Controller
                 'days_availables' => $vaca->days_availables
             ];
         }
-
-        $dias = VacationDays::where('vacation_request_id', $id)->count();
+        
+        $dias = VacationDays::where('vacation_request_id', $request->id)->count();
         if (count($Datos) > 1) {
             $datoswaiting = $Datos[0]['waiting'];
             $datoswaitingdos = $Datos[1]['waiting'];
@@ -482,7 +546,7 @@ class VacationRequestController extends Controller
                 $nuevodv = $Datos[0]['dv'] - $dias;
 
 
-                DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $peridoUno)->update([
+                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
                     'waiting' => $menosWaiting,
                     'days_enjoyed' => $nuevodaysenjoyed,
                     'dv' => $nuevodv
@@ -500,25 +564,43 @@ class VacationRequestController extends Controller
                     $nuevodv = $Datos[0]['dv'] - $finalwaitinguno;
 
                     ////waiting 1////
-                    DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $peridoUno)->update([
+                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
                         'waiting' => $menosWaiting,
                         'days_enjoyed' => $nuevodaysenjoyed,
                         'dv' => $nuevodv
                     ]);
                     ////waiting 2////
-                    DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $peridoDos)->update([
+                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoDos)->update([
                         'waiting' => $waiting2,
                         'days_enjoyed' => $nuevosdisfrutados,
                         'dv' => $nuevodvperiododos
                     ]);
                 }
+            }else{
+                dd('No tienes vacaciones disponibles.');
+                //return back()->with('message', 'No tienes vacaciones disponibles.');
             }
+            dd('Autorización exitosa');
+            //return back()->with('message', 'Autorización exitosa');
         } elseif (count($Datos) == 1) {
             $diasreservados = $Datos[0]['waiting'];
             $diasdisponibles = $Datos[0]['dv'];
-            $totalvacaciones = $Datos[0]['days_availables'];
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'];
-            $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
+            $PeridoUno = $Datos[0]['period'];
+            if ($dias <= $diasreservados) {
+                $menosWaiting = $diasreservados - $dias;
+                $nuevodaysenjoyed = $totalvacaionestomadas + $dias;
+                $nuevodv =  $diasdisponibles - $dias;
+                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $PeridoUno)->update([
+                    'waiting' => $menosWaiting,
+                    'days_enjoyed' => $nuevodaysenjoyed,
+                    'dv' => $nuevodv
+                ]);
+            }else{
+                return back()->with('message', 'No tienes vacaciones disponibles.');
+            }
+            dd('Autorización exitosa');
+            //return back()->with('message', 'Autorización exitosa');
         }
     }
     public function UpdatePurchase(Request $request)
