@@ -140,7 +140,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::delete('/request/{request}', [RequestController::class, 'destroy'])->name('request.destroy');
 
     //Route::get('request/authorize-manager', [VacationRequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
-    Route::get('request/authorize-rh', [RequestController::class, 'authorizeRequestRH'])->name('request.authorizeRH');
+    //Route::get('request/authorize-rh', [RequestController::class, 'authorizeRequestRH'])->name('request.authorizeRH');
     Route::post('request/filter', [RequestController::class, 'filter'])->name('request.filter');
     Route::post('request/filter-date', [RequestController::class, 'filterDate'])->name('request.filter.data');
     Route::get('request/reports/all', [RequestController::class, 'exportAll'])->name('request.report.all');

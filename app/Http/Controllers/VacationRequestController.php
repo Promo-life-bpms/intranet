@@ -28,6 +28,8 @@ class VacationRequestController extends Controller
         $positions = Position::where("department_id", $dep)->pluck("name", "id");
         $data = $dep->positions;
         $users = [];
+        $vacaciones_entrantes = null;
+        $fecha_expiracion_entrante = null;
 
         foreach ($data as $dat) {
             foreach ($dat->getEmployees as $emp) {
@@ -107,6 +109,7 @@ class VacationRequestController extends Controller
             $totalvacaciones = $Datos[0]['days_availables'] + $Datos[1]['days_availables'];
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'] + $Datos[1]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
+            $porcentajetomadas = round($porcentajetomadas, 2);
             $fecha_expiracion_actual = $Datos[0]['cutoff_date'];
             $vacaciones_actuales = $Datos[0]['dv'];
             $fecha_expiracion_entrante = $Datos[1]['cutoff_date'];
@@ -117,12 +120,10 @@ class VacationRequestController extends Controller
             $totalvacaciones = $Datos[0]['days_availables'];
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
+            $porcentajetomadas = round($porcentajetomadas, 2);
             $fecha_expiracion_actual = $Datos[0]['cutoff_date'];
             $vacaciones_actuales = $Datos[0]['dv'];
-            $fecha_expiracion_entrante = 'Aún no se genera';
-            $vacaciones_entrantes = 'Aún no hay vacaciones entrantes';
         }
-
 
         return view('request.vacations-collaborators', compact('users', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes'));
     }
@@ -194,7 +195,7 @@ class VacationRequestController extends Controller
             $fileNameToStore = time() . $filename . '.' . $extension;
             $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
         }
-    
+
         if (count($Datos) > 1) {
             // Extracción de datos de los dos periodos
             $PrimerPeriodo = (int) $Datos[0]['dv'];
@@ -484,7 +485,7 @@ class VacationRequestController extends Controller
                 'name' => $nameUser->name . ' ' . $nameUser->lastname,
                 'current_vacation' => $Datos[0]['dv'],
                 'current_vacation_expiration' => $Datos[0]['cutoff_date'],
-                'next_vacation' =>  empty($Datos[1]['dv']) ? null :$Datos[1]['dv'],
+                'next_vacation' =>  empty($Datos[1]['dv']) ? null : $Datos[1]['dv'],
                 'expiration_of_next_vacation' => empty($Datos[1]['cutoff_date']) ? null : $Datos[1]['cutoff_date'],
                 'direct_manager_status' => $Solicitud->direct_manager_status,
                 'rh_status' => $Solicitud->rh_status,
@@ -500,7 +501,7 @@ class VacationRequestController extends Controller
 
         $InfoSolicitudesUsuario = json_encode($InfoSolicitud);
 
-        return view('request.authorize', compact('InfoSolicitud', 'InfoSolicitudesUsuario')); 
+        return view('request.authorize', compact('InfoSolicitud', 'InfoSolicitudesUsuario'));
     }
 
     public function authorizeRequestRH()
@@ -508,8 +509,7 @@ class VacationRequestController extends Controller
         $user = auth()->user();
 
         $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->get();
-    
-        $InfoSolicitud = [];
+        $SolicitudesAprobadas = [];
         foreach ($Solicitudes as $Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
             $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
@@ -540,14 +540,14 @@ class VacationRequestController extends Controller
                 ];
             }
 
-            $InfoSolicitud[] = [
+            $SolicitudesAprobadas[] = [
                 'image' => $nameUser->image,
                 'created_at' => $Solicitud->created_at,
                 'id' => $Solicitud->id,
                 'name' => $nameUser->name . ' ' . $nameUser->lastname,
                 'current_vacation' => $Datos[0]['dv'],
                 'current_vacation_expiration' => $Datos[0]['cutoff_date'],
-                'next_vacation' =>  empty($Datos[1]['dv']) ? null :$Datos[1]['dv'],
+                'next_vacation' =>  empty($Datos[1]['dv']) ? null : $Datos[1]['dv'],
                 'expiration_of_next_vacation' => empty($Datos[1]['cutoff_date']) ? null : $Datos[1]['cutoff_date'],
                 'direct_manager_status' => $Solicitud->direct_manager_status,
                 'rh_status' => $Solicitud->rh_status,
@@ -561,10 +561,68 @@ class VacationRequestController extends Controller
             ];
         }
 
-        $InfoSolicitudesUsuario = json_encode($InfoSolicitud);
+        $Aprobadas = json_encode($SolicitudesAprobadas);
 
-        return view('request.reports', compact('InfoSolicitud', 'InfoSolicitudesUsuario')); 
+        $SolicitudesPendientes = DB::table('vacation_requests')
+            ->where('direct_manager_status', 'Aprobada')
+            ->where('rh_status', 'Pendiente')
+            ->get();  // Esta línea obtiene las solicitudes pendientes
 
+
+        $Pendientes = [];
+        foreach ($SolicitudesPendientes as $Solicitud) {
+            $nameUser = User::where('id', $Solicitud->user_id)->first();
+            $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
+            $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
+            $Reveal = User::where('id', $Solicitud->reveal_id)->first();
+
+            $dias = [];
+            foreach ($Days as $Day) {
+                $dias[] = $Day->day;
+            }
+
+            // Ordenar las fechas de la más cercana a la más lejana
+            usort($dias, function ($a, $b) {
+                return strtotime($a) - strtotime($b);
+            });
+
+            $fechaActual = Carbon::now();
+            $Vacaciones = DB::table('vacations_availables')
+                ->where('users_id', $Solicitud->user_id)
+                ->where('cutoff_date', '>=', $fechaActual)
+                ->orderBy('cutoff_date', 'asc')
+                ->get();
+            $Datos = [];
+            foreach ($Vacaciones as $vaca) {
+                $Datos[] = [
+                    'dv' => $vaca->dv,
+                    'cutoff_date' => $vaca->cutoff_date,
+                ];
+            }
+
+            $Pendientes[] = [
+                'image' => $nameUser->image,
+                'created_at' => $Solicitud->created_at,
+                'id' => $Solicitud->id,
+                'name' => $nameUser->name . ' ' . $nameUser->lastname,
+                'current_vacation' => $Datos[0]['dv'] ?? null,
+                'current_vacation_expiration' => $Datos[0]['cutoff_date'] ?? null,
+                'next_vacation' => !empty($Datos[1]['dv']) ? $Datos[1]['dv'] : null,
+                'expiration_of_next_vacation' => !empty($Datos[1]['cutoff_date']) ? $Datos[1]['cutoff_date'] : null,
+                'direct_manager_status' => $Solicitud->direct_manager_status,
+                'rh_status' => $Solicitud->rh_status,
+                'request_type' => $RequestType->type,
+                'specific_type' => $RequestType->type == 1 ? 'Específico' : '-',
+                'days_absent' => $dias,
+                'method_of_payment' => $RequestType->type == 1 ? 'A cuenta de vacaciones' : 'Otro',
+                'time' => $RequestType->type == 1 ? 'Tiempo completo' : 'Parcial',
+                'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
+                'file' => $Solicitud->file ?? null
+            ];
+        }
+        $SolicitudesPendientes = json_encode($Pendientes);
+        
+        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas'));
     }
 
     public function AuthorizePermissionBoss(Request $request)

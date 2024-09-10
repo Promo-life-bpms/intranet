@@ -7,7 +7,30 @@
     @endif
     <div>
         {{-- Because she competes with no one, no one can compete with her. --}}
-        <h3 class="mb-4">Permisos y Vacaciones</h3>
+
+        <div class="d-flex justify-content-between">
+            <h3 class="mb-4">Permisos y Vacaciones</h3>
+
+            <div>
+                <span>
+                    Dias de vacaciones disponibles:
+                    <strong>{{ $diasdisponibles }}</strong>
+                </span>
+            </div>
+        </div>
+        @php
+            use Carbon\Carbon;
+            Carbon::setLocale('es');
+            $fecha_expiracion_actual = Carbon::parse($fecha_expiracion_actual)
+                ->locale('es')
+                ->translatedFormat('d \d\e F \d\e Y');
+
+            if ($fecha_expiracion_entrante != null) {
+                $fecha_expiracion_entrante = Carbon::parse($fecha_expiracion_entrante)
+                    ->locale('es')
+                    ->translatedFormat('d \d\e F \d\e Y');
+            }
+        @endphp
 
         <div class="d-flex mb-4">
             <div id="openModalVacaciones" style="width: 18%;">
@@ -181,7 +204,8 @@
                                         </td>
                                         <td style="text-align: center;">
                                             @if ($solicitud->rh_status == 'Pendiente')
-                                                <span class="badge bg-warning text-dark">{{ $solicitud->rh_status }}</span>
+                                                <span
+                                                    class="badge bg-warning text-dark">{{ $solicitud->rh_status }}</span>
                                             @else
                                                 <span class="badge bg-success">{{ $solicitud->rh_status }}</span>
                                             @endif
@@ -219,20 +243,23 @@
                     <div class="mt-2 mb-1 text-align: justify;">
                         <span>
                             Te queda
-                            <strong>1</strong>
+                            <strong>{{ $vacaciones_actuales }}</strong>
                             día disponible que vence el
-                            <strong>14 de marzo de 2024</strong>.
+                            <strong>{{ $fecha_expiracion_actual }}</strong>.
                         </span>
                     </div>
 
-                    <div class="mt-2 mb-1 text-align: justify;">
-                        <span>
-                            Te queda
-                            <strong>1</strong>
-                            día disponible que vence el
-                            <strong>14 de marzo de 2024</strong>.
-                        </span>
-                    </div>
+
+                    @if ($fecha_expiracion_entrante != null)
+                        <div class="mt-2 mb-1 text-align: justify;">
+                            <span>
+                                Tienes
+                                <strong>{{ $vacaciones_entrantes }}</strong>
+                                días disponibles que vencen el
+                                <strong>{{ $fecha_expiracion_entrante }}</strong>.
+                            </span>
+                        </div>
+                    @endif
 
                     <div id="openModalCalendario" class="d-flex justify-content-center mt-3" style="cursor: pointer">
                         <strong>Ver mi calendario</strong>
@@ -246,30 +273,46 @@
                     </div>
 
                     <div class="mt-3">
-                        <div class="d-flex justify-content-between">
-                            <strong>Vacaciones</strong>
+                        <div class="d-flex justify-content-center align-content-center">
+                            <strong>
+                                Vacaciones
+                            </strong>
+                        </div>
 
-                            <span>
-                                Utilizado:
-                                <strong> 40% </strong>
-                            </span>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <span>
+                                    Utilizado:
+                                </span>
+                            </div>
+                            <div>
+                                <strong>{{ $porcentajetomadas }}%</strong>
+                            </div>
                         </div>
 
                         <div class="progress mt-1">
                             <div class="progress-bar" role="progressbar"
-                                style="width: 40%; background-color: var(--color-target-1);" aria-valuenow="25"
-                                aria-valuemin="0" aria-valuemax="100"></div>
+                                style="width: {{ $porcentajetomadas }}%; background-color: var(--color-target-1);"
+                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
 
                     <div class="mt-3">
-                        <div class="d-flex justify-content-between">
-                            <strong>P.Especiales</strong>
+                        <div class="d-flex justify-content-center align-content-center">
+                            <strong>
+                                P. Especiales
+                            </strong>
+                        </div>
 
-                            <span>
-                                Utilizado:
-                                <strong> 50% </strong>
-                            </span>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <span>
+                                    Utilizado:
+                                </span>
+                            </div>
+                            <div>
+                                <strong>50%</strong>
+                            </div>
                         </div>
 
                         <div class="progress mt-1">
@@ -296,7 +339,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="container">
-                            <div class="mr-2" style="max-height: 400px">
+                            <div style="max-height: 400px">
                                 <div class="mt-3" id='calendarioDays'></div>
                             </div>
                             <div class="row justify-content-start">
@@ -623,10 +666,6 @@
                             } else {
                                 console.log('no encontrada')
                             }
-
-                            // info.dayEl.classList.add('fc-day-selected');
-                            // console.log('Día seleccionado:', selectedDate);
-                            // console.log('Días seleccionados:', selectedDays);
                         } else {
                             selectedDays = selectedDays.filter(day => day !==
                                 selectedDate);
@@ -730,21 +769,79 @@
             });
 
 
-
+            // Poner dias de vacaciones y permisos especiales en el calendario
 
             $('#modalCalendario').on('shown.bs.modal', function() {
+
+                let dayDefaultCalendar = {
+                    vacaciones: ['2024-09-09', '2024-09-17'],
+                    permisos: ['2024-09-12', '2024-09-13']
+                };
+
+                console.log('dayDefaultCalendar', dayDefaultCalendar);
+
+
                 var selectedRanges = [];
                 var calendarEl = document.getElementById('calendarioDays');
+                ///Seleccionar el div donde viene contenido el dia
+
+
                 var calendario = new FullCalendar.Calendar(calendarEl, {
                     locale: "es",
                     hiddenDays: [0, 6],
                     selectable: true,
 
 
-                    validRange: function(nowDate) {
-                        return {
-                            start: nowDate // no permite seleccionar días antes de hoy
-                        };
+                    dayCellDidMount: function(info) {
+                        // Accede al <div> con la clase fc-daygrid-day-top
+                        var dayTopElement = info.el.querySelector(
+                            '.fc-daygrid-day-top');
+
+                        if (dayTopElement) {
+                            // Añade la clase personalizada
+                            dayTopElement.classList.add('custom-day-top-class');
+                        }
+
+
+
+                        var dateStr = info.date.toISOString().split('T')[
+                            0]; // Formato 'YYYY-MM-DD'
+                        var daysVacaciones = dayDefaultCalendar?.vacaciones
+                        var daysPermisos = dayDefaultCalendar?.permisos
+
+                        if (daysVacaciones.includes(dateStr)) {
+                            var dayNumberElement = info.el.querySelector(
+                                '.fc-daygrid-day-number'
+                            ); // Selecciona el <a> dentro del <td>
+                            if (dayNumberElement) {
+                                dayNumberElement.classList.add(
+                                    'highlighted-day-vacaciones'
+                                ); // Añade tu clase personalizada
+                            }
+                        }
+
+
+                        if (daysVacaciones.includes(dateStr)) {
+                            var dayNumberElement = info.el.querySelector(
+                                '.fc-daygrid-day-number'
+                            ); // Selecciona el <a> dentro del <td>
+                            if (dayNumberElement) {
+                                dayNumberElement.classList.add(
+                                    'highlighted-day-vacaciones'
+                                ); // Añade tu clase personalizada
+                            }
+                        }
+
+                        if (daysPermisos.includes(dateStr)) {
+                            var dayNumberElement = info.el.querySelector(
+                                '.fc-daygrid-day-number'
+                            ); // Selecciona el <a> dentro del <td>
+                            if (dayNumberElement) {
+                                dayNumberElement.classList.add(
+                                    'highlighted-day-permisos'
+                                ); // Añade tu clase personalizada
+                            }
+                        }
                     },
 
                     //MOSTRAR LOS BOTONES DE MES, SEMANA Y LISTA//
@@ -1365,6 +1462,27 @@
 
         #calendario {
             width: 100%;
+        }
+
+
+        .highlighted-day-vacaciones {
+            background-color: #81C10C !important;
+            color: white !important;
+            border-radius: 50%;
+            padding: 0.5em;
+        }
+
+        .highlighted-day-permisos {
+            background-color: #d5c321 !important;
+            color: white !important;
+            border-radius: 50%;
+            padding: 0.5em;
+        }
+
+
+        /*Estilo para el div de los dias en Calendario General*/
+        .custom-day-top-class {
+            padding: 0px 25px !important;
         }
     </style>
 @endsection
