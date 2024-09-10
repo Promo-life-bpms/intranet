@@ -430,6 +430,8 @@
             </div>
         </div>
 
+
+        <!-- Modal ver solicitud -->
         <div class="modal fade bd-example-modal-lg" id="verSolivitud" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
@@ -539,19 +541,13 @@
                                     <button class="btn btn-danger mb-2">Cancelar Solicitud</button>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
-                    {{-- <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    </div> --}}
                 </div>
             </div>
         </div>
 
 
-        <!-- Modal editar solicitud -->
 
 
 
@@ -779,17 +775,6 @@
                 const file = this.getAttribute('data-file');
                 const days = this.getAttribute('data-days');
 
-                // Mostrar los datos en la consola
-                console.log('Solicitud ID:', solicitudId);
-                console.log('Tipo:', tipo);
-                console.log('Detalles:', details);
-                console.log('Reveal ID:', revealId);
-                console.log('Direct Manager ID:', directManagerId);
-                console.log('Direct Manager Status:', directManagerStatus);
-                console.log('Status RH:', statusRh);
-                console.log('File:', file);
-                console.log('Días:', days);
-
                 // Cambiar el contenido del modal
                 document.getElementById('tipo').textContent = tipo;
                 document.getElementById('method-of-payment').textContent = methodOfPayment;
@@ -803,10 +788,6 @@
 
                 var statusManegerElement = document.getElementById('direct_manager_status');
                 var statusRhElement = document.getElementById('statusRh');
-
-
-
-
 
                 // Supongamos que 'direct_manager_status' tiene el valor que quieres evaluar
                 if (directManagerStatus === 'Aprobada') {
@@ -828,33 +809,11 @@
                     statusRhElement.classList.remove('bg-success');
                     statusRhElement.classList.add('bg-warning', 'text-dark');
                 }
-
-
-                // Puedes también establecer el texto si lo deseas
-                // statusElement.textContent = directManagerStatus;
-
-
-
                 // Muestra el modal (debes tenerlo en tu HTML)
                 const modal = new bootstrap.Modal(document.getElementById('verSolivitud'));
                 modal.show();
             });
         });
-
-
-
-        /* Abrir modal de ver solicitud */
-        // document.getElementById('openModalVer').addEventListener('click', function() {
-        //     $('#modalVerSolicitud').modal({
-        //         backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
-        //         keyboard: false // Desactiva el cierre con la tecla "Esc"
-        //     }).modal('show')
-        // });
-
-        // /*Cerrar modal de ver solicitud */
-        // document.getElementById('closemodalSolicitud').addEventListener('click', function() {
-        //     $('#modalVerSolicitud').modal('hide');
-        // });
 
         // /* Abrir modal de editar solicitud */
         document.getElementById('editSolcitud').addEventListener('click', function() {
@@ -879,14 +838,8 @@
             }).modal('show'); // Muestra el modal
         });
 
-        /*Cerrar modal de editar solicitud */
-        // document.getElementById('closemodalEditarSolicitud').addEventListener('click', function() {
-        //     $('#modalEditarSolicitud').modal('hide');
-        // });
 
         document.getElementById('openModalVacaciones').addEventListener('click', function() {
-            console.log('openModalVacaciones');
-
             // Cambia el título del modal
             document.getElementById('modalTitle').innerText = 'Vacaciones';
             // Cambia el contenido dinámico

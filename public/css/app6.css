@@ -25,7 +25,7 @@
 }
 
 .tarjeta {
-    border: 0px solid rgb(243, 243, 243); /* Borde de 2px con color rojo */
+    border: 0px solid rgb(243, 243, 243);
     border-radius: 10px; /* Bordes redondeados */
     padding: 20px; /* Espaciado interno */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar efecto de tarjeta */

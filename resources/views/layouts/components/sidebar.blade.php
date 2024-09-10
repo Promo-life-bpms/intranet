@@ -125,7 +125,7 @@
                                 class="badge bg-secondary">{{ count(App\Models\Request::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Pendiente')->get()) }}
                             </span>
                         </a>
-                        <ul class="submenu ">
+                        {{-- <ul class="submenu ">
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.authorizeRH') }}">
                                     <span>Ver solicitudes</span>
@@ -143,6 +143,28 @@
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">
                                     <span>Vacaciones disponibles</span>
+                                </a>
+                            </li>
+                        </ul> --}}
+
+                        <ul class="submenu ">
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('request.authorizeRH') }}">
+                                    <span>Ver solicitudes</span>
+                                    <span
+                                        class="badge bg-secondary">{{ count(App\Models\Request::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Pendiente')->get()) }}
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('request.reportRequest') }}">
+                                    <span>Reportes totales</span>
+                                </a>
+                            </li>
+
+                            <li class="submenu-item ">
+                                <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">
+                                    <span>Directorio de vacaciones</span>
                                 </a>
                             </li>
                         </ul>
