@@ -26,6 +26,8 @@ class VacationRequestController extends Controller
         $positions = Position::where("department_id", $dep)->pluck("name", "id");
         $data = $dep->positions;
         $users = [];
+        $vacaciones_entrantes = null;
+        $fecha_expiracion_entrante = null;
 
         foreach ($data as $dat) {
             foreach ($dat->getEmployees as $emp) {
@@ -105,25 +107,22 @@ class VacationRequestController extends Controller
             $totalvacaciones = $Datos[0]['days_availables'] + $Datos[1]['days_availables'];
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'] + $Datos[1]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
+            $porcentajetomadas = round($porcentajetomadas, 2);
             $fecha_expiracion_actual = $Datos[0]['cutoff_date'];
             $vacaciones_actuales = $Datos[0]['dv'];
             $fecha_expiracion_entrante = $Datos[1]['cutoff_date'];
             $vacaciones_entrantes = $Datos[1]['dv'];
-    
-
         } elseif (count($Datos) == 1) {
             $diasreservados = $Datos[0]['waiting'];
             $diasdisponibles = $Datos[0]['dv'];
             $totalvacaciones = $Datos[0]['days_availables'];
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
+            $porcentajetomadas = round($porcentajetomadas, 2);
             $fecha_expiracion_actual = $Datos[0]['cutoff_date'];
             $vacaciones_actuales = $Datos[0]['dv'];
-            $fecha_expiracion_entrante = 'Aún no se genera';
-            $vacaciones_entrantes = 'Aún no hay vacaciones entrantes';
         }
 
-        
         return view('request.vacations-collaborators', compact('users', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes'));
     }
 
@@ -440,12 +439,12 @@ class VacationRequestController extends Controller
         return back()->with('message', 'Se creo tu solicitud de vacaciones.');
     }
 
-    public function RequestBoss(){
+    public function RequestBoss()
+    {
         $user = auth()->user();
 
         $HeIsBossOf = Employee::where('jefe_directo_id', $user->id)->pluck('user_id');
         dd($HeIsBossOf);
-
     }
 
     public function AuthorizePermissionBoss(Request $request)
@@ -457,7 +456,7 @@ class VacationRequestController extends Controller
         ]);
 
         $IsBoss = VacationRequest::where('id', $request->id)->value('direct_manager_id');
-        if($IsBoss != $user->id){
+        if ($IsBoss != $user->id) {
             dd('Solo su jefe directo puede autorizar la solicitud');
             //return back()->with('message', 'Solo su jefe directo puede autorizar la solicitud');
         }
@@ -479,13 +478,12 @@ class VacationRequestController extends Controller
         ]);
 
         $solicitud = VacationRequest::where('id', $request->id)->first();
-        if($solicitud->direct_manager_id != $user->id){
+        if ($solicitud->direct_manager_id != $user->id) {
             dd('Solo su jefe directo puede rechazar la solicitud');
             //return back()->with('message', 'Solo su jefe directo puede autorizar la solicitud');
         }
 
-        if($solicitud->direct_manager_status == 'Aprobada')
-        {
+        if ($solicitud->direct_manager_status == 'Aprobada') {
             dd('La solicitud ya fue aprobada, por lo tanto ya no puede ser rechazada.');
             //return redirect()->with('message', 'La solicitud ya fue aprobada, por lo tanto ya no puede ser rechazada.');
         }
@@ -508,7 +506,7 @@ class VacationRequestController extends Controller
         ]);
 
         $Solicitud = DB::table('vacation_requests')->where('id', $request->id)->first();
-        if($Solicitud->direct_manager_status == 'Pendiente' || $Solicitud->direct_manager_status == 'Rechazada'){
+        if ($Solicitud->direct_manager_status == 'Pendiente' || $Solicitud->direct_manager_status == 'Rechazada') {
             dd('La solicitud se encuentra Pendiente o fue Rechazada por su jefe directo.');
             //return back()->with('message', 'La solicitud se encuentra Pendiente o fue Rechazada por su jefe directo.');
         }
@@ -540,7 +538,7 @@ class VacationRequestController extends Controller
                 'days_availables' => $vaca->days_availables
             ];
         }
-        
+
         $dias = VacationDays::where('vacation_request_id', $request->id)->count();
         if (count($Datos) > 1) {
             $datoswaiting = $Datos[0]['waiting'];
@@ -583,7 +581,7 @@ class VacationRequestController extends Controller
                         'dv' => $nuevodvperiododos
                     ]);
                 }
-            }else{
+            } else {
                 dd('No tienes vacaciones disponibles.');
                 //return back()->with('message', 'No tienes vacaciones disponibles.');
             }
@@ -603,7 +601,7 @@ class VacationRequestController extends Controller
                     'days_enjoyed' => $nuevodaysenjoyed,
                     'dv' => $nuevodv
                 ]);
-            }else{
+            } else {
                 return back()->with('message', 'No tienes vacaciones disponibles.');
             }
             dd('Autorización exitosa');
