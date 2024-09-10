@@ -377,7 +377,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="miFormulario" action="create/vacation/or/leave/request" method="POST">
+                        <form id="miFormulario" action="create/vacation/or/leave/request" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mt-2" id="dynamicContentEncabezado">
                                 <!-- Aquí se va a cambiar el contenido según la tarjeta seleccionada -->

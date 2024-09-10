@@ -194,7 +194,7 @@ class VacationRequestController extends Controller
             $fileNameToStore = time() . $filename . '.' . $extension;
             $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
         }
-
+    
         if (count($Datos) > 1) {
             // Extracción de datos de los dos periodos
             $PrimerPeriodo = (int) $Datos[0]['dv'];
@@ -445,7 +445,6 @@ class VacationRequestController extends Controller
         $user = auth()->user();
 
         $HeIsBossOf = Employee::where('jefe_directo_id', $user->id)->where('status', 1)->pluck('user_id');
-
         $Solicitudes = DB::table('vacation_requests')->whereIn('user_id', $HeIsBossOf)->get();
         $InfoSolicitud = [];
         foreach ($Solicitudes as $Solicitud) {
@@ -479,6 +478,7 @@ class VacationRequestController extends Controller
             }
 
             $InfoSolicitud[] = [
+                'image' => $nameUser->image,
                 'created_at' => $Solicitud->created_at,
                 'id' => $Solicitud->id,
                 'name' => $nameUser->name . ' ' . $nameUser->lastname,
@@ -499,7 +499,7 @@ class VacationRequestController extends Controller
         }
 
         $InfoSolicitudesUsuario = json_encode($InfoSolicitud);
-        
+        dd($InfoSolicitud);
         return view('request.authorize', compact('InfoSolicitud', 'InfoSolicitudesUsuario')); 
     }
 
