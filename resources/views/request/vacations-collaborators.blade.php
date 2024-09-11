@@ -196,7 +196,7 @@
                                         <td style="text-align: center;">
                                             @if ($solicitud->direct_manager_status == 'Pendiente')
                                                 <span
-                                                    class="badge bg-success">{{ $solicitud->direct_manager_status }}</span>
+                                                    class="badge bg-warning text-dark">{{ $solicitud->direct_manager_status }}</span>
                                             @else
                                                 <span
                                                     class="badge bg-success">{{ $solicitud->direct_manager_status }}</span>
