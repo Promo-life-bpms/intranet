@@ -183,6 +183,11 @@ class VacationRequestController extends Controller
         $datesArray = json_decode($dates, true);
         $diasTotales = count($datesArray);
 
+
+        if ($diasTotales == 0) {
+            return back()->with('message', 'Debes enviar al menos un día de vacaciones.');
+        }
+
         if ($diasTotales > $totalambosperidos) {
             return back()->with('message', 'No cuentas con días suficientes');
         }
@@ -213,9 +218,6 @@ class VacationRequestController extends Controller
             $totalAmbosPeriodos = $PrimerPeriodo + $SegundoPeriodo;
             $Disponibilidad1 = $primerWaiting + $primerDaysEnjoyed;
             $Disponibilidad2 = $segundoWaiting + $SegundoDaysEnjoyed;
-            $totalDisponibilidad = $Disponibilidad1 + $Disponibilidad2;
-            $sumaWaiting = $primerWaiting + $segundoWaiting;
-            $sumaDaysAvailables = $primerDaysAvailables + $segundoDaysAvailables;
             $prueba = $Disponibilidad1 + $Disponibilidad2;
 
             if ($diasTotales > $totalAmbosPeriodos) {
@@ -566,7 +568,7 @@ class VacationRequestController extends Controller
         $SolicitudesPendientes = DB::table('vacation_requests')
             ->where('direct_manager_status', 'Aprobada')
             ->where('rh_status', 'Pendiente')
-            ->get();  // Esta línea obtiene las solicitudes pendientes
+            ->get();
 
 
         $Pendientes = [];
@@ -621,7 +623,71 @@ class VacationRequestController extends Controller
             ];
         }
         $SolicitudesPendientes = json_encode($Pendientes);
-        
+
+        $SolicitudesRechazadas = DB::table('vacation_requests')
+            ->where(function ($query) {
+                $query->where('direct_manager_status', 'Rechazada')
+                    ->orWhere('rh_status', 'Rechazada');
+            })->get();
+
+        $rechazadas = [];
+        foreach ($SolicitudesRechazadas as $Solicitud) {
+            $nameUser = User::where('id', $Solicitud->user_id)->first();
+            $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
+            $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
+            $Reveal = User::where('id', $Solicitud->reveal_id)->first();
+
+            $dias = [];
+            foreach ($Days as $Day) {
+                $dias[] = $Day->day;
+            }
+
+            // Ordenar las fechas de la más cercana a la más lejana
+            usort($dias, function ($a, $b) {
+                return strtotime($a) - strtotime($b);
+            });
+
+            $fechaActual = Carbon::now();
+            $Vacaciones = DB::table('vacations_availables')
+                ->where('users_id', $Solicitud->user_id)
+                ->where('cutoff_date', '>=', $fechaActual)
+                ->orderBy('cutoff_date', 'asc')
+                ->get();
+            $Datos = [];
+            foreach ($Vacaciones as $vaca) {
+                $Datos[] = [
+                    'dv' => $vaca->dv,
+                    'cutoff_date' => $vaca->cutoff_date,
+                ];
+            }
+
+            $rechazadas[] = [
+                'image' => $nameUser->image,
+                'created_at' => $Solicitud->created_at,
+                'id' => $Solicitud->id,
+                'name' => $nameUser->name . ' ' . $nameUser->lastname,
+                'current_vacation' => $Datos[0]['dv'] ?? null,
+                'current_vacation_expiration' => $Datos[0]['cutoff_date'] ?? null,
+                'next_vacation' => !empty($Datos[1]['dv']) ? $Datos[1]['dv'] : null,
+                'expiration_of_next_vacation' => !empty($Datos[1]['cutoff_date']) ? $Datos[1]['cutoff_date'] : null,
+                'details' => $Solicitud->details,
+                'direct_manager_status' => $Solicitud->direct_manager_status,
+                'rh_status' => $Solicitud->rh_status,
+                'request_type' => $RequestType->type,
+                'specific_type' => $RequestType->type == 1 ? 'Específico' : '-',
+                'days_absent' => $dias,
+                'method_of_payment' => $RequestType->type == 1 ? 'A cuenta de vacaciones' : 'Otro',
+                'time' => $RequestType->type == 1 ? 'Tiempo completo' : 'Parcial',
+                'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
+                'file' => $Solicitud->file ?? null
+            ];
+        }
+        dd($rechazadas);
+
+
+
+
+
         return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas'));
     }
 
@@ -673,6 +739,109 @@ class VacationRequestController extends Controller
         dd('Solicitud rechazada exitosamente.');
         //return back()->with('message', 'Solicitud rechazada exitosamente.');
 
+    }
+
+    public function RejectPermissionUser(Request $request)
+    {
+        $user = auth()->user();
+
+        $request->validate([
+            'id' => 'required',
+        ]);
+
+        $Solicitud = VacationRequest::where('id', $request->id)->first();
+
+        if ($Solicitud->user_id != $user->id) {
+            dd('Solo el creador de la solicitud puede rechazar la solicitud');
+            //return back()->with('message', 'Solo el creador de la solicitud puede rechazar la solicitud');
+        }
+
+        if($Solicitud->direct_manager_status == 'Rechazada')
+        {
+            dd('Esta solicitud ya fue rechazada por tu jefe directo.');
+            //return back()->with('message', 'Esta solicitud ya fue rechazada por tu jefe directo.');
+        }
+
+        DB::table('vacation_requests')->where('id', $request->id)->update([
+            'commentary' => 'Esto es una prueba',
+            'direct_manager_status' => 'Cancelada por el usuario',
+            'rh_status' => 'Cancelada por el usuario'
+        ]);
+
+        DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+            'status' => 0
+        ]);
+
+        $fechaActual = Carbon::now();
+        $Vacaciones = DB::table('vacations_availables')
+            ->where('users_id', $Solicitud->user_id)
+            ->where('cutoff_date', '>=', $fechaActual)
+            ->orderBy('cutoff_date', 'asc')
+            ->get();
+        $Datos = [];
+        foreach ($Vacaciones as $vaca) {
+            $Datos[] = [
+                'id' => $vaca->id,
+                'dv' => $vaca->dv,
+                'cutoff_date' => $vaca->cutoff_date,
+                'period' => $vaca->period,
+                'days_enjoyed' => $vaca->days_enjoyed,
+                'waiting' => $vaca->waiting,
+                'days_enjoyed' => $vaca->days_enjoyed,
+                'days_availables' => $vaca->days_availables
+            ];
+        }
+
+        $dias = VacationDays::where('vacation_request_id', $request->id)->count();
+        if (count($Datos) > 1) {
+            $datoswaiting = $Datos[0]['waiting'];
+            $datoswaitingdos = $Datos[1]['waiting'];
+            $peridoUno = $Datos[0]['period'];
+            $peridoDos = $Datos[1]['period'];
+            if ($dias <= $datoswaiting) {
+                $menosWaiting = $datoswaiting - $dias;
+
+                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
+                    'waiting' => $menosWaiting
+                ]);
+
+            } elseif ($dias > $datoswaiting) {
+                $restawaiting = ($datoswaiting - $dias) * (-1);
+                $finalwaitinguno = $dias - $restawaiting;
+                $waiting2 = $datoswaitingdos - $restawaiting;
+
+                if (($finalwaitinguno <= $datoswaiting) && ($restawaiting <= $datoswaitingdos)) {
+                    $menosWaiting = $datoswaiting - $finalwaitinguno;
+                    ////waiting 1////
+                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
+                        'waiting' => $menosWaiting,
+                        
+                    ]);
+                    ////waiting 2////
+                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoDos)->update([
+                        'waiting' => $waiting2,
+                    ]);
+                }
+            } else {
+                dd('No tienes vacaciones disponibles.');
+                //return back()->with('message', 'No tienes vacaciones disponibles.');
+            }
+            dd('Autorización exitosa');
+            //return back()->with('message', 'Autorización exitosa');
+        } elseif (count($Datos) == 1) {
+            $diasreservados = $Datos[0]['waiting'];
+            $PeridoUno = $Datos[0]['period'];
+            if ($dias <= $diasreservados) {
+                $menosWaiting = $diasreservados - $dias;
+                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $PeridoUno)->update([
+                    'waiting' => $menosWaiting,
+                ]);
+            } else {
+                return back()->with('message', 'No tienes vacaciones disponibles.');
+            }
+            dd('Autorización exitosa');
+            //return back()->with('message', 'Autorización exitosa');
+        }
     }
 
     public function AuthorizePermissionHumanResources(Request $request)
