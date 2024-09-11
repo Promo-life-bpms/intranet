@@ -485,6 +485,7 @@ class VacationRequestController extends Controller
 
         $HeIsBossOf = Employee::where('jefe_directo_id', $user->id)->where('status', 1)->pluck('user_id');
         $Solicitudes = DB::table('vacation_requests')->whereIn('user_id', $HeIsBossOf)->get();
+        $SumaSolicitudes = count($Solicitudes);
         $InfoSolicitud = [];
         foreach ($Solicitudes as $Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
@@ -539,7 +540,7 @@ class VacationRequestController extends Controller
 
         $InfoSolicitudesUsuario = json_encode($InfoSolicitud);
 
-        return view('request.authorize', compact('InfoSolicitud', 'InfoSolicitudesUsuario'));
+        return view('request.authorize', compact('InfoSolicitud', 'InfoSolicitudesUsuario', 'SumaSolicitudes'));
     }
 
     public function authorizeRequestRH()
@@ -547,6 +548,8 @@ class VacationRequestController extends Controller
         $user = auth()->user();
 
         $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->get();
+        $sumaAprobadas = count($Solicitudes);
+
         $SolicitudesAprobadas = [];
         foreach ($Solicitudes as $Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
@@ -605,7 +608,7 @@ class VacationRequestController extends Controller
             ->where('direct_manager_status', 'Aprobada')
             ->where('rh_status', 'Pendiente')
             ->get();
-
+        $sumaPendientes = count($SolicitudesPendientes);
 
         $Pendientes = [];
         foreach ($SolicitudesPendientes as $Solicitud) {
@@ -660,11 +663,10 @@ class VacationRequestController extends Controller
         }
         $SolicitudesPendientes = json_encode($Pendientes);
 
-        $SolicitudesRechazadas = DB::table('vacation_requests')
-            ->where(function ($query) {
-                $query->where('direct_manager_status', 'Rechazada')
-                    ->orWhere('rh_status', 'Rechazada');
-            })->get();
+        $SolicitudesRechazadas = DB::table('vacation_requests')->where('direct_manager_status', 'Cancelada por el usuario')
+            ->where('rh_status', 'Cancelada por el usuario')->get();
+
+        $sumaCanceladasUsuario = count($SolicitudesRechazadas);
 
         $rechazadas = [];
         foreach ($SolicitudesRechazadas as $Solicitud) {
@@ -718,13 +720,8 @@ class VacationRequestController extends Controller
                 'file' => $Solicitud->file ?? null
             ];
         }
-        dd($rechazadas);
 
-
-
-
-
-        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas'));
+        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario'));
     }
 
     public function AuthorizePermissionBoss(Request $request)
@@ -879,6 +876,62 @@ class VacationRequestController extends Controller
             dd('Se rechazó la solicitud exitosamente.');
             //return back()->with('message', 'Se rechazó la solicitud exitosamente.');
         }
+    }
+
+    public function UpdateRequest($id)
+    {
+        $user = auth()->user();
+
+        /* $request->validate([
+            'details' => 'required',
+            'reveal_id' => 'required',
+            'dates' => 'required'
+        ]); */
+
+        $Solicitud = DB::table('vacation_requests')->where('id', $id)->first();
+
+        if ($Solicitud->user_id != $user->id) {
+            dd('Solo el usuario que creo la solicitud la puede editar.');
+            //return back()->with('message', 'Solo el usuario que creo la solicitud la puede editar.');
+        }
+
+        $dias = DB::table('vacation_days')
+            ->where('vacation_request_id', $Solicitud->id)
+            ->pluck('day')
+            ->toArray();  // Convertir a array para facilitar la comparación
+
+        // Días esperados
+        $dates = [
+            '2024-09-24',
+            '2024-09-25',
+            '2024-09-27'
+        ];
+
+        // Convertir ambos arrays a conjuntos (sets) para la comparación
+        $diasSet = collect($dias)->unique()->sort()->values();
+        $datesSet = collect($dates)->unique()->sort()->values();
+
+        // Comparar los conjuntos para encontrar diferencias
+        $missingInDias = $datesSet->diff($diasSet);  // Días en $dates pero no en $dias
+        $missingInDates = $diasSet->diff($datesSet); // Días en $dias pero no en $dates
+
+        if ($missingInDias->isEmpty() && $missingInDates->isEmpty()) {
+            dd('Todos los días coinciden.');
+        }else {
+            $message = 'dias';
+        
+            if (!$missingInDias->isEmpty()) {
+                $message .= 'Días faltantes en la base de datos: ' . $missingInDias->implode(', ') . '. ';
+            }
+        
+            if (!$missingInDates->isEmpty()) {
+                $message .= 'Días adicionales en la base de datos: ' . $missingInDates->implode(', ') . '.';
+            }
+    
+        }
+
+
+        //return view('request.vacations-collaborators', compact());
     }
 
     public function RejectPermissionHumanResources(Request $request)
