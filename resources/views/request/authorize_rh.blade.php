@@ -29,7 +29,7 @@
                         <div id="tarjeta1" class="tarjetaRh1 hover-tarjetaRh1"
                             style="border-bottom: 10px solid var(--color-target-1); min-height: 100%; padding: 10px 20px !important;">
                             <div class="d-flex justify-content-end">
-                                <strong>185</strong>
+                                <strong>{{ $sumaAprobadas }}</strong>
                             </div>
                             <div style="margin-top: 25px">
                                 <strong>Autorizadas</strong>
@@ -42,7 +42,7 @@
                         <div id="tarjeta2" class="tarjetaRh2 hover-tarjetaRh2"
                             style="border-bottom: 10px solid var(--color-target-3); min-height: 100%; padding: 10px 20px !important;">
                             <div class="d-flex justify-content-end">
-                                <strong>185</strong>
+                                <strong>{{ $sumaPendientes }}</strong>
                             </div>
                             <div style="margin-top: 25px">
                                 <strong>Pendientes</strong>
@@ -54,7 +54,7 @@
                         <div id="tarjeta3" class="tarjetaRh3 hover-tarjetaRh3"
                             style="border-bottom: 10px solid var(--color-target-4); min-height: 100%; padding: 10px 20px !important;">
                             <div class="d-flex justify-content-end">
-                                <strong>185</strong>
+                                <strong>{{ $sumaCanceladasUsuario }}</strong>
                             </div>
                             <div>
                                 <strong>Canceladas por el usuario</strong>

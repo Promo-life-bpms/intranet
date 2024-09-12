@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-2">
                         <div class="d-flex justify-content-center">
-                            <strong> Total 150 </strong>
+                            <strong> Total {{ $SumaSolicitudes }} </strong>
                         </div>
 
                         <div class="d-flex justify-content-center">

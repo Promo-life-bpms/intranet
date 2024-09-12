@@ -781,6 +781,7 @@ class VacationRequestController extends Controller
 
     public function RejectPermissionUser(Request $request)
     {
+
         $user = auth()->user();
 
         $request->validate([
@@ -801,7 +802,7 @@ class VacationRequestController extends Controller
         }
 
         DB::table('vacation_requests')->where('id', $request->id)->update([
-            'commentary' => 'Esto es una prueba',
+            'commentary' => $request->commentary,
             'direct_manager_status' => 'Cancelada por el usuario',
             'rh_status' => 'Cancelada por el usuario'
         ]);
