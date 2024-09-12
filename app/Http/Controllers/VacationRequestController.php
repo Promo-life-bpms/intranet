@@ -905,7 +905,7 @@ class VacationRequestController extends Controller
         $datesupdate = $request->dates;
         $dates = json_decode($datesupdate, true);
         $diasTotales = count($dates);
-        
+
         if ($diasTotales == 0) {
             return back()->with('message', 'Debes enviar al menos un día de vacaciones.');
         }
@@ -966,7 +966,6 @@ class VacationRequestController extends Controller
                 'file' => $request->archivos == null ? $Solicitud->file : $path,
             ]);
             return back()->with('message', 'Se actualizo correctamente tu solicitud.');
-
         } else {
             if (!$missingInDias->isEmpty()) {
                 ///Estos días son nuevos en el arreglo, se deben agregar a la solicitud:
@@ -1207,7 +1206,7 @@ class VacationRequestController extends Controller
                         'days_availables' => $vaca->days_availables
                     ];
                 }
- 
+
                 if (count($Datos) > 1) {
                     $datoswaiting = $Datos[0]['waiting'];
                     $datoswaitingdos = $Datos[1]['waiting'];
@@ -1534,7 +1533,7 @@ class VacationRequestController extends Controller
         $fechaIngreso = Carbon::parse($Ingreso->date_admission);
         $fechaActual = Carbon::now();
         $mesesTranscurridos = $fechaIngreso->diffInMonths($fechaActual);
-        
+
         $Vacaciones = DB::table('vacations_availables')
             ->where('users_id', $id)
             ->where('cutoff_date', '>=', $fechaActual)
@@ -1554,6 +1553,7 @@ class VacationRequestController extends Controller
             ];
         }
         $fechactual = Carbon::now()->format('Y-m-d');
+        $num_days = 1;
         if (count($Datos) > 1) {
 
             $PrimerasVacaciones = (int) $Datos[0]['dv'];
@@ -1565,28 +1565,45 @@ class VacationRequestController extends Controller
             $diasRestantesPeriodoUno = $caducidadperidouno->diffInDays($fechactual);
             $diasRestantesPeriodoDos = $caducidadperidodos->diffInDays($fechactual);
 
-            if($diasRestantesPeriodoUno >= 30){
+            if ($diasRestantesPeriodoUno >= 30) {
+                $newdv = $PrimerasVacaciones + $num_days; 
+                MakeUpVacations::create([
+                    'user_id' => $id,
+                    'description' => 'prueba',
+                    'num_days' => $num_days
+                ]);
+                DB::table('vacations_availables')->where('users_id', $id)->where('period', $PrimerPeriod)->update(
+                    [
+                        'dv' => $newdv,
+                    ]
+                );
+            }elseif($diasRestantesPeriodoUno < 30){
+                $newdv = $SegundasVacaciones + $num_days; 
                 MakeUpVacations::create([
                     'user_id' => $id,
                     'description' => 'prueba',
                     'num_days' => 1
                 ]);
+                DB::table('vacations_availables')->where('users_id', $id)->where('period', $SegundoPeriod)->update(
+                    [
+                        'dv' => $newdv,
+                    ]
+                );
             }
-            DB::table('vacations_availables')->where('users_id', $id)->where('period', $PrimerPeriod)->update(
-                [
-                    'dv' => 1,
-                ]);
-
-
         } elseif (count($Datos) == 1) {
-            $PrimerPeriodo = (int) $Datos[0]['dv'];
-            $caducidadperidouno = $Datos[0]['cutoff_date'];
-            
-            dd($caducidadperidouno);
+            $PrimerPeriod = $Datos[0]['period'];
+            MakeUpVacations::create([
+                    'user_id' => $id,
+                    'description' => 'prueba',
+                    'num_days' => 1
+                ]);
+                DB::table('vacations_availables')->where('users_id', $id)->where('period', $PrimerPeriod)->update(
+                    [
+                        'dv' => 1,
+                    ]
+                );
 
         }
-
-        
     }
 
     ////////////DATOS DE USUARIOS///////////////////
