@@ -902,9 +902,9 @@ class VacationRequestController extends Controller
 
         // Días esperados
         $dates = [
+            '2024-09-01',
+            '2024-09-12',
             '2024-09-11',
-            '2024-09-20',
-            '2024-09-21'
         ];
 
         // Convertir ambos arrays a conjuntos (sets) para la comparación
@@ -1029,7 +1029,7 @@ class VacationRequestController extends Controller
                             } else {
                                 return back()->with('message', 'Asegúrate que no tienes vacaciones por autorizar, ya que tienes días disponibles, pero están en espera.');
                             }
-                            return back()->with('message', 'Vacaciones actualizadas correctamente. 1');
+                            //return back()->with('message', 'Vacaciones actualizadas correctamente. 1');
                         }
 
                         // Caso donde los días solicitados están en ambos periodos
@@ -1111,7 +1111,7 @@ class VacationRequestController extends Controller
                                         }
                                     }
                                 }
-                                return back()->with('message', 'Vacaciones actualizadas correctamente.');
+                                //return back()->with('message', 'Vacaciones actualizadas correctamente.');
                             } else {
                                 return  back()->with('message', 'No te alcanza para los días solicitados.');
                             }
@@ -1154,7 +1154,6 @@ class VacationRequestController extends Controller
                                     'status' => 0,
                                 ]);
                             }
-                            return back()->with('message', 'Vacaciones actualizadas');
                         }
                     }
                 }
@@ -1165,7 +1164,6 @@ class VacationRequestController extends Controller
                 $eliminar = $missingInDates->implode(', ');
                 $eliminarArray = explode(', ', $eliminar);
                 $dias = count($eliminarArray);
-        
 
                 if (count($Datos) > 1) {
                     $datoswaiting = $Datos[0]['waiting'];
@@ -1173,24 +1171,30 @@ class VacationRequestController extends Controller
                     $peridoUno = $Datos[0]['period'];
                     $peridoDos = $Datos[1]['period'];
                     if ($dias <= $datoswaiting) {
-                        $menosWaiting = $datoswaiting - $dias;
-
-                        DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
-                            'waiting' => $menosWaiting
-                        ]);
-
+                        //return 0;
                         foreach ($eliminarArray as $eliminar) {
                             $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
                             DB::table('vacation_days')
                                 ->where('id', $idfecha)
                                 ->delete();
                         }
+                        $menosWaiting = $datoswaiting - $dias;
+                        DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
+                            'waiting' => $menosWaiting
+                        ]);
                     } elseif ($dias > $datoswaiting) {
                         $restawaiting = ($datoswaiting - $dias) * (-1);
                         $finalwaitinguno = $dias - $restawaiting;
                         $waiting2 = $datoswaitingdos - $restawaiting;
 
                         if (($finalwaitinguno <= $datoswaiting) && ($restawaiting <= $datoswaitingdos)) {
+                            foreach ($eliminarArray as $eliminar) {
+                                $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
+                                DB::table('vacation_days')
+                                    ->where('id', $idfecha)
+                                    ->delete();
+                            }
+                    
                             $menosWaiting = $datoswaiting - $finalwaitinguno;
                             ////waiting 1////
                             DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
@@ -1201,12 +1205,7 @@ class VacationRequestController extends Controller
                             DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoDos)->update([
                                 'waiting' => $waiting2,
                             ]);
-                            foreach ($eliminarArray as $eliminar) {
-                                $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
-                                DB::table('vacation_days')
-                                    ->where('id', $idfecha)
-                                    ->delete();
-                            }
+                            
                         }
                     } else {
                         dd('No tienes días reservados.');
@@ -1218,24 +1217,26 @@ class VacationRequestController extends Controller
                     $diasreservados = $Datos[0]['waiting'];
                     $PeridoUno = $Datos[0]['period'];
                     if ($dias <= $diasreservados) {
-                        $menosWaiting = $diasreservados - $dias;
-                        DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $PeridoUno)->update([
-                            'waiting' => $menosWaiting,
-                        ]);
-
                         foreach ($eliminarArray as $eliminar) {
                             $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
                             DB::table('vacation_days')
                                 ->where('id', $idfecha)
                                 ->delete();
-                        }
+                        }      
+                        $menosWaiting = $diasreservados - $dias;
+                        DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $PeridoUno)->update([
+                            'waiting' => $menosWaiting,
+                        ]);
+
                     } else {
                         return back()->with('message', 'No tienes días reservados.');
                     }
+                    
                     dd('Se rechazó la solicitud exitosamente.');
                     //return back()->with('message', 'Se rechazó la solicitud exitosamente.');
                 }
             }
+            return back()->with('message', 'Vacaciones actualizadas');
         }
 
         //return view('request.vacations-collaborators', compact());
