@@ -75,11 +75,11 @@
                                     @if ($infoSoli['direct_manager_status'] == 'Pendiente')
                                         <span class="badge bg-warning text-dark">{{ $infoSoli['direct_manager_status'] }}
                                         </span>
-                                    @elseif ($infoSoli['direct_manager_status'] == 'Rechazada')
-                                        <span class="badge bg-danger">{{ $infoSoli['direct_manager_status'] }}
+                                    @elseif ($infoSoli['direct_manager_status'] == 'Aprobada')
+                                        <span class="badge bg-success">{{ $infoSoli['direct_manager_status'] }}
                                         </span>
                                     @else
-                                        <span class="badge bg-success">{{ $infoSoli['direct_manager_status'] }}
+                                        <span class="badge bg-danger">{{ $infoSoli['direct_manager_status'] }}
                                         </span>
                                     @endif
                                 </td>
@@ -291,11 +291,9 @@
                         <form id="denyFormRequest" action="reject/leave/by/direct/boss/" method="POST">
                             @csrf
                             <textarea style="min-width: 100%" class="form-control" id="commentary" name="commentary" required></textarea>
-
                             <div class="d-flex justify-content-end mt-2">
                                 <button type="button" class="btn btn-primary" id="denyButtonForm">Aprobada</button>
                             </div>
-
                         </form>
                     </div>
                 </div>
@@ -363,8 +361,6 @@
                 const id = this.getAttribute('data-id');
                 document.getElementById('modalId').textContent = id;
 
-
-
                 const modal = new bootstrap.Modal(document.getElementById('modalDetails'));
                 modal.show();
 
@@ -404,9 +400,6 @@
                 const time = this.getAttribute('data-time');
                 const reveal_id = this.getAttribute('data-reveal_id');
                 const file = this.getAttribute('data-file');
-
-
-                console.log('direct_manager_status', direct_manager_status);
 
                 if (direct_manager_status === 'Pendiente') {
                     document.getElementById('buttonModifi').style.display = 'flex';

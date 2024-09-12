@@ -485,6 +485,7 @@ class VacationRequestController extends Controller
 
         $HeIsBossOf = Employee::where('jefe_directo_id', $user->id)->where('status', 1)->pluck('user_id');
         $Solicitudes = DB::table('vacation_requests')->whereIn('user_id', $HeIsBossOf)->get();
+        $SumaSolicitudes = count($Solicitudes);
         $InfoSolicitud = [];
         foreach ($Solicitudes as $Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
@@ -539,7 +540,7 @@ class VacationRequestController extends Controller
 
         $InfoSolicitudesUsuario = json_encode($InfoSolicitud);
 
-        return view('request.authorize', compact('InfoSolicitud', 'InfoSolicitudesUsuario'));
+        return view('request.authorize', compact('InfoSolicitud', 'InfoSolicitudesUsuario', 'SumaSolicitudes'));
     }
 
     public function authorizeRequestRH()
@@ -547,6 +548,8 @@ class VacationRequestController extends Controller
         $user = auth()->user();
 
         $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->get();
+        $sumaAprobadas = count($Solicitudes);
+
         $SolicitudesAprobadas = [];
         foreach ($Solicitudes as $Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
@@ -599,13 +602,13 @@ class VacationRequestController extends Controller
             ];
         }
 
-        $Aprobadas = json_encode($SolicitudesAprobadas);
+        $Aprobadas = $SolicitudesAprobadas;
 
         $SolicitudesPendientes = DB::table('vacation_requests')
             ->where('direct_manager_status', 'Aprobada')
             ->where('rh_status', 'Pendiente')
             ->get();
-
+        $sumaPendientes = count($SolicitudesPendientes);
 
         $Pendientes = [];
         foreach ($SolicitudesPendientes as $Solicitud) {
@@ -658,13 +661,12 @@ class VacationRequestController extends Controller
                 'file' => $Solicitud->file ?? null
             ];
         }
-        $SolicitudesPendientes = json_encode($Pendientes);
+        $SolicitudesPendientes = $Pendientes;
 
-        $SolicitudesRechazadas = DB::table('vacation_requests')
-            ->where(function ($query) {
-                $query->where('direct_manager_status', 'Rechazada')
-                    ->orWhere('rh_status', 'Rechazada');
-            })->get();
+        $SolicitudesRechazadas = DB::table('vacation_requests')->where('direct_manager_status', 'Cancelada por el usuario')
+            ->where('rh_status', 'Cancelada por el usuario')->get();
+
+        $sumaCanceladasUsuario = count($SolicitudesRechazadas);
 
         $rechazadas = [];
         foreach ($SolicitudesRechazadas as $Solicitud) {
@@ -707,6 +709,7 @@ class VacationRequestController extends Controller
                 'next_vacation' => !empty($Datos[1]['dv']) ? $Datos[1]['dv'] : null,
                 'expiration_of_next_vacation' => !empty($Datos[1]['cutoff_date']) ? $Datos[1]['cutoff_date'] : null,
                 'details' => $Solicitud->details,
+                'commentary' => $Solicitud->commentary,
                 'direct_manager_status' => $Solicitud->direct_manager_status,
                 'rh_status' => $Solicitud->rh_status,
                 'request_type' => $RequestType->type,
@@ -718,13 +721,10 @@ class VacationRequestController extends Controller
                 'file' => $Solicitud->file ?? null
             ];
         }
-        dd($rechazadas);
 
+        // dd($Pendientes);
 
-
-
-
-        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas'));
+        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas'));
     }
 
     public function AuthorizePermissionBoss(Request $request)
@@ -863,8 +863,8 @@ class VacationRequestController extends Controller
                 dd('No tienes días reservados.');
                 //return back()->with('message', 'No tienes días reservados.');
             }
-            dd('Se rechazó la solicitud exitosamente.');
-            //return back()->with('message', 'Se rechazó la solicitud exitosamente.');
+            // dd('Se rechazó la solicitud exitosamente.');
+            return back()->with('message', 'Se rechazó la solicitud exitosamente.');
         } elseif (count($Datos) == 1) {
             $diasreservados = $Datos[0]['waiting'];
             $PeridoUno = $Datos[0]['period'];
@@ -876,8 +876,8 @@ class VacationRequestController extends Controller
             } else {
                 return back()->with('message', 'No tienes días reservados.');
             }
-            dd('Se rechazó la solicitud exitosamente.');
-            //return back()->with('message', 'Se rechazó la solicitud exitosamente.');
+            // dd('Se rechazó la solicitud exitosamente.');
+            return back()->with('message', 'Se rechazó la solicitud exitosamente.');
         }
     }
 
@@ -960,8 +960,8 @@ class VacationRequestController extends Controller
                 dd('No tienes días reservados.');
                 //return back()->with('message', 'No tienes días reservados.');
             }
-            dd('Se rechazó la solicitud exitosamente.');
-            //return back()->with('message', 'Se rechazó la solicitud exitosamente.');
+            // dd('Se rechazó la solicitud exitosamente.');
+            return back()->with('message', 'Se rechazó la solicitud exitosamente.');
         } elseif (count($Datos) == 1) {
             $diasreservados = $Datos[0]['waiting'];
             $PeridoUno = $Datos[0]['period'];
@@ -973,8 +973,8 @@ class VacationRequestController extends Controller
             } else {
                 return back()->with('message', 'No tienes días reservados.');
             }
-            dd('Se rechazó la solicitud exitosamente.');
-            //return back()->with('message', 'Se rechazó la solicitud exitosamente.');
+            // dd('Se rechazó la solicitud exitosamente.');
+            return back()->with('message', 'Se rechazó la solicitud exitosamente.');
         }
     }
 
@@ -1066,8 +1066,8 @@ class VacationRequestController extends Controller
                 dd('No tienes vacaciones disponibles.');
                 //return back()->with('message', 'No tienes vacaciones disponibles.');
             }
-            dd('Autorización exitosa');
-            //return back()->with('message', 'Autorización exitosa');
+            // dd('Autorización exitosa');
+            return back()->with('message', 'Autorización exitosa');
         } elseif (count($Datos) == 1) {
             $diasreservados = $Datos[0]['waiting'];
             $diasdisponibles = $Datos[0]['dv'];
@@ -1085,8 +1085,8 @@ class VacationRequestController extends Controller
             } else {
                 return back()->with('message', 'No tienes vacaciones disponibles.');
             }
-            dd('Autorización exitosa');
-            //return back()->with('message', 'Autorización exitosa');
+            // dd('Autorización exitosa');
+            return back()->with('message', 'Autorización exitosa');
         }
     }
     public function UpdatePurchase(Request $request)

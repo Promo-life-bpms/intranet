@@ -166,8 +166,6 @@
                                     <th scope="col" style="text-align: center;">Fechas de ausencia</th>
                                     <th scope="col" style="text-align: center;">Tiempo</th>
                                     <th scope="col" style="text-align: center;">Jefe directo</th>
-
-
                                     <th scope="col" style="text-align: center;">RH</th>
                                     <th scope="col" style="text-align: center;">Detalles</th>
                                 </tr>
@@ -197,17 +195,22 @@
                                             @if ($solicitud->direct_manager_status == 'Pendiente')
                                                 <span
                                                     class="badge bg-warning text-dark">{{ $solicitud->direct_manager_status }}</span>
-                                            @else
+                                            @elseif ($solicitud->direct_manager_status == 'Aprobada')
                                                 <span
                                                     class="badge bg-success">{{ $solicitud->direct_manager_status }}</span>
+                                            @else
+                                                <span
+                                                    class="badge bg-danger">{{ $solicitud->direct_manager_status }}</span>
                                             @endif
                                         </td>
                                         <td style="text-align: center;">
                                             @if ($solicitud->rh_status == 'Pendiente')
                                                 <span
                                                     class="badge bg-warning text-dark">{{ $solicitud->rh_status }}</span>
-                                            @else
+                                            @elseif ($solicitud->rh_status == 'Aprobada')
                                                 <span class="badge bg-success">{{ $solicitud->rh_status }}</span>
+                                            @else
+                                                <span class="badge bg-danger">{{ $solicitud->rh_status }}</span>
                                             @endif
                                         </td>
                                         <td style="text-align: center; cursor: pointer;">
@@ -556,7 +559,7 @@
 
                             <div class="mt-3">
                                 <strong>Motivo:</strong>
-                                <textarea style="min-width: 100%" class="form-control" id="details_text" name="details_text" required></textarea>
+                                <textarea style="min-width: 100%" class="form-control" id="details_text" name="details_text" disabled></textarea>
                             </div>
 
                             <div class="d-flex mt-3">
@@ -889,23 +892,34 @@
 
                 // Supongamos que 'direct_manager_status' tiene el valor que quieres evaluar
                 if (directManagerStatus === 'Aprobada') {
+                    console.log('Aprobada');
                     // Remueve cualquier clase anterior y añade la clase 'bg-success'
                     statusManegerElement.classList.remove('bg-warning', 'text-dark');
                     statusManegerElement.classList.add('bg-success'); // Se añade 'bg-success'
-                } else {
-                    // Remueve 'bg-success' y añade otra clase, por ejemplo 'bg-danger'
+                } else if (directManagerStatus === 'Pendiente') {
                     statusManegerElement.classList.remove('bg-success');
+                    statusManegerElement.classList.remove('badge', 'bg-danger');
                     statusManegerElement.classList.add('bg-warning', 'text-dark');
+                } else {
+                    statusManegerElement.classList.remove('bg-success');
+                    statusManegerElement.classList.remove('bg-warning', 'text-dark');
+                    statusManegerElement.classList.add('badge', 'bg-danger');
                 }
+
 
                 if (statusRh === 'Aprobada') {
                     // Remueve cualquier clase anterior y añade la clase 'bg-success'
                     statusRhElement.classList.remove('bg-warning', 'text-dark');
                     statusRhElement.classList.add('bg-success'); // Se añade 'bg-success'
+                } else if (statusRh === 'Pendiente') {
+                    statusRhElement.classList.remove('bg-success');
+                    statusRhElement.classList.remove('badge', 'bg-danger');
+                    statusRhElement.classList.add('bg-warning', 'text-dark');
                 } else {
                     // Remueve 'bg-success' y añade otra clase, por ejemplo 'bg-danger'
                     statusRhElement.classList.remove('bg-success');
-                    statusRhElement.classList.add('bg-warning', 'text-dark');
+                    statusRhElement.classList.remove('bg-warning', 'text-dark');
+                    statusRhElement.classList.add('badge', 'bg-danger');
                 }
                 // Muestra el modal (debes tenerlo en tu HTML)
                 const modal = new bootstrap.Modal(document.getElementById('verSolivitud'));
