@@ -1555,6 +1555,7 @@ class VacationRequestController extends Controller
             ];
         }
         $fechactual = Carbon::now()->format('Y-m-d');
+        $num_days = 1;
         if (count($Datos) > 1) {
 
             $PrimerasVacaciones = (int) $Datos[0]['dv'];
@@ -1567,22 +1568,42 @@ class VacationRequestController extends Controller
             $diasRestantesPeriodoDos = $caducidadperidodos->diffInDays($fechactual);
 
             if ($diasRestantesPeriodoUno >= 30) {
+                $newdv = $PrimerasVacaciones + $num_days;
+                MakeUpVacations::create([
+                    'user_id' => $id,
+                    'description' => 'prueba',
+                    'num_days' => $num_days
+                ]);
+                DB::table('vacations_availables')->where('users_id', $id)->where('period', $PrimerPeriod)->update(
+                    [
+                        'dv' => $newdv,
+                    ]
+                );
+            } elseif ($diasRestantesPeriodoUno < 30) {
+                $newdv = $SegundasVacaciones + $num_days;
                 MakeUpVacations::create([
                     'user_id' => $id,
                     'description' => 'prueba',
                     'num_days' => 1
                 ]);
+                DB::table('vacations_availables')->where('users_id', $id)->where('period', $SegundoPeriod)->update(
+                    [
+                        'dv' => $newdv,
+                    ]
+                );
             }
+        } elseif (count($Datos) == 1) {
+            $PrimerPeriod = $Datos[0]['period'];
+            MakeUpVacations::create([
+                'user_id' => $id,
+                'description' => 'prueba',
+                'num_days' => 1
+            ]);
             DB::table('vacations_availables')->where('users_id', $id)->where('period', $PrimerPeriod)->update(
                 [
                     'dv' => 1,
                 ]
             );
-        } elseif (count($Datos) == 1) {
-            $PrimerPeriodo = (int) $Datos[0]['dv'];
-            $caducidadperidouno = $Datos[0]['cutoff_date'];
-
-            dd($caducidadperidouno);
         }
     }
 
