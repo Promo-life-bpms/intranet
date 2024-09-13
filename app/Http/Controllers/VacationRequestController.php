@@ -725,7 +725,28 @@ class VacationRequestController extends Controller
             ];
         }
 
-        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas'));
+        $usersid = DB::table('employees')->where('status', 1)->pluck('user_id');
+        $IdandNameUser = [];
+        foreach ($usersid as $userid){
+            $Usuario = User::where('id', $userid)->first();
+            $IdandNameUser[] = [
+                'name' => $Usuario->name.' '.$Usuario->lastname,
+                'id' => $userid
+            ];
+            
+        }
+
+        $agregarvacaciones = MakeUpVacations::all();
+        $vacacionesagregadas = [];
+        foreach ($agregarvacaciones as $vacacionesUser){
+            $Usuario = User::where('id', $vacacionesUser->user_id)->first();
+            $vacacionesagregadas[] = [
+                'iduser' => $Usuario->name.' '.$Usuario->lastname,
+                'num_days' => $vacacionesUser->num_days,
+                'description' => $vacacionesUser->description
+            ];
+        }    
+        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', '$IdandNameUser', 'vacacionesagregadas'));
     }
 
     public function AuthorizePermissionBoss(Request $request)
