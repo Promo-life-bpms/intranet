@@ -65,12 +65,12 @@
             </div>
 
             <div id="buttonUpdateDays" style="display: none">
-                <button class="btn" style="background-color: var(--color-target-1); color: white; ">Actualizar</button>
+                <button id="buttonReposicion" class="btn"
+                    style="background-color: var(--color-target-1); color: white; ">Reposición</button>
             </div>
 
 
             <div class="mt-3" style="min-width: 100% !important;">
-
                 {{-- Tabla para autorizadas --}}
                 <div id="tableAutorizadas">
                     <table class="table" style="min-width: 100% !important;">
@@ -233,7 +233,6 @@
                                 <th scope="col" style="text-align: center;">Dias ausente</th>
                                 <th scope="col" style="text-align: center;">Justificante</th>
                                 <th scope="col" style="text-align: center;">Motivo</th>
-                                <th scope="col" style="text-align: center;">Reposicion</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -260,11 +259,6 @@
                                     <td style="text-align: center;">
                                         {{ $rechazada['commentary'] }}
                                     </td>
-                                    <td style="text-align: center;">
-                                        <a href="#" class="btn btn-link">
-                                            <input type="number" style="max-width: 30%; text-align: center;">
-                                        </a>
-                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -278,11 +272,10 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">Detalles de la Solicitud</h5>
+                        <h5 class="modal-title" id="modalTitle">Detalles de la Solicitudd</h5>
                         <div id="modalId" style="display: none;"></div>
-                        <button id="closemodalDetails" type="button" class="close" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button id="closeModalDetails" type="button" class="btn-close" aria-label="Close"></button>
+
                     </div>
                     <div class="modal-body">
                         <form id="miFormularioAproveRh" action="authorization/by/human/resources" method="POST">
@@ -402,7 +395,7 @@
                                 </div>
                             </div>
 
-                            <div id="buttonModifi" style="display: none">
+                            <div id="buttonModifi" class="d-none">
                                 <button id="denyRequest" type="button" class="btn btn-danger mr-2">Rechazar</button>
                                 <button type="button" class="btn btn-primary" id="approveButton">Aprobada</button>
                             </div>
@@ -428,6 +421,43 @@
                             <textarea style="min-width: 100%" class="form-control" id="commentary" name="commentary" required></textarea>
                             <div class="d-flex justify-content-end mt-2">
                                 <button type="button" class="btn btn-primary" id="denyButtonForm">Aprobada</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal para reposición -->
+        <div class="modal fade bd-example-modal-lg" id="modalReposicion" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle">Reposición de dias</h5>
+                        <button id="ButtonCloseReposicion" type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="denyFormRequest" action="reject/leave/by/human/resources" method="POST">
+                            @csrf
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>Buscar por nombre: </span>
+                                    <input type="search" class="form-control" placeholder="Buscar por nombre">
+                                </div>
+                                <div class="col-6">
+                                    <span>Días a reponer: </span>
+                                    <input type="number" class="form-control" placeholder="Días a reponer">
+                                </div>
+                            </div>
+
+                            <textarea style="min-width: 100%" class="form-control mt-2" id="commentary" name="commentary" required></textarea>
+
+                            <div class="d-flex justify-content-end mt-2">
+                                <button type="button" class="btn btn-primary" id="denyButtonForm">Actualizar</button>
                             </div>
                         </form>
                     </div>
@@ -548,6 +578,16 @@
 
         .hover-tarjetaRh3:hover strong {
             color: white;
+        }
+
+
+        /*Color para el badge de aprobado*/
+        .bg-success {
+            background-color: #81C10C !important;
+        }
+
+        .bg-warning {
+            background-color: #FFC107 !important;
         }
     </style>
 
@@ -822,6 +862,7 @@
                     modalDirectManagerStatus.className = 'badge bg-secondary';
                 }
 
+
                 document.getElementById('modalRhStatus').textContent = rh_status;
                 const modalRhStatus = document.getElementById('modalRhStatus');
                 // Verificar el valor y asignar el contenido y las clases
@@ -848,6 +889,13 @@
             });
         });
 
+        /* Cerrar el modal de detalles */
+        document.getElementById('closeModalDetails').addEventListener('click', function() {
+            $('#modalDetails').modal('hide');
+            document.getElementById('buttonModifi').style.display = 'none';
+
+        });
+
         document.querySelectorAll('.updateDetails').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
@@ -855,11 +903,6 @@
 
                 const modal = new bootstrap.Modal(document.getElementById('modalDetails'));
                 modal.show();
-
-                document.getElementById('buttonModifi').style.display = 'flex';
-                document.getElementById('buttonModifi').style.justifyContent = 'flex-end';
-
-
                 const create = this.getAttribute('data-crete');
                 const image = this.getAttribute('data-image');
 
@@ -902,6 +945,11 @@
                 const reveal_id = this.getAttribute('data-reveal_id');
                 const file = this.getAttribute('data-file');
 
+
+                /*Habilitar el boton de rechazar */
+                document.getElementById('buttonModifi').classList.remove('d-none');
+                document.getElementById('buttonModifi').style.display = 'flex';
+                document.getElementById('buttonModifi').style.justifyContent = 'flex-end';
                 const date2 = new Date(current_vacation_expiration);
                 date2.setDate(date2.getDate() + 1);
                 const options2 = {
@@ -1013,12 +1061,12 @@
             }).modal('show');
         });
 
-
-        // Evento cuando se hace clic en el botón para cerrar el modal
-        document.getElementById('closemodalDetails').addEventListener('click', function() {
-            $('#modalDetails').modal('hide');
-            document.getElementById('buttonModifi').style.display = 'none';
-
+        // Abrir modal reposicion
+        document.getElementById('buttonReposicion').addEventListener('click', function() {
+            $('#modalReposicion').modal({
+                backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
+                keyboard: false // Desactiva el cierre con la tecla "Esc"
+            }).modal('show');
         });
     </script>
 @stop

@@ -168,6 +168,7 @@ class VacationRequestController extends Controller
 
     public function CreatePurchase(Request $request)
     {
+
         $user = auth()->user();
 
         $request->validate([
@@ -724,7 +725,7 @@ class VacationRequestController extends Controller
             ];
         }
 
-        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario'));
+        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas'));
     }
 
     public function AuthorizePermissionBoss(Request $request)
@@ -885,7 +886,6 @@ class VacationRequestController extends Controller
     public function UpdateRequest(Request $request)
     {
         $user = auth()->user();
-
         $request->validate([
             'details' => 'required',
             'reveal_id' => 'required',
@@ -962,7 +962,7 @@ class VacationRequestController extends Controller
         }
 
         if ($missingInDias->isEmpty() && $missingInDates->isEmpty()) {
-            DB::table('vacations_availables')->where('user_id', $Solicitud->user_id)->update([
+            DB::table('vacation_requests')->where('user_id', $Solicitud->user_id)->update([
                 'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                 'details' => $request->details == null ? $Solicitud->details : $request->details,
                 'file' => $request->archivos == null ? $Solicitud->file : $path,
@@ -1015,7 +1015,7 @@ class VacationRequestController extends Controller
                                         'status' => 0,
                                     ]);
                                 }
-                                DB::table('vacations_availables')->where('user_id', $Solicitud->user_id)->update([
+                                DB::table('vacation_requests')->where('user_id', $Solicitud->user_id)->update([
                                     'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                     'details' => $request->details == null ? $Solicitud->details : $request->details,
                                     'file' => $request->archivos == null ? $Solicitud->file : $path,
@@ -1035,7 +1035,7 @@ class VacationRequestController extends Controller
                                             'waiting' => $prodv
                                         ]);
 
-                                        DB::table('vacations_availables')->where('user_id', $Solicitud->user_id)->update([
+                                        DB::table('vacation_requests')->where('user_id', $Solicitud->user_id)->update([
                                             'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                             'details' => $request->details == null ? $Solicitud->details : $request->details,
                                             'file' => $request->archivos == null ? $Solicitud->file : $path,
@@ -1070,7 +1070,7 @@ class VacationRequestController extends Controller
                                         'waiting' => $restadedv
                                     ]);
 
-                                    DB::table('vacations_availables')->where('user_id', $Solicitud->user_id)->update([
+                                    DB::table('vacation_requests')->where('user_id', $Solicitud->user_id)->update([
                                         'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                         'details' => $request->details == null ? $Solicitud->details : $request->details,
                                         'file' => $request->archivos == null ? $Solicitud->file : $path,
@@ -1089,7 +1089,7 @@ class VacationRequestController extends Controller
                                         'waiting' => $prueba
                                     ]);
 
-                                    DB::table('vacations_availables')->where('user_id', $Solicitud->user_id)->update([
+                                    DB::table('vacation_requests')->where('user_id', $Solicitud->user_id)->update([
                                         'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                         'details' => $request->details == null ? $Solicitud->details : $request->details,
                                         'file' => $request->archivos == null ? $Solicitud->file : $path,
@@ -1117,7 +1117,7 @@ class VacationRequestController extends Controller
                                                 'waiting' => $cercadv2
                                             ]);
 
-                                            DB::table('vacations_availables')->where('user_id', $Solicitud->user_id)->update([
+                                            DB::table('vacation_requests')->where('user_id', $Solicitud->user_id)->update([
                                                 'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                                 'details' => $request->details == null ? $Solicitud->details : $request->details,
                                                 'file' => $request->archivos == null ? $Solicitud->file : $path,
@@ -1166,7 +1166,7 @@ class VacationRequestController extends Controller
                                 'waiting' => $dvupdate,
                             ]);
 
-                            DB::table('vacations_availables')->where('user_id', $Solicitud->user_id)->update([
+                            DB::table('vacation_requests')->where('user_id', $Solicitud->user_id)->update([
                                 'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                 'details' => $request->details == null ? $Solicitud->details : $request->details,
                                 'file' => $request->archivos == null ? $Solicitud->file : $path,
@@ -1222,7 +1222,7 @@ class VacationRequestController extends Controller
                                 ->where('id', $idfecha)
                                 ->delete();
                         }
-                        DB::table('vacations_availables')->where('user_id', $Solicitud->user_id)->update([
+                        DB::table('vacation_requests')->where('user_id', $Solicitud->user_id)->update([
                             'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                             'details' => $request->details == null ? $Solicitud->details : $request->details,
                             'file' => $request->archivos == null ? $Solicitud->file : $path,
@@ -1243,7 +1243,7 @@ class VacationRequestController extends Controller
                                     ->where('id', $idfecha)
                                     ->delete();
                             }
-                            DB::table('vacations_availables')->where('user_id', $Solicitud->user_id)->update([
+                            DB::table('vacation_requests')->where('user_id', $Solicitud->user_id)->update([
                                 'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                 'details' => $request->details == null ? $Solicitud->details : $request->details,
                                 'file' => $request->archivos == null ? $Solicitud->file : $path,
@@ -1275,7 +1275,7 @@ class VacationRequestController extends Controller
                                 ->delete();
                         }
 
-                        DB::table('vacations_availables')->where('user_id', $Solicitud->user_id)->update([
+                        DB::table('vacation_requests')->where('user_id', $Solicitud->user_id)->update([
                             'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                             'details' => $request->details == null ? $Solicitud->details : $request->details,
                             'file' => $request->archivos == null ? $Solicitud->file : $path,
@@ -1286,7 +1286,7 @@ class VacationRequestController extends Controller
                             'waiting' => $menosWaiting,
                         ]);
                     } else {
-                        return back()->with('message', 'No tienes días reservados.');
+                        return back()->with('message', 'Vacaciones actualizadas.');
                     }
 
                     //dd('Se rechazó la solicitud exitosamente.');

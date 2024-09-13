@@ -86,8 +86,8 @@
                                 <td style="text-align: center;">
                                     @if ($infoSoli['rh_status'] === 'Pendiente')
                                         <span class="badge bg-warning text-dark">{{ $infoSoli['rh_status'] }}</span>
-                                    @elseif ($infoSoli['rh_status'] === 'Rechazada')
-                                        <span class="badge bg-danger">{{ $infoSoli['rh_status'] }}</span>
+                                    @elseif ($infoSoli['rh_status'] === 'Aprobada')
+                                        <span class="badge bg-success">{{ $infoSoli['rh_status'] }}</span>
                                     @else
                                         <span class="badge bg-danger">{{ $infoSoli['rh_status'] }}</span>
                                     @endif
@@ -300,7 +300,6 @@
             </div>
         </div>
     </div>
-
 @stop
 
 
@@ -532,4 +531,14 @@
 
         });
     </script>
+
+    <style>
+        .bg-success {
+            background-color: #81C10C !important;
+        }
+
+        .bg-warning {
+            background-color: #FFC107 !important;
+        }
+    </style>
 @stop

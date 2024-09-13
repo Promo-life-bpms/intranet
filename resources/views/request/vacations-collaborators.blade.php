@@ -161,7 +161,7 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col" style="text-align: center;">#</th>
+                                    <th scope="col" style="text-align: center; align-content: center;">#</th>
                                     <th scope="col" style="text-align: center;">Tipo</th>
                                     <th scope="col" style="text-align: center;">Fechas de ausencia</th>
                                     <th scope="col" style="text-align: center;">Tiempo</th>
@@ -181,7 +181,8 @@
                                     <tr class="solicitud-row" data-tipo="{{ $solicitud->tipo }}"
                                         data-statusRh="{{ $solicitud->rh_status }}"
                                         data-days="{{ implode(',', $solicitud->days) }}">
-                                        <th scope="row">{{ $solicitud->id_request }}</th>
+                                        <th scope="row" style="align-content: center;">{{ $solicitud->id_request }}
+                                        </th>
                                         <td style="text-align: center;">{{ $solicitud->tipo }}</td>
                                         <td style="text-align: center;">
                                             @foreach ($solicitud->days as $day)
@@ -425,7 +426,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="miFormulario" action="create/vacation/or/leave/request" method="POST"
+                        <form id="miFormulario" class="formu1" action="create/vacation/or/leave/request" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             <div class="mt-2" id="dynamicContentEncabezado">
@@ -434,9 +435,6 @@
 
                             <div class="d-flex justify-content-between">
                                 <div class="mr-2">
-                                    {{-- <span class="mt-2">Selecciona los días de ausencia</span> --}}
-
-                                    {{-- <span id="textDinamicCalendar"></span> --}}
 
                                     <div class="mt-2" id="textDinamicCalendar">
                                         <!-- Aquí se va a cambiar el contenido según la tarjeta seleccionada -->
@@ -515,7 +513,7 @@
                                 </div>
                             </div>
                             <div class="row ">
-                                <div class="col-6">
+                                <div class="col-6 mt-2">
                                     <strong> Tipo de solicitud especifica:</strong>
                                 </div>
                                 <div class="col-6">
@@ -575,7 +573,7 @@
 
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <span style="padding: 8px 15px;" class="badge"
+                                        <span style="padding: 8px 15px;" class=""
                                             id="direct_manager_status"></span>
                                     </div>
                                 </div>
@@ -584,13 +582,13 @@
                                         <span>RECURSOS HUMANOS</span>
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <span style="padding: 8px 15px;" class="badge" id="statusRh"> </span>
+                                        <span style="padding: 8px 15px;" class="" id="statusRh"> </span>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-end mb-2">
-                                <div id="seccionOptionButton" style="display: none">
+                                <div id="seccionOptionButton">
                                     <button id="denyRequest" type="button" class="btn btn-danger">Cancelar
                                         Solicitud</button>
                                 </div>
@@ -705,7 +703,6 @@
                                 dayNumberEl.classList.remove('fc-day-selected');
                             }
                             // info.dayEl.classList.remove('fc-day-selected');
-                            // console.log('Días seleccionados:', selectedDays);
                         }
                     },
                     datesSet: function() {
@@ -765,10 +762,8 @@
             /* Filtrar solicitudes con respecto al select del estatus de RH */
             document.getElementById('selectRh').addEventListener('change', function() {
                 var selectedStatusRh = this.value;
-                console.log('selectedStatusRh', selectedStatusRh);
                 // Obtén todas las filas de la tabla
                 var rows = document.querySelectorAll('.solicitud-row');
-                console.log('rows', rows);
                 rows.forEach(function(row) {
                     // Verifica si el tipo de la fila coincide con la selección
                     if (selectedStatusRh === "" || row.getAttribute('data-statusRh') ===
@@ -782,7 +777,6 @@
 
             document.getElementById('fechaInput').addEventListener('input', function() {
                 var selectedDate = this.value; // La fecha seleccionada en el formato YYYY-MM-DD
-                console.log('selectedDate', selectedDate);
                 // Obtén todas las filas de la tabla
                 var rows = document.querySelectorAll('.solicitud-row');
 
@@ -878,11 +872,19 @@
 
             $('#modaTarjetas').on('shown.bs.modal', function() {
                 var calendarElVa = document.getElementById('calendarioDaysUpdate');
+                console.log('daysDataUpdate',
+                    daysDataUpdate); // Para verificar que se esté pasando correctamente
                 var daysSelected = daysDataUpdate.split(
                     ','); // Asegúrate de que 'daysDataUpdate' tiene los días seleccionados previamente
-                var selectedDays = [...
+                selectedDays = [...
                     daysSelected
                 ]; // Inicializa selectedDays con los valores de daysSelected
+
+                /*Eliminar de selectedDays los indices que aparecen como vacios ""*/
+                selectedDays = selectedDays.filter(function(e) {
+                    return e !== "";
+                });
+
                 console.log('Días iniciales seleccionados:', selectedDays); // Para ver los días iniciales
 
                 var calendarioVa = new FullCalendar.Calendar(calendarElVa, {
@@ -993,14 +995,13 @@
                     console.log('Aprobada');
                     // Remueve cualquier clase anterior y añade la clase 'bg-success'
                     statusManegerElement.classList.remove('bg-warning', 'text-dark');
-                    statusManegerElement.classList.add('bg-success'); // Se añade 'bg-success'
+                    statusManegerElement.classList.add('badge', 'bg-success',
+                        'text-white'); // Se añade 'bg-success'
                 } else if (directManagerStatus === 'Pendiente') {
-                    statusManegerElement.classList.remove('bg-success');
-                    statusManegerElement.classList.remove('badge', 'bg-danger');
-                    statusManegerElement.classList.add('bg-warning', 'text-dark');
+                    statusManegerElement.classList.remove('bg-danger', 'bg-success', 'text-white');
+                    statusManegerElement.classList.add('badge', 'bg-warning', 'text-dark');
                 } else {
-                    statusManegerElement.classList.remove('bg-success');
-                    statusManegerElement.classList.remove('bg-warning', 'text-dark');
+                    statusManegerElement.classList.remove('bg-warning', 'text-dark', 'bg-success');
                     statusManegerElement.classList.add('badge', 'bg-danger');
                 }
 
@@ -1025,8 +1026,10 @@
                 if (directManagerStatus === 'Cancelada por el usuario' && statusRh ===
                     'Cancelada por el usuario') {
                     document.getElementById('seccionOptionButton').style.display = 'none';
+                    document.getElementById('ButtonEditRequest').classList.add('d-none');
                 } else {
                     document.getElementById('seccionOptionButton').style.display = 'block';
+                    document.getElementById('ButtonEditRequest').classList.remove('d-none');
 
                 }
 
@@ -1035,6 +1038,9 @@
                     document.getElementById('ButtonEditRequest').classList.add('openModalVacaciones');
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
+
+                    /*Cambiar ruta del formulario miFormulario*/
+                    document.getElementById('miFormulario').action = 'update/request';
                 } else {
                     document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
                     document.getElementById('calendario').classList.remove('d-none');
@@ -1429,6 +1435,18 @@
                 JSON.stringify(selectedDays);
             hiddenDates.classList.add('hidden-input');
             this.appendChild(hiddenDates);
+
+            //MANDAR EL ID PARA ACTUALIZAR LA SOLICITUD
+            const id = document.getElementById('modalId').textContent;
+            const inputId = document.createElement('input');
+            inputId.type = 'hidden';
+            inputId.name = 'id';
+            inputId.value = id;
+            inputId.classList.add('hidden-input');
+            this.appendChild(inputId);
+
+
+
 
             // Si todo está bien, envía el formulario automáticamente
             this.submit();
