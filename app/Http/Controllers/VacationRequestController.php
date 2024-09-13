@@ -775,9 +775,8 @@ class VacationRequestController extends Controller
             'commentary' => $request->commentary
         ]);
 
-        dd('Solicitud rechazada exitosamente.');
-        //return back()->with('message', 'Solicitud rechazada exitosamente.');
-
+        // dd('Solicitud rechazada exitosamente.');
+        return back()->with('message', 'Solicitud rechazada exitosamente.');
     }
 
     public function RejectPermissionUser(Request $request)

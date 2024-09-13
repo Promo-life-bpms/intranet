@@ -157,7 +157,7 @@
 
                         </div>
                     </div>
-                    <div class="mt-4">
+                    <div class="mt-4" id="tableSolicitudes">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -640,6 +640,59 @@
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 
     <script>
+        /*Motores de busqueda */
+        /* Filtrar solicitudes co
+         al select de tipo */
+        document.getElementById('tipoSelect').addEventListener('change', function() {
+            var selectedTipo = this.value;
+            // Obtén todas las filas de la tabla
+            var rows = document.querySelectorAll('.solicitud-row');
+
+            rows.forEach(function(row) {
+                // Verifica si el tipo de la fila coincide con la selección
+                if (selectedTipo === "" || row.getAttribute('data-tipo') === selectedTipo) {
+                    row.style.display = ''; // Mostrar la fila
+                } else {
+                    row.style.display = 'none'; // Ocultar la fila
+                }
+            });
+        });
+
+        /* Filtrar solicitudes con respecto al select del estatus de RH */
+        document.getElementById('selectRh').addEventListener('change', function() {
+            var selectedStatusRh = this.value;
+            // Obtén todas las filas de la tabla
+            var rows = document.querySelectorAll('.solicitud-row');
+            rows.forEach(function(row) {
+                // Verifica si el tipo de la fila coincide con la selección
+                if (selectedStatusRh === "" || row.getAttribute('data-statusRh') ===
+                    selectedStatusRh) {
+                    row.style.display = ''; // Mostrar la fila
+                } else {
+                    row.style.display = 'none'; // Ocultar la fila
+                }
+            });
+        });
+
+        document.getElementById('fechaInput').addEventListener('input', function() {
+            var selectedDate = this.value; // La fecha seleccionada en el formato YYYY-MM-DD
+            // Obtén todas las filas de la tabla
+            var rows = document.querySelectorAll('.solicitud-row');
+
+            rows.forEach(function(row) {
+                // Obtén las fechas asociadas a la fila (separadas por comas)
+                var days = row.getAttribute('data-days').split(',');
+
+                // Verifica si la fecha seleccionada está en las fechas de la fila
+                if (days.includes(selectedDate) || selectedDate === "") {
+                    row.style.display = ''; // Mostrar la fila
+                } else {
+                    row.style.display = 'none'; // Ocultar la fila
+                }
+            });
+        });
+
+
         selectedDays = [];
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -662,6 +715,11 @@
                 // Otros parámetros que necesites
             });
             $('#modaTarjetas').on('hidden.bs.modal', function() {
+                document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
+                document.getElementById('calendario').classList.remove('d-none');
+                document.getElementById('calendarioDaysUpdate').classList.add('d-none');
+                /*Cambiar ruta del formulario miFormulario*/
+                document.getElementById('miFormulario').action = 'create/vacation/or/leave/request';
                 if (calendario) {
                     calendar.getEventSources().forEach(eventSource => eventSource.remove());
                     // También puedes borrar cualquier otra variable o estado relacionado si es necesario
@@ -677,282 +735,176 @@
 
 
         document.addEventListener('DOMContentLoaded', function() {
-            $('#modaTarjetas').on('shown.bs.modal', function() {
-                var selectedRanges = [];
-                var calendarEl = document.getElementById('calendario');
-                var calendario = new FullCalendar.Calendar(calendarEl, {
-                    locale: "es",
-                    hiddenDays: [0, 6],
-                    selectable: true,
-                    dateClick: function(info) {
-                        var selectedDate = info.dateStr;
-                        var dayNumberEl = info.dayEl.querySelector(
-                            '.fc-daygrid-day-number');
-                        if (!selectedDays.includes(selectedDate)) {
-                            selectedDays.push(selectedDate);
-                            if (dayNumberEl) {
-                                dayNumberEl.classList.add('fc-day-selected');
-                            } else {
-                                console.log('no encontrada')
-                            }
-                        } else {
-                            selectedDays = selectedDays.filter(day => day !==
-                                selectedDate);
-
-                            if (dayNumberEl) {
-                                dayNumberEl.classList.remove('fc-day-selected');
-                            }
-                            // info.dayEl.classList.remove('fc-day-selected');
-                        }
-                    },
-                    datesSet: function() {
-                        // Después de que se cambia la vista del calendario, volvemos a aplicar las clases CSS
-                        var days = document.querySelectorAll('.fc-daygrid-day');
-                        days.forEach(function(day) {
-                            var date = day.getAttribute('data-date');
-                            var dayNumberEl = day.querySelector(
-                                '.fc-daygrid-day-number');
-
-                            // Primero, asegurarse de que el número del día tenga la clase eliminada antes de volver a aplicarla
-                            if (dayNumberEl) {
-                                dayNumberEl.classList.remove('fc-day-selected');
-                            }
-
-                            if (selectedDays.includes(date)) {
-                                if (dayNumberEl) {
-                                    dayNumberEl.classList.add('fc-day-selected');
-                                }
-                            }
-                        });
-                    },
-
-
-                    validRange: function(nowDate) {
-                        return {
-                            start: nowDate // no permite seleccionar días antes de hoy
-                        };
-                    },
-
-                    //MOSTRAR LOS BOTONES DE MES, SEMANA Y LISTA//
-                    headerToolbar: {
-                        left: '',
-                        center: 'prev,title,next',
-                        right: '',
-                    },
-                });
-                calendario.render();
-            });
-
-            /* Filtrar solicitudes con respecto al select de tipo */
-            document.getElementById('tipoSelect').addEventListener('change', function() {
-                var selectedTipo = this.value;
-                // Obtén todas las filas de la tabla
-                var rows = document.querySelectorAll('.solicitud-row');
-
-                rows.forEach(function(row) {
-                    // Verifica si el tipo de la fila coincide con la selección
-                    if (selectedTipo === "" || row.getAttribute('data-tipo') === selectedTipo) {
-                        row.style.display = ''; // Mostrar la fila
-                    } else {
-                        row.style.display = 'none'; // Ocultar la fila
-                    }
-                });
-            });
-
-            /* Filtrar solicitudes con respecto al select del estatus de RH */
-            document.getElementById('selectRh').addEventListener('change', function() {
-                var selectedStatusRh = this.value;
-                // Obtén todas las filas de la tabla
-                var rows = document.querySelectorAll('.solicitud-row');
-                rows.forEach(function(row) {
-                    // Verifica si el tipo de la fila coincide con la selección
-                    if (selectedStatusRh === "" || row.getAttribute('data-statusRh') ===
-                        selectedStatusRh) {
-                        row.style.display = ''; // Mostrar la fila
-                    } else {
-                        row.style.display = 'none'; // Ocultar la fila
-                    }
-                });
-            });
-
-            document.getElementById('fechaInput').addEventListener('input', function() {
-                var selectedDate = this.value; // La fecha seleccionada en el formato YYYY-MM-DD
-                // Obtén todas las filas de la tabla
-                var rows = document.querySelectorAll('.solicitud-row');
-
-                rows.forEach(function(row) {
-                    // Obtén las fechas asociadas a la fila (separadas por comas)
-                    var days = row.getAttribute('data-days').split(',');
-
-                    // Verifica si la fecha seleccionada está en las fechas de la fila
-                    if (days.includes(selectedDate) || selectedDate === "") {
-                        row.style.display = ''; // Mostrar la fila
-                    } else {
-                        row.style.display = 'none'; // Ocultar la fila
-                    }
-                });
-            });
-
-
-            // Poner dias de vacaciones y permisos especiales en el calendario
-            $('#modalCalendario').on('shown.bs.modal', function() {
-                /*utilizar la variable vacacionescalendar que viene de el controlador para poner los dias en el calendario */
-                // Convertir la variable de PHP a JSON y asignarla a una variable de JavaScript
-                var vacacionesCalendar = @json($vacacionescalendar);
-                console.log('vacacionesCalendar',
-                    vacacionesCalendar); // Para verificar que se esté pasando correctamente
-
-
-                var selectedRanges = [];
-                var calendarEl = document.getElementById('calendarioDays');
-                ///Seleccionar el div donde viene contenido el dia
-                var calendario = new FullCalendar.Calendar(calendarEl, {
-                    locale: "es",
-                    hiddenDays: [0, 6],
-                    selectable: true,
-                    dayCellDidMount: function(info) {
-                        // Accede al <div> con la clase fc-daygrid-day-top
-                        var dayTopElement = info.el.querySelector(
-                            '.fc-daygrid-day-top');
-
-                        if (dayTopElement) {
-                            // Añade la clase personalizada
-                            dayTopElement.classList.add('custom-day-top-class');
-                        }
-
-                        var dateStr = info.date.toISOString().split('T')[
-                            0]; // Formato 'YYYY-MM-DD'
-                        var daysVacaciones = vacacionesCalendar?.vacaciones
-                        var daysPermisos = vacacionesCalendar?.permisos_especiales
-
-                        if (daysVacaciones.includes(dateStr)) {
-                            var dayNumberElement = info.el.querySelector(
-                                '.fc-daygrid-day-number'
-                            ); // Selecciona el <a> dentro del <td>
-                            if (dayNumberElement) {
-                                dayNumberElement.classList.add(
-                                    'highlighted-day-vacaciones'
-                                ); // Añade tu clase personalizada
-                            }
-                        }
-
-
-                        if (daysVacaciones.includes(dateStr)) {
-                            var dayNumberElement = info.el.querySelector(
-                                '.fc-daygrid-day-number'
-                            ); // Selecciona el <a> dentro del <td>
-                            if (dayNumberElement) {
-                                dayNumberElement.classList.add(
-                                    'highlighted-day-vacaciones'
-                                ); // Añade tu clase personalizada
-                            }
-                        }
-
-                        if (daysPermisos.includes(dateStr)) {
-                            var dayNumberElement = info.el.querySelector(
-                                '.fc-daygrid-day-number'
-                            ); // Selecciona el <a> dentro del <td>
-                            if (dayNumberElement) {
-                                dayNumberElement.classList.add(
-                                    'highlighted-day-permisos'
-                                ); // Añade tu clase personalizada
-                            }
-                        }
-                    },
-
-                    //MOSTRAR LOS BOTONES DE MES, SEMANA Y LISTA//
-                    headerToolbar: {
-                        left: '',
-                        center: 'prev,title,next',
-                        right: '',
-                    },
-                });
-                calendario.render();
-            });
+            let calendarioVa;
+            let calendario;
 
             $('#modaTarjetas').on('shown.bs.modal', function() {
                 var calendarElVa = document.getElementById('calendarioDaysUpdate');
-                console.log('daysDataUpdate',
-                    daysDataUpdate); // Para verificar que se esté pasando correctamente
-                var daysSelected = daysDataUpdate.split(
-                    ','); // Asegúrate de que 'daysDataUpdate' tiene los días seleccionados previamente
-                selectedDays = [...
-                    daysSelected
-                ]; // Inicializa selectedDays con los valores de daysSelected
+                console.log('calendarElVa', calendarElVa);
 
-                /*Eliminar de selectedDays los indices que aparecen como vacios ""*/
-                selectedDays = selectedDays.filter(function(e) {
-                    return e !== "";
-                });
+                if (calendarElVa && calendarElVa.classList.contains('d-none')) {
+                    // Si tiene la clase d-none, inicializamos el calendario para crear
+                    console.log('Calendario para crear');
 
-                console.log('Días iniciales seleccionados:', selectedDays); // Para ver los días iniciales
+                    if (!calendario) { // Solo inicializar si no se ha creado aún
+                        var calendarEl = document.getElementById('calendario');
+                        var calendario = new FullCalendar.Calendar(calendarEl, {
+                            locale: "es",
+                            hiddenDays: [0, 6],
+                            selectable: true,
+                            dateClick: function(info) {
+                                var selectedDate = info.dateStr;
+                                var dayNumberEl = info.dayEl.querySelector(
+                                    '.fc-daygrid-day-number');
+                                if (!selectedDays.includes(selectedDate)) {
+                                    selectedDays.push(selectedDate);
+                                    if (dayNumberEl) {
+                                        dayNumberEl.classList.add('fc-day-selected');
+                                    } else {
+                                        console.log('no encontrada')
+                                    }
+                                } else {
+                                    selectedDays = selectedDays.filter(day => day !==
+                                        selectedDate);
 
-                var calendarioVa = new FullCalendar.Calendar(calendarElVa, {
-                    locale: "es",
-                    hiddenDays: [0, 6],
-                    selectable: true,
-                    dateClick: function(info) {
-                        var selectedDate = info.dateStr;
-                        var dayNumberEl = info.dayEl.querySelector('.fc-daygrid-day-number');
-
-                        // Verifica si el día está en la lista de daysSelected o selectedDays
-                        if (!selectedDays.includes(selectedDate)) {
-                            // Si no está seleccionado, agrégalo
-                            selectedDays.push(selectedDate);
-                            if (dayNumberEl) {
-                                dayNumberEl.classList.add('fc-day-selected');
-                            }
-                            console.log('Día seleccionado agregado:',
-                                selectedDate); // Log para agregar día
-                        } else {
-                            // Si ya está en selectedDays o en daysSelected, elimínalo de ambos
-                            selectedDays = selectedDays.filter(day => day !== selectedDate);
-                            daysSelected = daysSelected.filter(day => day !== selectedDate);
-
-                            if (dayNumberEl) {
-                                dayNumberEl.classList.remove('fc-day-selected');
-                            }
-                            console.log('Día seleccionado eliminado:',
-                                selectedDate); // Log para eliminar día
-                        }
-                        console.log('Días seleccionados ahora:',
-                            selectedDays); // Log de la lista actualizada
-                    },
-
-                    datesSet: function() {
-                        // Después de que se cambia la vista del calendarioVa, volvemos a aplicar las clases CSS
-                        var days = document.querySelectorAll('.fc-daygrid-day');
-                        days.forEach(function(day) {
-                            var date = day.getAttribute('data-date');
-                            var dayNumberEl = day.querySelector(
-                                '.fc-daygrid-day-number');
-
-                            // Primero, asegurarse de que el número del día tenga la clase eliminada antes de volver a aplicarla
-                            if (dayNumberEl) {
-                                dayNumberEl.classList.remove('fc-day-selected');
-                            }
-
-                            if (selectedDays.includes(date)) {
-                                if (dayNumberEl) {
-                                    dayNumberEl.classList.add('fc-day-selected');
+                                    if (dayNumberEl) {
+                                        dayNumberEl.classList.remove('fc-day-selected');
+                                    }
+                                    // info.dayEl.classList.remove('fc-day-selected');
                                 }
-                            }
+                            },
+                            datesSet: function() {
+                                // Después de que se cambia la vista del calendario, volvemos a aplicar las clases CSS
+                                var days = document.querySelectorAll('.fc-daygrid-day');
+                                days.forEach(function(day) {
+                                    var date = day.getAttribute('data-date');
+                                    var dayNumberEl = day.querySelector(
+                                        '.fc-daygrid-day-number');
+
+                                    // Primero, asegurarse de que el número del día tenga la clase eliminada antes de volver a aplicarla
+                                    if (dayNumberEl) {
+                                        dayNumberEl.classList.remove('fc-day-selected');
+                                    }
+
+                                    if (selectedDays.includes(date)) {
+                                        if (dayNumberEl) {
+                                            dayNumberEl.classList.add(
+                                                'fc-day-selected');
+                                        }
+                                    }
+                                });
+                            },
+
+
+                            validRange: function(nowDate) {
+                                return {
+                                    start: nowDate // no permite seleccionar días antes de hoy
+                                };
+                            },
+                            //MOSTRAR LOS BOTONES DE MES, SEMANA Y LISTA//
+                            headerToolbar: {
+                                left: '',
+                                center: 'prev,title,next',
+                                right: '',
+                            },
                         });
-                    },
+                        calendario.render();
+                    }
+                } else {
+                    // Si no tiene la clase d-none, inicializamos el calendario para actualizar
+                    console.log('Calendario para actualizar');
 
-                    //MOSTRAR LOS BOTONES DE MES, SEMANA Y LISTA//
-                    headerToolbar: {
-                        left: '',
-                        center: 'prev,title,next',
-                        right: '',
-                    },
-                    // Resto del código del calendario...
-                });
-                calendarioVa.render();
+                    if (!calendarioVa) { // Solo inicializar si no se ha creado aún
+                        console.log('calnedario para actualizar');
+
+                        console.log('daysDataUpdate',
+                            daysDataUpdate); // Para verificar que se esté pasando correctamente
+                        var daysSelected = daysDataUpdate.split(
+                            ','
+                        ); // Asegúrate de que 'daysDataUpdate' tiene los días seleccionados previamente
+                        selectedDays = [...
+                            daysSelected
+                        ]; // Inicializa selectedDays con los valores de daysSelected
+
+                        /*Eliminar de selectedDays los indices que aparecen como vacios ""*/
+                        selectedDays = selectedDays.filter(function(e) {
+                            return e !== "";
+                        });
+
+                        console.log('Días iniciales seleccionados:',
+                            selectedDays); // Para ver los días iniciales
+
+                        var calendarioVa = new FullCalendar.Calendar(calendarElVa, {
+                            locale: "es",
+                            hiddenDays: [0, 6],
+                            selectable: true,
+                            dateClick: function(info) {
+                                var selectedDate = info.dateStr;
+                                var dayNumberEl = info.dayEl.querySelector(
+                                    '.fc-daygrid-day-number');
+
+                                // Verifica si el día está en la lista de daysSelected o selectedDays
+                                if (!selectedDays.includes(selectedDate)) {
+                                    // Si no está seleccionado, agrégalo
+                                    selectedDays.push(selectedDate);
+                                    if (dayNumberEl) {
+                                        dayNumberEl.classList.add('fc-day-selected');
+                                    }
+                                    console.log('Día seleccionado agregado:',
+                                        selectedDate); // Log para agregar día
+                                } else {
+                                    // Si ya está en selectedDays o en daysSelected, elimínalo de ambos
+                                    selectedDays = selectedDays.filter(day => day !==
+                                        selectedDate);
+                                    daysSelected = daysSelected.filter(day => day !==
+                                        selectedDate);
+
+                                    if (dayNumberEl) {
+                                        dayNumberEl.classList.remove('fc-day-selected');
+                                    }
+                                    console.log('Día seleccionado eliminado:',
+                                        selectedDate); // Log para eliminar día
+                                }
+                                console.log('Días seleccionados ahora:',
+                                    selectedDays); // Log de la lista actualizada
+                            },
+
+                            datesSet: function() {
+                                // Después de que se cambia la vista del calendarioVa, volvemos a aplicar las clases CSS
+                                var days = document.querySelectorAll('.fc-daygrid-day');
+                                days.forEach(function(day) {
+                                    var date = day.getAttribute('data-date');
+                                    var dayNumberEl = day.querySelector(
+                                        '.fc-daygrid-day-number');
+
+                                    // Primero, asegurarse de que el número del día tenga la clase eliminada antes de volver a aplicarla
+                                    if (dayNumberEl) {
+                                        dayNumberEl.classList.remove('fc-day-selected');
+                                    }
+
+                                    if (selectedDays.includes(date)) {
+                                        if (dayNumberEl) {
+                                            dayNumberEl.classList.add(
+                                                'fc-day-selected');
+                                        }
+                                    }
+                                });
+                            },
+
+                            //MOSTRAR LOS BOTONES DE MES, SEMANA Y LISTA//
+                            headerToolbar: {
+                                left: '',
+                                center: 'prev,title,next',
+                                right: '',
+                            },
+                            // Resto del código del calendario...
+                        });
+                        calendarioVa.render();
+                    }
+                }
             });
-
-
         });
+
 
         let daysDataUpdate = '';
 
@@ -1009,15 +961,14 @@
                 if (statusRh === 'Aprobada') {
                     // Remueve cualquier clase anterior y añade la clase 'bg-success'
                     statusRhElement.classList.remove('bg-warning', 'text-dark');
-                    statusRhElement.classList.add('bg-success'); // Se añade 'bg-success'
+                    statusRhElement.classList.add('badge', 'bg-success',
+                        'text-white'); // Se añade 'bg-success'
                 } else if (statusRh === 'Pendiente') {
-                    statusRhElement.classList.remove('bg-success');
-                    statusRhElement.classList.remove('badge', 'bg-danger');
-                    statusRhElement.classList.add('bg-warning', 'text-dark');
+                    statusRhElement.classList.remove('bg-danger', 'bg-success', 'text-white');
+                    statusRhElement.classList.add('badge', 'bg-warning', 'text-dark');
                 } else {
                     // Remueve 'bg-success' y añade otra clase, por ejemplo 'bg-danger'
-                    statusRhElement.classList.remove('bg-success');
-                    statusRhElement.classList.remove('bg-warning', 'text-dark');
+                    statusRhElement.classList.remove('bg-warning', 'text-dark', 'bg-success');
                     statusRhElement.classList.add('badge', 'bg-danger');
                 }
 
@@ -1033,18 +984,15 @@
 
                 }
 
+                console.log('tipo', tipo);
+
                 /*Agregarle una clase al elemento que tiene el id buttonEditRequest dependiendo el tipo de solicitud */
                 if (tipo === 'Vacaciones') {
                     document.getElementById('ButtonEditRequest').classList.add('openModalVacaciones');
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
-
                     /*Cambiar ruta del formulario miFormulario*/
                     document.getElementById('miFormulario').action = 'update/request';
-                } else {
-                    document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
-                    document.getElementById('calendario').classList.remove('d-none');
-                    document.getElementById('calendarioDaysUpdate').classList.add('d-none');
                 }
                 const modal = new bootstrap.Modal(document.getElementById('verSolivitud'));
                 modal.show();
@@ -1435,10 +1383,7 @@
             inputId.name = 'id';
             inputId.value = id;
             inputId.classList.add('hidden-input');
-            this.appendChild(inputId);
-
-
-
+            this.appendChild(inputId)
 
             // Si todo está bien, envía el formulario automáticamente
             this.submit();
