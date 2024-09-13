@@ -1057,15 +1057,15 @@
             document.getElementById('modalTitle').innerText = 'Vacaciones';
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentEncabezado').innerHTML = `
-        <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
-    `;
+                <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
+            `;
             document.getElementById('textDinamicCalendar').innerHTML = `
-        <span>Selecciona los días de vacaciones</span>
-    `;
+                <span>Selecciona los días de vacaciones</span>
+            `;
             document.getElementById('dynamicContentFormaPago').innerHTML = `
-        <span>Forma de pago (Asignación automática)</span>
-        <input type="text" disabled class="form-control mt-1" value="A cuenta de vacaciones" id="forma_pago" name="forma_pago" disabled>
-    `;
+                <span>Forma de pago (Asignación automática)</span>
+                <input type="text" disabled class="form-control mt-1" value="A cuenta de vacaciones" id="forma_pago" name="forma_pago" disabled>
+            `;
 
             // Abre el modal
             $('#modaTarjetas').modal({
@@ -1098,21 +1098,19 @@
             form.submit();
         });
 
-
-
         $('.btnAbrirModal').on('click', function() {
             document.getElementById('modalTitle').innerText = 'Vacaciones';
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentEncabezado').innerHTML = `
-            <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
-        `;
+                <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
+            `;
             document.getElementById('textDinamicCalendar').innerHTML = `
-            <span>Selecciona los días de vacaciones</span>
-        `;
+                <span>Selecciona los días de vacaciones</span>
+            `;
             document.getElementById('dynamicContentFormaPago').innerHTML = `
-            <span>Forma de pago (Asignación automatica)</span>
-            <input type="text" disabled class="form-control mt-1" value="A cuenta de vacaciones" id="forma_pago" name="forma_pago" disabled>
-        `;
+                <span>Forma de pago (Asignación automatica)</span>
+                <input type="text" disabled class="form-control mt-1" value="A cuenta de vacaciones" id="forma_pago" name="forma_pago" disabled>
+            `;
             // Abre el modal
             $('#modaTarjetas').modal({
                 backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
@@ -1124,60 +1122,60 @@
             // Cambia el título del modal
             document.getElementById('modalTitle').innerText = 'Ausencia';
             document.getElementById('textDinamicCalendar').innerHTML = `
-            <span>Selecciona el día que no te presentarás</span>
+                <span>Selecciona el día que no te presentarás</span>
             `;
 
             document.getElementById('dynamicContentEncabezado').innerHTML = `
-           <div class="d-flex">
-                <div class="mr-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="ausenciaTipo" id="retardo" value="retardo">
-                        <label class="form-check-label" for="retardo">Retardo</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="ausenciaTipo" id="salida_antes" value="salida_antes">
-                        <label class="form-check-label" for="salida_antes">Salida antes</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="ausenciaTipo" id="salida_durante" value="salida_durante">
-                        <label class="form-check-label" for="salida_durante">Salida durante</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="ausenciaTipo" id="falta_trabajo" value="falta_trabajo">
-                        <label class="form-check-label" for="falta_trabajo">Falta de trabajo</label>
-                    </div>
-                </div>
-
-                <div style="width: 75.5%">
-                    <span id="text-time" class="d-none" style="color: red">
-                        Toma en cuenta que si la ausencia supera las 4 horas, se descontará de los días de vacaciones.
-                    </span>
-
-                    <div class="d-flex justify-content-between">
-                        <div id="horaSalida" class="cs-form d-none mb-3">
-                            <span>Hora de salida: </span>
-                            <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" />
+                <div class="d-flex">
+                    <div class="mr-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ausenciaTipo" id="retardo" value="retardo">
+                            <label class="form-check-label" for="retardo">Retardo</label>
                         </div>
-
-                        <div id="horaEntrada" class="cs-form d-none mb-3">
-                            <span>Hora de regreso: </span>
-                            <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" />
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ausenciaTipo" id="salida_antes" value="salida_antes">
+                            <label class="form-check-label" for="salida_antes">Salida antes</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ausenciaTipo" id="salida_durante" value="salida_durante">
+                            <label class="form-check-label" for="salida_durante">Salida durante</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="ausenciaTipo" id="falta_trabajo" value="falta_trabajo">
+                            <label class="form-check-label" for="falta_trabajo">Falta de trabajo</label>
                         </div>
                     </div>
 
-                    <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
+                    <div style="width: 75.5%">
+                        <span id="text-time" class="d-none" style="color: red">
+                            Toma en cuenta que si la ausencia supera las 4 horas, se descontará de los días de vacaciones.
+                        </span>
+
+                        <div class="d-flex justify-content-between">
+                            <div id="horaSalida" class="cs-form d-none mb-3">
+                                <span>Hora de salida: </span>
+                                <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" />
+                            </div>
+
+                            <div id="horaEntrada" class="cs-form d-none mb-3">
+                                <span>Hora de regreso: </span>
+                                <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" />
+                            </div>
+                        </div>
+
+                        <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
 
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
-            <div class="mb-2">
-                <span>Forma de pago (Asignación automatica)</span>
-                <input type="text" disabled class="form-control mt-1"
-                value="Descontar Tiempo/Día" id="forma_pago" name="forma_pago" disabled>
-            </div>
-        `;
+                <div class="mb-2">
+                    <span>Forma de pago (Asignación automatica)</span>
+                    <input type="text" disabled class="form-control mt-1"
+                    value="Descontar Tiempo/Día" id="forma_pago" name="forma_pago" disabled>
+                </div>
+            `;
             // Abre el modal
             $('#modaTarjetas').modal('show');
             $(document).ready(function() {
@@ -1218,22 +1216,22 @@
             // Cambia el título del modal
             document.getElementById('modalTitle').innerText = 'Paternidad';
             document.getElementById('dynamicContentEncabezado').innerHTML = `
-            <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
-        `;
+                <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
+            `;
 
             document.getElementById('textDinamicCalendar').innerHTML = `
-            <span>Elige los 5 dias habiles a los que tienes derecho</span>
-        `;
+                <span>Elige los 5 dias habiles a los que tienes derecho</span>
+            `;
 
 
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
-            <div class="mb-2">
-                <span>Forma de pago (Asignación automatica)</span>
+                <div class="mb-2">
+                    <span>Forma de pago (Asignación automatica)</span>
 
-                <input type="text" class="form-control mt-1" value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
-            </div>
-        `;
+                    <input type="text" class="form-control mt-1" value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
+                </div>
+            `;
             // Abre el modal
             $('#modaTarjetas').modal('show');
         });
@@ -1243,23 +1241,23 @@
             document.getElementById('modalTitle').innerText = 'Incapacidad';
 
             document.getElementById('dynamicContentEncabezado').innerHTML = `
-            <span>Selecciona los días naturales que no te presentarás</span>
-        `;
-
+                <span>Selecciona los días naturales que no te presentarás</span>
+            `;
 
             document.getElementById('dynamicContentEncabezado').innerHTML = `
-            <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
-            <span style="color: red"> Nota: Si aún no tienes el justificante, puedes
-                anexarlo al recibirlo. Es obligatorio presentarlo; de lo contrario, se descontarán los dias
-                de tus vacaciones.</span>        `;
+                <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
+                <span style="color: red"> Nota: Si aún no tienes el justificante, puedes
+                    anexarlo al recibirlo. Es obligatorio presentarlo; de lo contrario, se descontarán los dias
+                    de tus vacaciones.</span>
+            `;
 
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
-            <div class="mb-2">
-                <span>Forma de pago (Asignación automatica)</span>
-                <input type="text" class="form-control mt-1" value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
-            </div>
-        `;
+                <div class="mb-2">
+                    <span>Forma de pago (Asignación automatica)</span>
+                    <input type="text" class="form-control mt-1" value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
+                </div>
+            `;
             // Abre el modal
             $('#modaTarjetas').modal('show');
         });
@@ -1268,124 +1266,118 @@
             // Cambia el título del modal
             document.getElementById('modalTitle').innerText = 'Especiales';
             document.getElementById('textDinamicCalendar').innerHTML = `
-            <span>Elige los 3 días naturales a los que tienes derecho</span>
-        `;
+                <span>Elige los 3 días naturales a los que tienes derecho</span>
+            `;
 
             document.getElementById('dynamicContentEncabezado').innerHTML = `
-            <div class="d-flex">
-                            <div class="mr-4 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="Permiso"
-                                        id="fallecimiento" value="Fallecimiento de un familiar">
-                                    <label class="form-check-label" for="fallecimiento">
-                                        Fallecimiento de un familiar
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="Permiso"
-                                        id="matrimonio" value="Matrimonio del colaborador">
-                                    <label class="form-check-label" for="matrimonio">
-                                        Matrimonio del colaborador
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="Permiso"
-                                        id="academico" value="Motivos academicos/escolares">
-                                    <label class="form-check-label" for="academico">
-                                        Motivos academicos/escolares
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="Permiso"
-                                        id="asunto" value="Asuntos personales">
-                                    <label class="form-check-label" for="asunto">Asuntos personales
-                                    </label>
-                                </div>
+                <div class="d-flex">
+                    <div class="mr-4 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="Permiso"
+                                id="fallecimiento" value="Fallecimiento de un familiar">
+                                <label class="form-check-label" for="fallecimiento">
+                                    Fallecimiento de un familiar
+                                </label>
                             </div>
-
-                            <div style="width: 50%">
-                                <div id="persona_afectada" class="d-none">
-                                    <span>Persona afectada: </span>
-                                    <div>
-                                        <select class="form-select mt-1" aria-label="Default select example"
-                                            id='familiar' name="familiar">
-                                            <option value="" selected>Seleccione</option>
-                                            <option value="conyuge">Conyuge</option>
-                                            <option value="hijos">Hijos</option>
-                                            <option value="padres">Padres</option>
-                                            <option value="hermanos">Hermanos</option>
-                                            <option value="otros">Otros</option>
-                                        </select>
-                                    </div>
-                                </div>
-
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="Permiso"
+                                id="matrimonio" value="Matrimonio del colaborador">
+                                <label class="form-check-label" for="matrimonio">
+                                    Matrimonio del colaborador
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="Permiso"
+                                id="academico" value="Motivos academicos/escolares">
+                                <label class="form-check-label" for="academico">
+                                    Motivos academicos/escolares
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="Permiso"
+                                id="asunto" value="Asuntos personales">
+                                <label class="form-check-label" for="asunto">Asuntos personales
+                                </label>
+                            </div>
+                    </div>
+                    <div style="width: 50%">
+                        <div id="persona_afectada" class="d-none">
+                            <span>Persona afectada: </span>
                                 <div>
-                                    <div id='academicos' class="d-none ">
-                                        <div class="row mb-3">
-                                            <div class="col-6">
-                                                <span>Tu posición es: </span>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio"
-                                                        name="Posicion" id="hijo" value="hijo">
-                                                    <label class="form-check-label" for="hijo">
-                                                        Hijo
-                                                    </label>
-                                                </div>
+                                    <select class="form-select mt-1" aria-label="Default select example"
+                                    id='familiar' name="familiar">
+                                        <option value="" selected>Seleccione</option>
+                                        <option value="conyuge">Conyuge</option>
+                                        <option value="hijos">Hijos</option>
+                                        <option value="padres">Padres</option>
+                                        <option value="hermanos">Hermanos</option>
+                                        <option value="otros">Otros</option>
+                                    </select>
+                                </div>
+                        </div>
+                        <div>
+                            <div id='academicos' class="d-none ">
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <span>Tu posición es: </span>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio"
+                                                name="Posicion" id="hijo" value="hijo">
+                                                <label class="form-check-label" for="hijo">
+                                                    Hijo
+                                                </label>
                                             </div>
+                                    </div>
 
-                                            <div class="col-6">
-                                                <div class="cs-form ">
-                                                    <span>Hora de salida: </span>
-                                                    <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" />
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-
-                                        <div class="row ">
-                                            <div class="col-6">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio"
-                                                        name="Posicion" id="colaborador" value="colaborador">
-                                                    <label class="form-check-label" for="colaborador">
-                                                        Colaborador
-                                                    </label>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-6">
-                                                <div class="cs-form mb-3">
-                                                    <span>Hora de regreso: </span>
-                                                    <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" />
-                                                </div>
-                                            </div>
-
+                                    <div class="col-6">
+                                        <div class="cs-form ">
+                                            <span>Hora de salida: </span>
+                                            <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" />
                                         </div>
                                     </div>
+
                                 </div>
 
+                                <div class="row ">
+                                    <div class="col-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                            name="Posicion" id="colaborador" value="colaborador">
+                                            <label class="form-check-label" for="colaborador">
+                                                Colaborador
+                                            </label>
+                                        </div>
+                                    </div>
 
+                                    <div class="col-6">
+                                        <div class="cs-form mb-3">
+                                            <span>Hora de regreso: </span>
+                                            <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" />
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div>
-                            <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
-                        </div>     `;
+                <div>
+                    <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
+                </div>
+            `;
 
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
-            <div class="mb-2">
-                <span>Forma de pago (Asignación automatica)</span>
-                <input type="text"  class="form-control mt-1"
-                    value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
+                <div class="mb-2">
+                    <span>Forma de pago (Asignación automatica)</span>
+                    <input type="text"  class="form-control mt-1"
+                        value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
 
-            </div>
-        `;
+                </div>
+            `;
             // Abre el modal
             $('#modaTarjetas').modal('show');
-
-
             $(document).ready(function() {
                 $('input[name="Permiso"]').on('change', function() {
                     especiales($(this).attr('id'));
