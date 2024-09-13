@@ -33,7 +33,7 @@
         @endphp
 
         <div class="d-flex mb-4">
-            <div id="openModalVacaciones" style="width: 18%;">
+            <div class="openModalVacaciones" style="width: 18%;">
                 <div class="tarjeta hover-tarjeta" style="border-bottom: 10px solid var(--color-target-1);">
                     <div class="d-flex justify-content-end ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="32" height="32"
@@ -161,13 +161,11 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col" style="text-align: center;">#</th>
+                                    <th scope="col" style="text-align: center; align-content: center;">#</th>
                                     <th scope="col" style="text-align: center;">Tipo</th>
                                     <th scope="col" style="text-align: center;">Fechas de ausencia</th>
                                     <th scope="col" style="text-align: center;">Tiempo</th>
                                     <th scope="col" style="text-align: center;">Jefe directo</th>
-
-
                                     <th scope="col" style="text-align: center;">RH</th>
                                     <th scope="col" style="text-align: center;">Detalles</th>
                                 </tr>
@@ -183,7 +181,8 @@
                                     <tr class="solicitud-row" data-tipo="{{ $solicitud->tipo }}"
                                         data-statusRh="{{ $solicitud->rh_status }}"
                                         data-days="{{ implode(',', $solicitud->days) }}">
-                                        <th scope="row">{{ $solicitud->id_request }}</th>
+                                        <th scope="row" style="align-content: center;">{{ $solicitud->id_request }}
+                                        </th>
                                         <td style="text-align: center;">{{ $solicitud->tipo }}</td>
                                         <td style="text-align: center;">
                                             @foreach ($solicitud->days as $day)
@@ -197,17 +196,22 @@
                                             @if ($solicitud->direct_manager_status == 'Pendiente')
                                                 <span
                                                     class="badge bg-warning text-dark">{{ $solicitud->direct_manager_status }}</span>
-                                            @else
+                                            @elseif ($solicitud->direct_manager_status == 'Aprobada')
                                                 <span
                                                     class="badge bg-success">{{ $solicitud->direct_manager_status }}</span>
+                                            @else
+                                                <span
+                                                    class="badge bg-danger">{{ $solicitud->direct_manager_status }}</span>
                                             @endif
                                         </td>
                                         <td style="text-align: center;">
                                             @if ($solicitud->rh_status == 'Pendiente')
                                                 <span
                                                     class="badge bg-warning text-dark">{{ $solicitud->rh_status }}</span>
-                                            @else
+                                            @elseif ($solicitud->rh_status == 'Aprobada')
                                                 <span class="badge bg-success">{{ $solicitud->rh_status }}</span>
+                                            @else
+                                                <span class="badge bg-danger">{{ $solicitud->rh_status }}</span>
                                             @endif
                                         </td>
                                         <td style="text-align: center; cursor: pointer;">
@@ -344,6 +348,8 @@
                             </div>
                             <div class="row justify-content-start">
                                 <div class="col-4 d-flex">
+
+                                    <div id="" style="display: none"></div>
                                     <div class="mr-1 col-4"
                                         style="display: flex; justify-content: center; align-items: center;">
                                         <span> Vacaciones</span>
@@ -420,7 +426,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="miFormulario" action="create/vacation/or/leave/request" method="POST"
+                        <form id="miFormulario" class="formu1" action="create/vacation/or/leave/request" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             <div class="mt-2" id="dynamicContentEncabezado">
@@ -429,15 +435,13 @@
 
                             <div class="d-flex justify-content-between">
                                 <div class="mr-2">
-                                    {{-- <span class="mt-2">Selecciona los días de ausencia</span> --}}
-
-                                    {{-- <span id="textDinamicCalendar"></span> --}}
 
                                     <div class="mt-2" id="textDinamicCalendar">
                                         <!-- Aquí se va a cambiar el contenido según la tarjeta seleccionada -->
                                     </div>
 
                                     <div class="mt-2" id='calendario'></div>
+                                    <div class="mt-2 d-none" id="calendarioDaysUpdate"></div>
                                 </div>
                                 <div class="mt-5">
                                     <div class="mt-2" id="dynamicContentFormaPago">
@@ -482,6 +486,8 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalLabel">Mi solicitud</h5>
+                        <div id="modalId" style="display: none;"></div>
+
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-bo-dy">
@@ -495,7 +501,8 @@
                                     <span id="tipo"></span>
                                 </div>
 
-                                <div id="editSolcitud" class="col-1 d-flex align-content-center justify-content-center "
+                                <div id="ButtonEditRequest"
+                                    class="col-1 d-flex align-content-center justify-content-center"
                                     style="border-radius: 25px; background-color: #E58D22; height: 45px; width: 45px; align-items: center; cursor: pointer;">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="32" height="32"
                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
@@ -506,7 +513,7 @@
                                 </div>
                             </div>
                             <div class="row ">
-                                <div class="col-6">
+                                <div class="col-6 mt-2">
                                     <strong> Tipo de solicitud especifica:</strong>
                                 </div>
                                 <div class="col-6">
@@ -556,7 +563,7 @@
 
                             <div class="mt-3">
                                 <strong>Motivo:</strong>
-                                <textarea style="min-width: 100%" class="form-control" id="details_text" name="details_text" required></textarea>
+                                <textarea style="min-width: 100%" class="form-control" id="details_text" name="details_text" disabled></textarea>
                             </div>
 
                             <div class="d-flex mt-3">
@@ -566,7 +573,7 @@
 
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <span style="padding: 8px 15px;" class="badge"
+                                        <span style="padding: 8px 15px;" class=""
                                             id="direct_manager_status"></span>
                                     </div>
                                 </div>
@@ -575,14 +582,15 @@
                                         <span>RECURSOS HUMANOS</span>
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <span style="padding: 8px 15px;" class="badge" id="statusRh"> </span>
+                                        <span style="padding: 8px 15px;" class="" id="statusRh"> </span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-end">
-                                <div>
-                                    <button class="btn btn-danger mb-2">Cancelar Solicitud</button>
+                            <div class="d-flex justify-content-end mb-2">
+                                <div id="seccionOptionButton">
+                                    <button id="denyRequest" type="button" class="btn btn-danger">Cancelar
+                                        Solicitud</button>
                                 </div>
                             </div>
                         </div>
@@ -591,9 +599,29 @@
             </div>
         </div>
 
-
-
-
+        <!-- Modal cancelar solicitud -->
+        <div class="modal fade bd-example-modal-lg" id="modalDeny" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle">Rechazar solicitud</h5>
+                        <button id="closeModalDeny" type="button" class="close" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="denyFormRequest" action="reject/leave/by/direct/user" method="POST">
+                            @csrf
+                            <textarea style="min-width: 100%" class="form-control" id="commentary" name="commentary" required></textarea>
+                            <div class="d-flex justify-content-end mt-2">
+                                <button type="button" class="btn btn-primary" id="denyButtonForm">Enviar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 
@@ -675,7 +703,6 @@
                                 dayNumberEl.classList.remove('fc-day-selected');
                             }
                             // info.dayEl.classList.remove('fc-day-selected');
-                            // console.log('Días seleccionados:', selectedDays);
                         }
                     },
                     datesSet: function() {
@@ -735,10 +762,8 @@
             /* Filtrar solicitudes con respecto al select del estatus de RH */
             document.getElementById('selectRh').addEventListener('change', function() {
                 var selectedStatusRh = this.value;
-                console.log('selectedStatusRh', selectedStatusRh);
                 // Obtén todas las filas de la tabla
                 var rows = document.querySelectorAll('.solicitud-row');
-                console.log('rows', rows);
                 rows.forEach(function(row) {
                     // Verifica si el tipo de la fila coincide con la selección
                     if (selectedStatusRh === "" || row.getAttribute('data-statusRh') ===
@@ -752,7 +777,6 @@
 
             document.getElementById('fechaInput').addEventListener('input', function() {
                 var selectedDate = this.value; // La fecha seleccionada en el formato YYYY-MM-DD
-                console.log('selectedDate', selectedDate);
                 // Obtén todas las filas de la tabla
                 var rows = document.querySelectorAll('.solicitud-row');
 
@@ -771,28 +795,21 @@
 
 
             // Poner dias de vacaciones y permisos especiales en el calendario
-
             $('#modalCalendario').on('shown.bs.modal', function() {
-
-                let dayDefaultCalendar = {
-                    vacaciones: ['2024-09-09', '2024-09-17'],
-                    permisos: ['2024-09-12', '2024-09-13']
-                };
-
-                console.log('dayDefaultCalendar', dayDefaultCalendar);
+                /*utilizar la variable vacacionescalendar que viene de el controlador para poner los dias en el calendario */
+                // Convertir la variable de PHP a JSON y asignarla a una variable de JavaScript
+                var vacacionesCalendar = @json($vacacionescalendar);
+                console.log('vacacionesCalendar',
+                    vacacionesCalendar); // Para verificar que se esté pasando correctamente
 
 
                 var selectedRanges = [];
                 var calendarEl = document.getElementById('calendarioDays');
                 ///Seleccionar el div donde viene contenido el dia
-
-
                 var calendario = new FullCalendar.Calendar(calendarEl, {
                     locale: "es",
                     hiddenDays: [0, 6],
                     selectable: true,
-
-
                     dayCellDidMount: function(info) {
                         // Accede al <div> con la clase fc-daygrid-day-top
                         var dayTopElement = info.el.querySelector(
@@ -803,12 +820,10 @@
                             dayTopElement.classList.add('custom-day-top-class');
                         }
 
-
-
                         var dateStr = info.date.toISOString().split('T')[
                             0]; // Formato 'YYYY-MM-DD'
-                        var daysVacaciones = dayDefaultCalendar?.vacaciones
-                        var daysPermisos = dayDefaultCalendar?.permisos
+                        var daysVacaciones = vacacionesCalendar?.vacaciones
+                        var daysPermisos = vacacionesCalendar?.permisos_especiales
 
                         if (daysVacaciones.includes(dateStr)) {
                             var dayNumberElement = info.el.querySelector(
@@ -855,12 +870,98 @@
                 calendario.render();
             });
 
-        })
+            $('#modaTarjetas').on('shown.bs.modal', function() {
+                var calendarElVa = document.getElementById('calendarioDaysUpdate');
+                console.log('daysDataUpdate',
+                    daysDataUpdate); // Para verificar que se esté pasando correctamente
+                var daysSelected = daysDataUpdate.split(
+                    ','); // Asegúrate de que 'daysDataUpdate' tiene los días seleccionados previamente
+                selectedDays = [...
+                    daysSelected
+                ]; // Inicializa selectedDays con los valores de daysSelected
+
+                /*Eliminar de selectedDays los indices que aparecen como vacios ""*/
+                selectedDays = selectedDays.filter(function(e) {
+                    return e !== "";
+                });
+
+                console.log('Días iniciales seleccionados:', selectedDays); // Para ver los días iniciales
+
+                var calendarioVa = new FullCalendar.Calendar(calendarElVa, {
+                    locale: "es",
+                    hiddenDays: [0, 6],
+                    selectable: true,
+                    dateClick: function(info) {
+                        var selectedDate = info.dateStr;
+                        var dayNumberEl = info.dayEl.querySelector('.fc-daygrid-day-number');
+
+                        // Verifica si el día está en la lista de daysSelected o selectedDays
+                        if (!selectedDays.includes(selectedDate)) {
+                            // Si no está seleccionado, agrégalo
+                            selectedDays.push(selectedDate);
+                            if (dayNumberEl) {
+                                dayNumberEl.classList.add('fc-day-selected');
+                            }
+                            console.log('Día seleccionado agregado:',
+                                selectedDate); // Log para agregar día
+                        } else {
+                            // Si ya está en selectedDays o en daysSelected, elimínalo de ambos
+                            selectedDays = selectedDays.filter(day => day !== selectedDate);
+                            daysSelected = daysSelected.filter(day => day !== selectedDate);
+
+                            if (dayNumberEl) {
+                                dayNumberEl.classList.remove('fc-day-selected');
+                            }
+                            console.log('Día seleccionado eliminado:',
+                                selectedDate); // Log para eliminar día
+                        }
+                        console.log('Días seleccionados ahora:',
+                            selectedDays); // Log de la lista actualizada
+                    },
+
+                    datesSet: function() {
+                        // Después de que se cambia la vista del calendarioVa, volvemos a aplicar las clases CSS
+                        var days = document.querySelectorAll('.fc-daygrid-day');
+                        days.forEach(function(day) {
+                            var date = day.getAttribute('data-date');
+                            var dayNumberEl = day.querySelector(
+                                '.fc-daygrid-day-number');
+
+                            // Primero, asegurarse de que el número del día tenga la clase eliminada antes de volver a aplicarla
+                            if (dayNumberEl) {
+                                dayNumberEl.classList.remove('fc-day-selected');
+                            }
+
+                            if (selectedDays.includes(date)) {
+                                if (dayNumberEl) {
+                                    dayNumberEl.classList.add('fc-day-selected');
+                                }
+                            }
+                        });
+                    },
+
+                    //MOSTRAR LOS BOTONES DE MES, SEMANA Y LISTA//
+                    headerToolbar: {
+                        left: '',
+                        center: 'prev,title,next',
+                        right: '',
+                    },
+                    // Resto del código del calendario...
+                });
+                calendarioVa.render();
+            });
+
+
+        });
+
+        let daysDataUpdate = '';
 
         // Evento cuando se hace clic en el botón para abrir el modal
         document.querySelectorAll('.openModalBtn').forEach(button => {
             button.addEventListener('click', function() {
-                const solicitudId = this.getAttribute('data-id');
+                const id = this.getAttribute('data-id');
+                document.getElementById('modalId').textContent = id;
+
                 const tipo = this.getAttribute('data-tipo');
                 const methodOfPayment = tipo === 'Vacaciones' ?
                     'A cuenta de vacaciones' :
@@ -872,6 +973,8 @@
                 const statusRh = this.getAttribute('data-statusRh');
                 const file = this.getAttribute('data-file');
                 const days = this.getAttribute('data-days');
+
+                daysDataUpdate = days;
 
                 // Cambiar el contenido del modal
                 document.getElementById('tipo').textContent = tipo;
@@ -889,76 +992,132 @@
 
                 // Supongamos que 'direct_manager_status' tiene el valor que quieres evaluar
                 if (directManagerStatus === 'Aprobada') {
+                    console.log('Aprobada');
                     // Remueve cualquier clase anterior y añade la clase 'bg-success'
                     statusManegerElement.classList.remove('bg-warning', 'text-dark');
-                    statusManegerElement.classList.add('bg-success'); // Se añade 'bg-success'
+                    statusManegerElement.classList.add('badge', 'bg-success',
+                        'text-white'); // Se añade 'bg-success'
+                } else if (directManagerStatus === 'Pendiente') {
+                    statusManegerElement.classList.remove('bg-danger', 'bg-success', 'text-white');
+                    statusManegerElement.classList.add('badge', 'bg-warning', 'text-dark');
                 } else {
-                    // Remueve 'bg-success' y añade otra clase, por ejemplo 'bg-danger'
-                    statusManegerElement.classList.remove('bg-success');
-                    statusManegerElement.classList.add('bg-warning', 'text-dark');
+                    statusManegerElement.classList.remove('bg-warning', 'text-dark', 'bg-success');
+                    statusManegerElement.classList.add('badge', 'bg-danger');
                 }
+
 
                 if (statusRh === 'Aprobada') {
                     // Remueve cualquier clase anterior y añade la clase 'bg-success'
                     statusRhElement.classList.remove('bg-warning', 'text-dark');
                     statusRhElement.classList.add('bg-success'); // Se añade 'bg-success'
+                } else if (statusRh === 'Pendiente') {
+                    statusRhElement.classList.remove('bg-success');
+                    statusRhElement.classList.remove('badge', 'bg-danger');
+                    statusRhElement.classList.add('bg-warning', 'text-dark');
                 } else {
                     // Remueve 'bg-success' y añade otra clase, por ejemplo 'bg-danger'
                     statusRhElement.classList.remove('bg-success');
-                    statusRhElement.classList.add('bg-warning', 'text-dark');
+                    statusRhElement.classList.remove('bg-warning', 'text-dark');
+                    statusRhElement.classList.add('badge', 'bg-danger');
                 }
-                // Muestra el modal (debes tenerlo en tu HTML)
+
+
+                /* Habilitar o deshabiliar la sección de botones de acuerdo al estatus de la solicitud */
+                if (directManagerStatus === 'Cancelada por el usuario' && statusRh ===
+                    'Cancelada por el usuario') {
+                    document.getElementById('seccionOptionButton').style.display = 'none';
+                    document.getElementById('ButtonEditRequest').classList.add('d-none');
+                } else {
+                    document.getElementById('seccionOptionButton').style.display = 'block';
+                    document.getElementById('ButtonEditRequest').classList.remove('d-none');
+
+                }
+
+                /*Agregarle una clase al elemento que tiene el id buttonEditRequest dependiendo el tipo de solicitud */
+                if (tipo === 'Vacaciones') {
+                    document.getElementById('ButtonEditRequest').classList.add('openModalVacaciones');
+                    document.getElementById('calendario').classList.add('d-none');
+                    document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
+
+                    /*Cambiar ruta del formulario miFormulario*/
+                    document.getElementById('miFormulario').action = 'update/request';
+                } else {
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
+                    document.getElementById('calendario').classList.remove('d-none');
+                    document.getElementById('calendarioDaysUpdate').classList.add('d-none');
+                }
                 const modal = new bootstrap.Modal(document.getElementById('verSolivitud'));
                 modal.show();
             });
         });
 
-        // /* Abrir modal de editar solicitud */
-        document.getElementById('editSolcitud').addEventListener('click', function() {
-            // Cambia el título del modal
-            $('#verSolivitud').modal('hide');
 
-            document.getElementById('modalTitle').innerText = 'Editar solicitud';
+        $(document).on('click', '.openModalVacaciones', function() {
+            $('#verSolivitud').modal('hide');
+            document.getElementById('modalTitle').innerText = 'Vacaciones';
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentEncabezado').innerHTML = `
         <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
     `;
-
-            document.getElementById('dynamicContentFormaPago').innerHTML = `
-        <span>Forma de pago (Asignación automatica)</span>
-        <input type="text" disabled class="form-control mt-1"
-        value="A cuenta de vacaciones" id="forma_pago" name="forma_pago" disabled>
+            document.getElementById('textDinamicCalendar').innerHTML = `
+        <span>Selecciona los días de vacaciones</span>
     `;
+            document.getElementById('dynamicContentFormaPago').innerHTML = `
+        <span>Forma de pago (Asignación automática)</span>
+        <input type="text" disabled class="form-control mt-1" value="A cuenta de vacaciones" id="forma_pago" name="forma_pago" disabled>
+    `;
+
             // Abre el modal
             $('#modaTarjetas').modal({
                 backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
                 keyboard: false // Desactiva el cierre con la tecla "Esc"
-            }).modal('show'); // Muestra el modal
+            }).modal('show');
+        });
+
+        /* Abrir modal de cancelar solicitud */
+        document.getElementById('denyRequest').addEventListener('click', function() {
+            $('#verSolivitud').modal('hide');
+            $('#modalDeny').modal({
+                backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
+                keyboard: false // Desactiva el cierre con la tecla "Esc"
+            }).modal('show');
+        });
+
+        /* Enviar formulario de rechazo */
+        document.getElementById('denyButtonForm').addEventListener('click', function() {
+            const form = document.getElementById('denyFormRequest');
+            /*Mandar el ID de la solicitus que se va a aprobar del que viene en el modal*/
+            const id = document.getElementById('modalId').textContent;
+            const inputId = document.createElement('input');
+            inputId.type = 'hidden';
+            inputId.name = 'id';
+            inputId.value = id;
+            form.appendChild(inputId);
+
+            // Imprimir todos los datos que se enviarán por consola
+            form.submit();
         });
 
 
-        document.getElementById('openModalVacaciones').addEventListener('click', function() {
-            // Cambia el título del modal
+
+        $('.btnAbrirModal').on('click', function() {
             document.getElementById('modalTitle').innerText = 'Vacaciones';
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentEncabezado').innerHTML = `
             <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
         `;
-
             document.getElementById('textDinamicCalendar').innerHTML = `
             <span>Selecciona los días de vacaciones</span>
         `;
-
             document.getElementById('dynamicContentFormaPago').innerHTML = `
             <span>Forma de pago (Asignación automatica)</span>
-            <input type="text" disabled class="form-control mt-1"
-            value="A cuenta de vacaciones" id="forma_pago" name="forma_pago" disabled>
+            <input type="text" disabled class="form-control mt-1" value="A cuenta de vacaciones" id="forma_pago" name="forma_pago" disabled>
         `;
             // Abre el modal
             $('#modaTarjetas').modal({
                 backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
                 keyboard: false // Desactiva el cierre con la tecla "Esc"
-            }).modal('show'); // Muestra el modal
+            }).modal('show');
         });
 
         document.getElementById('openModalAusencia').addEventListener('click', function() {
@@ -1276,6 +1435,18 @@
                 JSON.stringify(selectedDays);
             hiddenDates.classList.add('hidden-input');
             this.appendChild(hiddenDates);
+
+            //MANDAR EL ID PARA ACTUALIZAR LA SOLICITUD
+            const id = document.getElementById('modalId').textContent;
+            const inputId = document.createElement('input');
+            inputId.type = 'hidden';
+            inputId.name = 'id';
+            inputId.value = id;
+            inputId.classList.add('hidden-input');
+            this.appendChild(inputId);
+
+
+
 
             // Si todo está bien, envía el formulario automáticamente
             this.submit();
