@@ -123,6 +123,7 @@ class VacationRequestController extends Controller
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
             $porcentajetomadas = round($porcentajetomadas, 2);
+            //dd($porcentajetomadas);
             $fecha_expiracion_actual = $Datos[0]['cutoff_date'];
             $vacaciones_actuales = $Datos[0]['dv'];
         }
@@ -442,7 +443,7 @@ class VacationRequestController extends Controller
             $dvupdate = $primerWaiting + $diasTotales;
             $Disponibilidad = $primerWaiting + $primerDaysEnjoyed;
 
-            if ($diasTotales > $totalunsoloperido || $Disponibilidad  > $totalunsoloperido) {
+            if ($diasTotales > $totalunsoloperido) {
                 return back()->with('message', 'No cuentas con los días solicitados.');
             }
 
@@ -725,7 +726,28 @@ class VacationRequestController extends Controller
             ];
         }
 
-        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas'));
+        $usersid = DB::table('employees')->where('status', 1)->pluck('user_id');
+        $IdandNameUser = [];
+        foreach ($usersid as $userid){
+            $Usuario = User::where('id', $userid)->first();
+            $IdandNameUser[] = [
+                'name' => $Usuario->name.' '.$Usuario->lastname,
+                'id' => $userid
+            ];
+            
+        }
+
+        $agregarvacaciones = MakeUpVacations::all();
+        $vacacionesagregadas = [];
+        foreach ($agregarvacaciones as $vacacionesUser){
+            $Usuario = User::where('id', $vacacionesUser->user_id)->first();
+            $vacacionesagregadas[] = [
+                'iduser' => $Usuario->name.' '.$Usuario->lastname,
+                'num_days' => $vacacionesUser->num_days,
+                'description' => $vacacionesUser->description
+            ];
+        }    
+        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', '$IdandNameUser', 'vacacionesagregadas'));
     }
 
     public function AuthorizePermissionBoss(Request $request)
