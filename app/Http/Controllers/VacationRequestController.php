@@ -123,6 +123,7 @@ class VacationRequestController extends Controller
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
             $porcentajetomadas = round($porcentajetomadas, 2);
+            //dd($porcentajetomadas);
             $fecha_expiracion_actual = $Datos[0]['cutoff_date'];
             $vacaciones_actuales = $Datos[0]['dv'];
         }
@@ -442,7 +443,7 @@ class VacationRequestController extends Controller
             $dvupdate = $primerWaiting + $diasTotales;
             $Disponibilidad = $primerWaiting + $primerDaysEnjoyed;
 
-            if ($diasTotales > $totalunsoloperido || $Disponibilidad  > $totalunsoloperido) {
+            if ($diasTotales > $totalunsoloperido) {
                 return back()->with('message', 'No cuentas con los días solicitados.');
             }
 
