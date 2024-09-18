@@ -15,6 +15,7 @@ class VacationRequest extends Model
         'user_id',
         'request_type_id',
         'details',
+        'more_information',
         'reveal_id',
         'file',
         'commentary',

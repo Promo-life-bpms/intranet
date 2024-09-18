@@ -169,6 +169,7 @@ class VacationRequestController extends Controller
 
     public function CreatePurchase(Request $request)
     {
+        //dd($request);
         $user = auth()->user();
         ///VACACIONES
         if ($request->request_type_id == 1) {
@@ -485,7 +486,6 @@ class VacationRequestController extends Controller
 
         ///PERMISOS ESPECIALES
         if ($request->request_type_id == 2) {
-
             $request->validate([
                 'details' => 'required',
                 'reveal_id' => 'required',
@@ -538,14 +538,14 @@ class VacationRequestController extends Controller
                 }
 
                 ///aqui ya se va crear la solicitud
-                if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora2Carbon)) {
+                if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora1Carbon) && $hora2Carbon->lessThanOrEqualTo($hora5PM)) {
                     // Hora dentro del rango permitido
-
                     $Vacaciones = VacationRequest::create([
                         'user_id' => $user->id,
                         'request_type_id' => 2,
                         'file' => $path,
                         'details' => $request->details,
+                        'more_information' => $request->ausenciaTipo,
                         'reveal_id' => $request->reveal_id,
                         'direct_manager_id' => $jefedirecto,
                         'direct_manager_status' => 'Pendiente',
@@ -623,6 +623,7 @@ class VacationRequestController extends Controller
             //dd($diferenciaEnHoras.'...'.$diferenciaEnMinutosRestantes);
         }
 
+        ///PATERNIDAD
         if ($request->request_type_id == 3) {
             $request->validate([
                 'details' => 'required',
@@ -676,6 +677,7 @@ class VacationRequestController extends Controller
             return back()->with('message', 'Se creo exitosamente la solicitud.');
         }
 
+        ///INCAPACIDAD
         if ($request->request_type_id == 4) {
             $request->validate([
                 'details' => 'required',

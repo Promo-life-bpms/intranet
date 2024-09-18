@@ -14,6 +14,7 @@ class CreateVacationRequestsTable extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('request_type_id')->references('id')->on('request_types')->onDelete('cascade');
             $table->longText('details')->nullable();
+            $table->longText('more_information')->nullable();
             $table->integer('reveal_id')->nullable();
             $table->string('file', 255)->nullable();
             $table->longText('commentary')->nullable();
