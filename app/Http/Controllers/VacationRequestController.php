@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Livewire\Vacations\Vacations;
 use App\Models\Employee;
 use App\Models\MakeUpVacations;
 use App\Models\Position;
@@ -540,12 +541,17 @@ class VacationRequestController extends Controller
                 ///aqui ya se va crear la solicitud
                 if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora1Carbon) && $hora2Carbon->lessThanOrEqualTo($hora5PM)) {
                     // Hora dentro del rango permitido
+                    $more_information[] = [
+                        'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor'
+                    ];
+                    $moreinformation = json_encode($more_information);
+
                     $Vacaciones = VacationRequest::create([
                         'user_id' => $user->id,
                         'request_type_id' => 2,
                         'file' => $path,
                         'details' => $request->details,
-                        'more_information' => $request->ausenciaTipo,
+                        'more_information' => $moreinformation,
                         'reveal_id' => $request->reveal_id,
                         'direct_manager_id' => $jefedirecto,
                         'direct_manager_status' => 'Pendiente',
@@ -593,13 +599,17 @@ class VacationRequestController extends Controller
                 }
 
                 $hora1Carbon = Carbon::createFromFormat('H:i', $start);
-
+                $more_information[] = [
+                    'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_antes' ? 'Salir antes' : 'No encontro el valor'
+                ];
+                $moreinformation = json_encode($more_information);
                 if ($hora1Carbon->lessThan($hora5PM)) {
                     $Vacaciones = VacationRequest::create([
                         'user_id' => $user->id,
                         'request_type_id' => 2,
                         'file' => $path,
                         'details' => $request->details,
+                        'more_information' => $moreinformation,
                         'reveal_id' => $request->reveal_id,
                         'direct_manager_id' => $jefedirecto,
                         'direct_manager_status' => 'Pendiente',
@@ -629,7 +639,6 @@ class VacationRequestController extends Controller
                 'details' => 'required',
                 'reveal_id' => 'required',
                 'dates' => 'required',
-                'archivos' => 'required'
             ]);
 
             $dates = $request->dates;
@@ -705,10 +714,6 @@ class VacationRequestController extends Controller
                 return back()->with('message', 'Debes ingresar al menos un día');
             }
 
-            if ($path == null) {
-                return back()->with('message', 'Ingresar la incapacidad expedida por el IMSS.');
-            }
-
             $Vacaciones = VacationRequest::create([
                 'user_id' => $user->id,
                 'request_type_id' => 4,
@@ -728,6 +733,282 @@ class VacationRequestController extends Controller
                 ]);
             }
             return back()->with('message', 'Se creo exitosamente la solicitud. Recuerda que estos días son naturales y además estos los paga el IMSS.');
+        }
+
+        ///PERMISOS ESPECIALES
+        if ($request->request_type_id == 5) {
+            $request->validate([
+                'details' => 'required',
+                'reveal_id' => 'required',
+                'dates' => 'required'
+            ]);
+
+            $dates = $request->dates;
+            $datesArray = json_decode($dates, true);
+            $dias = count($datesArray);
+
+            $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
+            $jefedirecto = $Ingreso->jefe_directo_id;
+            $fechaIngreso = Carbon::parse($Ingreso->date_admission);
+            $fechaActual = Carbon::now();
+            $mesesTranscurridos = $fechaIngreso->diffInMonths($fechaActual);
+
+            $path = '';
+            if ($request->hasFile('archivos')) {
+                $filenameWithExt = $request->file('archivos')->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension = $request->file('archivos')->clientExtension();
+                $fileNameToStore = time() . $filename . '.' . $extension;
+                $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
+            }
+
+            if ($dias == 0) {
+                return back()->with('message', 'Debes ingresar al menos un día');
+            }
+
+            if ($request->Permiso == 'Fallecimiento de un familiar') {
+                if ($dias > 3) {
+                    return back()->with('message', 'Solo tienes derecho a tomar tres días.');
+                }
+
+                $more_information[] = [
+                    'Tipo_de_permiso_especial' => $request->Permiso,
+                    'familiar_finado' => $request->familiar
+                ];
+                $moreinformation = json_encode($more_information);
+                $permisoespecial = VacationRequest::create([
+                    'user_id' => $user->id,
+                    'request_type_id' => 5,
+                    'file' => $path,
+                    'details' => $request->details,
+                    'more_information' => $moreinformation,
+                    'reveal_id' => $request->reveal_id,
+                    'direct_manager_id' => $jefedirecto,
+                    'direct_manager_status' => 'Pendiente',
+                    'rh_status' => 'Pendiente'
+                ]);
+
+                foreach ($datesArray as $dia) {
+                    VacationDays::create([
+                        'day' => $dia,
+                        'vacation_request_id' => $permisoespecial->id,
+                        'status' => 0,
+                    ]);
+                }
+
+                return back()->with('message', 'Se creó con exito tu solicitud.');
+            }
+
+            if ($request->Permiso == 'Matrimonio del colaborador') {
+                if ($dias > 5) {
+                    return back()->with('message', 'Solo tienes derecho a tomar cinco días.');
+                }
+
+                if ($dias == 5) {
+                    $more_information[] = [
+                        'Tipo_de_permiso_especial' => $request->Permiso
+                    ];
+                    $moreinformation = json_encode($more_information);
+                    $permisoespecial = VacationRequest::create([
+                        'user_id' => $user->id,
+                        'request_type_id' => 5,
+                        'file' => $path,
+                        'details' => $request->details,
+                        'more_information' => $moreinformation,
+                        'reveal_id' => $request->reveal_id,
+                        'direct_manager_id' => $jefedirecto,
+                        'direct_manager_status' => 'Pendiente',
+                        'rh_status' => 'Pendiente'
+                    ]);
+
+                    foreach ($datesArray as $dia) {
+                        VacationDays::create([
+                            'day' => $dia,
+                            'vacation_request_id' => $permisoespecial->id,
+                            'status' => 0,
+                        ]);
+                    }
+                    return back()->with('message', 'Se creó con exito tu solicitud.');
+                } else {
+                    return back()->with('message', 'Debes tomar tus cinco días.');
+                }
+            }
+
+            if ($request->Permiso == 'Motivos academicos/escolares') {
+                if ($request->Posicion == 'hijo') {
+                    if ($dias > 1) {
+                        return back()->with('message', 'Solo puede tomar un día a la vez.');
+                    }
+                    $hora8AM = Carbon::today()->setHour(8)->setMinute(0)->setSecond(0);
+                    $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
+                    $start = $request->hora_salida;
+                    $end = $request->hora_regreso;
+
+                    $hora1Carbon = Carbon::createFromFormat('H:i', $start);
+                    $hora2Carbon = Carbon::createFromFormat('H:i', $end);
+
+                    // Calcular la diferencia en minutos
+                    $diferenciaEnMinutos = $hora2Carbon->diffInMinutes($hora1Carbon);
+
+                    // Convertir la diferencia a horas y minutos
+                    $diferenciaEnHoras = intdiv($diferenciaEnMinutos, 60); // Horas
+                    $diferenciaEnMinutosRestantes = $diferenciaEnMinutos % 60; // Minutos restantes
+
+                    if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora1Carbon) && $hora2Carbon->lessThanOrEqualTo($hora5PM)) {
+                        $more_information[] = [
+                            'Tipo_de_permiso_especial' => $request->Permiso,
+                            'El_permiso_involucra_a' => $request->Posicion
+                        ];
+                        $moreinformation = json_encode($more_information);
+                        $permisoespecial = VacationRequest::create([
+                            'user_id' => $user->id,
+                            'request_type_id' => 5,
+                            'file' => $path,
+                            'details' => $request->details,
+                            'more_information' => $moreinformation,
+                            'reveal_id' => $request->reveal_id,
+                            'direct_manager_id' => $jefedirecto,
+                            'direct_manager_status' => 'Pendiente',
+                            'rh_status' => 'Pendiente'
+                        ]);
+
+                        foreach ($datesArray as $dia) {
+                            VacationDays::create([
+                                'day' => $dia,
+                                'start' => $start,
+                                'end' => $end,
+                                'vacation_request_id' => $permisoespecial->id,
+                                'status' => 0,
+                            ]);
+                        }
+                        return back()->with('message', 'Se creó con exito tu solicitud.');
+                    } else {
+                        return back()->with('message', 'Verifica que la información ingresada sea correcta.');
+                    }
+                }
+                if ($request->Posicion == 'colaborador') {
+                    if ($path == null) {
+                        return back()->with('message', 'Debes ingresar un justificamente.');
+                    }
+                    if ($dias > 1) {
+                        return back()->with('message', 'Solo puede tomar un día a la vez.');
+                    }
+
+                    $hora8AM = Carbon::today()->setHour(8)->setMinute(0)->setSecond(0);
+                    $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
+                    $start = $request->hora_salida;
+                    $end = $request->hora_regreso;
+
+                    $hora1Carbon = Carbon::createFromFormat('H:i', $start);
+                    $hora2Carbon = Carbon::createFromFormat('H:i', $end);
+
+                    // Calcular la diferencia en minutos
+                    $diferenciaEnMinutos = $hora2Carbon->diffInMinutes($hora1Carbon);
+
+                    // Convertir la diferencia a horas y minutos
+                    $diferenciaEnHoras = intdiv($diferenciaEnMinutos, 60); // Horas
+                    $diferenciaEnMinutosRestantes = $diferenciaEnMinutos % 60; // Minutos restantes
+
+                    if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora1Carbon) && $hora2Carbon->lessThanOrEqualTo($hora5PM)) {
+                        $more_information[] = [
+                            'Tipo_de_permiso_especial' => $request->Permiso,
+                            'El_permiso_involucra_a' => $request->Posicion
+                        ];
+                        $moreinformation = json_encode($more_information);
+                        $permisoespecial = VacationRequest::create([
+                            'user_id' => $user->id,
+                            'request_type_id' => 5,
+                            'file' => $path,
+                            'details' => $request->details,
+                            'more_information' => $moreinformation,
+                            'reveal_id' => $request->reveal_id,
+                            'direct_manager_id' => $jefedirecto,
+                            'direct_manager_status' => 'Pendiente',
+                            'rh_status' => 'Pendiente'
+                        ]);
+
+                        foreach ($datesArray as $dia) {
+                            VacationDays::create([
+                                'day' => $dia,
+                                'start' => $start,
+                                'end' => $end,
+                                'vacation_request_id' => $permisoespecial->id,
+                                'status' => 0,
+                            ]);
+                        }
+                        return back()->with('message', 'Se creó con exito tu solicitud.');
+                    } else {
+                        return back()->with('message', 'Verifica que la información ingresada sea correcta.');
+                    }
+                }
+            }
+
+            if ($request->Permiso == 'Asuntos personales') {
+                //dd($request);
+                if ($mesesTranscurridos < 3) {
+                    return back()->with('message', 'No has cumplido el tiempo suficiente para solicitar este permiso.');
+                }
+
+                if ($dias > 1) {
+                    return back()->with('message', 'Solo puede tomar un día a la vez.');
+                }
+
+                ///VACACIONES PENDIENTES O APROBADAS///
+                $vacaciones = DB::table('vacation_requests')
+                    ->where('user_id', $user->id)
+                    ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->get();
+
+                $diasVacaciones = [];
+                foreach ($vacaciones as $diasvacaciones) {
+                    $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
+                    foreach ($Days as $Day) {
+                        $diasVacaciones[] = $Day->day;
+                    }
+                }
+                usort($diasVacaciones, function ($a, $b) {
+                    return strtotime($a) - strtotime($b);
+                });
+
+                $diasParecidos = [];
+                foreach ($datesArray as $date) {
+                    foreach ($diasVacaciones as $vacationDate) {
+                        if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                            $diasParecidos[] = $vacationDate; 
+                        }
+                    }
+                }
+        
+                if (!empty($diasParecidos)) {
+                    return back()->with('message', 'No puedes ingresar esta fecha, porque se encuentra seleccionada en tus solicitudes de vacaciones.');
+                } else {
+                    $more_information[] = [
+                        'Tipo_de_permiso_especial' => $request->Permiso
+                    ];
+                    $moreinformation = json_encode($more_information);
+                    $permisoespecial = VacationRequest::create([
+                        'user_id' => $user->id,
+                        'request_type_id' => 5,
+                        'file' => $path,
+                        'details' => $request->details,
+                        'more_information' => $moreinformation,
+                        'reveal_id' => $request->reveal_id,
+                        'direct_manager_id' => $jefedirecto,
+                        'direct_manager_status' => 'Pendiente',
+                        'rh_status' => 'Pendiente'
+                    ]);
+
+                    foreach ($datesArray as $dia) {
+                        VacationDays::create([
+                            'day' => $dia,
+                            'vacation_request_id' => $permisoespecial->id,
+                            'status' => 0,
+                        ]);
+                    }
+                    return back()->with('message', 'Se creó con exito tu solicitud.');
+                }
+            }
         }
     }
 
