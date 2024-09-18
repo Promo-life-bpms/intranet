@@ -13,7 +13,7 @@
 
             <div>
                 <span class="mr-3">
-                    Días por aprobar:
+                    Vacaciones por aprobar:
                     <strong>{{ $diasreservados }}</strong>
                 </span>
                 <span>
@@ -70,7 +70,7 @@
             </div>
 
 
-            <div id="openModalPaternidad" style="width: 18%; margin-left: 20px">
+            <div class="openModalPaternidad" style="width: 18%; margin-left: 20px">
                 <div class="tarjeta hover-tarjeta" style="border-bottom: 10px solid var(--color-target-5);">
                     <div class="d-flex justify-content-end ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="32" height="32"
@@ -87,7 +87,7 @@
                 </div>
             </div>
 
-            <div id="openModalIncapacidad" style="width: 18%; margin-left: 20px">
+            <div class="openModalIncapacidad" style="width: 18%; margin-left: 20px">
                 <div class="tarjeta" style="border-bottom: 10px solid var(--color-target-4);">
                     <div class="d-flex justify-content-end ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="32" height="32"
@@ -107,7 +107,7 @@
                 </div>
             </div>
 
-            <div id="openModalPermisoEspecial" style="width: 22%; margin-left: 20px">
+            <div class="openModalPermisoEspecial" style="width: 22%; margin-left: 20px">
                 <div class="tarjeta" style="border-bottom: 10px solid var(--color-target-3);">
                     <div class="d-flex justify-content-end ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="32" height="32"
@@ -1070,14 +1070,66 @@
 
                 }
 
+                console.log('tipo', tipo);
+
+
                 /*Agregarle una clase al elemento que tiene el id buttonEditRequest dependiendo el tipo de solicitud */
-                if (tipo === 'vacaciones' && statusRh === 'Pendiente') {
+                if (tipo === 'vacaciones' && statusRh === 'Pendiente' || tipo === 'Vacaciones' &&
+                    statusRh === 'Pendiente') {
                     document.getElementById('ButtonEditRequest').classList.add('openModalVacaciones');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalAusencia');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalPaternidad');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalIncapacidad');
+
+
+                    document.getElementById('calendario').classList.add('d-none');
+                    document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
+                    /*Cambiar ruta del formulario miFormulario*/
+                    document.getElementById('miFormulario').action = 'update/request';
+                } else if (tipo === 'Ausencia' && statusRh === 'Pendiente') {
+                    document.getElementById('ButtonEditRequest').classList.add('openModalAusencia');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalPaternidad');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalIncapacidad');
+
+                    document.getElementById('calendario').classList.add('d-none');
+                    document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
+                    /*Cambiar ruta del formulario miFormulario*/
+                    document.getElementById('miFormulario').action = 'update/request';
+                } else if (tipo === 'Paternidad' && statusRh === 'Pendiente') {
+                    document.getElementById('ButtonEditRequest').classList.add('openModalPaternidad');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalAusencia');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalIncapacidad');
+
+                    document.getElementById('calendario').classList.add('d-none');
+                    document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
+                    /*Cambiar ruta del formulario miFormulario*/
+                    document.getElementById('miFormulario').action = 'update/request';
+                } else if (tipo === 'Incapacidad' && statusRh === 'Pendiente') {
+                    document.getElementById('ButtonEditRequest').classList.add('openModalIncapacidad');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalAusencia');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalPaternidad');
+
+                    document.getElementById('calendario').classList.add('d-none');
+                    document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
+                    /*Cambiar ruta del formulario miFormulario*/
+                    document.getElementById('miFormulario').action = 'update/request';
+                } else if (tipo === 'Permisos especiales' && statusRh === 'Pendiente') {
+                    document.getElementById('ButtonEditRequest').classList.add('openModalIncapacidad');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalAusencia');
+                    document.getElementById('ButtonEditRequest').classList.remove('openModalPaternidad');
+
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
                     /*Cambiar ruta del formulario miFormulario*/
                     document.getElementById('miFormulario').action = 'update/request';
                 }
+
+
+
                 const modal = new bootstrap.Modal(document.getElementById('verSolivitud'));
                 modal.show();
             });
@@ -1100,7 +1152,7 @@
             `;
 
             document.getElementById('request_values').innerHTML = `
-                <input type="text" disabled class="form-control mt-1" value="1" id="request_type_id" name="request_type_id">
+                <input type="text" class="form-control mt-1 d-none" value="1" id="request_type_id" name="request_type_id">
             `;
 
             // Abre el modal
@@ -1201,7 +1253,7 @@
             `;
 
             document.getElementById('request_values').innerHTML = `
-                <input type="text" disabled class="form-control mt-1" value="2" id="request_type_id" name="request_type_id">
+                <input type="text"  class="form-control mt-1 d-none" value="2" id="request_type_id" name="request_type_id">
             `;
 
             // Abre el modal
@@ -1242,8 +1294,9 @@
             }
         });
 
+        $(document).on('click', '.openModalPaternidad', function() {
+            $('#verSolivitud').modal('hide');
 
-        document.getElementById('openModalPaternidad').addEventListener('click', function() {
             // Cambia el título del modal
             document.getElementById('modalTitle').innerText = 'Paternidad';
             document.getElementById('dynamicContentEncabezado').innerHTML = `
@@ -1264,15 +1317,19 @@
                 </div>
             `;
 
-            // Abre el modal
+            document.getElementById('request_values').innerHTML = `
+                <input type="text"  class="form-control mt-1 d-none" value="3" id="request_type_id" name="request_type_id">
+            `;
+
+
             $('#modaTarjetas').modal({
                 backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
                 keyboard: false // Desactiva el cierre con la tecla "Esc"
             }).modal('show');
-        });
+        })
 
-        document.getElementById('openModalIncapacidad').addEventListener('click', function() {
-            // Cambia el título del modal
+        $(document).on('click', '.openModalIncapacidad', function() {
+            $('#verSolivitud').modal('hide');
             document.getElementById('modalTitle').innerText = 'Incapacidad';
 
             document.getElementById('dynamicContentEncabezado').innerHTML = `
@@ -1286,6 +1343,10 @@
                 de tus vacaciones.</span>
             `;
 
+            document.getElementById('request_values').innerHTML = `
+                <input type="text"  class="form-control mt-1 d-none" value="4" id="request_type_id" name="request_type_id">
+            `;
+
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
                 <div class="mb-2">
@@ -1297,13 +1358,16 @@
             $('#modaTarjetas').modal('show');
         });
 
-        document.getElementById('openModalPermisoEspecial').addEventListener('click', function() {
+
+
+
+
+        $(document).on('click', '.openModalPermisoEspecial', function() {
             // Cambia el título del modal
             document.getElementById('modalTitle').innerText = 'Especiales';
             document.getElementById('textDinamicCalendar').innerHTML = `
                 <span>Elige los 3 días naturales a los que tienes derecho</span>
             `;
-
             document.getElementById('dynamicContentEncabezado').innerHTML = `
                 <div class="d-flex">
                                 <div class="mr-4 mb-3">
@@ -1401,6 +1465,11 @@
                                 <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
                             </div>
             `;
+
+            document.getElementById('request_values').innerHTML = `
+                <input type="text"  class="form-control mt-1 d-none" value="5" id="request_type_id" name="request_type_id">
+            `;
+
 
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
