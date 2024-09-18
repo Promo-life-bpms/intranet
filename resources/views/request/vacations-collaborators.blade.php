@@ -1071,7 +1071,7 @@
                 }
 
                 /*Agregarle una clase al elemento que tiene el id buttonEditRequest dependiendo el tipo de solicitud */
-                if (tipo === 'vacaciones' && statusRh === 'Pendiente') {
+                if (tipo === 'vacaciones' && statusRh === 'Pendiente'  || tipo === 'Vacaciones') {
                     document.getElementById('ButtonEditRequest').classList.add('openModalVacaciones');
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
