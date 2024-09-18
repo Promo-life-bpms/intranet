@@ -129,7 +129,7 @@
         <div class="d-flex">
             <!-- Columna izquierda -->
             <div style="width: 100%;">
-                <div class="card-seccion" style="height: 100vh;">
+                <div class="card-seccion">
                     <div class="row">
                         <div class="col-3 d-flex align-items-center justify-content-center">
                             <strong>Mis solicitudes</strong>
@@ -139,10 +139,10 @@
                                 aria-label="Default select example">
                                 <option value="">Tipo de permiso</option>
                                 <option value="Vacaciones">Vacaciones</option>
-                                <option value="ausencia">Ausencia</option>
-                                <option value="permiso_especial">Permisos especiales</option>
-                                <option value="incapacidad">Incapacidad</option>
-                                <option value="paternidad">Paternidad</option>
+                                <option value="Ausencia">Ausencia</option>
+                                <option value="Prmiso especial">Permisos especiales</option>
+                                <option value="Incapacidad">Incapacidad</option>
+                                <option value="Paternidad">Paternidad</option>
                             </select>
                         </div>
                         <div class="col-3 d-flex align-items-center justify-content-center">
@@ -163,7 +163,7 @@
                     </div>
 
                     <div class="mt-4" id="tableSolicitudes">
-                        <table class="table table-hover">
+                        <table class="table" id="table-request-user">
                             <thead>
                                 <tr>
                                     <th scope="col" style="text-align: center; align-content: center;">#</th>
@@ -621,7 +621,29 @@
                     <div class="modal-body">
                         <form id="denyFormRequest" action="reject/leave/by/direct/user" method="POST">
                             @csrf
-                            <textarea style="min-width: 100%" class="form-control" id="commentary" name="commentary" required></textarea>
+
+                            <div style="text-align: center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="120" height="120"
+                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
+                                    style="color: red">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                                </svg>
+
+                            </div>
+                            <div style="text-align: center">
+                                <strong style="color: red">Advertencia</strong>
+                            </div>
+
+
+
+                            <span style="display: flex; text-align: center">Si decide cancelar esta solicitud y no utilizar
+                                los días previamente solicitados, deberá
+                                esperar a que RH complete el proceso de retribución, lo cual podría tomar tiempo. Se le
+                                notificará por correo electrónico cuando la retribución esté lista.</span>
+
+                            <textarea style="min-width: 100%; min-height: 80px;" class="form-control mt-2" id="commentary" name="commentary"
+                                required></textarea>
                             <div class="d-flex justify-content-end mt-2">
                                 <button type="button" class="btn btn-primary" id="denyButtonForm">Enviar</button>
                             </div>
@@ -693,11 +715,9 @@
 
             $('#modaTarjetas').on('shown.bs.modal', function() {
                 var calendarElVa = document.getElementById('calendarioDaysUpdate');
-                console.log('calendarElVa', calendarElVa);
 
                 if (calendarElVa && calendarElVa.classList.contains('d-none')) {
                     // Si tiene la clase d-none, inicializamos el calendario para crear
-                    console.log('Calendario para crear');
 
                     if (!calendario) { // Solo inicializar si no se ha creado aún
                         var calendarEl = document.getElementById('calendario');
@@ -768,10 +788,8 @@
                     console.log('Calendario para actualizar');
 
                     if (!calendarioVa) { // Solo inicializar si no se ha creado aún
-                        console.log('calnedario para actualizar');
 
-                        console.log('daysDataUpdate',
-                            daysDataUpdate); // Para verificar que se esté pasando correctamente
+
                         var daysSelected = daysDataUpdate.split(
                             ','
                         ); // Asegúrate de que 'daysDataUpdate' tiene los días seleccionados previamente
@@ -784,8 +802,7 @@
                             return e !== "";
                         });
 
-                        console.log('Días iniciales seleccionados:',
-                            selectedDays); // Para ver los días iniciales
+
 
                         var calendarioVa = new FullCalendar.Calendar(calendarElVa, {
                             locale: "es",
@@ -914,8 +931,6 @@
                 /*utilizar la variable vacacionescalendar que viene de el controlador para poner los dias en el calendario */
                 // Convertir la variable de PHP a JSON y asignarla a una variable de JavaScript
                 var vacacionesCalendar = @json($vacacionescalendar);
-                console.log('vacacionesCalendar',
-                    vacacionesCalendar); // Para verificar que se esté pasando correctamente
 
 
                 var selectedRanges = [];
@@ -1006,6 +1021,9 @@
                 const file = this.getAttribute('data-file');
                 const days = this.getAttribute('data-days');
 
+
+                console.log('details', details);
+
                 daysDataUpdate = days;
 
                 // Cambiar el contenido del modal
@@ -1030,7 +1048,6 @@
 
                 // Supongamos que 'direct_manager_status' tiene el valor que quieres evaluar
                 if (directManagerStatus === 'Aprobada') {
-                    console.log('Aprobada');
                     // Remueve cualquier clase anterior y añade la clase 'bg-success'
                     statusManegerElement.classList.remove('bg-warning', 'text-dark');
                     statusManegerElement.classList.add('badge', 'bg-success',
@@ -1070,7 +1087,6 @@
 
                 }
 
-                console.log('tipo', tipo);
 
 
                 /*Agregarle una clase al elemento que tiene el id buttonEditRequest dependiendo el tipo de solicitud */
@@ -1229,16 +1245,15 @@
                             <div class="d-flex justify-content-between">
                                 <div id="horaSalida" class="cs-form d-none mb-3">
                                     <span>Hora de salida: </span>
-                                    <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" />
+                                    <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" id="hora_salida" />
                                 </div>
 
                                 <div id="horaEntrada" class="cs-form d-none mb-3">
                                     <span>Hora de regreso: </span>
-                                    <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" />
+                                    <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" id="hora_regreso" />
                                 </div>
                             </div>
-
-                            <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
+                            <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required> </textarea>
                         </div>
                     </div>
             `;
@@ -1274,7 +1289,6 @@
             const horaEntrada = document.querySelector('#horaEntrada');
 
             function ausenciaTipo(value) {
-                console.log('value', value);
                 switch (value) {
                     case 'salida_antes':
                         horaSalida.classList.remove('d-none');
@@ -1292,6 +1306,31 @@
                         textTime.classList.add('d-none');
                 }
             }
+
+            setTimeout(function() {
+                function limpiarCampos() {
+                    var horaSalida = document.getElementById('hora_salida');
+                    var horaRegreso = document.getElementById('hora_regreso');
+
+                    if (horaSalida) {
+                        horaSalida.value = '';
+                    }
+                    if (horaRegreso) {
+                        horaRegreso.value = '';
+                    }
+                }
+
+                // Añadir evento a todos los radio buttons
+                document.querySelectorAll('input[name="ausenciaTipo"]').forEach(function(radio) {
+                    radio.addEventListener('change', function() {
+                        limpiarCampos();
+                    });
+                });
+            }, 100); // Ajusta el tiempo si es necesario
+
+
+
+
         });
 
         $(document).on('click', '.openModalPaternidad', function() {
@@ -1492,7 +1531,6 @@
             const academicos = document.querySelector('#academicos');
 
             function especiales(value) {
-                console.log('value', value);
                 switch (value) {
                     case 'fallecimiento':
                         persona_afectada.classList.remove('d-none');
@@ -1512,7 +1550,6 @@
         document.getElementById('miFormulario').addEventListener('submit', function(event) {
             // Evita el envío del formulario hasta validar todo
             event.preventDefault();
-            console.log('Formulario enviado');
 
             var selectEncargado = document.getElementById('reveal_id');
             if (!selectEncargado || selectEncargado.value === "0") {
@@ -1562,208 +1599,282 @@
         });
     </script>
 
-    <style>
-        .bg-success {
-            background-color: #81C10C !important;
-        }
+@section('scripts')
 
-        .bg-warning {
-            background-color: #FFC107 !important;
-        }
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
 
-
-        .fc-day-disabled {
-            background-color: #e6e6e6 !important;
-            pointer-events: none;
-        }
-
-        .fc-toolbar-chunk>div {
-            width: 380px;
-            display: flex;
-            justify-content: space-between
-        }
-
-        .fc-prev-button.fc-button.fc-button-primary {
-            background-color: white;
-            color: black;
-            border-radius: 5px;
-            border: 0px solid white;
-        }
-
-        .fc-prev-button.fc-button.fc-button-primary:focus {
-            background-color: white;
-            color: black;
-            border-radius: 5px;
-            border: 0px solid white;
-            box-shadow: 0 0px 0px white;
-        }
+    <script>
+        $(document).ready(function() {
+            $('#table-request-user').DataTable({
+                pageLength: 5, // Número de filas por página
+                lengthChange: false,
+                language: {
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    },
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ ",
+                    "infoEmpty": "Mostrando 0 a 0 de 0 ",
+                    "infoFiltered": "(Filtrado de _MAX_ total de )",
+                    "lengthMenu": "Mostrar _MENU_ ",
+                },
+                order: [
+                    [0, 'desc']
+                ],
+            });
+        });
+    </script>
 
 
-        /*fc-next-button fc-button fc-button-primary*/
-        .fc-next-button.fc-button.fc-button-primary {
-            background-color: white;
-            color: black;
-            border-radius: 5px;
-            border: 0px solid white;
-        }
+@stop
 
-        .fc-next-button.fc-button.fc-button-primary:focus {
-            background-color: white;
-            color: black;
-            border-radius: 5px;
-            border: 0px solid white;
-            box-shadow: 0 0px 0px white;
-        }
+<style>
+    .dataTables_wrapper .dataTables_info {
+        clear: both;
+        float: left;
+        padding-top: 0.755em;
+    }
 
+    /*Acomodo de forma de boton y siguiente y anterior*/
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: 0.5em 1em;
+        margin-left: 2px;
+        text-align: center;
+        text-decoration: none !important;
+        cursor: pointer;
+        *cursor: hand;
+        color: #000000 !important;
+        border: 1px solid transparent;
+        border-radius: 2px;
+    }
 
-        .fc-theme-standard .fc-scrollgrid {
-            border: 0px solid white !important;
-        }
+    /*Marcado de la pagina actual*/
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        color: #FFFFFF !important;
+        background-color: #006EAD;
+        border-radius: 5px;
 
-        .fc-theme-standard td,
-        .fc-theme-standard th {
-            /* Espaciado interno */
-            border: 0px solid white;
-            /* Borde gris claro */
-            text-align: center;
-            /* Centrar el texto */
-        }
+    }
 
-        .fc-col-header-cell-cushion {
-            color: black;
-            text-decoration: none;
-        }
+    /*Acomodar al final los numeros de la paginacion*/
+    .dataTables_paginate {
+        text-align: end !important;
+    }
 
-        .fc-daygrid-day-number {
-            color: black;
-            text-decoration: none;
-        }
-
-        .fc-scrollgrid-sync-table {
-            height: 280px !important;
-        }
-
-        .fc,
-        .fc *,
-        .fc :after,
-        .fc :before {
-            box-sizing: border-box;
-            justify-content: center;
-        }
+    /*Quitar la barra de busqueda del script de datatables*/
+    .dataTables_filter {
+        display: none;
+    }
 
 
-        .fc-theme-standard .fc-daygrid-day-number {
-            color: black;
-            /* Color del número del día seleccionado */
-            background-color: transparent;
-            /* Fondo transparente para el número del día */
-            font-weight: bold;
-            /* Hacer el número más prominente */
-        }
+    .bg-success {
+        background-color: #81C10C !important;
+    }
 
-        .fc-theme-standard .fc-daygrid-day.fc-daygrid-day-selected {
-            background-color: transparent;
-            /* Fondo transparente para la celda seleccionada */
-            border: none;
-            /* Opcional: eliminar el borde si es necesario */
-        }
+    .bg-warning {
+        background-color: #FFC107 !important;
+    }
 
 
-        .fc-day-selected {
-            background-color: #81C10C !important;
-            border-radius: 17px;
-            color: white !important;
-            /* Color para los días intermedios */
-        }
+    .fc-day-disabled {
+        background-color: #e6e6e6 !important;
+        pointer-events: none;
+    }
 
-        .fc-day-start {
-            background-color: rgb(59, 201, 23);
-            /* Color para el primer día de la selección */
-            color: white;
-        }
+    .fc-toolbar-chunk>div {
+        width: 380px;
+        display: flex;
+        justify-content: space-between
+    }
 
-        .fc-day-end {
-            background-color: #d5c321;
-            /* Color para el último día de la selección */
-            color: white;
-        }
+    .fc-prev-button.fc-button.fc-button-primary {
+        background-color: white;
+        color: black;
+        border-radius: 5px;
+        border: 0px solid white;
+    }
 
-        .fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events {
-            min-height: 0px;
-        }
-
-        .fc .fc-daygrid-day-top {
-            margin-top: 2px !important;
-        }
-
-        .fc-theme-standard .fc-daygrid-day-number {
-            width: 45% !important;
-        }
-
-        .modal-content {
-            width: 1500px !important;
-        }
-
-        /*Estilo azul al seleccionar dia*/
-        .fc .fc-highlight {
-            background-color: transparent !important;
-        }
-
-        /*Estilo para quitar el color del dia actual */
-
-        .fc .fc-daygrid-day.fc-day-today {
-            background-color: transparent !important;
-        }
-
-        /*Estilo para quitar dias anteriores al que estamos*/
-        .fc .fc-cell-shaded,
-        .fc .fc-day-disabled {
-            background-color: transparent !important;
-        }
+    .fc-prev-button.fc-button.fc-button-primary:focus {
+        background-color: white;
+        color: black;
+        border-radius: 5px;
+        border: 0px solid white;
+        box-shadow: 0 0px 0px white;
+    }
 
 
-        /*Estilo para cambiar el tamaño*/
-        .fc .fc-toolbar-title {
-            font-size: 17px !important;
-        }
+    /*fc-next-button fc-button fc-button-primary*/
+    .fc-next-button.fc-button.fc-button-primary {
+        background-color: white;
+        color: black;
+        border-radius: 5px;
+        border: 0px solid white;
+    }
 
-        .fc-toolbar-title {
-            margin-top: 8px !important;
-        }
-
-        /*Estilo para quitar el mnargin botton del titulo*/
-        .fc .fc-toolbar.fc-header-toolbar {
-            margin-bottom: 4px !important;
-        }
-
-        /*Estilo para darle margin bottom de los dias del calendario*/
-        .fc .fc-view-harness {
-            margin-bottom: 20px !important;
-        }
-
-        #calendario {
-            width: 100%;
-        }
+    .fc-next-button.fc-button.fc-button-primary:focus {
+        background-color: white;
+        color: black;
+        border-radius: 5px;
+        border: 0px solid white;
+        box-shadow: 0 0px 0px white;
+    }
 
 
-        .highlighted-day-vacaciones {
-            background-color: #81C10C !important;
-            color: white !important;
-            border-radius: 50%;
-            padding: 0.5em;
-        }
+    .fc-theme-standard .fc-scrollgrid {
+        border: 0px solid white !important;
+    }
 
-        .highlighted-day-permisos {
-            background-color: #d5c321 !important;
-            color: white !important;
-            border-radius: 50%;
-            padding: 0.5em;
-        }
+    .fc-theme-standard td,
+    .fc-theme-standard th {
+        /* Espaciado interno */
+        border: 0px solid white;
+        /* Borde gris claro */
+        text-align: center;
+        /* Centrar el texto */
+    }
+
+    .fc-col-header-cell-cushion {
+        color: black;
+        text-decoration: none;
+    }
+
+    .fc-daygrid-day-number {
+        color: black;
+        text-decoration: none;
+    }
+
+    .fc-scrollgrid-sync-table {
+        height: 280px !important;
+    }
+
+    .fc,
+    .fc *,
+    .fc :after,
+    .fc :before {
+        box-sizing: border-box;
+        justify-content: center;
+    }
 
 
-        /*Estilo para el div de los dias en Calendario General*/
-        .custom-day-top-class {
-            padding: 0px 25px !important;
-        }
-    </style>
+    .fc-theme-standard .fc-daygrid-day-number {
+        color: black;
+        /* Color del número del día seleccionado */
+        background-color: transparent;
+        /* Fondo transparente para el número del día */
+        font-weight: bold;
+        /* Hacer el número más prominente */
+    }
+
+    .fc-theme-standard .fc-daygrid-day.fc-daygrid-day-selected {
+        background-color: transparent;
+        /* Fondo transparente para la celda seleccionada */
+        border: none;
+        /* Opcional: eliminar el borde si es necesario */
+    }
+
+
+    .fc-day-selected {
+        background-color: #81C10C !important;
+        border-radius: 17px;
+        color: white !important;
+        /* Color para los días intermedios */
+    }
+
+    .fc-day-start {
+        background-color: rgb(59, 201, 23);
+        /* Color para el primer día de la selección */
+        color: white;
+    }
+
+    .fc-day-end {
+        background-color: #d5c321;
+        /* Color para el último día de la selección */
+        color: white;
+    }
+
+    .fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events {
+        min-height: 0px;
+    }
+
+    .fc .fc-daygrid-day-top {
+        margin-top: 2px !important;
+    }
+
+    .fc-theme-standard .fc-daygrid-day-number {
+        width: 45% !important;
+    }
+
+    /* .modal-content {
+        width: 1500px !important;
+    } */
+
+    /*Estilo azul al seleccionar dia*/
+    .fc .fc-highlight {
+        background-color: transparent !important;
+    }
+
+    /*Estilo para quitar el color del dia actual */
+
+    .fc .fc-daygrid-day.fc-day-today {
+        background-color: transparent !important;
+    }
+
+    /*Estilo para quitar dias anteriores al que estamos*/
+    .fc .fc-cell-shaded,
+    .fc .fc-day-disabled {
+        background-color: transparent !important;
+    }
+
+
+    /*Estilo para cambiar el tamaño*/
+    .fc .fc-toolbar-title {
+        font-size: 17px !important;
+    }
+
+    .fc-toolbar-title {
+        margin-top: 8px !important;
+    }
+
+    /*Estilo para quitar el mnargin botton del titulo*/
+    .fc .fc-toolbar.fc-header-toolbar {
+        margin-bottom: 4px !important;
+    }
+
+    /*Estilo para darle margin bottom de los dias del calendario*/
+    .fc .fc-view-harness {
+        margin-bottom: 20px !important;
+    }
+
+    #calendario {
+        width: 100%;
+    }
+
+
+    .highlighted-day-vacaciones {
+        background-color: #81C10C !important;
+        color: white !important;
+        border-radius: 50%;
+        padding: 0.5em;
+    }
+
+    .highlighted-day-permisos {
+        background-color: #d5c321 !important;
+        color: white !important;
+        border-radius: 50%;
+        padding: 0.5em;
+    }
+
+
+    /*Estilo para el div de los dias en Calendario General*/
+    .custom-day-top-class {
+        padding: 0px 25px !important;
+    }
+</style>
 @endsection

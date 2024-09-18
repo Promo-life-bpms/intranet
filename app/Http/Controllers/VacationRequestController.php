@@ -169,7 +169,7 @@ class VacationRequestController extends Controller
 
     public function CreatePurchase(Request $request)
     {
-        //dd($request);
+        // dd($request);
         $user = auth()->user();
         ///VACACIONES
         if ($request->request_type_id == 1) {
@@ -994,7 +994,7 @@ class VacationRequestController extends Controller
                 'description' => $vacacionesUser->description
             ];
         }
-        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', '$IdandNameUser', 'vacacionesagregadas'));
+        return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', 'IdandNameUser', 'vacacionesagregadas'));
     }
 
     public function AuthorizePermissionBoss(Request $request)
