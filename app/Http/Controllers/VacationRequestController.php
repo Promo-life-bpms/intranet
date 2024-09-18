@@ -169,144 +169,208 @@ class VacationRequestController extends Controller
 
     public function CreatePurchase(Request $request)
     {
-
+        //dd($request);
         $user = auth()->user();
+        ///VACACIONES
+        if ($request->request_type_id == 1) {
+            $request->validate([
+                'details' => 'required',
+                'reveal_id' => 'required',
+                'dates' => 'required'
+            ]);
 
-        $request->validate([
-            'details' => 'required',
-            'reveal_id' => 'required',
-            'dates' => 'required'
-        ]);
-
-        if (auth()->user()->employee->jefe_directo_id == null) {
-            return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado o no llenaste todos los campos');
-        }
-
-        $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
-        $jefedirecto = $Ingreso->jefe_directo_id;
-        $fechaIngreso = Carbon::parse($Ingreso->date_admission);
-        $fechaActual = Carbon::now();
-        $mesesTranscurridos = $fechaIngreso->diffInMonths($fechaActual);
-
-        if ($mesesTranscurridos < 6) {
-            return back()->with('message', 'No has cumplido el tiempo suficiente para solicitar vacaciones.');
-        }
-
-        $Vacaciones = DB::table('vacations_availables')
-            ->where('users_id', $user->id)
-            ->where('cutoff_date', '>=', $fechaActual)
-            ->orderBy('cutoff_date', 'asc')
-            ->get();
-
-        $Datos = [];
-        foreach ($Vacaciones as $vaca) {
-            $Datos[] = [
-                'dv' => $vaca->dv,
-                'cutoff_date' => $vaca->cutoff_date,
-                'period' => $vaca->period,
-                'days_enjoyed' => $vaca->days_enjoyed,
-                'waiting' => $vaca->waiting,
-                'days_enjoyed' => $vaca->days_enjoyed,
-                'days_availables' => $vaca->days_availables
-            ];
-        }
-
-        if (count($Datos) > 1) {
-            $PrimerPeriodo = (int) $Datos[0]['dv'];
-            $SegundoPeriodo = (int) $Datos[1]['dv'];
-            $totalambosperidos = $PrimerPeriodo + $SegundoPeriodo;
-        } elseif (count($Datos) == 1) {
-            $totalambosperidos = $Datos[0]['dv'];
-        }
-
-        $dates = $request->dates;
-        $datesArray = json_decode($dates, true);
-        $diasTotales = count($datesArray);
-
-
-        if ($diasTotales == 0) {
-            return back()->with('message', 'Debes enviar al menos un día de vacaciones.');
-        }
-
-        if ($diasTotales > $totalambosperidos) {
-            return back()->with('message', 'No cuentas con días suficientes');
-        }
-
-        $path = '';
-        if ($request->hasFile('archivos')) {
-            $filenameWithExt = $request->file('archivos')->getClientOriginalName();
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('archivos')->clientExtension();
-            $fileNameToStore = time() . $filename . '.' . $extension;
-            $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
-        }
-
-        if (count($Datos) > 1) {
-            // Extracción de datos de los dos periodos
-            $PrimerPeriodo = (int) $Datos[0]['dv'];
-            $Periodo = $Datos[0]['period'];
-            $SegundoPeriodo = (int) $Datos[1]['dv'];
-            $Periododos = $Datos[1]['period'];
-            $primerWaiting = $Datos[0]['waiting'];
-            $segundoWaiting = $Datos[1]['waiting'];
-            $primerDaysEnjoyed = $Datos[0]['days_enjoyed'];
-            $SegundoDaysEnjoyed = $Datos[1]['days_enjoyed'];
-            $primerDaysAvailables = $Datos[0]['days_availables'];
-            $segundoDaysAvailables = $Datos[1]['days_availables'];
-
-            // Cálculos de disponibilidad
-            $totalAmbosPeriodos = $PrimerPeriodo + $SegundoPeriodo;
-            $Disponibilidad1 = $primerWaiting + $primerDaysEnjoyed;
-            $Disponibilidad2 = $segundoWaiting + $SegundoDaysEnjoyed;
-            $prueba = $Disponibilidad1 + $Disponibilidad2;
-
-            if ($diasTotales > $totalAmbosPeriodos) {
-                return  back()->with('message', 'No cuentas con los días solicitados.');
+            if (auth()->user()->employee->jefe_directo_id == null) {
+                return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado o no llenaste todos los campos');
             }
 
-            if ($diasTotales <= $totalAmbosPeriodos) {
-                // Caso donde los días solicitados están dentro del primer periodo
-                if ($diasTotales <= $PrimerPeriodo && $PrimerPeriodo > 0) {
-                    $cercadv = $diasTotales + $primerWaiting;
-                    $cercadv2 = $diasTotales + $segundoWaiting;
+            $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
+            $jefedirecto = $Ingreso->jefe_directo_id;
+            $fechaIngreso = Carbon::parse($Ingreso->date_admission);
+            $fechaActual = Carbon::now();
+            $mesesTranscurridos = $fechaIngreso->diffInMonths($fechaActual);
 
-                    if ($cercadv <= $PrimerPeriodo) {
-                        DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
-                            'waiting' => $cercadv
-                        ]);
+            if ($mesesTranscurridos < 6) {
+                return back()->with('message', 'No has cumplido el tiempo suficiente para solicitar vacaciones.');
+            }
 
-                        $Vacaciones = VacationRequest::create([
-                            'user_id' => $user->id,
-                            'request_type_id' => 1,
-                            'file' => $path,
-                            'details' => $request->details,
-                            'reveal_id' => $request->reveal_id,
-                            'direct_manager_id' => $jefedirecto,
-                            'direct_manager_status' => 'Pendiente',
-                            'rh_status' => 'Pendiente'
-                        ]);
+            $Vacaciones = DB::table('vacations_availables')
+                ->where('users_id', $user->id)
+                ->where('cutoff_date', '>=', $fechaActual)
+                ->orderBy('cutoff_date', 'asc')
+                ->get();
+
+            $Datos = [];
+            foreach ($Vacaciones as $vaca) {
+                $Datos[] = [
+                    'dv' => $vaca->dv,
+                    'cutoff_date' => $vaca->cutoff_date,
+                    'period' => $vaca->period,
+                    'days_enjoyed' => $vaca->days_enjoyed,
+                    'waiting' => $vaca->waiting,
+                    'days_enjoyed' => $vaca->days_enjoyed,
+                    'days_availables' => $vaca->days_availables
+                ];
+            }
+
+            if (count($Datos) > 1) {
+                $PrimerPeriodo = (int) $Datos[0]['dv'];
+                $SegundoPeriodo = (int) $Datos[1]['dv'];
+                $totalambosperidos = $PrimerPeriodo + $SegundoPeriodo;
+            } elseif (count($Datos) == 1) {
+                $totalambosperidos = $Datos[0]['dv'];
+            }
+
+            $dates = $request->dates;
+            $datesArray = json_decode($dates, true);
+            $diasTotales = count($datesArray);
 
 
-                        foreach ($datesArray as $dia) {
-                            VacationDays::create([
-                                'day' => $dia,
-                                'vacation_request_id' => $Vacaciones->id,
-                                'status' => 0,
+            if ($diasTotales == 0) {
+                return back()->with('message', 'Debes enviar al menos un día de vacaciones.');
+            }
+
+            if ($diasTotales > $totalambosperidos) {
+                return back()->with('message', 'No cuentas con días suficientes');
+            }
+
+            $path = '';
+            if ($request->hasFile('archivos')) {
+                $filenameWithExt = $request->file('archivos')->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension = $request->file('archivos')->clientExtension();
+                $fileNameToStore = time() . $filename . '.' . $extension;
+                $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
+            }
+
+            if (count($Datos) > 1) {
+                // Extracción de datos de los dos periodos
+                $PrimerPeriodo = (int) $Datos[0]['dv'];
+                $Periodo = $Datos[0]['period'];
+                $SegundoPeriodo = (int) $Datos[1]['dv'];
+                $Periododos = $Datos[1]['period'];
+                $primerWaiting = $Datos[0]['waiting'];
+                $segundoWaiting = $Datos[1]['waiting'];
+                $primerDaysEnjoyed = $Datos[0]['days_enjoyed'];
+                $SegundoDaysEnjoyed = $Datos[1]['days_enjoyed'];
+                $primerDaysAvailables = $Datos[0]['days_availables'];
+                $segundoDaysAvailables = $Datos[1]['days_availables'];
+
+                // Cálculos de disponibilidad
+                $totalAmbosPeriodos = $PrimerPeriodo + $SegundoPeriodo;
+                $Disponibilidad1 = $primerWaiting + $primerDaysEnjoyed;
+                $Disponibilidad2 = $segundoWaiting + $SegundoDaysEnjoyed;
+                $prueba = $Disponibilidad1 + $Disponibilidad2;
+
+                if ($diasTotales > $totalAmbosPeriodos) {
+                    return  back()->with('message', 'No cuentas con los días solicitados.');
+                }
+
+                if ($diasTotales <= $totalAmbosPeriodos) {
+                    // Caso donde los días solicitados están dentro del primer periodo
+                    if ($diasTotales <= $PrimerPeriodo && $PrimerPeriodo > 0) {
+                        $cercadv = $diasTotales + $primerWaiting;
+                        $cercadv2 = $diasTotales + $segundoWaiting;
+
+                        if ($cercadv <= $PrimerPeriodo) {
+                            DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
+                                'waiting' => $cercadv
                             ]);
-                        }
-                    } elseif ($cercadv2 <= $SegundoPeriodo) {
-                        $resta = $PrimerPeriodo - $primerWaiting;
-                        if ($resta >= 0) {
-                            $proxdv = $diasTotales - $resta;
-                            $nuevodv = $diasTotales - $proxdv;
-                            $newdv = $primerWaiting + $nuevodv;
-                            $prodv = $proxdv + $segundoWaiting;
-                            if ($newdv <= $PrimerPeriodo && $prodv  <= $SegundoPeriodo) {
-                                DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
-                                    'waiting' => $newdv
+
+                            $Vacaciones = VacationRequest::create([
+                                'user_id' => $user->id,
+                                'request_type_id' => 1,
+                                'file' => $path,
+                                'details' => $request->details,
+                                'reveal_id' => $request->reveal_id,
+                                'direct_manager_id' => $jefedirecto,
+                                'direct_manager_status' => 'Pendiente',
+                                'rh_status' => 'Pendiente'
+                            ]);
+
+
+                            foreach ($datesArray as $dia) {
+                                VacationDays::create([
+                                    'day' => $dia,
+                                    'vacation_request_id' => $Vacaciones->id,
+                                    'status' => 0,
                                 ]);
+                            }
+                        } elseif ($cercadv2 <= $SegundoPeriodo) {
+                            $resta = $PrimerPeriodo - $primerWaiting;
+                            if ($resta >= 0) {
+                                $proxdv = $diasTotales - $resta;
+                                $nuevodv = $diasTotales - $proxdv;
+                                $newdv = $primerWaiting + $nuevodv;
+                                $prodv = $proxdv + $segundoWaiting;
+                                if ($newdv <= $PrimerPeriodo && $prodv  <= $SegundoPeriodo) {
+                                    DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
+                                        'waiting' => $newdv
+                                    ]);
+                                    DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periododos)->update([
+                                        'waiting' => $prodv
+                                    ]);
+                                    $Vacaciones = VacationRequest::create([
+                                        'user_id' => $user->id,
+                                        'request_type_id' => 1,
+                                        'file' => $path,
+                                        'details' => $request->details,
+                                        'reveal_id' => $request->reveal_id,
+                                        'direct_manager_id' => $jefedirecto,
+                                        'direct_manager_status' => 'Pendiente',
+                                        'rh_status' => 'Pendiente'
+                                    ]);
+
+                                    foreach ($datesArray as $dia) {
+                                        VacationDays::create([
+                                            'day' => $dia,
+                                            'vacation_request_id' => $Vacaciones->id,
+                                            'status' => 0,
+                                        ]);
+                                    }
+                                }
+                            }
+                        } else {
+                            return back()->with('message', 'Asegúrate que no tienes vacaciones por autorizar, ya que tienes días disponibles, pero están en espera.');
+                        }
+                        return back()->with('message', 'Vacaciones actualizadas correctamente. 1');
+                    }
+
+                    // Caso donde los días solicitados están en ambos periodos
+                    if ($diasTotales > $PrimerPeriodo) {
+                        $faltan = $diasTotales - $PrimerPeriodo;
+                        $ambosWaiting = $primerWaiting + $segundoWaiting;
+
+                        if ($ambosWaiting <= $totalAmbosPeriodos) {
+                            $restadedv = $diasTotales - $faltan;
+                            $cercadv = $restadedv + $primerWaiting;
+
+                            if ($cercadv <= $PrimerPeriodo && $faltan <= $SegundoPeriodo && $PrimerPeriodo > 0) {
+                                DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
+                                    'waiting' => $restadedv
+                                ]);
+                                $Vacaciones = VacationRequest::create([
+                                    'user_id' => $user->id,
+                                    'request_type_id' => 1,
+                                    'file' => $path,
+                                    'details' => $request->details,
+                                    'reveal_id' => $request->reveal_id,
+                                    'direct_manager_id' => $jefedirecto,
+                                    'direct_manager_status' => 'Pendiente',
+                                    'rh_status' => 'Pendiente'
+                                ]);
+
+
+                                foreach ($datesArray as $dia) {
+                                    VacationDays::create([
+                                        'day' => $dia,
+                                        'vacation_request_id' => $Vacaciones->id,
+                                        'status' => 0,
+                                    ]);
+                                }
+                            } elseif ($SegundoPeriodo > 0 && $PrimerPeriodo == 0 && ($segundoWaiting + $diasTotales) <= $SegundoPeriodo) {
+                                $prueba = $diasTotales + $segundoWaiting;
                                 DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periododos)->update([
-                                    'waiting' => $prodv
+                                    'waiting' => $prueba
                                 ]);
                                 $Vacaciones = VacationRequest::create([
                                     'user_id' => $user->id,
@@ -326,140 +390,156 @@ class VacationRequestController extends Controller
                                         'status' => 0,
                                     ]);
                                 }
+                            } else {
+                                return back()->with('message', 'Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (1)');
                             }
-                        }
-                    } else {
-                        return back()->with('message', 'Asegúrate que no tienes vacaciones por autorizar, ya que tienes días disponibles, pero están en espera.');
-                    }
-                    return back()->with('message', 'Vacaciones actualizadas correctamente. 1');
-                }
 
-                // Caso donde los días solicitados están en ambos periodos
-                if ($diasTotales > $PrimerPeriodo) {
-                    $faltan = $diasTotales - $PrimerPeriodo;
-                    $ambosWaiting = $primerWaiting + $segundoWaiting;
-
-                    if ($ambosWaiting <= $totalAmbosPeriodos) {
-                        $restadedv = $diasTotales - $faltan;
-                        $cercadv = $restadedv + $primerWaiting;
-
-                        if ($cercadv <= $PrimerPeriodo && $faltan <= $SegundoPeriodo && $PrimerPeriodo > 0) {
-                            DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
-                                'waiting' => $restadedv
-                            ]);
-                            $Vacaciones = VacationRequest::create([
-                                'user_id' => $user->id,
-                                'request_type_id' => 1,
-                                'file' => $path,
-                                'details' => $request->details,
-                                'reveal_id' => $request->reveal_id,
-                                'direct_manager_id' => $jefedirecto,
-                                'direct_manager_status' => 'Pendiente',
-                                'rh_status' => 'Pendiente'
-                            ]);
-
-
-                            foreach ($datesArray as $dia) {
-                                VacationDays::create([
-                                    'day' => $dia,
-                                    'vacation_request_id' => $Vacaciones->id,
-                                    'status' => 0,
-                                ]);
-                            }
-                        } elseif ($SegundoPeriodo > 0 && $PrimerPeriodo == 0 && ($segundoWaiting + $diasTotales) <= $SegundoPeriodo) {
-                            $prueba = $diasTotales + $segundoWaiting;
-                            DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periododos)->update([
-                                'waiting' => $prueba
-                            ]);
-                            $Vacaciones = VacationRequest::create([
-                                'user_id' => $user->id,
-                                'request_type_id' => 1,
-                                'file' => $path,
-                                'details' => $request->details,
-                                'reveal_id' => $request->reveal_id,
-                                'direct_manager_id' => $jefedirecto,
-                                'direct_manager_status' => 'Pendiente',
-                                'rh_status' => 'Pendiente'
-                            ]);
-
-                            foreach ($datesArray as $dia) {
-                                VacationDays::create([
-                                    'day' => $dia,
-                                    'vacation_request_id' => $Vacaciones->id,
-                                    'status' => 0,
-                                ]);
-                            }
-                        } else {
-                            return back()->with('message', 'Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (1)');
-                        }
-
-                        if ($faltan > 0 && $PrimerPeriodo > 0) {
-                            if ($SegundoPeriodo > 0) {
-                                if ($faltan <= $SegundoPeriodo) {
-                                    if ($segundoWaiting == $SegundoPeriodo || $segundoWaiting > $SegundoPeriodo) {
-                                        return  back()->with('No tienes mas días');
-                                    }
-                                    $cercadv2 = $faltan + $segundoWaiting;
-                                    DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periododos)->update([
-                                        'waiting' => $cercadv2
-                                    ]);
-                                    $Vacaciones = VacationRequest::create([
-                                        'user_id' => $user->id,
-                                        'request_type_id' => 1,
-                                        'file' => $path,
-                                        'details' => $request->details,
-                                        'reveal_id' => $request->reveal_id,
-                                        'direct_manager_id' => $jefedirecto,
-                                        'direct_manager_status' => 'Pendiente',
-                                        'rh_status' => 'Pendiente'
-                                    ]);
-
-
-                                    foreach ($datesArray as $dia) {
-                                        VacationDays::create([
-                                            'day' => $dia,
-                                            'vacation_request_id' => $Vacaciones->id,
-                                            'status' => 0,
+                            if ($faltan > 0 && $PrimerPeriodo > 0) {
+                                if ($SegundoPeriodo > 0) {
+                                    if ($faltan <= $SegundoPeriodo) {
+                                        if ($segundoWaiting == $SegundoPeriodo || $segundoWaiting > $SegundoPeriodo) {
+                                            return  back()->with('No tienes mas días');
+                                        }
+                                        $cercadv2 = $faltan + $segundoWaiting;
+                                        DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periododos)->update([
+                                            'waiting' => $cercadv2
                                         ]);
+                                        $Vacaciones = VacationRequest::create([
+                                            'user_id' => $user->id,
+                                            'request_type_id' => 1,
+                                            'file' => $path,
+                                            'details' => $request->details,
+                                            'reveal_id' => $request->reveal_id,
+                                            'direct_manager_id' => $jefedirecto,
+                                            'direct_manager_status' => 'Pendiente',
+                                            'rh_status' => 'Pendiente'
+                                        ]);
+
+
+                                        foreach ($datesArray as $dia) {
+                                            VacationDays::create([
+                                                'day' => $dia,
+                                                'vacation_request_id' => $Vacaciones->id,
+                                                'status' => 0,
+                                            ]);
+                                        }
+                                    } else {
+                                        return back()->with('message', 'Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (2)');
                                     }
-                                } else {
-                                    return back()->with('message', 'Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (2)');
                                 }
                             }
+                            return back()->with('message', 'Vacaciones actualizadas correctamente.');
+                        } else {
+                            return  back()->with('message', 'No te alcanza para los días solicitados.');
                         }
-                        return back()->with('message', 'Vacaciones actualizadas correctamente.');
-                    } else {
-                        return  back()->with('message', 'No te alcanza para los días solicitados.');
                     }
                 }
             }
+
+            if (count($Datos) == 1) {
+                $totalunsoloperido = $Datos[0]['dv'];
+                $Periodo = $Datos[0]['period'];
+                $primerWaiting = $Datos[0]['waiting'];
+                $primerDaysEnjoyed = $Datos[0]['days_enjoyed'];
+                $dvupdate = $primerWaiting + $diasTotales;
+                $Disponibilidad = $primerWaiting + $primerDaysEnjoyed;
+
+                if ($diasTotales > $totalunsoloperido) {
+                    return back()->with('message', 'No cuentas con los días solicitados.');
+                }
+
+                if ($dvupdate > $totalunsoloperido) {
+                    return back()->with('message', 'Asegurate que no tengas solicitudes pendientes.');
+                }
+
+                if ($diasTotales <= $totalunsoloperido) {
+                    //dd($dvupdate);
+                    if ($diasTotales <= $dvupdate) {
+                        DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
+                            'waiting' => $dvupdate,
+                        ]);
+                        $Vacaciones = VacationRequest::create([
+                            'user_id' => $user->id,
+                            'request_type_id' => 1,
+                            'file' => $path,
+                            'details' => $request->details,
+                            'reveal_id' => $request->reveal_id,
+                            'direct_manager_id' => $jefedirecto,
+                            'direct_manager_status' => 'Pendiente',
+                            'rh_status' => 'Pendiente'
+                        ]);
+
+                        foreach ($datesArray as $dia) {
+                            VacationDays::create([
+                                'day' => $dia,
+                                'vacation_request_id' => $Vacaciones->id,
+                                'status' => 0,
+                            ]);
+                        }
+                        return back()->with('message', 'Se creo tu solicitud de vacaciones.');
+                    }
+                }
+            }
+
+            return back()->with('message', 'Se creo tu solicitud de vacaciones.');
         }
 
-        if (count($Datos) == 1) {
-            $totalunsoloperido = $Datos[0]['dv'];
-            $Periodo = $Datos[0]['period'];
-            $primerWaiting = $Datos[0]['waiting'];
-            $primerDaysEnjoyed = $Datos[0]['days_enjoyed'];
-            $dvupdate = $primerWaiting + $diasTotales;
-            $Disponibilidad = $primerWaiting + $primerDaysEnjoyed;
+        ///PERMISOS ESPECIALES
+        if ($request->request_type_id == 2) {
+            $request->validate([
+                'details' => 'required',
+                'reveal_id' => 'required',
+                'dates' => 'required',
+                'archivos' => 'required'
+            ]);
 
-            if ($diasTotales > $totalunsoloperido) {
-                return back()->with('message', 'No cuentas con los días solicitados.');
+            $dates = $request->dates;
+            $datesArray = json_decode($dates, true);
+            $dias = count($datesArray);
+
+            $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
+            $jefedirecto = $Ingreso->jefe_directo_id;
+
+            $path = '';
+            if ($request->hasFile('archivos')) {
+                $filenameWithExt = $request->file('archivos')->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension = $request->file('archivos')->clientExtension();
+                $fileNameToStore = time() . $filename . '.' . $extension;
+                $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
             }
 
-            if ($dvupdate > $totalunsoloperido) {
-                return back()->with('message', 'Asegurate que no tengas solicitudes pendientes.');
-            }
+            if ($request->ausenciaTipo == 'salida_durante') {
 
-            if ($diasTotales <= $totalunsoloperido) {
-                //dd($dvupdate);
-                if ($diasTotales <= $dvupdate) {
-                    DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $Periodo)->update([
-                        'waiting' => $dvupdate,
-                    ]);
+                $hora8AM = Carbon::today()->setHour(8)->setMinute(0)->setSecond(0);
+                $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
+                $start = $request->hora_salida;
+                $end = $request->hora_regreso;
+
+                $hora1Carbon = Carbon::createFromFormat('H:i', $start);
+                $hora2Carbon = Carbon::createFromFormat('H:i', $end);
+
+                // Calcular la diferencia en minutos
+                $diferenciaEnMinutos = $hora2Carbon->diffInMinutes($hora1Carbon);
+
+                // Convertir la diferencia a horas y minutos
+                $diferenciaEnHoras = intdiv($diferenciaEnMinutos, 60); // Horas
+                $diferenciaEnMinutosRestantes = $diferenciaEnMinutos % 60; // Minutos restantes
+                if ($dias > 1) {
+                    return back()->with('message', 'Sí tienes más de una solicitud, debes crearla una por una.');
+                }
+
+                if ($diferenciaEnHoras > 4) {
+                    return back()->with('message', 'No puedes tomar más de cuatro horas.');
+                }
+
+                ///aqui ya se va crear la solicitud
+                if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora2Carbon)) {
+                    // Hora dentro del rango permitido
+
                     $Vacaciones = VacationRequest::create([
                         'user_id' => $user->id,
-                        'request_type_id' => 1,
+                        'request_type_id' => 2,
                         'file' => $path,
                         'details' => $request->details,
                         'reveal_id' => $request->reveal_id,
@@ -471,16 +551,73 @@ class VacationRequestController extends Controller
                     foreach ($datesArray as $dia) {
                         VacationDays::create([
                             'day' => $dia,
+                            'start' => $start,
+                            'end' => $end,
                             'vacation_request_id' => $Vacaciones->id,
                             'status' => 0,
                         ]);
                     }
-                    return back()->with('message', 'Vacaciones actualizadas');
+                    return back()->with('message', 'La hora de inicio está dentro del rango permitido.');
+                } else {
+                    // Hora fuera del rango permitido
+                    return back()->with('message', 'La hora de inicio está fuera del rango permitido.');
                 }
             }
-        }
 
-        return back()->with('message', 'Se creo tu solicitud de vacaciones.');
+            if ($request->ausenciaTipo == 'salida_antes') {
+
+                if ($dias > 1) {
+                    return back()->with('message', 'Sí tienes más de una solicitud, debes crearla una por una.');
+                }
+
+                $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
+                $start = $request->hora_salida;
+
+                $diferenciaEnMinutos = $hora5PM->diffInMinutes($start);
+                // Convertir la diferencia a horas y minutos
+                $diferenciaEnHoras = intdiv($diferenciaEnMinutos, 60); // Horas
+                $diferenciaEnMinutosRestantes = $diferenciaEnMinutos % 60; // Minutos restantes
+
+                if ($diferenciaEnHoras > 4) {
+                    return back()->with('message', 'No puedes tomar más de cuatro horas.');
+                }
+
+                $horaSalidaCarbon = Carbon::createFromFormat('H:i', $start); 
+
+                if ($horaSalidaCarbon->greaterThanOrEqualTo($hora5PM)) {
+                    return back()->with('message', 'No se pueden crear solicitudes después de las 17 horas.');
+                }
+
+                $hora1Carbon = Carbon::createFromFormat('H:i', $start);
+
+                if ($hora1Carbon->lessThan($hora5PM)) {
+                    $Vacaciones = VacationRequest::create([
+                        'user_id' => $user->id,
+                        'request_type_id' => 2,
+                        'file' => $path,
+                        'details' => $request->details,
+                        'reveal_id' => $request->reveal_id,
+                        'direct_manager_id' => $jefedirecto,
+                        'direct_manager_status' => 'Pendiente',
+                        'rh_status' => 'Pendiente'
+                    ]);
+
+                    foreach ($datesArray as $dia) {
+                        VacationDays::create([
+                            'day' => $dia,
+                            'start' => $start,
+                            'vacation_request_id' => $Vacaciones->id,
+                            'status' => 0,
+                        ]);
+                    }
+
+                    return back()->with('message', 'Pues ya');
+                }else{
+                    return back()->with('message', 'No puedes seleccionar la misma hora de salida');
+                }
+            }
+            //dd($diferenciaEnHoras.'...'.$diferenciaEnMinutosRestantes);
+        }
     }
 
     public function RequestBoss()
@@ -728,25 +865,24 @@ class VacationRequestController extends Controller
 
         $usersid = DB::table('employees')->where('status', 1)->pluck('user_id');
         $IdandNameUser = [];
-        foreach ($usersid as $userid){
+        foreach ($usersid as $userid) {
             $Usuario = User::where('id', $userid)->first();
             $IdandNameUser[] = [
-                'name' => $Usuario->name.' '.$Usuario->lastname,
+                'name' => $Usuario->name . ' ' . $Usuario->lastname,
                 'id' => $userid
             ];
-            
         }
 
         $agregarvacaciones = MakeUpVacations::all();
         $vacacionesagregadas = [];
-        foreach ($agregarvacaciones as $vacacionesUser){
+        foreach ($agregarvacaciones as $vacacionesUser) {
             $Usuario = User::where('id', $vacacionesUser->user_id)->first();
             $vacacionesagregadas[] = [
-                'iduser' => $Usuario->name.' '.$Usuario->lastname,
+                'iduser' => $Usuario->name . ' ' . $Usuario->lastname,
                 'num_days' => $vacacionesUser->num_days,
                 'description' => $vacacionesUser->description
             ];
-        }    
+        }
         return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', '$IdandNameUser', 'vacacionesagregadas'));
     }
 
