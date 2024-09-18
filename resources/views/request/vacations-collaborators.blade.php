@@ -53,7 +53,7 @@
                 </div>
             </div>
 
-            <div id="openModalAusencia" style="width: 18%; margin-left: 20px">
+            <div class="openModalAusencia" style="width: 18%; margin-left: 20px">
                 <div class="tarjeta hover-tarjeta" style="border-bottom: 10px solid var(--color-target-2);">
                     <div class="d-flex justify-content-end ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="32" height="32"
@@ -130,37 +130,38 @@
             <!-- Columna izquierda -->
             <div style="width: 100%;">
                 <div class="card-seccion" style="height: 100vh;">
-                    <div class="d-flex justify-content-between">
-                        <strong>Mis solicitudes</strong>
-                        <div class="d-flex">
+                    <div class="row">
+                        <div class="col-3 d-flex align-items-center justify-content-center">
+                            <strong>Mis solicitudes</strong>
+                        </div>
+                        <div class="col-3 d-flex align-items-center justify-content-center">
                             <select id="tipoSelect" style="width: max-content" class="form-select mr-1"
                                 aria-label="Default select example">
-                                <option value="">Todos</option>
+                                <option value="">Tipo de permiso</option>
                                 <option value="Vacaciones">Vacaciones</option>
                                 <option value="ausencia">Ausencia</option>
                                 <option value="permiso_especial">Permisos especiales</option>
                                 <option value="incapacidad">Incapacidad</option>
                                 <option value="paternidad">Paternidad</option>
                             </select>
-
-
-                            <div class=" d-flex align-items-center justify-content-center align-content-center mr-1 ">
-                                <span>Status RH: </span>
-                            </div>
-
+                        </div>
+                        <div class="col-3 d-flex align-items-center justify-content-center">
                             <select id="selectRh" style="width: max-content" class="form-select mr-1"
                                 aria-label="Default select example">
-                                <option value="">Todas</option>
+                                <option value="">Status RH</option>
                                 <option value="aprobadas">Aprobadas</option>
                                 <option value="Pendiente">Pendientes</option>
                                 <option value="rechazadas">Rechazadas</option>
                             </select>
+                        </div>
 
+                        <div class="col-3 d-flex align-items-center justify-content-center">
+                            <span class="mr-1">Dia:</span>
                             <input id="fechaInput" placeholder="Fecha" type="date" class="form-control"
                                 style="width: 10rem" />
-
                         </div>
                     </div>
+
                     <div class="mt-4" id="tableSolicitudes">
                         <table class="table table-hover">
                             <thead>
@@ -436,6 +437,7 @@
                             <div class="mt-2" id="dynamicContentEncabezado">
                                 <!-- Aquí se va a cambiar el contenido según la tarjeta seleccionada -->
                             </div>
+                            <div id="request_values"></div>
 
                             <div class="d-flex justify-content-between">
                                 <div class="mr-2">
@@ -652,9 +654,7 @@
             document.getElementById('openModalCalendario').addEventListener('click', function() {
                 $('#modalCalendario').modal('show');
             });
-        });
 
-        document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('closeModalCalendario').addEventListener('click', function() {
                 $('#modalCalendario').modal('hide');
             });
@@ -984,94 +984,6 @@
                 });
                 calendario.render();
             });
-
-            $('#modaTarjetas').on('shown.bs.modal', function() {
-                var calendarElVa = document.getElementById('calendarioDaysUpdate');
-                console.log('daysDataUpdate',
-                    daysDataUpdate); // Para verificar que se esté pasando correctamente
-                var daysSelected = daysDataUpdate.split(
-                    ','
-                ); // Asegúrate de que 'daysDataUpdate' tiene los días seleccionados previamente
-                selectedDays = [...
-                    daysSelected
-                ]; // Inicializa selectedDays con los valores de daysSelected
-
-                /*Eliminar de selectedDays los indices que aparecen como vacios ""*/
-                selectedDays = selectedDays.filter(function(e) {
-                    return e !== "";
-                });
-
-                console.log('Días iniciales seleccionados:',
-                    selectedDays); // Para ver los días iniciales
-
-                var calendarioVa = new FullCalendar.Calendar(calendarElVa, {
-                    locale: "es",
-                    hiddenDays: [0, 6],
-                    selectable: true,
-                    dateClick: function(info) {
-                        var selectedDate = info.dateStr;
-                        var dayNumberEl = info.dayEl.querySelector(
-                            '.fc-daygrid-day-number');
-
-                        // Verifica si el día está en la lista de daysSelected o selectedDays
-                        if (!selectedDays.includes(selectedDate)) {
-                            // Si no está seleccionado, agrégalo
-                            selectedDays.push(selectedDate);
-                            if (dayNumberEl) {
-                                dayNumberEl.classList.add('fc-day-selected');
-                            }
-                            console.log('Día seleccionado agregado:',
-                                selectedDate); // Log para agregar día
-                        } else {
-                            // Si ya está en selectedDays o en daysSelected, elimínalo de ambos
-                            selectedDays = selectedDays.filter(day => day !==
-                                selectedDate);
-                            daysSelected = daysSelected.filter(day => day !==
-                                selectedDate);
-
-                            if (dayNumberEl) {
-                                dayNumberEl.classList.remove('fc-day-selected');
-                            }
-                            console.log('Día seleccionado eliminado:',
-                                selectedDate); // Log para eliminar día
-                        }
-                        console.log('Días seleccionados ahora:',
-                            selectedDays); // Log de la lista actualizada
-                    },
-
-                    datesSet: function() {
-                        // Después de que se cambia la vista del calendarioVa, volvemos a aplicar las clases CSS
-                        var days = document.querySelectorAll('.fc-daygrid-day');
-                        days.forEach(function(day) {
-                            var date = day.getAttribute('data-date');
-                            var dayNumberEl = day.querySelector(
-                                '.fc-daygrid-day-number');
-
-                            // Primero, asegurarse de que el número del día tenga la clase eliminada antes de volver a aplicarla
-                            if (dayNumberEl) {
-                                dayNumberEl.classList.remove(
-                                    'fc-day-selected');
-                            }
-
-                            if (selectedDays.includes(date)) {
-                                if (dayNumberEl) {
-                                    dayNumberEl.classList.add(
-                                        'fc-day-selected');
-                                }
-                            }
-                        });
-                    },
-
-                    //MOSTRAR LOS BOTONES DE MES, SEMANA Y LISTA//
-                    headerToolbar: {
-                        left: '',
-                        center: 'prev,title,next',
-                        right: '',
-                    },
-                    // Resto del código del calendario...
-                });
-                calendarioVa.render();
-            });
         });
 
         let daysDataUpdate = '';
@@ -1107,7 +1019,10 @@
 
                 const baseUrl = window.location.origin;
                 const viewFile = baseUrl + '/' + file;
-                document.getElementById('file').textContent = viewFile;
+
+                // Establece el href dinámicamente para que apunte al archivo y lo abra en una nueva ventana
+                document.getElementById('file').setAttribute('href', viewFile);
+
                 document.getElementById('days').textContent = days;
 
                 var statusManegerElement = document.getElementById('direct_manager_status');
@@ -1156,7 +1071,7 @@
                 }
 
                 /*Agregarle una clase al elemento que tiene el id buttonEditRequest dependiendo el tipo de solicitud */
-                if (tipo === 'Vacaciones' && statusRh === 'Pendiente') {
+                if (tipo === 'vacaciones' && statusRh === 'Pendiente') {
                     document.getElementById('ButtonEditRequest').classList.add('openModalVacaciones');
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
@@ -1168,21 +1083,25 @@
             });
         });
 
-
+        /* Abrir modal de vacaciones */
         $(document).on('click', '.openModalVacaciones', function() {
             $('#verSolivitud').modal('hide');
             document.getElementById('modalTitle').innerText = 'Vacaciones';
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentEncabezado').innerHTML = `
-        <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
-    `;
+                <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
+            `;
             document.getElementById('textDinamicCalendar').innerHTML = `
-        <span>Selecciona los días de vacaciones</span>
-    `;
+                <span>Selecciona los días de vacaciones</span>
+            `;
             document.getElementById('dynamicContentFormaPago').innerHTML = `
-        <span>Forma de pago (Asignación automática)</span>
-        <input type="text" disabled class="form-control mt-1" value="A cuenta de vacaciones" id="forma_pago" name="forma_pago" disabled>
-    `;
+                <span>Forma de pago (Asignación automática)</span>
+                <input type="text" disabled class="form-control mt-1" value="A cuenta de vacaciones" id="forma_pago" name="forma_pago" disabled>
+            `;
+
+            document.getElementById('request_values').innerHTML = `
+                <input type="text" disabled class="form-control mt-1" value="1" id="request_type_id" name="request_type_id">
+            `;
 
             // Abre el modal
             $('#modaTarjetas').modal({
@@ -1220,88 +1139,78 @@
             form.submit();
         });
 
-        $('.btnAbrirModal').on('click', function() {
-            document.getElementById('modalTitle').innerText = 'Vacaciones';
-            // Cambia el contenido dinámico
-            document.getElementById('dynamicContentEncabezado').innerHTML = `
-            <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
-        `;
+        /* Abrir modal de ausencia */
+        $(document).on('click', '.openModalAusencia', function() {
+            $('#verSolivitud').modal('hide');
+            // Cambia el título del modal
+            document.getElementById('modalTitle').innerText = 'Ausencia';
             document.getElementById('textDinamicCalendar').innerHTML = `
-            <span>Selecciona los días de vacaciones</span>
-        `;
+                <span>Selecciona el día que no te presentarás</span>
+            `;
+
+            document.getElementById('dynamicContentEncabezado').innerHTML = `
+                <div class="d-flex">
+                        <div class="mr-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="ausenciaTipo" id="retardo" value="retardo">
+                                <label class="form-check-label" for="retardo">Retardo</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="ausenciaTipo" id="salida_antes" value="salida_antes">
+                                <label class="form-check-label" for="salida_antes">Salida antes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="ausenciaTipo" id="salida_durante" value="salida_durante">
+                                <label class="form-check-label" for="salida_durante">Salida durante</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="ausenciaTipo" id="falta_trabajo" value="falta_trabajo">
+                                <label class="form-check-label" for="falta_trabajo">Falta de trabajo</label>
+                            </div>
+                        </div>
+
+                        <div style="width: 75.5%">
+                            <span id="text-time" class="d-none" style="color: red">
+                                Toma en cuenta que si la ausencia supera las 4 horas, se descontará de los días de vacaciones.
+                            </span>
+
+                            <div class="d-flex justify-content-between">
+                                <div id="horaSalida" class="cs-form d-none mb-3">
+                                    <span>Hora de salida: </span>
+                                    <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" />
+                                </div>
+
+                                <div id="horaEntrada" class="cs-form d-none mb-3">
+                                    <span>Hora de regreso: </span>
+                                    <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" />
+                                </div>
+                            </div>
+
+                            <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
+                        </div>
+                    </div>
+            `;
+
+            // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
-            <span>Forma de pago (Asignación automatica)</span>
-            <input type="text" disabled class="form-control mt-1" value="A cuenta de vacaciones" id="forma_pago" name="forma_pago" disabled>
-        `;
+                <div class="mb-2">
+                    <span>Forma de pago (Asignación automatica)</span>
+                    <input type="text" disabled class="form-control mt-1"
+                    value="Descontar Tiempo/Día" id="forma_pago" name="forma_pago" disabled>
+                </div>
+            `;
+
+            document.getElementById('request_values').innerHTML = `
+                <input type="text" disabled class="form-control mt-1" value="2" id="request_type_id" name="request_type_id">
+            `;
+
             // Abre el modal
             $('#modaTarjetas').modal({
                 backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
                 keyboard: false // Desactiva el cierre con la tecla "Esc"
             }).modal('show');
-        });
-
-        document.getElementById('openModalAusencia').addEventListener('click', function() {
-            // Cambia el título del modal
-            document.getElementById('modalTitle').innerText = 'Ausencia';
-            document.getElementById('textDinamicCalendar').innerHTML = `
-            <span>Selecciona el día que no te presentarás</span>
-            `;
-
-            document.getElementById('dynamicContentEncabezado').innerHTML = `
-           <div class="d-flex">
-                <div class="mr-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="ausenciaTipo" id="retardo" value="retardo">
-                        <label class="form-check-label" for="retardo">Retardo</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="ausenciaTipo" id="salida_antes" value="salida_antes">
-                        <label class="form-check-label" for="salida_antes">Salida antes</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="ausenciaTipo" id="salida_durante" value="salida_durante">
-                        <label class="form-check-label" for="salida_durante">Salida durante</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="ausenciaTipo" id="falta_trabajo" value="falta_trabajo">
-                        <label class="form-check-label" for="falta_trabajo">Falta de trabajo</label>
-                    </div>
-                </div>
-
-                <div style="width: 75.5%">
-                    <span id="text-time" class="d-none" style="color: red">
-                        Toma en cuenta que si la ausencia supera las 4 horas, se descontará de los días de vacaciones.
-                    </span>
-
-                    <div class="d-flex justify-content-between">
-                        <div id="horaSalida" class="cs-form d-none mb-3">
-                            <span>Hora de salida: </span>
-                            <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" />
-                        </div>
-
-                        <div id="horaEntrada" class="cs-form d-none mb-3">
-                            <span>Hora de regreso: </span>
-                            <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" />
-                        </div>
-                    </div>
-
-                    <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
-                </div>
-            </div>
-        `;
-
-            // Cambia el contenido dinámico
-            document.getElementById('dynamicContentFormaPago').innerHTML = `
-            <div class="mb-2">
-                <span>Forma de pago (Asignación automatica)</span>
-                <input type="text" disabled class="form-control mt-1"
-                value="Descontar Tiempo/Día" id="forma_pago" name="forma_pago" disabled>
-            </div>
-        `;
 
 
-            // Abre el modal
-            $('#modaTarjetas').modal('show');
             $(document).ready(function() {
                 $('input[name="ausenciaTipo"]').on('change', function() {
                     ausenciaTipo($(this).attr('id'));
@@ -1331,8 +1240,6 @@
                         textTime.classList.add('d-none');
                 }
             }
-
-
         });
 
 
@@ -1340,24 +1247,28 @@
             // Cambia el título del modal
             document.getElementById('modalTitle').innerText = 'Paternidad';
             document.getElementById('dynamicContentEncabezado').innerHTML = `
-            <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
-        `;
+                <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
+            `;
 
             document.getElementById('textDinamicCalendar').innerHTML = `
-            <span>Elige los 5 dias habiles a los que tienes derecho</span>
-        `;
+                <span>Elige los 5 dias habiles a los que tienes derecho</span>
+            `;
 
 
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
-            <div class="mb-2">
-                <span>Forma de pago (Asignación automatica)</span>
+                <div class="mb-2">
+                    <span>Forma de pago (Asignación automatica)</span>
 
-                <input type="text" class="form-control mt-1" value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
-            </div>
-        `;
+                    <input type="text" class="form-control mt-1" value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
+                </div>
+            `;
+
             // Abre el modal
-            $('#modaTarjetas').modal('show');
+            $('#modaTarjetas').modal({
+                backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
+                keyboard: false // Desactiva el cierre con la tecla "Esc"
+            }).modal('show');
         });
 
         document.getElementById('openModalIncapacidad').addEventListener('click', function() {
@@ -1390,116 +1301,116 @@
             // Cambia el título del modal
             document.getElementById('modalTitle').innerText = 'Especiales';
             document.getElementById('textDinamicCalendar').innerHTML = `
-            <span>Elige los 3 días naturales a los que tienes derecho</span>
-        `;
+                <span>Elige los 3 días naturales a los que tienes derecho</span>
+            `;
 
             document.getElementById('dynamicContentEncabezado').innerHTML = `
-            <div class="d-flex">
-                            <div class="mr-4 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="Permiso"
-                                        id="fallecimiento" value="Fallecimiento de un familiar">
-                                    <label class="form-check-label" for="fallecimiento">
-                                        Fallecimiento de un familiar
-                                    </label>
+                <div class="d-flex">
+                                <div class="mr-4 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Permiso"
+                                            id="fallecimiento" value="Fallecimiento de un familiar">
+                                        <label class="form-check-label" for="fallecimiento">
+                                            Fallecimiento de un familiar
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Permiso"
+                                            id="matrimonio" value="Matrimonio del colaborador">
+                                        <label class="form-check-label" for="matrimonio">
+                                            Matrimonio del colaborador
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Permiso"
+                                            id="academico" value="Motivos academicos/escolares">
+                                        <label class="form-check-label" for="academico">
+                                            Motivos academicos/escolares
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Permiso"
+                                            id="asunto" value="Asuntos personales">
+                                        <label class="form-check-label" for="asunto">Asuntos personales
+                                        </label>
+                                    </div>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="Permiso"
-                                        id="matrimonio" value="Matrimonio del colaborador">
-                                    <label class="form-check-label" for="matrimonio">
-                                        Matrimonio del colaborador
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="Permiso"
-                                        id="academico" value="Motivos academicos/escolares">
-                                    <label class="form-check-label" for="academico">
-                                        Motivos academicos/escolares
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="Permiso"
-                                        id="asunto" value="Asuntos personales">
-                                    <label class="form-check-label" for="asunto">Asuntos personales
-                                    </label>
-                                </div>
-                            </div>
-                            <div style="width: 50%">
-                                <div id="persona_afectada" class="d-none">
-                                    <span>Persona afectada: </span>
+                                <div style="width: 50%">
+                                    <div id="persona_afectada" class="d-none">
+                                        <span>Persona afectada: </span>
+                                        <div>
+                                            <select class="form-select mt-1" aria-label="Default select example"
+                                                id='familiar' name="familiar">
+                                                <option value="" selected>Seleccione</option>
+                                                <option value="conyuge">Conyuge</option>
+                                                <option value="hijos">Hijos</option>
+                                                <option value="padres">Padres</option>
+                                                <option value="hermanos">Hermanos</option>
+                                                <option value="otros">Otros</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div>
-                                        <select class="form-select mt-1" aria-label="Default select example"
-                                            id='familiar' name="familiar">
-                                            <option value="" selected>Seleccione</option>
-                                            <option value="conyuge">Conyuge</option>
-                                            <option value="hijos">Hijos</option>
-                                            <option value="padres">Padres</option>
-                                            <option value="hermanos">Hermanos</option>
-                                            <option value="otros">Otros</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div id='academicos' class="d-none ">
-                                        <div class="row mb-3">
-                                            <div class="col-6">
-                                                <span>Tu posición es: </span>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio"
-                                                        name="Posicion" id="hijo" value="hijo">
-                                                    <label class="form-check-label" for="hijo">
-                                                        Hijo
-                                                    </label>
+                                        <div id='academicos' class="d-none ">
+                                            <div class="row mb-3">
+                                                <div class="col-6">
+                                                    <span>Tu posición es: </span>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="Posicion" id="hijo" value="hijo">
+                                                        <label class="form-check-label" for="hijo">
+                                                            Hijo
+                                                        </label>
+                                                    </div>
                                                 </div>
+
+                                                <div class="col-6">
+                                                    <div class="cs-form ">
+                                                        <span>Hora de salida: </span>
+                                                        <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" />
+                                                    </div>
+                                                </div>
+
                                             </div>
 
-                                            <div class="col-6">
-                                                <div class="cs-form ">
-                                                    <span>Hora de salida: </span>
-                                                    <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" />
+                                            <div class="row ">
+                                                <div class="col-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="Posicion" id="colaborador" value="colaborador">
+                                                        <label class="form-check-label" for="colaborador">
+                                                            Colaborador
+                                                        </label>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                        </div>
-
-                                        <div class="row ">
-                                            <div class="col-6">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio"
-                                                        name="Posicion" id="colaborador" value="colaborador">
-                                                    <label class="form-check-label" for="colaborador">
-                                                        Colaborador
-                                                    </label>
+                                                <div class="col-6">
+                                                    <div class="cs-form mb-3">
+                                                        <span>Hora de regreso: </span>
+                                                        <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" />
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-6">
-                                                <div class="cs-form mb-3">
-                                                    <span>Hora de regreso: </span>
-                                                    <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" />
-                                                </div>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div>
-                            <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
-                        </div>
-                    `;
+                            <div>
+                                <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
+                            </div>
+            `;
 
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
-            <div class="mb-2">
-                <span>Forma de pago (Asignación automatica)</span>
-                <input type="text"  class="form-control mt-1"
-                    value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
+                <div class="mb-2">
+                    <span>Forma de pago (Asignación automatica)</span>
+                    <input type="text"  class="form-control mt-1"
+                        value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
 
-            </div>
-        `;
+                </div>
+            `;
             // Abre el modal
             $('#modaTarjetas').modal('show');
             $(document).ready(function() {
@@ -1539,6 +1450,14 @@
                 alert('Selecciona un reveal_id');
                 return; // Detiene el proceso si no se ha seleccionado un reveal_id
             }
+            //Imprimir por consola los datos que se enviaran
+            console.log('Formulario enviado');
+            console.log('Reveal ID:', selectEncargado.value);
+            console.log('Detalles:', document.getElementById('details').value);
+            console.log('Forma de pago:', document.getElementById('forma_pago').value);
+            console.log('Tipo de solicitud:', document.getElementById('request_type_id').value);
+            console.log('Archivo:', document.getElementById('archivos').value);
+            console.log('Días seleccionados:', selectedDays);
             // Elimina los campos ocultos previamente creados (si existen)
             document.querySelectorAll('.hidden-input').forEach(input => input.remove());
             // Crear un objeto FormData para capturar los datos del formulario
@@ -1551,6 +1470,14 @@
                 JSON.stringify(selectedDays);
             hiddenDates.classList.add('hidden-input');
             this.appendChild(hiddenDates);
+
+            //Crear un campo request_type_id para mandar el tipo de solicitud
+            const requestTypeId = document.createElement('input');
+            requestTypeId.type = 'hidden';
+            requestTypeId.name = 'request_type_id';
+            requestTypeId.value = document.getElementById('request_type_id').value;
+            requestTypeId.classList.add('hidden-input');
+            this.appendChild(requestTypeId);
 
             //MANDAR EL ID PARA ACTUALIZAR LA SOLICITUD
             const id = document.getElementById('modalId').textContent;

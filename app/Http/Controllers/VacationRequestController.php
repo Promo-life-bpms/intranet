@@ -169,7 +169,6 @@ class VacationRequestController extends Controller
 
     public function CreatePurchase(Request $request)
     {
-        //dd($request);
         $user = auth()->user();
         ///VACACIONES
         if ($request->request_type_id == 1) {
@@ -486,6 +485,7 @@ class VacationRequestController extends Controller
 
         ///PERMISOS ESPECIALES
         if ($request->request_type_id == 2) {
+
             $request->validate([
                 'details' => 'required',
                 'reveal_id' => 'required',
@@ -509,7 +509,7 @@ class VacationRequestController extends Controller
                 $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
             }
 
-            if($dias == 0){
+            if ($dias == 0) {
                 return back()->with('message', 'Debes ingresar el día en que saldrás temprano de la jornada.');
             }
 
@@ -586,7 +586,7 @@ class VacationRequestController extends Controller
                     return back()->with('message', 'No puedes tomar más de cuatro horas.');
                 }
 
-                $horaSalidaCarbon = Carbon::createFromFormat('H:i', $start); 
+                $horaSalidaCarbon = Carbon::createFromFormat('H:i', $start);
 
                 if ($horaSalidaCarbon->greaterThanOrEqualTo($hora5PM)) {
                     return back()->with('message', 'No se pueden crear solicitudes después de las 17 horas.');
@@ -616,7 +616,7 @@ class VacationRequestController extends Controller
                     }
 
                     return back()->with('message', 'Pues ya');
-                }else{
+                } else {
                     return back()->with('message', 'No puedes seleccionar la misma hora de salida');
                 }
             }
@@ -651,7 +651,7 @@ class VacationRequestController extends Controller
                 return back()->with('message', 'Solo tienes permitido tomar cinco días.');
             }
 
-            if($dias == 0){
+            if ($dias == 0) {
                 return back()->with('message', 'Debes ingresar al menos un día');
             }
 
@@ -676,7 +676,7 @@ class VacationRequestController extends Controller
             return back()->with('message', 'Se creo exitosamente la solicitud.');
         }
 
-        if ($request->request_type_id == 4){
+        if ($request->request_type_id == 4) {
             $request->validate([
                 'details' => 'required',
                 'reveal_id' => 'required',
@@ -699,11 +699,11 @@ class VacationRequestController extends Controller
                 $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
             }
 
-            if($dias == 0){
+            if ($dias == 0) {
                 return back()->with('message', 'Debes ingresar al menos un día');
             }
 
-            if($path == null){
+            if ($path == null) {
                 return back()->with('message', 'Ingresar la incapacidad expedida por el IMSS.');
             }
 
@@ -726,8 +726,7 @@ class VacationRequestController extends Controller
                 ]);
             }
             return back()->with('message', 'Se creo exitosamente la solicitud. Recuerda que estos días son naturales y además estos los paga el IMSS.');
-
-        } 
+        }
     }
 
     public function RequestBoss()
@@ -1152,6 +1151,7 @@ class VacationRequestController extends Controller
 
     public function UpdateRequest(Request $request)
     {
+        // dd($request);
         $user = auth()->user();
         $request->validate([
             'details' => 'required',
