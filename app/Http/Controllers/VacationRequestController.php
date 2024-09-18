@@ -509,6 +509,10 @@ class VacationRequestController extends Controller
                 $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
             }
 
+            if($dias == 0){
+                return back()->with('message', 'Debes ingresar el día en que saldrás temprano de la jornada.');
+            }
+
             if ($request->ausenciaTipo == 'salida_durante') {
 
                 $hora8AM = Carbon::today()->setHour(8)->setMinute(0)->setSecond(0);
@@ -618,6 +622,112 @@ class VacationRequestController extends Controller
             }
             //dd($diferenciaEnHoras.'...'.$diferenciaEnMinutosRestantes);
         }
+
+        if ($request->request_type_id == 3) {
+            $request->validate([
+                'details' => 'required',
+                'reveal_id' => 'required',
+                'dates' => 'required',
+                'archivos' => 'required'
+            ]);
+
+            $dates = $request->dates;
+            $datesArray = json_decode($dates, true);
+            $dias = count($datesArray);
+
+            $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
+            $jefedirecto = $Ingreso->jefe_directo_id;
+
+            $path = '';
+            if ($request->hasFile('archivos')) {
+                $filenameWithExt = $request->file('archivos')->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension = $request->file('archivos')->clientExtension();
+                $fileNameToStore = time() . $filename . '.' . $extension;
+                $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
+            }
+
+            if ($dias > 5) {
+                return back()->with('message', 'Solo tienes permitido tomar cinco días.');
+            }
+
+            if($dias == 0){
+                return back()->with('message', 'Debes ingresar al menos un día');
+            }
+
+            $Vacaciones = VacationRequest::create([
+                'user_id' => $user->id,
+                'request_type_id' => 3,
+                'file' => $path,
+                'details' => $request->details,
+                'reveal_id' => $request->reveal_id,
+                'direct_manager_id' => $jefedirecto,
+                'direct_manager_status' => 'Pendiente',
+                'rh_status' => 'Pendiente'
+            ]);
+
+            foreach ($datesArray as $dia) {
+                VacationDays::create([
+                    'day' => $dia,
+                    'vacation_request_id' => $Vacaciones->id,
+                    'status' => 0,
+                ]);
+            }
+            return back()->with('message', 'Se creo exitosamente la solicitud.');
+        }
+
+        if ($request->request_type_id == 4){
+            $request->validate([
+                'details' => 'required',
+                'reveal_id' => 'required',
+                'dates' => 'required'
+            ]);
+
+            $dates = $request->dates;
+            $datesArray = json_decode($dates, true);
+            $dias = count($datesArray);
+
+            $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
+            $jefedirecto = $Ingreso->jefe_directo_id;
+
+            $path = '';
+            if ($request->hasFile('archivos')) {
+                $filenameWithExt = $request->file('archivos')->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension = $request->file('archivos')->clientExtension();
+                $fileNameToStore = time() . $filename . '.' . $extension;
+                $path = $request->file('archivos')->move('storage/vacation/files/', $fileNameToStore);
+            }
+
+            if($dias == 0){
+                return back()->with('message', 'Debes ingresar al menos un día');
+            }
+
+            if($path == null){
+                return back()->with('message', 'Ingresar la incapacidad expedida por el IMSS.');
+            }
+
+            $Vacaciones = VacationRequest::create([
+                'user_id' => $user->id,
+                'request_type_id' => 4,
+                'file' => $path,
+                'details' => $request->details,
+                'reveal_id' => $request->reveal_id,
+                'direct_manager_id' => $jefedirecto,
+                'direct_manager_status' => 'Pendiente',
+                'rh_status' => 'Pendiente'
+            ]);
+
+            foreach ($datesArray as $dia) {
+                VacationDays::create([
+                    'day' => $dia,
+                    'vacation_request_id' => $Vacaciones->id,
+                    'status' => 0,
+                ]);
+            }
+            return back()->with('message', 'Se creo exitosamente la solicitud. Recuerda que estos días son naturales y además estos los paga el IMSS.');
+
+        } 
     }
 
     public function RequestBoss()
