@@ -1,23 +1,25 @@
 @extends('layouts.app')
 @section('content')
     @if (session('message'))
-        <div class="alert alert-success">
+        <div id="alert-succ" class="alert alert-success">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="26" height="26"
+                stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
             {{ session('message') }}
         </div>
     @endif
     <div>
-        {{-- Because she competes with no one, no one can compete with her. --}}
-
         <div class="d-flex justify-content-between">
             <h3 class="mb-4">Permisos y Vacaciones</h3>
-
             <div>
                 <span class="mr-3">
                     Vacaciones por aprobar:
                     <strong>{{ $diasreservados }}</strong>
                 </span>
                 <span>
-                    Dias de vacaciones disponibles:
+                    Días de vacaciones disponibles:
                     <strong>{{ $diasdisponibles }}</strong>
                 </span>
             </div>
@@ -118,7 +120,7 @@
                         </svg>
                     </div>
                     <div>
-                        <strong style="color:  var(--color-target-3);">Permisos epeciales</strong>
+                        <strong style="color:  var(--color-target-3);">Permisos especiales</strong>
                     </div>
                 </div>
             </div>
@@ -224,7 +226,8 @@
                                                 data-id="{{ $solicitud->id_request }}"
                                                 data-tipo="{{ $solicitud->tipo }}"
                                                 data-details="{{ $solicitud->details }}"
-                                                data-reveal_id="{{ $solicitud->reveal_id }}"
+                                                data-reveal_name="{{ $solicitud->reveal_id }}"
+                                                data-reveal_id="{{ $solicitud->id_reveal }}"
                                                 data-direct_manager_id="{{ $solicitud->direct_manager_id }}"
                                                 data-direct_manager_status="{{ $solicitud->direct_manager_status }}"
                                                 data-statusRh="{{ $solicitud->rh_status }}"
@@ -251,9 +254,9 @@
                     </div>
                     <div class="mt-2 mb-1 text-align: justify;">
                         <span>
-                            Te queda
+                            Tienes
                             <strong>{{ $vacaciones_actuales }}</strong>
-                            día disponible que vence el
+                            día(s) disponible(s) que vence el
                             <strong>{{ $fecha_expiracion_actual }}</strong>.
                         </span>
                     </div>
@@ -264,7 +267,7 @@
                             <span>
                                 Tienes
                                 <strong>{{ $vacaciones_entrantes }}</strong>
-                                días disponibles que vencen el
+                                día(s) disponible(s) que vence el
                                 <strong>{{ $fecha_expiracion_entrante }}</strong>.
                             </span>
                         </div>
@@ -463,7 +466,7 @@
                                     </div>
 
                                     <div class="mt-3">
-                                        <span>¿Quien atenderá tus pendientes?</span>
+                                        <span>¿Quién atenderá tus pendientes?</span>
                                         <select class="form-select mt-1" aria-label="Default select example"
                                             id='reveal_id' name="reveal_id" required>
                                             @foreach ($users as $user)
@@ -555,8 +558,8 @@
                                 <div class="col-6">
                                     <strong> Justificante:</strong>
                                 </div>
-                                <div class="col-6">
-                                    <a id="file" href="" target="_blank">Ver archivo</a>
+                                <div class="col-6" id="viewFile">
+                                    {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
                                 </div>
                             </div>
                             <div class="row mt-3">
@@ -690,7 +693,6 @@
                 // Otros parámetros que necesites
             });
             $('#modaTarjetas').on('hidden.bs.modal', function() {
-                document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
                 document.getElementById('calendario').classList.remove('d-none');
                 document.getElementById('calendarioDaysUpdate').classList.add('d-none');
                 /*Cambiar ruta del formulario miFormulario*/
@@ -715,9 +717,10 @@
 
             $('#modaTarjetas').on('shown.bs.modal', function() {
                 var calendarElVa = document.getElementById('calendarioDaysUpdate');
-
                 if (calendarElVa && calendarElVa.classList.contains('d-none')) {
                     // Si tiene la clase d-none, inicializamos el calendario para crear
+                    document.getElementById('details').value = '';
+                    document.getElementById('reveal_id').value = '';
 
                     if (!calendario) { // Solo inicializar si no se ha creado aún
                         var calendarEl = document.getElementById('calendario');
@@ -729,45 +732,108 @@
                                 var selectedDate = info.dateStr;
                                 var dayNumberEl = info.dayEl.querySelector(
                                     '.fc-daygrid-day-number');
+                                var tipeRequest = document.getElementById('modalTitle')
+                                    .innerText; // Obtén el tipo de solicitud
+
+                                var classToAdd =
+                                    ''; // Variable para almacenar la clase que se agregará
+
+                                // Determinar qué clase agregar en función del tipo de solicitud
+                                if (tipeRequest === 'Vacaciones') {
+                                    classToAdd = 'fc-day-vacaciones';
+                                } else if (tipeRequest === 'Ausencia') {
+                                    classToAdd = 'fc-day-ausencia';
+                                } else if (tipeRequest === 'Paternidad') {
+                                    classToAdd = 'fc-day-paternidad';
+                                } else if (tipeRequest === 'Incapacidad') {
+                                    classToAdd = 'fc-day-incapacidad';
+                                } else if (tipeRequest === 'Especiales') {
+                                    classToAdd = 'fc-day-especiales';
+                                }
+
                                 if (!selectedDays.includes(selectedDate)) {
                                     selectedDays.push(selectedDate);
                                     if (dayNumberEl) {
+                                        // Primero, remueve las clases anteriores (por si cambia el tipo de solicitud)
+                                        dayNumberEl.classList.remove('fc-day-vacaciones',
+                                            'fc-day-ausencia', 'fc-day-paternidad',
+                                            'fc-day-incapacidad',
+                                            'fc-day-especiales',
+                                            'fc-day-selected');
+
+                                        // Agregar la clase correspondiente
                                         dayNumberEl.classList.add('fc-day-selected');
+                                        if (classToAdd) {
+                                            dayNumberEl.classList.add(
+                                                classToAdd
+                                            ); // Agregar la clase según el tipo de solicitud
+                                        }
                                     } else {
-                                        console.log('no encontrada')
+                                        console.log('Elemento no encontrado');
                                     }
                                 } else {
+                                    // Eliminar el día de la lista y sus clases asociadas
                                     selectedDays = selectedDays.filter(day => day !==
                                         selectedDate);
-
                                     if (dayNumberEl) {
-                                        dayNumberEl.classList.remove('fc-day-selected');
+                                        dayNumberEl.classList.remove('fc-day-selected',
+                                            'fc-day-vacaciones',
+                                            'fc-day-ausencia', 'fc-day-paternidad',
+                                            'fc-day-incapacidad',
+                                            'fc-day-especiales'
+                                        );
                                     }
-                                    // info.dayEl.classList.remove('fc-day-selected');
                                 }
                             },
                             datesSet: function() {
                                 // Después de que se cambia la vista del calendario, volvemos a aplicar las clases CSS
                                 var days = document.querySelectorAll('.fc-daygrid-day');
+                                var tipeRequest = document.getElementById('modalTitle')
+                                    .innerText; // Obtén el tipo de solicitud
+
+                                var classToAdd =
+                                    ''; // Variable para almacenar la clase que se agregará
+
+                                // Determinar qué clase agregar en función del tipo de solicitud
+                                if (tipeRequest === 'Vacaciones') {
+                                    classToAdd = 'fc-day-vacaciones';
+                                } else if (tipeRequest === 'Ausencia') {
+                                    classToAdd = 'fc-day-ausencia';
+                                } else if (tipeRequest === 'Paternidad') {
+                                    classToAdd = 'fc-day-paternidad';
+                                } else if (tipeRequest === 'Incapacidad') {
+                                    classToAdd = 'fc-day-incapacidad';
+                                } else if (tipeRequest === 'Especiales') {
+                                    classToAdd = 'fc-day-especiales';
+                                }
+
                                 days.forEach(function(day) {
                                     var date = day.getAttribute('data-date');
                                     var dayNumberEl = day.querySelector(
                                         '.fc-daygrid-day-number');
 
-                                    // Primero, asegurarse de que el número del día tenga la clase eliminada antes de volver a aplicarla
                                     if (dayNumberEl) {
-                                        dayNumberEl.classList.remove('fc-day-selected');
-                                    }
+                                        // Limpia cualquier clase anterior para evitar conflictos
+                                        dayNumberEl.classList.remove('fc-day-selected',
+                                            'fc-day-vacaciones',
+                                            'fc-day-ausencia', 'fc-day-paternidad',
+                                            'fc-day-incapacidad',
+                                            'fc-day-especiales'
+                                        );
 
-                                    if (selectedDays.includes(date)) {
-                                        if (dayNumberEl) {
+                                        // Si el día está en la lista de seleccionados, agregar la clase correspondiente
+                                        if (selectedDays.includes(date)) {
                                             dayNumberEl.classList.add(
                                                 'fc-day-selected');
+                                            if (classToAdd) {
+                                                dayNumberEl.classList.add(
+                                                    classToAdd
+                                                ); // Agregar la clase según el tipo de solicitud
+                                            }
                                         }
                                     }
                                 });
                             },
-
 
                             validRange: function(nowDate) {
                                 return {
@@ -786,6 +852,8 @@
                 } else {
                     // Si no tiene la clase d-none, inicializamos el calendario para actualizar
                     console.log('Calendario para actualizar');
+                    document.getElementById('details').value = detailsGlobal;
+                    document.getElementById('reveal_id').value = revealIdGlobal;
 
                     if (!calendarioVa) { // Solo inicializar si no se ha creado aún
 
@@ -813,12 +881,35 @@
                                 var dayNumberEl = info.dayEl.querySelector(
                                     '.fc-daygrid-day-number');
 
+                                var tipeRequest = document.getElementById('modalTitle')
+                                    .innerText; // Obtén el tipo de solicitud
+
+                                var classToAdd =
+                                    ''; //
+
+                                if (tipeRequest === 'Vacaciones') {
+                                    classToAdd = 'fc-day-vacaciones';
+                                } else if (tipeRequest === 'Ausencia') {
+                                    classToAdd = 'fc-day-ausencia';
+                                } else if (tipeRequest === 'Paternidad') {
+                                    classToAdd = 'fc-day-paternidad';
+                                } else if (tipeRequest === 'Incapacidad') {
+                                    classToAdd = 'fc-day-incapacidad';
+                                } else if (tipeRequest === 'Especiales') {
+                                    classToAdd = 'fc-day-especiales';
+                                }
+
                                 // Verifica si el día está en la lista de daysSelected o selectedDays
                                 if (!selectedDays.includes(selectedDate)) {
                                     // Si no está seleccionado, agrégalo
                                     selectedDays.push(selectedDate);
                                     if (dayNumberEl) {
                                         dayNumberEl.classList.add('fc-day-selected');
+                                        if (classToAdd) {
+                                            dayNumberEl.classList.add(
+                                                classToAdd
+                                            ); // Agregar la clase según el tipo de solicitud
+                                        }
                                     }
                                     console.log('Día seleccionado agregado:',
                                         selectedDate); // Log para agregar día
@@ -830,7 +921,12 @@
                                         selectedDate);
 
                                     if (dayNumberEl) {
-                                        dayNumberEl.classList.remove('fc-day-selected');
+                                        dayNumberEl.classList.remove('fc-day-selected',
+                                            'fc-day-vacaciones',
+                                            'fc-day-ausencia', 'fc-day-paternidad',
+                                            'fc-day-incapacidad',
+                                            'fc-day-especiales'
+                                        );
                                     }
                                     console.log('Día seleccionado eliminado:',
                                         selectedDate); // Log para eliminar día
@@ -842,6 +938,26 @@
                             datesSet: function() {
                                 // Después de que se cambia la vista del calendarioVa, volvemos a aplicar las clases CSS
                                 var days = document.querySelectorAll('.fc-daygrid-day');
+
+                                var tipeRequest = document.getElementById('modalTitle')
+                                    .innerText; // Obtén el tipo de solicitud
+
+                                var classToAdd =
+                                    ''; // Variable para almacenar la clase que se agregará
+
+                                // Determinar qué clase agregar en función del tipo de solicitud
+                                if (tipeRequest === 'Vacaciones') {
+                                    classToAdd = 'fc-day-vacaciones';
+                                } else if (tipeRequest === 'Ausencia') {
+                                    classToAdd = 'fc-day-ausencia';
+                                } else if (tipeRequest === 'Paternidad') {
+                                    classToAdd = 'fc-day-paternidad';
+                                } else if (tipeRequest === 'Incapacidad') {
+                                    classToAdd = 'fc-day-incapacidad';
+                                } else if (tipeRequest === 'Especiales') {
+                                    classToAdd = 'fc-day-especiales';
+                                }
+
                                 days.forEach(function(day) {
                                     var date = day.getAttribute('data-date');
                                     var dayNumberEl = day.querySelector(
@@ -849,13 +965,23 @@
 
                                     // Primero, asegurarse de que el número del día tenga la clase eliminada antes de volver a aplicarla
                                     if (dayNumberEl) {
-                                        dayNumberEl.classList.remove('fc-day-selected');
-                                    }
+                                        dayNumberEl.classList.remove('fc-day-selected',
+                                            'fc-day-vacaciones',
+                                            'fc-day-ausencia', 'fc-day-paternidad',
+                                            'fc-day-incapacidad',
+                                            'fc-day-especiales'
+                                        );
 
-                                    if (selectedDays.includes(date)) {
-                                        if (dayNumberEl) {
+
+                                        // Si el día está en la lista de seleccionados, agregar la clase correspondiente
+                                        if (selectedDays.includes(date)) {
                                             dayNumberEl.classList.add(
                                                 'fc-day-selected');
+                                            if (classToAdd) {
+                                                dayNumberEl.classList.add(
+                                                    classToAdd
+                                                ); // Agregar la clase según el tipo de solicitud
+                                            }
                                         }
                                     }
                                 });
@@ -1002,6 +1128,8 @@
         });
 
         let daysDataUpdate = '';
+        let detailsGlobal = ''; // Variable global para almacenar el valor de details
+        let revealIdGlobal = ''; // Variable global para almacenar el valor de reveal_id
 
         // Evento cuando se hace clic en el botón para abrir el modal
         document.querySelectorAll('.openModalBtn').forEach(button => {
@@ -1014,15 +1142,15 @@
                     'A cuenta de vacaciones' :
                     'A cuenta de permisos especiales';
                 const details = this.getAttribute('data-details');
+                const revealName = this.getAttribute('data-reveal_name');
                 const revealId = this.getAttribute('data-reveal_id');
                 const directManagerId = this.getAttribute('data-direct_manager_id');
                 const directManagerStatus = this.getAttribute('data-direct_manager_status');
                 const statusRh = this.getAttribute('data-statusRh');
                 const file = this.getAttribute('data-file');
+                console.log('file', file);
                 const days = this.getAttribute('data-days');
 
-
-                console.log('details', details);
 
                 daysDataUpdate = days;
 
@@ -1030,16 +1158,36 @@
                 document.getElementById('tipo').textContent = tipo;
                 document.getElementById('method-of-payment').textContent = methodOfPayment;
                 document.getElementById('details_text').textContent = details;
-                document.getElementById('reveal_id_name').textContent = revealId;
+                document.getElementById('reveal_id_name').textContent = revealName;
                 // document.getElementById('direct_manager_id') = directManagerId;
                 document.getElementById('direct_manager_status').textContent = directManagerStatus;
                 document.getElementById('statusRh').textContent = statusRh;
 
-                const baseUrl = window.location.origin;
-                const viewFile = baseUrl + '/' + file;
 
-                // Establece el href dinámicamente para que apunte al archivo y lo abra en una nueva ventana
-                document.getElementById('file').setAttribute('href', viewFile);
+                if (file !== 'No hay justificante') {
+                    const baseUrl = window.location.origin;
+                    const viewFile = baseUrl + '/' + file;
+
+                    // Crea la etiqueta <a> y establece su href dinámicamente
+                    const link = document.createElement('a');
+                    link.id = 'file';
+                    link.href = viewFile;
+                    link.target = '_blank';
+                    link.textContent = 'Ver archivo';
+
+                    // Agrega el enlace al div
+                    document.getElementById('viewFile').innerHTML = '';
+                    document.getElementById('viewFile').appendChild(link);
+                } else {
+                    // Crea la etiqueta <span> con el texto "No hay justificante"
+                    const span = document.createElement('span');
+                    span.textContent = 'No hay justificante';
+
+                    // Agrega el span al div
+                    document.getElementById('viewFile').innerHTML = '';
+                    document.getElementById('viewFile').appendChild(span);
+                }
+
 
                 document.getElementById('days').textContent = days;
 
@@ -1094,8 +1242,12 @@
                     statusRh === 'Pendiente') {
                     document.getElementById('ButtonEditRequest').classList.add('openModalVacaciones');
                     document.getElementById('ButtonEditRequest').classList.remove('openModalAusencia');
-                    document.getElementById('ButtonEditRequest').classList.remove('openModalPaternidad');
-                    document.getElementById('ButtonEditRequest').classList.remove('openModalIncapacidad');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalPaternidad');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalIncapacidad');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalPermisoEspecial');
 
 
                     document.getElementById('calendario').classList.add('d-none');
@@ -1104,9 +1256,14 @@
                     document.getElementById('miFormulario').action = 'update/request';
                 } else if (tipo === 'Ausencia' && statusRh === 'Pendiente') {
                     document.getElementById('ButtonEditRequest').classList.add('openModalAusencia');
-                    document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
-                    document.getElementById('ButtonEditRequest').classList.remove('openModalPaternidad');
-                    document.getElementById('ButtonEditRequest').classList.remove('openModalIncapacidad');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalVacaciones');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalPaternidad');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalIncapacidad');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalPermisoEspecial');
 
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
@@ -1114,9 +1271,13 @@
                     document.getElementById('miFormulario').action = 'update/request';
                 } else if (tipo === 'Paternidad' && statusRh === 'Pendiente') {
                     document.getElementById('ButtonEditRequest').classList.add('openModalPaternidad');
-                    document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalVacaciones');
                     document.getElementById('ButtonEditRequest').classList.remove('openModalAusencia');
-                    document.getElementById('ButtonEditRequest').classList.remove('openModalIncapacidad');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalIncapacidad');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalPermisoEspecial');
 
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
@@ -1124,19 +1285,30 @@
                     document.getElementById('miFormulario').action = 'update/request';
                 } else if (tipo === 'Incapacidad' && statusRh === 'Pendiente') {
                     document.getElementById('ButtonEditRequest').classList.add('openModalIncapacidad');
-                    document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalVacaciones');
                     document.getElementById('ButtonEditRequest').classList.remove('openModalAusencia');
-                    document.getElementById('ButtonEditRequest').classList.remove('openModalPaternidad');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalPaternidad');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalPermisoEspecial');
+
 
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
                     /*Cambiar ruta del formulario miFormulario*/
                     document.getElementById('miFormulario').action = 'update/request';
                 } else if (tipo === 'Permisos especiales' && statusRh === 'Pendiente') {
-                    document.getElementById('ButtonEditRequest').classList.add('openModalIncapacidad');
-                    document.getElementById('ButtonEditRequest').classList.remove('openModalVacaciones');
+                    document.getElementById('ButtonEditRequest').classList.add(
+                        'openModalPermisoEspecial');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalVacaciones');
                     document.getElementById('ButtonEditRequest').classList.remove('openModalAusencia');
-                    document.getElementById('ButtonEditRequest').classList.remove('openModalPaternidad');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalPaternidad');
+                    document.getElementById('ButtonEditRequest').classList.remove(
+                        'openModalIncapacidad');
+
 
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
@@ -1145,6 +1317,8 @@
                 }
 
 
+                detailsGlobal = details;
+                revealIdGlobal = revealId;
 
                 const modal = new bootstrap.Modal(document.getElementById('verSolivitud'));
                 modal.show();
@@ -1160,7 +1334,7 @@
                 <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
             `;
             document.getElementById('textDinamicCalendar').innerHTML = `
-                <span>Selecciona los días de vacaciones</span>
+                <span>Selecciona los días de vacaciones.</span>
             `;
             document.getElementById('dynamicContentFormaPago').innerHTML = `
                 <span>Forma de pago (Asignación automática)</span>
@@ -1170,6 +1344,10 @@
             document.getElementById('request_values').innerHTML = `
                 <input type="text" class="form-control mt-1 d-none" value="1" id="request_type_id" name="request_type_id">
             `;
+
+
+            // document.getElementById('details').value = detailsGlobal;
+            // document.getElementById('reveal_id').value = '159';
 
             // Abre el modal
             $('#modaTarjetas').modal({
@@ -1213,7 +1391,7 @@
             // Cambia el título del modal
             document.getElementById('modalTitle').innerText = 'Ausencia';
             document.getElementById('textDinamicCalendar').innerHTML = `
-                <span>Selecciona el día que no te presentarás</span>
+                <span>Selecciona el día que no te presentarás.</span>
             `;
 
             document.getElementById('dynamicContentEncabezado').innerHTML = `
@@ -1326,10 +1504,7 @@
                         limpiarCampos();
                     });
                 });
-            }, 100); // Ajusta el tiempo si es necesario
-
-
-
+            }, 100);
 
         });
 
@@ -1343,7 +1518,7 @@
             `;
 
             document.getElementById('textDinamicCalendar').innerHTML = `
-                <span>Elige los 5 dias habiles a los que tienes derecho</span>
+                <span>Elige los 5 días hábiles a los que tienes derecho.</span>
             `;
 
 
@@ -1378,7 +1553,7 @@
             document.getElementById('dynamicContentEncabezado').innerHTML = `
                 <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
                 <span style="color: red"> Nota: Si aún no tienes el justificante, puedes
-                anexarlo al recibirlo. Es obligatorio presentarlo; de lo contrario, se descontarán los dias
+                anexarlo al recibirlo. Es obligatorio presentarlo; de lo contrario, se descontarán los días
                 de tus vacaciones.</span>
             `;
 
@@ -1397,11 +1572,9 @@
             $('#modaTarjetas').modal('show');
         });
 
-
-
-
-
         $(document).on('click', '.openModalPermisoEspecial', function() {
+            $('#verSolivitud').modal('hide');
+
             // Cambia el título del modal
             document.getElementById('modalTitle').innerText = 'Especiales';
             document.getElementById('textDinamicCalendar').innerHTML = `
@@ -1426,9 +1599,9 @@
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="Permiso"
-                                            id="academico" value="Motivos academicos/escolares">
+                                            id="academico" value="Motivos académicos/escolares">
                                         <label class="form-check-label" for="academico">
-                                            Motivos academicos/escolares
+                                            Motivos académicos/escolares
                                         </label>
                                     </div>
                                     <div class="form-check">
@@ -1470,7 +1643,7 @@
                                                 <div class="col-6">
                                                     <div class="cs-form ">
                                                         <span>Hora de salida: </span>
-                                                        <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" />
+                                                        <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" id="hora_salida"/>
                                                     </div>
                                                 </div>
 
@@ -1490,7 +1663,7 @@
                                                 <div class="col-6">
                                                     <div class="cs-form mb-3">
                                                         <span>Hora de regreso: </span>
-                                                        <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" />
+                                                        <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" id="hora_regreso" />
                                                     </div>
                                                 </div>
 
@@ -1503,6 +1676,10 @@
                             <div>
                                 <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required></textarea>
                             </div>
+            `;
+
+            document.getElementById('request_values').innerHTML = `
+                <input type="text"  class="form-control mt-1 d-none" value="5" id="request_type_id" name="request_type_id">
             `;
 
             document.getElementById('request_values').innerHTML = `
@@ -1545,6 +1722,43 @@
                         academicos.classList.add('d-none');
                 }
             }
+
+
+            setTimeout(function() {
+                function limpiarCampos() {
+                    var horaSalida = document.getElementById('hora_salida');
+                    var horaRegreso = document.getElementById('hora_regreso');
+                    var hijo = document.getElementById('hijo');
+                    var colaborador = document.getElementById('colaborador');
+                    var familiar = document.getElementById('familiar');
+
+                    if (horaSalida) {
+                        horaSalida.value = '';
+                    }
+                    if (horaRegreso) {
+                        horaRegreso.value = '';
+                    }
+                    if (hijo) {
+                        hijo.checked = false;
+                    }
+                    if (colaborador) {
+                        colaborador.checked = false;
+                    }
+                    if (familiar) {
+                        familiar.value = '';
+                    }
+                }
+
+                // Añadir evento a todos los radio buttons
+                document.querySelectorAll('input[name="Permiso"]').forEach(function(radio) {
+                    radio.addEventListener('change', function() {
+                        limpiarCampos();
+                    });
+                });
+            }, 100);
+
+
+
         });
 
         document.getElementById('miFormulario').addEventListener('submit', function(event) {
@@ -1673,6 +1887,11 @@
         display: none;
     }
 
+    /*Padding para las alertas*/
+    .alert {
+        padding: 0.7rem !important;
+    }
+
 
     .bg-success {
         background-color: #81C10C !important;
@@ -1781,11 +2000,32 @@
 
 
     .fc-day-selected {
-        background-color: #81C10C !important;
+        /* background-color: #81C10C !important; */
         border-radius: 17px;
         color: white !important;
         /* Color para los días intermedios */
     }
+
+    .fc-day-vacaciones {
+        background-color: #81C10C !important;
+    }
+
+    .fc-day-ausencia {
+        background-color: #0C57C1 !important;
+    }
+
+    .fc-day-paternidad {
+        background-color: #C10C8E !important;
+    }
+
+    .fc-day-incapacidad {
+        background-color: #C10C0C !important;
+    }
+
+    .fc-day-especiales {
+        background-color: #C1A10C !important;
+    }
+
 
     .fc-day-start {
         background-color: rgb(59, 201, 23);
