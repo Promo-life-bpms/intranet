@@ -1002,6 +1002,8 @@
         });
 
         let daysDataUpdate = '';
+        let detailsGlobal = ''; // Variable global para almacenar el valor de details
+        let revealIdGlobal = ''; // Variable global para almacenar el valor de reveal_id
 
         // Evento cuando se hace clic en el botón para abrir el modal
         document.querySelectorAll('.openModalBtn').forEach(button => {
@@ -1020,7 +1022,6 @@
                 const statusRh = this.getAttribute('data-statusRh');
                 const file = this.getAttribute('data-file');
                 const days = this.getAttribute('data-days');
-
 
                 console.log('details', details);
 
@@ -1145,6 +1146,8 @@
                 }
 
 
+                detailsGlobal = details;
+                revealIdGlobal = revealId;
 
                 const modal = new bootstrap.Modal(document.getElementById('verSolivitud'));
                 modal.show();
@@ -1170,6 +1173,9 @@
             document.getElementById('request_values').innerHTML = `
                 <input type="text" class="form-control mt-1 d-none" value="1" id="request_type_id" name="request_type_id">
             `;
+
+            document.getElementById('details').value = detailsGlobal;
+            // document.getElementById('reveal_id').value = '159';
 
             // Abre el modal
             $('#modaTarjetas').modal({
