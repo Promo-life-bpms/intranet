@@ -73,7 +73,7 @@ class VacationRequestController extends Controller
                     'end' => $Day->end
                 ];
             }
-            
+
             // Crear un objeto en lugar de un array
             $solicitud = new \stdClass();
             $solicitud->id_request = $vacacion->id;
@@ -91,7 +91,7 @@ class VacationRequestController extends Controller
             $solicitud->more_information = $vacacion->more_information == null ? 'No hay informacion' : json_decode($vacacion->more_information);
             $solicitudes[] = $solicitud;
         }
-    
+
         $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
         $fechaIngreso = Carbon::parse($Ingreso->date_admission);
         $fechaActual = Carbon::now();
@@ -159,13 +159,13 @@ class VacationRequestController extends Controller
 
             if ($daysonthecalendar->request_type_id == 1) {
                 $vacacionesDias = array_merge($vacacionesDias, $dias);
-            } elseif($daysonthecalendar->request_type_id == 2){
+            } elseif ($daysonthecalendar->request_type_id == 2) {
                 $ausenciaDias = array_merge($ausenciaDias, $dias);
-            } elseif($daysonthecalendar->request_type_id == 3){
+            } elseif ($daysonthecalendar->request_type_id == 3) {
                 $paternidadDias = array_merge($paternidadDias, $dias);
-            } elseif($daysonthecalendar->request_type_id == 4){
+            } elseif ($daysonthecalendar->request_type_id == 4) {
                 $incapacidadDias = array_merge($incapacidadDias, $dias);
-            }elseif ($daysonthecalendar->request_type_id == 5) {
+            } elseif ($daysonthecalendar->request_type_id == 5) {
                 $permisosEspecialesDias = array_merge($permisosEspecialesDias, $dias);
             }
         }
@@ -184,8 +184,10 @@ class VacationRequestController extends Controller
             'paternidad' => $paternidadDias,
             'incapacidad' => $incapacidadDias,
             'permisos_especiales' => $permisosEspecialesDias,
-            
+
         ];
+
+        // dd($solicitudes);
 
         return view('request.vacations-collaborators', compact('users', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar'));
     }

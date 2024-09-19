@@ -250,7 +250,7 @@
                                                 data-direct_manager_status="{{ $solicitud->direct_manager_status }}"
                                                 data-statusRh="{{ $solicitud->rh_status }}"
                                                 data-file="{{ $solicitud->file }}"
-                                                data-days="{{ implode(',', $solicitud->days) }}">
+                                                data-days="{{ implode(',', $solicitud->days) }}" {{-- data-horasalida="{{ $solicitud->time }}" --}}>
                                                 Ver
                                             </button>
                                         </td>
@@ -1291,6 +1291,8 @@
         let revealIdGlobal = ''; // Variable global para almacenar el valor de reveal_id
         let ausenciaTipoGlobal = ''; // Variable global para almacenar el tipo de ausencia
 
+        let horaSalidaGlobal = ''; // Variable global para almacenar la hora de salida
+
         // Evento cuando se hace clic en el botón para abrir el modal
         document.querySelectorAll('.openModalBtn').forEach(button => {
             button.addEventListener('click', function() {
@@ -1308,6 +1310,9 @@
                 const directManagerStatus = this.getAttribute('data-direct_manager_status');
                 const statusRh = this.getAttribute('data-statusRh');
                 const file = this.getAttribute('data-file');
+                const horaSalida = this.getAttribute('data-horasalida');
+
+                console.log('horaSalida', horaSalida);
                 console.log('file', file);
                 const days = this.getAttribute('data-days');
 
