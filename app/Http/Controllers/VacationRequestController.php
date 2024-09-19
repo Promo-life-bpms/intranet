@@ -625,7 +625,8 @@ class VacationRequestController extends Controller
                 if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora1Carbon) && $hora2Carbon->lessThanOrEqualTo($hora5PM)) {
                     // Hora dentro del rango permitido
                     $more_information[] = [
-                        'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor'
+                        'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor',
+                        'value_type' => $request->ausenciaTipo,
                     ];
                     $moreinformation = json_encode($more_information);
 
@@ -683,7 +684,8 @@ class VacationRequestController extends Controller
 
                 $hora1Carbon = Carbon::createFromFormat('H:i', $start);
                 $more_information[] = [
-                    'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_antes' ? 'Salir antes' : 'No encontro el valor'
+                    'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_antes' ? 'Salir antes' : 'No encontro el valor',
+                    'value_type' => $request->ausenciaTipo,
                 ];
                 $moreinformation = json_encode($more_information);
                 if ($hora1Carbon->lessThan($hora5PM)) {
@@ -984,7 +986,7 @@ class VacationRequestController extends Controller
 
                 if ($dias == 5) {
                     $more_information[] = [
-                        'Tipo_de_permiso_especial' => $request->Permiso
+                        'Tipo_de_permiso_especial' => $request->Permiso,
                     ];
                     $moreinformation = json_encode($more_information);
                     $permisoespecial = VacationRequest::create([
@@ -2140,7 +2142,8 @@ class VacationRequestController extends Controller
                     if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora1Carbon) && $hora2Carbon->lessThanOrEqualTo($hora5PM)) {
                         // Hora dentro del rango permitido
                         $more_information[] = [
-                            'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor'
+                            'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor',
+                            'value_type' => $request->ausenciaTipo,
                         ];
                         $moreinformation = json_encode($more_information);
 
@@ -2165,7 +2168,8 @@ class VacationRequestController extends Controller
                     if (!$missingInDias->isEmpty()) {
                         if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora1Carbon) && $hora2Carbon->lessThanOrEqualTo($hora5PM)) {
                             $more_information[] = [
-                                'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor'
+                                'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor',
+                                'value_type' => $request->ausenciaTipo,
                             ];
                             $moreinformation = json_encode($more_information);
                             DB::table('vacation_requests')->where('id', $request->id)->update([
@@ -2234,7 +2238,8 @@ class VacationRequestController extends Controller
 
                 if ($missingInDias->isEmpty() && $missingInDates->isEmpty()) {
                     $more_information[] = [
-                        'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_antes' ? 'Salir antes' : 'No encontro el valor'
+                        'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_antes' ? 'Salir antes' : 'No encontro el valor',
+                        'value_type' => $request->ausenciaTipo,
                     ];
                     $moreinformation = json_encode($more_information);
                     DB::table('vacation_requests')->where('id', $request->id)->update([
@@ -2253,7 +2258,8 @@ class VacationRequestController extends Controller
                         ///Dias que no vienen en el arreglo
                         $hora1Carbon = Carbon::createFromFormat('H:i', $start);
                         $more_information[] = [
-                            'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_antes' ? 'Salir antes' : 'No encontro el valor'
+                            'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_antes' ? 'Salir antes' : 'No encontro el valor',
+                            'value_type' => $request->ausenciaTipo,
                         ];
                         $moreinformation = json_encode($more_information);
                         if ($hora1Carbon->lessThan($hora5PM)) {
