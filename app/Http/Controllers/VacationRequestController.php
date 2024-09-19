@@ -186,7 +186,7 @@ class VacationRequestController extends Controller
             'permisos_especiales' => $permisosEspecialesDias,
             
         ];
-        
+
         return view('request.vacations-collaborators', compact('users', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar'));
     }
 
@@ -540,16 +540,47 @@ class VacationRequestController extends Controller
 
         ///PERMISOS ESPECIALES
         if ($request->request_type_id == 2) {
+
             $request->validate([
                 'details' => 'required',
                 'reveal_id' => 'required',
                 'dates' => 'required',
-                'archivos' => 'required'
             ]);
 
             $dates = $request->dates;
             $datesArray = json_decode($dates, true);
             $dias = count($datesArray);
+
+            ///VACACIONES PENDIENTES O APROBADAS///
+            $vacaciones = DB::table('vacation_requests')
+                ->where('user_id', $user->id)
+                ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                ->get();
+
+            $diasVacaciones = [];
+            foreach ($vacaciones as $diasvacaciones) {
+                $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
+                foreach ($Days as $Day) {
+                    $diasVacaciones[] = $Day->day;
+                }
+            }
+            usort($diasVacaciones, function ($a, $b) {
+                return strtotime($a) - strtotime($b);
+            });
+
+            $diasParecidos = [];
+            foreach ($datesArray as $date) {
+                foreach ($diasVacaciones as $vacationDate) {
+                    if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                        $diasParecidos[] = $vacationDate;
+                    }
+                }
+            }
+
+            if (!empty($diasParecidos)) {
+                return back()->with('message', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+            }
 
             $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
             $jefedirecto = $Ingreso->jefe_directo_id;
@@ -568,7 +599,6 @@ class VacationRequestController extends Controller
             }
 
             if ($request->ausenciaTipo == 'salida_durante') {
-
                 $hora8AM = Carbon::today()->setHour(8)->setMinute(0)->setSecond(0);
                 $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
                 $start = $request->hora_salida;
@@ -678,7 +708,7 @@ class VacationRequestController extends Controller
                         ]);
                     }
 
-                    return back()->with('message', 'Pues ya');
+                    return back()->with('message', 'Solicitud creada exitosamente.');
                 } else {
                     return back()->with('message', 'No puedes seleccionar la misma hora de salida');
                 }
@@ -943,7 +973,7 @@ class VacationRequestController extends Controller
                     ]);
                 }
 
-                return back()->with('message', 'Se creó con exito tu solicitud.');
+                return back()->with('message', 'Se creó con éxito tu solicitud.');
             }
 
             if ($request->Permiso == 'Matrimonio del colaborador') {
@@ -976,7 +1006,7 @@ class VacationRequestController extends Controller
                             'status' => 0,
                         ]);
                     }
-                    return back()->with('message', 'Se creó con exito tu solicitud.');
+                    return back()->with('message', 'Se creó con éxito tu solicitud.');
                 } else {
                     return back()->with('message', 'Debes tomar tus cinco días.');
                 }
@@ -1030,7 +1060,7 @@ class VacationRequestController extends Controller
                                 'status' => 0,
                             ]);
                         }
-                        return back()->with('message', 'Se creó con exito tu solicitud.');
+                        return back()->with('message', 'Se creó con éxito tu solicitud.');
                     } else {
                         return back()->with('message', 'Verifica que la información ingresada sea correcta.');
                     }
@@ -1085,7 +1115,7 @@ class VacationRequestController extends Controller
                                 'status' => 0,
                             ]);
                         }
-                        return back()->with('message', 'Se creó con exito tu solicitud.');
+                        return back()->with('message', 'Se creó con éxito tu solicitud.');
                     } else {
                         return back()->with('message', 'Verifica que la información ingresada sea correcta.');
                     }
@@ -1147,7 +1177,7 @@ class VacationRequestController extends Controller
                         'status' => 0,
                     ]);
                 }
-                return back()->with('message', 'Se creó con exito tu solicitud.');
+                return back()->with('message', 'Se creó con éxito tu solicitud.');
             }
         }
     }
@@ -2580,7 +2610,7 @@ class VacationRequestController extends Controller
                     }
                     return back()->with('message', 'Solicitud actualizada correctamente.');
                 }
-                return back()->with('message', 'Se creó con exito tu solicitud.');
+                return back()->with('message', 'Solicitud actualizada correctamente.');
             }
 
             if ($request->Permiso == 'Matrimonio del colaborador') {
@@ -2657,7 +2687,7 @@ class VacationRequestController extends Controller
                                 DB::table('vacation_days')->where('id', $idfecha)->delete();
                             }
                         }
-                        return back()->with('message', 'Se creó con exito tu solicitud.');
+                        return back()->with('message', 'Actualización exitosa.');
                     }
                 } else {
                     return back()->with('message', 'Debes tomar tus cinco días.');
