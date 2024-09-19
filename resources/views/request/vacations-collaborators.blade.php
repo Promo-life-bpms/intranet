@@ -226,7 +226,8 @@
                                                 data-id="{{ $solicitud->id_request }}"
                                                 data-tipo="{{ $solicitud->tipo }}"
                                                 data-details="{{ $solicitud->details }}"
-                                                data-reveal_id="{{ $solicitud->reveal_id }}"
+                                                data-reveal_name="{{ $solicitud->reveal_id }}"
+                                                data-reveal_id="{{ $solicitud->id_reveal }}"
                                                 data-direct_manager_id="{{ $solicitud->direct_manager_id }}"
                                                 data-direct_manager_status="{{ $solicitud->direct_manager_status }}"
                                                 data-statusRh="{{ $solicitud->rh_status }}"
@@ -719,6 +720,7 @@
                 if (calendarElVa && calendarElVa.classList.contains('d-none')) {
                     // Si tiene la clase d-none, inicializamos el calendario para crear
                     document.getElementById('details').value = '';
+                    document.getElementById('reveal_id').value = '';
 
                     if (!calendario) { // Solo inicializar si no se ha creado aún
                         var calendarEl = document.getElementById('calendario');
@@ -851,6 +853,7 @@
                     // Si no tiene la clase d-none, inicializamos el calendario para actualizar
                     console.log('Calendario para actualizar');
                     document.getElementById('details').value = detailsGlobal;
+                    document.getElementById('reveal_id').value = revealIdGlobal;
 
                     if (!calendarioVa) { // Solo inicializar si no se ha creado aún
 
@@ -1139,6 +1142,7 @@
                     'A cuenta de vacaciones' :
                     'A cuenta de permisos especiales';
                 const details = this.getAttribute('data-details');
+                const revealName = this.getAttribute('data-reveal_name');
                 const revealId = this.getAttribute('data-reveal_id');
                 const directManagerId = this.getAttribute('data-direct_manager_id');
                 const directManagerStatus = this.getAttribute('data-direct_manager_status');
@@ -1147,7 +1151,6 @@
                 console.log('file', file);
                 const days = this.getAttribute('data-days');
 
-                console.log('details', details);
 
                 daysDataUpdate = days;
 
@@ -1155,7 +1158,7 @@
                 document.getElementById('tipo').textContent = tipo;
                 document.getElementById('method-of-payment').textContent = methodOfPayment;
                 document.getElementById('details_text').textContent = details;
-                document.getElementById('reveal_id_name').textContent = revealId;
+                document.getElementById('reveal_id_name').textContent = revealName;
                 // document.getElementById('direct_manager_id') = directManagerId;
                 document.getElementById('direct_manager_status').textContent = directManagerStatus;
                 document.getElementById('statusRh').textContent = statusRh;
