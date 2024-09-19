@@ -132,21 +132,36 @@
             <!-- Columna izquierda -->
             <div style="width: 100%;">
                 <div class="card-seccion">
-                    <div class="row">
-                        <div class="col-3 d-flex align-items-center justify-content-center">
+                    <div class="row mb-2">
+                        <div class="col-2 d-flex align-items-center justify-content-center">
                             <strong>Mis solicitudes</strong>
                         </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-3 d-flex align-items-center justify-content-center">
                             <select id="tipoSelect" style="width: max-content" class="form-select mr-1"
                                 aria-label="Default select example">
                                 <option value="">Tipo de permiso</option>
                                 <option value="Vacaciones">Vacaciones</option>
                                 <option value="Ausencia">Ausencia</option>
-                                <option value="Prmiso especial">Permisos especiales</option>
+                                <option value="Permisos especiales">Permisos especiales</option>
                                 <option value="Incapacidad">Incapacidad</option>
                                 <option value="Paternidad">Paternidad</option>
                             </select>
                         </div>
+
+                        <div class="col-3 d-flex align-items-center justify-content-center">
+                            <select id="selectJD" style="width: max-content" class="form-select mr-1"
+                                aria-label="Default select example">
+                                <option value="">Status Jefe Directo</option>
+                                <option value="aprobadas">Aprobadas</option>
+                                <option value="Pendiente">Pendientes</option>
+                                <option value="rechazadas">Rechazadas</option>
+                                <option value="Cancelada por el usuario">Mis cancelaciones</option>
+                            </select>
+                        </div>
+
                         <div class="col-3 d-flex align-items-center justify-content-center">
                             <select id="selectRh" style="width: max-content" class="form-select mr-1"
                                 aria-label="Default select example">
@@ -154,13 +169,15 @@
                                 <option value="aprobadas">Aprobadas</option>
                                 <option value="Pendiente">Pendientes</option>
                                 <option value="rechazadas">Rechazadas</option>
+                                <option value="Cancelada por el usuario">Mis cancelaciones</option>
                             </select>
                         </div>
 
                         <div class="col-3 d-flex align-items-center justify-content-center">
-                            <span class="mr-1">Dia:</span>
+                            <span style=" margin-right: 0.5rem;">Dia:</span>
                             <input id="fechaInput" placeholder="Fecha" type="date" class="form-control"
-                                style="width: 10rem" />
+                                style="width: 10rem; margin-right: 0.2rem;" />
+                            <i id="clearFecha" class="fas fa-times-circle" style="cursor: pointer;"></i>
                         </div>
                     </div>
 
@@ -187,6 +204,7 @@
                                 @foreach ($solicitudes as $solicitud)
                                     <tr class="solicitud-row" data-tipo="{{ $solicitud->tipo }}"
                                         data-statusRh="{{ $solicitud->rh_status }}"
+                                        data-direct_manager_status="{{ $solicitud->direct_manager_status }}"
                                         data-days="{{ implode(',', $solicitud->days) }}">
                                         <th scope="row" style="align-content: center;">{{ $solicitud->id_request }}
                                         </th>
@@ -685,6 +703,33 @@
             });
         });
 
+
+        let dateGlobal = '';
+        // Eliminar la fecha seleccionada
+        document.getElementById('clearFecha').addEventListener('click', function() {
+            document.getElementById('fechaInput').value = '';
+
+
+
+            var rows = document.querySelectorAll('.solicitud-row');
+
+            rows.forEach(function(row) {
+                // Obtén las fechas asociadas a la fila (separadas por comas)
+                var days = row.getAttribute('data-days').split(',');
+
+                // Verifica si la fecha seleccionada está en las fechas de la fila
+                if (document.getElementById('fechaInput').value === '' ||
+                    document.getElementById('fechaInput').value === null ||
+                    document.getElementById('fechaInput').value === undefined
+                ) {
+                    row.style.display = ''; // Mostrar la fila
+                } else {
+                    row.style.display = 'none'; // Ocultar la fila
+                }
+            });
+        });
+
+
         document.getElementById('closemodal').addEventListener('click', function() {
             $('#modaTarjetas').modal('hide');
             var calendar = new FullCalendar.Calendar(document.getElementById('calendario'), {
@@ -710,6 +755,13 @@
             });
         });
 
+        var selectedOptionAusencia = 'salida_durante'; // Este valor puede cambiar según tu lógica
+        var defaultHoraSalida = '14:30'; // La hora debe estar en formato HH:MM (24 horas)
+        var defaultHoraRegreso = '18:30'; // La hora debe estar en formato HH:MM (24 horas)
+        var defaultFamiliar = 'hijos'; // El valor por defecto para el familiar
+
+        var selectOptionPermisoEspecial = 'Motivos académicos/escolares'; // Este valor puede cambiar según tu lógica
+        var selectOptionPosicion = 'colaborador'; // Este valor puede cambiar según tu lógica
 
         document.addEventListener('DOMContentLoaded', function() {
             let calendarioVa;
@@ -851,9 +903,109 @@
                     }
                 } else {
                     // Si no tiene la clase d-none, inicializamos el calendario para actualizar
+
+
+                    function ausenciaTipo(value) {
+                        console.log('value', value);
+                        switch (value) {
+                            case 'salida_antes':
+                                horaSalida.classList.remove('d-none');
+                                horaEntrada.classList.add('d-none');
+                                textTime.classList.add('d-none');
+                                break;
+                            case 'salida_durante':
+                                horaEntrada.classList.remove('d-none');
+                                horaSalida.classList.remove('d-none');
+                                textTime.classList.remove('d-none');
+                                break;
+                            default:
+                                horaSalida.classList.add('d-none');
+                                horaEntrada.classList.add('d-none');
+                                textTime.classList.add('d-none');
+                        }
+                    }
+
+                    function especiales(value) {
+
+                        console.log('valueEspe', value);
+                        switch (value) {
+                            case 'fallecimiento':
+                                persona_afectada.classList.remove('d-none');
+                                academicos.classList.add('d-none');
+                                document.getElementById('textDinamicCalendar').innerHTML = `
+                                    <span>Elige los 3 días naturales a los que tienes derecho.</span>
+                                `;
+                                break;
+
+                            case 'matrimonio':
+                                academicos.classList.add('d-none');
+                                persona_afectada.classList.add('d-none');
+                                document.getElementById('textDinamicCalendar').innerHTML = `
+                            <span>Elige los 5 días habiles a los que tienes derecho.</span>
+                        `;
+                                break;
+                            case 'Motivos académicos/escolares':
+                                persona_afectada.classList.add('d-none');
+                                academicos.classList.remove('d-none');
+                                document.getElementById('textDinamicCalendar').innerHTML = `
+                            <span>Elige el dia que no te presentaras.</span>
+                        `;
+                                break;
+                            case 'asunto':
+                                academicos.classList.add('d-none');
+                                persona_afectada.classList.add('d-none');
+                                document.getElementById('textDinamicCalendar').innerHTML = `
+                            <span style="color: red;">Tienes derecho a 3 días al año, NO puedes ser consecutivos.</span>
+                        `;
+                                break;
+                            default:
+                                persona_afectada.classList.add('d-none');
+                                academicos.classList.add('d-none');
+                        }
+                    }
+
+
                     console.log('Calendario para actualizar');
+                    const textTime = document.querySelector('#text-time');
                     document.getElementById('details').value = detailsGlobal;
                     document.getElementById('reveal_id').value = revealIdGlobal;
+
+                    var radioButtonAusencia = document.querySelector(
+                        `input[name="ausenciaTipo"][value="${selectedOptionAusencia}"]`);
+                    if (radioButtonAusencia) {
+                        radioButtonAusencia.checked = true;
+                        ausenciaTipo(selectedOptionAusencia);
+                    }
+
+                    var horaSalidaInput = document.getElementById('hora_salida');
+                    if (horaSalidaInput) {
+                        horaSalidaInput.value =
+                            defaultHoraSalida; // Asigna la hora predeterminada a la entrada
+                    }
+
+                    var horaRegresoInput = document.getElementById('hora_regreso');
+                    if (horaRegresoInput) {
+                        horaRegresoInput.value =
+                            defaultHoraRegreso; // Asigna la hora predeterminada a la salida
+                    }
+
+
+                    var radioButtonPermisoEspecial = document.querySelector(
+                        `input[name="Permiso"][value="${selectOptionPermisoEspecial}"]`);
+                    if (radioButtonPermisoEspecial) {
+                        radioButtonPermisoEspecial.checked = true;
+                        especiales(selectOptionPermisoEspecial);
+                    }
+
+                    document.getElementById('familiar').value =
+                        defaultFamiliar; // Asigna el familiar predeterminado
+
+                    var radioButtonPosicion = document.querySelector(
+                        `input[name="Posicion"][value="${selectOptionPosicion}"]`);
+                    if (radioButtonPosicion) {
+                        radioButtonPosicion.checked = true;
+                    }
+
 
                     if (!calendarioVa) { // Solo inicializar si no se ha creado aún
 
@@ -1033,6 +1185,27 @@
                 });
             });
 
+
+            /* Filtrar solicitudes con respecto al select del estatus de jefe directo */
+            document.getElementById('selectJD').addEventListener('change', function() {
+                var selectedStatusDirectManager = this.value;
+                // console.log(row.getAttribute('data-statusRh'));
+                // Obtén todas las filas de la tabla
+                var rows = document.querySelectorAll('.solicitud-row');
+                rows.forEach(function(row) {
+                    // Verifica si el tipo de la fila coincide con la selección
+                    if (selectedStatusDirectManager === "" || row.getAttribute(
+                            'data-direct_manager_status') ===
+                        selectedStatusDirectManager) {
+                        row.style.display = ''; // Mostrar la fila
+                    } else {
+                        row.style.display = 'none'; // Ocultar la fila
+                    }
+                });
+            });
+
+
+
             document.getElementById('fechaInput').addEventListener('input', function() {
                 var selectedDate = this.value; // La fecha seleccionada en el formato YYYY-MM-DD
                 // Obtén todas las filas de la tabla
@@ -1055,9 +1228,7 @@
             // Poner dias de vacaciones y permisos especiales en el calendario
             $('#modalCalendario').on('shown.bs.modal', function() {
                 /*utilizar la variable vacacionescalendar que viene de el controlador para poner los dias en el calendario */
-                // Convertir la variable de PHP a JSON y asignarla a una variable de JavaScript
                 var vacacionesCalendar = @json($vacacionescalendar);
-
 
                 var selectedRanges = [];
                 var calendarEl = document.getElementById('calendarioDays');
@@ -1087,20 +1258,8 @@
                             ); // Selecciona el <a> dentro del <td>
                             if (dayNumberElement) {
                                 dayNumberElement.classList.add(
-                                    'highlighted-day-vacaciones'
-                                ); // Añade tu clase personalizada
-                            }
-                        }
-
-
-                        if (daysVacaciones.includes(dateStr)) {
-                            var dayNumberElement = info.el.querySelector(
-                                '.fc-daygrid-day-number'
-                            ); // Selecciona el <a> dentro del <td>
-                            if (dayNumberElement) {
-                                dayNumberElement.classList.add(
-                                    'highlighted-day-vacaciones'
-                                ); // Añade tu clase personalizada
+                                    'highlighted-day', 'fc-day-vacaciones'
+                                );
                             }
                         }
 
@@ -1110,8 +1269,8 @@
                             ); // Selecciona el <a> dentro del <td>
                             if (dayNumberElement) {
                                 dayNumberElement.classList.add(
-                                    'highlighted-day-permisos'
-                                ); // Añade tu clase personalizada
+                                    'highlighted-day', 'fc-day-especiales'
+                                );
                             }
                         }
                     },
@@ -1130,6 +1289,7 @@
         let daysDataUpdate = '';
         let detailsGlobal = ''; // Variable global para almacenar el valor de details
         let revealIdGlobal = ''; // Variable global para almacenar el valor de reveal_id
+        let ausenciaTipoGlobal = ''; // Variable global para almacenar el tipo de ausencia
 
         // Evento cuando se hace clic en el botón para abrir el modal
         document.querySelectorAll('.openModalBtn').forEach(button => {
@@ -1293,7 +1453,6 @@
                     document.getElementById('ButtonEditRequest').classList.remove(
                         'openModalPermisoEspecial');
 
-
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
                     /*Cambiar ruta del formulario miFormulario*/
@@ -1316,9 +1475,10 @@
                     document.getElementById('miFormulario').action = 'update/request';
                 }
 
-
                 detailsGlobal = details;
                 revealIdGlobal = revealId;
+
+                ausenciaTipoGlobal = this.getAttribute('data-ausencia_tipo');
 
                 const modal = new bootstrap.Modal(document.getElementById('verSolivitud'));
                 modal.show();
@@ -1346,10 +1506,6 @@
             `;
 
 
-            // document.getElementById('details').value = detailsGlobal;
-            // document.getElementById('reveal_id').value = '159';
-
-            // Abre el modal
             $('#modaTarjetas').modal({
                 backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
                 keyboard: false // Desactiva el cierre con la tecla "Esc"
@@ -1467,6 +1623,7 @@
             const horaEntrada = document.querySelector('#horaEntrada');
 
             function ausenciaTipo(value) {
+                console.log('value', value);
                 switch (value) {
                     case 'salida_antes':
                         horaSalida.classList.remove('d-none');
@@ -1574,18 +1731,15 @@
 
         $(document).on('click', '.openModalPermisoEspecial', function() {
             $('#verSolivitud').modal('hide');
-
             // Cambia el título del modal
             document.getElementById('modalTitle').innerText = 'Especiales';
-            document.getElementById('textDinamicCalendar').innerHTML = `
-                <span>Elige los 3 días naturales a los que tienes derecho</span>
-            `;
+
             document.getElementById('dynamicContentEncabezado').innerHTML = `
                 <div class="d-flex">
                                 <div class="mr-4 mb-3">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="Permiso"
-                                            id="fallecimiento" value="Fallecimiento de un familiar">
+                                            id="fallecimiento" value="fallecimiento">
                                         <label class="form-check-label" for="fallecimiento">
                                             Fallecimiento de un familiar
                                         </label>
@@ -1599,8 +1753,8 @@
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="Permiso"
-                                            id="academico" value="Motivos académicos/escolares">
-                                        <label class="form-check-label" for="academico">
+                                            id="Motivos académicos/escolares" value="Motivos académicos/escolares">
+                                        <label class="form-check-label" for="Motivos académicos/escolares">
                                             Motivos académicos/escolares
                                         </label>
                                     </div>
@@ -1708,14 +1862,36 @@
             const academicos = document.querySelector('#academicos');
 
             function especiales(value) {
+                console.log('value', value);
                 switch (value) {
                     case 'fallecimiento':
                         persona_afectada.classList.remove('d-none');
                         academicos.classList.add('d-none');
+                        document.getElementById('textDinamicCalendar').innerHTML = `
+                            <span>Elige los 3 días naturales a los que tienes derecho.</span>
+                        `;
                         break;
-                    case 'academico':
+
+                    case 'matrimonio':
+                        academicos.classList.add('d-none');
+                        persona_afectada.classList.add('d-none');
+                        document.getElementById('textDinamicCalendar').innerHTML = `
+                            <span>Elige los 5 días habiles a los que tienes derecho.</span>
+                        `;
+                        break;
+                    case 'Motivos académicos/escolares':
                         persona_afectada.classList.add('d-none');
                         academicos.classList.remove('d-none');
+                        document.getElementById('textDinamicCalendar').innerHTML = `
+                            <span>Elige el dia que no te presentaras.</span>
+                        `;
+                        break;
+                    case 'asunto':
+                        academicos.classList.add('d-none');
+                        persona_afectada.classList.add('d-none');
+                        document.getElementById('textDinamicCalendar').innerHTML = `
+                            <span style="color: red;">Tienes derecho a 3 días al año, NO puedes ser consecutivos.</span>
+                        `;
                         break;
                     default:
                         persona_afectada.classList.add('d-none');
@@ -1818,7 +1994,8 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
 
-    <script>
+    {{-- Paginado de la tabla --}}
+    {{-- <script>
         $(document).ready(function() {
             $('#table-request-user').DataTable({
                 pageLength: 5, // Número de filas por página
@@ -1840,7 +2017,7 @@
                 ],
             });
         });
-    </script>
+    </script> --}}
 
 
 @stop
@@ -1999,11 +2176,16 @@
     }
 
 
-    .fc-day-selected {
+    .highlighted-day {
         /* background-color: #81C10C !important; */
+        color: white !important;
+        border-radius: 50%;
+        padding: 0.5em;
+    }
+
+    .fc-day-selected {
         border-radius: 17px;
         color: white !important;
-        /* Color para los días intermedios */
     }
 
     .fc-day-vacaciones {
@@ -2095,22 +2277,6 @@
     #calendario {
         width: 100%;
     }
-
-
-    .highlighted-day-vacaciones {
-        background-color: #81C10C !important;
-        color: white !important;
-        border-radius: 50%;
-        padding: 0.5em;
-    }
-
-    .highlighted-day-permisos {
-        background-color: #d5c321 !important;
-        color: white !important;
-        border-radius: 50%;
-        padding: 0.5em;
-    }
-
 
     /*Estilo para el div de los dias en Calendario General*/
     .custom-day-top-class {
