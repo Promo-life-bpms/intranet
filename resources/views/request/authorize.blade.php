@@ -378,10 +378,19 @@
                 // Asigna el valor formateado a algún elemento en el modal
                 document.getElementById('modalCreate').textContent = formattedDate;
 
-                const baseUrl = window.location.origin;
-                /* Poner anexarle la baseURl a la imagen */
-                const imagen = baseUrl + '/' + image;
-                document.getElementById('modalImage').src = imagen;
+                let imagen = '';
+
+                if (image === null || image === 'null' || image === 'undefined' || image === undefined ||
+                    image === '') {
+                    console.log('esta vacio');
+                    /*Poner una imagen de un perfil*/
+                    imagen = 'https://www.w3schools.com/howto/img_avatar.png';
+
+                } else {
+                    const baseUrl = window.location.origin;
+                    /* Poner anexarle la baseURl a la imagen */
+                    imagen = baseUrl + '/' + image;
+                }
 
 
                 // Otros atributos

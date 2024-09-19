@@ -1156,8 +1156,8 @@ class VacationRequestController extends Controller
                         $contadorAsuntosPersonales++;
                     }
                 }
-                
-                if($contadorAsuntosPersonales >= 3){
+
+                if ($contadorAsuntosPersonales >= 3) {
                     return back()->with('message', 'Solo tienes derecho a 3 permisos especiales por año.');
                 }
 
