@@ -71,6 +71,7 @@ class VacationRequestController extends Controller
             $solicitud->id_request = $vacacion->id;
             $solicitud->tipo = $typeRequest;
             $solicitud->details = $vacacion->details;
+            $solicitud->id_reveal = $nameResponsable->id;
             $solicitud->reveal_id = $nameResponsable->name . ' ' . $nameResponsable->lastname;
             $solicitud->direct_manager_id = $nameManager->name . ' ' . $nameManager->lastname;
             $solicitud->direct_manager_status = $vacacion->direct_manager_status;
