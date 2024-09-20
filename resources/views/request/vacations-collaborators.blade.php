@@ -10,6 +10,18 @@
             {{ session('message') }}
         </div>
     @endif
+
+    @if (session('error'))
+        <div id="alert-err" class="alert alert-danger">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="26" height="26"
+                stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div>
         <div class="d-flex justify-content-between">
             <h3 class="mb-4">Permisos y Vacaciones</h3>
@@ -99,7 +111,8 @@
                                 stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             <path
                                 d="M5 18L3.13036 4.91253C3.05646 4.39524 3.39389 3.91247 3.90398 3.79912L11.5661 2.09641C11.8519 2.03291 12.1481 2.03291 12.4339 2.09641L20.096 3.79912C20.6061 3.91247 20.9435 4.39524 20.8696 4.91252L19 18C18.9293 18.495 18.5 21.5 12 21.5C5.5 21.5 5.07071 18.495 5 18Z"
-                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
                         </svg>
 
                     </div>
@@ -215,8 +228,33 @@
                                                     {{ $day }}
                                                 </div>
                                             @endforeach
+
                                         </td>
-                                        <td style="text-align: center;">Tiempo completo</td>
+                                        <td style="text-align: center;">
+                                            {!! is_array($solicitud->time)
+                                                ? (is_array($solicitud->more_information) && isset($solicitud->more_information[0]['value_type'])
+                                                    ? ($solicitud->more_information[0]['value_type'] == 'salida_antes'
+                                                        ? '<div>Hora de salida: ' . $solicitud->time[0]['start'] . '</div>'
+                                                        : ($solicitud->more_information[0]['value_type'] == 'salida_durante'
+                                                            ? '<div>Hora de salida: ' .
+                                                                $solicitud->time[0]['start'] .
+                                                                '</div>' .
+                                                                '<div>Hora de entrada: ' .
+                                                                $solicitud->time[0]['end'] .
+                                                                '</div>'
+                                                            : 'Tiempo completo'))
+                                                    : ($solicitud->more_information[0]['Tipo_de_permiso_especial'] == 'Motivos académicos/escolares'
+                                                        ? '<div>Hora de salida: ' .
+                                                            $solicitud->time[0]['start'] .
+                                                            '</div>' .
+                                                            '<div>Hora de entrada: ' .
+                                                            $solicitud->time[0]['end'] .
+                                                            '</div>'
+                                                        : 'Tiempo completo'))
+                                                : 'Tiempo completo' !!}
+                                        </td>
+
+
                                         <td style="text-align: center;">
                                             @if ($solicitud->direct_manager_status == 'Pendiente')
                                                 <span
@@ -248,9 +286,18 @@
                                                 data-reveal_id="{{ $solicitud->id_reveal }}"
                                                 data-direct_manager_id="{{ $solicitud->direct_manager_id }}"
                                                 data-direct_manager_status="{{ $solicitud->direct_manager_status }}"
-                                                data-statusRh="{{ $solicitud->rh_status }}"
+                                                data-statusRh="{{ $solicitud->rh_status }}" {{-- Verificar si solicitud-> time es un array --}}
+                                                data-timeArray="{{ is_array($solicitud->time) ? 'true' : 'false' }}"
+                                                data-start="{{ $solicitud->time ? $solicitud->time[0]['start'] : '12:00' }}"
+                                                data-end="{{ $solicitud->time ? $solicitud->time[0]['end'] : '12:00' }}"
                                                 data-file="{{ $solicitud->file }}"
-                                                data-days="{{ implode(',', $solicitud->days) }}" {{-- data-horasalida="{{ $solicitud->time }}" --}}>
+                                                data-days="{{ implode(',', $solicitud->days) }}" {{-- Para ausencias --}}
+                                                data-value-type="{{ is_array($solicitud->more_information) && count($solicitud->more_information) > 0 && isset($solicitud->more_information[0]['value_type']) ? $solicitud->more_information[0]['value_type'] : '0' }}"
+                                                data-tipo-de-ausencia="{{ is_array($solicitud->more_information) && count($solicitud->more_information) > 0 && isset($solicitud->more_information[0]['Tipo_de_ausencia']) ? $solicitud->more_information[0]['Tipo_de_ausencia'] : '-' }}"
+                                                {{-- Para permisos especiales --}}
+                                                data-tipo-permiso-especial="{{ is_array($solicitud->more_information) && count($solicitud->more_information) > 0 && isset($solicitud->more_information[0]['Tipo_de_permiso_especial']) ? $solicitud->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
+                                                data-familiar-feriado="{{ is_array($solicitud->more_information) && count($solicitud->more_information) > 0 && isset($solicitud->more_information[0]['familiar_finado']) ? $solicitud->more_information[0]['familiar_finado'] : '-' }}"
+                                                data-el-permiso-involucra-a="{{ is_array($solicitud->more_information) && count($solicitud->more_information) > 0 && isset($solicitud->more_information[0]['El_permiso_involucra_a']) ? $solicitud->more_information[0]['El_permiso_involucra_a'] : '-' }}">
                                                 Ver
                                             </button>
                                         </td>
@@ -545,7 +592,7 @@
                                     <strong> Tipo de solicitud especifica:</strong>
                                 </div>
                                 <div class="col-6">
-                                    -
+                                    <span id="value-type-request-specifies"></span>
                                 </div>
                             </div>
                             <div class="row mt-3">
@@ -568,8 +615,8 @@
                                 <div class="col-6">
                                     <strong>Tiempo de ausencia:</strong>
                                 </div>
-                                <div class="col-6">
-                                    Tiempo completo
+                                <div class="col-6" id="timeStatus">
+                                    <span>Tiempo completo</span>
                                 </div>
                             </div>
                             <div class="row mt-3">
@@ -708,11 +755,7 @@
         // Eliminar la fecha seleccionada
         document.getElementById('clearFecha').addEventListener('click', function() {
             document.getElementById('fechaInput').value = '';
-
-
-
             var rows = document.querySelectorAll('.solicitud-row');
-
             rows.forEach(function(row) {
                 // Obtén las fechas asociadas a la fila (separadas por comas)
                 var days = row.getAttribute('data-days').split(',');
@@ -735,7 +778,6 @@
             var calendar = new FullCalendar.Calendar(document.getElementById('calendario'), {
                 // Configura tu calendario aquí (eventos, opciones, etc.)
                 selectable: true, // Habilita la selección de días
-                // Otros parámetros que necesites
             });
             $('#modaTarjetas').on('hidden.bs.modal', function() {
                 document.getElementById('calendario').classList.remove('d-none');
@@ -755,13 +797,7 @@
             });
         });
 
-        var selectedOptionAusencia = 'salida_durante'; // Este valor puede cambiar según tu lógica
-        var defaultHoraSalida = '14:30'; // La hora debe estar en formato HH:MM (24 horas)
-        var defaultHoraRegreso = '18:30'; // La hora debe estar en formato HH:MM (24 horas)
-        var defaultFamiliar = 'hijos'; // El valor por defecto para el familiar
 
-        var selectOptionPermisoEspecial = 'Motivos académicos/escolares'; // Este valor puede cambiar según tu lógica
-        var selectOptionPosicion = 'colaborador'; // Este valor puede cambiar según tu lógica
 
         document.addEventListener('DOMContentLoaded', function() {
             let calendarioVa;
@@ -770,6 +806,7 @@
             $('#modaTarjetas').on('shown.bs.modal', function() {
                 var calendarElVa = document.getElementById('calendarioDaysUpdate');
                 if (calendarElVa && calendarElVa.classList.contains('d-none')) {
+                    console.log('Calendario para crear');
                     // Si tiene la clase d-none, inicializamos el calendario para crear
                     document.getElementById('details').value = '';
                     document.getElementById('reveal_id').value = '';
@@ -902,8 +939,11 @@
                         calendario.render();
                     }
                 } else {
-                    // Si no tiene la clase d-none, inicializamos el calendario para actualizar
+                    console.log('Calendario para actualizar');
 
+                    // Si no tiene la clase d-none, inicializamos el calendario para actualizar
+                    var tipeRequest = document.getElementById('modalTitle')
+                        .innerText; // Obtén el tipo de solicitud
 
                     function ausenciaTipo(value) {
                         console.log('value', value);
@@ -929,7 +969,7 @@
 
                         console.log('valueEspe', value);
                         switch (value) {
-                            case 'fallecimiento':
+                            case 'Fallecimiento de un familiar':
                                 persona_afectada.classList.remove('d-none');
                                 academicos.classList.add('d-none');
                                 document.getElementById('textDinamicCalendar').innerHTML = `
@@ -965,45 +1005,51 @@
                     }
 
 
-                    console.log('Calendario para actualizar');
                     const textTime = document.querySelector('#text-time');
                     document.getElementById('details').value = detailsGlobal;
                     document.getElementById('reveal_id').value = revealIdGlobal;
 
-                    var radioButtonAusencia = document.querySelector(
-                        `input[name="ausenciaTipo"][value="${selectedOptionAusencia}"]`);
-                    if (radioButtonAusencia) {
-                        radioButtonAusencia.checked = true;
-                        ausenciaTipo(selectedOptionAusencia);
+
+                    if (tipeRequest === 'Ausencia') {
+                        var radioButtonAusencia = document.querySelector(
+                            `input[name="ausenciaTipo"][value="${valueTypesGlobal}"]`);
+                        if (radioButtonAusencia) {
+                            radioButtonAusencia.checked = true;
+                            ausenciaTipo(valueTypesGlobal);
+                        }
                     }
 
-                    var horaSalidaInput = document.getElementById('hora_salida');
-                    if (horaSalidaInput) {
-                        horaSalidaInput.value =
-                            defaultHoraSalida; // Asigna la hora predeterminada a la entrada
+                    if (tipeRequest === 'Especiales' || tipeRequest === 'Ausencia') {
+                        var horaSalidaInput = document.getElementById('hora_salida');
+                        if (horaSalidaInput) {
+                            horaSalidaInput.value =
+                                horaSalidaGlobal; // Asigna la hora predeterminada a la entrada
+                        }
+
+                        var horaRegresoInput = document.getElementById('hora_regreso');
+                        if (horaRegresoInput) {
+                            horaRegresoInput.value =
+                                horaEntradaGlobal; // Asigna la hora predeterminada a la salida
+                        }
+
                     }
 
-                    var horaRegresoInput = document.getElementById('hora_regreso');
-                    if (horaRegresoInput) {
-                        horaRegresoInput.value =
-                            defaultHoraRegreso; // Asigna la hora predeterminada a la salida
-                    }
+                    if (tipeRequest === 'Especiales') {
+                        document.getElementById('familiar').value =
+                            familiarFeriadoGlobal; // Asigna el familiar predeterminado
 
+                        var radioButtonPosicion = document.querySelector(
+                            `input[name="Posicion"][value="${elPermisoInvolucraGlobal}"]`);
+                        if (radioButtonPosicion) {
+                            radioButtonPosicion.checked = true;
+                        }
 
-                    var radioButtonPermisoEspecial = document.querySelector(
-                        `input[name="Permiso"][value="${selectOptionPermisoEspecial}"]`);
-                    if (radioButtonPermisoEspecial) {
-                        radioButtonPermisoEspecial.checked = true;
-                        especiales(selectOptionPermisoEspecial);
-                    }
-
-                    document.getElementById('familiar').value =
-                        defaultFamiliar; // Asigna el familiar predeterminado
-
-                    var radioButtonPosicion = document.querySelector(
-                        `input[name="Posicion"][value="${selectOptionPosicion}"]`);
-                    if (radioButtonPosicion) {
-                        radioButtonPosicion.checked = true;
+                        var radioButtonPermisoEspecial = document.querySelector(
+                            `input[name="Permiso"][value="${typePermisoEspecialGlobal}"]`);
+                        if (radioButtonPermisoEspecial) {
+                            radioButtonPermisoEspecial.checked = true;
+                            especiales(typePermisoEspecialGlobal);
+                        }
                     }
 
 
@@ -1250,6 +1296,9 @@
                         var dateStr = info.date.toISOString().split('T')[
                             0]; // Formato 'YYYY-MM-DD'
                         var daysVacaciones = vacacionesCalendar?.vacaciones
+                        var daysAusecia = vacacionesCalendar?.ausencias
+                        var daysPaternidad = vacacionesCalendar?.paternidad
+                        var daysIncapacidad = vacacionesCalendar?.incapacidad
                         var daysPermisos = vacacionesCalendar?.permisos_especiales
 
                         if (daysVacaciones.includes(dateStr)) {
@@ -1262,6 +1311,41 @@
                                 );
                             }
                         }
+
+                        if (daysAusecia.includes(dateStr)) {
+                            var dayNumberElement = info.el.querySelector(
+                                '.fc-daygrid-day-number'
+                            ); // Selecciona el <a> dentro del <td>
+                            if (dayNumberElement) {
+                                dayNumberElement.classList.add(
+                                    'highlighted-day', 'fc-day-ausencia'
+                                );
+                            }
+                        }
+
+
+                        if (daysIncapacidad.includes(dateStr)) {
+                            var dayNumberElement = info.el.querySelector(
+                                '.fc-daygrid-day-number'
+                            ); // Selecciona el <a> dentro del <td>
+                            if (dayNumberElement) {
+                                dayNumberElement.classList.add(
+                                    'highlighted-day', 'fc-day-incapacidad'
+                                );
+                            }
+                        }
+
+                        if (daysPaternidad.includes(dateStr)) {
+                            var dayNumberElement = info.el.querySelector(
+                                '.fc-daygrid-day-number'
+                            ); // Selecciona el <a> dentro del <td>
+                            if (dayNumberElement) {
+                                dayNumberElement.classList.add(
+                                    'highlighted-day', 'fc-day-paternidad'
+                                );
+                            }
+                        }
+
 
                         if (daysPermisos.includes(dateStr)) {
                             var dayNumberElement = info.el.querySelector(
@@ -1292,6 +1376,18 @@
         let ausenciaTipoGlobal = ''; // Variable global para almacenar el tipo de ausencia
 
         let horaSalidaGlobal = ''; // Variable global para almacenar la hora de salida
+        let horaEntradaGlobal = ''; // Variable global para almacenar la hora de regreso
+
+        /*Para ausencia*/
+        let valueTypesGlobal = ''; // Variable global para almacenar el tipo de valor
+
+        /*Para permisos especiales*/
+        let typePermisoEspecialGlobal = ''; // Variable global para almacenar el tipo de permiso especial
+        let familiarFeriadoGlobal = ''; // Variable global para almacenar el familiar o feriado
+        let elPermisoInvolucraGlobal = ''; // Variable global para almacenar el permiso que involucra
+
+        /*Variable para cuando no hay horas en tipo de ausencia*/
+        let typeAusenciaTextGlobal = '';
 
         // Evento cuando se hace clic en el botón para abrir el modal
         document.querySelectorAll('.openModalBtn').forEach(button => {
@@ -1300,20 +1396,39 @@
                 document.getElementById('modalId').textContent = id;
 
                 const tipo = this.getAttribute('data-tipo');
-                const methodOfPayment = tipo === 'Vacaciones' ?
+                const methodOfPayment = (tipo === 'Vacaciones' || tipo === 'vacaciones') ?
                     'A cuenta de vacaciones' :
-                    'A cuenta de permisos especiales';
+                    tipo === 'Ausencia' ?
+                    'Descontar Tiempo/Día' :
+                    (tipo === 'Paternidad' || tipo === 'Permisos especiales') ?
+                    'Permiso Especial' :
+                    tipo === 'Incapacidad' ?
+                    'Pago del IMSS' :
+                    'Sin especificar';
+
                 const details = this.getAttribute('data-details');
                 const revealName = this.getAttribute('data-reveal_name');
                 const revealId = this.getAttribute('data-reveal_id');
                 const directManagerId = this.getAttribute('data-direct_manager_id');
                 const directManagerStatus = this.getAttribute('data-direct_manager_status');
                 const statusRh = this.getAttribute('data-statusRh');
-                const file = this.getAttribute('data-file');
-                const horaSalida = this.getAttribute('data-horasalida');
+                const dataStar = this.getAttribute('data-start'); // Obtener la hora de salida
+                const dataEnd = this.getAttribute('data-end'); // Obtener la hora de regreso
 
-                console.log('horaSalida', horaSalida);
-                console.log('file', file);
+                const timeText = this.getAttribute('data-timeArray'); // Obtener el texto de la hora
+
+
+                /*Para ausencia*/
+                const valueType = this.getAttribute('data-value-type');
+                const tipoDeAusencia = this.getAttribute('data-tipo-de-ausencia');
+
+                /*Para permisos especiales*/
+                const typePermisoEspecial = this.getAttribute('data-tipo-permiso-especial');
+                const familiarFeriado = this.getAttribute('data-familiar-feriado');
+                const elPermisoInvolucra = this.getAttribute('data-el-permiso-involucra-a');
+
+                const file = this.getAttribute('data-file');
+
                 const days = this.getAttribute('data-days');
 
 
@@ -1327,6 +1442,53 @@
                 // document.getElementById('direct_manager_id') = directManagerId;
                 document.getElementById('direct_manager_status').textContent = directManagerStatus;
                 document.getElementById('statusRh').textContent = statusRh;
+
+                var timeStatusDiv = document.getElementById('timeStatus');
+
+                if (dataStar === '') {
+                    console.log('No hay horas');
+                } else {
+                    console.log('Hay horas');
+                }
+
+                if (timeText === 'true') {
+                    console.log('tipo', tipo);
+                    console.log('timeText', timeText);
+                    console.log('typePermisoEspecial', typePermisoEspecial);
+
+                    var startValue = dataStar;
+                    var endValue = dataEnd;
+                    if (tipo === 'Ausencia' && valueType === 'salida_durante' || tipo ===
+                        'Permisos especiales' && typePermisoEspecial === 'Motivos académicos/escolares') {
+                        timeStatusDiv.innerHTML =
+                            '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
+                            'Hora de regreso: <strong>' + endValue + '</strong></span>';
+                    } else if (tipo === 'Ausencia' && valueType === 'salida_antes') {
+                        timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
+                            '</strong></span> ';
+                    } else {
+                        timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
+                    }
+                } else {
+                    timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
+                }
+
+
+
+
+
+
+                console.log('tipo', tipo);
+
+                /*Cambiar valor de solicitud especifica*/
+                if (tipo === 'Ausencia') {
+                    document.getElementById('value-type-request-specifies').textContent = tipoDeAusencia;
+                } else if (tipo === 'Permisos especiales') {
+                    document.getElementById('value-type-request-specifies').textContent =
+                        typePermisoEspecial;
+                } else {
+                    document.getElementById('value-type-request-specifies').textContent = 'Sin especificar';
+                }
 
 
                 if (file !== 'No hay justificante') {
@@ -1473,7 +1635,6 @@
                     document.getElementById('ButtonEditRequest').classList.remove(
                         'openModalIncapacidad');
 
-
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
                     /*Cambiar ruta del formulario miFormulario*/
@@ -1482,6 +1643,18 @@
 
                 detailsGlobal = details;
                 revealIdGlobal = revealId;
+
+                horaSalidaGlobal = dataStar;
+                horaEntradaGlobal = dataEnd;
+
+                /*Para ausencia*/
+                valueTypesGlobal = valueType;
+
+                /*Para permisos especiales*/
+                typePermisoEspecialGlobal = typePermisoEspecial;
+                familiarFeriadoGlobal = familiarFeriado;
+                elPermisoInvolucraGlobal = elPermisoInvolucra;
+
 
                 ausenciaTipoGlobal = this.getAttribute('data-ausencia_tipo');
 
@@ -1519,7 +1692,13 @@
 
         /* Abrir modal de cancelar solicitud */
         document.getElementById('denyRequest').addEventListener('click', function() {
+            document.getElementById('calendarioDaysUpdate').classList.add('d-none');
+            document.getElementById('calendario').classList.remove('d-none');
+            document.getElementById('miFormulario').action = 'create/vacation/or/leave/request';
+
+
             $('#verSolivitud').modal('hide');
+
             $('#modalDeny').modal({
                 backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
                 keyboard: false // Desactiva el cierre con la tecla "Esc"
@@ -1528,6 +1707,10 @@
 
         /*Cerrar modal ver solicitud */
         document.getElementById('closeVerSolicitud').addEventListener('click', function() {
+            document.getElementById('calendarioDaysUpdate').classList.add('d-none');
+            document.getElementById('calendario').classList.remove('d-none');
+            document.getElementById('miFormulario').action = 'create/vacation/or/leave/request';
+
             $('#verSolivitud').modal('hide');
         });
 
@@ -1727,7 +1910,7 @@
             document.getElementById('dynamicContentFormaPago').innerHTML = `
                 <div class="mb-2">
                     <span>Forma de pago (Asignación automatica)</span>
-                    <input type="text" class="form-control mt-1" value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
+                    <input type="text" class="form-control mt-1" value="Pago del IMSS" id="forma_pago" name="forma_pago" disabled>
                 </div>
             `;
             // Abre el modal
@@ -1744,15 +1927,15 @@
                                 <div class="mr-4 mb-3">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="Permiso"
-                                            id="fallecimiento" value="fallecimiento">
-                                        <label class="form-check-label" for="fallecimiento">
+                                            id="Fallecimiento de un familiar" value="Fallecimiento de un familiar">
+                                        <label class="form-check-label" for="Fallecimiento de un familiar">
                                             Fallecimiento de un familiar
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="Permiso"
-                                            id="matrimonio" value="Matrimonio del colaborador">
-                                        <label class="form-check-label" for="matrimonio">
+                                            id="Matrimonio del colaborador" value="Matrimonio del colaborador">
+                                        <label class="form-check-label" for="Matrimonio del colaborador">
                                             Matrimonio del colaborador
                                         </label>
                                     </div>
@@ -1765,8 +1948,8 @@
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="Permiso"
-                                            id="asunto" value="Asuntos personales">
-                                        <label class="form-check-label" for="asunto">Asuntos personales
+                                            id="Asuntos personales" value="Asuntos personales">
+                                        <label class="form-check-label" for="Asuntos personales">Asuntos personales
                                         </label>
                                     </div>
                                 </div>
@@ -1869,7 +2052,7 @@
             function especiales(value) {
                 console.log('value', value);
                 switch (value) {
-                    case 'fallecimiento':
+                    case 'Fallecimiento de un familiar':
                         persona_afectada.classList.remove('d-none');
                         academicos.classList.add('d-none');
                         document.getElementById('textDinamicCalendar').innerHTML = `
@@ -1877,7 +2060,7 @@
                         `;
                         break;
 
-                    case 'matrimonio':
+                    case 'Matrimonio del colaborador':
                         academicos.classList.add('d-none');
                         persona_afectada.classList.add('d-none');
                         document.getElementById('textDinamicCalendar').innerHTML = `
@@ -1891,7 +2074,7 @@
                             <span>Elige el dia que no te presentaras.</span>
                         `;
                         break;
-                    case 'asunto':
+                    case 'Asuntos personales':
                         academicos.classList.add('d-none');
                         persona_afectada.classList.add('d-none');
                         document.getElementById('textDinamicCalendar').innerHTML = `
@@ -2012,7 +2195,7 @@
                         "next": "Siguiente",
                         "previous": "Anterior"
                     },
-                    "info": "Mostrando _START_ a _END_ de _TOTAL_ ",
+                    "info": "Mostrando _START_ a _xxEND_ de _TOTAL_ ",
                     "infoEmpty": "Mostrando 0 a 0 de 0 ",
                     "infoFiltered": "(Filtrado de _MAX_ total de )",
                     "lengthMenu": "Mostrar _MENU_ ",
@@ -2239,8 +2422,8 @@
     }
 
     /* .modal-content {
-        width: 1500px !important;
-    } */
+                                                        width: 1500px !important;
+                                                    } */
 
     /*Estilo azul al seleccionar dia*/
     .fc .fc-highlight {

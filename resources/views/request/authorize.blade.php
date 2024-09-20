@@ -60,7 +60,8 @@
                     <tbody>
                         @foreach ($InfoSolicitud as $infoSoli)
                             <tr class="solicitud-row" data-days="{{ implode(',', $infoSoli['days_absent']) }}">
-                                <th style="text-align: center; align-content: center;" scope="row">{{ $infoSoli['id'] }}
+                                <th style="text-align: center; align-content: center;" scope="row">
+                                    {{ $infoSoli['id'] }}
                                 </th>
                                 <td style="text-align: center;">{{ $infoSoli['name'] }}</td>
                                 <td style="text-align: center;">{{ $infoSoli['request_type'] }}</td>
@@ -108,8 +109,7 @@
                                             data-specific_type="{{ $infoSoli['specific_type'] }}"
                                             data-days_absent="{{ implode(',', $infoSoli['days_absent']) }}"
                                             data-method_of_payment="{{ $infoSoli['method_of_payment'] }}"
-                                            data-time="{{ $infoSoli['time'] }}"
-                                            data-reveal_id="{{ $infoSoli['reveal_id'] }}"
+                                            {{-- data-time="{{ $infoSoli['time'] }}" --}} data-reveal_id="{{ $infoSoli['reveal_id'] }}"
                                             data-file="{{ $infoSoli['file'] }}"> Ver y
                                             autorizar</button>
                                     @else
@@ -126,8 +126,7 @@
                                             data-specific_type="{{ $infoSoli['specific_type'] }}"
                                             data-days_absent="{{ implode(',', $infoSoli['days_absent']) }}"
                                             data-method_of_payment="{{ $infoSoli['method_of_payment'] }}"
-                                            data-time="{{ $infoSoli['time'] }}"
-                                            data-reveal_id="{{ $infoSoli['reveal_id'] }}"
+                                            {{-- data-time="{{ $infoSoli['time'] }}" --}} data-reveal_id="{{ $infoSoli['reveal_id'] }}"
                                             data-file="{{ $infoSoli['file'] }}"> Ver
                                         </button>
                                     @endif
