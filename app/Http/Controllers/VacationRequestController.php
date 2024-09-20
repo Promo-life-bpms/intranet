@@ -1224,6 +1224,14 @@ class VacationRequestController extends Controller
                 ];
             }
 
+            $time = [];
+            foreach ($Days as $Day) {
+                $time[] = [
+                    'start' => $Day->start,
+                    'end' => $Day->end
+                ];
+            }
+
             $InfoSolicitud[] = [
                 'image' => $nameUser->image,
                 'created_at' => $Solicitud->created_at,
@@ -1241,12 +1249,13 @@ class VacationRequestController extends Controller
                 'method_of_payment' => $RequestType->type == 1 ?: 'A cuenta de vacaciones',
                 'time' => $RequestType->type == 1 ?: 'Tiempo completo',
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
-                'file' => $Solicitud->file == null ? null : $Solicitud->file
+                'file' => $Solicitud->file == null ? null : $Solicitud->file,
+                'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
+                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : json_decode($Solicitud->more_information),
             ];
         }
 
         $InfoSolicitudesUsuario = json_encode($InfoSolicitud);
-
         return view('request.authorize', compact('InfoSolicitud', 'InfoSolicitudesUsuario', 'SumaSolicitudes'));
     }
 
@@ -1273,6 +1282,14 @@ class VacationRequestController extends Controller
             usort($dias, function ($a, $b) {
                 return strtotime($a) - strtotime($b);
             });
+
+            $time = [];
+            foreach ($Days as $Day) {
+                $time[] = [
+                    'start' => $Day->start,
+                    'end' => $Day->end
+                ];
+            }
 
             $fechaActual = Carbon::now();
             $Vacaciones = DB::table('vacations_availables')
@@ -1305,7 +1322,9 @@ class VacationRequestController extends Controller
                 'method_of_payment' => $RequestType->type == 1 ?: 'A cuenta de vacaciones',
                 'time' => $RequestType->type == 1 ?: 'Tiempo completo',
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
-                'file' => $Solicitud->file == null ? null : $Solicitud->file
+                'file' => $Solicitud->file == null ? null : $Solicitud->file,
+                'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
+                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : json_decode($Solicitud->more_information),
             ];
         }
 
@@ -1333,6 +1352,14 @@ class VacationRequestController extends Controller
             usort($dias, function ($a, $b) {
                 return strtotime($a) - strtotime($b);
             });
+
+            $time = [];
+            foreach ($Days as $Day) {
+                $time[] = [
+                    'start' => $Day->start,
+                    'end' => $Day->end
+                ];
+            }
 
             $fechaActual = Carbon::now();
             $Vacaciones = DB::table('vacations_availables')
@@ -1365,7 +1392,9 @@ class VacationRequestController extends Controller
                 'method_of_payment' => $RequestType->type == 1 ? 'A cuenta de vacaciones' : 'Otro',
                 'time' => $RequestType->type == 1 ? 'Tiempo completo' : 'Parcial',
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
-                'file' => $Solicitud->file ?? null
+                'file' => $Solicitud->file ?? null,
+                'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
+                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : json_decode($Solicitud->more_information),
             ];
         }
         $SolicitudesPendientes = $Pendientes;
@@ -1391,6 +1420,14 @@ class VacationRequestController extends Controller
             usort($dias, function ($a, $b) {
                 return strtotime($a) - strtotime($b);
             });
+
+            $time = [];
+            foreach ($Days as $Day) {
+                $time[] = [
+                    'start' => $Day->start,
+                    'end' => $Day->end
+                ];
+            }
 
             $fechaActual = Carbon::now();
             $Vacaciones = DB::table('vacations_availables')
@@ -1425,7 +1462,9 @@ class VacationRequestController extends Controller
                 'method_of_payment' => $RequestType->type == 1 ? 'A cuenta de vacaciones' : 'Otro',
                 'time' => $RequestType->type == 1 ? 'Tiempo completo' : 'Parcial',
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
-                'file' => $Solicitud->file ?? null
+                'file' => $Solicitud->file ?? null,
+                'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
+                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : json_decode($Solicitud->more_information),
             ];
         }
 
