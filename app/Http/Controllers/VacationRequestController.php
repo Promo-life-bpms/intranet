@@ -88,7 +88,7 @@ class VacationRequestController extends Controller
             $solicitud->commentary = $vacacion->commentary == null ? 'No hay un comentario' : $vacacion->commentary;
             $solicitud->days = $dias;
             $solicitud->time = in_array($vacacion->request_type_id, [1, 3, 4]) ? null : $time;
-            $solicitud->more_information = $vacacion->more_information == null ? 'No hay informacion' : json_decode($vacacion->more_information, true);
+            $solicitud->more_information = $vacacion->more_information == null ? null : json_decode($vacacion->more_information, true);
             $solicitudes[] = $solicitud;
         }
 
@@ -187,12 +187,16 @@ class VacationRequestController extends Controller
 
         ];
 
+        // dd($vacacionescalendar);
+
         return view('request.vacations-collaborators', compact('users', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar'));
     }
 
     public function CreatePurchase(Request $request)
     {
-        //dd($request);
+
+        // dd($request);
+
         $user = auth()->user();
 
         ///VACACIONES
@@ -1249,7 +1253,7 @@ class VacationRequestController extends Controller
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file == null ? null : $Solicitud->file,
                 'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
-                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : json_decode($Solicitud->more_information, true),
+                'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
         }
 
@@ -1635,8 +1639,7 @@ class VacationRequestController extends Controller
                 // dd('Se rechazó la solicitud exitosamente.');
                 return back()->with('message', 'Se rechazó la solicitud exitosamente.');
             }
-
-        }else{
+        } else {
             DB::table('vacation_requests')->where('id', $request->id)->update([
                 'commentary' => $request->commentary,
                 'direct_manager_status' => 'Cancelada por el usuario',
