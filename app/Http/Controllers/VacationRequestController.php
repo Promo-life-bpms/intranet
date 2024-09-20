@@ -88,10 +88,10 @@ class VacationRequestController extends Controller
             $solicitud->commentary = $vacacion->commentary == null ? 'No hay un comentario' : $vacacion->commentary;
             $solicitud->days = $dias;
             $solicitud->time = in_array($vacacion->request_type_id, [1, 3, 4]) ? null : $time;
-            $solicitud->more_information = $vacacion->more_information == null ? 'No hay informacion' : json_decode($vacacion->more_information);
+            $solicitud->more_information = $vacacion->more_information == null ? 'No hay informacion' : json_decode($vacacion->more_information, true);
             $solicitudes[] = $solicitud;
         }
-
+        
         $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
         $fechaIngreso = Carbon::parse($Ingreso->date_admission);
         $fechaActual = Carbon::now();
@@ -206,7 +206,7 @@ class VacationRequestController extends Controller
             ]);
 
             if (auth()->user()->employee->jefe_directo_id == null) {
-                return back()->with('message', 'No puedes crear solicitudes por que no tienes un jefe directo asignado o no llenaste todos los campos');
+                return back()->with('error', 'No puedes crear solicitudes por que no tienes un jefe directo asignado o no llenaste todos los campos');
             }
 
             $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
@@ -216,7 +216,7 @@ class VacationRequestController extends Controller
             $mesesTranscurridos = $fechaIngreso->diffInMonths($fechaActual);
 
             if ($mesesTranscurridos < 6) {
-                return back()->with('message', 'No has cumplido el tiempo suficiente para solicitar vacaciones.');
+                return back()->with('error', 'No has cumplido el tiempo suficiente para solicitar vacaciones.');
             }
 
             $Vacaciones = DB::table('vacations_availables')
@@ -278,15 +278,15 @@ class VacationRequestController extends Controller
             }
 
             if (!empty($diasParecidos)) {
-                return back()->with('message', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
             }
 
             if ($diasTotales == 0) {
-                return back()->with('message', 'Debes enviar al menos un día de vacaciones.');
+                return back()->with('error', 'Debes enviar al menos un día de vacaciones.');
             }
 
             if ($diasTotales > $totalambosperidos) {
-                return back()->with('message', 'No cuentas con días suficientes');
+                return back()->with('error', 'No cuentas con días suficientes');
             }
 
             $path = '';
@@ -318,7 +318,7 @@ class VacationRequestController extends Controller
                 $prueba = $Disponibilidad1 + $Disponibilidad2;
 
                 if ($diasTotales > $totalAmbosPeriodos) {
-                    return  back()->with('message', 'No cuentas con los días solicitados.');
+                    return  back()->with('error', 'No cuentas con los días solicitados.');
                 }
 
                 if ($diasTotales <= $totalAmbosPeriodos) {
@@ -386,7 +386,7 @@ class VacationRequestController extends Controller
                                 }
                             }
                         } else {
-                            return back()->with('message', 'Asegúrate que no tienes vacaciones por autorizar, ya que tienes días disponibles, pero están en espera.');
+                            return back()->with('error', 'Asegúrate que no tienes vacaciones por autorizar, ya que tienes días disponibles, pero están en espera.');
                         }
                         return back()->with('message', 'Vacaciones actualizadas correctamente. 1');
                     }
@@ -447,7 +447,7 @@ class VacationRequestController extends Controller
                                     ]);
                                 }
                             } else {
-                                return back()->with('message', 'Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (1)');
+                                return back()->with('error', 'Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes.');
                             }
 
                             if ($faltan > 0 && $PrimerPeriodo > 0) {
@@ -480,13 +480,13 @@ class VacationRequestController extends Controller
                                             ]);
                                         }
                                     } else {
-                                        return back()->with('message', 'Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes. (2)');
+                                        return back()->with('error', 'Asegúrate que no tienes días solicitados por aprobar, ya que hemos detectado que tienes vacaciones pendientes.');
                                     }
                                 }
                             }
                             return back()->with('message', 'Vacaciones actualizadas correctamente.');
                         } else {
-                            return  back()->with('message', 'No te alcanza para los días solicitados.');
+                            return  back()->with('error', 'No cuentas con los días solicitados.');
                         }
                     }
                 }
@@ -501,11 +501,11 @@ class VacationRequestController extends Controller
                 $Disponibilidad = $primerWaiting + $primerDaysEnjoyed;
 
                 if ($diasTotales > $totalunsoloperido) {
-                    return back()->with('message', 'No cuentas con los días solicitados.');
+                    return back()->with('error', 'No cuentas con los días solicitados.');
                 }
 
                 if ($dvupdate > $totalunsoloperido) {
-                    return back()->with('message', 'Asegurate que no tengas solicitudes pendientes.');
+                    return back()->with('error', 'Asegurate que no tengas solicitudes pendientes.');
                 }
 
                 if ($diasTotales <= $totalunsoloperido) {
@@ -532,12 +532,12 @@ class VacationRequestController extends Controller
                                 'status' => 0,
                             ]);
                         }
-                        return back()->with('message', 'Se creo tu solicitud de vacaciones.');
+                        return back()->with('message', 'Se creó tu solicitud de vacaciones.');
                     }
                 }
             }
 
-            return back()->with('message', 'Se creo tu solicitud de vacaciones.');
+            return back()->with('message', 'Se creó tu solicitud de vacaciones.');
         }
 
         ///PERMISOS ESPECIALES
@@ -581,7 +581,7 @@ class VacationRequestController extends Controller
             }
 
             if (!empty($diasParecidos)) {
-                return back()->with('message', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
             }
 
             $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
@@ -597,7 +597,7 @@ class VacationRequestController extends Controller
             }
 
             if ($dias == 0) {
-                return back()->with('message', 'Debes ingresar el día en que saldrás temprano de la jornada.');
+                return back()->with('error', 'Debes ingresar el día en que saldrás temprano de la jornada.');
             }
 
             if ($request->ausenciaTipo == 'salida_durante') {
@@ -616,11 +616,11 @@ class VacationRequestController extends Controller
                 $diferenciaEnHoras = intdiv($diferenciaEnMinutos, 60); // Horas
                 $diferenciaEnMinutosRestantes = $diferenciaEnMinutos % 60; // Minutos restantes
                 if ($dias > 1) {
-                    return back()->with('message', 'Sí tienes más de una solicitud, debes crearla una por una.');
+                    return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
                 }
 
                 if ($diferenciaEnHoras > 4) {
-                    return back()->with('message', 'No puedes tomar más de cuatro horas.');
+                    return back()->with('error', 'No puedes tomar más de cuatro horas.');
                 }
 
                 ///aqui ya se va crear la solicitud
@@ -653,7 +653,7 @@ class VacationRequestController extends Controller
                             'status' => 0,
                         ]);
                     }
-                    return back()->with('message', 'La hora de inicio está dentro del rango permitido.');
+                    return back()->with('message', 'Solicitud creada exitosamente.');
                 } else {
                     // Hora fuera del rango permitido
                     return back()->with('message', 'La hora de inicio está fuera del rango permitido.');
@@ -663,7 +663,7 @@ class VacationRequestController extends Controller
             if ($request->ausenciaTipo == 'salida_antes') {
 
                 if ($dias > 1) {
-                    return back()->with('message', 'Sí tienes más de una solicitud, debes crearla una por una.');
+                    return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
                 }
 
                 $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
@@ -675,13 +675,13 @@ class VacationRequestController extends Controller
                 $diferenciaEnMinutosRestantes = $diferenciaEnMinutos % 60; // Minutos restantes
 
                 if ($diferenciaEnHoras > 4) {
-                    return back()->with('message', 'No puedes tomar más de cuatro horas.');
+                    return back()->with('error', 'No puedes tomar más de cuatro horas.');
                 }
 
                 $horaSalidaCarbon = Carbon::createFromFormat('H:i', $start);
 
                 if ($horaSalidaCarbon->greaterThanOrEqualTo($hora5PM)) {
-                    return back()->with('message', 'No se pueden crear solicitudes después de las 17 horas.');
+                    return back()->with('error', 'No se pueden crear solicitudes después de las 17 horas.');
                 }
 
                 $hora1Carbon = Carbon::createFromFormat('H:i', $start);
@@ -714,7 +714,7 @@ class VacationRequestController extends Controller
 
                     return back()->with('message', 'Solicitud creada exitosamente.');
                 } else {
-                    return back()->with('message', 'No puedes seleccionar la misma hora de salida');
+                    return back()->with('error', 'No puedes seleccionar la misma hora de salida');
                 }
             }
             //dd($diferenciaEnHoras.'...'.$diferenciaEnMinutosRestantes);
@@ -760,7 +760,7 @@ class VacationRequestController extends Controller
             }
 
             if (!empty($diasParecidos)) {
-                return back()->with('message', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
             }
 
             $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
@@ -776,11 +776,11 @@ class VacationRequestController extends Controller
             }
 
             if ($dias > 5) {
-                return back()->with('message', 'Solo tienes permitido tomar cinco días.');
+                return back()->with('error', 'Solo tienes permitido tomar cinco días.');
             }
 
             if ($dias == 0) {
-                return back()->with('message', 'Debes ingresar al menos un día');
+                return back()->with('error', 'Debes ingresar al menos un día');
             }
 
             $Vacaciones = VacationRequest::create([
@@ -801,7 +801,7 @@ class VacationRequestController extends Controller
                     'status' => 0,
                 ]);
             }
-            return back()->with('message', 'Se creo exitosamente la solicitud.');
+            return back()->with('message', 'Se creó exitosamente la solicitud.');
         }
 
         ///INCAPACIDAD
@@ -844,7 +844,7 @@ class VacationRequestController extends Controller
             }
 
             if (!empty($diasParecidos)) {
-                return back()->with('message', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
             }
 
             $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
@@ -860,7 +860,7 @@ class VacationRequestController extends Controller
             }
 
             if ($dias == 0) {
-                return back()->with('message', 'Debes ingresar al menos un día');
+                return back()->with('error', 'Debes ingresar al menos un día');
             }
 
             $Vacaciones = VacationRequest::create([
@@ -923,7 +923,7 @@ class VacationRequestController extends Controller
             }
 
             if (!empty($diasParecidos)) {
-                return back()->with('message', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
             }
 
             $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
@@ -943,13 +943,13 @@ class VacationRequestController extends Controller
 
 
             if ($dias == 0) {
-                return back()->with('message', 'Debes ingresar al menos un día');
+                return back()->with('error', 'Debes ingresar al menos un día');
             }
 
             if ($request->Permiso == 'Fallecimiento de un familiar') {
                 ///VACACIONES PENDIENTES O APROBADAS///
                 if ($dias > 3) {
-                    return back()->with('message', 'Solo tienes derecho a tomar tres días.');
+                    return back()->with('error', 'Solo tienes derecho a tomar tres días.');
                 }
 
                 $more_information[] = [
@@ -983,7 +983,7 @@ class VacationRequestController extends Controller
             if ($request->Permiso == 'Matrimonio del colaborador') {
                 ///VACACIONES PENDIENTES O APROBADAS///
                 if ($dias > 5) {
-                    return back()->with('message', 'Solo tienes derecho a tomar cinco días.');
+                    return back()->with('error', 'Solo tienes derecho a tomar cinco días.');
                 }
 
                 if ($dias == 5) {
@@ -1012,7 +1012,7 @@ class VacationRequestController extends Controller
                     }
                     return back()->with('message', 'Se creó con éxito tu solicitud.');
                 } else {
-                    return back()->with('message', 'Debes tomar tus cinco días.');
+                    return back()->with('error', 'Debes tomar tus cinco días.');
                 }
             }
 
@@ -1020,7 +1020,7 @@ class VacationRequestController extends Controller
 
                 if ($request->Posicion == 'hijo') {
                     if ($dias > 1) {
-                        return back()->with('message', 'Solo puede tomar un día a la vez.');
+                        return back()->with('error', 'Solo puedes tomar un día a la vez.');
                     }
                     $hora8AM = Carbon::today()->setHour(8)->setMinute(0)->setSecond(0);
                     $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
@@ -1066,15 +1066,15 @@ class VacationRequestController extends Controller
                         }
                         return back()->with('message', 'Se creó con éxito tu solicitud.');
                     } else {
-                        return back()->with('message', 'Verifica que la información ingresada sea correcta.');
+                        return back()->with('error', 'Verifica que la información ingresada sea correcta.');
                     }
                 }
                 if ($request->Posicion == 'colaborador') {
                     if ($path == null) {
-                        return back()->with('message', 'Debes ingresar un justificamente.');
+                        return back()->with('error', 'Debes ingresar un justificamente.');
                     }
                     if ($dias > 1) {
-                        return back()->with('message', 'Solo puede tomar un día a la vez.');
+                        return back()->with('error', 'Solo puedes tomar un día a la vez.');
                     }
 
                     $hora8AM = Carbon::today()->setHour(8)->setMinute(0)->setSecond(0);
@@ -1121,7 +1121,7 @@ class VacationRequestController extends Controller
                         }
                         return back()->with('message', 'Se creó con éxito tu solicitud.');
                     } else {
-                        return back()->with('message', 'Verifica que la información ingresada sea correcta.');
+                        return back()->with('error', 'Verifica que la información ingresada sea correcta.');
                     }
                 }
             }
@@ -1130,11 +1130,11 @@ class VacationRequestController extends Controller
                 ///VACACIONES PENDIENTES O APROBADAS///
                 //dd($request);
                 if ($mesesTranscurridos < 3) {
-                    return back()->with('message', 'No has cumplido el tiempo suficiente para solicitar este permiso.');
+                    return back()->with('error', 'No has cumplido el tiempo suficiente para solicitar este permiso.');
                 }
 
                 if ($dias > 1) {
-                    return back()->with('message', 'Solo puede tomar un día a la vez.');
+                    return back()->with('error', 'Solo puedes tomar un día a la vez.');
                 }
 
                 $currentYear = date('Y');
@@ -1155,7 +1155,7 @@ class VacationRequestController extends Controller
                 }
 
                 if ($contadorAsuntosPersonales >= 3) {
-                    return back()->with('message', 'Solo tienes derecho a 3 permisos especiales por año.');
+                    return back()->with('error', 'Solo tienes derecho a 3 permisos especiales por año.');
                 }
 
                 $more_information[] = [
@@ -1251,7 +1251,7 @@ class VacationRequestController extends Controller
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file == null ? null : $Solicitud->file,
                 'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
-                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : $Solicitud->more_information,
+                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : json_decode($Solicitud->more_information, true),
             ];
         }
 
@@ -1324,7 +1324,7 @@ class VacationRequestController extends Controller
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file == null ? null : $Solicitud->file,
                 'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
-                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : $Solicitud->more_information,
+                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : json_decode($Solicitud->more_information, true),
             ];
         }
 
@@ -1394,7 +1394,7 @@ class VacationRequestController extends Controller
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file ?? null,
                 'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
-                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : $Solicitud->more_information,
+                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : json_decode($Solicitud->more_information, true),
             ];
         }
         $SolicitudesPendientes = $Pendientes;
@@ -1464,7 +1464,7 @@ class VacationRequestController extends Controller
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file ?? null,
                 'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
-                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : $Solicitud->more_information,
+                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : json_decode($Solicitud->more_information, true),
             ];
         }
 
@@ -1643,7 +1643,7 @@ class VacationRequestController extends Controller
                 // dd('Se rechazó la solicitud exitosamente.');
                 return back()->with('message', 'Se rechazó la solicitud exitosamente.');
             }
-            
+
         }else{
             DB::table('vacation_requests')->where('id', $request->id)->update([
                 'commentary' => $request->commentary,
@@ -2760,7 +2760,7 @@ class VacationRequestController extends Controller
                 }
 
                 if ($diasTotales > 1) {
-                    return back()->with('message', 'Solo puede tomar un día a la vez.');
+                    return back()->with('error', 'Solo puedes tomar un día a la vez.');
                 }
 
                 if ($request->Posicion == 'hijo') {
@@ -2968,7 +2968,7 @@ class VacationRequestController extends Controller
                 }
 
                 if ($diasTotales > 1) {
-                    return back()->with('message', 'Solo puede tomar un día a la vez.');
+                    return back()->with('error', 'Solo puedes tomar un día a la vez.');
                 }
 
                 $currentYear = date('Y');
