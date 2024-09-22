@@ -49,7 +49,7 @@ class VacationRequestController extends Controller
             }
         }
 
-        $vacaciones = DB::table('vacation_requests')->where('user_id', $user->id)->get();
+        $vacaciones = DB::table('vacation_requests')->where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
         $solicitudes = [];
         foreach ($vacaciones as $vacacion) {
             $nameResponsable = User::where('id', $vacacion->reveal_id)->first();
@@ -69,8 +69,8 @@ class VacationRequestController extends Controller
             $time = [];
             foreach ($Days as $Day) {
                 $time[] = [
-                    'start' => $Day->start,
-                    'end' => $Day->end
+                    'start' => Carbon::parse($Day->start)->format('H:i'),
+                    'end' => Carbon::parse($Day->end)->format('H:i')
                 ];
             }
 
@@ -92,6 +92,7 @@ class VacationRequestController extends Controller
             $solicitudes[] = $solicitud;
         }
 
+        //dd($solicitudes);
         $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
         $fechaIngreso = Carbon::parse($Ingreso->date_admission);
         $fechaActual = Carbon::now();
@@ -1120,7 +1121,7 @@ class VacationRequestController extends Controller
         $user = auth()->user();
 
         $HeIsBossOf = Employee::where('jefe_directo_id', $user->id)->where('status', 1)->pluck('user_id');
-        $Solicitudes = DB::table('vacation_requests')->whereIn('user_id', $HeIsBossOf)->get();
+        $Solicitudes = DB::table('vacation_requests')->whereIn('user_id', $HeIsBossOf)->orderBy('created_at', 'desc')->get();
         $SumaSolicitudes = count($Solicitudes);
         $InfoSolicitud = [];
         foreach ($Solicitudes as $Solicitud) {
@@ -1156,8 +1157,8 @@ class VacationRequestController extends Controller
             $time = [];
             foreach ($Days as $Day) {
                 $time[] = [
-                    'start' => $Day->start,
-                    'end' => $Day->end
+                    'start' => Carbon::parse($Day->start)->format('H:i'),
+                    'end' => Carbon::parse($Day->end)->format('H:i')
                 ];
             }
 
@@ -1191,7 +1192,7 @@ class VacationRequestController extends Controller
     {
         $user = auth()->user();
 
-        $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->get();
+        $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->orderBy('created_at', 'desc')->get();
         $sumaAprobadas = count($Solicitudes);
 
         $SolicitudesAprobadas = [];
@@ -1214,8 +1215,8 @@ class VacationRequestController extends Controller
             $time = [];
             foreach ($Days as $Day) {
                 $time[] = [
-                    'start' => $Day->start,
-                    'end' => $Day->end
+                    'start' => Carbon::parse($Day->start)->format('H:i'),
+                    'end' => Carbon::parse($Day->end)->format('H:i')
                 ];
             }
 
@@ -1260,6 +1261,7 @@ class VacationRequestController extends Controller
         $SolicitudesPendientes = DB::table('vacation_requests')
             ->where('direct_manager_status', 'Aprobada')
             ->where('rh_status', 'Pendiente')
+            ->orderBy('created_at', 'desc')
             ->get();
         $sumaPendientes = count($SolicitudesPendientes);
 
@@ -1283,8 +1285,8 @@ class VacationRequestController extends Controller
             $time = [];
             foreach ($Days as $Day) {
                 $time[] = [
-                    'start' => $Day->start,
-                    'end' => $Day->end
+                    'start' => Carbon::parse($Day->start)->format('H:i'),
+                    'end' => Carbon::parse($Day->end)->format('H:i')
                 ];
             }
 
@@ -1326,7 +1328,7 @@ class VacationRequestController extends Controller
         $SolicitudesPendientes = $Pendientes;
 
         $SolicitudesRechazadas = DB::table('vacation_requests')->where('direct_manager_status', 'Cancelada por el usuario')
-            ->where('rh_status', 'Cancelada por el usuario')->get();
+            ->where('rh_status', 'Cancelada por el usuario')->orderBy('created_at', 'desc')->get();
 
         $sumaCanceladasUsuario = count($SolicitudesRechazadas);
 
@@ -1350,8 +1352,8 @@ class VacationRequestController extends Controller
             $time = [];
             foreach ($Days as $Day) {
                 $time[] = [
-                    'start' => $Day->start,
-                    'end' => $Day->end
+                    'start' => Carbon::parse($Day->start)->format('H:i'),
+                    'end' => Carbon::parse($Day->end)->format('H:i')
                 ];
             }
 
@@ -1697,22 +1699,151 @@ class VacationRequestController extends Controller
                 ]);
                 return back()->with('message', 'Se actualizó correctamente tu solicitud.');
             } else {
+
+                //DÍAS A ELIMINAR
+                if (!$missingInDates->isEmpty()) {
+                    $eliminar = $missingInDates->implode(', ');
+                    $eliminarArray = explode(', ', $eliminar);
+                    $dias = count($eliminarArray);
+
+                    $Vacaciones = DB::table('vacations_availables')
+                        ->where('users_id', $user->id)
+                        ->where('cutoff_date', '>=', $fechaActual)
+                        ->orderBy('cutoff_date', 'asc')
+                        ->get();
+
+                    $Datos = [];
+                    foreach ($Vacaciones as $vaca) {
+                        $Datos[] = [
+                            'dv' => $vaca->dv,
+                            'cutoff_date' => $vaca->cutoff_date,
+                            'period' => $vaca->period,
+                            'days_enjoyed' => $vaca->days_enjoyed,
+                            'waiting' => $vaca->waiting,
+                            'days_enjoyed' => $vaca->days_enjoyed,
+                            'days_availables' => $vaca->days_availables
+                        ];
+                    }
+
+
+                    if (count($Datos) > 1) {
+                        $datoswaiting = $Datos[0]['waiting'];
+                        $datoswaitingdos = $Datos[1]['waiting'];
+                        $peridoUno = $Datos[0]['period'];
+                        $peridoDos = $Datos[1]['period'];
+                        if ($dias <= $datoswaiting) {
+                            //return 0;
+                            foreach ($eliminarArray as $eliminar) {
+                                $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
+                                DB::table('vacation_days')
+                                    ->where('id', $idfecha)
+                                    ->delete();
+                            }
+
+                            DB::table('vacation_requests')->where('id', $request->id)->update([
+                                'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
+                                'details' => $request->details == null ? $Solicitud->details : $request->details,
+                                'file' => $request->archivos == null ? $Solicitud->file : $path,
+                            ]);
+                            $menosWaiting = $datoswaiting - $dias;
+                            DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
+                                'waiting' => $menosWaiting
+                            ]);
+                        } elseif ($dias > $datoswaiting) {
+                            $restawaiting = ($datoswaiting - $dias) * (-1);
+                            $finalwaitinguno = $dias - $restawaiting;
+                            $waiting2 = $datoswaitingdos - $restawaiting;
+
+                            if (($finalwaitinguno <= $datoswaiting) && ($restawaiting <= $datoswaitingdos)) {
+                                foreach ($eliminarArray as $eliminar) {
+                                    $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
+                                    DB::table('vacation_days')
+                                        ->where('id', $idfecha)
+                                        ->delete();
+                                }
+
+                                DB::table('vacation_requests')->where('id', $request->id)->update([
+                                    'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
+                                    'details' => $request->details == null ? $Solicitud->details : $request->details,
+                                    'file' => $request->archivos == null ? $Solicitud->file : $path,
+                                ]);
+
+                                $menosWaiting = $datoswaiting - $finalwaitinguno;
+                                ////waiting 1////
+                                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
+                                    'waiting' => $menosWaiting,
+
+                                ]);
+                                ////waiting 2////
+                                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoDos)->update([
+                                    'waiting' => $waiting2,
+                                ]);
+                            }
+                        } else {
+                            //dd('No tienes días reservados.');
+                            return back()->with('error', 'No tienes días reservados.');
+                        }
+                    } elseif (count($Datos) == 1) {
+                        $diasreservados = $Datos[0]['waiting'];
+                        $PeridoUno = $Datos[0]['period'];
+                        if ($dias <= $diasreservados) {
+                            foreach ($eliminarArray as $eliminar) {
+                                $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
+                                DB::table('vacation_days')
+                                    ->where('id', $idfecha)
+                                    ->delete();
+                            }
+
+                            DB::table('vacation_requests')->where('id', $request->id)->update([
+                                'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
+                                'details' => $request->details == null ? $Solicitud->details : $request->details,
+                                'file' => $request->archivos == null ? $Solicitud->file : $path,
+                            ]);
+
+                            $menosWaiting = $diasreservados - $dias;
+                            DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $PeridoUno)->update([
+                                'waiting' => $menosWaiting,
+                            ]);
+                        }
+                    }
+                }
+
+                //NUEVOS DÍAS//
                 if (!$missingInDias->isEmpty()) {
+                    $newVacaciones = DB::table('vacations_availables')
+                        ->where('users_id', $user->id)
+                        ->where('cutoff_date', '>=', $fechaActual)
+                        ->orderBy('cutoff_date', 'asc')
+                        ->get();
+
+                    $Datosnew = [];
+                    foreach ($newVacaciones as $vaca) {
+                        $Datosnew[] = [
+                            'dv' => $vaca->dv,
+                            'cutoff_date' => $vaca->cutoff_date,
+                            'period' => $vaca->period,
+                            'days_enjoyed' => $vaca->days_enjoyed,
+                            'waiting' => $vaca->waiting,
+                            'days_enjoyed' => $vaca->days_enjoyed,
+                            'days_availables' => $vaca->days_availables
+                        ];
+                    }
+
                     ///Estos días son nuevos en el arreglo, se deben agregar a la solicitud:
                     $registrar = $missingInDias->implode(', ');
                     $registrarArray = explode(', ', $registrar);
                     $diasTotales = count($registrarArray);
 
-                    if (count($Datos) > 1) {
+                    if (count($Datosnew) > 1) {
                         // Extracción de datos de los dos periodos
-                        $PrimerPeriodo = (int) $Datos[0]['dv'];
-                        $Periodo = $Datos[0]['period'];
-                        $SegundoPeriodo = (int) $Datos[1]['dv'];
-                        $Periododos = $Datos[1]['period'];
-                        $primerWaiting = $Datos[0]['waiting'];
-                        $segundoWaiting = $Datos[1]['waiting'];
-                        $primerDaysEnjoyed = $Datos[0]['days_enjoyed'];
-                        $SegundoDaysEnjoyed = $Datos[1]['days_enjoyed'];
+                        $PrimerPeriodo = (int) $Datosnew[0]['dv'];
+                        $Periodo = $Datosnew[0]['period'];
+                        $SegundoPeriodo = (int) $Datosnew[1]['dv'];
+                        $Periododos = $Datosnew[1]['period'];
+                        $primerWaiting = $Datosnew[0]['waiting'];
+                        $segundoWaiting = $Datosnew[1]['waiting'];
+                        $primerDaysEnjoyed = $Datosnew[0]['days_enjoyed'];
+                        $SegundoDaysEnjoyed = $Datosnew[1]['days_enjoyed'];
 
 
                         // Cálculos de disponibilidad
@@ -1872,19 +2003,27 @@ class VacationRequestController extends Controller
                         }
                     }
 
-                    if (count($Datos) == 1) {
-                        $totalunsoloperido = $Datos[0]['dv'];
-                        $Periodo = $Datos[0]['period'];
-                        $primerWaiting = $Datos[0]['waiting'];
-                        $primerDaysEnjoyed = $Datos[0]['days_enjoyed'];
+                    if (count($Datosnew) == 1) {
+                        $totalunsoloperido = $Datosnew[0]['dv'];
+                        $Periodo = $Datosnew[0]['period'];
+                        $primerWaiting = $Datosnew[0]['waiting'];
+                        $primerDaysEnjoyed = $Datosnew[0]['days_enjoyed'];
                         $dvupdate = $primerWaiting + $diasTotales;
                         $Disponibilidad = $primerWaiting + $primerDaysEnjoyed;
 
-                        if ($diasTotales > $totalunsoloperido || $Disponibilidad  > $totalunsoloperido) {
+                        $diaseliminar = 0;
+                        if (!$missingInDates->isEmpty()) {
+                            $eliminar = $missingInDates->implode(', ');
+                            $eliminarArray = explode(', ', $eliminar);
+                            $diaseliminar = count($eliminarArray);
+                        }
+                        $prueba = ($primerWaiting - $diaseliminar) + $diasTotales;
+
+                        if ($prueba > $totalunsoloperido || $Disponibilidad  > $totalunsoloperido) {
                             return back()->with('error', 'No cuentas con los días solicitados.');
                         }
 
-                        if ($dvupdate > $totalunsoloperido) {
+                        if ($prueba > $totalunsoloperido) {
                             return back()->with('error', 'Asegurate que no tengas solicitudes pendientes.');
                         }
 
@@ -1910,118 +2049,6 @@ class VacationRequestController extends Controller
                                 }
                             }
                         }
-                    }
-                }
-
-                if (!$missingInDates->isEmpty()) {
-                    ///Estos días ya no vienen en el arreglo, por lo tanto se eliminan de la solicitud.
-                    $eliminar = $missingInDates->implode(', ');
-                    $eliminarArray = explode(', ', $eliminar);
-                    $dias = count($eliminarArray);
-
-                    $Vacaciones = DB::table('vacations_availables')
-                        ->where('users_id', $user->id)
-                        ->where('cutoff_date', '>=', $fechaActual)
-                        ->orderBy('cutoff_date', 'asc')
-                        ->get();
-
-                    $Datos = [];
-                    foreach ($Vacaciones as $vaca) {
-                        $Datos[] = [
-                            'dv' => $vaca->dv,
-                            'cutoff_date' => $vaca->cutoff_date,
-                            'period' => $vaca->period,
-                            'days_enjoyed' => $vaca->days_enjoyed,
-                            'waiting' => $vaca->waiting,
-                            'days_enjoyed' => $vaca->days_enjoyed,
-                            'days_availables' => $vaca->days_availables
-                        ];
-                    }
-
-
-                    if (count($Datos) > 1) {
-                        $datoswaiting = $Datos[0]['waiting'];
-                        $datoswaitingdos = $Datos[1]['waiting'];
-                        $peridoUno = $Datos[0]['period'];
-                        $peridoDos = $Datos[1]['period'];
-                        if ($dias <= $datoswaiting) {
-                            //return 0;
-                            foreach ($eliminarArray as $eliminar) {
-                                $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
-                                DB::table('vacation_days')
-                                    ->where('id', $idfecha)
-                                    ->delete();
-                            }
-
-                            DB::table('vacation_requests')->where('id', $request->id)->update([
-                                'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
-                                'details' => $request->details == null ? $Solicitud->details : $request->details,
-                                'file' => $request->archivos == null ? $Solicitud->file : $path,
-                            ]);
-                            $menosWaiting = $datoswaiting - $dias;
-                            DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
-                                'waiting' => $menosWaiting
-                            ]);
-                        } elseif ($dias > $datoswaiting) {
-                            $restawaiting = ($datoswaiting - $dias) * (-1);
-                            $finalwaitinguno = $dias - $restawaiting;
-                            $waiting2 = $datoswaitingdos - $restawaiting;
-
-                            if (($finalwaitinguno <= $datoswaiting) && ($restawaiting <= $datoswaitingdos)) {
-                                foreach ($eliminarArray as $eliminar) {
-                                    $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
-                                    DB::table('vacation_days')
-                                        ->where('id', $idfecha)
-                                        ->delete();
-                                }
-
-                                DB::table('vacation_requests')->where('id', $request->id)->update([
-                                    'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
-                                    'details' => $request->details == null ? $Solicitud->details : $request->details,
-                                    'file' => $request->archivos == null ? $Solicitud->file : $path,
-                                ]);
-
-                                $menosWaiting = $datoswaiting - $finalwaitinguno;
-                                ////waiting 1////
-                                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
-                                    'waiting' => $menosWaiting,
-
-                                ]);
-                                ////waiting 2////
-                                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoDos)->update([
-                                    'waiting' => $waiting2,
-                                ]);
-                            }
-                        } else {
-                            //dd('No tienes días reservados.');
-                            return back()->with('error', 'No tienes días reservados.');
-                        }
-                    } elseif (count($Datos) == 1) {
-                        $diasreservados = $Datos[0]['waiting'];
-                        $PeridoUno = $Datos[0]['period'];
-                        if ($dias <= $diasreservados) {
-                            foreach ($eliminarArray as $eliminar) {
-                                $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
-                                DB::table('vacation_days')
-                                    ->where('id', $idfecha)
-                                    ->delete();
-                            }
-
-                            DB::table('vacation_requests')->where('id', $request->id)->update([
-                                'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
-                                'details' => $request->details == null ? $Solicitud->details : $request->details,
-                                'file' => $request->archivos == null ? $Solicitud->file : $path,
-                            ]);
-
-                            $menosWaiting = $diasreservados - $dias;
-                            DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $PeridoUno)->update([
-                                'waiting' => $menosWaiting,
-                            ]);
-                        } else {
-                            return back()->with('message', 'Vacaciones actualizadas correctamente.');
-                        }
-
-                        return back()->with('message', 'Se actualizó la solicitud exitosamente.');
                     }
                 }
                 return back()->with('message', 'Vacaciones actualizadas');
@@ -2171,7 +2198,7 @@ class VacationRequestController extends Controller
                 $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
                 $start = $request->hora_salida;
                 $end = $request->hora_regreso;
-    
+
                 $hora1Carbon = Carbon::createFromFormat('H:i', $start);
                 $hora2Carbon = Carbon::createFromFormat('H:i', $end);
 
