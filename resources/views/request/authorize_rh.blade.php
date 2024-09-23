@@ -1,6 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
+    @if (session('message'))
+        <div id="alert-succ" class="alert alert-success">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="26" height="26"
+                stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            {{ session('message') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div id="alert-err" class="alert alert-danger">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="26" height="26"
+                stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            {{ session('error') }}
+        </div>
+    @endif
 
     <div>
         <h3 id="titlePage">Solicitudes autorizadas</h3>
@@ -131,8 +152,8 @@
 
                                     <td style="text-align: center; cursor: pointer;">
                                         <button class="btn btn-link openModalDetails" data-id="{{ $aprovada['id'] }}"
-                                            data-crete="{{ $aprovada['created_at'] }}" data-name="{{ $aprovada['name'] }}"
-                                            data-image="{{ $aprovada['image'] }}"
+                                            data-crete="{{ $aprovada['created_at'] }}"
+                                            data-name="{{ $aprovada['name'] }}" data-image="{{ $aprovada['image'] }}"
                                             data-current_vacation="{{ $aprovada['current_vacation'] }}"
                                             data-current_vacation_expiration="{{ $aprovada['current_vacation_expiration'] }}"
                                             data-next_vacation="{{ $aprovada['next_vacation'] }}"
@@ -273,7 +294,7 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">Detalles de la Solicitudd</h5>
+                        <h5 class="modal-title" id="modalTitle">Detalles de la Solicitud</h5>
                         <div id="modalId" style="display: none;"></div>
                         <button id="closeModalDetails" type="button" class="btn-close" aria-label="Close"></button>
 
@@ -363,7 +384,7 @@
                                     </div>
 
                                     <div class="mt-2">
-                                        <strong>Justificantes: </strong>
+                                        <strong>Justificante: </strong>
                                     </div>
                                 </div>
 
@@ -500,8 +521,10 @@
                                     </div>
                                 </div>
 
-                                <textarea style="min-width: 100%" class="form-control mt-2" id="commentary" name="commentary" placeholder="Motivo"
-                                    required></textarea>
+                                <div class="col-12">
+                                    <textarea style="min-width: 100%" class="form-control mt-2" id="commentary" name="commentary" placeholder="Motivo"
+                                        required></textarea>
+                                </div>
 
                                 <div class="d-flex justify-content-end mt-2">
                                     <button class="btn btn-primary" type="submit">Actualizar</button>
@@ -517,7 +540,6 @@
 
 
 @section('styles')
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/fontawesome/all.min.css') }}">
     <style>
         table.dataTable td {
@@ -649,8 +671,24 @@
         .bg-warning {
             background-color: #FFC107 !important;
         }
-    </style>
 
+        /*Estilos de las alertas*/
+        .alert {
+            padding: 0.7rem !important;
+        }
+
+        .alert-success {
+            color: #0f5132 !important;
+            background-color: #d1e7dd !important;
+            border-color: #badbcc !important;
+        }
+
+        .alert-danger {
+            color: #842029 !important;
+            background-color: #f8d7da !important;
+            border-color: #f5c2c7 !important;
+        }
+    </style>
 @stop
 
 @section('scripts')
@@ -896,7 +934,15 @@
                 const reveal_id = this.getAttribute('data-reveal_id');
                 const file = this.getAttribute('data-file');
 
-                if (file !== 'No hay justificante') {
+                if (file === 'No hay justificante' || file === '' || file === null || file === 'null' ||
+                    file === undefined) {
+                    // Crea la etiqueta <span> con el texto "No hay justificante"
+                    const span = document.createElement('span');
+                    span.textContent = 'No hay justificante';
+                    // Agrega el span al div
+                    document.getElementById('viewFile').innerHTML = '';
+                    document.getElementById('viewFile').appendChild(span);
+                } else {
                     const baseUrl = window.location.origin;
                     const viewFile = baseUrl + '/' + file;
                     // Crea la etiqueta <a> y establece su href dinámicamente
@@ -908,13 +954,6 @@
                     // Agrega el enlace al div
                     document.getElementById('viewFile').innerHTML = '';
                     document.getElementById('viewFile').appendChild(link);
-                } else {
-                    // Crea la etiqueta <span> con el texto "No hay justificante"
-                    const span = document.createElement('span');
-                    span.textContent = 'No hay justificante';
-                    // Agrega el span al div
-                    document.getElementById('viewFile').innerHTML = '';
-                    document.getElementById('viewFile').appendChild(span);
                 }
 
                 const timeText = this.getAttribute('data-timeArray');
@@ -1097,25 +1136,22 @@
                 const reveal_id = this.getAttribute('data-reveal_id');
                 const file = this.getAttribute('data-file');
 
-                if (file !== 'No hay justificante') {
+                if (file === 'No hay justificante' || file === '' || file === null || file === 'null' ||
+                    file === undefined) {
+                    const span = document.createElement('span');
+                    span.textContent = 'No hay justificante';
+                    document.getElementById('viewFile').innerHTML = '';
+                    document.getElementById('viewFile').appendChild(span);
+                } else {
                     const baseUrl = window.location.origin;
                     const viewFile = baseUrl + '/' + file;
-                    // Crea la etiqueta <a> y establece su href dinámicamente
                     const link = document.createElement('a');
                     link.id = 'file';
                     link.href = viewFile;
                     link.target = '_blank';
                     link.textContent = 'Ver archivo';
-                    // Agrega el enlace al div
                     document.getElementById('viewFile').innerHTML = '';
                     document.getElementById('viewFile').appendChild(link);
-                } else {
-                    // Crea la etiqueta <span> con el texto "No hay justificante"
-                    const span = document.createElement('span');
-                    span.textContent = 'No hay justificante';
-                    // Agrega el span al div
-                    document.getElementById('viewFile').innerHTML = '';
-                    document.getElementById('viewFile').appendChild(span);
                 }
 
                 const timeText = this.getAttribute('data-timeArray');

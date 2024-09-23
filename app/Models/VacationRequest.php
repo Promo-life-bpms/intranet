@@ -34,9 +34,39 @@ class VacationRequest extends Model
         return $this->belongsTo(RequestType::class, 'request_type_id');
     }
 
+    // public function employee()
+    // {
+    //     return $this->belongsTo(Employee::class, 'direct_manager_id');
+    // }
+
+
     public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
+
+    public function manager()
     {
         return $this->belongsTo(Employee::class, 'direct_manager_id');
     }
 
+    public function requestdays()
+    {
+        return $this->hasMany(RequestCalendar::class, 'requests_id');
+    }
+
+    public function requestrejected()
+    {
+        return $this->hasMany(RequestRejected::class, 'requests_id');
+    }
+
+    public function vacations()
+    {
+        return $this->belongsTo(Vacations::class, 'employee_id');
+    }
+
+    public function reveal()
+    {
+        return $this->belongsTo(User::class, 'reveal_id');
+    }
 }

@@ -540,8 +540,8 @@
                                     </div>
 
                                     <div class="mt-3 ">
-                                        <button style="width: 100%" type="submit"
-                                            class="btn btn-primary">Guardar</button>
+                                        <button style="width: 100%" type="submit" class="btn btn-primary"
+                                            id="submitBtn">Guardar</button>
                                     </div>
                                 </div>
                             </div>
@@ -769,6 +769,17 @@
                     row.style.display = 'none'; // Ocultar la fila
                 }
             });
+        });
+
+
+        const form = document.getElementById('miFormulario');
+        const submitButton = document.getElementById('submitBtn');
+
+        // Agregar evento de envío al formulario
+        form.addEventListener('submit', function() {
+            submitButton.disabled = true;
+
+            submitButton.innerHTML = 'Guardando...';
         });
 
 
@@ -1528,15 +1539,13 @@
 
 
                 if (statusRh === 'Aprobada') {
-                    // Remueve cualquier clase anterior y añade la clase 'bg-success'
                     statusRhElement.classList.remove('bg-warning', 'text-dark');
                     statusRhElement.classList.add('badge', 'bg-success',
-                        'text-white'); // Se añade 'bg-success'
+                        'text-white');
                 } else if (statusRh === 'Pendiente') {
                     statusRhElement.classList.remove('bg-danger', 'bg-success', 'text-white');
                     statusRhElement.classList.add('badge', 'bg-warning', 'text-dark');
                 } else {
-                    // Remueve 'bg-success' y añade otra clase, por ejemplo 'bg-danger'
                     statusRhElement.classList.remove('bg-warning', 'text-dark', 'bg-success');
                     statusRhElement.classList.add('badge', 'bg-danger');
                 }
@@ -1545,6 +1554,9 @@
                 /* Habilitar o deshabiliar la sección de botones de acuerdo al estatus de la solicitud */
                 if (directManagerStatus === 'Cancelada por el usuario' && statusRh ===
                     'Cancelada por el usuario' || statusRh === 'Aprobada') {
+                    document.getElementById('seccionOptionButton').style.display = 'none';
+                    document.getElementById('ButtonEditRequest').classList.add('d-none');
+                } else if (directManagerStatus === 'Rechazada') {
                     document.getElementById('seccionOptionButton').style.display = 'none';
                     document.getElementById('ButtonEditRequest').classList.add('d-none');
                 } else {
@@ -1585,7 +1597,6 @@
 
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
-                    /*Cambiar ruta del formulario miFormulario*/
                     document.getElementById('miFormulario').action = 'update/request';
                 } else if (tipo === 'Paternidad' && statusRh === 'Pendiente') {
                     document.getElementById('ButtonEditRequest').classList.add('openModalPaternidad');
@@ -1599,7 +1610,6 @@
 
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
-                    /*Cambiar ruta del formulario miFormulario*/
                     document.getElementById('miFormulario').action = 'update/request';
                 } else if (tipo === 'Incapacidad' && statusRh === 'Pendiente') {
                     document.getElementById('ButtonEditRequest').classList.add('openModalIncapacidad');
@@ -1610,10 +1620,8 @@
                         'openModalPaternidad');
                     document.getElementById('ButtonEditRequest').classList.remove(
                         'openModalPermisoEspecial');
-
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
-                    /*Cambiar ruta del formulario miFormulario*/
                     document.getElementById('miFormulario').action = 'update/request';
                 } else if (tipo === 'Permisos especiales' && statusRh === 'Pendiente') {
                     document.getElementById('ButtonEditRequest').classList.add(
@@ -1625,10 +1633,8 @@
                         'openModalPaternidad');
                     document.getElementById('ButtonEditRequest').classList.remove(
                         'openModalIncapacidad');
-
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
-                    /*Cambiar ruta del formulario miFormulario*/
                     document.getElementById('miFormulario').action = 'update/request';
                 }
 
@@ -1675,8 +1681,8 @@
             `;
 
             $('#modaTarjetas').modal({
-                backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
-                keyboard: false // Desactiva el cierre con la tecla "Esc"
+                backdrop: 'static',
+                keyboard: false
             }).modal('show');
         });
 
@@ -1690,8 +1696,8 @@
             $('#verSolivitud').modal('hide');
 
             $('#modalDeny').modal({
-                backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
-                keyboard: false // Desactiva el cierre con la tecla "Esc"
+                backdrop: 'static',
+                keyboard: false
             }).modal('show');
         });
 
@@ -1715,7 +1721,6 @@
             inputId.value = id;
             form.appendChild(inputId);
 
-            // Imprimir todos los datos que se enviarán por consola
             form.submit();
         });
 
@@ -1781,8 +1786,8 @@
 
             // Abre el modal
             $('#modaTarjetas').modal({
-                backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
-                keyboard: false // Desactiva el cierre con la tecla "Esc"
+                backdrop: 'static',
+                keyboard: false
             }).modal('show');
 
 
@@ -1808,6 +1813,11 @@
                         horaEntrada.classList.remove('d-none');
                         horaSalida.classList.remove('d-none');
                         textTime.classList.remove('d-none');
+                        break;
+                    case 'retardo':
+                        horaSalida.classList.add('d-none');
+                        horaEntrada.classList.remove('d-none');
+                        textTime.classList.add('d-none');
                         break;
                     default:
                         horaSalida.classList.add('d-none');
@@ -1868,8 +1878,8 @@
 
 
             $('#modaTarjetas').modal({
-                backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
-                keyboard: false // Desactiva el cierre con la tecla "Esc"
+                backdrop: 'static',
+                keyboard: false
             }).modal('show');
         })
 

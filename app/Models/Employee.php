@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Employee extends Model
 {
     use HasFactory;
-    public $table='employees';
+    public $table = 'employees';
 
     protected $fillable = [
         'take_expired_vacation',
@@ -30,7 +30,7 @@ class Employee extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    
+
 
     // Companias y puestos
     public function companies()
@@ -66,10 +66,13 @@ class Employee extends Model
         return $this->hasMany(Request::class);
     }
 
+    // public function requestToAuth()
+    // {
+    //     return $this->hasMany(Request::class, 'direct_manager_id');
+    // }
+
     public function requestToAuth()
     {
-        return $this->hasMany(Request::class, 'direct_manager_id');
+        return $this->hasMany(VacationRequest::class, 'direct_manager_id');
     }
-
-    
 }
