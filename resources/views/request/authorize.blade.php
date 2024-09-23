@@ -638,7 +638,6 @@
             inputId.value = id;
             form.appendChild(inputId);
 
-            // Imprimir todos los datos que se enviarán por consola
             form.submit();
         });
 

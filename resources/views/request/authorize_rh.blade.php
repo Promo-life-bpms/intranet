@@ -433,16 +433,17 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalTitle">Rechazar solicitud</h5>
-                        <button id="closeModalDeny" type="button" class="close" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <div id="modalId" style="display: none;"></div>
+                        <button id='closeModalDeny' type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="denyFormRequest" action="reject/leave/by/human/resources" method="POST">
                             @csrf
-                            <textarea style="min-width: 100%" class="form-control" id="commentary" name="commentary" required></textarea>
+                            <textarea style="min-width: 100%" class="form-control" id="commentary" name="commentary" placeholder="Motivo"
+                                required></textarea>
                             <div class="d-flex justify-content-end mt-2">
-                                <button type="button" class="btn btn-primary" id="denyButtonForm">Aprobada</button>
+                                <button type="button" class="btn btn-primary" id="denyButtonForm">Enviar</button>
                             </div>
                         </form>
                     </div>
@@ -703,18 +704,34 @@
 
     <script>
         function viewFileDeny(file) {
-            // Reemplazar las barras invertidas con barras normales
             const correctedFile = file.replace(/\\/g, '/');
 
-            // Obtener la URL base
             const baseUrl = window.location.origin;
 
-            // Crear la URL completa del archivo
             const fileUrl = baseUrl + '/' + correctedFile;
 
-            // Abrir el archivo en una nueva pestaña
             window.open(fileUrl, '_blank');
         }
+
+
+        /*Rechazar solicitud*/
+        document.getElementById('denyButtonForm').addEventListener('click', function() {
+            const form = document.getElementById('denyFormRequest');
+            /*Mandar el ID de la solicitus que se va a aprobar del que viene en el modal*/
+            const id = document.getElementById('modalId').textContent;
+            const inputId = document.createElement('input');
+            inputId.type = 'hidden';
+            inputId.name = 'id';
+            inputId.value = id;
+            form.appendChild(inputId);
+
+            form.submit();
+        });
+
+        /*Limpiar el formulario de rechazo*/
+        document.getElementById('closeModalDeny').addEventListener('click', function() {
+            document.getElementById('commentary').value = '';
+        });
 
         //Poner por defecto la tarjeta 1 activa
         document.getElementById('tarjeta1').classList.add('tarjetaRh1-activa');
