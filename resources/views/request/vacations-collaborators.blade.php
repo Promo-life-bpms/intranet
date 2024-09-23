@@ -1969,13 +1969,6 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-6">
-                                                    <div class="cs-form ">
-                                                        <span>Hora de salida: </span>
-                                                        <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" id="hora_salida"/>
-                                                    </div>
-                                                </div>
-
                                             </div>
 
                                             <div class="row ">
@@ -1989,12 +1982,6 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-6">
-                                                    <div class="cs-form mb-3">
-                                                        <span>Hora de regreso: </span>
-                                                        <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" id="hora_regreso" />
-                                                    </div>
-                                                </div>
 
                                             </div>
                                         </div>
