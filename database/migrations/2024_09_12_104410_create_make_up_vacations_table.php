@@ -16,7 +16,8 @@ class CreateMakeUpVacationsTable extends Migration
         Schema::create('make_up_vacations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->delete('cascade');
-            $table->integer('num_days');
+            $table->integer('num_days')->nullable();
+            $table->integer('subtract_days')->nullable();
             $table->longText('description');
             $table->timestamps();
         });

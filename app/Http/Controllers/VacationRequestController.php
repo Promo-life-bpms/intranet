@@ -3340,31 +3340,60 @@ class VacationRequestController extends Controller
 
     public function MakeUpVacations(Request $request)
     {
+        dd($request);
         $request->validate([
-            'user_id' => 'required',
-            'description' => 'required',
-            'num_days' => 'required'
+            'team' => 'required',
+            'commentary' => 'required',
+            'days' => 'required',
+            'Periodo' => 'required',
+            'Opcion' => 'required'
         ]);
 
+        $usuarios = $request->team;
+        $usuariosCon2Periodos = [];
+        $usuariosCon1Periodo = [];
         $fechaActual = Carbon::now();
-        $Vacaciones = DB::table('vacations_availables')
-            ->where('users_id', $request->user_id)
+        $vacaciones = DB::table('vacations_availables')
             ->where('cutoff_date', '>=', $fechaActual)
+            ->whereIn('users_id', $usuarios)
             ->orderBy('cutoff_date', 'asc')
             ->get();
 
-        $Datos = [];
-        foreach ($Vacaciones as $vaca) {
-            $Datos[] = [
-                'dv' => $vaca->dv,
-                'cutoff_date' => $vaca->cutoff_date,
-                'period' => $vaca->period,
-                'days_enjoyed' => $vaca->days_enjoyed,
-                'waiting' => $vaca->waiting,
-                'days_enjoyed' => $vaca->days_enjoyed,
-                'days_availables' => $vaca->days_availables
-            ];
+        // Agrupa las vacaciones por usuario
+        $vacacionesPorUsuario = [];
+        foreach ($vacaciones as $vaca) {
+            $vacacionesPorUsuario[$vaca->users_id][] = $vaca->dv;
         }
+
+        foreach ($usuarios as $user) {
+            $numPeriodos = isset($vacacionesPorUsuario[$user]) ? count($vacacionesPorUsuario[$user]) : 0;
+
+            if ($numPeriodos === 2) {
+                $usuariosCon2Periodos[] = $user;
+            } elseif ($numPeriodos === 1) {
+                $usuariosCon1Periodo[] = $user;
+            }
+        }
+
+        $resultado = [
+            'Usuarios con 2 periodos' => $usuariosCon2Periodos,
+            'Usuarios con 1 periodo' => $usuariosCon1Periodo,
+        ];
+
+        if($request->Periodo == 'segundo_periodo')
+        {
+            
+        }
+
+        if($request->Periodo == 'primer_periodo')
+        {
+
+        }
+        // Impresión del resultado
+        dd($resultado);
+        //dd($numPeriodo);
+
+
         $fechactual = Carbon::now()->format('Y-m-d');
         $num_days = $request->num_days;
         if (count($Datos) > 1) {

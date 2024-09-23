@@ -14,6 +14,7 @@ class MakeUpVacations extends Model
     protected $fillable = [
         'user_id',
         'num_days',
+        'subtract_days',
         'description'
     ];
 
