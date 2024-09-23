@@ -410,9 +410,8 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">Calendario</h5>
-                        <button id="closeModalCalendario" type="button" class="close" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button id="closeModalCalendario" type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="container">
@@ -1473,11 +1472,6 @@
                     timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
                 }
 
-
-
-
-
-
                 console.log('tipo', tipo);
 
                 /*Cambiar valor de solicitud especifica*/
@@ -1494,14 +1488,12 @@
                 if (file !== 'No hay justificante') {
                     const baseUrl = window.location.origin;
                     const viewFile = baseUrl + '/' + file;
-
                     // Crea la etiqueta <a> y establece su href dinámicamente
                     const link = document.createElement('a');
                     link.id = 'file';
                     link.href = viewFile;
                     link.target = '_blank';
                     link.textContent = 'Ver archivo';
-
                     // Agrega el enlace al div
                     document.getElementById('viewFile').innerHTML = '';
                     document.getElementById('viewFile').appendChild(link);
@@ -1509,7 +1501,6 @@
                     // Crea la etiqueta <span> con el texto "No hay justificante"
                     const span = document.createElement('span');
                     span.textContent = 'No hay justificante';
-
                     // Agrega el span al div
                     document.getElementById('viewFile').innerHTML = '';
                     document.getElementById('viewFile').appendChild(span);
@@ -1752,10 +1743,6 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="ausenciaTipo" id="salida_durante" value="salida_durante">
                                 <label class="form-check-label" for="salida_durante">Salida durante</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="ausenciaTipo" id="falta_trabajo" value="falta_trabajo">
-                                <label class="form-check-label" for="falta_trabajo">Falta de trabajo</label>
                             </div>
                         </div>
 

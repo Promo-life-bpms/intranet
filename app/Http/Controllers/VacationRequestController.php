@@ -1326,7 +1326,7 @@ class VacationRequestController extends Controller
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file == null ? null : $Solicitud->file,
                 'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
-                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : json_decode($Solicitud->more_information, true),
+                'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
         }
 
@@ -1396,7 +1396,7 @@ class VacationRequestController extends Controller
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file ?? null,
                 'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
-                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : json_decode($Solicitud->more_information, true),
+                'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
         }
         $SolicitudesPendientes = $Pendientes;
@@ -1466,7 +1466,7 @@ class VacationRequestController extends Controller
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file ?? null,
                 'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
-                'more_information' => $Solicitud->more_information == null ? 'No hay informacion' : json_decode($Solicitud->more_information, true),
+                'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
         }
 
@@ -1661,7 +1661,7 @@ class VacationRequestController extends Controller
 
     public function UpdateRequest(Request $request)
     {
-        //dd($request);
+        // dd($request);
         $user = auth()->user();
         $request->validate([
             'details' => 'required',

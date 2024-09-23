@@ -4,12 +4,10 @@
 
     <div>
         <h3 id="titlePage">Solicitudes autorizadas</h3>
-
         <div class="row">
             <div class="col-5 align-content-end">
                 <div class="d-flex justify-between">
                     <input id="searchName" type="search" class="form-control mr-2" placeholder="Buscar por nombre">
-
                     <select id="tipoSelect" style="width: max-content" class="form-select mr-1"
                         aria-label="Default select example">
                         <option value="">Todos</option>
@@ -144,8 +142,6 @@
                                             data-request_type="{{ $aprovada['request_type'] }}"
                                             data-specific_type="{{ $aprovada['specific_type'] }}"
                                             data-days_absent="{{ implode(',', $aprovada['days_absent']) }}"
-                                            data-method_of_payment="{{ $aprovada['method_of_payment'] }}"
-                                            data-time="{{ $aprovada['time'] }}"
                                             data-reveal_id="{{ $aprovada['reveal_id'] }}"
                                             data-file="{{ $aprovada['file'] }}">Ver</button>
                                     </td>
@@ -211,8 +207,14 @@
                                             data-request_type="{{ $pendiente['request_type'] }}"
                                             data-specific_type="{{ $pendiente['specific_type'] }}"
                                             data-days_absent="{{ implode(',', $pendiente['days_absent']) }}"
-                                            data-method_of_payment="{{ $pendiente['method_of_payment'] }}"
-                                            data-time="{{ $pendiente['time'] }}"
+                                            data-timeArray="{{ is_Array($pendiente['time']) ? 'true' : 'false' }}"
+                                            data-start="{{ $pendiente['time'] ? $pendiente['time'][0]['start'] : '12:00' }}"
+                                            data-end="{{ $pendiente['time'] ? $pendiente['time'][0]['end'] : '12:00' }}"
+                                            {{-- Para Ausencia --}}
+                                            data-value-type="{{ is_array($pendiente['more_information']) && count($pendiente['more_information']) > 0 && isset($pendiente['more_information'][0]['value_type']) ? $pendiente['more_information'][0]['value_type'] : '0' }}"
+                                            data-tipo-de-ausencia="{{ is_array($pendiente['more_information']) && isset($pendiente['more_information'][0]['Tipo_de_ausencia']) ? $pendiente['more_information'][0]['Tipo_de_ausencia'] : '-' }}"
+                                            {{-- Para permisos especiales --}}
+                                            data-tipo-permiso-especial="{{ is_array($pendiente['more_information']) && count($pendiente['more_information']) > 0 && isset($pendiente['more_information'][0]['Tipo_de_permiso_especial']) ? $pendiente['more_information'][0]['Tipo_de_permiso_especial'] : '-' }}"
                                             data-reveal_id="{{ $pendiente['reveal_id'] }}"
                                             data-file="{{ $pendiente['file'] }}">Ver y Autorizar</button>
                                     </td>
@@ -250,11 +252,10 @@
                                         @endforeach
                                     </td>
                                     <td style="text-align: center;">
-
-                                        <span class="text-align: center;">
-                                            {{ $rechazada['file'] }}
-                                        </span>
-
+                                        <button type="button" id="file-link-{{ $rechazada['file'] }}"
+                                            class="btn btn-link"
+                                            onclick="viewFileDeny({{ json_encode($rechazada['file']) }})">Ver
+                                            archivo</button>
                                     </td>
                                     <td style="text-align: center;">
                                         {{ $rechazada['commentary'] }}
@@ -381,16 +382,16 @@
                                         <span id="modalMethodOfPayment"></span>
                                     </div>
 
-                                    <div class="mt-2">
-                                        <span id="modalTime"></span>
+                                    <div class="mt-2" id="timeStatus">
+                                        <span>Tiempo completo</span>
                                     </div>
 
                                     <div class="mt-2">
                                         <span id="modalRevealId"></span>
                                     </div>
 
-                                    <div class="mt-2">
-                                        <span id="modalFile"></span>
+                                    <div class="mt-2" id="viewFile">
+                                        {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
                                     </div>
                                 </div>
                             </div>
@@ -444,21 +445,48 @@
                             @csrf
 
                             <div class="row">
-                                <div class="col-6">
-                                    <span>Buscar por nombre: </span>
-                                    <input type="search" class="form-control" placeholder="Buscar por nombre">
+                                <div class="col-12 mb-3">
+                                    <span>Selecciona Usuarios:</span>
+                                    <select name="team[]" class="form-select" multiple
+                                        data-placeholder="Selecciona Usuarios" id="select2" data-coreui-search="true"
+                                        style="width: 100%">
+                                        @foreach ($IdandNameUser as $user)
+                                            <option value="{{ $user['id'] }}">{{ $user['name'] }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="col-6">
                                     <span>Días a reponer: </span>
                                     <input type="number" class="form-control" placeholder="Días a reponer">
                                 </div>
-                            </div>
 
-                            <textarea style="min-width: 100%" class="form-control mt-2" id="commentary" name="commentary" required></textarea>
+                                <div class="col-6">
+                                    <div class="mr-4 mb-3">
+                                        <span>Selecciona tu periodo: </span>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="Periodo"
+                                                id="primer_periodo" value="primer_periodo">
+                                            <label class="form-check-label" for="primer_periodo">
+                                                Primero
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="Periodo"
+                                                id="segundo_periodo" value="segundo_periodo">
+                                            <label class="form-check-label" for="segundo_periodo">
+                                                Segundo
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div class="d-flex justify-content-end mt-2">
-                                <button type="button" class="btn btn-primary" id="denyButtonForm">Actualizar</button>
-                            </div>
+                                <textarea style="min-width: 100%" class="form-control mt-2" id="commentary" name="commentary" placeholder="Motivo"
+                                    required></textarea>
+
+                                <div class="d-flex justify-content-end mt-2">
+                                    <button type="button" class="btn btn-primary"
+                                        id="denyButtonForm">Actualizar</button>
+                                </div>
                         </form>
                     </div>
                 </div>
@@ -470,6 +498,19 @@
 
 
 @section('styles')
+
+    <link rel="stylesheet" href="{{ asset('assets/vendors/fontawesome/all.min.css') }}">
+    <style>
+        table.dataTable td {
+            padding: 15px 8px;
+        }
+
+        .fontawesome-icons .the-icon svg {
+            font-size: 24px;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />x1
+
     <style>
         .tarjetaRh1 {
             border: 0px solid rgb(243, 243, 243);
@@ -594,7 +635,30 @@
 @stop
 
 @section('scripts')
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#select2').select2();
+        });
+    </script>
+
+    <script>
+        function viewFileDeny(file) {
+            // Reemplazar las barras invertidas con barras normales
+            const correctedFile = file.replace(/\\/g, '/');
+
+            // Obtener la URL base
+            const baseUrl = window.location.origin;
+
+            // Crear la URL completa del archivo
+            const fileUrl = baseUrl + '/' + correctedFile;
+
+            // Abrir el archivo en una nueva pestaña
+            window.open(fileUrl, '_blank');
+        }
+
         //Poner por defecto la tarjeta 1 activa
         document.getElementById('tarjeta1').classList.add('tarjetaRh1-activa');
 
@@ -801,10 +865,69 @@
                 const request_type = this.getAttribute('data-request_type');
                 const specific_type = this.getAttribute('data-specific_type');
                 const days_absent = this.getAttribute('data-days_absent');
-                const method_of_payment = this.getAttribute('data-method_of_payment');
-                const time = this.getAttribute('data-time');
+                const method_of_payment = (request_type === 'Vacaciones' || request_type === 'vacaciones') ?
+                    'A cuenta de vacaciones' :
+                    request_type === 'Ausencia' ?
+                    'Descontar Tiempo/Día' :
+                    (request_type === 'Paternidad' || request_type === 'Permisos especiales') ?
+                    'Permiso Especial' :
+                    request_type === 'Incapacidad' ?
+                    'Pago del IMSS' :
+                    'Sin especificar';
                 const reveal_id = this.getAttribute('data-reveal_id');
                 const file = this.getAttribute('data-file');
+
+                if (file !== 'No hay justificante') {
+                    const baseUrl = window.location.origin;
+                    const viewFile = baseUrl + '/' + file;
+                    // Crea la etiqueta <a> y establece su href dinámicamente
+                    const link = document.createElement('a');
+                    link.id = 'file';
+                    link.href = viewFile;
+                    link.target = '_blank';
+                    link.textContent = 'Ver archivo';
+                    // Agrega el enlace al div
+                    document.getElementById('viewFile').innerHTML = '';
+                    document.getElementById('viewFile').appendChild(link);
+                } else {
+                    // Crea la etiqueta <span> con el texto "No hay justificante"
+                    const span = document.createElement('span');
+                    span.textContent = 'No hay justificante';
+                    // Agrega el span al div
+                    document.getElementById('viewFile').innerHTML = '';
+                    document.getElementById('viewFile').appendChild(span);
+                }
+
+                const timeText = this.getAttribute('data-timeArray');
+                const dataStart = this.getAttribute('data-start');
+                const dataEnd = this.getAttribute('data-end');
+
+                /* Para Ausencia */
+                const valueType = this.getAttribute('data-value-type');
+                const tipoDeAusencia = this.getAttribute('data-tipo-de-ausencia');
+
+                /* Para permisos especiales */
+                const typePermisoEspecial = this.getAttribute('data-tipo-permiso-especial');
+
+                var timeStatusDiv = document.getElementById('timeStatus');
+                if (timeText === 'true') {
+                    var startValue = dataStar;
+                    var endValue = dataEnd;
+
+                    if (request_type === 'Ausencia' && valueType === 'salida_durante' || request_type ===
+                        'Permisos especiales' && typePermisoEspecial === 'Motivos académicos/escolares') {
+                        timeStatusDiv.innerHTML =
+                            '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
+                            'Hora de regreso: <strong>' + endValue + '</strong></span>';
+                    } else if (request_type === 'Ausencia' && valueType === 'salida_antes') {
+                        timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
+                            '</strong></span> ';
+                    } else {
+                        timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
+                    }
+                } else {
+                    timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
+                }
 
                 const date2 = new Date(current_vacation_expiration);
                 date2.setDate(date2.getDate() + 1);
@@ -814,9 +937,6 @@
                     day: 'numeric'
                 };
                 const formattedDate2 = date2.toLocaleDateString('es-ES', options2);
-
-
-
                 const date3 = new Date(expiration_of_next_vacation);
                 date3.setDate(date3.getDate() + 1);
                 const options3 = {
@@ -834,7 +954,6 @@
                 document.getElementById('modalCurrentVacationExpiration').textContent = formattedDate2;
                 document.getElementById('modalNextVaca').textContent = next_vacation || 'No hay vacaciones';
 
-                const modalNextVacationExpiration = document.getElementById('modalNextVacation');
                 const secondaryPeriodo = document.getElementById('secondaryPeriodo');
 
                 if (modalNextVaca.textContent === 'No hay vacaciones') {
@@ -879,13 +998,20 @@
                     modalRhStatus.textContent = 'Desconocido';
                     modalRhStatus.className = 'badge bg-secondary';
                 }
+
+                if (request_type === 'Ausencia') {
+                    document.getElementById('modalSpecificType').textContent = tipoDeAusencia;
+                } else if (request_type === 'Permisos especiales') {
+                    document.getElementById('modalSpecificType').textContent =
+                        typePermisoEspecial;
+                } else {
+                    document.getElementById('modalSpecificType').textContent = 'Sin especificar';
+                }
+
                 document.getElementById('modalRequestType').textContent = request_type;
-                document.getElementById('modalSpecificType').textContent = specific_type;
                 document.getElementById('modalDaysAbsent').textContent = days_absent;
                 document.getElementById('modalMethodOfPayment').textContent = method_of_payment;
-                document.getElementById('modalTime').textContent = time;
                 document.getElementById('modalRevealId').textContent = reveal_id;
-                document.getElementById('modalFile').textContent = file ? file : 'Sin justificante';
             });
         });
 
@@ -940,10 +1066,69 @@
                 const request_type = this.getAttribute('data-request_type');
                 const specific_type = this.getAttribute('data-specific_type');
                 const days_absent = this.getAttribute('data-days_absent');
-                const method_of_payment = this.getAttribute('data-method_of_payment');
-                const time = this.getAttribute('data-time');
+                const method_of_payment = (request_type === 'Vacaciones' || request_type === 'vacaciones') ?
+                    'A cuenta de vacaciones' :
+                    request_type === 'Ausencia' ?
+                    'Descontar Tiempo/Día' :
+                    (request_type === 'Paternidad' || request_type === 'Permisos especiales') ?
+                    'Permiso Especial' :
+                    request_type === 'Incapacidad' ?
+                    'Pago del IMSS' :
+                    'Sin especificar';
                 const reveal_id = this.getAttribute('data-reveal_id');
                 const file = this.getAttribute('data-file');
+
+                if (file !== 'No hay justificante') {
+                    const baseUrl = window.location.origin;
+                    const viewFile = baseUrl + '/' + file;
+                    // Crea la etiqueta <a> y establece su href dinámicamente
+                    const link = document.createElement('a');
+                    link.id = 'file';
+                    link.href = viewFile;
+                    link.target = '_blank';
+                    link.textContent = 'Ver archivo';
+                    // Agrega el enlace al div
+                    document.getElementById('viewFile').innerHTML = '';
+                    document.getElementById('viewFile').appendChild(link);
+                } else {
+                    // Crea la etiqueta <span> con el texto "No hay justificante"
+                    const span = document.createElement('span');
+                    span.textContent = 'No hay justificante';
+                    // Agrega el span al div
+                    document.getElementById('viewFile').innerHTML = '';
+                    document.getElementById('viewFile').appendChild(span);
+                }
+
+                const timeText = this.getAttribute('data-timeArray');
+                const dataStart = this.getAttribute('data-start');
+                const dataEnd = this.getAttribute('data-end');
+
+                /* Para Ausencia */
+                const valueType = this.getAttribute('data-value-type');
+                const tipoDeAusencia = this.getAttribute('data-tipo-de-ausencia');
+
+                /* Para permisos especiales */
+                const typePermisoEspecial = this.getAttribute('data-tipo-permiso-especial');
+
+                var timeStatusDiv = document.getElementById('timeStatus');
+                if (timeText === 'true') {
+                    var startValue = dataStar;
+                    var endValue = dataEnd;
+
+                    if (request_type === 'Ausencia' && valueType === 'salida_durante' || request_type ===
+                        'Permisos especiales' && typePermisoEspecial === 'Motivos académicos/escolares') {
+                        timeStatusDiv.innerHTML =
+                            '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
+                            'Hora de regreso: <strong>' + endValue + '</strong></span>';
+                    } else if (request_type === 'Ausencia' && valueType === 'salida_antes') {
+                        timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
+                            '</strong></span> ';
+                    } else {
+                        timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
+                    }
+                } else {
+                    timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
+                }
 
 
                 /*Habilitar el boton de rechazar */
@@ -972,7 +1157,6 @@
                 document.getElementById('modalCurrentVacationExpiration').textContent = formattedDate2;
                 document.getElementById('modalNextVaca').textContent = next_vacation || 'No hay vacaciones';
 
-                const modalNextVacationExpiration = document.getElementById('modalNextVacation');
                 const secondaryPeriodo = document.getElementById('secondaryPeriodo');
 
                 if (modalNextVaca.textContent === 'No hay vacaciones') {
@@ -1016,13 +1200,21 @@
                     modalRhStatus.textContent = 'Desconocido';
                     modalRhStatus.className = 'badge bg-secondary';
                 }
+
+                /*Tipo Especifico*/
+                if (request_type === 'Ausencia') {
+                    document.getElementById('modalSpecificType').textContent = tipoDeAusencia;
+                } else if (request_type === 'Permisos especiales') {
+                    document.getElementById('modalSpecificType').textContent =
+                        typePermisoEspecial;
+                } else {
+                    document.getElementById('modalSpecificType').textContent = 'Sin especificar';
+                }
+
                 document.getElementById('modalRequestType').textContent = request_type;
-                document.getElementById('modalSpecificType').textContent = specific_type;
                 document.getElementById('modalDaysAbsent').textContent = days_absent;
                 document.getElementById('modalMethodOfPayment').textContent = method_of_payment;
-                document.getElementById('modalTime').textContent = time;
                 document.getElementById('modalRevealId').textContent = reveal_id;
-                document.getElementById('modalFile').textContent = file ? file : 'Sin justificante';
             });
         });
 

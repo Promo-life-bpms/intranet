@@ -108,8 +108,15 @@
                                             data-request_type="{{ $infoSoli['request_type'] }}"
                                             data-specific_type="{{ $infoSoli['specific_type'] }}"
                                             data-days_absent="{{ implode(',', $infoSoli['days_absent']) }}"
-                                            data-method_of_payment="{{ $infoSoli['method_of_payment'] }}"
-                                            {{-- data-time="{{ $infoSoli['time'] }}" --}} data-reveal_id="{{ $infoSoli['reveal_id'] }}"
+                                            data-timeArray="{{ is_Array($infoSoli['time']) ? 'true' : 'false' }}"
+                                            data-start="{{ $infoSoli['time'] ? $infoSoli['time'][0]['start'] : '12:00' }}"
+                                            data-end="{{ $infoSoli['time'] ? $infoSoli['time'][0]['end'] : '12:00' }}"
+                                            {{-- Para Ausencia --}}
+                                            data-value-type="{{ is_array($infoSoli['more_information']) && count($infoSoli['more_information']) > 0 && isset($infoSoli['more_information'][0]['value_type']) ? $infoSoli['more_information'][0]['value_type'] : '0' }}"
+                                            data-tipo-de-ausencia="{{ is_array($infoSoli['more_information']) && isset($infoSoli['more_information'][0]['Tipo_de_ausencia']) ? $infoSoli['more_information'][0]['Tipo_de_ausencia'] : '-' }}"
+                                            {{-- Para permisos especiales --}}
+                                            data-tipo-permiso-especial="{{ is_array($infoSoli['more_information']) && count($infoSoli['more_information']) > 0 && isset($infoSoli['more_information'][0]['Tipo_de_permiso_especial']) ? $infoSoli['more_information'][0]['Tipo_de_permiso_especial'] : '-' }}"
+                                            data-reveal_id="{{ $infoSoli['reveal_id'] }}"
                                             data-file="{{ $infoSoli['file'] }}"> Ver y
                                             autorizar</button>
                                     @else
@@ -125,8 +132,15 @@
                                             data-request_type="{{ $infoSoli['request_type'] }}"
                                             data-specific_type="{{ $infoSoli['specific_type'] }}"
                                             data-days_absent="{{ implode(',', $infoSoli['days_absent']) }}"
-                                            data-method_of_payment="{{ $infoSoli['method_of_payment'] }}"
-                                            {{-- data-time="{{ $infoSoli['time'] }}" --}} data-reveal_id="{{ $infoSoli['reveal_id'] }}"
+                                            data-timeArray="{{ is_Array($infoSoli['time']) ? 'true' : 'false' }}"
+                                            data-start="{{ $infoSoli['time'] ? $infoSoli['time'][0]['start'] : '12:00' }}"
+                                            data-end="{{ $infoSoli['time'] ? $infoSoli['time'][0]['end'] : '12:00' }}"
+                                            {{-- Para Ausencia --}}
+                                            data-value-type="{{ is_array($infoSoli['more_information']) && count($infoSoli['more_information']) > 0 && isset($infoSoli['more_information'][0]['value_type']) ? $infoSoli['more_information'][0]['value_type'] : '0' }}"
+                                            data-tipo-de-ausencia="{{ is_array($infoSoli['more_information']) && isset($infoSoli['more_information'][0]['Tipo_de_ausencia']) ? $infoSoli['more_information'][0]['Tipo_de_ausencia'] : '-' }}"
+                                            {{-- Para permisos especiales --}}
+                                            data-tipo-permiso-especial="{{ is_array($infoSoli['more_information']) && count($infoSoli['more_information']) > 0 && isset($infoSoli['more_information'][0]['Tipo_de_permiso_especial']) ? $infoSoli['more_information'][0]['Tipo_de_permiso_especial'] : '-' }}"
+                                            data-reveal_id="{{ $infoSoli['reveal_id'] }}"
                                             data-file="{{ $infoSoli['file'] }}"> Ver
                                         </button>
                                     @endif
@@ -233,7 +247,7 @@
                                     </div>
 
                                     <div class="mt-2">
-                                        <strong>Justificantes: </strong>
+                                        <strong>Justificante: </strong>
                                     </div>
                                 </div>
 
@@ -252,16 +266,16 @@
                                         <span id="modalMethodOfPayment"></span>
                                     </div>
 
-                                    <div class="mt-2">
-                                        <span id="modalTime"></span>
+                                    <div class="mt-2" id="timeStatus">
+                                        <span>Tiempo completo</span>
                                     </div>
 
                                     <div class="mt-2">
                                         <span id="modalRevealId"></span>
                                     </div>
 
-                                    <div class="mt-2">
-                                        <span id="modalFile"></span>
+                                    <div class="mt-2" id="viewFile">
+                                        {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
                                     </div>
                                 </div>
                             </div>
@@ -403,10 +417,70 @@
                 const request_type = this.getAttribute('data-request_type');
                 const specific_type = this.getAttribute('data-specific_type');
                 const days_absent = this.getAttribute('data-days_absent');
-                const method_of_payment = this.getAttribute('data-method_of_payment');
+                const method_of_payment = (request_type === 'Vacaciones' || request_type === 'vacaciones') ?
+                    'A cuenta de vacaciones' :
+                    request_type === 'Ausencia' ?
+                    'Descontar Tiempo/Día' :
+                    (request_type === 'Paternidad' || request_type === 'Permisos especiales') ?
+                    'Permiso Especial' :
+                    request_type === 'Incapacidad' ?
+                    'Pago del IMSS' :
+                    'Sin especificar';
                 const time = this.getAttribute('data-time');
                 const reveal_id = this.getAttribute('data-reveal_id');
                 const file = this.getAttribute('data-file');
+
+                if (file !== 'No hay justificante') {
+                    const baseUrl = window.location.origin;
+                    const viewFile = baseUrl + '/' + file;
+                    // Crea la etiqueta <a> y establece su href dinámicamente
+                    const link = document.createElement('a');
+                    link.id = 'file';
+                    link.href = viewFile;
+                    link.target = '_blank';
+                    link.textContent = 'Ver archivo';
+                    // Agrega el enlace al div
+                    document.getElementById('viewFile').innerHTML = '';
+                    document.getElementById('viewFile').appendChild(link);
+                } else {
+                    // Crea la etiqueta <span> con el texto "No hay justificante"
+                    const span = document.createElement('span');
+                    span.textContent = 'No hay justificante';
+                    // Agrega el span al div
+                    document.getElementById('viewFile').innerHTML = '';
+                    document.getElementById('viewFile').appendChild(span);
+                }
+
+                const timeText = this.getAttribute('data-timeArray')
+                const dataStar = this.getAttribute('data-start'); // Obtener la hora de salida
+                const dataEnd = this.getAttribute('data-end'); // Obtener la hora de regreso
+                /*Para Ausencia*/
+                const valueType = this.getAttribute('data-value-type');
+                const tipoDeAusencia = this.getAttribute('data-tipo-de-ausencia');
+
+                /*Para permisos especiales*/
+                const typePermisoEspecial = this.getAttribute('data-tipo-permiso-especial');
+
+                var timeStatusDiv = document.getElementById('timeStatus');
+                if (timeText === 'true') {
+                    var startValue = dataStar;
+                    var endValue = dataEnd;
+
+                    if (request_type === 'Ausencia' && valueType === 'salida_durante' || request_type ===
+                        'Permisos especiales' && typePermisoEspecial === 'Motivos académicos/escolares') {
+                        timeStatusDiv.innerHTML =
+                            '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
+                            'Hora de regreso: <strong>' + endValue + '</strong></span>';
+                    } else if (request_type === 'Ausencia' && valueType === 'salida_antes') {
+                        timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
+                            '</strong></span> ';
+                    } else {
+                        timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
+                    }
+
+                } else {
+                    timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
+                }
 
                 if (direct_manager_status === 'Pendiente') {
                     document.getElementById('buttonModifi').style.display = 'flex';
@@ -465,6 +539,9 @@
                 } else if (direct_manager_status === 'Rechazada') {
                     modalDirectManagerStatus.textContent = 'Rechazada';
                     modalDirectManagerStatus.className = 'badge bg-danger';
+                } else if (direct_manager_status === 'Cancelada por el usuario') {
+                    modalDirectManagerStatus.textContent = 'Cancelada por el usuario';
+                    modalDirectManagerStatus.className = 'badge bg-danger';
                 } else {
                     modalDirectManagerStatus.textContent = 'Desconocido';
                     modalDirectManagerStatus.className = 'badge bg-secondary';
@@ -482,17 +559,26 @@
                 } else if (rh_status === 'Rechazada') {
                     modalRhStatus.textContent = 'Rechazada';
                     modalRhStatus.className = 'badge bg-danger';
+                } else if (direct_manager_status === 'Cancelada por el usuario') {
+                    modalRhStatus.textContent = 'Cancelada por el usuario';
+                    modalRhStatus.className = 'badge bg-danger';
                 } else {
                     modalRhStatus.textContent = 'Desconocido';
                     modalRhStatus.className = 'badge bg-secondary';
                 }
+                /*Tipo Especifico*/
+                if (request_type === 'Ausencia') {
+                    document.getElementById('modalSpecificType').textContent = tipoDeAusencia;
+                } else if (request_type === 'Permisos especiales') {
+                    document.getElementById('modalSpecificType').textContent =
+                        typePermisoEspecial;
+                } else {
+                    document.getElementById('modalSpecificType').textContent = 'Sin especificar';
+                }
                 document.getElementById('modalRequestType').textContent = request_type;
-                document.getElementById('modalSpecificType').textContent = specific_type;
                 document.getElementById('modalDaysAbsent').textContent = days_absent;
                 document.getElementById('modalMethodOfPayment').textContent = method_of_payment;
-                document.getElementById('modalTime').textContent = time;
                 document.getElementById('modalRevealId').textContent = reveal_id;
-                document.getElementById('modalFile').textContent = file ? file : 'Sin justificante';
             });
         });
 
