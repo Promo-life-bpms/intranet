@@ -441,9 +441,8 @@
                             aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="denyFormRequest" action="reject/leave/by/human/resources" method="POST">
+                        <form action="make/up/vacations" method="POST">
                             @csrf
-
                             <div class="row">
                                 <div class="col-12 mb-3">
                                     <span>Selecciona Usuarios:</span>
@@ -455,12 +454,13 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-6">
-                                    <span>Días a reponer: </span>
-                                    <input type="number" class="form-control" placeholder="Días a reponer">
+                                <div class="col-4">
+                                    <span>Días: </span>
+                                    <input name='days' id="days" type="number" class="form-control"
+                                        placeholder="Días a reponer">
                                 </div>
 
-                                <div class="col-6">
+                                <div class="col-4">
                                     <div class="mr-4 mb-3">
                                         <span>Selecciona tu periodo: </span>
                                         <div class="form-check">
@@ -480,12 +480,31 @@
                                     </div>
                                 </div>
 
+                                <div class="col-4">
+                                    <div class="mr-4 mb-3">
+                                        <span>Opción: </span>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="Opcion"
+                                                id="aumentar_dias" value="aumentar_dias">
+                                            <label class="form-check-label" for="aumentar_dias">
+                                                Aumentar
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="Opcion"
+                                                id="descontar_dias" value="descontar_dias">
+                                            <label class="form-check-label" for="descontar_dias">
+                                                Descontar
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <textarea style="min-width: 100%" class="form-control mt-2" id="commentary" name="commentary" placeholder="Motivo"
                                     required></textarea>
 
                                 <div class="d-flex justify-content-end mt-2">
-                                    <button type="button" class="btn btn-primary"
-                                        id="denyButtonForm">Actualizar</button>
+                                    <button class="btn btn-primary" type="submit">Actualizar</button>
                                 </div>
                         </form>
                     </div>
@@ -1231,19 +1250,6 @@
             form.submit();
         });
 
-        document.getElementById('denyButtonForm').addEventListener('click', function() {
-            const form = document.getElementById('denyFormRequest');
-            /*Mandar el ID de la solicitus que se va a aprobar del que viene en el modal*/
-            const id = document.getElementById('modalId').textContent;
-            const inputId = document.createElement('input');
-            inputId.type = 'hidden';
-            inputId.name = 'id';
-            inputId.value = id;
-            form.appendChild(inputId);
-
-            // Imprimir todos los datos que se enviarán por consola
-            form.submit();
-        });
 
         document.getElementById('denyRequest').addEventListener('click', function() {
             $('#modalDetails').modal('hide');

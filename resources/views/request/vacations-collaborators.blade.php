@@ -994,7 +994,7 @@
                                 academicos.classList.add('d-none');
                                 persona_afectada.classList.add('d-none');
                                 document.getElementById('textDinamicCalendar').innerHTML = `
-                            <span style="color: red;">Tienes derecho a 3 días al año, NO puedes ser consecutivos.</span>
+                            <span style="color: red;">Tienes derecho a 3 días al año, no pueden ser consecutivos.</span>
                         `;
                                 break;
                             default:
@@ -1674,7 +1674,6 @@
                 <input type="text" class="form-control mt-1 d-none" value="1" id="request_type_id" name="request_type_id">
             `;
 
-
             $('#modaTarjetas').modal({
                 backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
                 keyboard: false // Desactiva el cierre con la tecla "Esc"
@@ -2052,7 +2051,7 @@
                         academicos.classList.add('d-none');
                         persona_afectada.classList.add('d-none');
                         document.getElementById('textDinamicCalendar').innerHTML = `
-                            <span style="color: red;">Tienes derecho a 3 días al año, NO puedes ser consecutivos.</span>
+                            <span style="color: red;">Tienes derecho a 3 días al año, no pueden ser consecutivos.</span>
                         `;
                         break;
                     default:

@@ -296,11 +296,11 @@ class RequestController extends Controller
         //dd($requestDays);
         $ids = User::where('status', 1)->pluck('id');
         $requests = ModelsRequest::whereIn('employee_id', $ids)->where('direct_manager_status', 'Aprobada')
-                                            ->where('human_resources_status', 'Aprobada')->orderBy('created_at', 'desc')->get();
+            ->where('human_resources_status', 'Aprobada')->orderBy('created_at', 'desc')->get();
 
         return view('request.reports', compact('requests', 'requestDays', 'vacations'));
     }
-    
+
     //Vista de excel a exportar
     public function exportAll()
     {

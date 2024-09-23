@@ -163,7 +163,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('update/vacation/or/leave/request', [VacationRequestController::class, 'UpdatePurchase'])->name('update.vacation.or.leave.request');
     Route::get('prueba/info', [VacationRequestController::class, 'CreateVacationRequest']);
     Route::post('create/request/type', [RequestTypeController::class, 'store'])->name('create.request.type');
-    Route::post('make/up/vacations', [VacationRequestController::class, 'MakeUpVacations'])->name('make.up.vacations');
+    Route::post('request/make/up/vacations', [VacationRequestController::class, 'MakeUpVacations'])->name('make.up.vacations');
 
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);

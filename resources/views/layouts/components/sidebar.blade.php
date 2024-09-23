@@ -235,15 +235,15 @@
                 </li>
 
                 @if (!auth()->user()->hasRole('becario'))
-                    <li class="sidebar-item {{ request()->is('reservation.creative') ? 'active' : '' }}">
+                    {{-- <li class="sidebar-item {{ request()->is('reservation.creative') ? 'active' : '' }}">
                         <a href="{{ route('request.index') }}" class='sidebar-link'>
                             <i class="fa fa-pencil-square" aria-hidden="true"></i>
                             <span>Permisos y Vacaciones</span>
                         </a>
-                    </li>
+                    </li> --}}
 
 
-                    {{-- <li class="sidebar-item  has-sub {{ request()->is('request') ? 'active' : '' }}">
+                    <li class="sidebar-item  has-sub {{ request()->is('request') ? 'active' : '' }}">
                         <a href="{{ route('request.index') }}" class='sidebar-link'>
                             <i class="fa fa-pencil-square" aria-hidden="true"></i>
                             <span>Permisos y Vacaciones</span>
@@ -271,7 +271,7 @@
                                 </li>
                             @endif
                         </ul>
-                    </li> --}}
+                    </li>
                 @endif
                 <li class="sidebar-item {{ request()->is('directories') ? 'active' : '' }}">
                     <a href="{{ route('directories.index') }}" class='sidebar-link'>
