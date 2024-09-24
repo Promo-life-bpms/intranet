@@ -89,7 +89,7 @@ class VacationRequestController extends Controller
             $solicitud->file = $vacacion->file == null ? 'No hay justificante' : $vacacion->file;
             $solicitud->commentary = $vacacion->commentary == null ? 'No hay un comentario' : $vacacion->commentary;
             $solicitud->days = $dias;
-            $solicitud->time = in_array($vacacion->request_type_id, [1, 3, 4]) ? null : $time;
+            $solicitud->request_type_id = $vacacion->request_type_id == 2 ? $time : null;
             $solicitud->more_information = $vacacion->more_information == null ? null : json_decode($vacacion->more_information, true);
             $solicitudes[] = $solicitud;
         }
@@ -124,7 +124,7 @@ class VacationRequestController extends Controller
             $totalvacaciones = $Datos[0]['days_availables'] + $Datos[1]['days_availables'];
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'] + $Datos[1]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
-            $porcentajetomadas = round($porcentajetomadas, 2);
+            $porcentajetomadas = round($porcentajetomadas);
             $fecha_expiracion_actual = $Datos[0]['cutoff_date'];
             $vacaciones_actuales = $Datos[0]['dv'];
             $fecha_expiracion_entrante = $Datos[1]['cutoff_date'];
@@ -1247,7 +1247,7 @@ class VacationRequestController extends Controller
                 'method_of_payment' => $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro')))),
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file == null ? null : $Solicitud->file,
-                'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
+                'time' => $Solicitud->request_type_id == 2 ? $time : null,
                 'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
         }
@@ -1318,7 +1318,7 @@ class VacationRequestController extends Controller
                 'method_of_payment' => $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro')))),
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file == null ? null : $Solicitud->file,
-                'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
+                'time' => $Solicitud->request_type_id == 2 ? $time : null,
                 'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
         }
@@ -1388,7 +1388,7 @@ class VacationRequestController extends Controller
                 'method_of_payment' => $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro')))),
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file ?? null,
-                'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
+                'time' => $Solicitud->request_type_id == 2 ? $time : null,
                 'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
         }
@@ -1457,7 +1457,7 @@ class VacationRequestController extends Controller
                 'method_of_payment' => $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro')))),
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file ?? null,
-                'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
+                'time' => $Solicitud->request_type_id == 2 ? $time : null,
                 'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
         }
