@@ -50,24 +50,18 @@ class VacationRequestController extends Controller
         }
 
         $vacaciones = DB::table('vacation_requests')->where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate(5);
-
-        $solicitudes = [];
-        foreach ($vacaciones as $vacacion) {
+        $solicitudes = $vacaciones->map(function ($vacacion) {
             $nameResponsable = User::where('id', $vacacion->reveal_id)->first();
             $nameManager = User::where('id', $vacacion->direct_manager_id)->first();
             $typeRequest = RequestType::where('id', $vacacion->request_type_id)->value('type');
             $Days = VacationDays::where('vacation_request_id', $vacacion->id)->get();
             $dias = [];
-
             foreach ($Days as $Day) {
                 $dias[] = $Day->day;
             }
-
-            // Ordenar las fechas de la más cercana a la más lejana
             usort($dias, function ($a, $b) {
                 return strtotime($a) - strtotime($b);
             });
-
             $time = [];
             foreach ($Days as $Day) {
                 $time[] = [
@@ -75,7 +69,6 @@ class VacationRequestController extends Controller
                     'end' => Carbon::parse($Day->end)->format('H:i')
                 ];
             }
-
             // Crear un objeto en lugar de un array
             $solicitud = new \stdClass();
             $solicitud->id_request = $vacacion->id;
@@ -89,10 +82,10 @@ class VacationRequestController extends Controller
             $solicitud->file = $vacacion->file == null ? 'No hay justificante' : $vacacion->file;
             $solicitud->commentary = $vacacion->commentary == null ? 'No hay un comentario' : $vacacion->commentary;
             $solicitud->days = $dias;
-            $solicitud->time = in_array($vacacion->request_type_id, [1, 3, 4]) ? null : $time;
+            $solicitud->time = in_array($vacacion->request_type_id, [2]) ? $time : null;
             $solicitud->more_information = $vacacion->more_information == null ? null : json_decode($vacacion->more_information, true);
-            $solicitudes[] = $solicitud;
-        }
+            return $solicitud;
+        });
 
         //dd($solicitudes);
         $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
@@ -124,7 +117,7 @@ class VacationRequestController extends Controller
             $totalvacaciones = $Datos[0]['days_availables'] + $Datos[1]['days_availables'];
             $totalvacaionestomadas = $Datos[0]['days_enjoyed'] + $Datos[1]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
-            $porcentajetomadas = round($porcentajetomadas, 2);
+            $porcentajetomadas = round($porcentajetomadas);
             $fecha_expiracion_actual = $Datos[0]['cutoff_date'];
             $vacaciones_actuales = $Datos[0]['dv'];
             $fecha_expiracion_entrante = $Datos[1]['cutoff_date'];
@@ -204,13 +197,12 @@ class VacationRequestController extends Controller
         }
 
         $porcentajeespecial = round(($contadorAsuntosPersonales / 3) * 100);
-        
-        return view('request.vacations-collaborators', compact('users', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar', 'porcentajeespecial'));
+
+        return view('request.vacations-collaborators', compact('users', 'vacaciones', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar', 'porcentajeespecial'));
     }
 
     public function CreatePurchase(Request $request)
     {
-
         $user = auth()->user();
 
         ///VACACIONES
@@ -669,6 +661,67 @@ class VacationRequestController extends Controller
                 return back()->with('error', 'Debes ingresar el día en que saldrás temprano de la jornada.');
             }
 
+            if ($request->ausenciaTipo == 'retardo') {
+                if ($dias > 1) {
+                    return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
+                }
+
+                $hora8AM = Carbon::today()->setHour(8)->setMinute(15);
+                $totalMinutos = $hora8AM->hour * 60 + $hora8AM->minute;
+
+                $retardo = $request->hora_regreso;
+                $Retardo = Carbon::parse($retardo);
+                $totalMinutosRetardo = $Retardo->hour * 60 + $Retardo->minute;
+
+                if ($totalMinutosRetardo > $totalMinutos) {
+                    return back()->with('error', 'La hora del retardo no puede ser después de las 8:15 AM.');
+                }
+
+                $currentMonth = now()->format('Y-m');
+                $firstDayOfMonth = now()->startOfMonth();
+                $today = now(); // Día actual
+
+                // Contar solicitudes de retardo
+                $retardoCount = DB::table('vacation_requests')
+                    ->where('user_id', $user->id)
+                    ->where('request_type_id', 2)
+                    ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereBetween('created_at', [$firstDayOfMonth, $today])
+                    ->whereJsonContains('more_information', ['Tipo_de_ausencia' => 'Retardo'])
+                    ->count();
+
+                if ($retardoCount >= 3) {
+                    return back()->with('error', 'Solo tienes derecho a tres retardos al mes');
+                }
+
+                $more_information[] = [
+                    'Tipo_de_ausencia' => $request->ausenciaTipo == 'retardo' ? 'Retardo' : 'No encontro el valor',
+                    'value_type' => $request->ausenciaTipo,
+                ];
+                $moreinformation = json_encode($more_information);
+                $Vacaciones = VacationRequest::create([
+                    'user_id' => $user->id,
+                    'request_type_id' => 2,
+                    'file' => $path,
+                    'details' => $request->details,
+                    'more_information' => $moreinformation,
+                    'reveal_id' => $request->reveal_id,
+                    'direct_manager_id' => $jefedirecto,
+                    'direct_manager_status' => 'Pendiente',
+                    'rh_status' => 'Pendiente'
+                ]);
+
+                foreach ($datesArray as $dia) {
+                    VacationDays::create([
+                        'day' => $dia,
+                        'end' => $retardo,
+                        'vacation_request_id' => $Vacaciones->id,
+                        'status' => 0,
+                    ]);
+                }
+                return back()->with('message', 'Solicitud creada exitosamente.');
+            }
             if ($request->ausenciaTipo == 'salida_antes') {
 
                 if ($dias > 1) {
@@ -799,6 +852,14 @@ class VacationRequestController extends Controller
             $dates = $request->dates;
             $datesArray = json_decode($dates, true);
             $dias = count($datesArray);
+
+            if ($dias > 5) {
+                return back()->with('error', 'Solo puedes tomar cinco días.');
+            }
+
+            if ($dias < 5) {
+                return back()->with('error', 'Debes ingresar los cinco días.');
+            }
 
             ///VACACIONES PENDIENTES O APROBADAS///
             $vacaciones = DB::table('vacation_requests')
@@ -1190,8 +1251,8 @@ class VacationRequestController extends Controller
         $HeIsBossOf = Employee::where('jefe_directo_id', $user->id)->where('status', 1)->pluck('user_id');
         $Solicitudes = DB::table('vacation_requests')->whereIn('user_id', $HeIsBossOf)->orderBy('created_at', 'desc')->paginate(5);
         $SumaSolicitudes = $Solicitudes->total();
-        $InfoSolicitud = [];
-        foreach ($Solicitudes as $Solicitud) {
+        // Recorre las solicitudes paginadas, pero no crees un nuevo array desde cero
+        $Solicitudes->getCollection()->transform(function ($Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
             $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
             $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
@@ -1230,7 +1291,7 @@ class VacationRequestController extends Controller
                 ];
             }
 
-            $InfoSolicitud[] = [
+            return (object)[
                 'image' => $nameUser->image,
                 'created_at' => $Solicitud->created_at,
                 'id' => $Solicitud->id,
@@ -1247,13 +1308,12 @@ class VacationRequestController extends Controller
                 'method_of_payment' => $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro')))),
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file == null ? null : $Solicitud->file,
-                'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
+                'time' => in_array($Solicitud->request_type_id, [2]) ? $time : null,
                 'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
-        }
+        });
 
-        $InfoSolicitudesUsuario = json_encode($InfoSolicitud);
-        return view('request.authorize', compact('InfoSolicitud', 'InfoSolicitudesUsuario', 'SumaSolicitudes'));
+        return view('request.authorize', compact('Solicitudes', 'SumaSolicitudes'));
     }
 
     public function authorizeRequestRH()
@@ -1318,7 +1378,7 @@ class VacationRequestController extends Controller
                 'method_of_payment' => $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro')))),
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file == null ? null : $Solicitud->file,
-                'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
+                'time' => in_array($Solicitud->request_type_id, [2]) ? $time : null,
                 'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
         }
@@ -1388,7 +1448,7 @@ class VacationRequestController extends Controller
                 'method_of_payment' => $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro')))),
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file ?? null,
-                'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
+                'time' => in_array($Solicitud->request_type_id, [2]) ? $time : null,
                 'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
         }
@@ -1457,7 +1517,7 @@ class VacationRequestController extends Controller
                 'method_of_payment' => $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro')))),
                 'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
                 'file' => $Solicitud->file ?? null,
-                'time' => in_array($Solicitud->request_type_id, [1, 3, 4]) ? null : $time,
+                'time' => in_array($Solicitud->request_type_id, [2]) ? $time : null,
                 'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
         }
@@ -1482,6 +1542,9 @@ class VacationRequestController extends Controller
                 'description' => $vacacionesUser->description
             ];
         }
+
+        // dd($Pendientes);
+
         return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', 'IdandNameUser', 'vacacionesagregadas'));
     }
 
@@ -1765,38 +1828,6 @@ class VacationRequestController extends Controller
             $dates = json_decode($datesupdate, true);
             $diasTotales = count($dates);
 
-            ///VACACIONES PENDIENTES O APROBADAS///
-            $vacaciones = DB::table('vacation_requests')
-                ->where('user_id', $user->id)
-                ->whereIn('request_type_id', [2, 3, 4, 5])
-                ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
-                ->get();
-
-            $diasVacaciones = [];
-            foreach ($vacaciones as $diasvacaciones) {
-                $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
-                foreach ($Days as $Day) {
-                    $diasVacaciones[] = $Day->day;
-                }
-            }
-            usort($diasVacaciones, function ($a, $b) {
-                return strtotime($a) - strtotime($b);
-            });
-
-            $diasParecidos = [];
-            foreach ($dates as $date) {
-                foreach ($diasVacaciones as $vacationDate) {
-                    if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
-                        $diasParecidos[] = $vacationDate;
-                    }
-                }
-            }
-
-            if (!empty($diasParecidos)) {
-                return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
-            }
-
 
             if ($diasTotales == 0) {
                 return back()->with('error', 'Debes enviar al menos un día de vacaciones.');
@@ -1850,6 +1881,37 @@ class VacationRequestController extends Controller
                 ]);
                 return back()->with('message', 'Se actualizó correctamente tu solicitud.');
             } else {
+                ///VACACIONES PENDIENTES O APROBADAS///
+                $vacaciones = DB::table('vacation_requests')
+                    ->where('user_id', $user->id)
+                    ->whereIn('request_type_id', [2, 3, 4, 5])
+                    ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->get();
+
+                $diasVacaciones = [];
+                foreach ($vacaciones as $diasvacaciones) {
+                    $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
+                    foreach ($Days as $Day) {
+                        $diasVacaciones[] = $Day->day;
+                    }
+                }
+                usort($diasVacaciones, function ($a, $b) {
+                    return strtotime($a) - strtotime($b);
+                });
+
+                $diasParecidos = [];
+                foreach ($dates as $date) {
+                    foreach ($diasVacaciones as $vacationDate) {
+                        if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                            $diasParecidos[] = $vacationDate;
+                        }
+                    }
+                }
+
+                if (!empty($diasParecidos)) {
+                    return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                }
 
                 ///VERIFICAR SI LE ALCANZAN LOS DIAS ANTES DE ELIMINAR///
                 if (count($Datos) == 1) {
@@ -2275,38 +2337,6 @@ class VacationRequestController extends Controller
             $dates = json_decode($datesupdate, true);
             $diasTotales = count($dates);
 
-            ///VACACIONES PENDIENTES O APROBADAS///
-            $vacaciones = DB::table('vacation_requests')
-                ->where('user_id', $user->id)
-                ->whereIn('request_type_id', [1, 3, 4, 5])
-                ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
-                ->get();
-
-            $diasVacaciones = [];
-            foreach ($vacaciones as $diasvacaciones) {
-                $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
-                foreach ($Days as $Day) {
-                    $diasVacaciones[] = $Day->day;
-                }
-            }
-            usort($diasVacaciones, function ($a, $b) {
-                return strtotime($a) - strtotime($b);
-            });
-
-            $diasParecidos = [];
-            foreach ($dates as $date) {
-                foreach ($diasVacaciones as $vacationDate) {
-                    if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
-                        $diasParecidos[] = $vacationDate;
-                    }
-                }
-            }
-
-            if (!empty($diasParecidos)) {
-                return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
-            }
-
             if ($diasTotales > 1) {
                 return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
             }
@@ -2314,9 +2344,136 @@ class VacationRequestController extends Controller
             if ($diasTotales == 0) {
                 return back()->with('error', 'Debes ingresar el día en que saldrás temprano de la jornada.');
             }
+            if ($request->ausenciaTipo == 'retardo') {
+                if ($diasTotales > 1) {
+                    return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
+                }
+
+                $hora8AM = Carbon::today()->setHour(8)->setMinute(15);
+                $totalMinutos = $hora8AM->hour * 60 + $hora8AM->minute;
+
+                $retardo = $request->hora_regreso;
+                $Retardo = Carbon::parse($retardo);
+                $totalMinutosRetardo = $Retardo->hour * 60 + $Retardo->minute;
+
+                if ($totalMinutosRetardo > $totalMinutos) {
+                    return back()->with('error', 'La hora del retardo no puede ser después de las 8:15 AM.');
+                }
+
+                $currentMonth = now()->format('Y-m');
+                $firstDayOfMonth = now()->startOfMonth();
+                $today = now(); // Día actual
+
+                // Contar solicitudes de retardo
+                $retardoCount = DB::table('vacation_requests')
+                    ->where('user_id', $user->id)
+                    ->where('request_type_id', 2)
+                    ->whereNotIn('direct_manager_status', ['Pendiente', 'Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('rh_status', ['Pendiente', 'Rechazada', 'Cancelada por el usuario'])
+                    ->whereBetween('created_at', [$firstDayOfMonth, $today])
+                    ->whereJsonContains('more_information', ['Tipo_de_ausencia' => 'Retardo'])
+                    ->count();
+
+                if ($retardoCount >= 3) {
+                    return back()->with('error', 'Solo tienes derecho a tres retardos al mes');
+                }
+
+                // Convertir ambos arrays a conjuntos (sets) para la comparación
+                $diasSet = collect($dias)->unique()->sort()->values();
+                $datesSet = collect($dates)->unique()->sort()->values();
+
+                // Comparar los conjuntos para encontrar diferencias
+                $missingInDias = $datesSet->diff($diasSet);  // Días en $dates pero no en $dias
+                $missingInDates = $diasSet->diff($datesSet); // Días en $dias pero no en $dates
+
+                if ($missingInDias->isEmpty() && $missingInDates->isEmpty()) {
+                    $more_information[] = [
+                        'Tipo_de_ausencia' => $request->ausenciaTipo == 'retardo' ? 'Retardo' : 'No encontro el valor',
+                        'value_type' => $request->ausenciaTipo,
+                    ];
+                    $moreinformation = json_encode($more_information);
+                    DB::table('vacation_requests')->where('id', $request->id)->update([
+                        'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
+                        'details' => $request->details == null ? $Solicitud->details : $request->details,
+                        'file' => $request->archivos == null ? $Solicitud->file : $path,
+                        'more_information' => $moreinformation,
+                    ]);
+                    DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                        'end' => $retardo,
+                        'start' => null,
+                    ]);
+                    return back()->with('message', 'Solicitud creada exitosamente.');
+                } else {
+                    ///VACACIONES PENDIENTES O APROBADAS///
+                    $vacaciones = DB::table('vacation_requests')
+                        ->where('user_id', $user->id)
+                        ->whereIn('request_type_id', [1, 3, 4, 5])
+                        ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->get();
+
+                    $diasVacaciones = [];
+                    foreach ($vacaciones as $diasvacaciones) {
+                        $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
+                        foreach ($Days as $Day) {
+                            $diasVacaciones[] = $Day->day;
+                        }
+                    }
+                    usort($diasVacaciones, function ($a, $b) {
+                        return strtotime($a) - strtotime($b);
+                    });
+
+                    $diasParecidos = [];
+                    foreach ($dates as $date) {
+                        foreach ($diasVacaciones as $vacationDate) {
+                            if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                                $diasParecidos[] = $vacationDate;
+                            }
+                        }
+                    }
+
+                    if (!empty($diasParecidos)) {
+                        return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                    }
+
+                    if (!$missingInDias->isEmpty()) {
+                        ///Dias que no vienen en el arreglo
+                        $more_information[] = [
+                            'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_antes' ? 'Salir antes' : 'No encontro el valor',
+                            'value_type' => $request->ausenciaTipo,
+                        ];
+                        $moreinformation = json_encode($more_information);
+                        DB::table('vacation_requests')->where('id', $request->id)->update([
+                            'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
+                            'details' => $request->details == null ? $Solicitud->details : $request->details,
+                            'file' => $request->archivos == null ? $Solicitud->file : $path,
+                            'more_information' => $moreinformation,
+                        ]);
+                        foreach ($dates as $dia) {
+                            VacationDays::create([
+                                'day' => $dia,
+                                'end' => $retardo,
+                                'vacation_request_id' => $request->id,
+                                'status' => 0,
+                            ]);
+                        }
+                    }
+                    if (!$missingInDates->isEmpty()) {
+                        ///Estos días ya no vienen en el arreglo, por lo tanto se eliminan de la solicitud.
+                        $eliminar = $missingInDates->implode(', ');
+                        $eliminarArray = explode(', ', $eliminar);
+                        foreach ($eliminarArray as $eliminar) {
+                            $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
+                            DB::table('vacation_days')
+                                ->where('id', $idfecha)
+                                ->delete();
+                        }
+                    }
+                    return back()->with('message', 'Solicitud actualizada correctamente.');
+                }
+            }
 
             if ($request->ausenciaTipo == 'salida_antes') {
-
                 $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
                 $start = $request->hora_salida;
 
@@ -2361,6 +2518,38 @@ class VacationRequestController extends Controller
                         'end' => null,
                     ]);
                 } else {
+                    ///VACACIONES PENDIENTES O APROBADAS///
+                    $vacaciones = DB::table('vacation_requests')
+                        ->where('user_id', $user->id)
+                        ->whereIn('request_type_id', [1, 3, 4, 5])
+                        ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->get();
+
+                    $diasVacaciones = [];
+                    foreach ($vacaciones as $diasvacaciones) {
+                        $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
+                        foreach ($Days as $Day) {
+                            $diasVacaciones[] = $Day->day;
+                        }
+                    }
+                    usort($diasVacaciones, function ($a, $b) {
+                        return strtotime($a) - strtotime($b);
+                    });
+
+                    $diasParecidos = [];
+                    foreach ($dates as $date) {
+                        foreach ($diasVacaciones as $vacationDate) {
+                            if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                                $diasParecidos[] = $vacationDate;
+                            }
+                        }
+                    }
+
+                    if (!empty($diasParecidos)) {
+                        return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                    }
+
                     if (!$missingInDias->isEmpty()) {
                         ///Dias que no vienen en el arreglo
                         $more_information[] = [
@@ -2457,6 +2646,38 @@ class VacationRequestController extends Controller
                         return back()->with('error', 'La hora de inicio está fuera del rango permitido.');
                     }
                 } else {
+                    ///VACACIONES PENDIENTES O APROBADAS///
+                    $vacaciones = DB::table('vacation_requests')
+                        ->where('user_id', $user->id)
+                        ->whereIn('request_type_id', [1, 3, 4, 5])
+                        ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->get();
+
+                    $diasVacaciones = [];
+                    foreach ($vacaciones as $diasvacaciones) {
+                        $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
+                        foreach ($Days as $Day) {
+                            $diasVacaciones[] = $Day->day;
+                        }
+                    }
+                    usort($diasVacaciones, function ($a, $b) {
+                        return strtotime($a) - strtotime($b);
+                    });
+
+                    $diasParecidos = [];
+                    foreach ($dates as $date) {
+                        foreach ($diasVacaciones as $vacationDate) {
+                            if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                                $diasParecidos[] = $vacationDate;
+                            }
+                        }
+                    }
+
+                    if (!empty($diasParecidos)) {
+                        return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                    }
+
                     if (!$missingInDias->isEmpty()) {
                         if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora1Carbon) && $hora2Carbon->lessThanOrEqualTo($hora5PM)) {
                             $more_information[] = [
@@ -2512,44 +2733,12 @@ class VacationRequestController extends Controller
             $dates = json_decode($datesupdate, true);
             $diasTotales = count($dates);
 
-            ///VACACIONES PENDIENTES O APROBADAS///
-            $vacaciones = DB::table('vacation_requests')
-                ->where('user_id', $user->id)
-                ->whereIn('request_type_id', [1, 2, 4, 5])
-                ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
-                ->get();
-
-            $diasVacaciones = [];
-            foreach ($vacaciones as $diasvacaciones) {
-                $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
-                foreach ($Days as $Day) {
-                    $diasVacaciones[] = $Day->day;
-                }
-            }
-            usort($diasVacaciones, function ($a, $b) {
-                return strtotime($a) - strtotime($b);
-            });
-
-            $diasParecidos = [];
-            foreach ($dates as $date) {
-                foreach ($diasVacaciones as $vacationDate) {
-                    if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
-                        $diasParecidos[] = $vacationDate;
-                    }
-                }
-            }
-
-            if (!empty($diasParecidos)) {
-                return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
-            }
-
             if ($diasTotales > 5) {
                 return back()->with('error', 'Solo puedes tomar cinco días.');
             }
 
             if ($diasTotales < 5) {
-                return back()->with('message', 'Debes ingresar los cinco días.');
+                return back()->with('error', 'Debes ingresar los cinco días.');
             }
 
             // Convertir ambos arrays a conjuntos (sets) para la comparación
@@ -2568,6 +2757,38 @@ class VacationRequestController extends Controller
                 ]);
                 return back()->with('message', 'Solicitud actualizada correctamente.');
             } else {
+                ///VACACIONES PENDIENTES O APROBADAS///
+                $vacaciones = DB::table('vacation_requests')
+                    ->where('user_id', $user->id)
+                    ->whereIn('request_type_id', [1, 2, 4, 5])
+                    ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->get();
+
+                $diasVacaciones = [];
+                foreach ($vacaciones as $diasvacaciones) {
+                    $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
+                    foreach ($Days as $Day) {
+                        $diasVacaciones[] = $Day->day;
+                    }
+                }
+                usort($diasVacaciones, function ($a, $b) {
+                    return strtotime($a) - strtotime($b);
+                });
+
+                $diasParecidos = [];
+                foreach ($dates as $date) {
+                    foreach ($diasVacaciones as $vacationDate) {
+                        if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                            $diasParecidos[] = $vacationDate;
+                        }
+                    }
+                }
+
+                if (!empty($diasParecidos)) {
+                    return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                }
+
                 if (!$missingInDias->isEmpty()) {
                     $registrar = $missingInDias->implode(', ');
                     $registrarArray = explode(', ', $registrar);
@@ -2596,6 +2817,11 @@ class VacationRequestController extends Controller
                             ->where('id', $idfecha)
                             ->delete();
                     }
+                    DB::table('vacation_requests')->where('id', $request->id)->update([
+                        'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
+                        'details' => $request->details == null ? $Solicitud->details : $request->details,
+                        'file' => $request->archivos == null ? $Solicitud->file : $path,
+                    ]);
                 }
                 return back()->with('message', 'Solicitud actualizada correctamente.');
             }
@@ -2611,38 +2837,6 @@ class VacationRequestController extends Controller
             $datesupdate = $request->dates;
             $dates = json_decode($datesupdate, true);
             $diasTotales = count($dates);
-
-            ///VACACIONES PENDIENTES O APROBADAS///
-            $vacaciones = DB::table('vacation_requests')
-                ->where('user_id', $user->id)
-                ->whereIn('request_type_id', [1, 2, 3, 5])
-                ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
-                ->get();
-
-            $diasVacaciones = [];
-            foreach ($vacaciones as $diasvacaciones) {
-                $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
-                foreach ($Days as $Day) {
-                    $diasVacaciones[] = $Day->day;
-                }
-            }
-            usort($diasVacaciones, function ($a, $b) {
-                return strtotime($a) - strtotime($b);
-            });
-
-            $diasParecidos = [];
-            foreach ($dates as $date) {
-                foreach ($diasVacaciones as $vacationDate) {
-                    if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
-                        $diasParecidos[] = $vacationDate;
-                    }
-                }
-            }
-
-            if (!empty($diasParecidos)) {
-                return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
-            }
 
             if ($diasTotales == 0) {
                 return back()->with('error', 'Debes ingresar al menos un día.');
@@ -2664,6 +2858,38 @@ class VacationRequestController extends Controller
                 ]);
                 return back()->with('message', 'Solicitud actualizada correctamente.');
             } else {
+                ///VACACIONES PENDIENTES O APROBADAS///
+                $vacaciones = DB::table('vacation_requests')
+                    ->where('user_id', $user->id)
+                    ->whereIn('request_type_id', [1, 2, 3, 5])
+                    ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->get();
+
+                $diasVacaciones = [];
+                foreach ($vacaciones as $diasvacaciones) {
+                    $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
+                    foreach ($Days as $Day) {
+                        $diasVacaciones[] = $Day->day;
+                    }
+                }
+                usort($diasVacaciones, function ($a, $b) {
+                    return strtotime($a) - strtotime($b);
+                });
+
+                $diasParecidos = [];
+                foreach ($dates as $date) {
+                    foreach ($diasVacaciones as $vacationDate) {
+                        if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                            $diasParecidos[] = $vacationDate;
+                        }
+                    }
+                }
+
+                if (!empty($diasParecidos)) {
+                    return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                }
+
                 if (!$missingInDias->isEmpty()) {
                     $registrar = $missingInDias->implode(', ');
                     $registrarArray = explode(', ', $registrar);
@@ -2707,49 +2933,11 @@ class VacationRequestController extends Controller
             $dias = DB::table('vacation_days')
                 ->where('vacation_request_id', $Solicitud->id)
                 ->pluck('day')
-                ->toArray();  // Convertir a array para facilitar la comparación
+                ->toArray();  
 
             $datesupdate = $request->dates;
             $dates = json_decode($datesupdate, true);
             $diasTotales = count($dates);
-
-            ///VACACIONES PENDIENTES O APROBADAS///
-            $vacaciones = DB::table('vacation_requests')
-                ->where('user_id', $user->id)
-                ->whereIn('request_type_id', [1, 2, 3, 4])
-                ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
-                ->get();
-
-            $diasVacaciones = [];
-            foreach ($vacaciones as $diasvacaciones) {
-                $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
-                foreach ($Days as $Day) {
-                    $diasVacaciones[] = $Day->day;
-                }
-            }
-            usort($diasVacaciones, function ($a, $b) {
-                return strtotime($a) - strtotime($b);
-            });
-
-            $diasParecidos = [];
-            foreach ($dates as $date) {
-                foreach ($diasVacaciones as $vacationDate) {
-                    if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
-                        $diasParecidos[] = $vacationDate;
-                    }
-                }
-            }
-
-            $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
-            $jefedirecto = $Ingreso->jefe_directo_id;
-            $fechaIngreso = Carbon::parse($Ingreso->date_admission);
-            $fechaActual = Carbon::now();
-            $mesesTranscurridos = $fechaIngreso->diffInMonths($fechaActual);
-
-            if (!empty($diasParecidos)) {
-                return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
-            }
 
             if ($request->Permiso == 'Fallecimiento de un familiar') {
                 if ($diasTotales < 3) {
@@ -2782,6 +2970,38 @@ class VacationRequestController extends Controller
                     ]);
                     return back()->with('message', 'Solicitud actualizada correctamente.');
                 } else {
+                    ///VACACIONES PENDIENTES O APROBADAS///
+                    $vacaciones = DB::table('vacation_requests')
+                        ->where('user_id', $user->id)
+                        ->whereIn('request_type_id', [1, 2, 3, 4])
+                        ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->get();
+
+                    $diasVacaciones = [];
+                    foreach ($vacaciones as $diasvacaciones) {
+                        $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
+                        foreach ($Days as $Day) {
+                            $diasVacaciones[] = $Day->day;
+                        }
+                    }
+                    usort($diasVacaciones, function ($a, $b) {
+                        return strtotime($a) - strtotime($b);
+                    });
+
+                    $diasParecidos = [];
+                    foreach ($dates as $date) {
+                        foreach ($diasVacaciones as $vacationDate) {
+                            if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                                $diasParecidos[] = $vacationDate;
+                            }
+                        }
+                    }
+
+                    if (!empty($diasParecidos)) {
+                        return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                    }
+
                     if (!$missingInDias->isEmpty()) {
                         $registrar = $missingInDias->implode(', ');
                         $registrarArray = explode(', ', $registrar);
@@ -2811,7 +3031,6 @@ class VacationRequestController extends Controller
                         ///Estos días ya no vienen en el arreglo, por lo tanto se eliminan de la solicitud.
                         $eliminar = $missingInDates->implode(', ');
                         $eliminarArray = explode(', ', $eliminar);
-
                         $more_information[] = [
                             'Tipo_de_permiso_especial' => $request->Permiso,
                             'familiar_finado' => $request->familiar
@@ -2864,6 +3083,38 @@ class VacationRequestController extends Controller
                         ]);
                         return back()->with('message', 'Solicitud actualizada correctamente.');
                     } else {
+                        ///VACACIONES PENDIENTES O APROBADAS///
+                        $vacaciones = DB::table('vacation_requests')
+                            ->where('user_id', $user->id)
+                            ->whereIn('request_type_id', [1, 2, 3, 4])
+                            ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                            ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                            ->get();
+
+                        $diasVacaciones = [];
+                        foreach ($vacaciones as $diasvacaciones) {
+                            $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
+                            foreach ($Days as $Day) {
+                                $diasVacaciones[] = $Day->day;
+                            }
+                        }
+                        usort($diasVacaciones, function ($a, $b) {
+                            return strtotime($a) - strtotime($b);
+                        });
+
+                        $diasParecidos = [];
+                        foreach ($dates as $date) {
+                            foreach ($diasVacaciones as $vacationDate) {
+                                if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                                    $diasParecidos[] = $vacationDate;
+                                }
+                            }
+                        }
+
+                        if (!empty($diasParecidos)) {
+                            return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                        }
+
                         if (!$missingInDias->isEmpty()) {
                             $registrar = $missingInDias->implode(', ');
                             $registrarArray = explode(', ', $registrar);
@@ -2953,6 +3204,38 @@ class VacationRequestController extends Controller
                     ]);
                     return back()->with('message', 'Solicitud actualizada correctamente.');
                 } else {
+                    ///VACACIONES PENDIENTES O APROBADAS///
+                    $vacaciones = DB::table('vacation_requests')
+                        ->where('user_id', $user->id)
+                        ->whereIn('request_type_id', [1, 2, 3, 4])
+                        ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->get();
+
+                    $diasVacaciones = [];
+                    foreach ($vacaciones as $diasvacaciones) {
+                        $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
+                        foreach ($Days as $Day) {
+                            $diasVacaciones[] = $Day->day;
+                        }
+                    }
+                    usort($diasVacaciones, function ($a, $b) {
+                        return strtotime($a) - strtotime($b);
+                    });
+
+                    $diasParecidos = [];
+                    foreach ($dates as $date) {
+                        foreach ($diasVacaciones as $vacationDate) {
+                            if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                                $diasParecidos[] = $vacationDate;
+                            }
+                        }
+                    }
+
+                    if (!empty($diasParecidos)) {
+                        return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                    }
+
                     if (!$missingInDias->isEmpty()) {
                         $registrar = $missingInDias->implode(', ');
                         $registrarArray = explode(', ', $registrar);
@@ -3022,6 +3305,11 @@ class VacationRequestController extends Controller
                     return back()->with('error', 'Verifica que no tengas permisos especiales en status "Pendiente".');
                 }
 
+                $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
+                $fechaIngreso = Carbon::parse($Ingreso->date_admission);
+                $fechaActual = Carbon::now();
+                $mesesTranscurridos = $fechaIngreso->diffInMonths($fechaActual);
+
                 if ($mesesTranscurridos < 3) {
                     return back()->with('error', 'No has cumplido el tiempo suficiente para solicitar este permiso.');
                 }
@@ -3071,6 +3359,38 @@ class VacationRequestController extends Controller
                     ]);
                     return back()->with('message', 'Solicitud actualizada correctamente.');
                 } else {
+                    ///VACACIONES PENDIENTES O APROBADAS///
+                    $vacaciones = DB::table('vacation_requests')
+                        ->where('user_id', $user->id)
+                        ->whereIn('request_type_id', [1, 2, 3, 4])
+                        ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->get();
+
+                    $diasVacaciones = [];
+                    foreach ($vacaciones as $diasvacaciones) {
+                        $Days = VacationDays::where('vacation_request_id', $diasvacaciones->id)->get();
+                        foreach ($Days as $Day) {
+                            $diasVacaciones[] = $Day->day;
+                        }
+                    }
+                    usort($diasVacaciones, function ($a, $b) {
+                        return strtotime($a) - strtotime($b);
+                    });
+
+                    $diasParecidos = [];
+                    foreach ($dates as $date) {
+                        foreach ($diasVacaciones as $vacationDate) {
+                            if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                                $diasParecidos[] = $vacationDate;
+                            }
+                        }
+                    }
+
+                    if (!empty($diasParecidos)) {
+                        return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+                    }
+
                     if (!$missingInDias->isEmpty()) {
                         $registrar = $missingInDias->implode(', ');
                         $registrarArray = explode(', ', $registrar);

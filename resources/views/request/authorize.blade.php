@@ -38,8 +38,8 @@
                             aria-label="Default select example">
                             <option value="">Todos</option>
                             <option value="Vacaciones">Vacaciones</option>
-                            <option value="ausencia">Ausencia</option>
-                            <option value="permiso_especial">Permisos especiales</option>
+                            <option value="Ausencia">Ausencia</option>
+                            <option value="Permisos especiales">Permisos especiales</option>
                             <option value="incapacidad">Incapacidad</option>
                             <option value="paternidad">Paternidad</option>
                         </select>
@@ -79,90 +79,90 @@
                     </thead>
 
                     <tbody>
-                        @foreach ($InfoSolicitud as $infoSoli)
-                            <tr class="solicitud-row" data-days="{{ implode(',', $infoSoli['days_absent']) }}">
+                        @foreach ($Solicitudes as $infoSoli)
+                            <tr class="solicitud-row" data-days="{{ implode(',', $infoSoli->days_absent) }}">
                                 <th style="text-align: center; align-content: center;" scope="row">
-                                    {{ $infoSoli['id'] }}
+                                    {{ $infoSoli->id }}
                                 </th>
-                                <td style="text-align: center;">{{ $infoSoli['name'] }}</td>
-                                <td style="text-align: center;">{{ $infoSoli['request_type'] }}</td>
+                                <td style="text-align: center;">{{ $infoSoli->name }}</td>
+                                <td style="text-align: center;">{{ $infoSoli->request_type }}</td>
                                 <td style="text-align: center;">
-                                    @foreach ($infoSoli['days_absent'] as $day)
+                                    @foreach ($infoSoli->days_absent as $day)
                                         <div>
                                             {{ $day }}
                                         </div>
                                     @endforeach
                                 </td>
                                 <td style="text-align: center;">
-                                    @if ($infoSoli['direct_manager_status'] == 'Pendiente')
-                                        <span class="badge bg-warning text-dark">{{ $infoSoli['direct_manager_status'] }}
+                                    @if ($infoSoli->direct_manager_status == 'Pendiente')
+                                        <span class="badge bg-warning text-dark">{{ $infoSoli->direct_manager_status }}
                                         </span>
-                                    @elseif ($infoSoli['direct_manager_status'] == 'Aprobada')
-                                        <span class="badge bg-success">{{ $infoSoli['direct_manager_status'] }}
+                                    @elseif ($infoSoli->direct_manager_status == 'Aprobada')
+                                        <span class="badge bg-success">{{ $infoSoli->direct_manager_status }}
                                         </span>
                                     @else
-                                        <span class="badge bg-danger">{{ $infoSoli['direct_manager_status'] }}
+                                        <span class="badge bg-danger">{{ $infoSoli->direct_manager_status }}
                                         </span>
                                     @endif
                                 </td>
                                 <td style="text-align: center;">
-                                    @if ($infoSoli['rh_status'] === 'Pendiente')
-                                        <span class="badge bg-warning text-dark">{{ $infoSoli['rh_status'] }}</span>
-                                    @elseif ($infoSoli['rh_status'] === 'Aprobada')
-                                        <span class="badge bg-success">{{ $infoSoli['rh_status'] }}</span>
+                                    @if ($infoSoli->rh_status === 'Pendiente')
+                                        <span class="badge bg-warning text-dark">{{ $infoSoli->rh_status }}</span>
+                                    @elseif ($infoSoli->rh_status === 'Aprobada')
+                                        <span class="badge bg-success">{{ $infoSoli->rh_status }}</span>
                                     @else
-                                        <span class="badge bg-danger">{{ $infoSoli['rh_status'] }}</span>
+                                        <span class="badge bg-danger">{{ $infoSoli->rh_status }}</span>
                                     @endif
                                 </td>
 
                                 <td style="text-align: center; cursor: pointer;">
-                                    @if ($infoSoli['direct_manager_status'] === 'Pendiente')
-                                        <button class="btn btn-link openModalDetails" data-id="{{ $infoSoli['id'] }}"
-                                            data-create="{{ $infoSoli['created_at'] }}"
-                                            data-name="{{ $infoSoli['name'] }}" data-image="{{ $infoSoli['image'] }}"
-                                            data-current_vacation="{{ $infoSoli['current_vacation'] }}"
-                                            data-current_vacation_expiration="{{ $infoSoli['current_vacation_expiration'] }}"
-                                            data-next_vacation="{{ $infoSoli['next_vacation'] }}"
-                                            data-expiration_of_next_vacation="{{ $infoSoli['expiration_of_next_vacation'] }}"
-                                            data-direct_manager_status="{{ $infoSoli['direct_manager_status'] }}"
-                                            data-rh_status="{{ $infoSoli['rh_status'] }}"
-                                            data-request_type="{{ $infoSoli['request_type'] }}"
-                                            data-specific_type="{{ $infoSoli['specific_type'] }}"
-                                            data-days_absent="{{ implode(',', $infoSoli['days_absent']) }}"
-                                            data-timeArray="{{ is_Array($infoSoli['time']) ? 'true' : 'false' }}"
-                                            data-start="{{ $infoSoli['time'] ? $infoSoli['time'][0]['start'] : '12:00' }}"
-                                            data-end="{{ $infoSoli['time'] ? $infoSoli['time'][0]['end'] : '12:00' }}"
+                                    @if ($infoSoli->direct_manager_status === 'Pendiente')
+                                        <button class="btn btn-link openModalDetails" data-id="{{ $infoSoli->id }}"
+                                            data-create="{{ $infoSoli->created_at }}" data-name="{{ $infoSoli->name }}"
+                                            data-image="{{ $infoSoli->image }}"
+                                            data-current_vacation="{{ $infoSoli->current_vacation }}"
+                                            data-current_vacation_expiration="{{ $infoSoli->current_vacation_expiration }}"
+                                            data-next_vacation="{{ $infoSoli->next_vacation }}"
+                                            data-expiration_of_next_vacation="{{ $infoSoli->expiration_of_next_vacation }}"
+                                            data-direct_manager_status="{{ $infoSoli->direct_manager_status }}"
+                                            data-rh_status="{{ $infoSoli->rh_status }}"
+                                            data-request_type="{{ $infoSoli->request_type }}"
+                                            data-specific_type="{{ $infoSoli->specific_type }}"
+                                            data-days_absent="{{ implode(',', $infoSoli->days_absent) }}"
+                                            data-timeArray="{{ is_Array($infoSoli->time) ? 'true' : 'false' }}"
+                                            data-start="{{ $infoSoli->time ? $infoSoli->time[0]['start'] : '12:00' }}"
+                                            data-end="{{ $infoSoli->time ? $infoSoli->time[0]['end'] : '12:00' }}"
                                             {{-- Para Ausencia --}}
-                                            data-value-type="{{ is_array($infoSoli['more_information']) && count($infoSoli['more_information']) > 0 && isset($infoSoli['more_information'][0]['value_type']) ? $infoSoli['more_information'][0]['value_type'] : '0' }}"
-                                            data-tipo-de-ausencia="{{ is_array($infoSoli['more_information']) && isset($infoSoli['more_information'][0]['Tipo_de_ausencia']) ? $infoSoli['more_information'][0]['Tipo_de_ausencia'] : '-' }}"
+                                            data-value-type="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['value_type']) ? $infoSoli->more_information[0]['value_type'] : '0' }}"
+                                            data-tipo-de-ausencia="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_ausencia']) ? $infoSoli->more_information[0]['Tipo_de_ausencia'] : '-' }}"
                                             {{-- Para permisos especiales --}}
-                                            data-tipo-permiso-especial="{{ is_array($infoSoli['more_information']) && count($infoSoli['more_information']) > 0 && isset($infoSoli['more_information'][0]['Tipo_de_permiso_especial']) ? $infoSoli['more_information'][0]['Tipo_de_permiso_especial'] : '-' }}"
-                                            data-reveal_id="{{ $infoSoli['reveal_id'] }}"
-                                            data-file="{{ $infoSoli['file'] }}"> Ver y
+                                            data-tipo-permiso-especial="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_permiso_especial']) ? $infoSoli->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
+                                            data-reveal_id="{{ $infoSoli->reveal_id }}"
+                                            data-file="{{ $infoSoli->file }}"> Ver y
                                             autorizar</button>
                                     @else
-                                        <button class="btn btn-link openModalDetails" data-id="{{ $infoSoli['id'] }}"
-                                            data-create="{{ $infoSoli['created_at'] }}"
-                                            data-name="{{ $infoSoli['name'] }}" data-image="{{ $infoSoli['image'] }}"
-                                            data-current_vacation="{{ $infoSoli['current_vacation'] }}"
-                                            data-current_vacation_expiration="{{ $infoSoli['current_vacation_expiration'] }}"
-                                            data-next_vacation="{{ $infoSoli['next_vacation'] }}"
-                                            data-expiration_of_next_vacation="{{ $infoSoli['expiration_of_next_vacation'] }}"
-                                            data-direct_manager_status="{{ $infoSoli['direct_manager_status'] }}"
-                                            data-rh_status="{{ $infoSoli['rh_status'] }}"
-                                            data-request_type="{{ $infoSoli['request_type'] }}"
-                                            data-specific_type="{{ $infoSoli['specific_type'] }}"
-                                            data-days_absent="{{ implode(',', $infoSoli['days_absent']) }}"
-                                            data-timeArray="{{ is_Array($infoSoli['time']) ? 'true' : 'false' }}"
-                                            data-start="{{ $infoSoli['time'] ? $infoSoli['time'][0]['start'] : '12:00' }}"
-                                            data-end="{{ $infoSoli['time'] ? $infoSoli['time'][0]['end'] : '12:00' }}"
+                                        <button class="btn btn-link openModalDetails" data-id="{{ $infoSoli->id }}"
+                                            data-create="{{ $infoSoli->created_at }}" data-name="{{ $infoSoli->name }}"
+                                            data-image="{{ $infoSoli->image }}"
+                                            data-current_vacation="{{ $infoSoli->current_vacation }}"
+                                            data-current_vacation_expiration="{{ $infoSoli->current_vacation_expiration }}"
+                                            data-next_vacation="{{ $infoSoli->next_vacation }}"
+                                            data-expiration_of_next_vacation="{{ $infoSoli->expiration_of_next_vacation }}"
+                                            data-direct_manager_status="{{ $infoSoli->direct_manager_status }}"
+                                            data-rh_status="{{ $infoSoli->rh_status }}"
+                                            data-request_type="{{ $infoSoli->request_type }}"
+                                            data-specific_type="{{ $infoSoli->specific_type }}"
+                                            data-days_absent="{{ implode(',', $infoSoli->days_absent) }}"
+                                            data-timeArray="{{ is_Array($infoSoli->time) ? 'true' : 'false' }}"
+                                            data-start="{{ $infoSoli->time ? $infoSoli->time[0]['start'] : '12:00' }}"
+                                            data-end="{{ $infoSoli->time ? $infoSoli->time[0]['end'] : '12:00' }}"
                                             {{-- Para Ausencia --}}
-                                            data-value-type="{{ is_array($infoSoli['more_information']) && count($infoSoli['more_information']) > 0 && isset($infoSoli['more_information'][0]['value_type']) ? $infoSoli['more_information'][0]['value_type'] : '0' }}"
-                                            data-tipo-de-ausencia="{{ is_array($infoSoli['more_information']) && isset($infoSoli['more_information'][0]['Tipo_de_ausencia']) ? $infoSoli['more_information'][0]['Tipo_de_ausencia'] : '-' }}"
+                                            data-value-type="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['value_type']) ? $infoSoli->more_information[0]['value_type'] : '0' }}"
+                                            data-tipo-de-ausencia="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_ausencia']) ? $infoSoli->more_information[0]['Tipo_de_ausencia'] : '-' }}"
                                             {{-- Para permisos especiales --}}
-                                            data-tipo-permiso-especial="{{ is_array($infoSoli['more_information']) && count($infoSoli['more_information']) > 0 && isset($infoSoli['more_information'][0]['Tipo_de_permiso_especial']) ? $infoSoli['more_information'][0]['Tipo_de_permiso_especial'] : '-' }}"
-                                            data-reveal_id="{{ $infoSoli['reveal_id'] }}"
-                                            data-file="{{ $infoSoli['file'] }}"> Ver
+                                            data-tipo-permiso-especial="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_permiso_especial']) ? $infoSoli->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
+                                            data-reveal_id="{{ $infoSoli->reveal_id }}"
+                                            data-file="{{ $infoSoli->file }}"> Ver
                                         </button>
                                     @endif
                                 </td>
@@ -172,6 +172,9 @@
 
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-end">
+                    {{ $Solicitudes->links() }}
+                </div>
             </div>
         </div>
 
@@ -505,8 +508,7 @@
                     var startValue = dataStar;
                     var endValue = dataEnd;
 
-                    if (request_type === 'Ausencia' && valueType === 'salida_durante' || request_type ===
-                        'Permisos especiales' && typePermisoEspecial === 'Motivos académicos/escolares') {
+                    if (request_type === 'Ausencia' && valueType === 'salida_durante') {
                         timeStatusDiv.innerHTML =
                             '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
                             'Hora de regreso: <strong>' + endValue + '</strong></span>';
@@ -688,6 +690,34 @@
             color: #842029 !important;
             background-color: #f8d7da !important;
             border-color: #f5c2c7 !important;
+        }
+
+
+        /*Estilos de paginacion*/
+        .pagination {
+            display: flex;
+            justify-content: end;
+
+        }
+
+        .page-item .page-link {
+            font-size: .875rem;
+            border-color: transparent;
+        }
+
+        .page-item.active .page-link {
+            background-color: #435ebe;
+            border-color: #435ebe;
+            color: #fff;
+            z-index: 3;
+            border-radius: 27px;
+        }
+
+        .page-item.disabled .page-link {
+            background-color: #fff;
+            color: #6c757d;
+            pointer-events: none;
+            border-color: transparent;
         }
     </style>
 @stop

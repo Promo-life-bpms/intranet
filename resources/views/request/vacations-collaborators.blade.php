@@ -243,14 +243,7 @@
                                                                 $solicitud->time[0]['end'] .
                                                                 '</div>'
                                                             : 'Tiempo completo'))
-                                                    : ($solicitud->more_information[0]['Tipo_de_permiso_especial'] == 'Motivos académicos/escolares'
-                                                        ? '<div>Hora de salida: ' .
-                                                            $solicitud->time[0]['start'] .
-                                                            '</div>' .
-                                                            '<div>Hora de entrada: ' .
-                                                            $solicitud->time[0]['end'] .
-                                                            '</div>'
-                                                        : 'Tiempo completo'))
+                                                    : 'Tiempo completo')
                                                 : 'Tiempo completo' !!}
                                         </td>
 
@@ -307,6 +300,10 @@
 
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        {{ $vacaciones->links() }}
                     </div>
                 </div>
             </div>
@@ -388,14 +385,14 @@
                                 </span>
                             </div>
                             <div>
-                                <strong>50%</strong>
+                                <strong>{{ $porcentajeespecial }}%</strong>
                             </div>
                         </div>
 
                         <div class="progress mt-1">
                             <div class="progress-bar" role="progressbar"
-                                style="width: 50%; background-color: var(--color-target-3);" aria-valuenow="25"
-                                aria-valuemin="0" aria-valuemax="100"></div>
+                                style="width:{{ $porcentajeespecial }}%; background-color: var(--color-target-3);"
+                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -502,7 +499,6 @@
                             enctype="multipart/form-data">
                             @csrf
                             <div class="mt-2" id="dynamicContentEncabezado">
-                                <!-- Aquí se va a cambiar el contenido según la tarjeta seleccionada -->
                             </div>
                             <div id="request_values"></div>
 
@@ -510,7 +506,6 @@
                                 <div class="mr-2">
 
                                     <div class="mt-2" id="textDinamicCalendar">
-                                        <!-- Aquí se va a cambiar el contenido según la tarjeta seleccionada -->
                                     </div>
 
                                     <div class="mt-2" id='calendario'></div>
@@ -518,7 +513,6 @@
                                 </div>
                                 <div class="mt-5">
                                     <div class="mt-2" id="dynamicContentFormaPago">
-                                        <!-- Aquí se va a cambiar el contenido según la tarjeta seleccionada -->
                                     </div>
 
                                     <div class="mt-3">
@@ -967,6 +961,14 @@
                                 horaEntrada.classList.remove('d-none');
                                 horaSalida.classList.remove('d-none');
                                 textTime.classList.remove('d-none');
+                                break;
+                            case 'retardo':
+                                horaSalida.classList.add('d-none');
+                                horaEntrada.classList.remove('d-none');
+                                textTime.classList.add('d-none');
+                                //Cambiar el texto de la hora de regreso a Hora de llegada
+                                document.querySelector('#horaEntrada').querySelector('span').innerText =
+                                    'Hora de llegada: ';
                                 break;
                             default:
                                 horaSalida.classList.add('d-none');
@@ -1468,8 +1470,7 @@
 
                     var startValue = dataStar;
                     var endValue = dataEnd;
-                    if (tipo === 'Ausencia' && valueType === 'salida_durante' || tipo ===
-                        'Permisos especiales' && typePermisoEspecial === 'Motivos académicos/escolares') {
+                    if (tipo === 'Ausencia' && valueType === 'salida_durante') {
                         timeStatusDiv.innerHTML =
                             '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
                             'Hora de regreso: <strong>' + endValue + '</strong></span>';
@@ -1818,6 +1819,9 @@
                         horaSalida.classList.add('d-none');
                         horaEntrada.classList.remove('d-none');
                         textTime.classList.add('d-none');
+                        //Cambiar el texto de la hora de regreso a Hora de llegada
+                        document.querySelector('#horaEntrada').querySelector('span').innerText =
+                            'Hora de llegada: ';
                         break;
                     default:
                         horaSalida.classList.add('d-none');
@@ -2452,6 +2456,34 @@
     /*Estilo para el div de los dias en Calendario General*/
     .custom-day-top-class {
         padding: 0px 25px !important;
+    }
+
+
+    /*Estilos de paginacion*/
+    .pagination {
+        display: flex;
+        justify-content: end;
+
+    }
+
+    .page-item .page-link {
+        font-size: .875rem;
+        border-color: transparent;
+    }
+
+    .page-item.active .page-link {
+        background-color: #435ebe;
+        border-color: #435ebe;
+        color: #fff;
+        z-index: 3;
+        border-radius: 27px;
+    }
+
+    .page-item.disabled .page-link {
+        background-color: #fff;
+        color: #6c757d;
+        pointer-events: none;
+        border-color: transparent;
     }
 </style>
 @endsection
