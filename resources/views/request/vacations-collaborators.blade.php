@@ -962,6 +962,14 @@
                                 horaSalida.classList.remove('d-none');
                                 textTime.classList.remove('d-none');
                                 break;
+                            case 'retardo':
+                                horaSalida.classList.add('d-none');
+                                horaEntrada.classList.remove('d-none');
+                                textTime.classList.add('d-none');
+                                //Cambiar el texto de la hora de regreso a Hora de llegada
+                                document.querySelector('#horaEntrada').querySelector('span').innerText =
+                                    'Hora de llegada: ';
+                                break;
                             default:
                                 horaSalida.classList.add('d-none');
                                 horaEntrada.classList.add('d-none');
