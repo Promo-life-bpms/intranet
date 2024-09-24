@@ -197,13 +197,12 @@ class VacationRequestController extends Controller
         }
 
         $porcentajeespecial = round(($contadorAsuntosPersonales / 3) * 100);
-        
-        return view('request.vacations-collaborators', compact('users', 'vacaciones','solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar', 'porcentajeespecial'));
+
+        return view('request.vacations-collaborators', compact('users', 'vacaciones', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar', 'porcentajeespecial'));
     }
 
     public function CreatePurchase(Request $request)
     {
-
         $user = auth()->user();
 
         ///VACACIONES
@@ -662,6 +661,67 @@ class VacationRequestController extends Controller
                 return back()->with('error', 'Debes ingresar el día en que saldrás temprano de la jornada.');
             }
 
+            if ($request->ausenciaTipo == 'retardo') {
+                if ($dias > 1) {
+                    return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
+                }
+
+                $hora8AM = Carbon::today()->setHour(8)->setMinute(15);
+                $totalMinutos = $hora8AM->hour * 60 + $hora8AM->minute;
+
+                $retardo = $request->hora_regreso;
+                $Retardo = Carbon::parse($retardo);
+                $totalMinutosRetardo = $Retardo->hour * 60 + $Retardo->minute;
+
+                if ($totalMinutosRetardo > $totalMinutos) {
+                    return back()->with('error', 'La hora del retardo no puede ser después de las 8:15 AM.');
+                }
+
+                $currentMonth = now()->format('Y-m');
+                $firstDayOfMonth = now()->startOfMonth();
+                $today = now(); // Día actual
+
+                // Contar solicitudes de retardo
+                $retardoCount = DB::table('vacation_requests')
+                    ->where('user_id', $user->id)
+                    ->where('request_type_id', 2)
+                    ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereBetween('created_at', [$firstDayOfMonth, $today])
+                    ->whereJsonContains('more_information', ['Tipo_de_ausencia' => 'Retardo'])
+                    ->count();
+
+                if ($retardoCount >= 3) {
+                    return back()->with('error', 'Solo tienes derecho a tres retardos al mes');
+                }
+
+                $more_information[] = [
+                    'Tipo_de_ausencia' => $request->ausenciaTipo == 'retardo' ? 'Retardo' : 'No encontro el valor',
+                    'value_type' => $request->ausenciaTipo,
+                ];
+                $moreinformation = json_encode($more_information);
+                $Vacaciones = VacationRequest::create([
+                    'user_id' => $user->id,
+                    'request_type_id' => 2,
+                    'file' => $path,
+                    'details' => $request->details,
+                    'more_information' => $moreinformation,
+                    'reveal_id' => $request->reveal_id,
+                    'direct_manager_id' => $jefedirecto,
+                    'direct_manager_status' => 'Pendiente',
+                    'rh_status' => 'Pendiente'
+                ]);
+
+                foreach ($datesArray as $dia) {
+                    VacationDays::create([
+                        'day' => $dia,
+                        'start' => $retardo,
+                        'vacation_request_id' => $Vacaciones->id,
+                        'status' => 0,
+                    ]);
+                }
+                return back()->with('message', 'Solicitud creada exitosamente.');
+            }
             if ($request->ausenciaTipo == 'salida_antes') {
 
                 if ($dias > 1) {
@@ -2309,6 +2369,106 @@ class VacationRequestController extends Controller
 
             if ($diasTotales == 0) {
                 return back()->with('error', 'Debes ingresar el día en que saldrás temprano de la jornada.');
+            }
+            if ($request->ausenciaTipo == 'retardo') {
+                if ($diasTotales > 1) {
+                    return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
+                }
+
+                $hora8AM = Carbon::today()->setHour(8)->setMinute(15);
+                $totalMinutos = $hora8AM->hour * 60 + $hora8AM->minute;
+
+                $retardo = $request->hora_regreso;
+                $Retardo = Carbon::parse($retardo);
+                $totalMinutosRetardo = $Retardo->hour * 60 + $Retardo->minute;
+
+                if ($totalMinutosRetardo > $totalMinutos) {
+                    return back()->with('error', 'La hora del retardo no puede ser después de las 8:15 AM.');
+                }
+
+                $currentMonth = now()->format('Y-m');
+                $firstDayOfMonth = now()->startOfMonth();
+                $today = now(); // Día actual
+
+                // Contar solicitudes de retardo
+                $retardoCount = DB::table('vacation_requests')
+                    ->where('user_id', $user->id)
+                    ->where('request_type_id', 2)
+                    ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereBetween('created_at', [$firstDayOfMonth, $today])
+                    ->whereJsonContains('more_information', ['Tipo_de_ausencia' => 'Retardo'])
+                    ->count();
+
+                if ($retardoCount >= 3) {
+                    return back()->with('error', 'Solo tienes derecho a tres retardos al mes');
+                }
+
+                // Convertir ambos arrays a conjuntos (sets) para la comparación
+                $diasSet = collect($dias)->unique()->sort()->values();
+                $datesSet = collect($dates)->unique()->sort()->values();
+
+                // Comparar los conjuntos para encontrar diferencias
+                $missingInDias = $datesSet->diff($diasSet);  // Días en $dates pero no en $dias
+                $missingInDates = $diasSet->diff($datesSet); // Días en $dias pero no en $dates
+
+                if ($missingInDias->isEmpty() && $missingInDates->isEmpty()) {
+                    $more_information[] = [
+                        'Tipo_de_ausencia' => $request->ausenciaTipo == 'retardo' ? 'Retardo' : 'No encontro el valor',
+                        'value_type' => $request->ausenciaTipo,
+                    ];
+                    $moreinformation = json_encode($more_information);
+                    $more_information[] = [
+                        'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_antes' ? 'Salir antes' : 'No encontro el valor',
+                        'value_type' => $request->ausenciaTipo,
+                    ];
+                    $moreinformation = json_encode($more_information);
+                    DB::table('vacation_requests')->where('id', $request->id)->update([
+                        'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
+                        'details' => $request->details == null ? $Solicitud->details : $request->details,
+                        'file' => $request->archivos == null ? $Solicitud->file : $path,
+                        'more_information' => $moreinformation,
+                    ]);
+                    DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                        'start' => $retardo,
+                        'end' => null,
+                    ]);
+                    return back()->with('message', 'Solicitud creada exitosamente.');
+                } else {
+                    if (!$missingInDias->isEmpty()) {
+                        ///Dias que no vienen en el arreglo
+                        $more_information[] = [
+                            'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_antes' ? 'Salir antes' : 'No encontro el valor',
+                            'value_type' => $request->ausenciaTipo,
+                        ];
+                        $moreinformation = json_encode($more_information);
+                        DB::table('vacation_requests')->where('id', $request->id)->update([
+                            'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
+                            'details' => $request->details == null ? $Solicitud->details : $request->details,
+                            'file' => $request->archivos == null ? $Solicitud->file : $path,
+                            'more_information' => $moreinformation,
+                        ]);
+                        foreach ($dates as $dia) {
+                            VacationDays::create([
+                                'day' => $dia,
+                                'start' => $retardo,
+                                'vacation_request_id' => $request->id,
+                                'status' => 0,
+                            ]);
+                        }
+                    }
+                    if (!$missingInDates->isEmpty()) {
+                        ///Estos días ya no vienen en el arreglo, por lo tanto se eliminan de la solicitud.
+                        $eliminar = $missingInDates->implode(', ');
+                        $eliminarArray = explode(', ', $eliminar);
+                        foreach ($eliminarArray as $eliminar) {
+                            $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
+                            DB::table('vacation_days')
+                                ->where('id', $idfecha)
+                                ->delete();
+                        }
+                    }
+                }
             }
 
             if ($request->ausenciaTipo == 'salida_antes') {
