@@ -243,14 +243,7 @@
                                                                 $solicitud->time[0]['end'] .
                                                                 '</div>'
                                                             : 'Tiempo completo'))
-                                                    : ($solicitud->more_information[0]['Tipo_de_permiso_especial'] == 'Motivos académicos/escolares'
-                                                        ? '<div>Hora de salida: ' .
-                                                            $solicitud->time[0]['start'] .
-                                                            '</div>' .
-                                                            '<div>Hora de entrada: ' .
-                                                            $solicitud->time[0]['end'] .
-                                                            '</div>'
-                                                        : 'Tiempo completo'))
+                                                    :  'Tiempo completo')
                                                 : 'Tiempo completo' !!}
                                         </td>
 
@@ -1468,8 +1461,7 @@
 
                     var startValue = dataStar;
                     var endValue = dataEnd;
-                    if (tipo === 'Ausencia' && valueType === 'salida_durante' || tipo ===
-                        'Permisos especiales' && typePermisoEspecial === 'Motivos académicos/escolares') {
+                    if (tipo === 'Ausencia' && valueType === 'salida_durante') {
                         timeStatusDiv.innerHTML =
                             '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
                             'Hora de regreso: <strong>' + endValue + '</strong></span>';

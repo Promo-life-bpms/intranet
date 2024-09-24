@@ -995,8 +995,7 @@
                     var startValue = dataStar;
                     var endValue = dataEnd;
 
-                    if (request_type === 'Ausencia' && valueType === 'salida_durante' || request_type ===
-                        'Permisos especiales' && typePermisoEspecial === 'Motivos académicos/escolares') {
+                    if (request_type === 'Ausencia' && valueType === 'salida_durante') {
                         timeStatusDiv.innerHTML =
                             '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
                             'Hora de regreso: <strong>' + endValue + '</strong></span>';
@@ -1193,8 +1192,7 @@
                     var startValue = dataStar;
                     var endValue = dataEnd;
 
-                    if (request_type === 'Ausencia' && valueType === 'salida_durante' || request_type ===
-                        'Permisos especiales' && typePermisoEspecial === 'Motivos académicos/escolares') {
+                    if (request_type === 'Ausencia' && valueType === 'salida_durante') {
                         timeStatusDiv.innerHTML =
                             '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
                             'Hora de regreso: <strong>' + endValue + '</strong></span>';
