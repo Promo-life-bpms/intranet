@@ -391,7 +391,7 @@
 
                         <div class="progress mt-1">
                             <div class="progress-bar" role="progressbar"
-                                style="{{ $porcentajeespecial }}%; background-color: var(--color-target-3);"
+                                style="width:{{ $porcentajeespecial }}%; background-color: var(--color-target-3);"
                                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
@@ -1808,7 +1808,6 @@
                         textTime.classList.remove('d-none');
                         break;
                     case 'retardo':
-
                         horaSalida.classList.add('d-none');
                         horaEntrada.classList.remove('d-none');
                         textTime.classList.add('d-none');
