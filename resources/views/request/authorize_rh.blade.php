@@ -83,7 +83,7 @@
                 </div>
             </div>
 
-            <div id="buttonUpdateDays" style="display: none">
+            <div id="buttonUpdateDays" class="d-flex justify-content-end mt-3">
                 <button id="buttonReposicion" class="btn"
                     style="background-color: var(--color-target-1); color: white; ">Reposición</button>
             </div>
@@ -97,8 +97,8 @@
                             <tr>
                                 <th scope="col" style="text-align: center;">#</th>
                                 <th scope="col" style="text-align: center;">Solicitante</th>
-                                <th scope="col" style="text-align: center;">Tipo de Solicitud</th>
-                                <th scope="col" style="text-align: center;">Dias ausente</th>
+                                <th scope="col" style="text-align: center;">Tipo de solicitud</th>
+                                <th scope="col" style="text-align: center;">Días ausente</th>
                                 <th scope="col" style="text-align: center;">Aprobado por (Jefe)</th>
                                 <th scope="col" style="text-align: center;">Aprobado por (RH)</th>
                                 <th scope="col" style="text-align: center;">Detalles</th>
@@ -180,8 +180,8 @@
                             <tr>
                                 <th scope="col" style="text-align: center; align-content: center;">#</th>
                                 <th scope="col" style="text-align: center;">Solicitante</th>
-                                <th scope="col" style="text-align: center;">Tipo de Solicitud</th>
-                                <th scope="col" style="text-align: center;">Dias ausente</th>
+                                <th scope="col" style="text-align: center;">Tipo de solicitud</th>
+                                <th scope="col" style="text-align: center;">Días ausente</th>
                                 <th scope="col" style="text-align: center;">Aprobado por (Jefe)</th>
                                 <th scope="col" style="text-align: center;">Autorizar solicitud</th>
                             </tr>
@@ -252,8 +252,8 @@
                             <tr>
                                 <th scope="col" style="text-align: center;">#</th>
                                 <th scope="col" style="text-align: center;">Solicitante</th>
-                                <th scope="col" style="text-align: center;">Tipo de Solicitud</th>
-                                <th scope="col" style="text-align: center;">Dias ausente</th>
+                                <th scope="col" style="text-align: center;">Tipo de solicitud</th>
+                                <th scope="col" style="text-align: center;">Días ausente</th>
                                 <th scope="col" style="text-align: center;">Justificante</th>
                                 <th scope="col" style="text-align: center;">Motivo</th>
                             </tr>
@@ -294,7 +294,7 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">Detalles de la Solicitud</h5>
+                        <h5 class="modal-title" id="modalTitle">Detalles de la solicitud</h5>
                         <div id="modalId" style="display: none;"></div>
                         <button id="closeModalDetails" type="button" class="btn-close" aria-label="Close"></button>
 
@@ -321,18 +321,18 @@
                                     </div>
 
                                     <div class="mt-2">
-                                        <span>Te queda
+                                        <span>Tienes
                                             <strong id="modalCurrentVacation"></strong>
-                                            días disponible que vence el
+                                            día(s) disponible(s) que vence(n) el
                                             <strong id="modalCurrentVacationExpiration"></strong>
                                         </span>
                                     </div>
 
 
                                     <div class="mt-2" id="secondaryPeriodo">
-                                        <span>Te queda
+                                        <span>Tienes
                                             <strong id="modalNextVaca"></strong>
-                                            días disponible que vence el
+                                            día(s) disponible(s) que vence(n) el
                                             <strong id="modalExpireNextVaca"></strong>
                                         </span>
                                     </div>
@@ -365,7 +365,7 @@
                                         <strong>Tipo: </strong>
                                     </div>
                                     <div class="mt-2">
-                                        <strong>Tipo especifico: </strong>
+                                        <strong>Tipo específico: </strong>
                                     </div>
                                     <div class="mt-2">
                                         <strong>Días ausente: </strong>
@@ -419,7 +419,7 @@
 
                             <div id="buttonModifi" class="d-none">
                                 <button id="denyRequest" type="button" class="btn btn-danger mr-2">Rechazar</button>
-                                <button type="button" class="btn btn-primary" id="approveButton">Aprobada</button>
+                                <button type="button" class="btn btn-primary" id="approveButton">Aprobar</button>
                             </div>
                         </form>
                     </div>
@@ -458,16 +458,16 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">Reposición de dias</h5>
+                        <h5 class="modal-title" id="modalTitle">Reposición de días</h5>
                         <button id="ButtonCloseReposicion" type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="make/up/vacations" method="POST">
+                        <form action="make/up/vacations" method="POST" id="formReposicion">
                             @csrf
                             <div class="row">
                                 <div class="col-12 mb-3">
-                                    <span>Selecciona Usuarios:</span>
+                                    <span>Selecciona usuarios:</span>
                                     <select name="team[]" class="form-select" multiple
                                         data-placeholder="Selecciona Usuarios" id="select2" data-coreui-search="true"
                                         style="width: 100%">
@@ -484,7 +484,7 @@
 
                                 <div class="col-4">
                                     <div class="mr-4 mb-3">
-                                        <span>Selecciona tu periodo: </span>
+                                        <span>Selecciona el periodo: </span>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="Periodo"
                                                 id="primer_periodo" value="primer_periodo">
@@ -528,7 +528,7 @@
                                 </div>
 
                                 <div class="d-flex justify-content-end mt-2">
-                                    <button class="btn btn-primary" type="submit">Actualizar</button>
+                                    <button class="btn btn-primary" type="submit">Aceptar</button>
                                 </div>
                         </form>
                     </div>
@@ -733,6 +733,15 @@
             document.getElementById('commentary').value = '';
         });
 
+        /*Limpiar ek formulario de agregar o quitar dias*/
+        document.getElementById('ButtonCloseReposicion').addEventListener('click', function() {
+            const form = document.getElementById('formReposicion');
+            form.reset();
+            // Limpiar el select múltiple de Select2
+            $('#select2').val(null).trigger('change'); // Con jQuery y Select2
+
+        });
+
         //Poner por defecto la tarjeta 1 activa
         document.getElementById('tarjeta1').classList.add('tarjetaRh1-activa');
 
@@ -745,8 +754,8 @@
             document.getElementById('tableAutorizadas').style.display = 'block';
             document.getElementById('tablePendientes').style.display = 'none';
             document.getElementById('tableCanceladas').style.display = 'none';
-            //Desabilitar boton de actualizar dias
-            document.getElementById('buttonUpdateDays').style.display = 'none';
+
+
             //Cambiar titulo de la pagina
             document.getElementById('titlePage').innerHTML = 'Solicitudes autorizadas';
         });
@@ -761,8 +770,8 @@
             document.getElementById('tableAutorizadas').style.display = 'none';
             document.getElementById('tablePendientes').style.display = 'block';
             document.getElementById('tableCanceladas').style.display = 'none';
-            //Desabilitar boton de actualizar dias
-            document.getElementById('buttonUpdateDays').style.display = 'none';
+
+
             //Cambiar titulo de la pagina
             document.getElementById('titlePage').innerHTML = 'Solicitudes pendientes';
         });
@@ -776,10 +785,7 @@
             document.getElementById('tableAutorizadas').style.display = 'none';
             document.getElementById('tablePendientes').style.display = 'none';
             document.getElementById('tableCanceladas').style.display = 'block';
-            //Habilitar boton de actualizar dias
-            document.getElementById('buttonUpdateDays').style.display = 'flex';
-            document.getElementById('buttonUpdateDays').style.justifyContent = 'flex-end';
-            document.getElementById('buttonUpdateDays').style.marginTop = '13px';
+
             //Cambiar titulo de la pagina
             document.getElementById('titlePage').innerHTML = 'Solicitudes canceladas por el usuario';
         });

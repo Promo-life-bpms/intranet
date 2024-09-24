@@ -54,7 +54,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <span>Colaboradores</span>
+                            <span>Solicitudes</span>
                         </div>
                     </div>
                 </div>
@@ -70,8 +70,8 @@
                         <tr>
                             <th scope="col" style="text-align: center; align-content: center">#</th>
                             <th scope="col" style="text-align: center;">Solicitante</th>
-                            <th scope="col" style="text-align: center;">Tipo de Solicitud</th>
-                            <th scope="col" style="text-align: center;">Dias ausente</th>
+                            <th scope="col" style="text-align: center;">Tipo de solicitud</th>
+                            <th scope="col" style="text-align: center;">Días ausente</th>
                             <th scope="col" style="text-align: center;">Aprobado por (Jefe)</th>
                             <th scope="col" style="text-align: center;">Aprobado por (RH)</th>
                             <th scope="col" style="text-align: center;">Detalles</th>
@@ -181,7 +181,7 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Detalles de la Solicitud</h5>
+                        <h5 class="modal-title">Detalles de la solicitud</h5>
                         <div id="modalId" style="display: none;"></div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -206,17 +206,17 @@
                                     </div>
 
                                     <div class="mt-2">
-                                        <span>Te queda
+                                        <span>Tienes
                                             <strong id="modalCurrentVacation"></strong>
-                                            días disponible que vence el
+                                            día(s) disponible(s) que vence(n) el
                                             <strong id="modalCurrentVacationExpiration"></strong>
                                         </span>
                                     </div>
 
                                     <div class="mt-2" id="secondaryPeriodo">
-                                        <span>Te queda
+                                        <span>Tienes
                                             <strong id="modalNextVaca"></strong>
-                                            días disponible que vence el
+                                            día(s) disponible(s) que vence(n) el
                                             <strong id="modalExpireNextVaca"></strong>
                                         </span>
                                     </div>
@@ -249,7 +249,7 @@
                                         <strong>Tipo: </strong>
                                     </div>
                                     <div class="mt-2">
-                                        <strong>Tipo especifico: </strong>
+                                        <strong>Tipo específico: </strong>
                                     </div>
                                     <div class="mt-2">
                                         <strong>Días ausente: </strong>
@@ -303,7 +303,7 @@
 
                             <div id="buttonModifi" style="display: none">
                                 <button id="denyRequest" type="button" class="btn btn-danger mr-2">Rechazar</button>
-                                <button type="button" class="btn btn-primary" id="approveButton">Aprobada</button>
+                                <button type="button" class="btn btn-primary" id="approveButton">Aprobar</button>
                             </div>
                         </form>
                     </div>
@@ -317,14 +317,15 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalTitle">Rechazar solicitud</h5>
-                        <button id="closeModalDeny" type="button" class="close" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+
+                        <button id='closeModalDeny' type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="denyFormRequest" action="reject/leave/by/direct/boss/" method="POST">
                             @csrf
-                            <textarea style="min-width: 100%" class="form-control" id="commentary" name="commentary" required></textarea>
+                            <textarea style="min-width: 100%" placeholder="Motivo" class="form-control" id="commentary" name="commentary"
+                                required></textarea>
                             <div class="d-flex justify-content-end mt-2">
                                 <button type="button" class="btn btn-primary" id="denyButtonForm">Enviar</button>
                             </div>
@@ -370,20 +371,25 @@
         document.getElementById('fechaInput').addEventListener('input', function() {
             var selectedDate = this.value; // La fecha seleccionada en el formato YYYY-MM-DD
             console.log('selectedDate', selectedDate);
-            // Obtén todas las filas de la tabla
             var rows = document.querySelectorAll('.solicitud-row');
 
             rows.forEach(function(row) {
-                // Obtén las fechas asociadas a la fila (separadas por comas)
                 var days = row.getAttribute('data-days').split(',');
 
-                // Verifica si la fecha seleccionada está en las fechas de la fila
                 if (days.includes(selectedDate) || selectedDate === "") {
-                    row.style.display = ''; // Mostrar la fila
+                    row.style.display = '';
                 } else {
-                    row.style.display = 'none'; // Ocultar la fila
+                    row.style.display = 'none';
                 }
             });
+        });
+
+
+
+        /*Limpiar los campos del formulario de rechazo*/
+        document.getElementById('closeModalDeny').addEventListener('click', function() {
+            const form = document.getElementById('denyFormRequest');
+            form.reset();
         });
 
 
