@@ -163,6 +163,14 @@
                                             data-request_type="{{ $aprovada['request_type'] }}"
                                             data-specific_type="{{ $aprovada['specific_type'] }}"
                                             data-days_absent="{{ implode(',', $aprovada['days_absent']) }}"
+                                            data-timeArray="{{ is_Array($aprovada['time']) ? 'true' : 'false' }}"
+                                            data-start="{{ $aprovada['time'] ? $aprovada['time'][0]['start'] : '12:00' }}"
+                                            data-end="{{ $aprovada['time'] ? $aprovada['time'][0]['end'] : '12:00' }}"
+                                            {{-- Para Ausencia --}}
+                                            data-value-type="{{ is_array($aprovada['more_information']) && count($aprovada['more_information']) > 0 && isset($aprovada['more_information'][0]['value_type']) ? $aprovada['more_information'][0]['value_type'] : '0' }}"
+                                            data-tipo-de-ausencia="{{ is_array($aprovada['more_information']) && isset($aprovada['more_information'][0]['Tipo_de_ausencia']) ? $aprovada['more_information'][0]['Tipo_de_ausencia'] : '-' }}"
+                                            {{-- Para permisos especiales --}}
+                                            data-tipo-permiso-especial="{{ is_array($aprovada['more_information']) && count($aprovada['more_information']) > 0 && isset($aprovada['more_information'][0]['Tipo_de_permiso_especial']) ? $aprovada['more_information'][0]['Tipo_de_permiso_especial'] : '-' }}"
                                             data-reveal_id="{{ $aprovada['reveal_id'] }}"
                                             data-file="{{ $aprovada['file'] }}">Ver</button>
                                     </td>
@@ -324,7 +332,7 @@
                                         <span>Tienes
                                             <strong id="modalCurrentVacation"></strong>
                                             día(s) disponible(s) que vence(n) el
-                                            <strong id="modalCurrentVacationExpiration"></strong>
+                                            <strong id="primaryPeriodo"></strong>
                                         </span>
                                     </div>
 
@@ -333,7 +341,7 @@
                                         <span>Tienes
                                             <strong id="modalNextVaca"></strong>
                                             día(s) disponible(s) que vence(n) el
-                                            <strong id="modalExpireNextVaca"></strong>
+                                            <strong id="secondariPeriodo"></strong>
                                         </span>
                                     </div>
 
@@ -1017,6 +1025,7 @@
                     day: 'numeric'
                 };
                 const formattedDate2 = date2.toLocaleDateString('es-ES', options2);
+
                 const date3 = new Date(expiration_of_next_vacation);
                 date3.setDate(date3.getDate() + 1);
                 const options3 = {
@@ -1024,25 +1033,22 @@
                     month: 'long',
                     day: 'numeric'
                 };
-
-
                 const formattedDate3 = date3.toLocaleDateString('es-ES', options3);
 
 
                 document.getElementById('modalName').textContent = name;
                 document.getElementById('modalCurrentVacation').textContent = current_vacation;
-                document.getElementById('modalCurrentVacationExpiration').textContent = formattedDate2;
+                document.getElementById('primaryPeriodo').textContent = formattedDate2;
                 document.getElementById('modalNextVaca').textContent = next_vacation || 'No hay vacaciones';
 
                 const secondaryPeriodo = document.getElementById('secondaryPeriodo');
-
                 if (modalNextVaca.textContent === 'No hay vacaciones') {
                     secondaryPeriodo.className = 'd-none';
                 } else {
                     secondaryPeriodo.className = 'd-flex';
                 }
 
-                document.getElementById('modalExpireNextVaca').textContent = formattedDate3;
+                document.getElementById('secondariPeriodo').textContent = formattedDate3;
 
                 document.getElementById('modalDirectManagerStatus').textContent = direct_manager_status;
                 const modalDirectManagerStatus = document.getElementById('modalDirectManagerStatus');
@@ -1122,18 +1128,15 @@
                 document.getElementById('modalCreate').textContent = formattedDate;
 
                 let imagen = '';
-
                 if (image === null || image === 'null' || image === 'undefined' || image === undefined ||
                     image === '') {
                     /*Poner una imagen de un perfil*/
                     imagen = 'https://www.w3schools.com/howto/img_avatar.png';
-
                 } else {
                     const baseUrl = window.location.origin;
                     /* Poner anexarle la baseURl a la imagen */
                     imagen = baseUrl + '/' + image;
                 }
-
 
                 document.getElementById('modalImage').src = imagen;
                 const name = this.getAttribute('data-name');
@@ -1176,41 +1179,6 @@
                     document.getElementById('viewFile').appendChild(link);
                 }
 
-                const timeText = this.getAttribute('data-timeArray');
-                const dataStart = this.getAttribute('data-start');
-                const dataEnd = this.getAttribute('data-end');
-
-                /* Para Ausencia */
-                const valueType = this.getAttribute('data-value-type');
-                const tipoDeAusencia = this.getAttribute('data-tipo-de-ausencia');
-
-                /* Para permisos especiales */
-                const typePermisoEspecial = this.getAttribute('data-tipo-permiso-especial');
-
-                var timeStatusDiv = document.getElementById('timeStatus');
-                if (timeText === 'true') {
-                    var startValue = dataStar;
-                    var endValue = dataEnd;
-
-                    if (request_type === 'Ausencia' && valueType === 'salida_durante') {
-                        timeStatusDiv.innerHTML =
-                            '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
-                            'Hora de regreso: <strong>' + endValue + '</strong></span>';
-                    } else if (request_type === 'Ausencia' && valueType === 'salida_antes') {
-                        timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
-                            '</strong></span> ';
-                    } else {
-                        timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
-                    }
-                } else {
-                    timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
-                }
-
-
-                /*Habilitar el boton de rechazar */
-                document.getElementById('buttonModifi').classList.remove('d-none');
-                document.getElementById('buttonModifi').style.display = 'flex';
-                document.getElementById('buttonModifi').style.justifyContent = 'flex-end';
                 const date2 = new Date(current_vacation_expiration);
                 date2.setDate(date2.getDate() + 1);
                 const options2 = {
@@ -1230,18 +1198,56 @@
 
                 document.getElementById('modalName').textContent = name;
                 document.getElementById('modalCurrentVacation').textContent = current_vacation;
-                document.getElementById('modalCurrentVacationExpiration').textContent = formattedDate2;
+                document.getElementById('primaryPeriodo').textContent = formattedDate2;
                 document.getElementById('modalNextVaca').textContent = next_vacation || 'No hay vacaciones';
 
                 const secondaryPeriodo = document.getElementById('secondaryPeriodo');
-
                 if (modalNextVaca.textContent === 'No hay vacaciones') {
                     secondaryPeriodo.className = 'd-none';
                 } else {
                     secondaryPeriodo.className = 'd-flex';
                 }
 
-                document.getElementById('modalExpireNextVaca').textContent = formattedDate3;
+                const timeText = this.getAttribute('data-timeArray');
+                const dataStar = this.getAttribute('data-start');
+                const dataEnd = this.getAttribute('data-end');
+
+                /* Para Ausencia */
+                const valueType = this.getAttribute('data-value-type');
+                const tipoDeAusencia = this.getAttribute('data-tipo-de-ausencia');
+
+                const typePermisoEspecial = this.getAttribute('data-tipo-permiso-especial');
+
+                var timeStatusDiv = document.getElementById('timeStatus');
+                if (timeText === 'true') {
+                    var startValue = dataStar;
+                    var endValue = dataEnd;
+
+                    if (request_type === 'Ausencia' && valueType === 'salida_durante') {
+                        timeStatusDiv.innerHTML =
+                            '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
+                            'Hora de regreso: <strong>' + endValue + '</strong></span>';
+                    } else if (request_type === 'Ausencia' && valueType === 'salida_antes') {
+                        timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
+                            '</strong></span> ';
+                    } else if (request_type === 'Ausencia' && valueType === 'retardo') {
+                        timeStatusDiv.innerHTML = '<span>Hora de llegada: <strong>' + startValue +
+                            '</strong></span> ';
+                    } else {
+                        timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
+                    }
+                } else {
+                    timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
+                }
+
+
+                /*Habilitar el boton de rechazar */
+                document.getElementById('buttonModifi').classList.remove('d-none');
+                document.getElementById('buttonModifi').style.display = 'flex';
+                document.getElementById('buttonModifi').style.justifyContent = 'flex-end';
+
+
+                document.getElementById('secondariPeriodo').textContent = formattedDate3;
 
                 document.getElementById('modalDirectManagerStatus').textContent = direct_manager_status;
                 const modalDirectManagerStatus = document.getElementById('modalDirectManagerStatus');
