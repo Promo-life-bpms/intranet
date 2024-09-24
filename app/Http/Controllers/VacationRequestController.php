@@ -89,7 +89,7 @@ class VacationRequestController extends Controller
             $solicitud->file = $vacacion->file == null ? 'No hay justificante' : $vacacion->file;
             $solicitud->commentary = $vacacion->commentary == null ? 'No hay un comentario' : $vacacion->commentary;
             $solicitud->days = $dias;
-            $solicitud->request_type_id == 2 ? $time : null;
+            $solicitud->request_type_id = $vacacion->request_type_id == 2 ? $time : null;
             $solicitud->more_information = $vacacion->more_information == null ? null : json_decode($vacacion->more_information, true);
             $solicitudes[] = $solicitud;
         }
