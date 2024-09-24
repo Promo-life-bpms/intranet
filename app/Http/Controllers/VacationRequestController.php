@@ -715,7 +715,7 @@ class VacationRequestController extends Controller
                 foreach ($datesArray as $dia) {
                     VacationDays::create([
                         'day' => $dia,
-                        'start' => $retardo,
+                        'end' => $retardo,
                         'vacation_request_id' => $Vacaciones->id,
                         'status' => 0,
                     ]);
@@ -2344,7 +2344,7 @@ class VacationRequestController extends Controller
                 $hora8AM = Carbon::today()->setHour(8)->setMinute(15);
                 $totalMinutos = $hora8AM->hour * 60 + $hora8AM->minute;
 
-                $retardo = $request->hora_salida;
+                $retardo = $request->hora_regreso;
                 $Retardo = Carbon::parse($retardo);
                 $totalMinutosRetardo = $Retardo->hour * 60 + $Retardo->minute;
 
@@ -2391,8 +2391,8 @@ class VacationRequestController extends Controller
                         'more_information' => $moreinformation,
                     ]);
                     DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
-                        'start' => $retardo,
-                        'end' => null,
+                        'end' => $retardo,
+                        'start' => null,
                     ]);
                     return back()->with('message', 'Solicitud creada exitosamente.');
                 } else {
@@ -2444,7 +2444,7 @@ class VacationRequestController extends Controller
                         foreach ($dates as $dia) {
                             VacationDays::create([
                                 'day' => $dia,
-                                'start' => $retardo,
+                                'end' => $retardo,
                                 'vacation_request_id' => $request->id,
                                 'status' => 0,
                             ]);
