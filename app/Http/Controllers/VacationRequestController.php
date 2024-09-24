@@ -49,7 +49,8 @@ class VacationRequestController extends Controller
             }
         }
 
-        $vacaciones = DB::table('vacation_requests')->where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        $vacaciones = DB::table('vacation_requests')->where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate(5);
+
         $solicitudes = [];
         foreach ($vacaciones as $vacacion) {
             $nameResponsable = User::where('id', $vacacion->reveal_id)->first();
@@ -57,6 +58,7 @@ class VacationRequestController extends Controller
             $typeRequest = RequestType::where('id', $vacacion->request_type_id)->value('type');
             $Days = VacationDays::where('vacation_request_id', $vacacion->id)->get();
             $dias = [];
+
             foreach ($Days as $Day) {
                 $dias[] = $Day->day;
             }
@@ -1173,8 +1175,8 @@ class VacationRequestController extends Controller
         $user = auth()->user();
 
         $HeIsBossOf = Employee::where('jefe_directo_id', $user->id)->where('status', 1)->pluck('user_id');
-        $Solicitudes = DB::table('vacation_requests')->whereIn('user_id', $HeIsBossOf)->orderBy('created_at', 'desc')->get();
-        $SumaSolicitudes = count($Solicitudes);
+        $Solicitudes = DB::table('vacation_requests')->whereIn('user_id', $HeIsBossOf)->orderBy('created_at', 'desc')->paginate(5);
+        $SumaSolicitudes = $Solicitudes->total();
         $InfoSolicitud = [];
         foreach ($Solicitudes as $Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
@@ -1198,6 +1200,7 @@ class VacationRequestController extends Controller
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
                 ->get();
+
             $Datos = [];
             foreach ($Vacaciones as $vaca) {
                 $Datos[] = [
@@ -1219,9 +1222,9 @@ class VacationRequestController extends Controller
                 'created_at' => $Solicitud->created_at,
                 'id' => $Solicitud->id,
                 'name' => $nameUser->name . ' ' . $nameUser->lastname,
-                'current_vacation' => $Datos[0]['dv'],
-                'current_vacation_expiration' => $Datos[0]['cutoff_date'],
-                'next_vacation' =>  empty($Datos[1]['dv']) ? null : $Datos[1]['dv'],
+                'current_vacation' => $Datos[0]['dv'] ?? null,
+                'current_vacation_expiration' => $Datos[0]['cutoff_date'] ?? null,
+                'next_vacation' => empty($Datos[1]['dv']) ? null : $Datos[1]['dv'],
                 'expiration_of_next_vacation' => empty($Datos[1]['cutoff_date']) ? null : $Datos[1]['cutoff_date'],
                 'direct_manager_status' => $Solicitud->direct_manager_status,
                 'rh_status' => $Solicitud->rh_status,
@@ -1244,9 +1247,8 @@ class VacationRequestController extends Controller
     {
         $user = auth()->user();
 
-        $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->orderBy('created_at', 'desc')->get();
-        $sumaAprobadas = count($Solicitudes);
-
+        $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->orderBy('created_at', 'desc')->paginate(5);
+        $sumaAprobadas = $Solicitudes->total();
         $SolicitudesAprobadas = [];
         foreach ($Solicitudes as $Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
@@ -1314,8 +1316,8 @@ class VacationRequestController extends Controller
             ->where('direct_manager_status', 'Aprobada')
             ->where('rh_status', 'Pendiente')
             ->orderBy('created_at', 'desc')
-            ->get();
-        $sumaPendientes = count($SolicitudesPendientes);
+            ->paginate(5);
+        $sumaPendientes = $SolicitudesPendientes->total();
 
         $Pendientes = [];
         foreach ($SolicitudesPendientes as $Solicitud) {
@@ -1380,9 +1382,9 @@ class VacationRequestController extends Controller
         $SolicitudesPendientes = $Pendientes;
 
         $SolicitudesRechazadas = DB::table('vacation_requests')->where('direct_manager_status', 'Cancelada por el usuario')
-            ->where('rh_status', 'Cancelada por el usuario')->orderBy('created_at', 'desc')->get();
+            ->where('rh_status', 'Cancelada por el usuario')->orderBy('created_at', 'desc')->paginate(5);
 
-        $sumaCanceladasUsuario = count($SolicitudesRechazadas);
+        $sumaCanceladasUsuario = $SolicitudesRechazadas->total();
 
         $rechazadas = [];
         foreach ($SolicitudesRechazadas as $Solicitud) {
@@ -3340,7 +3342,7 @@ class VacationRequestController extends Controller
 
     public function MakeUpVacations(Request $request)
     {
-        dd($request);
+        //dd($request);
         $request->validate([
             'team' => 'required',
             'commentary' => 'required',
@@ -3350,8 +3352,6 @@ class VacationRequestController extends Controller
         ]);
 
         $usuarios = $request->team;
-        $usuariosCon2Periodos = [];
-        $usuariosCon1Periodo = [];
         $fechaActual = Carbon::now();
         $vacaciones = DB::table('vacations_availables')
             ->where('cutoff_date', '>=', $fechaActual)
@@ -3359,93 +3359,129 @@ class VacationRequestController extends Controller
             ->orderBy('cutoff_date', 'asc')
             ->get();
 
-        // Agrupa las vacaciones por usuario
-        $vacacionesPorUsuario = [];
+        $Datos = [];
         foreach ($vacaciones as $vaca) {
-            $vacacionesPorUsuario[$vaca->users_id][] = $vaca->dv;
+            $Datos[$vaca->users_id][] = [
+                'dv' => $vaca->dv,
+                'cutoff_date' => $vaca->cutoff_date,
+                'period' => $vaca->period,
+                'days_enjoyed' => $vaca->days_enjoyed,
+                'waiting' => $vaca->waiting,
+                'days_availables' => $vaca->days_availables,
+            ];
         }
 
-        foreach ($usuarios as $user) {
-            $numPeriodos = isset($vacacionesPorUsuario[$user]) ? count($vacacionesPorUsuario[$user]) : 0;
+        if ($request->Periodo === 'primer_periodo') {
+            if ($request->Opcion === 'aumentar_dias') {
+                foreach ($usuarios as $usuario) {
+                    if (isset($Datos[$usuario][0])) {
+                        $primerdv = $Datos[$usuario][0]['dv'];
+                        $totalnuevodv = $primerdv + $request->days;
+                        DB::table('vacations_availables')
+                            ->where('users_id', $usuario)
+                            ->where('dv', $primerdv)
+                            ->update(['dv' => $totalnuevodv]);
 
-            if ($numPeriodos === 2) {
-                $usuariosCon2Periodos[] = $user;
-            } elseif ($numPeriodos === 1) {
-                $usuariosCon1Periodo[] = $user;
+                        MakeUpVacations::create([
+                            'user_id' => $usuario,
+                            'description' => $request->commentary,
+                            'num_days' => $request->days
+                        ]);
+                    }
+                }
+                return  back()->with('message', 'Se aumentaron los días exitosamente.');
+            }
+            if ($request->Opcion === 'descontar_dias') {
+                foreach ($usuarios as $usuario) {
+                    if (isset($Datos[$usuario][0])) {
+                        $primerdv = $Datos[$usuario][0]['dv'];
+                        $totalnuevodv = $primerdv - $request->days;
+                        DB::table('vacations_availables')
+                            ->where('users_id', $usuario)
+                            ->where('dv', $primerdv)
+                            ->update(['dv' => $totalnuevodv]);
+
+                        MakeUpVacations::create([
+                            'user_id' => $usuario,
+                            'description' => $request->commentary,
+                            'subtract_days' => $request->days
+                        ]);
+                    }
+                }
+                return  back()->with('message', 'Se descontaron los días exitosamente.');
             }
         }
 
-        $resultado = [
-            'Usuarios con 2 periodos' => $usuariosCon2Periodos,
-            'Usuarios con 1 periodo' => $usuariosCon1Periodo,
-        ];
-
-        if($request->Periodo == 'segundo_periodo')
-        {
-            
-        }
-
-        if($request->Periodo == 'primer_periodo')
-        {
-
-        }
-        // Impresión del resultado
-        dd($resultado);
-        //dd($numPeriodo);
-
-
-        $fechactual = Carbon::now()->format('Y-m-d');
-        $num_days = $request->num_days;
-        if (count($Datos) > 1) {
-            $PrimerasVacaciones = (int) $Datos[0]['dv'];
-            $SegundasVacaciones = (int) $Datos[1]['dv'];
-            $PrimerPeriod = $Datos[0]['period'];
-            $SegundoPeriod = $Datos[1]['period'];
-            $caducidadperidouno = Carbon::parse($Datos[0]['cutoff_date']);
-            $caducidadperidodos = Carbon::parse($Datos[1]['cutoff_date']);
-            $diasRestantesPeriodoUno = $caducidadperidouno->diffInDays($fechactual);
-            $diasRestantesPeriodoDos = $caducidadperidodos->diffInDays($fechactual);
-
-            if ($diasRestantesPeriodoUno >= 30) {
-                $newdv = $PrimerasVacaciones + $num_days;
-                MakeUpVacations::create([
-                    'user_id' => $request->user_id,
-                    'description' => $request->description,
-                    'num_days' => $num_days
-                ]);
-                DB::table('vacations_availables')->where('users_id', $request->user_id)->where('period', $PrimerPeriod)->update(
-                    [
-                        'dv' => $newdv,
-                    ]
-                );
-            } else {
-                $newdvtwo = $SegundasVacaciones + $num_days;
-                MakeUpVacations::create([
-                    'user_id' => $request->user_id,
-                    'description' => $request->description,
-                    'num_days' => $num_days
-                ]);
-                DB::table('vacations_availables')->where('users_id', $request->user_id)->where('period', $SegundoPeriod)->update(
-                    [
-                        'dv' => $newdvtwo,
-                    ]
-                );
+        $usuariosSinSegundoPeriodo = [];
+        if ($request->Periodo === 'segundo_periodo') {
+            foreach ($usuarios as $usuario) {
+                if (!isset($Datos[$usuario][1])) {
+                    $usuariosSinSegundoPeriodo[] = $usuario;
+                }
             }
-        } elseif (count($Datos) == 1) {
-            $PrimerPeriod = $Datos[0]['period'];
-            $newdv = $Datos[0]['dv'] + $num_days;
-            MakeUpVacations::create([
-                'user_id' => $request->user_id,
-                'description' => $request->description,
-                'num_days' =>  $num_days,
-            ]);
-            DB::table('vacations_availables')->where('users_id', $request->user_id)->where('period', $PrimerPeriod)->update(
-                [
-                    'dv' => $newdv,
-                ]
-            );
+
+            if ($request->Opcion === 'aumentar_dias') {
+                foreach ($usuarios as $usuario) {
+                    if (isset($Datos[$usuario][1])) {
+                        $primerdv = $Datos[$usuario][1]['dv'];
+                        $totalnuevodv = $primerdv + $request->days;
+                        DB::table('vacations_availables')
+                            ->where('users_id', $usuario)
+                            ->where('dv', $primerdv)
+                            ->update(['dv' => $totalnuevodv]);
+
+                        MakeUpVacations::create([
+                            'user_id' => $usuario,
+                            'description' => $request->commentary,
+                            'num_days' => $request->days
+                        ]);
+                    }
+                }
+
+                if ($usuariosSinSegundoPeriodo == null) {
+                    return back()->with('message', 'Se aumentaron los días exitosamente.');
+                }
+
+                $Name = [];
+                foreach ($usuariosSinSegundoPeriodo as $nameUser) {
+                    $usuarioInfo = User::where('id', $nameUser)->first();
+                    $Name[] = $usuarioInfo->name . ' ' . $usuarioInfo->lastname;
+                }
+                $users = implode(', ', $Name);
+                return back()->with('message', 'Se aumentaron los días exitosamente, sin embargo, estos usuarios: ' . $users . ' ' . 'solo tienen un periodo, por lo tanto no se les aumentaron los días.');
+            }
+
+            if ($request->Opcion === 'descontar_dias') {
+                foreach ($usuarios as $usuario) {
+                    if (isset($Datos[$usuario][1])) {
+                        $primerdv = $Datos[$usuario][1]['dv'];
+                        $totalnuevodv = $primerdv - $request->days;
+                        DB::table('vacations_availables')
+                            ->where('users_id', $usuario)
+                            ->where('dv', $primerdv)
+                            ->update(['dv' => $totalnuevodv]);
+
+                        MakeUpVacations::create([
+                            'user_id' => $usuario,
+                            'description' => $request->commentary,
+                            'subtract_days' => $request->days
+                        ]);
+                    }
+                }
+            }
+            if ($usuariosSinSegundoPeriodo == null) {
+                return back()->with('message', 'Se descontaron los días exitosamente.');
+            }
+
+            $Name = [];
+            foreach ($usuariosSinSegundoPeriodo as $nameUser) {
+                $usuarioInfo = User::where('id', $nameUser)->first();
+                $Name[] = $usuarioInfo->name . ' ' . $usuarioInfo->lastname;
+            }
+            $users = implode(', ', $Name);
+
+            return back()->with('message', 'Se descontaron los días exitosamente, sin embargo, estos usuarios: ' . $users . ' ' . 'solo tienen un periodo, por lo tanto, no se les descontaron los día.');
         }
-        return back()->with('message', 'Se le agrego exitosamente los días de vacaciones al usuario.');
     }
 
     ////////////DATOS DE USUARIOS///////////////////
