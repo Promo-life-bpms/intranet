@@ -385,7 +385,7 @@
                                 </span>
                             </div>
                             <div>
-                                <strong>{{ $porcentajeespecial }}</strong>
+                                <strong>{{ $porcentajeespecial }}%</strong>
                             </div>
                         </div>
 
@@ -499,7 +499,6 @@
                             enctype="multipart/form-data">
                             @csrf
                             <div class="mt-2" id="dynamicContentEncabezado">
-                                <!-- Aquí se va a cambiar el contenido según la tarjeta seleccionada -->
                             </div>
                             <div id="request_values"></div>
 
@@ -507,7 +506,6 @@
                                 <div class="mr-2">
 
                                     <div class="mt-2" id="textDinamicCalendar">
-                                        <!-- Aquí se va a cambiar el contenido según la tarjeta seleccionada -->
                                     </div>
 
                                     <div class="mt-2" id='calendario'></div>
@@ -515,7 +513,6 @@
                                 </div>
                                 <div class="mt-5">
                                     <div class="mt-2" id="dynamicContentFormaPago">
-                                        <!-- Aquí se va a cambiar el contenido según la tarjeta seleccionada -->
                                     </div>
 
                                     <div class="mt-3">
@@ -1817,7 +1814,7 @@
                         textTime.classList.add('d-none');
                         //Cambiar el texto de la hora de regreso a Hora de llegada
                         document.querySelector('#horaEntrada').querySelector('span').innerText =
-                        'Hora de llegada: ';
+                            'Hora de llegada: ';
                         break;
                     default:
                         horaSalida.classList.add('d-none');

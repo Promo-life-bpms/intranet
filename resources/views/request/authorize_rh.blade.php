@@ -458,7 +458,7 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">Reposición de días</h5>
+                        <h5 class="modal-title" id="modalTitle">Aumento/Descuento de días</h5>
                         <button id="ButtonCloseReposicion" type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
@@ -478,8 +478,8 @@
                                 </div>
                                 <div class="col-4">
                                     <span>Días: </span>
-                                    <input name='days' id="days" type="number" class="form-control"
-                                        placeholder="Días a reponer">
+                                    <input name='days' id="days" type="number" min="0"
+                                        class="form-control" placeholder="Días">
                                 </div>
 
                                 <div class="col-4">
@@ -528,7 +528,7 @@
                                 </div>
 
                                 <div class="d-flex justify-content-end mt-2">
-                                    <button class="btn btn-primary" type="submit">Aceptar</button>
+                                    <button id="acepForm" class="btn btn-primary" type="submit">Aceptar</button>
                                 </div>
                         </form>
                     </div>
@@ -739,8 +739,8 @@
             form.reset();
             // Limpiar el select múltiple de Select2
             $('#select2').val(null).trigger('change'); // Con jQuery y Select2
-
         });
+
 
         //Poner por defecto la tarjeta 1 activa
         document.getElementById('tarjeta1').classList.add('tarjetaRh1-activa');
