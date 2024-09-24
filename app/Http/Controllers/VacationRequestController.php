@@ -173,12 +173,6 @@ class VacationRequestController extends Controller
             }
         }
 
-        /* // Eliminar duplicados y volver a ordenar las fechas de las solicitudes
-        $vacacionesDias = array_unique($vacacionesDias);
-        sort($vacacionesDias);
-
-        $permisosEspecialesDias = array_unique($permisosEspecialesDias);
-        sort($permisosEspecialesDias); */
 
         // Crear el arreglo final
         $vacacionescalendar = [
@@ -190,9 +184,28 @@ class VacationRequestController extends Controller
 
         ];
 
-        // dd($vacacionescalendar);
 
-        return view('request.vacations-collaborators', compact('users', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar'));
+        //PERMISOS ESPECIALES//
+        $currentYear = date('Y');
+        $AsuntosPersonales = DB::table('vacation_requests')
+            ->where('user_id', $user->id)
+            ->where('request_type_id', 5)
+            ->where('direct_manager_status', 'Aprobada')
+            ->where('rh_status', 'Aprobada')
+            ->whereBetween('created_at', ["$currentYear-01-01 00:00:00", "$currentYear-12-31 23:59:59"])
+            ->get();
+
+        $contadorAsuntosPersonales = 0;
+        foreach ($AsuntosPersonales as $asuntoPersonal) {
+            $moreInformation = json_decode($asuntoPersonal->more_information, true);
+            if (!empty($moreInformation) && isset($moreInformation[0]['Tipo_de_permiso_especial']) && $moreInformation[0]['Tipo_de_permiso_especial'] === 'Asuntos personales') {
+                $contadorAsuntosPersonales++;
+            }
+        }
+
+        $porcentajeespecial = round(($contadorAsuntosPersonales / 3) * 100);
+        
+        return view('request.vacations-collaborators', compact('users', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar', 'porcentajeespecial'));
     }
 
     public function CreatePurchase(Request $request)
