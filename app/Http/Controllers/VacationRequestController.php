@@ -1243,8 +1243,8 @@ class VacationRequestController extends Controller
         $HeIsBossOf = Employee::where('jefe_directo_id', $user->id)->where('status', 1)->pluck('user_id');
         $Solicitudes = DB::table('vacation_requests')->whereIn('user_id', $HeIsBossOf)->orderBy('created_at', 'desc')->paginate(5);
         $SumaSolicitudes = $Solicitudes->total();
-        $InfoSolicitud = [];
-        foreach ($Solicitudes as $Solicitud) {
+        // Recorre las solicitudes paginadas, pero no crees un nuevo array desde cero
+        $Solicitudes->getCollection()->transform(function ($Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
             $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
             $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
@@ -1283,7 +1283,7 @@ class VacationRequestController extends Controller
                 ];
             }
 
-            $InfoSolicitud[] = [
+            return (object)[
                 'image' => $nameUser->image,
                 'created_at' => $Solicitud->created_at,
                 'id' => $Solicitud->id,
@@ -1303,10 +1303,9 @@ class VacationRequestController extends Controller
                 'time' => in_array($Solicitud->request_type_id, [2]) ? $time : null,
                 'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
             ];
-        }
+        });
 
-        $InfoSolicitudesUsuario = json_encode($InfoSolicitud);
-        return view('request.authorize', compact('InfoSolicitud', 'InfoSolicitudesUsuario', 'SumaSolicitudes'));
+        return view('request.authorize', compact('Solicitudes', 'SumaSolicitudes'));
     }
 
     public function authorizeRequestRH()
