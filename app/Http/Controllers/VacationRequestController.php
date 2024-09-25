@@ -3492,81 +3492,91 @@ class VacationRequestController extends Controller
         }
 
         if ($Solicitud->request_type_id == 1) {
-            DB::table('vacation_requests')->where('id', $request->id)->update([
-                'rh_status' => 'Rechazada',
-                'commentary' => $request->commentary
-            ]);
-
-            DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
-                'status' => 0
-            ]);
-
             $fechaActual = Carbon::now();
             $Vacaciones = DB::table('vacations_availables')
-                ->where('users_id', $Solicitud->user_id)
+                ->where('users_id', $user->id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
                 ->get();
+
             $Datos = [];
             foreach ($Vacaciones as $vaca) {
                 $Datos[] = [
-                    'id' => $vaca->id,
                     'dv' => $vaca->dv,
                     'cutoff_date' => $vaca->cutoff_date,
                     'period' => $vaca->period,
                     'days_enjoyed' => $vaca->days_enjoyed,
                     'waiting' => $vaca->waiting,
                     'days_enjoyed' => $vaca->days_enjoyed,
-                    'days_availables' => $vaca->days_availables
+                    'days_availables' => $vaca->days_availables,
+                    'id' => $vaca->id,
                 ];
             }
 
-            $dias = VacationDays::where('vacation_request_id', $request->id)->count();
-            if (count($Datos) > 1) {
-                $datoswaiting = $Datos[0]['waiting'];
-                $datoswaitingdos = $Datos[1]['waiting'];
-                $peridoUno = $Datos[0]['period'];
-                $peridoDos = $Datos[1]['period'];
-                if ($dias <= $datoswaiting) {
-                    $menosWaiting = $datoswaiting - $dias;
+            $idOne = (int) $Datos[0]['id'];
+            $idTwo = (int) $Datos[1]['id'];
+            $WaitingOne = $Datos[0]['waiting'];
+            $WaitingTwo = $Datos[1]['waiting'];
+            $dvOne = $Datos[0]['dv'];
+            $dvTwo = $Datos[1]['dv'];
+            $InfoVacaciones = DB::table('vacation_information')->where('id_vacation_request', $request->id)->get();
+            $total = count($InfoVacaciones);
+            if ($total == 2) {
+                $InfoTwo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idTwo)->first();
+                $InfoOne = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idOne)->first();
+                $totaldaysOne = $InfoOne->total_days;
+                $newWaiting = $WaitingOne - $totaldaysOne;
+                $totaldvOne = $dvOne + $totaldaysOne;
 
-                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
-                        'waiting' => $menosWaiting
-                    ]);
-                } elseif ($dias > $datoswaiting) {
-                    $restawaiting = ($datoswaiting - $dias) * (-1);
-                    $finalwaitinguno = $dias - $restawaiting;
-                    $waiting2 = $datoswaitingdos - $restawaiting;
+                $totaldaysTwo = $InfoTwo->total_days;
+                $newWaitingTwo = $WaitingTwo - $totaldaysTwo;
+                $totaldvTwo = $dvTwo + $newWaitingTwo;
 
-                    if (($finalwaitinguno <= $datoswaiting) && ($restawaiting <= $datoswaitingdos)) {
-                        $menosWaiting = $datoswaiting - $finalwaitinguno;
-                        ////waiting 1////
-                        DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
-                            'waiting' => $menosWaiting,
+                DB::table('vacation_requests')->where('id', $request->id)->update([
+                    'rh_status' => 'Rechazada',
+                    'commentary' => $request->commentary
+                ]);
+    
+                DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                    'status' => 0
+                ]);
 
-                        ]);
-                        ////waiting 2////
-                        DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoDos)->update([
-                            'waiting' => $waiting2,
-                        ]);
-                    }
-                } else {
-                    return back()->with('error', 'No tienes días reservados.');
-                }
-                return back()->with('message', 'Se rechazó la solicitud exitosamente.');
-            } elseif (count($Datos) == 1) {
-                $diasreservados = $Datos[0]['waiting'];
-                $PeridoUno = $Datos[0]['period'];
-                if ($dias <= $diasreservados) {
-                    $menosWaiting = $diasreservados - $dias;
-                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $PeridoUno)->update([
-                        'waiting' => $menosWaiting,
-                    ]);
-                } else {
-                    return back()->with('error', 'No tienes días reservados.');
-                }
-                // dd('Se rechazó la solicitud exitosamente.');
-                return back()->with('message', 'Se rechazó la solicitud exitosamente.');
+                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
+                    'waiting' => $newWaiting,
+                    'dv' => $totaldvOne
+                ]);
+
+                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
+                    'waiting' => $newWaitingTwo,
+                    'dv' => $totaldvTwo
+                ]);
+
+                return back()->with('message', 'Vacaciones actualizadas correctamente');
+            }
+
+            if ($total == 1) {
+                $VacaInfo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->first();
+                $id_vacations_availables = $VacaInfo->id_vacations_availables;
+                $VacacionesAviles = DB::table('vacations_availables')->where('id', $id_vacations_availables)->first();
+                $totaldaysOne = $VacaInfo->total_days;
+                $newWaiting = $VacacionesAviles->waiting - $totaldaysOne;
+                $totaldv = $VacacionesAviles->dv + $totaldaysOne;
+
+                DB::table('vacation_requests')->where('id', $request->id)->update([
+                    'rh_status' => 'Rechazada',
+                    'commentary' => $request->commentary
+                ]);
+    
+                DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                    'status' => 0
+                ]);
+
+                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $id_vacations_availables)->update([
+                    'waiting' => $newWaiting,
+                    'dv' => $totaldv
+                ]);
+
+                return back()->with('message', 'Vacaciones actualizadas correctamente');
             }
         } else {
             DB::table('vacation_requests')->where('id', $request->id)->update([
@@ -3595,99 +3605,91 @@ class VacationRequestController extends Controller
         }
 
         if ($Solicitud->request_type_id == 1) {
-            DB::table('vacation_requests')->where('id', $request->id)->update([
-                'rh_status' => 'Aprobada'
-            ]);
-
-            DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
-                'status' => 1
-            ]);
-
             $fechaActual = Carbon::now();
             $Vacaciones = DB::table('vacations_availables')
-                ->where('users_id', $Solicitud->user_id)
+                ->where('users_id', $user->id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
                 ->get();
+
             $Datos = [];
             foreach ($Vacaciones as $vaca) {
                 $Datos[] = [
-                    'id' => $vaca->id,
                     'dv' => $vaca->dv,
                     'cutoff_date' => $vaca->cutoff_date,
                     'period' => $vaca->period,
                     'days_enjoyed' => $vaca->days_enjoyed,
                     'waiting' => $vaca->waiting,
                     'days_enjoyed' => $vaca->days_enjoyed,
-                    'days_availables' => $vaca->days_availables
+                    'days_availables' => $vaca->days_availables,
+                    'id' => $vaca->id,
                 ];
             }
 
-            $dias = VacationDays::where('vacation_request_id', $request->id)->count();
-            if (count($Datos) > 1) {
-                $datoswaiting = $Datos[0]['waiting'];
-                $datoswaitingdos = $Datos[1]['waiting'];
-                $peridoUno = $Datos[0]['period'];
-                $peridoDos = $Datos[1]['period'];
-                if ($dias <= $datoswaiting) {
-                    $menosWaiting = $datoswaiting - $dias;
-                    $nuevodaysenjoyed = $Datos[0]['days_enjoyed'] + $dias;
-                    $nuevodv = $Datos[0]['dv'] - $dias;
+            $idOne = (int) $Datos[0]['id'];
+            $idTwo = (int) $Datos[1]['id'];
+            $WaitingOne = $Datos[0]['waiting'];
+            $WaitingTwo = $Datos[1]['waiting'];
+            $DaysEnjoyedOne = $Datos[0]['days_enjoyed'];
+            $DaysEnjoyedTwo = $Datos[1]['days_enjoyed'];
+            $InfoVacaciones = DB::table('vacation_information')->where('id_vacation_request', $request->id)->get();
+            $total = count($InfoVacaciones);
+            if ($total == 2) {
+                $dvTwo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idTwo)->first();
+                $dvOne = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idOne)->first();
+                $totaldaysOne = $dvOne->total_days;
+                $newWaiting = $WaitingOne - $totaldaysOne;
+                $totalDaysEnjoyedOne = $DaysEnjoyedOne + $totaldaysOne;
 
+                $totaldaysTwo = $dvTwo->total_days;
+                $newWaitingTwo = $WaitingTwo - $totaldaysTwo;
+                $totalDaysEnjoyedtWO = $DaysEnjoyedTwo + $totaldaysOne;
 
-                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
-                        'waiting' => $menosWaiting,
-                        'days_enjoyed' => $nuevodaysenjoyed,
-                        'dv' => $nuevodv
-                    ]);
-                } elseif ($dias > $datoswaiting) {
-                    $restawaiting = ($datoswaiting - $dias) * (-1);
-                    $finalwaitinguno = $dias - $restawaiting;
-                    $waiting2 = $datoswaitingdos - $restawaiting;
-                    $nuevosdisfrutados = $Datos[1]['days_enjoyed'] + $restawaiting;
-                    $nuevodvperiododos = $Datos[1]['dv'] - $restawaiting;
+                DB::table('vacation_requests')->where('id', $request->id)->update([
+                    'rh_status' => 'Aprobada',
+                ]);
 
-                    if (($finalwaitinguno <= $datoswaiting) && ($restawaiting <= $datoswaitingdos)) {
-                        $menosWaiting = $datoswaiting - $finalwaitinguno;
-                        $nuevodaysenjoyed = $Datos[0]['days_enjoyed'] + $finalwaitinguno;
-                        $nuevodv = $Datos[0]['dv'] - $finalwaitinguno;
+                DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                    'status' => 1
+                ]);
 
-                        ////waiting 1////
-                        DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoUno)->update([
-                            'waiting' => $menosWaiting,
-                            'days_enjoyed' => $nuevodaysenjoyed,
-                            'dv' => $nuevodv
-                        ]);
-                        ////waiting 2////
-                        DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $peridoDos)->update([
-                            'waiting' => $waiting2,
-                            'days_enjoyed' => $nuevosdisfrutados,
-                            'dv' => $nuevodvperiododos
-                        ]);
-                    }
-                } else {
-                    return back()->with('error', 'No tienes vacaciones disponibles.');
-                }
+                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
+                    'waiting' => $newWaiting,
+                    'days_enjoyed' => $totalDaysEnjoyedOne
+                ]);
 
-                return back()->with('message', 'Autorización exitosa');
-            } elseif (count($Datos) == 1) {
-                $diasreservados = $Datos[0]['waiting'];
-                $diasdisponibles = $Datos[0]['dv'];
-                $totalvacaionestomadas = $Datos[0]['days_enjoyed'];
-                $PeridoUno = $Datos[0]['period'];
-                if ($dias <= $diasreservados) {
-                    $menosWaiting = $diasreservados - $dias;
-                    $nuevodaysenjoyed = $totalvacaionestomadas + $dias;
-                    $nuevodv =  $diasdisponibles - $dias;
-                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('period', $PeridoUno)->update([
-                        'waiting' => $menosWaiting,
-                        'days_enjoyed' => $nuevodaysenjoyed,
-                        'dv' => $nuevodv
-                    ]);
-                } else {
-                    return back()->with('error', 'No tienes vacaciones disponibles.');
-                }
+                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
+                    'waiting' => $newWaitingTwo,
+                    'days_enjoyed' => $totalDaysEnjoyedtWO
+                ]);
+
+                return back()->with('message', 'Vacaciones actualizadas correctamente');
             }
+
+            if ($total == 1) {
+                $VacaInfo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->first();
+                $id_vacations_availables = $VacaInfo->id_vacations_availables;
+                $VacacionesAviles = DB::table('vacations_availables')->where('id', $id_vacations_availables)->first();
+                $totaldaysOne = $VacaInfo->total_days;
+                $newWaiting = $VacacionesAviles->waiting - $totaldaysOne;
+                $totalDaysEnjoyedOne = $VacacionesAviles->days_enjoyed + $totaldaysOne;
+
+                DB::table('vacation_requests')->where('id', $request->id)->update([
+                    'rh_status' => 'Aprobada'
+                ]);
+
+                DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                    'status' => 1
+                ]);
+
+                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $id_vacations_availables)->update([
+                    'waiting' => $newWaiting,
+                    'days_enjoyed' => $totalDaysEnjoyedOne
+                ]);
+
+                return back()->with('message', 'Vacaciones actualizadas correctamente');
+            }
+
             return back()->with('message', 'Autorización exitosa');
         } else {
             DB::table('vacation_requests')->where('id', $request->id)->update([
