@@ -1222,8 +1222,8 @@ class VacationRequestController extends Controller
     {
         $user = auth()->user();
 
-        $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->orderBy('created_at', 'desc')->paginate(5);
-        $sumaAprobadas = $Solicitudes->total();
+        $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->orderBy('created_at', 'desc')->get();
+        $sumaAprobadas = count($Solicitudes);
         $SolicitudesAprobadas = [];
         foreach ($Solicitudes as $Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
@@ -1291,8 +1291,8 @@ class VacationRequestController extends Controller
             ->where('direct_manager_status', 'Aprobada')
             ->where('rh_status', 'Pendiente')
             ->orderBy('created_at', 'desc')
-            ->paginate(5);
-        $sumaPendientes = $SolicitudesPendientes->total();
+            ->get();
+        $sumaPendientes = count($SolicitudesPendientes);
 
         $Pendientes = [];
         foreach ($SolicitudesPendientes as $Solicitud) {
@@ -1357,9 +1357,9 @@ class VacationRequestController extends Controller
         $SolicitudesPendientes = $Pendientes;
 
         $SolicitudesRechazadas = DB::table('vacation_requests')->where('direct_manager_status', 'Cancelada por el usuario')
-            ->where('rh_status', 'Cancelada por el usuario')->orderBy('created_at', 'desc')->paginate(5);
+            ->where('rh_status', 'Cancelada por el usuario')->orderBy('created_at', 'desc')->get();
 
-        $sumaCanceladasUsuario = $SolicitudesRechazadas->total();
+        $sumaCanceladasUsuario = count($SolicitudesRechazadas);
 
         $rechazadas = [];
         foreach ($SolicitudesRechazadas as $Solicitud) {
@@ -1445,7 +1445,6 @@ class VacationRequestController extends Controller
             ];
         }
 
-        // dd($Pendientes);
 
         return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', 'IdandNameUser', 'vacacionesagregadas'));
     }

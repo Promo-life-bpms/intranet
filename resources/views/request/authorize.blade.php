@@ -515,6 +515,9 @@
                     } else if (request_type === 'Ausencia' && valueType === 'salida_antes') {
                         timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
                             '</strong></span> ';
+                    } else if (request_type === 'Ausencia' && valueType === 'retardo') {
+                        timeStatusDiv.innerHTML = '<span>Hora de llegada: <strong>' + startValue +
+                            '</strong></span> ';
                     } else {
                         timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
                     }
