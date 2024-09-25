@@ -83,10 +83,6 @@
                 </div>
             </div>
 
-            <div id="buttonUpdateDays" class="d-flex justify-content-end mt-3">
-                <button id="buttonReposicion" class="btn"
-                    style="background-color: var(--color-target-1); color: white; ">Reposición</button>
-            </div>
 
 
             <div class="mt-3" style="min-width: 100% !important;">
@@ -255,6 +251,10 @@
 
                 {{-- Tabla para canceladas por el usuario --}}
                 <div id="tableCanceladas" style="display: none">
+                    <div id="buttonUpdateDays" class="d-flex justify-content-end mb-2">
+                        <button id="buttonReposicion" class="btn"
+                            style="background-color: var(--color-target-1); color: white; ">Reposición</button>
+                    </div>
                     <table class="table" id="tableCanceladas" style="min-width: 100% !important;">
                         <thead style="background-color: #072A3B; color: white;">
                             <tr>
@@ -264,6 +264,7 @@
                                 <th scope="col" style="text-align: center;">Días ausente</th>
                                 <th scope="col" style="text-align: center;">Justificante</th>
                                 <th scope="col" style="text-align: center;">Motivo</th>
+                                <th scope="col" style="text-align: center;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -288,6 +289,26 @@
                                     </td>
                                     <td style="text-align: center;">
                                         {{ $rechazada['commentary'] }}
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <!-- Formulario para rechazar -->
+                                        <form action="{{ route('create.vacation.or.leave.request') }}" method="POST"
+                                            style="display:inline;">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ $rechazada['id'] }}">
+                                            <input type="hidden" name="value" value="rechazada">
+                                            <button type="submit" class="btn btn-danger">Rechazar</button>
+                                        </form>
+
+                                        <!-- Formulario para aceptar -->
+                                        <form action="{{ route('create.vacation.or.leave.request') }}" method="POST"
+                                            style="display:inline;">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ $rechazada['id'] }}">
+                                            <input type="hidden" name="value" value="aprobada">
+                                            <button type="submit" class="btn btn-primary">Aceptar</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -492,19 +513,19 @@
 
                                 <div class="col-4">
                                     <div class="mr-4 mb-3">
-                                        <span>Selecciona el periodo: </span>
+                                        <span>Periodo: </span>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="Periodo"
                                                 id="primer_periodo" value="primer_periodo">
                                             <label class="form-check-label" for="primer_periodo">
-                                                Primero
+                                                Viejo
                                             </label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="Periodo"
                                                 id="segundo_periodo" value="segundo_periodo">
                                             <label class="form-check-label" for="segundo_periodo">
-                                                Segundo
+                                                Nuevo
                                             </label>
                                         </div>
                                     </div>

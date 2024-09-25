@@ -1543,7 +1543,6 @@ class VacationRequestController extends Controller
             ];
         }
 
-        // dd($SolicitudesPendientes);
 
         return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', 'IdandNameUser', 'vacacionesagregadas'));
     }

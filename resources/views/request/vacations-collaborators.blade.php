@@ -168,9 +168,9 @@
                             <select id="selectJD" style="width: max-content" class="form-select mr-1"
                                 aria-label="Default select example">
                                 <option value="">Status Jefe Directo</option>
-                                <option value="aprobadas">Aprobadas</option>
+                                <option value="Aprobada">Aprobadas</option>
                                 <option value="Pendiente">Pendientes</option>
-                                <option value="rechazadas">Rechazadas</option>
+                                <option value="Rechazada">Rechazadas</option>
                                 <option value="Cancelada por el usuario">Mis cancelaciones</option>
                             </select>
                         </div>
@@ -179,7 +179,7 @@
                             <select id="selectRh" style="width: max-content" class="form-select mr-1"
                                 aria-label="Default select example">
                                 <option value="">Status RH</option>
-                                <option value="aprobadas">Aprobadas</option>
+                                <option value="Aprobada">Aprobadas</option>
                                 <option value="Pendiente">Pendientes</option>
                                 <option value="rechazadas">Rechazadas</option>
                                 <option value="Cancelada por el usuario">Mis cancelaciones</option>
@@ -584,7 +584,7 @@
                                 <div class="col-6 mt-2">
                                     <strong> Tipo de solicitud especifica:</strong>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6 mt-2">
                                     <span id="value-type-request-specifies"></span>
                                 </div>
                             </div>
@@ -1554,11 +1554,13 @@
 
                 /* Habilitar o deshabiliar la sección de botones de acuerdo al estatus de la solicitud */
                 if (directManagerStatus === 'Cancelada por el usuario' && statusRh ===
-                    'Cancelada por el usuario' || statusRh === 'Aprobada') {
+                    'Cancelada por el usuario') {
                     document.getElementById('seccionOptionButton').style.display = 'none';
                     document.getElementById('ButtonEditRequest').classList.add('d-none');
+                } else if (statusRh === 'Aprobada') {
+                    document.getElementById('ButtonEditRequest').classList.add('d-none');
                 } else if (directManagerStatus === 'Rechazada') {
-                    document.getElementById('seccionOptionButton').style.display = 'none';
+                    // document.getElementById('seccionOptionButton').style.display = 'none';
                     document.getElementById('ButtonEditRequest').classList.add('d-none');
                 } else {
                     document.getElementById('seccionOptionButton').style.display = 'block';
@@ -1739,7 +1741,7 @@
                         <div class="mr-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="ausenciaTipo" id="retardo" value="retardo">
-                                <label class="form-check-label" for="retardo">Retardo</label>
+                                <label class="form-check-label" for="retardo">Atraso en la llegada</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="ausenciaTipo" id="salida_antes" value="salida_antes">
@@ -1751,7 +1753,7 @@
                             </div>
                         </div>
 
-                        <div style="width: 75.5%">
+                        <div style="width: 72%">
                             <span id="text-time" class="d-none" style="color: red">
                                 Toma en cuenta que si la ausencia supera las 4 horas, se descontará de los días de vacaciones.
                             </span>
@@ -1818,7 +1820,9 @@
                     case 'retardo':
                         horaSalida.classList.add('d-none');
                         horaEntrada.classList.remove('d-none');
-                        textTime.classList.add('d-none');
+                        textTime.classList.remove('d-none');
+                        document.querySelector('#text-time').innerText =
+                            'Solo puedes elegir hasta 4 horas después de la hora de ingreso.';
                         //Cambiar el texto de la hora de regreso a Hora de llegada
                         document.querySelector('#horaEntrada').querySelector('span').innerText =
                             'Hora de llegada: ';
