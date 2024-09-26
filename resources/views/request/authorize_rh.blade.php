@@ -310,7 +310,7 @@
 
                                     <td style="text-align: center;">
                                         <!-- Formulario para rechazar -->
-                                        <form action="{{ route('create.vacation.or.leave.request') }}" method="POST"
+                                        <form action="{{ route('confirm.rejected.by.rh') }}" method="POST"
                                             style="display:inline;">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $rechazada['id'] }}">
@@ -319,7 +319,7 @@
                                         </form>
 
                                         <!-- Formulario para aceptar -->
-                                        <form action="{{ route('create.vacation.or.leave.request') }}" method="POST"
+                                        <form action="{{ route('confirm.rejected.by.rh') }}" method="POST"
                                             style="display:inline;">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $rechazada['id'] }}">
