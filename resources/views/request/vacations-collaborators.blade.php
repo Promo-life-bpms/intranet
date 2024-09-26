@@ -153,43 +153,56 @@
 
                     <div class="row">
                         <div class="col-3 d-flex align-items-center justify-content-center">
-                            <select id="tipoSelect" style="width: max-content" class="form-select mr-1"
-                                aria-label="Default select example">
+                            <select id="tipoSelect" class="form-select">
                                 <option value="">Tipo de permiso</option>
-                                <option value="Vacaciones">Vacaciones</option>
-                                <option value="Ausencia">Ausencia</option>
-                                <option value="Permisos especiales">Permisos especiales</option>
-                                <option value="Incapacidad">Incapacidad</option>
-                                <option value="Paternidad">Paternidad</option>
+                                <option value="Vacaciones" {{ request('tipo') == 'Vacaciones' ? 'selected' : '' }}>
+                                    Vacaciones</option>
+                                <option value="Ausencia" {{ request('tipo') == 'Ausencia' ? 'selected' : '' }}>Ausencia
+                                </option>
+                                <option value="Permisos especiales"
+                                    {{ request('tipo') == 'Permisos especiales' ? 'selected' : '' }}>Permisos especiales
+                                </option>
+                                <option value="Incapacidad" {{ request('tipo') == 'Incapacidad' ? 'selected' : '' }}>
+                                    Incapacidad</option>
+                                <option value="Paternidad" {{ request('tipo') == 'Paternidad' ? 'selected' : '' }}>
+                                    Paternidad</option>
                             </select>
                         </div>
 
                         <div class="col-3 d-flex align-items-center justify-content-center">
-                            <select id="selectJD" style="width: max-content" class="form-select mr-1"
-                                aria-label="Default select example">
+                            <select id="selectJD" class="form-select">
                                 <option value="">Status Jefe Directo</option>
-                                <option value="Aprobada">Aprobadas</option>
-                                <option value="Pendiente">Pendientes</option>
-                                <option value="Rechazada">Rechazadas</option>
-                                <option value="Cancelada por el usuario">Mis cancelaciones</option>
+                                <option value="aprobadas" {{ request('jefeDirecto') == 'aprobadas' ? 'selected' : '' }}>
+                                    Aprobadas</option>
+                                <option value="Pendiente" {{ request('jefeDirecto') == 'Pendiente' ? 'selected' : '' }}>
+                                    Pendientes</option>
+                                <option value="rechazadas" {{ request('jefeDirecto') == 'rechazadas' ? 'selected' : '' }}>
+                                    Rechazadas</option>
+                                <option value="Cancelada por el usuario"
+                                    {{ request('jefeDirecto') == 'Cancelada por el usuario' ? 'selected' : '' }}>Mis
+                                    cancelaciones</option>
                             </select>
                         </div>
 
                         <div class="col-3 d-flex align-items-center justify-content-center">
-                            <select id="selectRh" style="width: max-content" class="form-select mr-1"
-                                aria-label="Default select example">
+                            <select id="selectRh" class="form-select">
                                 <option value="">Status RH</option>
-                                <option value="Aprobada">Aprobadas</option>
-                                <option value="Pendiente">Pendientes</option>
-                                <option value="rechazadas">Rechazadas</option>
-                                <option value="Cancelada por el usuario">Mis cancelaciones</option>
+                                <option value="aprobadas" {{ request('rhStatus') == 'aprobadas' ? 'selected' : '' }}>
+                                    Aprobadas</option>
+                                <option value="Pendiente" {{ request('rhStatus') == 'Pendiente' ? 'selected' : '' }}>
+                                    Pendientes</option>
+                                <option value="rechazadas" {{ request('rhStatus') == 'rechazadas' ? 'selected' : '' }}>
+                                    Rechazadas</option>
+                                <option value="Cancelada por el usuario"
+                                    {{ request('rhStatus') == 'Cancelada por el usuario' ? 'selected' : '' }}>Mis
+                                    cancelaciones</option>
                             </select>
                         </div>
 
                         <div class="col-3 d-flex align-items-center justify-content-center">
                             <span style=" margin-right: 0.5rem;">Dia:</span>
-                            <input id="fechaInput" placeholder="Fecha" type="date" class="form-control"
-                                style="width: 10rem; margin-right: 0.2rem;" />
+                            <input id="fechaInput" type="date" class="form-control"
+                                value="{{ request('fecha') }}" />
                             <i id="clearFecha" class="fas fa-times-circle" style="cursor: pointer;"></i>
                         </div>
                     </div>
@@ -303,7 +316,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end">
-                        {{ $vacaciones->links() }}
+                        {{ $solicitudes->appends(request()->input())->links() }}
                     </div>
                 </div>
             </div>
@@ -746,24 +759,7 @@
 
         let dateGlobal = '';
         // Eliminar la fecha seleccionada
-        document.getElementById('clearFecha').addEventListener('click', function() {
-            document.getElementById('fechaInput').value = '';
-            var rows = document.querySelectorAll('.solicitud-row');
-            rows.forEach(function(row) {
-                // Obtén las fechas asociadas a la fila (separadas por comas)
-                var days = row.getAttribute('data-days').split(',');
 
-                // Verifica si la fecha seleccionada está en las fechas de la fila
-                if (document.getElementById('fechaInput').value === '' ||
-                    document.getElementById('fechaInput').value === null ||
-                    document.getElementById('fechaInput').value === undefined
-                ) {
-                    row.style.display = ''; // Mostrar la fila
-                } else {
-                    row.style.display = 'none'; // Ocultar la fila
-                }
-            });
-        });
 
 
         const form = document.getElementById('miFormulario');
@@ -771,9 +767,14 @@
 
         // Agregar evento de envío al formulario
         form.addEventListener('submit', function() {
+            event.preventDefault();
+            const urlBase = window.location.origin + window.location.pathname; // Obtener la URL base sin parámetros
+            window.history.pushState({}, '', urlBase); // Actualizar la URL sin recargar la página
             submitButton.disabled = true;
-
             submitButton.innerHTML = 'Guardando...';
+
+            // Enviar el formulario
+            form.submit();
         });
 
 
@@ -1210,77 +1211,38 @@
                 }
             });
 
-            /* Filtrar solicitudes con respecto al select de tipo */
+
             document.getElementById('tipoSelect').addEventListener('change', function() {
-                var selectedTipo = this.value;
-                // Obtén todas las filas de la tabla
-                var rows = document.querySelectorAll('.solicitud-row');
-
-                rows.forEach(function(row) {
-                    // Verifica si el tipo de la fila coincide con la selección
-                    if (selectedTipo === "" || row.getAttribute('data-tipo') ===
-                        selectedTipo) {
-                        row.style.display = ''; // Mostrar la fila
-                    } else {
-                        row.style.display = 'none'; // Ocultar la fila
-                    }
-                });
+                applyFilters();
             });
 
-            /* Filtrar solicitudes con respecto al select del estatus de RH */
-            document.getElementById('selectRh').addEventListener('change', function() {
-                var selectedStatusRh = this.value;
-                // Obtén todas las filas de la tabla
-                var rows = document.querySelectorAll('.solicitud-row');
-                rows.forEach(function(row) {
-                    // Verifica si el tipo de la fila coincide con la selección
-                    if (selectedStatusRh === "" || row.getAttribute('data-statusRh') ===
-                        selectedStatusRh) {
-                        row.style.display = ''; // Mostrar la fila
-                    } else {
-                        row.style.display = 'none'; // Ocultar la fila
-                    }
-                });
-            });
-
-
-            /* Filtrar solicitudes con respecto al select del estatus de jefe directo */
             document.getElementById('selectJD').addEventListener('change', function() {
-                var selectedStatusDirectManager = this.value;
-                // console.log(row.getAttribute('data-statusRh'));
-                // Obtén todas las filas de la tabla
-                var rows = document.querySelectorAll('.solicitud-row');
-                rows.forEach(function(row) {
-                    // Verifica si el tipo de la fila coincide con la selección
-                    if (selectedStatusDirectManager === "" || row.getAttribute(
-                            'data-direct_manager_status') ===
-                        selectedStatusDirectManager) {
-                        row.style.display = ''; // Mostrar la fila
-                    } else {
-                        row.style.display = 'none'; // Ocultar la fila
-                    }
-                });
+                applyFilters();
             });
 
-
-
-            document.getElementById('fechaInput').addEventListener('input', function() {
-                var selectedDate = this.value; // La fecha seleccionada en el formato YYYY-MM-DD
-                // Obtén todas las filas de la tabla
-                var rows = document.querySelectorAll('.solicitud-row');
-
-                rows.forEach(function(row) {
-                    // Obtén las fechas asociadas a la fila (separadas por comas)
-                    var days = row.getAttribute('data-days').split(',');
-
-                    // Verifica si la fecha seleccionada está en las fechas de la fila
-                    if (days.includes(selectedDate) || selectedDate === "") {
-                        row.style.display = ''; // Mostrar la fila
-                    } else {
-                        row.style.display = 'none'; // Ocultar la fila
-                    }
-                });
+            document.getElementById('selectRh').addEventListener('change', function() {
+                applyFilters();
             });
+
+            document.getElementById('fechaInput').addEventListener('change', function() {
+                applyFilters();
+            });
+
+            document.getElementById('clearFecha').addEventListener('click', function() {
+                document.getElementById('fechaInput').value = '';
+                applyFilters();
+            });
+
+            function applyFilters() {
+                const tipo = document.getElementById('tipoSelect').value;
+                const jefeDirecto = document.getElementById('selectJD').value;
+                const rhStatus = document.getElementById('selectRh').value;
+                const fecha = document.getElementById('fechaInput').value;
+                let url = '?tipo=' + tipo + '&jefeDirecto=' + jefeDirecto + '&rhStatus=' + rhStatus + '&fecha=' +
+                    fecha;
+                window.location.href = url; // Actualiza la URL con los filtros
+            }
+
 
 
             // Poner dias de vacaciones y permisos especiales en el calendario
@@ -1551,7 +1513,6 @@
                     statusRhElement.classList.add('badge', 'bg-danger');
                 }
 
-
                 /* Habilitar o deshabiliar la sección de botones de acuerdo al estatus de la solicitud */
                 if (directManagerStatus === 'Cancelada por el usuario' && statusRh ===
                     'Cancelada por el usuario') {
@@ -1567,8 +1528,6 @@
                     document.getElementById('ButtonEditRequest').classList.remove('d-none');
 
                 }
-
-
 
                 /*Agregarle una clase al elemento que tiene el id buttonEditRequest dependiendo el tipo de solicitud */
                 if (tipo === 'vacaciones' && statusRh === 'Pendiente' || tipo === 'Vacaciones' &&

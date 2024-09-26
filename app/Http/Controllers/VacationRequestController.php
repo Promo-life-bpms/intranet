@@ -17,6 +17,10 @@ use Doctrine\DBAL\Schema\Index;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+
 use PhpParser\Node\Expr\FuncCall;
 
 use function PHPUnit\Framework\isEmpty;
@@ -51,8 +55,17 @@ class VacationRequestController extends Controller
             }
         }
 
-        $vacaciones = DB::table('vacation_requests')->where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate(5);
-        $solicitudes = $vacaciones->map(function ($vacacion) {
+        $vacaciones = DB::table('vacation_requests')->where('user_id', $user->id)->orderBy('created_at', 'desc');
+
+        if ($request->has('jefeDirecto') && $request->jefeDirecto != '') {
+            $vacaciones->where('direct_manager_status', $request->jefeDirecto);
+        }
+
+        if ($request->has('rhStatus') && $request->rhStatus != '') {
+            $vacaciones->where('rh_status', $request->rhStatus);
+        }
+
+        $solicitudesCollection = $vacaciones->get()->map(function ($vacacion) {
             $nameResponsable = User::where('id', $vacacion->reveal_id)->first();
             $nameManager = User::where('id', $vacacion->direct_manager_id)->first();
             $typeRequest = RequestType::where('id', $vacacion->request_type_id)->value('type');
@@ -81,6 +94,7 @@ class VacationRequestController extends Controller
             $solicitud->direct_manager_id = $nameManager->name . ' ' . $nameManager->lastname;
             $solicitud->direct_manager_status = $vacacion->direct_manager_status;
             $solicitud->rh_status = $vacacion->rh_status;
+            $solicitud->request_type_id = $vacacion->request_type_id;
             $solicitud->file = $vacacion->file == null ? 'No hay justificante' : $vacacion->file;
             $solicitud->commentary = $vacacion->commentary == null ? 'No hay un comentario' : $vacacion->commentary;
             $solicitud->days = $dias;
@@ -89,7 +103,30 @@ class VacationRequestController extends Controller
             return $solicitud;
         });
 
-        //dd($solicitudes);
+
+        // Si hay un filtro de tipo, se aplica sobre la colección mapeada
+        if ($request->has('tipo') && $request->tipo != '') {
+            $solicitudesCollection = $solicitudesCollection->filter(function ($solicitud) use ($request) {
+                return $solicitud->tipo == $request->tipo;
+            });
+        }
+        //Si hay un filtro de fecha, se aplica sobre la colección mapeada
+        if ($request->has('fecha') && $request->fecha != '') {
+            $solicitudesCollection = $solicitudesCollection->filter(function ($solicitud) use ($request) {
+                return in_array($request->fecha, $solicitud->days);
+            });
+        }
+
+        $page = $request->get('page', 1);
+        $perPage = 5;
+        $solicitudes = new LengthAwarePaginator(
+            $solicitudesCollection->forPage($page, $perPage),
+            $solicitudesCollection->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
         $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
         $fechaIngreso = Carbon::parse($Ingreso->date_admission);
         $fechaActual = Carbon::now();
@@ -141,9 +178,9 @@ class VacationRequestController extends Controller
         $paternidadDias = [];
         $incapacidadDias = [];
         $permisosEspecialesDias = [];
-        foreach ($vacaciones as $daysonthecalendar) {
+        foreach ($solicitudes as $daysonthecalendar) {
             // Obtener los días asociados a la solicitud
-            $Days = VacationDays::where('vacation_request_id', $daysonthecalendar->id)->get();
+            $Days = VacationDays::where('vacation_request_id', $daysonthecalendar->id_request)->get();
             $dias = [];
 
             foreach ($Days as $Day) {
@@ -200,9 +237,11 @@ class VacationRequestController extends Controller
 
         $porcentajeespecial = round(($contadorAsuntosPersonales / 3) * 100);
 
+        //dd de solicirudes y vacaiones
+
+
         return view('request.vacations-collaborators', compact('users', 'vacaciones', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar', 'porcentajeespecial'));
     }
-
     public function CreatePurchase(Request $request)
     {
         $user = auth()->user();
@@ -1444,8 +1483,6 @@ class VacationRequestController extends Controller
                 'description' => $vacacionesUser->description
             ];
         }
-
-
         return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', 'IdandNameUser', 'vacacionesagregadas'));
     }
 

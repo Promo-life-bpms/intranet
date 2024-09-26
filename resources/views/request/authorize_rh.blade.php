@@ -264,6 +264,7 @@
                                 <th scope="col" style="text-align: center;">Días ausente</th>
                                 <th scope="col" style="text-align: center;">Justificante</th>
                                 <th scope="col" style="text-align: center;">Motivo</th>
+                                <th scope="col" style="text-align: center;">Estado</th>
                                 <th scope="col" style="text-align: center;">Acciones</th>
                             </tr>
                         </thead>
@@ -281,14 +282,30 @@
                                             </div>
                                         @endforeach
                                     </td>
+
+
                                     <td style="text-align: center;">
-                                        <button type="button" id="file-link-{{ $rechazada['file'] }}"
-                                            class="btn btn-link"
-                                            onclick="viewFileDeny({{ json_encode($rechazada['file']) }})">Ver
-                                            archivo</button>
+                                        @if (
+                                            $rechazada['file'] == null ||
+                                                $rechazada['file'] == '' ||
+                                                $rechazada['file'] == 'null' ||
+                                                $rechazada['file'] == 'undefined')
+                                            <span>Sin archivo</span>
+                                        @else
+                                            <button type="button" id="file-link-{{ $rechazada['file'] }}"
+                                                class="btn btn-link"
+                                                onclick="viewFileDeny({{ json_encode($rechazada['file']) }})">Ver
+                                                archivo</button>
+                                        @endif
+
                                     </td>
                                     <td style="text-align: center;">
                                         {{ $rechazada['commentary'] }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-danger text-white">
+                                            {{ $rechazada['rh_status'] }}
+                                        </span>
                                     </td>
 
                                     <td style="text-align: center;">
@@ -298,7 +315,7 @@
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $rechazada['id'] }}">
                                             <input type="hidden" name="value" value="rechazada">
-                                            <button type="submit" class="btn btn-danger">Rechazar</button>
+                                            <button type="submit" class="btn btn-danger mr-1 mb-1">Rechazar</button>
                                         </form>
 
                                         <!-- Formulario para aceptar -->
@@ -307,7 +324,7 @@
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $rechazada['id'] }}">
                                             <input type="hidden" name="value" value="aprobada">
-                                            <button type="submit" class="btn btn-primary">Aceptar</button>
+                                            <button type="submit" class="btn btn-primary mb-1">Aceptar</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -733,6 +750,7 @@
 
     <script>
         function viewFileDeny(file) {
+            console.log('file', file);
             const correctedFile = file.replace(/\\/g, '/');
 
             const baseUrl = window.location.origin;
