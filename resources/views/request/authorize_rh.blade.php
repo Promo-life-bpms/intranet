@@ -27,19 +27,33 @@
         <h3 id="titlePage">Solicitudes autorizadas</h3>
         <div class="row">
             <div class="col-5 align-content-end">
-                <div class="d-flex justify-between">
-                    <input id="searchName" type="search" class="form-control mr-2" placeholder="Buscar por nombre">
-                    <select id="tipoSelect" style="width: max-content" class="form-select mr-1"
-                        aria-label="Default select example">
-                        <option value="">Todos</option>
-                        <option value="Vacaciones">Vacaciones</option>
-                        <option value="ausencia">Ausencia</option>
-                        <option value="permiso_especial">Permisos especiales</option>
-                        <option value="incapacidad">Incapacidad</option>
-                        <option value="paternidad">Paternidad</option>
-                    </select>
+                <div class="row">
+                    <div class="col-4">
+                        <input id="searchName" type="search" class="form-control" placeholder="Nombre">
+                    </div>
+                    <div class="col-5">
+                        <select id="tipoSelect" name="tipo" class="form-select">
+                            <option value="">Tipo de permiso</option>
+                            <option value="Vacaciones" {{ request('tipo') == 'Vacaciones' ? 'selected' : '' }}>Vacaciones
+                            </option>
+                            <option value="Ausencia" {{ request('tipo') == 'Ausencia' ? 'selected' : '' }}>Ausencia</option>
+                            <option value="Permisos especiales"
+                                {{ request('tipo') == 'Permisos especiales' ? 'selected' : '' }}>Permisos especiales
+                            </option>
+                            <option value="Incapacidad" {{ request('tipo') == 'Incapacidad' ? 'selected' : '' }}>Incapacidad
+                            </option>
+                            <option value="Paternidad" {{ request('tipo') == 'Paternidad' ? 'selected' : '' }}>Paternidad
+                            </option>
+                        </select>
+                    </div>
 
-                    <input id="fechaInput" placeholder="Fecha" type="date" class="form-control" style="width: 2.8rem" />
+
+                    <div class="col-3 d-flex align-items-center justify-content-center">
+                        <input id="fechaInput" type="date" class="form-control" value="{{ request('fecha') }}"
+                            style="width: 2.8rem" />
+                        <i style="margin-left: 0.5rem" id="clearFecha" class="fas fa-times-circle"
+                            style="cursor: pointer;"></i>
+                    </div>
                 </div>
             </div>
             <div class="col-7">
@@ -103,72 +117,72 @@
 
                         <tbody>
                             @foreach ($Aprobadas as $aprovada)
-                                <tr class="solicitud-row1" data-days1="{{ implode(',', $aprovada['days_absent']) }}">
+                                <tr class="solicitud-row1" data-days1="{{ implode(',', $aprovada->days_absent) }}">
                                     <th style="text-align: center; align-content: center;" scope="row">
-                                        {{ $aprovada['id'] }}</th>
-                                    <td style="text-align: center;">{{ $aprovada['name'] }}</td>
-                                    <td style="text-align: center;">{{ $aprovada['request_type'] }}</td>
+                                        {{ $aprovada->id }}</th>
+                                    <td style="text-align: center;">{{ $aprovada->name }}</td>
+                                    <td style="text-align: center;">{{ $aprovada->request_type }}</td>
                                     <td style="text-align: center;">
-                                        @foreach ($aprovada['days_absent'] as $day)
+                                        @foreach ($aprovada->days_absent as $day)
                                             <div>
                                                 {{ $day }}
                                             </div>
                                         @endforeach
                                     </td>
                                     <td style="text-align: center;">
-                                        @if ($aprovada['direct_manager_status'] == 'Pendiente')
+                                        @if ($aprovada->direct_manager_status == 'Pendiente')
                                             <span class="badge bg-warning text-dark">
-                                                {{ $aprovada['direct_manager_status'] }}
+                                                {{ $aprovada->direct_manager_status }}
                                             </span>
-                                        @elseif ($aprovada['direct_manager_status'] == 'Aprobada')
+                                        @elseif ($aprovada->direct_manager_status == 'Aprobada')
                                             <span class="badge bg-success text-white">
-                                                {{ $aprovada['direct_manager_status'] }}
+                                                {{ $aprovada->direct_manager_status }}
                                             </span>
                                         @else
                                             <span class="badge bg-danger text-white">
-                                                {{ $aprovada['direct_manager_status'] }}
+                                                {{ $aprovada->direct_manager_status }}
                                             </span>
                                         @endif
                                     </td>
                                     <td style="text-align: center;">
-                                        @if ($aprovada['rh_status'] == 'Pendiente')
+                                        @if ($aprovada->rh_status == 'Pendiente')
                                             <span class="badge bg-warning text-dark">
-                                                {{ $aprovada['rh_status'] }}
+                                                {{ $aprovada->rh_status }}
                                             </span>
-                                        @elseif ($aprovada['rh_status'] == 'Aprobada')
+                                        @elseif ($aprovada->rh_status == 'Aprobada')
                                             <span class="badge bg-success text-white">
-                                                {{ $aprovada['rh_status'] }}
+                                                {{ $aprovada->rh_status }}
                                             </span>
                                         @else
                                             <span class="badge bg-danger text-white">
-                                                {{ $aprovada['rh_status'] }}
+                                                {{ $aprovada->rh_status }}
                                             </span>
                                         @endif
                                     </td>
 
                                     <td style="text-align: center; cursor: pointer;">
-                                        <button class="btn btn-link openModalDetails" data-id="{{ $aprovada['id'] }}"
-                                            data-crete="{{ $aprovada['created_at'] }}"
-                                            data-name="{{ $aprovada['name'] }}" data-image="{{ $aprovada['image'] }}"
-                                            data-current_vacation="{{ $aprovada['current_vacation'] }}"
-                                            data-current_vacation_expiration="{{ $aprovada['current_vacation_expiration'] }}"
-                                            data-next_vacation="{{ $aprovada['next_vacation'] }}"
-                                            data-expiration_of_next_vacation="{{ $aprovada['expiration_of_next_vacation'] }}"
-                                            data-direct_manager_status="{{ $aprovada['direct_manager_status'] }}"
-                                            data-rh_status="{{ $aprovada['rh_status'] }}"
-                                            data-request_type="{{ $aprovada['request_type'] }}"
-                                            data-specific_type="{{ $aprovada['specific_type'] }}"
-                                            data-days_absent="{{ implode(',', $aprovada['days_absent']) }}"
-                                            data-timeArray="{{ is_Array($aprovada['time']) ? 'true' : 'false' }}"
-                                            data-start="{{ $aprovada['time'] ? $aprovada['time'][0]['start'] : '12:00' }}"
-                                            data-end="{{ $aprovada['time'] ? $aprovada['time'][0]['end'] : '12:00' }}"
+                                        <button class="btn btn-link openModalDetails" data-id="{{ $aprovada->id }}"
+                                            data-crete="{{ $aprovada->created_at }}" data-name="{{ $aprovada->name }}"
+                                            data-image="{{ $aprovada->image }}"
+                                            data-current_vacation="{{ $aprovada->current_vacation }}"
+                                            data-current_vacation_expiration="{{ $aprovada->current_vacation_expiration }}"
+                                            data-next_vacation="{{ $aprovada->next_vacation }}"
+                                            data-expiration_of_next_vacation="{{ $aprovada->expiration_of_next_vacation }}"
+                                            data-direct_manager_status="{{ $aprovada->direct_manager_status }}"
+                                            data-rh_status="{{ $aprovada->rh_status }}"
+                                            data-request_type="{{ $aprovada->request_type }}"
+                                            data-specific_type="{{ $aprovada->specific_type }}"
+                                            data-days_absent="{{ implode(',', $aprovada->days_absent) }}"
+                                            data-timeArray="{{ is_Array($aprovada->time) ? 'true' : 'false' }}"
+                                            data-start="{{ $aprovada->time ? $aprovada->time[0]['start'] : '12:00' }}"
+                                            data-end="{{ $aprovada->time ? $aprovada->time[0]['end'] : '12:00' }}"
                                             {{-- Para Ausencia --}}
-                                            data-value-type="{{ is_array($aprovada['more_information']) && count($aprovada['more_information']) > 0 && isset($aprovada['more_information'][0]['value_type']) ? $aprovada['more_information'][0]['value_type'] : '0' }}"
-                                            data-tipo-de-ausencia="{{ is_array($aprovada['more_information']) && isset($aprovada['more_information'][0]['Tipo_de_ausencia']) ? $aprovada['more_information'][0]['Tipo_de_ausencia'] : '-' }}"
+                                            data-value-type="{{ is_array($aprovada->more_information) && count($aprovada->more_information) > 0 && isset($aprovada->more_information[0]['value_type']) ? $aprovada->more_information[0]['value_type'] : '0' }}"
+                                            data-tipo-de-ausencia="{{ is_array($aprovada->more_information) && isset($aprovada->more_information[0]['Tipo_de_ausencia']) ? $aprovada->more_information[0]['Tipo_de_ausencia'] : '-' }}"
                                             {{-- Para permisos especiales --}}
-                                            data-tipo-permiso-especial="{{ is_array($aprovada['more_information']) && count($aprovada['more_information']) > 0 && isset($aprovada['more_information'][0]['Tipo_de_permiso_especial']) ? $aprovada['more_information'][0]['Tipo_de_permiso_especial'] : '-' }}"
-                                            data-reveal_id="{{ $aprovada['reveal_id'] }}"
-                                            data-file="{{ $aprovada['file'] }}">Ver</button>
+                                            data-tipo-permiso-especial="{{ is_array($aprovada->more_information) && count($aprovada->more_information) > 0 && isset($aprovada->more_information[0]['Tipo_de_permiso_especial']) ? $aprovada->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
+                                            data-reveal_id="{{ $aprovada->reveal_id }}"
+                                            data-file="{{ $aprovada->file }}">Ver</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -191,62 +205,65 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($SolicitudesPendientes as $pendiente)
-                                <tr class="solicitud-row2" data-days2="{{ implode(',', $pendiente['days_absent']) }}">
+                            @foreach ($Pendientes as $pendiente)
+                                <tr class="solicitud-row2" data-days2="{{ implode(',', $pendiente->days_absent) }}">
                                     <th style="text-align: center; align-content: center;" scope="row">
-                                        {{ $pendiente['id'] }}</th>
-                                    <td style="text-align: center;">{{ $pendiente['name'] }}</td>
-                                    <td style="text-align: center;">{{ $pendiente['request_type'] }}</td>
+                                        {{ $pendiente->id }}</th>
+                                    <td style="text-align: center;">{{ $pendiente->name }}</td>
+                                    <td style="text-align: center;">{{ $pendiente->request_type }}</td>
                                     <td style="text-align: center;">
-                                        @foreach ($pendiente['days_absent'] as $day)
+                                        @foreach ($pendiente->days_absent as $day)
                                             <div>
                                                 {{ $day }}
                                             </div>
                                         @endforeach
                                     </td>
                                     <td style="text-align: center;">
-                                        @if ($pendiente['direct_manager_status'] == 'Pendiente')
+                                        @if ($pendiente->direct_manager_status == 'Pendiente')
                                             <span class="badge bg-warning text-dark">
-                                                {{ $pendiente['direct_manager_status'] }}
+                                                {{ $pendiente->direct_manager_status }}
                                             </span>
-                                        @elseif ($pendiente['direct_manager_status'] == 'Aprobada')
+                                        @elseif ($pendiente->direct_manager_status == 'Aprobada')
                                             <span class="badge bg-success text-white">
-                                                {{ $pendiente['direct_manager_status'] }}
+                                                {{ $pendiente->direct_manager_status }}
                                             </span>
                                         @else
                                             <span class="badge bg-danger text-white">
-                                                {{ $pendiente['direct_manager_status'] }}
+                                                {{ $pendiente->direct_manager_status }}
                                             </span>
                                         @endif
                                     </td>
                                     <td style="text-align: center; cursor: pointer;">
-                                        <button class="btn btn-link updateDetails" data-id="{{ $pendiente['id'] }}"
-                                            data-crete="{{ $pendiente['created_at'] }}"
-                                            data-name="{{ $pendiente['name'] }}" data-image="{{ $pendiente['image'] }}"
-                                            data-current_vacation="{{ $pendiente['current_vacation'] }}"
-                                            data-current_vacation_expiration="{{ $pendiente['current_vacation_expiration'] }}"
-                                            data-next_vacation="{{ $pendiente['next_vacation'] }}"
-                                            data-expiration_of_next_vacation="{{ $pendiente['expiration_of_next_vacation'] }}"
-                                            data-direct_manager_status="{{ $pendiente['direct_manager_status'] }}"
-                                            data-rh_status="{{ $pendiente['rh_status'] }}"
-                                            data-request_type="{{ $pendiente['request_type'] }}"
-                                            data-specific_type="{{ $pendiente['specific_type'] }}"
-                                            data-days_absent="{{ implode(',', $pendiente['days_absent']) }}"
-                                            data-timeArray="{{ is_Array($pendiente['time']) ? 'true' : 'false' }}"
-                                            data-start="{{ $pendiente['time'] ? $pendiente['time'][0]['start'] : '12:00' }}"
-                                            data-end="{{ $pendiente['time'] ? $pendiente['time'][0]['end'] : '12:00' }}"
+                                        <button class="btn btn-link updateDetails" data-id="{{ $pendiente->id }}"
+                                            data-crete="{{ $pendiente->created_at }}" data-name="{{ $pendiente->name }}"
+                                            data-image="{{ $pendiente->image }}"
+                                            data-current_vacation="{{ $pendiente->current_vacation }}"
+                                            data-current_vacation_expiration="{{ $pendiente->current_vacation_expiration }}"
+                                            data-next_vacation="{{ $pendiente->next_vacation }}"
+                                            data-expiration_of_next_vacation="{{ $pendiente->expiration_of_next_vacation }}"
+                                            data-direct_manager_status="{{ $pendiente->direct_manager_status }}"
+                                            data-rh_status="{{ $pendiente->rh_status }}"
+                                            data-request_type="{{ $pendiente->request_type }}"
+                                            data-specific_type="{{ $pendiente->specific_type }}"
+                                            data-days_absent="{{ implode(',', $pendiente->days_absent) }}"
+                                            data-timeArray="{{ is_Array($pendiente->time) ? 'true' : 'false' }}"
+                                            data-start="{{ $pendiente->time ? $pendiente->time[0]['start'] : '12:00' }}"
+                                            data-end="{{ $pendiente->time ? $pendiente->time[0]['end'] : '12:00' }}"
                                             {{-- Para Ausencia --}}
-                                            data-value-type="{{ is_array($pendiente['more_information']) && count($pendiente['more_information']) > 0 && isset($pendiente['more_information'][0]['value_type']) ? $pendiente['more_information'][0]['value_type'] : '0' }}"
-                                            data-tipo-de-ausencia="{{ is_array($pendiente['more_information']) && isset($pendiente['more_information'][0]['Tipo_de_ausencia']) ? $pendiente['more_information'][0]['Tipo_de_ausencia'] : '-' }}"
+                                            data-value-type="{{ is_array($pendiente->more_information) && count($pendiente->more_information) > 0 && isset($pendiente->more_information[0]['value_type']) ? $pendiente->more_information[0]['value_type'] : '0' }}"
+                                            data-tipo-de-ausencia="{{ is_array($pendiente->more_information) && isset($pendiente->more_information[0]['Tipo_de_ausencia']) ? $pendiente->more_information[0]['Tipo_de_ausencia'] : '-' }}"
                                             {{-- Para permisos especiales --}}
-                                            data-tipo-permiso-especial="{{ is_array($pendiente['more_information']) && count($pendiente['more_information']) > 0 && isset($pendiente['more_information'][0]['Tipo_de_permiso_especial']) ? $pendiente['more_information'][0]['Tipo_de_permiso_especial'] : '-' }}"
-                                            data-reveal_id="{{ $pendiente['reveal_id'] }}"
-                                            data-file="{{ $pendiente['file'] }}">Ver y Autorizar</button>
+                                            data-tipo-permiso-especial="{{ is_array($pendiente->more_information) && count($pendiente->more_information) > 0 && isset($pendiente->more_information[0]['Tipo_de_permiso_especial']) ? $pendiente->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
+                                            data-reveal_id="{{ $pendiente->reveal_id }}"
+                                            data-file="{{ $pendiente->file }}">Ver y Autorizar</button>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    {{-- <div class="d-flex justify-content-end">
+                        {{ $Pendientes->appends(request()->input())->links() }}
+                    </div> --}}
                 </div>
 
                 {{-- Tabla para canceladas por el usuario --}}
@@ -333,6 +350,10 @@
                     </table>
                 </div>
             </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            {{ $Aprobadas->appends(request()->input())->links() }}
         </div>
 
         <div class="modal fade bd-example-modal-lg" id="modalDetails" tabindex="-1" role="dialog"
@@ -735,6 +756,33 @@
             background-color: #f8d7da !important;
             border-color: #f5c2c7 !important;
         }
+
+        /*Estilos de paginacion*/
+        .pagination {
+            display: flex;
+            justify-content: end;
+
+        }
+
+        .page-item .page-link {
+            font-size: .875rem;
+            border-color: transparent;
+        }
+
+        .page-item.active .page-link {
+            background-color: #435ebe;
+            border-color: #435ebe;
+            color: #fff;
+            z-index: 3;
+            border-radius: 27px;
+        }
+
+        .page-item.disabled .page-link {
+            background-color: #fff;
+            color: #6c757d;
+            pointer-events: none;
+            border-color: transparent;
+        }
     </style>
 @stop
 
@@ -835,116 +883,6 @@
 
             //Cambiar titulo de la pagina
             document.getElementById('titlePage').innerHTML = 'Solicitudes canceladas por el usuario';
-        });
-
-
-        /* Filtro para buscar por nombre */
-        document.getElementById('searchName').addEventListener('input', function() {
-            const searchValue = this.value.toLowerCase();
-            console.log('searchValue', searchValue);
-            const rows = document.querySelectorAll('#tableAutorizadas tbody tr');
-
-            rows.forEach(row => {
-                const name = row.children[1].textContent.toLowerCase();
-                if (name.includes(searchValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-            const rows2 = document.querySelectorAll('#tablePendientes tbody tr');
-            rows2.forEach(row => {
-                const name = row.children[1].textContent.toLowerCase();
-                if (name.includes(searchValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-            const rows3 = document.querySelectorAll('#tableCanceladas tbody tr');
-            rows3.forEach(row => {
-                const name = row.children[1].textContent.toLowerCase();
-                if (name.includes(searchValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-
-        /* Filtro para buscar por tipo de solicitud */
-        document.getElementById('tipoSelect').addEventListener('change', function() {
-            const searchValue = this.value.toLowerCase();
-            console.log('searchValue', searchValue);
-            const rows = document.querySelectorAll('#tableAutorizadas tbody tr');
-
-            rows.forEach(row => {
-                const type = row.children[2].textContent.toLowerCase();
-                if (type.includes(searchValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-            const rows2 = document.querySelectorAll('#tablePendientes tbody tr');
-            rows2.forEach(row => {
-                const type = row.children[2].textContent.toLowerCase();
-                if (type.includes(searchValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-            const rows3 = document.querySelectorAll('#tableCanceladas tbody tr');
-            rows3.forEach(row => {
-                const type = row.children[2].textContent.toLowerCase();
-                if (type.includes(searchValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-
-        /* Filtro para buscar por fecha */
-        document.getElementById('fechaInput').addEventListener('input', function() {
-            const searchValue = this.value;
-            console.log('searchValue', searchValue);
-
-            const rows = document.querySelectorAll('.solicitud-row1');
-            rows.forEach(function(row) {
-                var date = row.getAttribute('data-days1').split(',');
-                if (date.includes(searchValue) || searchValue === '') {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-            const rows2 = document.querySelectorAll('.solicitud-row2');
-            rows2.forEach(function(row) {
-                var date = row.getAttribute('data-days2').split(',');
-                if (date.includes(searchValue) || searchValue === '') {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-
-            const rows3 = document.querySelectorAll('.solicitud-row3');
-            rows3.forEach(function(row) {
-                var date = row.getAttribute('data-days3').split(',');
-                if (date.includes(searchValue) || searchValue === '') {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
         });
 
         // Evento cuando se hace clic en el botón para abrir el modal
@@ -1368,5 +1306,45 @@
                 keyboard: false // Desactiva el cierre con la tecla "Esc"
             }).modal('show');
         });
+
+
+        //Codigo para filtros de busqueda
+
+
+        let tiempoEspera;
+        //Filtrado de solicitudes
+        document.getElementById('searchName').addEventListener('input', function() {
+            clearTimeout(tiempoEspera);
+            tiempoEspera = setTimeout(function() {
+                console.log('Buscando...');
+                applyFilters();
+            }, 300);
+        });
+
+
+        document.getElementById('tipoSelect').addEventListener('change', function() {
+            applyFilters();
+        });
+
+        document.getElementById('fechaInput').addEventListener('change', function() {
+            applyFilters();
+        });
+
+        document.getElementById('clearFecha').addEventListener('click', function() {
+            document.getElementById('fechaInput').value = '';
+            document.getElementById('tipoSelect').value = '';
+
+            applyFilters();
+        });
+        //Funcion de filtrado
+        function applyFilters() {
+            console.log('Aplicando filtros');
+            const tipo = document.getElementById('tipoSelect').value;
+            const fecha = document.getElementById('fechaInput').value;
+            const search = document.getElementById('searchName').value; // Obtener valor del campo de búsqueda
+
+            let url = '?tipo=' + tipo + '&fecha=' + fecha + '&search=' + encodeURIComponent(search);
+            window.location.href = url;
+        }
     </script>
 @stop

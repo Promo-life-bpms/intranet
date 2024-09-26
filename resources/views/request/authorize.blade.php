@@ -642,6 +642,7 @@
 
         document.getElementById('clearFecha').addEventListener('click', function() {
             document.getElementById('fechaInput').value = '';
+            document.getElementById('tipoSelect').value = '';
             applyFilters();
         });
         //Funcion de filtrado
