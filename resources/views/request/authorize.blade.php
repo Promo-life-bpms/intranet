@@ -25,28 +25,32 @@
 
     <div>
         <div class="row">
-            <div class="col-4">
+            <div class="col-3">
                 <h3>Solicitudes autorizadas</h3>
             </div>
-            <div class="col-8">
+            <div class="col-9">
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-3">
                         <input id="searchName" type="search" class="form-control" placeholder="Buscar por nombre">
                     </div>
                     <div class="col-4">
-                        <select id="tipoSelect" style="width: max-content" class="form-select"
-                            aria-label="Default select example">
-                            <option value="">Todos</option>
-                            <option value="Vacaciones">Vacaciones</option>
-                            <option value="Ausencia">Ausencia</option>
-                            <option value="Permisos especiales">Permisos especiales</option>
-                            <option value="incapacidad">Incapacidad</option>
-                            <option value="paternidad">Paternidad</option>
+                        <select id="tipoSelect" name="tipo" class="form-select">
+                            <option value="">Tipo de permiso</option>
+                            <option value="Vacaciones" {{ request('tipo') == 'Vacaciones' ? 'selected' : '' }}>Vacaciones
+                            </option>
+                            <option value="Ausencia" {{ request('tipo') == 'Ausencia' ? 'selected' : '' }}>Ausencia</option>
+                            <option value="Permisos especiales"
+                                {{ request('tipo') == 'Permisos especiales' ? 'selected' : '' }}>Permisos especiales
+                            </option>
+                            <option value="Incapacidad" {{ request('tipo') == 'Incapacidad' ? 'selected' : '' }}>Incapacidad
+                            </option>
+                            <option value="Paternidad" {{ request('tipo') == 'Paternidad' ? 'selected' : '' }}>Paternidad
+                            </option>
                         </select>
                     </div>
-                    <div class="col-2">
-                        <input id="fechaInput" placeholder="Fecha" type="date" class="form-control"
-                            style="width: 2.8rem" />
+                    <div class="col-3 d-flex align-items-center justify-content-center">
+                        <input id="fechaInput" type="date" class="form-control" value="{{ request('fecha') }}" />
+                        <i id="clearFecha" class="fas fa-times-circle" style="cursor: pointer;"></i>
                     </div>
                     <div class="col-2">
                         <div class="d-flex justify-content-center">
@@ -79,8 +83,9 @@
                     </thead>
 
                     <tbody>
-                        @foreach ($Solicitudes as $infoSoli)
-                            <tr class="solicitud-row" data-days="{{ implode(',', $infoSoli->days_absent) }}">
+                        @foreach ($solicitudes as $infoSoli)
+                            <tr class="solicitud-row"
+                                data-days="{{ isset($infoSoli->days_absent) ? implode(',', $infoSoli->days_absent) : '' }}">
                                 <th style="text-align: center; align-content: center;" scope="row">
                                     {{ $infoSoli->id }}
                                 </th>
@@ -173,7 +178,7 @@
                     </tbody>
                 </table>
                 <div class="d-flex justify-content-end">
-                    {{ $Solicitudes->links() }}
+                    {{ $solicitudes->appends(request()->input())->links() }}
                 </div>
             </div>
         </div>
@@ -344,51 +349,6 @@
 
 @section('scripts')
     <script>
-        document.getElementById('searchName').addEventListener('input', function() {
-            const searchValue = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#tableAutorizadas tbody tr');
-
-            rows.forEach(row => {
-                const name = row.children[1].textContent.toLowerCase();
-                if (name.includes(searchValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-
-        document.getElementById('tipoSelect').addEventListener('change', function() {
-            const tipoValue = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#tableAutorizadas tbody tr');
-            rows.forEach(row => {
-                const tipo = row.children[2].textContent.toLowerCase();
-                if (tipo.includes(tipoValue) || tipoValue === '') {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-
-        document.getElementById('fechaInput').addEventListener('input', function() {
-            var selectedDate = this.value; // La fecha seleccionada en el formato YYYY-MM-DD
-            console.log('selectedDate', selectedDate);
-            var rows = document.querySelectorAll('.solicitud-row');
-
-            rows.forEach(function(row) {
-                var days = row.getAttribute('data-days').split(',');
-
-                if (days.includes(selectedDate) || selectedDate === "") {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-
-
-
         /*Limpiar los campos del formulario de rechazo*/
         document.getElementById('closeModalDeny').addEventListener('click', function() {
             const form = document.getElementById('denyFormRequest');
@@ -661,12 +621,40 @@
             }).modal('show');
         });
 
-        // Evento cuando se hace clic en el botón para cerrar el modal
-        document.getElementById('closemodalDetails').addEventListener('click', function() {
-            $('#modalDetails').modal('hide');
-            document.getElementById('buttonModifi').style.display = 'none';
-
+        let tiempoEspera;
+        //Filtrado de solicitudes
+        document.getElementById('searchName').addEventListener('input', function() {
+            clearTimeout(tiempoEspera);
+            tiempoEspera = setTimeout(function() {
+                console.log('Buscando...');
+                applyFilters();
+            }, 300);
         });
+
+
+        document.getElementById('tipoSelect').addEventListener('change', function() {
+            applyFilters();
+        });
+
+        document.getElementById('fechaInput').addEventListener('change', function() {
+            applyFilters();
+        });
+
+        document.getElementById('clearFecha').addEventListener('click', function() {
+            document.getElementById('fechaInput').value = '';
+            document.getElementById('tipoSelect').value = '';
+            applyFilters();
+        });
+        //Funcion de filtrado
+        function applyFilters() {
+            console.log('Aplicando filtros');
+            const tipo = document.getElementById('tipoSelect').value;
+            const fecha = document.getElementById('fechaInput').value;
+            const search = document.getElementById('searchName').value; // Obtener valor del campo de búsqueda
+
+            let url = '?tipo=' + tipo + '&fecha=' + fecha + '&search=' + encodeURIComponent(search);
+            window.location.href = url;
+        }
     </script>
 
     <style>

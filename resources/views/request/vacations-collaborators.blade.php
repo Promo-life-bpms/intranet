@@ -1514,14 +1514,14 @@
                 }
 
                 /* Habilitar o deshabiliar la sección de botones de acuerdo al estatus de la solicitud */
-                if (directManagerStatus === 'Cancelada por el usuario' && statusRh ===
-                    'Cancelada por el usuario') {
+                if (statusRh === 'Cancelada por el usuario' || statusRh === 'Rechazada') {
                     document.getElementById('seccionOptionButton').style.display = 'none';
                     document.getElementById('ButtonEditRequest').classList.add('d-none');
                 } else if (statusRh === 'Aprobada') {
                     document.getElementById('ButtonEditRequest').classList.add('d-none');
+                    document.getElementById('seccionOptionButton').style.display = 'block';
                 } else if (directManagerStatus === 'Rechazada') {
-                    // document.getElementById('seccionOptionButton').style.display = 'none';
+                    document.getElementById('seccionOptionButton').style.display = 'block';
                     document.getElementById('ButtonEditRequest').classList.add('d-none');
                 } else {
                     document.getElementById('seccionOptionButton').style.display = 'block';
