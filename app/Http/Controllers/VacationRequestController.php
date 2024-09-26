@@ -12,6 +12,7 @@ use App\Models\VacationDays;
 use App\Models\VacationInformation;
 use App\Models\VacationRequest;
 use App\Models\Vacations as ModelsVacations;
+use App\Notifications\PermissionRequest;
 use Carbon\Carbon;
 use Doctrine\DBAL\Schema\Index;
 use Illuminate\Http\Request;
@@ -295,8 +296,8 @@ class VacationRequestController extends Controller
             ///VACACIONES PENDIENTES O APROBADAS///
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -366,7 +367,8 @@ class VacationRequestController extends Controller
                         'reveal_id' => $request->reveal_id,
                         'direct_manager_id' => $jefedirecto,
                         'direct_manager_status' => 'Pendiente',
-                        'rh_status' => 'Pendiente'
+                        'rh_status' => 'Pendiente',
+                        'more_information' => 'No hay más información'
                     ]);
 
                     foreach ($datesArray as $dia) {
@@ -383,6 +385,33 @@ class VacationRequestController extends Controller
                         'id_vacation_request' => $Vacaciones->id
 
                     ]);
+
+                    /* $receptor = User::where('id', $request->reveal_id)->value('name');
+                    $emisor = User::where('id', $user->id)->value('name');
+                    $reveal = User::where('id', $request->reveal_id)->value('name');
+                    $request = RequestType::where('id', $request->request_type_id)->value('name');
+                    $Days = VacationDays::where('vacation_request_id', $Vacaciones->id)->get();
+                    $dias = [];
+                    foreach ($Days as $Day) {
+                        $dias[] = $Day->day;
+                    }
+                    $dias = implode(', ', $dias);
+
+                    $time = VacationDays::where('vacation_request_id', $Vacaciones->id)->first();
+                    $start = $time->start;
+
+                    $Boss = User::where('id', $Ingreso->jefe_directo_id)->first();
+
+                    $Boss->notify(new PermissionRequest(
+                        $receptor,
+                        $emisor,
+                        $request,
+                        $dias,
+                        $start,
+                        $reveal,
+                        $request->details,
+                        $Vacaciones->more_information,
+                    )); */
 
                     return back()->with('message', 'Vacaciones creadas exitosamente. 1');
                 }
@@ -536,6 +565,34 @@ class VacationRequestController extends Controller
 
                     ]);
 
+                    /* $receptor = User::where('id', $request->reveal_id)->value('name');
+                    $emisor = User::where('id', $user->id)->value('name');
+                    $reveal = User::where('id', $request->reveal_id)->value('name');
+                    $request = RequestType::where('id', $request->request_type_id)->value('type');
+                    $Days = VacationDays::where('vacation_request_id', $Vacaciones->id)->get();
+                    $dias = [];
+                    foreach ($Days as $Day) {
+                        $dias[] = $Day->day;
+                    }
+                    $dias = implode(', ', $dias);
+                    $ditails = $request->details;
+
+                    $time = VacationDays::where('vacation_request_id', $Vacaciones->id)->first();
+                    $start = $time->start;
+
+                    $Boss = User::where('id', $Ingreso->jefe_directo_id)->first();
+
+                    $Boss->notify(new PermissionRequest(
+                        $receptor,
+                        $emisor,
+                        $request,
+                        $dias,
+                        $start,
+                        $reveal,
+                        $ditails,
+                        $Vacaciones->more_information,
+                    )); */
+
                     return back()->with('message', 'Vacaciones creadas exitosamente. 1');
                 }
             }
@@ -557,8 +614,8 @@ class VacationRequestController extends Controller
             ///VACACIONES PENDIENTES O APROBADAS///
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -676,117 +733,112 @@ class VacationRequestController extends Controller
                     return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
                 }
 
-                $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
+                $hora13PM = Carbon::today()->setHour(13)->setMinute(00);
+                $totalMinutos = $hora13PM->hour * 60 + $hora13PM->minute;
+
                 $start = $request->hora_salida;
+                $salidaAntes = Carbon::parse($start);
+                $totalMinutosRetardo = $salidaAntes->hour * 60 + $salidaAntes->minute;
 
-                $diferenciaEnMinutos = $hora5PM->diffInMinutes($start);
-                // Convertir la diferencia a horas y minutos
-                $diferenciaEnHoras = intdiv($diferenciaEnMinutos, 60); // Horas
-                $diferenciaEnMinutosRestantes = $diferenciaEnMinutos % 60; // Minutos restantes
-
-                if ($diferenciaEnHoras > 4) {
-                    return back()->with('error', 'No puedes tomar más de cuatro horas.');
+                if ($totalMinutosRetardo < $totalMinutos) {
+                    return back()->with('error', 'No puedes salir antes de las 13PM.');
                 }
-
-                $horaSalidaCarbon = Carbon::createFromFormat('H:i', $start);
-
-                if ($horaSalidaCarbon->greaterThanOrEqualTo($hora5PM)) {
-                    return back()->with('error', 'No se pueden crear solicitudes después de las 17 horas.');
-                }
-
 
                 $more_information[] = [
                     'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_antes' ? 'Salir antes' : 'No encontro el valor',
                     'value_type' => $request->ausenciaTipo,
                 ];
                 $moreinformation = json_encode($more_information);
-                if ($horaSalidaCarbon->lessThan($hora5PM)) {
-                    $Vacaciones = VacationRequest::create([
-                        'user_id' => $user->id,
-                        'request_type_id' => 2,
-                        'file' => $path,
-                        'details' => $request->details,
-                        'more_information' => $moreinformation,
-                        'reveal_id' => $request->reveal_id,
-                        'direct_manager_id' => $jefedirecto,
-                        'direct_manager_status' => 'Pendiente',
-                        'rh_status' => 'Pendiente'
-                    ]);
+                $Vacaciones = VacationRequest::create([
+                    'user_id' => $user->id,
+                    'request_type_id' => 2,
+                    'file' => $path,
+                    'details' => $request->details,
+                    'more_information' => $moreinformation,
+                    'reveal_id' => $request->reveal_id,
+                    'direct_manager_id' => $jefedirecto,
+                    'direct_manager_status' => 'Pendiente',
+                    'rh_status' => 'Pendiente'
+                ]);
 
-                    foreach ($datesArray as $dia) {
-                        VacationDays::create([
-                            'day' => $dia,
-                            'start' => $horaSalidaCarbon,
-                            'vacation_request_id' => $Vacaciones->id,
-                            'status' => 0,
-                        ]);
-                    }
-                    return back()->with('message', 'Solicitud creada exitosamente.');
-                } else {
-                    return back()->with('error', 'No puedes seleccionar la misma hora de salida');
+                foreach ($datesArray as $dia) {
+                    VacationDays::create([
+                        'day' => $dia,
+                        'start' => $start,
+                        'vacation_request_id' => $Vacaciones->id,
+                        'status' => 0,
+                    ]);
                 }
+
+                return back()->with('message', 'Solicitud creada exitosamente.');
             }
 
             if ($request->ausenciaTipo == 'salida_durante') {
-                $hora8AM = Carbon::today()->setHour(8)->setMinute(0)->setSecond(0);
-                $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
                 $start = $request->hora_salida;
                 $end = $request->hora_regreso;
 
                 $hora1Carbon = Carbon::createFromFormat('H:i', $start);
                 $hora2Carbon = Carbon::createFromFormat('H:i', $end);
 
-                // Calcular la diferencia en minutos
-                $diferenciaEnMinutos = $hora2Carbon->diffInMinutes($hora1Carbon);
+                $hora4 = Carbon::today()->setHour(4)->setMinute(00);
+                $totalMinutos = $hora4->hour * 60 + $hora4->minute;
 
-                // Convertir la diferencia a horas y minutos
-                $diferenciaEnHoras = intdiv($diferenciaEnMinutos, 60); // Horas
-                $diferenciaEnMinutosRestantes = $diferenciaEnMinutos % 60; // Minutos restantes
-                if ($dias > 1) {
-                    return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
+                $hora8 = Carbon::today()->setHour(8)->setMinute(00);
+                $total8 = $hora8->hour * 60 + $hora8->minute;
+
+                $hora17 = Carbon::today()->setHour(17)->setMinute(00);
+                $total17 = $hora17->hour * 60 + $hora17->minute;
+
+                $start = $request->hora_salida;
+                $salidaAntes = Carbon::parse($start);
+                $totalSalida = $salidaAntes->hour * 60 + $salidaAntes->minute;
+
+                $end = $request->hora_regreso;
+                $salidaRegreso = Carbon::parse($end);
+                $totalRegreso = $salidaRegreso->hour * 60 + $salidaRegreso->minute;
+
+                $DiferenciaMinutos = $totalRegreso - $totalSalida;
+
+                if ($DiferenciaMinutos > $totalMinutos) {
+                    return back()->with('error', 'No puedes irte de tus labores más de cuatro horas.');
                 }
 
-                if ($diferenciaEnHoras > 4) {
-                    return back()->with('error', 'No puedes tomar más de cuatro horas.');
+                if ($totalSalida < $total8 || $totalSalida > $total17 || $totalRegreso > $total17) {
+                    return back()->with('error', 'Verifica tu información de salida y regreso.');
+                }
+                if ($totalSalida == $totalRegreso) {
+                    return back()->with('error', 'La hora de salida no puede ser la misma que la de regreso');
                 }
 
-                ///aqui ya se va crear la solicitud
-                if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora1Carbon) && $hora2Carbon->lessThanOrEqualTo($hora5PM)) {
-                    // Hora dentro del rango permitido
-                    $more_information[] = [
-                        'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor',
-                        'value_type' => $request->ausenciaTipo,
-                    ];
-                    $moreinformation = json_encode($more_information);
+                $more_information[] = [
+                    'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor',
+                    'value_type' => $request->ausenciaTipo,
+                ];
+                $moreinformation = json_encode($more_information);
 
-                    $Vacaciones = VacationRequest::create([
-                        'user_id' => $user->id,
-                        'request_type_id' => 2,
-                        'file' => $path,
-                        'details' => $request->details,
-                        'more_information' => $moreinformation,
-                        'reveal_id' => $request->reveal_id,
-                        'direct_manager_id' => $jefedirecto,
-                        'direct_manager_status' => 'Pendiente',
-                        'rh_status' => 'Pendiente'
+                $Vacaciones = VacationRequest::create([
+                    'user_id' => $user->id,
+                    'request_type_id' => 2,
+                    'file' => $path,
+                    'details' => $request->details,
+                    'more_information' => $moreinformation,
+                    'reveal_id' => $request->reveal_id,
+                    'direct_manager_id' => $jefedirecto,
+                    'direct_manager_status' => 'Pendiente',
+                    'rh_status' => 'Pendiente'
+                ]);
+
+                foreach ($datesArray as $dia) {
+                    VacationDays::create([
+                        'day' => $dia,
+                        'start' => $hora1Carbon,
+                        'end' => $hora2Carbon,
+                        'vacation_request_id' => $Vacaciones->id,
+                        'status' => 0,
                     ]);
-
-                    foreach ($datesArray as $dia) {
-                        VacationDays::create([
-                            'day' => $dia,
-                            'start' => $hora1Carbon,
-                            'end' => $hora2Carbon,
-                            'vacation_request_id' => $Vacaciones->id,
-                            'status' => 0,
-                        ]);
-                    }
-                    return back()->with('message', 'Solicitud creada exitosamente.');
-                } else {
-                    // Hora fuera del rango permitido
-                    return back()->with('message', 'La hora de inicio está fuera del rango permitido.');
                 }
+                return back()->with('message', 'Solicitud creada exitosamente.');
             }
-            //dd($diferenciaEnHoras.'...'.$diferenciaEnMinutosRestantes);
         }
 
         ///PATERNIDAD
@@ -812,8 +864,8 @@ class VacationRequestController extends Controller
             ///VACACIONES PENDIENTES O APROBADAS///
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -896,8 +948,8 @@ class VacationRequestController extends Controller
             ///VACACIONES PENDIENTES O APROBADAS///
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -975,8 +1027,8 @@ class VacationRequestController extends Controller
 
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -1525,7 +1577,33 @@ class VacationRequestController extends Controller
 
     public function ConfirmRejectedByRh(Request $request)
     {
-        dd($request);
+        if ($request->value == 'aprobada') {
+            DB::table('vacation_requests')->where('id', $request->id)->update([
+                'rh_status' => 'Verificada RH',
+                'direct_manager_status' => 'Verificada RH',
+                'commentary' => $request->commentary
+            ]);
+
+            DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                'status' => 0
+            ]);
+
+            return back()->with('nessage', 'La solicitud rechazo correctamente. Puedes regresarle las vacaciones faltantes al usuario.');
+        }
+
+        if ($request->value == 'rechazada') {
+            DB::table('vacation_requests')->where('id', $request->id)->update([
+                'rh_status' => 'Denegada RH',
+                'direct_manager_status' => 'Denegada RH',
+                'commentary' => $request->commentary
+            ]);
+
+            DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                'status' => 1
+            ]);
+
+            return back()->with('nessage', 'La solicitud rechazo correctamente. No es necesario aumentarle días al usuario.');
+        }
     }
 
     public function AuthorizePermissionBoss(Request $request)
@@ -1567,82 +1645,94 @@ class VacationRequestController extends Controller
         }
 
         if ($solicitud->request_type_id == 1) {
-            DB::table('vacation_requests')->where('id', $request->id)->update([
-                'direct_manager_status' => 'Rechazada',
-                'rh_status' => 'Rechazada',
-                'commentary' => $request->commentary
-            ]);
-
-            DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
-                'status' => 0
-            ]);
-
             $fechaActual = Carbon::now();
             $Vacaciones = DB::table('vacations_availables')
-                ->where('users_id', $solicitud->user_id)
+                ->where('users_id', $user->id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
                 ->get();
+
             $Datos = [];
             foreach ($Vacaciones as $vaca) {
                 $Datos[] = [
-                    'id' => $vaca->id,
                     'dv' => $vaca->dv,
                     'cutoff_date' => $vaca->cutoff_date,
                     'period' => $vaca->period,
                     'days_enjoyed' => $vaca->days_enjoyed,
                     'waiting' => $vaca->waiting,
                     'days_enjoyed' => $vaca->days_enjoyed,
-                    'days_availables' => $vaca->days_availables
+                    'days_availables' => $vaca->days_availables,
+                    'id' => $vaca->id,
                 ];
             }
 
-            $dias = VacationDays::where('vacation_request_id', $request->id)->count();
-            if (count($Datos) > 1) {
-                $datoswaiting = $Datos[0]['waiting'];
-                $datoswaitingdos = $Datos[1]['waiting'];
-                $peridoUno = $Datos[0]['period'];
-                $peridoDos = $Datos[1]['period'];
-                if ($dias <= $datoswaiting) {
-                    $menosWaiting = $datoswaiting - $dias;
+            $idOne = (int) $Datos[0]['id'];
+            $idTwo = (int) $Datos[1]['id'];
+            $WaitingOne = $Datos[0]['waiting'];
+            $WaitingTwo = $Datos[1]['waiting'];
+            $dvOne = $Datos[0]['dv'];
+            $dvTwo = $Datos[1]['dv'];
+            $InfoVacaciones = DB::table('vacation_information')->where('id_vacation_request', $request->id)->get();
+            $total = count($InfoVacaciones);
+            if ($total == 2) {
+                $InfoTwo = DB::table('vacation_information')->where('id_vacation_request', $solicitud->id)->where('id_vacations_availables', $idTwo)->first();
+                $InfoOne = DB::table('vacation_information')->where('id_vacation_request', $solicitud->id)->where('id_vacations_availables', $idOne)->first();
+                $totaldaysOne = $InfoOne->total_days;
+                $newWaiting = $WaitingOne - $totaldaysOne;
+                $totaldvOne = $dvOne + $totaldaysOne;
 
-                    DB::table('vacations_availables')->where('users_id', $solicitud->user_id)->where('period', $peridoUno)->update([
-                        'waiting' => $menosWaiting
-                    ]);
-                } elseif ($dias > $datoswaiting) {
-                    $restawaiting = ($datoswaiting - $dias) * (-1);
-                    $finalwaitinguno = $dias - $restawaiting;
-                    $waiting2 = $datoswaitingdos - $restawaiting;
+                $totaldaysTwo = $InfoTwo->total_days;
+                $newWaitingTwo = $WaitingTwo - $totaldaysTwo;
+                $totaldvTwo = $dvTwo + $totaldaysTwo;
 
-                    if (($finalwaitinguno <= $datoswaiting) && ($restawaiting <= $datoswaitingdos)) {
-                        $menosWaiting = $datoswaiting - $finalwaitinguno;
-                        ////waiting 1////
-                        DB::table('vacations_availables')->where('users_id', $solicitud->user_id)->where('period', $peridoUno)->update([
-                            'waiting' => $menosWaiting,
+                DB::table('vacation_requests')->where('id', $request->id)->update([
+                    'rh_status' => 'Rechazada',
+                    'direct_manager_status' => 'Rechazada',
+                    'commentary' => $request->commentary
+                ]);
 
-                        ]);
-                        ////waiting 2////
-                        DB::table('vacations_availables')->where('users_id', $solicitud->user_id)->where('period', $peridoDos)->update([
-                            'waiting' => $waiting2,
-                        ]);
-                    }
-                } else {
-                    return back()->with('error', 'No tienes días reservados.');
-                }
-                return back()->with('message', 'Se rechazó la solicitud exitosamente.');
-            } elseif (count($Datos) == 1) {
-                $diasreservados = $Datos[0]['waiting'];
-                $PeridoUno = $Datos[0]['period'];
-                if ($dias <= $diasreservados) {
-                    $menosWaiting = $diasreservados - $dias;
-                    DB::table('vacations_availables')->where('users_id', $solicitud->user_id)->where('period', $PeridoUno)->update([
-                        'waiting' => $menosWaiting,
-                    ]);
-                } else {
-                    return back()->with('error', 'No tienes días reservados.');
-                }
-                // dd('Se rechazó la solicitud exitosamente.');
-                return back()->with('message', 'Se rechazó la solicitud exitosamente.');
+                DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                    'status' => 0
+                ]);
+
+                DB::table('vacations_availables')->where('users_id', $solicitud->user_id)->where('id', $idOne)->update([
+                    'waiting' => $newWaiting,
+                    'dv' => $totaldvOne
+                ]);
+
+                DB::table('vacations_availables')->where('users_id', $solicitud->user_id)->where('id', $idTwo)->update([
+                    'waiting' => $newWaitingTwo,
+                    'dv' => $totaldvTwo
+                ]);
+
+                return back()->with('message', 'Vacaciones rechazadas correctamente');
+            }
+
+            if ($total == 1) {
+                $VacaInfo = DB::table('vacation_information')->where('id_vacation_request', $solicitud->id)->first();
+                $id_vacations_availables = $VacaInfo->id_vacations_availables;
+                $VacacionesAviles = DB::table('vacations_availables')->where('id', $id_vacations_availables)->first();
+                $totaldaysOne = $VacaInfo->total_days;
+                $newWaiting = $VacacionesAviles->waiting - $totaldaysOne;
+                $totaldv = $VacacionesAviles->dv + $totaldaysOne;
+                //dd('totaldevacaciones'.':'.$totaldaysOne.'Waiting'.$newWaiting.'dv'.$totaldv.'VA'.$id_vacations_availables);
+
+                DB::table('vacation_requests')->where('id', $request->id)->update([
+                    'rh_status' => 'Rechazada',
+                    'direct_manager_status' => 'Rechazada',
+                    'commentary' => $request->commentary
+                ]);
+
+                DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                    'status' => 0
+                ]);
+
+                DB::table('vacations_availables')->where('users_id', $solicitud->user_id)->where('id', $id_vacations_availables)->update([
+                    'waiting' => $newWaiting,
+                    'dv' => $totaldv
+                ]);
+
+                return back()->with('message', 'Vacaciones rechazadas correctamente');
             }
         } else {
             DB::table('vacation_requests')->where('id', $request->id)->update([
@@ -1652,11 +1742,9 @@ class VacationRequestController extends Controller
             DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
                 'status' => 0
             ]);
+
+            return back()->with('message', 'Solicitud rechazada exitosamente.');
         }
-
-
-
-        return back()->with('message', 'Solicitud rechazada exitosamente.');
     }
 
     public function RejectPermissionUser(Request $request)
@@ -1840,8 +1928,8 @@ class VacationRequestController extends Controller
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
                 ->whereIn('request_type_id', [2, 3, 4, 5])
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -2489,8 +2577,8 @@ class VacationRequestController extends Controller
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
                 ->whereIn('request_type_id', [1, 3, 4, 5])
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -2630,22 +2718,15 @@ class VacationRequestController extends Controller
             }
 
             if ($request->ausenciaTipo == 'salida_antes') {
-                $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
+                $hora13PM = Carbon::today()->setHour(13)->setMinute(00);
+                $totalMinutos = $hora13PM->hour * 60 + $hora13PM->minute;
+
                 $start = $request->hora_salida;
+                $salidaAntes = Carbon::parse($start);
+                $totalMinutosRetardo = $salidaAntes->hour * 60 + $salidaAntes->minute;
 
-                $diferenciaEnMinutos = $hora5PM->diffInMinutes($start);
-                // Convertir la diferencia a horas y minutos
-                $diferenciaEnHoras = intdiv($diferenciaEnMinutos, 60); // Horas
-                $diferenciaEnMinutosRestantes = $diferenciaEnMinutos % 60; // Minutos restantes
-
-                if ($diferenciaEnHoras > 4) {
-                    return back()->with('error', 'No puedes tomar más de cuatro horas.');
-                }
-
-                $horaSalidaCarbon = Carbon::createFromFormat('H:i', $start);
-
-                if ($horaSalidaCarbon->greaterThanOrEqualTo($hora5PM)) {
-                    return back()->with('error', 'No se pueden crear solicitudes después de las 17 horas.');
+                if ($totalMinutosRetardo < $totalMinutos) {
+                    return back()->with('error', 'No puedes salir antes de las 13PM.');
                 }
 
                 // Convertir ambos arrays a conjuntos (sets) para la comparación
@@ -2670,7 +2751,7 @@ class VacationRequestController extends Controller
                     ]);
 
                     DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
-                        'start' => $horaSalidaCarbon,
+                        'start' => $start,
                         'end' => null,
                     ]);
                 } else {
@@ -2687,17 +2768,14 @@ class VacationRequestController extends Controller
                             'file' => $request->archivos == null ? $Solicitud->file : $path,
                             'more_information' => $moreinformation,
                         ]);
-                        if ($horaSalidaCarbon->lessThan($hora5PM)) {
-                            foreach ($dates as $dia) {
-                                VacationDays::create([
-                                    'day' => $dia,
-                                    'start' => $horaSalidaCarbon,
-                                    'vacation_request_id' => $request->id,
-                                    'status' => 0,
-                                ]);
-                            }
-                        } else {
-                            return back()->with('error', 'No puedes seleccionar la misma hora de salida');
+
+                        foreach ($dates as $dia) {
+                            VacationDays::create([
+                                'day' => $dia,
+                                'start' => $start,
+                                'vacation_request_id' => $request->id,
+                                'status' => 0,
+                            ]);
                         }
                     }
                     if (!$missingInDates->isEmpty()) {
@@ -2716,23 +2794,41 @@ class VacationRequestController extends Controller
             }
 
             if ($request->ausenciaTipo == 'salida_durante') {
-                $hora8AM = Carbon::today()->setHour(8)->setMinute(0)->setSecond(0);
-                $hora5PM = Carbon::today()->setHour(17)->setMinute(0)->setSecond(0);
                 $start = $request->hora_salida;
                 $end = $request->hora_regreso;
 
                 $hora1Carbon = Carbon::createFromFormat('H:i', $start);
                 $hora2Carbon = Carbon::createFromFormat('H:i', $end);
 
-                // Calcular la diferencia en minutos
-                $diferenciaEnMinutos = $hora2Carbon->diffInMinutes($hora1Carbon);
+                $hora4 = Carbon::today()->setHour(4)->setMinute(00);
+                $totalMinutos = $hora4->hour * 60 + $hora4->minute;
 
-                // Convertir la diferencia a horas y minutos
-                $diferenciaEnHoras = intdiv($diferenciaEnMinutos, 60); // Horas
-                $diferenciaEnMinutosRestantes = $diferenciaEnMinutos % 60; // Minutos restantes
+                $hora8 = Carbon::today()->setHour(8)->setMinute(00);
+                $total8 = $hora8->hour * 60 + $hora8->minute;
 
-                if ($diferenciaEnHoras > 4) {
-                    return back()->with('error', 'No puedes tomar más de cuatro horas.');
+                $hora17 = Carbon::today()->setHour(17)->setMinute(00);
+                $total17 = $hora17->hour * 60 + $hora17->minute;
+
+                $start = $request->hora_salida;
+                $salidaAntes = Carbon::parse($start);
+                $totalSalida = $salidaAntes->hour * 60 + $salidaAntes->minute;
+
+                $end = $request->hora_regreso;
+                $salidaRegreso = Carbon::parse($end);
+                $totalRegreso = $salidaRegreso->hour * 60 + $salidaRegreso->minute;
+
+                $DiferenciaMinutos = $totalRegreso - $totalSalida;
+
+                if ($DiferenciaMinutos > $totalMinutos) {
+                    return back()->with('error', 'No puedes irte de tus labores más de cuatro horas.');
+                }
+
+                if ($totalSalida < $total8 || $totalSalida > $total17 || $totalRegreso > $total17) {
+                    return back()->with('error', 'Verifica tu información de salida y regreso.');
+                }
+
+                if ($totalSalida == $totalRegreso) {
+                    return back()->with('error', 'La hora de salida no puede ser la misma que la de regreso');
                 }
 
                 // Convertir ambos arrays a conjuntos (sets) para la comparación
@@ -2744,14 +2840,34 @@ class VacationRequestController extends Controller
                 $missingInDates = $diasSet->diff($datesSet); // Días en $dias pero no en $dates
 
                 if ($missingInDias->isEmpty() && $missingInDates->isEmpty()) {
-                    if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora1Carbon) && $hora2Carbon->lessThanOrEqualTo($hora5PM)) {
-                        // Hora dentro del rango permitido
+
+                    // Hora dentro del rango permitido
+                    $more_information[] = [
+                        'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor',
+                        'value_type' => $request->ausenciaTipo,
+                    ];
+                    $moreinformation = json_encode($more_information);
+
+                    DB::table('vacation_requests')->where('id', $request->id)->update([
+                        'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
+                        'details' => $request->details == null ? $Solicitud->details : $request->details,
+                        'file' => $request->archivos == null ? $Solicitud->file : $path,
+                        'more_information' => $moreinformation,
+                    ]);
+
+                    DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                        'start' => $hora1Carbon,
+                        'end' => $hora2Carbon,
+                    ]);
+
+                    return back()->with('message', 'Solicitud actualizada correctamente.');
+                } else {
+                    if (!$missingInDias->isEmpty()) {
                         $more_information[] = [
                             'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor',
                             'value_type' => $request->ausenciaTipo,
                         ];
                         $moreinformation = json_encode($more_information);
-
                         DB::table('vacation_requests')->where('id', $request->id)->update([
                             'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                             'details' => $request->details == null ? $Solicitud->details : $request->details,
@@ -2759,43 +2875,14 @@ class VacationRequestController extends Controller
                             'more_information' => $moreinformation,
                         ]);
 
-                        DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
-                            'start' => $hora1Carbon,
-                            'end' => $hora2Carbon,
-                        ]);
-
-                        return back()->with('message', 'Solicitud actualizada correctamente.');
-                    } else {
-                        // Hora fuera del rango permitido
-                        return back()->with('error', 'La hora de inicio está fuera del rango permitido.');
-                    }
-                } else {
-                    if (!$missingInDias->isEmpty()) {
-                        if ($hora1Carbon->greaterThanOrEqualTo($hora8AM) && $hora1Carbon->lessThan($hora5PM) && $hora2Carbon->greaterThanOrEqualTo($hora1Carbon) && $hora2Carbon->lessThanOrEqualTo($hora5PM)) {
-                            $more_information[] = [
-                                'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor',
-                                'value_type' => $request->ausenciaTipo,
-                            ];
-                            $moreinformation = json_encode($more_information);
-                            DB::table('vacation_requests')->where('id', $request->id)->update([
-                                'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
-                                'details' => $request->details == null ? $Solicitud->details : $request->details,
-                                'file' => $request->archivos == null ? $Solicitud->file : $path,
-                                'more_information' => $moreinformation,
+                        foreach ($dates as $dia) {
+                            VacationDays::create([
+                                'day' => $dia,
+                                'start' => $hora1Carbon,
+                                'end' => $hora2Carbon,
+                                'vacation_request_id' => $request->id,
+                                'status' => 0,
                             ]);
-
-                            foreach ($dates as $dia) {
-                                VacationDays::create([
-                                    'day' => $dia,
-                                    'start' => $hora1Carbon,
-                                    'end' => $hora2Carbon,
-                                    'vacation_request_id' => $request->id,
-                                    'status' => 0,
-                                ]);
-                            }
-                        } else {
-                            // Hora fuera del rango permitido
-                            return back()->with('error', 'La hora de inicio está fuera del rango permitido.');
                         }
                     }
                     if (!$missingInDates->isEmpty()) {
@@ -2829,8 +2916,8 @@ class VacationRequestController extends Controller
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
                 ->whereIn('request_type_id', [1, 2, 4, 5])
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -2940,8 +3027,8 @@ class VacationRequestController extends Controller
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
                 ->whereIn('request_type_id', [1, 2, 3, 5])
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -3046,8 +3133,8 @@ class VacationRequestController extends Controller
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
                 ->whereIn('request_type_id', [1, 2, 3, 4])
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -3317,8 +3404,8 @@ class VacationRequestController extends Controller
                 $vacaciones = DB::table('vacation_requests')
                     ->where('user_id', $user->id)
                     ->whereIn('request_type_id', [5])
-                    ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                    ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                     ->get();
 
                 $diasVacaciones = [];
@@ -3515,7 +3602,7 @@ class VacationRequestController extends Controller
                     'dv' => $totaldvTwo
                 ]);
 
-                return back()->with('message', 'Vacaciones actualizadas correctamente');
+                return back()->with('message', 'Vacaciones rechazadas correctamente');
             }
 
             if ($total == 1) {
@@ -3542,7 +3629,7 @@ class VacationRequestController extends Controller
                     'dv' => $totaldv
                 ]);
 
-                return back()->with('message', 'Vacaciones actualizadas correctamente');
+                return back()->with('message', 'Vacaciones rechazadas correctamente');
             }
         } else {
             DB::table('vacation_requests')->where('id', $request->id)->update([
