@@ -3974,7 +3974,7 @@ class VacationRequestController extends Controller
     }
 
     ////////////DATOS DE USUARIOS///////////////////
-    /* public function CreateVacationRequest(Request $request)
+    public function CreateVacationRequest(Request $request)
     {
         $vacationDays = DB::table('vacation_per_years')->pluck('days', 'year');
 
@@ -4070,5 +4070,5 @@ class VacationRequestController extends Controller
                 }
             }
         }
-    } */
+    }
 }
