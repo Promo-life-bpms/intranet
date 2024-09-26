@@ -19,6 +19,7 @@ class Vacations extends Model
         'date_end',
         'date_start',
         'days_enjoyed',
+        'waiting',
         "users_id"
     ];
 

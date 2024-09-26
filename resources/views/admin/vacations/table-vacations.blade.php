@@ -8,20 +8,30 @@
             padding: 2px !important;
         }
     </style>
-    <div class="d-flex justify-content-end pb-3">
-        <input wire:model='keyWord' type="text" class="form-control" name="search" id="search"
-            placeholder="Buscar Empleados">
+
+    <div class="row mb-3">
+        <div class="col-6">
+            <h3>Directorio de vacaciones</h3>
+        </div>
+        <div class="col-4" style="text-align: end">
+            <input wire:model='keyWord' type="text" class="form-control" name="search" id="search"
+                placeholder="Buscar Empleados">
+        </div>
+        <div class="col-2" style="text-align: end">
+            <a style="margin-left: 20px;" href=" {{ route('admin.vacations.export') }} " type="button"
+                class="btn btn btn-success">Exportar Excel</a>
+        </div>
     </div>
     <div class="table-responsive">
         <table class="table table-striped" id="table-directory">
-            <thead>
+            <thead style="background-color: #072A3B; color: white;">
                 <tr class="text-center">
                     <th>Nombre</th>
                     <th>Ingreso</th>
                     <th>Dias Totales</th>
                     <th>Dias Disfrutados</th>
                     <th>Dias Disponibles</th>
-                    <th>Respetar Vacaciones Vencidas</th>
+                    {{-- <th>Respetar Vacaciones Vencidas</th> --}}
                     <th>Ver Detalle</th>
                 </tr>
             </thead>
@@ -46,17 +56,17 @@
                                 <td>
                                     {{ $user->employee->take_expired_vacation ? $user->vacationsComplete()->sum('dv') : $user->vacationsAvailables()->sum('dv') }}</b>
                                 </td>
-                                <td>
+                                {{-- <td>
                                     <div>
                                         <input {{ $user->employee->take_expired_vacation ? 'checked' : '' }}
                                             type="checkbox" class="form-check-input" id="exampleCheck1"
                                             wire:click="changeStatusVacations({{ $user->id }})">
                                     </div>
-                                </td>
+                                </td> --}}
                                 <td>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    <button type="button" class="btn btn-link" data-bs-toggle="modal"
                                         data-bs-target="#modalDetails{{ $user->id }}">
-                                        Ver Detalles
+                                        Ver Detalle
                                     </button>
                                     <!-- Modal -->
                                     <div wire:ignore.self class="modal fade" id="modalDetails{{ $user->id }}"
@@ -72,60 +82,49 @@
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <div>
-                                                        <div class="d-flex justify-content-between">
-                                                            <div class="text-left">
-                                                                <p class="m-0"><strong>Empresa:</strong>
-                                                                    {{ $user->employee->companies[0]->name_company }}
-                                                                </p>
-                                                                <p class="m-0"><strong>Alta:</strong>
-                                                                    {{ $user->employee->date_admission->format('d-M-Y') }}
-                                                                </p>
-                                                                <p class="m-0"><strong>Calculo al: </strong>
-                                                                    {{ now()->format('d-M-Y') }}
-                                                                </p>
-                                                                @php
-                                                                    $yearsWork = $user->employee->date_admission->diffInYears(now());
-                                                                    $lastPeriodYear = (string) ((int) $user->employee->date_admission->format('Y') + $yearsWork);
-                                                                    $lastPeriodCurrent = \Carbon\Carbon::parse($lastPeriodYear . '-' . (string) $user->employee->date_admission->format('m-d'));
-                                                                    $daysItsYear = $lastPeriodCurrent->diffInDays(now());
-                                                                @endphp
-                                                                <p class="m-0"><strong>Dias transcurridos del
-                                                                        {{ $lastPeriodCurrent->format('d-M-Y') . ' al ' . now()->format('d-M-Y') }}:
-                                                                    </strong> {{ $daysItsYear . ' dias' }}
-                                                                </p>
-                                                            </div>
-                                                            <div>
-                                                                <div class="d-flex justify-content-between">
-                                                                    <div wire:loading.flex>
-                                                                        <div class="spinner-border text-info"
-                                                                            role="status">
-                                                                            <span class="sr-only">Loading...</span>
-                                                                        </div>
-                                                                    </div>
-                                                                    @if (session()->has('error'))
-                                                                        <div class="alert alert-danger" wire:poll.3s>
-                                                                            {{ session('error') }}
-                                                                        </div>
-                                                                    @endif
-                                                                    @if (session()->has('message'))
-                                                                        <div class="alert alert-success p-1 m-0"
-                                                                            wire:poll.3s>
-                                                                            {{ session('message') }}
-                                                                        </div>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
+                                                    <div class="mb-3">
+                                                        <div class="d-flex">
+                                                            <strong class="mr-1">Empresa: </strong>
+                                                            {{ $user->employee->companies[0]->name_company }}
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <strong class="mr-1">Alta: </strong>
+                                                            {{ $user->employee->date_admission->format('d/m/Y') }}
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <strong class="mr-1">Calculo al: </strong>
+                                                            {{ now()->format('d/m/Y') }}
+                                                            @php
+                                                                $yearsWork = $user->employee->date_admission->diffInYears(
+                                                                    now(),
+                                                                );
+                                                                $lastPeriodYear =
+                                                                    (string) ((int) $user->employee->date_admission->format(
+                                                                        'Y',
+                                                                    ) + $yearsWork);
+                                                                $lastPeriodCurrent = \Carbon\Carbon::parse(
+                                                                    $lastPeriodYear .
+                                                                        '-' .
+                                                                        (string) $user->employee->date_admission->format(
+                                                                            'm-d',
+                                                                        ),
+                                                                );
+                                                                $daysItsYear = $lastPeriodCurrent->diffInDays(now());
+                                                            @endphp
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <strong class="mr-1">Dias transcurridos del
+                                                                {{ $lastPeriodCurrent->format('d/m/Y') . ' al ' . now()->format('d/m/Y') }}:
+                                                            </strong>
+                                                            {{ $daysItsYear . ' dias' }}
                                                         </div>
                                                     </div>
                                                     <div style="overflow: auto; max-height: 500px">
                                                         <table class="table table-bordered table-hover">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th colspan="3"></th>
-                                                                    <th colspan="3" class="text-center">Dias</th>
-                                                                    <th colspan="3"></th>
-                                                                </tr>
+                                                            <thead style="background-color: #072A3B; color: white;">
                                                                 <tr>
                                                                     <th scope="col">#</th>
                                                                     <th scope="col" class="text-center">Año</th>
@@ -153,12 +152,22 @@
                                                                 @endphp
                                                                 @foreach ($user->vacationsComplete()->orderBy('date_end', 'DESC')->get() as $vacation)
                                                                     @php
-                                                                        $date_start = new \Carbon\Carbon($vacation->date_start);
-                                                                        $date_end = new \Carbon\Carbon($vacation->date_end);
-                                                                        $cutoff_date = new \Carbon\Carbon($vacation->cutoff_date);
-                                                                        $totalCalculados = $totalCalculados + $vacation->days_availables;
-                                                                        $totalDisponibles = $totalDisponibles + $vacation->dv;
-                                                                        $totalDisfrutados = $totalDisfrutados + $vacation->days_enjoyed;
+                                                                        $date_start = new \Carbon\Carbon(
+                                                                            $vacation->date_start,
+                                                                        );
+                                                                        $date_end = new \Carbon\Carbon(
+                                                                            $vacation->date_end,
+                                                                        );
+                                                                        $cutoff_date = new \Carbon\Carbon(
+                                                                            $vacation->cutoff_date,
+                                                                        );
+                                                                        $totalCalculados =
+                                                                            $totalCalculados +
+                                                                            $vacation->days_availables;
+                                                                        $totalDisponibles =
+                                                                            $totalDisponibles + $vacation->dv;
+                                                                        $totalDisfrutados =
+                                                                            $totalDisfrutados + $vacation->days_enjoyed;
                                                                     @endphp
                                                                     <tr>
                                                                         <td scope="row">{{ $loop->iteration }}</td>
@@ -223,11 +232,13 @@
                                                                     <td></td>
                                                                     <td></td>
                                                                     {{-- <td></td> --}}
-                                                                    <td class="text-center">{{ $totalCalculados }} <br>
-                                                                        Dias Cumplidos</td>
-                                                                        <td class="text-center">{{ $totalDisfrutados }}
-                                                                            <br> Dias Disfrutados
-                                                                        </td>
+                                                                    <td class="text-center">{{ $totalCalculados }}
+                                                                        <br>
+                                                                        Dias Cumplidos
+                                                                    </td>
+                                                                    <td class="text-center">{{ $totalDisfrutados }}
+                                                                        <br> Dias Disfrutados
+                                                                    </td>
                                                                     <td class="text-center">
                                                                         {{ $totalCalculados - $totalDisfrutados }} <br>
                                                                         Dias Restantes</td>
