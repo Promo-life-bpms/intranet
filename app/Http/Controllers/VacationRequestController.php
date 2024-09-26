@@ -296,8 +296,8 @@ class VacationRequestController extends Controller
             ///VACACIONES PENDIENTES O APROBADAS///
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -558,8 +558,8 @@ class VacationRequestController extends Controller
             ///VACACIONES PENDIENTES O APROBADAS///
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -808,8 +808,8 @@ class VacationRequestController extends Controller
             ///VACACIONES PENDIENTES O APROBADAS///
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -892,8 +892,8 @@ class VacationRequestController extends Controller
             ///VACACIONES PENDIENTES O APROBADAS///
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -971,8 +971,8 @@ class VacationRequestController extends Controller
 
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -1491,13 +1491,32 @@ class VacationRequestController extends Controller
 
     public function ConfirmRejectedByRh(Request $request)
     {
-        dd($request);
         if ($request->value == 'aprobada') {
-            return 0;
+            DB::table('vacation_requests')->where('id', $request->id)->update([
+                'rh_status' => 'Verificada RH',
+                'direct_manager_status' => 'Verificada RH',
+                'commentary' => $request->commentary
+            ]);
+
+            DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                'status' => 0
+            ]);
+
+            return back()->with('nessage', 'La solicitud rechazo correctamente. Puedes regresarle las vacaciones faltantes al usuario.');
         }
 
         if ($request->value == 'rechazada') {
-            return 1;
+            DB::table('vacation_requests')->where('id', $request->id)->update([
+                'rh_status' => 'Denegada RH',
+                'direct_manager_status' => 'Denegada RH',
+                'commentary' => $request->commentary
+            ]);
+
+            DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
+                'status' => 1
+            ]);
+
+            return back()->with('nessage', 'La solicitud rechazo correctamente. No es necesario aumentarle días al usuario.');
         }
     }
 
@@ -1823,8 +1842,8 @@ class VacationRequestController extends Controller
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
                 ->whereIn('request_type_id', [2, 3, 4, 5])
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -2472,8 +2491,8 @@ class VacationRequestController extends Controller
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
                 ->whereIn('request_type_id', [1, 3, 4, 5])
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -2811,8 +2830,8 @@ class VacationRequestController extends Controller
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
                 ->whereIn('request_type_id', [1, 2, 4, 5])
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -2922,8 +2941,8 @@ class VacationRequestController extends Controller
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
                 ->whereIn('request_type_id', [1, 2, 3, 5])
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -3028,8 +3047,8 @@ class VacationRequestController extends Controller
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
                 ->whereIn('request_type_id', [1, 2, 3, 4])
-                ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                 ->get();
 
             $diasVacaciones = [];
@@ -3299,8 +3318,8 @@ class VacationRequestController extends Controller
                 $vacaciones = DB::table('vacation_requests')
                     ->where('user_id', $user->id)
                     ->whereIn('request_type_id', [5])
-                    ->whereNotIn('direct_manager_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
-                    ->whereNotIn('rh_status', ['Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('direct_manager_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('rh_status', ['Verificada RH', 'Cancelada', 'Rechazada', 'Cancelada por el usuario'])
                     ->get();
 
                 $diasVacaciones = [];
