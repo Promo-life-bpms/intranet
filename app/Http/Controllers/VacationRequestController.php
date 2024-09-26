@@ -28,7 +28,6 @@ use function PHPUnit\Framework\isEmpty;
 class VacationRequestController extends Controller
 {
 
-
     public function index(Request $request)
     {
 
@@ -1193,15 +1192,16 @@ class VacationRequestController extends Controller
         }
     }
 
-    public function RequestBoss()
+    public function RequestBoss(Request $request)
     {
         $user = auth()->user();
 
         $HeIsBossOf = Employee::where('jefe_directo_id', $user->id)->where('status', 1)->pluck('user_id');
-        $Solicitudes = DB::table('vacation_requests')->whereIn('user_id', $HeIsBossOf)->orderBy('created_at', 'desc')->paginate(5);
-        $SumaSolicitudes = $Solicitudes->total();
+        $Solicitudes = DB::table('vacation_requests')->whereIn('user_id', $HeIsBossOf)->orderBy('created_at', 'desc');
+
+        $SumaSolicitudes = count($Solicitudes->get());
         // Recorre las solicitudes paginadas, pero no crees un nuevo array desde cero
-        $Solicitudes->getCollection()->transform(function ($Solicitud) {
+        $solicitudesCollection = $Solicitudes->get()->map(function ($Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
             $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
             $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
@@ -1211,7 +1211,6 @@ class VacationRequestController extends Controller
             foreach ($Days as $Day) {
                 $dias[] = $Day->day;
             }
-
             // Ordenar las fechas de la más cercana a la más lejana
             usort($dias, function ($a, $b) {
                 return strtotime($a) - strtotime($b);
@@ -1240,29 +1239,59 @@ class VacationRequestController extends Controller
                 ];
             }
 
-            return (object)[
-                'image' => $nameUser->image,
-                'created_at' => $Solicitud->created_at,
-                'id' => $Solicitud->id,
-                'name' => $nameUser->name . ' ' . $nameUser->lastname,
-                'current_vacation' => $Datos[0]['dv'] ?? null,
-                'current_vacation_expiration' => $Datos[0]['cutoff_date'] ?? null,
-                'next_vacation' => empty($Datos[1]['dv']) ? null : $Datos[1]['dv'],
-                'expiration_of_next_vacation' => empty($Datos[1]['cutoff_date']) ? null : $Datos[1]['cutoff_date'],
-                'direct_manager_status' => $Solicitud->direct_manager_status,
-                'rh_status' => $Solicitud->rh_status,
-                'request_type' => $RequestType->type,
-                'specific_type' => $RequestType->type == 1 ?: '-',
-                'days_absent' => $dias,
-                'method_of_payment' => $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro')))),
-                'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
-                'file' => $Solicitud->file == null ? null : $Solicitud->file,
-                'time' => in_array($Solicitud->request_type_id, [2]) ? $time : null,
-                'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
-            ];
+            // return (object)[
+            $solicitud = new \stdClass();
+            $solicitud->image = $nameUser->image;
+            $solicitud->created_at = $Solicitud->created_at;
+            $solicitud->id = $Solicitud->id;
+            $solicitud->name = $nameUser->name . ' ' . $nameUser->lastname;
+            $solicitud->current_vacation = $Datos[0]['dv'] ?? null;
+            $solicitud->current_vacation_expiration = $Datos[0]['cutoff_date'] ?? null;
+            $solicitud->next_vacation = empty($Datos[1]['dv']) ? null : $Datos[1]['dv'];
+            $solicitud->expiration_of_next_vacation = empty($Datos[1]['cutoff_date']) ? null : $Datos[1]['cutoff_date'];
+            $solicitud->direct_manager_status = $Solicitud->direct_manager_status;
+            $solicitud->rh_status = $Solicitud->rh_status;
+            $solicitud->request_type = $RequestType->type;
+            $solicitud->specific_type = $RequestType->type == 1 ?: '-';
+            $solicitud->days_absent = $dias ?? null;
+            $solicitud->method_of_payment = $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro'))));
+            $solicitud->reveal_id = $Reveal->name . ' ' . $Reveal->lastname;
+            $solicitud->file = $Solicitud->file == null ? null : $Solicitud->file;
+            $solicitud->time = in_array($Solicitud->request_type_id, [2]) ? $time : null;
+            $solicitud->more_information = $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true);
+            return $solicitud;
         });
 
-        return view('request.authorize', compact('Solicitudes', 'SumaSolicitudes'));
+
+        if ($request->filled('search')) {
+            $solicitudesCollection = $solicitudesCollection->filter(function ($solicitud) use ($request) {
+                return stripos($solicitud->name, $request->search) !== false;
+            });
+        }
+
+        if ($request->has('tipo') && $request->tipo != '') {
+            $solicitudesCollection = $solicitudesCollection->filter(function ($solicitud) use ($request) {
+                return $solicitud->request_type == $request->tipo;
+            });
+        }
+        if ($request->has('fecha') && $request->fecha != '') {
+            $solicitudesCollection = $solicitudesCollection->filter(function ($solicitud) use ($request) {
+                return in_array($request->fecha, $solicitud->days_absent);
+            });
+        }
+
+        $page = $request->get('page', 1);
+        $perPage = 5;
+        $solicitudes = new LengthAwarePaginator(
+            $solicitudesCollection->forPage($page, $perPage),
+            $solicitudesCollection->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+
+        return view('request.authorize', compact('solicitudes', 'SumaSolicitudes'));
     }
 
     public function authorizeRequestRH()
@@ -1494,9 +1523,9 @@ class VacationRequestController extends Controller
         return view('request.authorize_rh', compact('SolicitudesPendientes', 'Pendientes', 'Aprobadas', 'SolicitudesAprobadas', 'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', 'IdandNameUser', 'vacacionesagregadas'));
     }
 
-    public function ConfirmRejectedByRh(Request $request){
+    public function ConfirmRejectedByRh(Request $request)
+    {
         dd($request);
-
     }
 
     public function AuthorizePermissionBoss(Request $request)
