@@ -1732,11 +1732,11 @@ class VacationRequestController extends Controller
             if ($total == 2) {
                 $InfoTwo = DB::table('vacation_information')->where('id_vacation_request', $solicitud->id)->where('id_vacations_availables', $idTwo)->first();
                 $InfoOne = DB::table('vacation_information')->where('id_vacation_request', $solicitud->id)->where('id_vacations_availables', $idOne)->first();
-                $totaldaysOne = $InfoOne->total_days;
+                $totaldaysOne = $InfoOne->total_days == null ? 0 : $InfoOne->total_days;
                 $newWaiting = $WaitingOne - $totaldaysOne;
                 $totaldvOne = $dvOne + $totaldaysOne;
 
-                $totaldaysTwo = $InfoTwo->total_days;
+                $totaldaysTwo = $InfoTwo->total_days == null ? 0 : $InfoTwo->total_days;
                 $newWaitingTwo = $WaitingTwo - $totaldaysTwo;
                 $totaldvTwo = $dvTwo + $totaldaysTwo;
 
@@ -1767,7 +1767,8 @@ class VacationRequestController extends Controller
                 $VacaInfo = DB::table('vacation_information')->where('id_vacation_request', $solicitud->id)->first();
                 $id_vacations_availables = $VacaInfo->id_vacations_availables;
                 $VacacionesAviles = DB::table('vacations_availables')->where('id', $id_vacations_availables)->first();
-                $totaldaysOne = $VacaInfo->total_days;
+                $totaldaysOne =  //Si no esta el campo que no lo tome en cuenta
+                    $VacaInfo->total_days == null ? 0 : $VacaInfo->total_days;
                 $newWaiting = $VacacionesAviles->waiting - $totaldaysOne;
                 $totaldv = $VacacionesAviles->dv + $totaldaysOne;
                 //dd('totaldevacaciones'.':'.$totaldaysOne.'Waiting'.$newWaiting.'dv'.$totaldv.'VA'.$id_vacations_availables);
@@ -1869,11 +1870,12 @@ class VacationRequestController extends Controller
                 if ($total == 2) {
                     $InfoTwo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idTwo)->first();
                     $InfoOne = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idOne)->first();
-                    $totaldaysOne = $InfoOne->total_days;
+                    $totaldaysOne =  //Si no esta el campo que no lo tome en cuenta
+                        $InfoOne->total_days == null ? 0 : $InfoOne->total_days;
                     $newWaiting = $WaitingOne - $totaldaysOne;
                     $totaldvOne = $dvOne + $totaldaysOne;
 
-                    $totaldaysTwo = $InfoTwo->total_days;
+                    $totaldaysTwo = $InfoTwo->total_days == null ? 0 : $InfoTwo->total_days;
                     $newWaitingTwo = $WaitingTwo - $totaldaysTwo;
                     $totaldvTwo = $dvTwo + $totaldaysTwo;
 
@@ -1904,7 +1906,8 @@ class VacationRequestController extends Controller
                     $VacaInfo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->first();
                     $id_vacations_availables = $VacaInfo->id_vacations_availables;
                     $VacacionesAviles = DB::table('vacations_availables')->where('id', $id_vacations_availables)->first();
-                    $totaldaysOne = $VacaInfo->total_days;
+                    $totaldaysOne = //Si no esta el campo que no lo tome en cuenta
+                        $VacaInfo->total_days == null ? 0 : $VacaInfo->total_days;
                     $newWaiting = $VacacionesAviles->waiting - $totaldaysOne;
                     $totaldv = $VacacionesAviles->dv + $totaldaysOne;
                     //dd('totaldevacaciones'.':'.$totaldaysOne.'Waiting'.$newWaiting.'dv'.$totaldv.'VA'.$id_vacations_availables);
@@ -3629,11 +3632,15 @@ class VacationRequestController extends Controller
             if ($total == 2) {
                 $InfoTwo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idTwo)->first();
                 $InfoOne = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idOne)->first();
-                $totaldaysOne = $InfoOne->total_days;
+                // $totaldaysOne = $InfoOne->total_days;
+
+                $totaldaysOne = //Si no esta el campo que no lo tome en cuenta
+                    $InfoOne->total_days == null ? 0 : $InfoOne->total_days;
+
                 $newWaiting = $WaitingOne - $totaldaysOne;
                 $totaldvOne = $dvOne + $totaldaysOne;
 
-                $totaldaysTwo = $InfoTwo->total_days;
+                $totaldaysTwo = $InfoTwo->total_days == null ? 0 : $InfoTwo->total_days;
                 $newWaitingTwo = $WaitingTwo - $totaldaysTwo;
                 $totaldvTwo = $dvTwo + $totaldaysTwo;
 
@@ -3746,11 +3753,15 @@ class VacationRequestController extends Controller
             if ($total == 2) {
                 $dvTwo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idTwo)->first();
                 $dvOne = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idOne)->first();
-                $totaldaysOne = $dvOne->total_days;
+                // $totaldaysOne = $dvOne->total_days;
+
+                $totaldaysOne = //Si no esta el campo que no lo tome en cuenta
+                    $dvOne->total_days == null ? 0 : $dvOne->total_days;
+
                 $newWaiting = $WaitingOne - $totaldaysOne;
                 $totalDaysEnjoyedOne = $DaysEnjoyedOne + $totaldaysOne;
 
-                $totaldaysTwo = $dvTwo->total_days;
+                $totaldaysTwo = $dvTwo->total_days == null ? 0 : $dvTwo->total_days;
                 $newWaitingTwo = $WaitingTwo - $totaldaysTwo;
                 $totalDaysEnjoyedtWO = $DaysEnjoyedTwo + $totaldaysTwo;
 
@@ -3779,7 +3790,10 @@ class VacationRequestController extends Controller
                 $VacaInfo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->first();
                 $id_vacations_availables = $VacaInfo->id_vacations_availables;
                 $VacacionesAviles = DB::table('vacations_availables')->where('id', $id_vacations_availables)->first();
-                $totaldaysOne = $VacaInfo->total_days;
+                // $totaldaysOne = $VacaInfo->total_days;
+                $totaldaysOne = //Si no esta el campo que no lo tome en cuenta
+                    $VacaInfo->total_days == null ? 0 : $VacaInfo->total_days;
+
                 $newWaiting = $VacacionesAviles->waiting - $totaldaysOne;
                 $totalDaysEnjoyedOne = $VacacionesAviles->days_enjoyed + $totaldaysOne;
 
