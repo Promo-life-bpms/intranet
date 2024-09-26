@@ -12,6 +12,7 @@ use App\Models\VacationDays;
 use App\Models\VacationInformation;
 use App\Models\VacationRequest;
 use App\Models\Vacations as ModelsVacations;
+use App\Notifications\PermissionRequest;
 use Carbon\Carbon;
 use Doctrine\DBAL\Schema\Index;
 use Illuminate\Http\Request;
@@ -367,7 +368,8 @@ class VacationRequestController extends Controller
                         'reveal_id' => $request->reveal_id,
                         'direct_manager_id' => $jefedirecto,
                         'direct_manager_status' => 'Pendiente',
-                        'rh_status' => 'Pendiente'
+                        'rh_status' => 'Pendiente',
+                        'more_information' => 'No hay más información'
                     ]);
 
                     foreach ($datesArray as $dia) {
@@ -384,6 +386,33 @@ class VacationRequestController extends Controller
                         'id_vacation_request' => $Vacaciones->id
 
                     ]);
+
+                    /* $receptor = User::where('id', $request->reveal_id)->value('name');
+                    $emisor = User::where('id', $user->id)->value('name');
+                    $reveal = User::where('id', $request->reveal_id)->value('name');
+                    $request = RequestType::where('id', $request->request_type_id)->value('name');
+                    $Days = VacationDays::where('vacation_request_id', $Vacaciones->id)->get();
+                    $dias = [];
+                    foreach ($Days as $Day) {
+                        $dias[] = $Day->day;
+                    }
+                    $dias = implode(', ', $dias);
+
+                    $time = VacationDays::where('vacation_request_id', $Vacaciones->id)->first();
+                    $start = $time->start;
+
+                    $Boss = User::where('id', $Ingreso->jefe_directo_id)->first();
+
+                    $Boss->notify(new PermissionRequest(
+                        $receptor,
+                        $emisor,
+                        $request,
+                        $dias,
+                        $start,
+                        $reveal,
+                        $request->details,
+                        $Vacaciones->more_information,
+                    )); */
 
                     return back()->with('message', 'Vacaciones creadas exitosamente. 1');
                 }
@@ -536,6 +565,34 @@ class VacationRequestController extends Controller
                         'id_vacation_request' => $Vacaciones->id
 
                     ]);
+
+                    /* $receptor = User::where('id', $request->reveal_id)->value('name');
+                    $emisor = User::where('id', $user->id)->value('name');
+                    $reveal = User::where('id', $request->reveal_id)->value('name');
+                    $request = RequestType::where('id', $request->request_type_id)->value('type');
+                    $Days = VacationDays::where('vacation_request_id', $Vacaciones->id)->get();
+                    $dias = [];
+                    foreach ($Days as $Day) {
+                        $dias[] = $Day->day;
+                    }
+                    $dias = implode(', ', $dias);
+                    $ditails = $request->details;
+
+                    $time = VacationDays::where('vacation_request_id', $Vacaciones->id)->first();
+                    $start = $time->start;
+
+                    $Boss = User::where('id', $Ingreso->jefe_directo_id)->first();
+
+                    $Boss->notify(new PermissionRequest(
+                        $receptor,
+                        $emisor,
+                        $request,
+                        $dias,
+                        $start,
+                        $reveal,
+                        $ditails,
+                        $Vacaciones->more_information,
+                    )); */
 
                     return back()->with('message', 'Vacaciones creadas exitosamente. 1');
                 }
