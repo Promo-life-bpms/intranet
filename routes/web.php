@@ -31,10 +31,11 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PublicationsController;
+use App\Http\Controllers\RequestTypeController;
 use App\Http\Controllers\Soporte\SoporteController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Systems\DevicesController;
-
+use App\Http\Controllers\VacationRequestController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -130,15 +131,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::delete('/vacations/{vacation}', [VacationsController::class, 'destroy'])->middleware('role:rh')->name('admin.vacations.destroy');
     Route::get('vacations/export/', [VacationsController::class, 'export'])->name('admin.vacations.export');
 
-    Route::get('/request', [RequestController::class, 'index'])->name('request.index');
+    // Route::get('/request', [RequestController::class, 'index'])->name('request.index');
+    Route::get('/request', [VacationRequestController::class, 'index'])->name('request.index');
     Route::get('/request/create', [RequestController::class, 'create'])->name('request.create');
     Route::post('/request', [RequestController::class, 'store'])->name('request.store');
     Route::get('/request/{request}/edit', [RequestController::class, 'edit'])->name('request.edit');
     Route::put('/request/{request}', [RequestController::class, 'update'])->name('request.update');
     Route::delete('/request/{request}', [RequestController::class, 'destroy'])->name('request.destroy');
 
-    Route::get('request/authorize-manager', [RequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
-    Route::get('request/authorize-rh', [RequestController::class, 'authorizeRequestRH'])->name('request.authorizeRH');
+    //Route::get('request/authorize-manager', [VacationRequestController::class, 'authorizeRequestManager'])->name('request.authorizeManager');
+    //Route::get('request/authorize-rh', [RequestController::class, 'authorizeRequestRH'])->name('request.authorizeRH');
     Route::post('request/filter', [RequestController::class, 'filter'])->name('request.filter');
     Route::post('request/filter-date', [RequestController::class, 'filterDate'])->name('request.filter.data');
     Route::get('request/reports/all', [RequestController::class, 'exportAll'])->name('request.report.all');
@@ -147,6 +149,23 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('request/dataFilter', [RequestController::class, 'getDataFilter'])->name('request.export.filterdata');;
     Route::get('request/reports', [RequestController::class, 'reportRequest'])->middleware('role:rh')->name('request.reportRequest');
     Route::post('fullcalenderAjax', [RequestController::class, 'ajax']);
+
+    ///////////////////////////VACACIONES///////////////////////////////////////////////
+    Route::post('create/vacation/or/leave/request', [VacationRequestController::class, 'CreatePurchase'])->name('create.vacation.or.leave.request');
+    Route::get('request/authorize-manager', [VacationRequestController::class, 'RequestBoss'])->name('request.authorizeManager');
+    Route::post('request/authorize/leave/by/direct/boss', [VacationRequestController::class, 'AuthorizePermissionBoss'])->name('authorize.leave.by.direct.boss');
+    Route::post('request/reject/leave/by/direct/boss/', [VacationRequestController::class, 'RejectPermissionBoss'])->name('reject.leave.by.direct.boss');
+    Route::post('reject/leave/by/direct/user', [VacationRequestController::class, 'RejectPermissionUser'])->name('reject.leave.by.direct.user');
+    Route::post('update/request', [VacationRequestController::class, 'UpdateRequest'])->name('update.request');
+    Route::post('request/reject/leave/by/human/resources', [VacationRequestController::class, 'RejectPermissionHumanResources'])->name('reject.leave.by.human.resources');
+    Route::post('request/authorization/by/human/resources', [VacationRequestController::class, 'AuthorizePermissionHumanResources'])->name('authorization.by.human.resources');
+    Route::get('request/authorize-rh', [VacationRequestController::class, 'authorizeRequestRH'])->name('request.authorizeRH');
+    Route::get('update/vacation/or/leave/request', [VacationRequestController::class, 'UpdatePurchase'])->name('update.vacation.or.leave.request');
+    Route::get('prueba/info', [VacationRequestController::class, 'CreateVacationRequest']);
+    Route::post('create/request/type', [RequestTypeController::class, 'store'])->name('create.request.type');
+    Route::post('request/make/up/vacations', [VacationRequestController::class, 'MakeUpVacations'])->name('make.up.vacations');
+    Route::post('request/confirm/rejected/by/rh',[VacationRequestController::class, 'ConfirmRejectedByRh'])->name('confirm.rejected.by.rh');
+
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
     Route::get('manager/getPosition/{id}', [ManagerController::class, 'getPosition']);

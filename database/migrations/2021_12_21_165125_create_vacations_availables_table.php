@@ -25,6 +25,7 @@ class CreateVacationsAvailablesTable extends Migration
             $table->date('date_start')->nullable();
             $table->date('date_end')->nullable();
             $table->date('cutoff_date')->nullable();
+            $table->integer('waiting')->nullable();
             $table->foreignId('users_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

@@ -20,37 +20,38 @@
     <div class="card-body">
 
         <div class="table-responsive">
-            <table class="table table-striped" id="table-directory">
-                <thead>
+            <table class="table" id="table-directory">
+                <thead style="background-color: #072A3B; color: white;">
                     <tr>
-                        <th scope="col">#</th>
-                        {{-- <th scope="col">Fecha de creación</th> --}}
-                        <th scope="col">Solicitante</th>
-                        <th scope="col">Tipo</th>
-                        <th scope="col">Pago</th>
-                        <th scope="col">Fechas de ausencia</th>
-                        <th scope="col">Tiempo</th>
-                        <th scope="col">Motivo</th>
-                        <th scope="col">Vacaciones disponibles</th>
+                        <th scope="col" style="text-align: center;">#</th>
+                        {{-- <th scope="col"  style="text-align: center;">Fecha de creación</th> --}}
+                        <th scope="col" style="text-align: center;">Solicitante</th>
+                        <th scope="col" style="text-align: center;">Tipo</th>
+                        <th scope="col" style="text-align: center;">Pago</th>
+                        <th scope="col" style="text-align: center;">Fechas de ausencia</th>
+                        <th scope="col" style="text-align: center;">Tiempo</th>
+                        <th scope="col" style="text-align: center;">Motivo</th>
+                        <th scope="col" style="text-align: center;">Vacaciones disponibles</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($requests as $request)
                         <tr>
-                            <td>{{ $request->id }}</td>
-                            {{-- <td>{{ $request->created_at }}</td> --}}
-                            <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }}</td>
-                            <td>{{ $request->type_request }}</td>
-                            <td>{{ $request->payment }}</td>
-                            <td>
+                            <td style="text-align: center;">{{ $request->id }}</td>
+                            {{-- <td style="text-align: center;">{{ $request->created_at }}</td> --}}
+                            <td style="text-align: center;">
+                                {{ $request->employee->user->name . ' ' . $request->employee->user->lastname }}</td>
+                            <td style="text-align: center;">{{ $request->type_request }}</td>
+                            <td style="text-align: center;">{{ $request->payment }}</td>
+                            <td style="text-align: center;">
                                 @foreach ($request->requestDays as $requestDay)
                                     @if ($request->id == $requestDay->requests_id)
-                                        {{ $requestDay->start }} ,
+                                        {{ $requestDay->start }}
                                     @endif
                                 @endforeach
                             </td>
 
-                            <td>
+                            <td style="text-align: center;">
                                 @if ($request->start == null)
                                     Tiempo completo
                                 @else
@@ -61,8 +62,8 @@
                                     @endif
                                 @endif
                             </td>
-                            <td>{{ $request->reason }}</td>
-                            <td>
+                            <td style="text-align: center;">{{ $request->reason }}</td>
+                            <td style="text-align: center;">
                                 @if ($request->employee->user->vacation)
                                     {{ $request->employee->user->vacation->dv }}
                                 @else
@@ -792,7 +793,9 @@
                         }
                     }
                 },
-                order: [[0, 'desc']],
+                order: [
+                    [0, 'desc']
+                ],
             });
 
         });
