@@ -1358,7 +1358,7 @@
             tiempoEspera = setTimeout(function() {
                 console.log('Buscando...');
                 applyFilters();
-            }, 300);
+            }, 750);
         });
 
 

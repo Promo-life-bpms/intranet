@@ -55,7 +55,7 @@
                         </select>
                     </div>
                     <div class="col-3 d-flex align-items-baseline">
-                        <input id="fechaInput" type="date" class="form-control" value="{{ request('fecha') }}" />
+                        <input id="fechaInput" type="date" class="form-control mr-1" value="{{ request('fecha') }}" />
                         <i id="clearFilter" class="fas fa-times-circle" style="cursor: pointer;"></i>
                     </div>
                     <div class="col-2">
@@ -89,6 +89,12 @@
                     </thead>
 
                     <tbody>
+                        @if (count($solicitudes) === 0)
+                            <tr>
+                                <td colspan="7" style="text-align: center;">No hay solicitudes</td>
+                            </tr>
+                        @endif
+
                         @foreach ($solicitudes as $infoSoli)
                             <tr class="solicitud-row"
                                 data-days="{{ isset($infoSoli->days_absent) ? implode(',', $infoSoli->days_absent) : '' }}">
@@ -632,7 +638,7 @@
             tiempoEspera = setTimeout(function() {
                 console.log('Buscando...');
                 applyFilters();
-            }, 300);
+            }, 750);
         });
 
 
