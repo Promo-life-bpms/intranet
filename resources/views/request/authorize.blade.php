@@ -24,6 +24,12 @@
     @endif
 
     <div>
+        <div id="loadingSpinner"
+            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255, 255, 255, 0.8); z-index:9999; justify-content:center; align-items:center;">
+            <div class="spinner-border text-primary" role="status">
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-4">
                 <h3>Solicitudes autorizadas</h3>
@@ -50,7 +56,7 @@
                     </div>
                     <div class="col-3 d-flex align-items-baseline">
                         <input id="fechaInput" type="date" class="form-control" value="{{ request('fecha') }}" />
-                        <i id="clearFecha" class="fas fa-times-circle" style="cursor: pointer;"></i>
+                        <i id="clearFilter" class="fas fa-times-circle" style="cursor: pointer;"></i>
                     </div>
                     <div class="col-2">
                         <div class="d-flex justify-content-center">
@@ -638,20 +644,39 @@
             applyFilters();
         });
 
-        document.getElementById('clearFecha').addEventListener('click', function() {
+        document.getElementById('clearFilter').addEventListener('click', function() {
             document.getElementById('fechaInput').value = '';
             document.getElementById('tipoSelect').value = '';
+            document.getElementById('searchName').value = '';
             applyFilters();
         });
-        //Funcion de filtrado
+
+        /*Funcion para aplicar los filtros*/
         function applyFilters() {
-            console.log('Aplicando filtros');
+            document.getElementById('loadingSpinner').style.display = 'flex';
+
             const tipo = document.getElementById('tipoSelect').value;
             const fecha = document.getElementById('fechaInput').value;
-            const search = document.getElementById('searchName').value; // Obtener valor del campo de búsqueda
+            const search = document.getElementById('searchName').value;
 
             let url = '?tipo=' + tipo + '&fecha=' + fecha + '&search=' + encodeURIComponent(search);
             window.location.href = url;
+        }
+
+        // Mostrar el spinner de carga al cambiar de página
+        document.querySelectorAll('.pagination a').forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                document.getElementById('loadingSpinner').style.display = 'flex';
+            });
+        });
+
+
+
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const search = urlParams.get('search');
+        if (search) {
+            document.getElementById('searchName').value = search;
         }
     </script>
 
@@ -707,6 +732,25 @@
             color: #6c757d;
             pointer-events: none;
             border-color: transparent;
+        }
+
+        /*Estilo para spin de carga*/
+        #loadingSpinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
         }
     </style>
 @stop

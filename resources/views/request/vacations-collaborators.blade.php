@@ -23,6 +23,12 @@
     @endif
 
     <div>
+        <div id="loadingSpinner"
+            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255, 255, 255, 0.8); z-index:9999; justify-content:center; align-items:center;">
+            <div class="spinner-border text-primary" role="status">
+            </div>
+        </div>
+
         <div class="d-flex justify-content-between">
             <h3 class="mb-4">Permisos y Vacaciones</h3>
             <div>
@@ -108,7 +114,8 @@
                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
                             style="color:  var(--color-target-4);">
                             <path d="M13.6667 16H10.3333V13.6667H8V10.3333H10.3333V8H13.6667V10.3333H16V13.6667H13.6667V16Z"
-                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
                             <path
                                 d="M5 18L3.13036 4.91253C3.05646 4.39524 3.39389 3.91247 3.90398 3.79912L11.5661 2.09641C11.8519 2.03291 12.1481 2.03291 12.4339 2.09641L20.096 3.79912C20.6061 3.91247 20.9435 4.39524 20.8696 4.91252L19 18C18.9293 18.495 18.5 21.5 12 21.5C5.5 21.5 5.07071 18.495 5 18Z"
                                 stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
@@ -200,8 +207,7 @@
                         </div>
 
                         <div class="col-3 d-flex align-items-center justify-content-center">
-                            <span style=" margin-right: 0.5rem;">Dia:</span>
-                            <input id="fechaInput" type="date" class="form-control"
+                            <input id="fechaInput" type="date" class="form-control mr-1"
                                 value="{{ request('fecha') }}" />
                             <i id="clearFecha" class="fas fa-times-circle" style="cursor: pointer;"></i>
                         </div>
@@ -322,6 +328,7 @@
                     </div>
                 </div>
             </div>
+
 
             <!-- Columna derecha -->
             <div style="width: 28%; margin-left: 25px; display: flex; flex-direction: column;">
@@ -1222,44 +1229,47 @@
             document.getElementById('clearFecha').addEventListener('click', function() {
                 document.getElementById('fechaInput').value = '';
                 applyFilters();
-            });
+            });,
 
+
+            /*Funcion para aplicar los filtros*/
             function applyFilters() {
+                document.getElementById('loadingSpinner').style.display = 'flex';
                 const tipo = document.getElementById('tipoSelect').value;
                 const jefeDirecto = document.getElementById('selectJD').value;
                 const rhStatus = document.getElementById('selectRh').value;
                 const fecha = document.getElementById('fechaInput').value;
                 let url = '?tipo=' + tipo + '&jefeDirecto=' + jefeDirecto + '&rhStatus=' + rhStatus + '&fecha=' +
                     fecha;
-                window.location.href = url; // Actualiza la URL con los filtros
+                window.location.href = url;
             }
 
+            // Mostrar el spinner de carga al cambiar de página
+            document.querySelectorAll('.pagination a').forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    document.getElementById('loadingSpinner').style.display = 'flex';
+                });
+            });
 
-
-            // Poner dias de vacaciones y permisos especiales en el calendario
             $('#modalCalendario').on('shown.bs.modal', function() {
                 /*utilizar la variable vacacionescalendar que viene de el controlador para poner los dias en el calendario */
                 var vacacionesCalendar = @json($vacacionescalendar);
 
                 var selectedRanges = [];
                 var calendarEl = document.getElementById('calendarioDays');
-                ///Seleccionar el div donde viene contenido el dia
                 var calendario = new FullCalendar.Calendar(calendarEl, {
                     locale: "es",
                     hiddenDays: [0, 6],
                     selectable: true,
                     dayCellDidMount: function(info) {
-                        // Accede al <div> con la clase fc-daygrid-day-top
                         var dayTopElement = info.el.querySelector(
                             '.fc-daygrid-day-top');
 
                         if (dayTopElement) {
-                            // Añade la clase personalizada
                             dayTopElement.classList.add('custom-day-top-class');
                         }
 
-                        var dateStr = info.date.toISOString().split('T')[
-                            0]; // Formato 'YYYY-MM-DD'
+                        var dateStr = info.date.toISOString().split('T')[0];
                         var daysVacaciones = vacacionesCalendar?.vacaciones
                         var daysAusecia = vacacionesCalendar?.ausencias
                         var daysPaternidad = vacacionesCalendar?.paternidad
@@ -2361,6 +2371,25 @@
             color: #6c757d;
             pointer-events: none;
             border-color: transparent;
+        }
+
+        /*Estilo para spin de carga*/
+        #loadingSpinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
         }
     </style>
 @endsection
