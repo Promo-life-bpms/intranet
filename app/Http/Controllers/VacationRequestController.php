@@ -237,9 +237,6 @@ class VacationRequestController extends Controller
 
         $porcentajeespecial = round(($contadorAsuntosPersonales / 3) * 100);
 
-        //dd de solicirudes y vacaiones
-
-
         return view('request.vacations-collaborators', compact('users', 'vacaciones', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar', 'porcentajeespecial'));
     }
     public function CreatePurchase(Request $request)
@@ -1350,11 +1347,11 @@ class VacationRequestController extends Controller
     {
         $user = auth()->user();
 
-        $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->orderBy('created_at', 'desc');
-        $sumaAprobadas = count($Solicitudes->get());
+        $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->orderBy('created_at', 'desc')->get();
+        $sumaAprobadas = count($Solicitudes);
 
         // $SolicitudesAprobadas = [];
-        $solicitudesAprobadasCollection = $Solicitudes->get()->map(function ($Solicitud) {
+        $solicitudesAprobadasCollection = $Solicitudes->map(function ($Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
             $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
             $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
@@ -1527,8 +1524,6 @@ class VacationRequestController extends Controller
                 return in_array($request->fecha, $solicitud->days_absent);
             });
         }
-        $pagePendientes = $request->get('pagePendientes', 1);
-        $perPagePendientes = 5;
         $Pendientes = new LengthAwarePaginator(
             $solicitudesPendientesCollection->forPage($page, $perPage),
             $solicitudesPendientesCollection->count(),
@@ -1544,8 +1539,7 @@ class VacationRequestController extends Controller
 
         $sumaCanceladasUsuario = count($SolicitudesRechazadas);
 
-        $rechazadas = [];
-        foreach ($SolicitudesRechazadas as $Solicitud) {
+        $solicitudesRechazadasCollection = $SolicitudesRechazadas->map(function ($Solicitud) {
             $nameUser = User::where('id', $Solicitud->user_id)->first();
             $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
             $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
@@ -1583,29 +1577,55 @@ class VacationRequestController extends Controller
                 ];
             }
 
-            $rechazadas[] = [
-                'image' => $nameUser->image,
-                'created_at' => $Solicitud->created_at,
-                'id' => $Solicitud->id,
-                'name' => $nameUser->name . ' ' . $nameUser->lastname,
-                'current_vacation' => $Datos[0]['dv'] ?? null,
-                'current_vacation_expiration' => $Datos[0]['cutoff_date'] ?? null,
-                'next_vacation' => !empty($Datos[1]['dv']) ? $Datos[1]['dv'] : null,
-                'expiration_of_next_vacation' => !empty($Datos[1]['cutoff_date']) ? $Datos[1]['cutoff_date'] : null,
-                'details' => $Solicitud->details,
-                'commentary' => $Solicitud->commentary,
-                'direct_manager_status' => $Solicitud->direct_manager_status,
-                'rh_status' => $Solicitud->rh_status,
-                'request_type' => $RequestType->type,
-                'specific_type' => $RequestType->type == 1 ? 'Específico' : '-',
-                'days_absent' => $dias,
-                'method_of_payment' => $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro')))),
-                'reveal_id' => $Reveal->name . ' ' . $Reveal->lastname,
-                'file' => $Solicitud->file ?? null,
-                'time' => in_array($Solicitud->request_type_id, [2]) ? $time : null,
-                'more_information' => $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true),
-            ];
+            // $rechazadas[] = [
+            $rechazadas = new \stdClass();
+            $rechazadas->image = $nameUser->image;
+            $rechazadas->created_at = $Solicitud->created_at;
+            $rechazadas->id = $Solicitud->id;
+            $rechazadas->name = $nameUser->name . ' ' . $nameUser->lastname;
+            $rechazadas->current_vacation = $Datos[0]['dv'];
+            $rechazadas->current_vacation_expiration = $Datos[0]['cutoff_date'];
+            $rechazadas->next_vacation =  empty($Datos[1]['dv']) ? null : $Datos[1]['dv'];
+            $rechazadas->expiration_of_next_vacation = empty($Datos[1]['cutoff_date']) ? null : $Datos[1]['cutoff_date'];
+            $rechazadas->details = $Solicitud->details;
+            $rechazadas->commentary = $Solicitud->commentary;
+            $rechazadas->direct_manager_status = $Solicitud->direct_manager_status;
+            $rechazadas->rh_status = $Solicitud->rh_status;
+            $rechazadas->request_type = $RequestType->type;
+            $rechazadas->specific_type = $RequestType->type == 1 ?: '-';
+            $rechazadas->days_absent = $dias;
+            $rechazadas->method_of_payment = $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro'))));
+            $rechazadas->reveal_id = $Reveal->name . ' ' . $Reveal->lastname;
+            $rechazadas->file = $Solicitud->file == null ? null : $Solicitud->file;
+            $rechazadas->time = in_array($Solicitud->request_type_id, [2]) ? $time : null;
+            $rechazadas->more_information = $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true);
+            return $rechazadas;
+        });
+
+        if ($request->filled('search')) {
+            $solicitudesRechazadasCollection = $solicitudesRechazadasCollection->filter(function ($solicitud) use ($request) {
+                return stripos($solicitud->name, $request->search) !== false;
+            });
         }
+
+        if ($request->has('tipo') && $request->tipo != '') {
+            $solicitudesRechazadasCollection = $solicitudesRechazadasCollection->filter(function ($solicitud) use ($request) {
+                return $solicitud->request_type == $request->tipo;
+            });
+        }
+        if ($request->has('fecha') && $request->fecha != '') {
+            $solicitudesRechazadasCollection = $solicitudesRechazadasCollection->filter(function ($solicitud) use ($request) {
+                return in_array($request->fecha, $solicitud->days_absent);
+            });
+        }
+
+        $rechazadas = new LengthAwarePaginator(
+            $solicitudesRechazadasCollection->forPage($page, $perPage),
+            $solicitudesRechazadasCollection->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         $usersid = DB::table('employees')->where('status', 1)->pluck('user_id');
         $IdandNameUser = [];
