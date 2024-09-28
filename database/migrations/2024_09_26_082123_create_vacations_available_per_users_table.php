@@ -22,6 +22,7 @@ class CreateVacationsAvailablePerUsersTable extends Migration
             $table->date('cutoff_date')->nullable();
             $table->integer('waiting')->nullable();
             $table->foreignId('users_id')->constrained()->onDelete('cascade');
+            $table->integer('anniversary_number');
             $table->timestamps();
         });
     }

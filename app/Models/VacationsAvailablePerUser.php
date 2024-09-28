@@ -20,7 +20,8 @@ class VacationsAvailablePerUser extends Model
         'date_start',
         'days_enjoyed',
         'waiting',
-        "users_id"
+        "users_id",
+        "anniversary_number"
     ];
 
     public function user()

@@ -3976,34 +3976,34 @@ class VacationRequestController extends Controller
     ////////////DATOS DE USUARIOS///////////////////
     public function CreateVacationRequest(Request $request)
     {
-        $vacationDays = DB::table('vacation_per_years')->pluck('days', 'year');
-
-        $aniversariosPorUsuario = [];
-
-        // Obtener todos los empleados
         $Ingresos = Employee::all();
+        $aniversariosPorUsuario = [];
 
         foreach ($Ingresos as $Ingreso) {
             $fechaIngreso = Carbon::parse($Ingreso->date_admission);
             $fechaActual = Carbon::now();
 
-            // Inicializa el array para el usuario
             $aniversariosPorUsuario[$Ingreso->user_id] = [];
-            $aniversario = $fechaIngreso->copy();
-            $añosCumplidos = 0;
 
-            // Array para almacenar los períodos
-            $periodos = [];
+            // Fecha del primer aniversario
+            $aniversario = $fechaIngreso->copy();
+
+
+            $añosCumplidos = 0;
 
             // Itera hasta que el aniversario sea mayor que la fecha actual
             while ($aniversario->lessThanOrEqualTo($fechaActual)) {
+                // Calcula el número de días en el año del aniversario (considera si es bisiesto)
                 $diasEnAnio = $aniversario->isLeapYear() ? 366 : 365;
-                $vacacionesAniversario = $vacationDays[$añosCumplidos] ?? 0;
 
-                // Agrega el periodo actual al array
-                $periodos[] = [
+                // Obtiene el número de días de vacaciones para el año correspondiente
+                $anos = DB::table('vacation_per_years')->where('year', $añosCumplidos)->value('days');
+                $vacacionesAniversario = $anos; // Vacaciones solo para ese año
+
+                // Agrega al array del usuario
+                $aniversariosPorUsuario[$Ingreso->user_id][] = [
                     'aniversario' => $aniversario->format('Y-m-d'),
-                    'años_Cumplidos' => $añosCumplidos > 0 ? $añosCumplidos : null,
+                    'años_Cumplidos' => $añosCumplidos > 0 ? $añosCumplidos : null, // No muestra años cumplidos para el primer aniversario
                     'dias_en_año' => $diasEnAnio,
                     'vacaciones_acumuladas' => $vacacionesAniversario,
                 ];
@@ -4013,62 +4013,30 @@ class VacationRequestController extends Controller
                 $añosCumplidos++;
             }
 
-            // Calcula el período en curso, si corresponde
-            if ($añosCumplidos > 0) {
-                $ultimoAniversario = $aniversario->subYear(); // Último aniversario cumplido
-                $diasDesdeUltimoAniversarioHastaHoy = $fechaActual->diffInDays($ultimoAniversario);
-                $diasEnAnioUltimo = $ultimoAniversario->isLeapYear() ? 366 : 365;
-                $vacacionesEnCurso = $vacationDays[$añosCumplidos] ?? 0;
+            // Calcula el número de días desde el último aniversario hasta la fecha actual
+            $ultimoAniversario = $aniversario->subYear(); // Regresa al último aniversario cumplido
+            $diasDesdeUltimoAniversarioHastaHoy = $fechaActual->diffInDays($ultimoAniversario);
 
-                $vacacionesAcumuladasHastaHoy = ($diasDesdeUltimoAniversarioHastaHoy / $diasEnAnioUltimo) * $vacacionesEnCurso;
+            // Calcula el número de días en el año en curso
+            $anioEnCurso = $fechaActual->year;
+            $diasEnAnioUltimo = $ultimoAniversario->isLeapYear() ? 366 : 365;
 
-                // Agrega el cálculo para el período en curso
-                $periodos[] = [
-                    'aniversario' => 'Aún no cumple el año, pero se comienzan a generar sus vacaciones',
-                    'años_Cumplidos' => $añosCumplidos,
-                    'dias_desde_ultimo_aniversario_hasta_hoy' => $diasDesdeUltimoAniversarioHastaHoy,
-                    'dias_en_año' => $diasEnAnioUltimo,
-                    'vacaciones_acumuladas' => $vacacionesAcumuladasHastaHoy,
-                ];
-            }
+            // Obtiene el número de días de vacaciones para el año en curso
+            $anos = DB::table('vacation_per_years')->where('year', $añosCumplidos)->value('days');
 
-            // Solo almacenar los últimos dos períodos
-            $ultimosPeriodos = array_slice($periodos, -2);
-            $aniversariosPorUsuario[$Ingreso->user_id] = $ultimosPeriodos;
+            // Ajusta el cálculo de vacaciones para el período actual hasta hoy
+            $vacacionesAcumuladasHastaHoy = ($diasDesdeUltimoAniversarioHastaHoy / $diasEnAnioUltimo) * $anos;
 
-            // Guarda los periodos en la base de datos
-            foreach ($ultimosPeriodos as $index => $vacacion) {
-                // Determina el periodo
-                $period = $vacacion['años_Cumplidos'] > 0 ? 2 : 1;
-
-                // Calcula las fechas
-                if ($index === 0) {
-                    $dateStart = Carbon::parse($Ingreso->date_admission); // Fecha de ingreso
-                    $dateEnd = $dateStart->copy()->addYear(); // Primer aniversario
-                } else {
-                    $dateStart = $dateEnd; // Fecha del primer aniversario
-                    $dateEnd = $dateStart->copy()->addYear(); // Segundo aniversario
-                }
-
-                // Cálculo del cutoff date
-                $cutoffDate = $dateEnd->copy()->addYear(); // Fecha de caducidad
-
-                try {
-                    VacationsAvailablePerUser::create([
-                        'days_availables' => $vacacion['vacaciones_acumuladas'],
-                        'dv' => $vacacion['vacaciones_acumuladas'],
-                        'period' => $period,
-                        'cutoff_date' => $cutoffDate,
-                        'date_end' => $dateEnd,
-                        'date_start' => $dateStart,
-                        'days_enjoyed' => 0,
-                        'waiting' => 0,
-                        'users_id' => $Ingreso->user_id
-                    ]);
-                } catch (\Exception $e) {
-                    return 0;    
-                }
-            }
+            // Agrega la acumulación final
+            $aniversariosPorUsuario[$Ingreso->user_id][] = [
+                'aniversario' => 'Aún no cumple el año, pero se comienzan a generar sus vacaciones',
+                'años_Cumplidos' => $añosCumplidos, // Los años cumplidos hasta la fecha actual
+                'dias_desde_ultimo_aniversario_hasta_hoy' => $diasDesdeUltimoAniversarioHastaHoy,
+                'dias_en_año' => $diasEnAnioUltimo,
+                'vacaciones_acumuladas' => $vacacionesAcumuladasHastaHoy,
+            ];
         }
+        // Muestra el resultado
+        dd($aniversariosPorUsuario[45]);
     }
 }
