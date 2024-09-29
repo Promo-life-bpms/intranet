@@ -24,6 +24,12 @@
     @endif
 
     <div>
+        <div id="loadingSpinner"
+            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255, 255, 255, 0.8); z-index:9999; justify-content:center; align-items:center;">
+            <div class="spinner-border text-primary" role="status">
+            </div>
+        </div>
+
         <h3 id="titlePage">Solicitudes autorizadas</h3>
         <div class="row">
             <div class="col-5 align-content-end">
@@ -51,7 +57,7 @@
                     <div class="col-3 d-flex align-items-center justify-content-center">
                         <input id="fechaInput" type="date" class="form-control" value="{{ request('fecha') }}"
                             style="width: 2.8rem" />
-                        <i style="margin-left: 0.5rem" id="clearFecha" class="fas fa-times-circle"
+                        <i style="margin-left: 0.5rem" id="clearFilter" class="fas fa-times-circle"
                             style="cursor: pointer;"></i>
                     </div>
                 </div>
@@ -116,6 +122,11 @@
                         </thead>
 
                         <tbody>
+                            @if (count($Aprobadas) == 0)
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">No tienes solicitudes</td>
+                                </tr>
+                            @endif
                             @foreach ($Aprobadas as $aprovada)
                                 <tr class="solicitud-row1" data-days1="{{ implode(',', $aprovada->days_absent) }}">
                                     <th style="text-align: center; align-content: center;" scope="row">
@@ -188,7 +199,12 @@
                             @endforeach
                         </tbody>
                     </table>
-
+                    @if (count($Aprobadas) > 0)
+                        <span>Autorizadas</span>
+                        <div class="d-flex justify-content-end">
+                            {{ $Aprobadas->appends(request()->input())->links() }}
+                        </div>
+                    @endif
                 </div>
 
                 {{-- Tabla para pendientes --}}
@@ -205,6 +221,11 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @if (count($Pendientes) == 0)
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">No tienes solicitudes</td>
+                                </tr>
+                            @endif
                             @foreach ($Pendientes as $pendiente)
                                 <tr class="solicitud-row2" data-days2="{{ implode(',', $pendiente->days_absent) }}">
                                     <th style="text-align: center; align-content: center;" scope="row">
@@ -261,17 +282,21 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{-- <div class="d-flex justify-content-end">
-                        {{ $Pendientes->appends(request()->input())->links() }}
-                    </div> --}}
+
+                    @if (count($Pendientes) > 0)
+                        <span>Pendientes</span>
+                        <div class="d-flex justify-content-end">
+                            {{ $Pendientes->appends(request()->input())->links() }}
+                        </div>
+                    @endif
                 </div>
 
                 {{-- Tabla para canceladas por el usuario --}}
                 <div id="tableCanceladas" style="display: none">
-                    <div id="buttonUpdateDays" class="d-flex justify-content-end mb-2">
+                    {{-- <div id="buttonUpdateDays" class="d-flex justify-content-end mb-2">
                         <button id="buttonReposicion" class="btn"
                             style="background-color: var(--color-target-1); color: white; ">Reposición</button>
-                    </div>
+                    </div> --}}
                     <table class="table" id="tableCanceladas" style="min-width: 100% !important;">
                         <thead style="background-color: #072A3B; color: white;">
                             <tr>
@@ -282,18 +307,23 @@
                                 <th scope="col" style="text-align: center;">Justificante</th>
                                 <th scope="col" style="text-align: center;">Motivo</th>
                                 <th scope="col" style="text-align: center;">Estado</th>
-                                <th scope="col" style="text-align: center;">Acciones</th>
+                                {{-- <th scope="col" style="text-align: center;">Acciones</th> --}}
                             </tr>
                         </thead>
                         <tbody>
+                            @if (count($rechazadas) == 0)
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">No tienes solicitudes</td>
+                                </tr>
+                            @endif
                             @foreach ($rechazadas as $rechazada)
-                                <tr class="solicitud-row3" data-days3="{{ implode(',', $rechazada['days_absent']) }}">
+                                <tr class="solicitud-row3" data-days3="{{ implode(',', $rechazada->days_absent) }}">
                                     <th style="text-align: center; align-content: center;" scope="row">
-                                        {{ $rechazada['id'] }}</th>
-                                    <td style="text-align: center;">{{ $rechazada['name'] }}</td>
-                                    <td style="text-align: center;">{{ $rechazada['request_type'] }}</td>
+                                        {{ $rechazada->id }}</th>
+                                    <td style="text-align: center;">{{ $rechazada->name }}</td>
+                                    <td style="text-align: center;">{{ $rechazada->request_type }}</td>
                                     <td style="text-align: center;">
-                                        @foreach ($rechazada['days_absent'] as $day)
+                                        @foreach ($rechazada->days_absent as $day)
                                             <div>
                                                 {{ $day }}
                                             </div>
@@ -302,35 +332,31 @@
 
 
                                     <td style="text-align: center;">
-                                        @if (
-                                            $rechazada['file'] == null ||
-                                                $rechazada['file'] == '' ||
-                                                $rechazada['file'] == 'null' ||
-                                                $rechazada['file'] == 'undefined')
+                                        @if ($rechazada->file == null || $rechazada->file == '' || $rechazada->file == 'null' || $rechazada->file == 'undefined')
                                             <span>Sin archivo</span>
                                         @else
-                                            <button type="button" id="file-link-{{ $rechazada['file'] }}"
+                                            <button type="button" id="file-link-{{ $rechazada->file }}"
                                                 class="btn btn-link"
-                                                onclick="viewFileDeny({{ json_encode($rechazada['file']) }})">Ver
+                                                onclick="viewFileDeny({{ json_encode($rechazada->file) }})">Ver
                                                 archivo</button>
                                         @endif
 
                                     </td>
                                     <td style="text-align: center;">
-                                        {{ $rechazada['commentary'] }}
+                                        {{ $rechazada->commentary }}
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;">
                                         <span class="badge bg-danger text-white">
-                                            {{ $rechazada['rh_status'] }}
+                                            {{ $rechazada->rh_status }}
                                         </span>
                                     </td>
 
-                                    <td style="text-align: center;">
+                                    {{-- <td style="text-align: center;">
                                         <!-- Formulario para rechazar -->
                                         <form action="{{ route('confirm.rejected.by.rh') }}" method="POST"
                                             style="display:inline;">
                                             @csrf
-                                            <input type="hidden" name="id" value="{{ $rechazada['id'] }}">
+                                            <input type="hidden" name="id" value="{{ $rechazada->id }}">
                                             <input type="hidden" name="value" value="rechazada">
                                             <button type="submit" class="btn btn-danger mr-1 mb-1">Rechazar</button>
                                         </form>
@@ -339,21 +365,25 @@
                                         <form action="{{ route('confirm.rejected.by.rh') }}" method="POST"
                                             style="display:inline;">
                                             @csrf
-                                            <input type="hidden" name="id" value="{{ $rechazada['id'] }}">
+                                            <input type="hidden" name="id" value="{{ $rechazada->id }}">
                                             <input type="hidden" name="value" value="aprobada">
                                             <button type="submit" class="btn btn-primary mb-1">Aceptar</button>
                                         </form>
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+
+                    @if (count($rechazadas) > 0)
+                        <span>rechazada</span>
+
+                        <div class="d-flex justify-content-end">
+                            {{ $rechazadas->appends(request()->input())->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
-        </div>
-
-        <div class="d-flex justify-content-end">
-            {{ $Aprobadas->appends(request()->input())->links() }}
         </div>
 
         <div class="modal fade bd-example-modal-lg" id="modalDetails" tabindex="-1" role="dialog"
@@ -382,7 +412,7 @@
                                             style="width: 70%; height: 120px; border-radius: 100px;">
                                     </div>
                                 </div>
-                                <div class="col-9">
+                                <div class="col-9  mt-2">
                                     <div>
                                         <strong id="modalName"></strong>
                                     </div>
@@ -427,58 +457,58 @@
                             </div>
 
                             <div class="row mt-3 mb-2">
-                                <div class="col-3">
-                                    <div class="mt-2">
-                                        <strong>Tipo: </strong>
-                                    </div>
-                                    <div class="mt-2">
-                                        <strong>Tipo específico: </strong>
-                                    </div>
-                                    <div class="mt-2">
-                                        <strong>Días ausente: </strong>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <strong>Forma de pago: </strong>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <strong>Tiempo: </strong>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <strong>Apoyo: </strong>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <strong>Justificante: </strong>
-                                    </div>
+                                <div class="col-3 mt-2">
+                                    <strong>Tipo: </strong>
+                                </div>
+                                <div class="col-9  mt-2">
+                                    <span id="modalRequestType"></span>
                                 </div>
 
-                                <div class="col-9">
-                                    <div class="mt-2">
-                                        <span id="modalRequestType"></span>
-                                    </div>
-                                    <div class="mt-2">
-                                        <span id="modalSpecificType"></span>
-                                    </div>
-                                    <div class="mt-2">
-                                        <span id="modalDaysAbsent"></span>
-                                    </div>
+                                <div class="col-3 mt-2">
+                                    <strong>Tipo específico: </strong>
+                                </div>
+                                <div class="col-9  mt-2">
+                                    <span id="modalSpecificType"></span>
+                                </div>
 
-                                    <div class="mt-2">
-                                        <span id="modalMethodOfPayment"></span>
-                                    </div>
+                                <div class="col-3 mt-2">
+                                    <strong>Días ausente: </strong>
+                                </div>
 
-                                    <div class="mt-2" id="timeStatus">
-                                        <span>Tiempo completo</span>
-                                    </div>
+                                <div class="col-9  mt-2">
+                                    <span id="modalDaysAbsent"></span>
+                                </div>
 
-                                    <div class="mt-2">
-                                        <span id="modalRevealId"></span>
-                                    </div>
+                                <div class="col-3 mt-2">
+                                    <strong>Forma de pago: </strong>
+                                </div>
 
-                                    <div class="mt-2" id="viewFile">
+                                <div class="col-9  mt-2">
+                                    <span id="modalMethodOfPayment"></span>
+                                </div>
+
+                                <div class="col-3 mt-2">
+                                    <strong>Tiempo: </strong>
+                                </div>
+
+                                <div class="col-9  mt-2">
+                                    <span id="timeStatus">Tiempo completo</span>
+                                </div>
+
+                                <div class="col-3 mt-2">
+                                    <strong>Apoyo: </strong>
+                                </div>
+
+                                <div class="col-9  mt-2">
+                                    <span id="modalRevealId"></span>
+                                </div>
+
+                                <div class="col-3 mt-2">
+                                    <strong>Justificante: </strong>
+                                </div>
+
+                                <div class="col-9  mt-2">
+                                    <div id="viewFile">
                                         {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
                                     </div>
                                 </div>
@@ -783,6 +813,25 @@
             pointer-events: none;
             border-color: transparent;
         }
+
+        /*Estilo para spin de carga*/
+        #loadingSpinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
     </style>
 @stop
 
@@ -1085,6 +1134,7 @@
 
         });
 
+
         document.querySelectorAll('.updateDetails').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
@@ -1299,16 +1349,6 @@
             }).modal('show');
         });
 
-        // Abrir modal reposicion
-        document.getElementById('buttonReposicion').addEventListener('click', function() {
-            $('#modalReposicion').modal({
-                backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
-                keyboard: false // Desactiva el cierre con la tecla "Esc"
-            }).modal('show');
-        });
-
-
-        //Codigo para filtros de busqueda
 
 
         let tiempoEspera;
@@ -1318,7 +1358,7 @@
             tiempoEspera = setTimeout(function() {
                 console.log('Buscando...');
                 applyFilters();
-            }, 300);
+            }, 750);
         });
 
 
@@ -1330,21 +1370,39 @@
             applyFilters();
         });
 
-        document.getElementById('clearFecha').addEventListener('click', function() {
+        document.getElementById('clearFilter').addEventListener('click', function() {
             document.getElementById('fechaInput').value = '';
             document.getElementById('tipoSelect').value = '';
-
+            document.getElementById('searchName').value = '';
             applyFilters();
         });
-        //Funcion de filtrado
+
+        /*Funcion para aplicar los filtros*/
         function applyFilters() {
-            console.log('Aplicando filtros');
+            document.getElementById('loadingSpinner').style.display = 'flex';
+
             const tipo = document.getElementById('tipoSelect').value;
             const fecha = document.getElementById('fechaInput').value;
-            const search = document.getElementById('searchName').value; // Obtener valor del campo de búsqueda
+            const search = document.getElementById('searchName').value;
 
             let url = '?tipo=' + tipo + '&fecha=' + fecha + '&search=' + encodeURIComponent(search);
             window.location.href = url;
+        }
+
+        // Mostrar el spinner de carga al cambiar de página
+        document.querySelectorAll('.pagination a').forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                document.getElementById('loadingSpinner').style.display = 'flex';
+            });
+        });
+
+
+
+        //Si en la url esta el parametro de search pasarlo al input de busqueda searchName
+        const urlParams = new URLSearchParams(window.location.search);
+        const search = urlParams.get('search');
+        if (search) {
+            document.getElementById('searchName').value = search;
         }
     </script>
 @stop

@@ -24,16 +24,22 @@
     @endif
 
     <div>
+        <div id="loadingSpinner"
+            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255, 255, 255, 0.8); z-index:9999; justify-content:center; align-items:center;">
+            <div class="spinner-border text-primary" role="status">
+            </div>
+        </div>
+
         <div class="row">
-            <div class="col-3">
+            <div class="col-4">
                 <h3>Solicitudes autorizadas</h3>
             </div>
-            <div class="col-9">
+            <div class="col-8">
                 <div class="row">
-                    <div class="col-3">
+                    <div class="col-4">
                         <input id="searchName" type="search" class="form-control" placeholder="Buscar por nombre">
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                         <select id="tipoSelect" name="tipo" class="form-select">
                             <option value="">Tipo de permiso</option>
                             <option value="Vacaciones" {{ request('tipo') == 'Vacaciones' ? 'selected' : '' }}>Vacaciones
@@ -48,9 +54,9 @@
                             </option>
                         </select>
                     </div>
-                    <div class="col-3 d-flex align-items-center justify-content-center">
-                        <input id="fechaInput" type="date" class="form-control" value="{{ request('fecha') }}" />
-                        <i id="clearFecha" class="fas fa-times-circle" style="cursor: pointer;"></i>
+                    <div class="col-3 d-flex align-items-baseline">
+                        <input id="fechaInput" type="date" class="form-control mr-1" value="{{ request('fecha') }}" />
+                        <i id="clearFilter" class="fas fa-times-circle" style="cursor: pointer;"></i>
                     </div>
                     <div class="col-2">
                         <div class="d-flex justify-content-center">
@@ -83,6 +89,12 @@
                     </thead>
 
                     <tbody>
+                        @if (count($solicitudes) === 0)
+                            <tr>
+                                <td colspan="7" style="text-align: center;">No hay solicitudes</td>
+                            </tr>
+                        @endif
+
                         @foreach ($solicitudes as $infoSoli)
                             <tr class="solicitud-row"
                                 data-days="{{ isset($infoSoli->days_absent) ? implode(',', $infoSoli->days_absent) : '' }}">
@@ -252,60 +264,58 @@
                             </div>
 
                             <div class="row mt-3 mb-2">
-                                <div class="col-3">
-                                    <div class="mt-2">
-                                        <strong>Tipo: </strong>
-                                    </div>
-                                    <div class="mt-2">
-                                        <strong>Tipo específico: </strong>
-                                    </div>
-                                    <div class="mt-2">
-                                        <strong>Días ausente: </strong>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <strong>Forma de pago: </strong>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <strong>Tiempo: </strong>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <strong>Apoyo: </strong>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <strong>Justificante: </strong>
-                                    </div>
+                                <div class="col-3 mt-2">
+                                    <strong>Tipo </strong>
+                                </div>
+                                <div class="col-9 mt-2">
+                                    <span id="modalRequestType"></span>
                                 </div>
 
-                                <div class="col-9">
-                                    <div class="mt-2">
-                                        <span id="modalRequestType"></span>
-                                    </div>
-                                    <div class="mt-2">
-                                        <span id="modalSpecificType"></span>
-                                    </div>
-                                    <div class="mt-2">
-                                        <span id="modalDaysAbsent"></span>
-                                    </div>
+                                <div class="col-3 mt-2">
+                                    <strong>Tipo específico </strong>
+                                </div>
+                                <div class="col-9 mt-2">
+                                    <span id="modalSpecificType"></span>
+                                </div>
 
-                                    <div class="mt-2">
-                                        <span id="modalMethodOfPayment"></span>
-                                    </div>
+                                <div class="col-3 mt-2">
+                                    <strong>Días ausente </strong>
+                                </div>
 
-                                    <div class="mt-2" id="timeStatus">
-                                        <span>Tiempo completo</span>
-                                    </div>
+                                <div class="col-9 mt-2">
+                                    <span id="modalDaysAbsent"></span>
+                                </div>
 
-                                    <div class="mt-2">
-                                        <span id="modalRevealId"></span>
-                                    </div>
+                                <div class="col-3 mt-2">
+                                    <strong>Forma de pago </strong>
+                                </div>
 
-                                    <div class="mt-2" id="viewFile">
-                                        {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
-                                    </div>
+                                <div class="col-9 mt-2">
+                                    <span id="modalMethodOfPayment"></span>
+                                </div>
+
+                                <div class="col-3 mt-2">
+                                    <strong>Tiempo </strong>
+                                </div>
+
+                                <div class="col-9 mt-2" id="timeStatus">
+                                    <span>Tiempo completo</span>
+                                </div>
+
+                                <div class="col-3 mt-2">
+                                    <strong>Apoyo </strong>
+                                </div>
+
+                                <div class="col-9 mt-2">
+                                    <span id="modalRevealId"></span>
+                                </div>
+
+                                <div class="col-3 mt-2">
+                                    <strong>Justificante </strong>
+                                </div>
+
+                                <div class="col-9 mt-2" id="viewFile">
+                                    {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
                                 </div>
                             </div>
 
@@ -628,7 +638,7 @@
             tiempoEspera = setTimeout(function() {
                 console.log('Buscando...');
                 applyFilters();
-            }, 300);
+            }, 750);
         });
 
 
@@ -640,20 +650,39 @@
             applyFilters();
         });
 
-        document.getElementById('clearFecha').addEventListener('click', function() {
+        document.getElementById('clearFilter').addEventListener('click', function() {
             document.getElementById('fechaInput').value = '';
             document.getElementById('tipoSelect').value = '';
+            document.getElementById('searchName').value = '';
             applyFilters();
         });
-        //Funcion de filtrado
+
+        /*Funcion para aplicar los filtros*/
         function applyFilters() {
-            console.log('Aplicando filtros');
+            document.getElementById('loadingSpinner').style.display = 'flex';
+
             const tipo = document.getElementById('tipoSelect').value;
             const fecha = document.getElementById('fechaInput').value;
-            const search = document.getElementById('searchName').value; // Obtener valor del campo de búsqueda
+            const search = document.getElementById('searchName').value;
 
             let url = '?tipo=' + tipo + '&fecha=' + fecha + '&search=' + encodeURIComponent(search);
             window.location.href = url;
+        }
+
+        // Mostrar el spinner de carga al cambiar de página
+        document.querySelectorAll('.pagination a').forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                document.getElementById('loadingSpinner').style.display = 'flex';
+            });
+        });
+
+
+
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const search = urlParams.get('search');
+        if (search) {
+            document.getElementById('searchName').value = search;
         }
     </script>
 
@@ -709,6 +738,25 @@
             color: #6c757d;
             pointer-events: none;
             border-color: transparent;
+        }
+
+        /*Estilo para spin de carga*/
+        #loadingSpinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
         }
     </style>
 @stop

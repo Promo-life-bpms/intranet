@@ -23,6 +23,12 @@
     @endif
 
     <div>
+        <div id="loadingSpinner"
+            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255, 255, 255, 0.8); z-index:9999; justify-content:center; align-items:center;">
+            <div class="spinner-border text-primary" role="status">
+            </div>
+        </div>
+
         <div class="d-flex justify-content-between">
             <h3 class="mb-4">Permisos y Vacaciones</h3>
             <div>
@@ -108,7 +114,8 @@
                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
                             style="color:  var(--color-target-4);">
                             <path d="M13.6667 16H10.3333V13.6667H8V10.3333H10.3333V8H13.6667V10.3333H16V13.6667H13.6667V16Z"
-                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
                             <path
                                 d="M5 18L3.13036 4.91253C3.05646 4.39524 3.39389 3.91247 3.90398 3.79912L11.5661 2.09641C11.8519 2.03291 12.1481 2.03291 12.4339 2.09641L20.096 3.79912C20.6061 3.91247 20.9435 4.39524 20.8696 4.91252L19 18C18.9293 18.495 18.5 21.5 12 21.5C5.5 21.5 5.07071 18.495 5 18Z"
                                 stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
@@ -200,8 +207,7 @@
                         </div>
 
                         <div class="col-3 d-flex align-items-center justify-content-center">
-                            <span style=" margin-right: 0.5rem;">Dia:</span>
-                            <input id="fechaInput" type="date" class="form-control"
+                            <input id="fechaInput" type="date" class="form-control mr-1"
                                 value="{{ request('fecha') }}" />
                             <i id="clearFecha" class="fas fa-times-circle" style="cursor: pointer;"></i>
                         </div>
@@ -255,7 +261,9 @@
                                                                 '<div>Hora de entrada: ' .
                                                                 $solicitud->time[0]['end'] .
                                                                 '</div>'
-                                                            : 'Tiempo completo'))
+                                                            : ($solicitud->more_information[0]['value_type'] == 'retardo'
+                                                                ? '<div>Hora de entrada: ' . $solicitud->time[0]['end'] . '</div>'
+                                                                : 'Tiempo completo')))
                                                     : 'Tiempo completo')
                                                 : 'Tiempo completo' !!}
                                         </td>
@@ -320,6 +328,7 @@
                     </div>
                 </div>
             </div>
+
 
             <!-- Columna derecha -->
             <div style="width: 28%; margin-left: 25px; display: flex; flex-direction: column;">
@@ -758,11 +767,7 @@
             });
         });
 
-
         let dateGlobal = '';
-        // Eliminar la fecha seleccionada
-
-
 
         const form = document.getElementById('miFormulario');
         const submitButton = document.getElementById('submitBtn');
@@ -783,8 +788,7 @@
         document.getElementById('closemodal').addEventListener('click', function() {
             $('#modaTarjetas').modal('hide');
             var calendar = new FullCalendar.Calendar(document.getElementById('calendario'), {
-                // Configura tu calendario aquí (eventos, opciones, etc.)
-                selectable: true, // Habilita la selección de días
+                selectable: true,
             });
             $('#modaTarjetas').on('hidden.bs.modal', function() {
                 document.getElementById('calendario').classList.remove('d-none');
@@ -793,9 +797,7 @@
                 document.getElementById('miFormulario').action = 'create/vacation/or/leave/request';
                 if (calendario) {
                     calendar.getEventSources().forEach(eventSource => eventSource.remove());
-                    // También puedes borrar cualquier otra variable o estado relacionado si es necesario
-                    selectedDays = []; // Si tienes una lista de días seleccionados
-                    ///Tambien quiero que se resetee el formulario
+                    selectedDays = [];
                     document.getElementById('miFormulario').reset();
 
                 } else {
@@ -1067,10 +1069,7 @@
                         }
                     }
 
-
-                    if (!calendarioVa) { // Solo inicializar si no se ha creado aún
-
-
+                    if (!calendarioVa) {
                         var daysSelected = daysDataUpdate.split(
                             ','
                         ); // Asegúrate de que 'daysDataUpdate' tiene los días seleccionados previamente
@@ -1082,8 +1081,6 @@
                         selectedDays = selectedDays.filter(function(e) {
                             return e !== "";
                         });
-
-
 
                         var calendarioVa = new FullCalendar.Calendar(calendarElVa, {
                             locale: "es",
@@ -1213,7 +1210,6 @@
                 }
             });
 
-
             document.getElementById('tipoSelect').addEventListener('change', function() {
                 applyFilters();
             });
@@ -1233,44 +1229,47 @@
             document.getElementById('clearFecha').addEventListener('click', function() {
                 document.getElementById('fechaInput').value = '';
                 applyFilters();
-            });
+            });,
 
+
+            /*Funcion para aplicar los filtros*/
             function applyFilters() {
+                document.getElementById('loadingSpinner').style.display = 'flex';
                 const tipo = document.getElementById('tipoSelect').value;
                 const jefeDirecto = document.getElementById('selectJD').value;
                 const rhStatus = document.getElementById('selectRh').value;
                 const fecha = document.getElementById('fechaInput').value;
                 let url = '?tipo=' + tipo + '&jefeDirecto=' + jefeDirecto + '&rhStatus=' + rhStatus + '&fecha=' +
                     fecha;
-                window.location.href = url; // Actualiza la URL con los filtros
+                window.location.href = url;
             }
 
+            // Mostrar el spinner de carga al cambiar de página
+            document.querySelectorAll('.pagination a').forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    document.getElementById('loadingSpinner').style.display = 'flex';
+                });
+            });
 
-
-            // Poner dias de vacaciones y permisos especiales en el calendario
             $('#modalCalendario').on('shown.bs.modal', function() {
                 /*utilizar la variable vacacionescalendar que viene de el controlador para poner los dias en el calendario */
                 var vacacionesCalendar = @json($vacacionescalendar);
 
                 var selectedRanges = [];
                 var calendarEl = document.getElementById('calendarioDays');
-                ///Seleccionar el div donde viene contenido el dia
                 var calendario = new FullCalendar.Calendar(calendarEl, {
                     locale: "es",
                     hiddenDays: [0, 6],
                     selectable: true,
                     dayCellDidMount: function(info) {
-                        // Accede al <div> con la clase fc-daygrid-day-top
                         var dayTopElement = info.el.querySelector(
                             '.fc-daygrid-day-top');
 
                         if (dayTopElement) {
-                            // Añade la clase personalizada
                             dayTopElement.classList.add('custom-day-top-class');
                         }
 
-                        var dateStr = info.date.toISOString().split('T')[
-                            0]; // Formato 'YYYY-MM-DD'
+                        var dateStr = info.date.toISOString().split('T')[0];
                         var daysVacaciones = vacacionesCalendar?.vacaciones
                         var daysAusecia = vacacionesCalendar?.ausencias
                         var daysPaternidad = vacacionesCalendar?.paternidad
@@ -1299,7 +1298,6 @@
                             }
                         }
 
-
                         if (daysIncapacidad.includes(dateStr)) {
                             var dayNumberElement = info.el.querySelector(
                                 '.fc-daygrid-day-number'
@@ -1321,7 +1319,6 @@
                                 );
                             }
                         }
-
 
                         if (daysPermisos.includes(dateStr)) {
                             var dayNumberElement = info.el.querySelector(
@@ -1390,7 +1387,6 @@
                 const statusRh = this.getAttribute('data-statusRh');
                 const dataStar = this.getAttribute('data-start'); // Obtener la hora de salida
                 const dataEnd = this.getAttribute('data-end'); // Obtener la hora de regreso
-
                 const timeText = this.getAttribute('data-timeArray'); // Obtener el texto de la hora
 
 
@@ -1402,9 +1398,7 @@
                 const typePermisoEspecial = this.getAttribute('data-tipo-permiso-especial');
                 const familiarFeriado = this.getAttribute('data-familiar-feriado');
                 const elPermisoInvolucra = this.getAttribute('data-el-permiso-involucra-a');
-
                 const file = this.getAttribute('data-file');
-
                 const days = this.getAttribute('data-days');
 
 
@@ -1415,7 +1409,6 @@
                 document.getElementById('method-of-payment').textContent = methodOfPayment;
                 document.getElementById('details_text').textContent = details;
                 document.getElementById('reveal_id_name').textContent = revealName;
-                // document.getElementById('direct_manager_id') = directManagerId;
                 document.getElementById('direct_manager_status').textContent = directManagerStatus;
                 document.getElementById('statusRh').textContent = statusRh;
 
@@ -1441,14 +1434,15 @@
                     } else if (tipo === 'Ausencia' && valueType === 'salida_antes') {
                         timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
                             '</strong></span> ';
+                    } else if (tipo === 'Ausencia' && valueType === 'retardo') {
+                        timeStatusDiv.innerHTML = '<span>Hora de entrada: <strong>' + endValue +
+                            '</strong></span> ';
                     } else {
                         timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
                     }
                 } else {
                     timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
                 }
-
-                console.log('tipo', tipo);
 
                 /*Cambiar valor de solicitud especifica*/
                 if (tipo === 'Ausencia') {
@@ -1460,37 +1454,29 @@
                     document.getElementById('value-type-request-specifies').textContent = 'Sin especificar';
                 }
 
-
                 if (file !== 'No hay justificante') {
                     const baseUrl = window.location.origin;
                     const viewFile = baseUrl + '/' + file;
-                    // Crea la etiqueta <a> y establece su href dinámicamente
                     const link = document.createElement('a');
                     link.id = 'file';
                     link.href = viewFile;
                     link.target = '_blank';
                     link.textContent = 'Ver archivo';
-                    // Agrega el enlace al div
                     document.getElementById('viewFile').innerHTML = '';
                     document.getElementById('viewFile').appendChild(link);
                 } else {
-                    // Crea la etiqueta <span> con el texto "No hay justificante"
                     const span = document.createElement('span');
                     span.textContent = 'No hay justificante';
-                    // Agrega el span al div
                     document.getElementById('viewFile').innerHTML = '';
                     document.getElementById('viewFile').appendChild(span);
                 }
-
 
                 document.getElementById('days').textContent = days;
 
                 var statusManegerElement = document.getElementById('direct_manager_status');
                 var statusRhElement = document.getElementById('statusRh');
 
-                // Supongamos que 'direct_manager_status' tiene el valor que quieres evaluar
                 if (directManagerStatus === 'Aprobada') {
-                    // Remueve cualquier clase anterior y añade la clase 'bg-success'
                     statusManegerElement.classList.remove('bg-warning', 'text-dark');
                     statusManegerElement.classList.add('badge', 'bg-success',
                         'text-white'); // Se añade 'bg-success'
@@ -1542,8 +1528,6 @@
                         'openModalIncapacidad');
                     document.getElementById('ButtonEditRequest').classList.remove(
                         'openModalPermisoEspecial');
-
-
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
                     /*Cambiar ruta del formulario miFormulario*/
@@ -1558,7 +1542,6 @@
                         'openModalIncapacidad');
                     document.getElementById('ButtonEditRequest').classList.remove(
                         'openModalPermisoEspecial');
-
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
                     document.getElementById('miFormulario').action = 'update/request';
@@ -1571,7 +1554,6 @@
                         'openModalIncapacidad');
                     document.getElementById('ButtonEditRequest').classList.remove(
                         'openModalPermisoEspecial');
-
                     document.getElementById('calendario').classList.add('d-none');
                     document.getElementById('calendarioDaysUpdate').classList.remove('d-none');
                     document.getElementById('miFormulario').action = 'update/request';
@@ -1616,7 +1598,6 @@
                 familiarFeriadoGlobal = familiarFeriado;
                 elPermisoInvolucraGlobal = elPermisoInvolucra;
 
-
                 ausenciaTipoGlobal = this.getAttribute('data-ausencia_tipo');
 
                 const modal = new bootstrap.Modal(document.getElementById('verSolivitud'));
@@ -1655,10 +1636,7 @@
             document.getElementById('calendarioDaysUpdate').classList.add('d-none');
             document.getElementById('calendario').classList.remove('d-none');
             document.getElementById('miFormulario').action = 'create/vacation/or/leave/request';
-
-
             $('#verSolivitud').modal('hide');
-
             $('#modalDeny').modal({
                 backdrop: 'static',
                 keyboard: false
@@ -1831,7 +1809,6 @@
                 <span>Elige los 5 días hábiles a los que tienes derecho.</span>
             `;
 
-
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
                 <div class="mb-2">
@@ -1844,7 +1821,6 @@
             document.getElementById('request_values').innerHTML = `
                 <input type="text"  class="form-control mt-1 d-none" value="3" id="request_type_id" name="request_type_id">
             `;
-
 
             $('#modaTarjetas').modal({
                 backdrop: 'static',
@@ -2039,7 +2015,6 @@
                 }
             }
 
-
             setTimeout(function() {
                 function limpiarCampos() {
                     var horaSalida = document.getElementById('hora_salida');
@@ -2072,9 +2047,6 @@
                     });
                 });
             }, 100);
-
-
-
         });
 
         document.getElementById('miFormulario').addEventListener('submit', function(event) {
@@ -2086,18 +2058,10 @@
                 alert('Selecciona un reveal_id');
                 return; // Detiene el proceso si no se ha seleccionado un reveal_id
             }
-            //Imprimir por consola los datos que se enviaran
-            console.log('Formulario enviado');
-            console.log('Reveal ID:', selectEncargado.value);
-            console.log('Detalles:', document.getElementById('details').value);
-            console.log('Forma de pago:', document.getElementById('forma_pago').value);
-            console.log('Tipo de solicitud:', document.getElementById('request_type_id').value);
-            console.log('Archivo:', document.getElementById('archivos').value);
-            console.log('Días seleccionados:', selectedDays);
-            // Elimina los campos ocultos previamente creados (si existen)
             document.querySelectorAll('.hidden-input').forEach(input => input.remove());
-            // Crear un objeto FormData para capturar los datos del formulario
+
             const formData = new FormData(this);
+
             // Crear un campo oculto para los días seleccionados (array 'selectedDays')
             const hiddenDates = document.createElement('input');
             hiddenDates.type = 'hidden';
@@ -2124,331 +2088,308 @@
             inputId.classList.add('hidden-input');
             this.appendChild(inputId);
 
-            // Si todo está bien, envía el formulario automáticamente
             this.submit();
         });
     </script>
 
-@section('scripts')
-
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
-
-    {{-- Paginado de la tabla --}}
-    {{-- <script>
-        $(document).ready(function() {
-            $('#table-request-user').DataTable({
-                pageLength: 5, // Número de filas por página
-                lengthChange: false,
-                language: {
-                    "paginate": {
-                        "first": "Primero",
-                        "last": "Último",
-                        "next": "Siguiente",
-                        "previous": "Anterior"
-                    },
-                    "info": "Mostrando _START_ a _xxEND_ de _TOTAL_ ",
-                    "infoEmpty": "Mostrando 0 a 0 de 0 ",
-                    "infoFiltered": "(Filtrado de _MAX_ total de )",
-                    "lengthMenu": "Mostrar _MENU_ ",
-                },
-                order: [
-                    [0, 'desc']
-                ],
-            });
-        });
-    </script> --}}
-
-
-@stop
-
-<style>
-    .dataTables_wrapper .dataTables_info {
-        clear: both;
-        float: left;
-        padding-top: 0.755em;
-    }
-
-    /*Acomodo de forma de boton y siguiente y anterior*/
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        box-sizing: border-box;
-        display: inline-block;
-        min-width: 1.5em;
-        padding: 0.5em 1em;
-        margin-left: 2px;
-        text-align: center;
-        text-decoration: none !important;
-        cursor: pointer;
-        *cursor: hand;
-        color: #000000 !important;
-        border: 1px solid transparent;
-        border-radius: 2px;
-    }
-
-    /*Marcado de la pagina actual*/
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-        color: #FFFFFF !important;
-        background-color: #006EAD;
-        border-radius: 5px;
-
-    }
-
-    /*Acomodar al final los numeros de la paginacion*/
-    .dataTables_paginate {
-        text-align: end !important;
-    }
-
-    /*Quitar la barra de busqueda del script de datatables*/
-    .dataTables_filter {
-        display: none;
-    }
-
-    /*Padding para las alertas*/
-    .alert {
-        padding: 0.7rem !important;
-    }
-
-
-    .bg-success {
-        background-color: #81C10C !important;
-    }
-
-    .bg-warning {
-        background-color: #FFC107 !important;
-    }
-
-
-    .fc-day-disabled {
-        background-color: #e6e6e6 !important;
-        pointer-events: none;
-    }
-
-    .fc-toolbar-chunk>div {
-        width: 380px;
-        display: flex;
-        justify-content: space-between
-    }
-
-    .fc-prev-button.fc-button.fc-button-primary {
-        background-color: white;
-        color: black;
-        border-radius: 5px;
-        border: 0px solid white;
-    }
-
-    .fc-prev-button.fc-button.fc-button-primary:focus {
-        background-color: white;
-        color: black;
-        border-radius: 5px;
-        border: 0px solid white;
-        box-shadow: 0 0px 0px white;
-    }
-
-
-    /*fc-next-button fc-button fc-button-primary*/
-    .fc-next-button.fc-button.fc-button-primary {
-        background-color: white;
-        color: black;
-        border-radius: 5px;
-        border: 0px solid white;
-    }
-
-    .fc-next-button.fc-button.fc-button-primary:focus {
-        background-color: white;
-        color: black;
-        border-radius: 5px;
-        border: 0px solid white;
-        box-shadow: 0 0px 0px white;
-    }
-
-
-    .fc-theme-standard .fc-scrollgrid {
-        border: 0px solid white !important;
-    }
-
-    .fc-theme-standard td,
-    .fc-theme-standard th {
-        /* Espaciado interno */
-        border: 0px solid white;
-        /* Borde gris claro */
-        text-align: center;
-        /* Centrar el texto */
-    }
-
-    .fc-col-header-cell-cushion {
-        color: black;
-        text-decoration: none;
-    }
-
-    .fc-daygrid-day-number {
-        color: black;
-        text-decoration: none;
-    }
-
-    .fc-scrollgrid-sync-table {
-        height: 280px !important;
-    }
-
-    .fc,
-    .fc *,
-    .fc :after,
-    .fc :before {
-        box-sizing: border-box;
-        justify-content: center;
-    }
-
-
-    .fc-theme-standard .fc-daygrid-day-number {
-        color: black;
-        /* Color del número del día seleccionado */
-        background-color: transparent;
-        /* Fondo transparente para el número del día */
-        font-weight: bold;
-        /* Hacer el número más prominente */
-    }
-
-    .fc-theme-standard .fc-daygrid-day.fc-daygrid-day-selected {
-        background-color: transparent;
-        /* Fondo transparente para la celda seleccionada */
-        border: none;
-        /* Opcional: eliminar el borde si es necesario */
-    }
-
-
-    .highlighted-day {
-        /* background-color: #81C10C !important; */
-        color: white !important;
-        border-radius: 50%;
-        padding: 0.5em;
-    }
-
-    .fc-day-selected {
-        border-radius: 17px;
-        color: white !important;
-    }
-
-    .fc-day-vacaciones {
-        background-color: #81C10C !important;
-    }
-
-    .fc-day-ausencia {
-        background-color: #0C57C1 !important;
-    }
-
-    .fc-day-paternidad {
-        background-color: #C10C8E !important;
-    }
-
-    .fc-day-incapacidad {
-        background-color: #C10C0C !important;
-    }
-
-    .fc-day-especiales {
-        background-color: #C1A10C !important;
-    }
-
-
-    .fc-day-start {
-        background-color: rgb(59, 201, 23);
-        /* Color para el primer día de la selección */
-        color: white;
-    }
-
-    .fc-day-end {
-        background-color: #d5c321;
-        /* Color para el último día de la selección */
-        color: white;
-    }
-
-    .fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events {
-        min-height: 0px;
-    }
-
-    .fc .fc-daygrid-day-top {
-        margin-top: 2px !important;
-    }
-
-    .fc-theme-standard .fc-daygrid-day-number {
-        width: 45% !important;
-    }
-
-    /* .modal-content {
-                                                        width: 1500px !important;
-                                                    } */
-
-    /*Estilo azul al seleccionar dia*/
-    .fc .fc-highlight {
-        background-color: transparent !important;
-    }
-
-    /*Estilo para quitar el color del dia actual */
-
-    .fc .fc-daygrid-day.fc-day-today {
-        background-color: transparent !important;
-    }
-
-    /*Estilo para quitar dias anteriores al que estamos*/
-    .fc .fc-cell-shaded,
-    .fc .fc-day-disabled {
-        background-color: transparent !important;
-    }
-
-
-    /*Estilo para cambiar el tamaño*/
-    .fc .fc-toolbar-title {
-        font-size: 17px !important;
-    }
-
-    .fc-toolbar-title {
-        margin-top: 8px !important;
-    }
-
-    /*Estilo para quitar el mnargin botton del titulo*/
-    .fc .fc-toolbar.fc-header-toolbar {
-        margin-bottom: 4px !important;
-    }
-
-    /*Estilo para darle margin bottom de los dias del calendario*/
-    .fc .fc-view-harness {
-        margin-bottom: 20px !important;
-    }
-
-    #calendario {
-        width: 100%;
-    }
-
-    /*Estilo para el div de los dias en Calendario General*/
-    .custom-day-top-class {
-        padding: 0px 25px !important;
-    }
-
-
-    /*Estilos de paginacion*/
-    .pagination {
-        display: flex;
-        justify-content: end;
-
-    }
-
-    .page-item .page-link {
-        font-size: .875rem;
-        border-color: transparent;
-    }
-
-    .page-item.active .page-link {
-        background-color: #435ebe;
-        border-color: #435ebe;
-        color: #fff;
-        z-index: 3;
-        border-radius: 27px;
-    }
-
-    .page-item.disabled .page-link {
-        background-color: #fff;
-        color: #6c757d;
-        pointer-events: none;
-        border-color: transparent;
-    }
-</style>
+    <style>
+        .dataTables_wrapper .dataTables_info {
+            clear: both;
+            float: left;
+            padding-top: 0.755em;
+        }
+
+        /*Acomodo de forma de boton y siguiente y anterior*/
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            box-sizing: border-box;
+            display: inline-block;
+            min-width: 1.5em;
+            padding: 0.5em 1em;
+            margin-left: 2px;
+            text-align: center;
+            text-decoration: none !important;
+            cursor: pointer;
+            *cursor: hand;
+            color: #000000 !important;
+            border: 1px solid transparent;
+            border-radius: 2px;
+        }
+
+        /*Marcado de la pagina actual*/
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+            color: #FFFFFF !important;
+            background-color: #006EAD;
+            border-radius: 5px;
+
+        }
+
+        /*Acomodar al final los numeros de la paginacion*/
+        .dataTables_paginate {
+            text-align: end !important;
+        }
+
+        /*Quitar la barra de busqueda del script de datatables*/
+        .dataTables_filter {
+            display: none;
+        }
+
+        /*Padding para las alertas*/
+        .alert {
+            padding: 0.7rem !important;
+        }
+
+        .bg-success {
+            background-color: #81C10C !important;
+        }
+
+        .bg-warning {
+            background-color: #FFC107 !important;
+        }
+
+        .fc-day-disabled {
+            background-color: #e6e6e6 !important;
+            pointer-events: none;
+        }
+
+        .fc-toolbar-chunk>div {
+            width: 380px;
+            display: flex;
+            justify-content: space-between
+        }
+
+        .fc-prev-button.fc-button.fc-button-primary {
+            background-color: white;
+            color: black;
+            border-radius: 5px;
+            border: 0px solid white;
+        }
+
+        .fc-prev-button.fc-button.fc-button-primary:focus {
+            background-color: white;
+            color: black;
+            border-radius: 5px;
+            border: 0px solid white;
+            box-shadow: 0 0px 0px white;
+        }
+
+        .fc-next-button.fc-button.fc-button-primary {
+            background-color: white;
+            color: black;
+            border-radius: 5px;
+            border: 0px solid white;
+        }
+
+        .fc-next-button.fc-button.fc-button-primary:focus {
+            background-color: white;
+            color: black;
+            border-radius: 5px;
+            border: 0px solid white;
+            box-shadow: 0 0px 0px white;
+        }
+
+
+        .fc-theme-standard .fc-scrollgrid {
+            border: 0px solid white !important;
+        }
+
+        .fc-theme-standard td,
+        .fc-theme-standard th {
+            /* Espaciado interno */
+            border: 0px solid white;
+            /* Borde gris claro */
+            text-align: center;
+            /* Centrar el texto */
+        }
+
+        .fc-col-header-cell-cushion {
+            color: black;
+            text-decoration: none;
+        }
+
+        .fc-daygrid-day-number {
+            color: black;
+            text-decoration: none;
+        }
+
+        .fc-scrollgrid-sync-table {
+            height: 280px !important;
+        }
+
+        .fc,
+        .fc *,
+        .fc :after,
+        .fc :before {
+            box-sizing: border-box;
+            justify-content: center;
+        }
+
+
+        .fc-theme-standard .fc-daygrid-day-number {
+            color: black;
+            /* Color del número del día seleccionado */
+            background-color: transparent;
+            /* Fondo transparente para el número del día */
+            font-weight: bold;
+            /* Hacer el número más prominente */
+        }
+
+        .fc-theme-standard .fc-daygrid-day.fc-daygrid-day-selected {
+            background-color: transparent;
+            /* Fondo transparente para la celda seleccionada */
+            border: none;
+            /* Opcional: eliminar el borde si es necesario */
+        }
+
+
+        .highlighted-day {
+            /* background-color: #81C10C !important; */
+            color: white !important;
+            border-radius: 50%;
+            padding: 0.5em;
+        }
+
+        .fc-day-selected {
+            border-radius: 17px;
+            color: white !important;
+        }
+
+        .fc-day-vacaciones {
+            background-color: #81C10C !important;
+        }
+
+        .fc-day-ausencia {
+            background-color: #0C57C1 !important;
+        }
+
+        .fc-day-paternidad {
+            background-color: #C10C8E !important;
+        }
+
+        .fc-day-incapacidad {
+            background-color: #C10C0C !important;
+        }
+
+        .fc-day-especiales {
+            background-color: #C1A10C !important;
+        }
+
+
+        .fc-day-start {
+            background-color: rgb(59, 201, 23);
+            /* Color para el primer día de la selección */
+            color: white;
+        }
+
+        .fc-day-end {
+            background-color: #d5c321;
+            /* Color para el último día de la selección */
+            color: white;
+        }
+
+        .fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events {
+            min-height: 0px;
+        }
+
+        .fc .fc-daygrid-day-top {
+            margin-top: 2px !important;
+        }
+
+        .fc-theme-standard .fc-daygrid-day-number {
+            width: 45% !important;
+        }
+
+
+        /*Estilo azul al seleccionar dia*/
+        .fc .fc-highlight {
+            background-color: transparent !important;
+        }
+
+        /*Estilo para quitar el color del dia actual */
+        .fc .fc-daygrid-day.fc-day-today {
+            background-color: transparent !important;
+        }
+
+        /*Estilo para quitar dias anteriores al que estamos*/
+        .fc .fc-cell-shaded,
+        .fc .fc-day-disabled {
+            background-color: transparent !important;
+        }
+
+
+        /*Estilo para cambiar el tamaño*/
+        .fc .fc-toolbar-title {
+            font-size: 17px !important;
+        }
+
+        .fc-toolbar-title {
+            margin-top: 8px !important;
+        }
+
+        /*Estilo para quitar el mnargin botton del titulo*/
+        .fc .fc-toolbar.fc-header-toolbar {
+            margin-bottom: 4px !important;
+        }
+
+        /*Estilo para darle margin bottom de los dias del calendario*/
+        .fc .fc-view-harness {
+            margin-bottom: 20px !important;
+        }
+
+        #calendario {
+            width: 100%;
+        }
+
+        /*Estilo para el div de los dias en Calendario General*/
+        .custom-day-top-class {
+            padding: 0px 25px !important;
+        }
+
+
+        /*Estilos de paginacion*/
+        .pagination {
+            display: flex;
+            justify-content: end;
+
+        }
+
+        .page-item .page-link {
+            font-size: .875rem;
+            border-color: transparent;
+        }
+
+        .page-item.active .page-link {
+            background-color: #435ebe;
+            border-color: #435ebe;
+            color: #fff;
+            z-index: 3;
+            border-radius: 27px;
+        }
+
+        .page-item.disabled .page-link {
+            background-color: #fff;
+            color: #6c757d;
+            pointer-events: none;
+            border-color: transparent;
+        }
+
+        /*Estilo para spin de carga*/
+        #loadingSpinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
 @endsection
