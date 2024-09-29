@@ -1229,10 +1229,8 @@
             document.getElementById('clearFecha').addEventListener('click', function() {
                 document.getElementById('fechaInput').value = '';
                 applyFilters();
-            });,
+            });
 
-
-            /*Funcion para aplicar los filtros*/
             function applyFilters() {
                 document.getElementById('loadingSpinner').style.display = 'flex';
                 const tipo = document.getElementById('tipoSelect').value;
@@ -1244,32 +1242,37 @@
                 window.location.href = url;
             }
 
-            // Mostrar el spinner de carga al cambiar de página
             document.querySelectorAll('.pagination a').forEach(function(link) {
                 link.addEventListener('click', function(event) {
+                    // Mostrar el spinner de carga
                     document.getElementById('loadingSpinner').style.display = 'flex';
                 });
             });
 
+            // Poner dias de vacaciones y permisos especiales en el calendario
             $('#modalCalendario').on('shown.bs.modal', function() {
                 /*utilizar la variable vacacionescalendar que viene de el controlador para poner los dias en el calendario */
                 var vacacionesCalendar = @json($vacacionescalendar);
 
                 var selectedRanges = [];
                 var calendarEl = document.getElementById('calendarioDays');
+                ///Seleccionar el div donde viene contenido el dia
                 var calendario = new FullCalendar.Calendar(calendarEl, {
                     locale: "es",
                     hiddenDays: [0, 6],
                     selectable: true,
                     dayCellDidMount: function(info) {
+                        // Accede al <div> con la clase fc-daygrid-day-top
                         var dayTopElement = info.el.querySelector(
                             '.fc-daygrid-day-top');
 
                         if (dayTopElement) {
+                            // Añade la clase personalizada
                             dayTopElement.classList.add('custom-day-top-class');
                         }
 
-                        var dateStr = info.date.toISOString().split('T')[0];
+                        var dateStr = info.date.toISOString().split('T')[
+                            0]; // Formato 'YYYY-MM-DD'
                         var daysVacaciones = vacacionesCalendar?.vacaciones
                         var daysAusecia = vacacionesCalendar?.ausencias
                         var daysPaternidad = vacacionesCalendar?.paternidad
