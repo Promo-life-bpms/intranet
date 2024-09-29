@@ -10,6 +10,7 @@ use App\Models\RequestType;
 use App\Models\User;
 use App\Models\VacationDays;
 use App\Models\VacationInformation;
+use App\Models\VacationPerYear;
 use App\Models\VacationRequest;
 use App\Models\Vacations as ModelsVacations;
 use App\Models\VacationsAvailablePerUser;
@@ -132,7 +133,7 @@ class VacationRequestController extends Controller
         $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
         $fechaIngreso = Carbon::parse($Ingreso->date_admission);
         $fechaActual = Carbon::now();
-        $Vacaciones = DB::table('vacations_availables')
+        $Vacaciones = DB::table('vacations_available_per_users')
             ->where('users_id', $user->id)
             ->where('cutoff_date', '>=', $fechaActual)
             ->orderBy('cutoff_date', 'asc')
@@ -148,7 +149,9 @@ class VacationRequestController extends Controller
                 'waiting' => $vaca->waiting,
                 'days_enjoyed' => $vaca->days_enjoyed,
                 'days_availables' => $vaca->days_availables,
-                'cutoff_date' => $vaca->cutoff_date,
+                'date_start' => $vaca->date_start,
+                'date_end' => $vaca->date_end,
+                'anniversary_number' => $vaca->anniversary_number,
             ];
         }
 
@@ -239,6 +242,81 @@ class VacationRequestController extends Controller
 
         $porcentajeespecial = round(($contadorAsuntosPersonales / 3) * 100);
 
+        ////ACTUALIZAR LAS VACACIONES////
+        /* $employee = Employee::where('user_id', $user->id)->first();
+        dd($employee->date_admission); */
+        if (count($Datos) > 1) {
+            $fechaActual = Carbon::now();
+            $Vacaciones = DB::table('vacations_available_per_users')
+                ->where('users_id', $user->id)
+                ->where('cutoff_date', '>=', $fechaActual)
+                ->orderBy('cutoff_date', 'asc')
+                ->get();
+            $Datosnew = [];
+            foreach ($Vacaciones as $vaca) {
+                $Datosnew[] = [
+                    'id' => $vaca->id,
+                    'dv' => $vaca->dv,
+                    'days_enjoyed' => $vaca->days_enjoyed,
+                    'date_start' => $vaca->date_start,
+                    'date_end' => $vaca->date_end,
+                    'anniversary_number' => $vaca->anniversary_number,
+                ];
+            }
+            
+            $fechaActual = Carbon::now();
+            $fechaInicio = Carbon::parse($Datosnew[1]['date_start']);
+            $fechaFin = Carbon::parse($Datosnew[1]['date_end']);
+            $DiasPorAñoCumplido = VacationPerYear::where('year',  $Datosnew[1]['anniversary_number'])->value('days');
+            $diasTranscurridos = $fechaInicio->diffInDays($fechaActual);
+            $diasaño = $fechaInicio->diffInDays($fechaFin);
+            $calculoVacaciones = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido), 2);
+            $calculoVacacionesRedondeado = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido));
+            $dv = $Datosnew[1]['dv'];
+            $days_enjoyed = $Datosnew[1]['days_enjoyed'];
+            $dvNew = $calculoVacacionesRedondeado - $days_enjoyed;
+            DB::table('vacations_available_per_users')->where('id', $Datosnew[1]['id'])->update([
+                'days_availables' =>  $calculoVacaciones,
+                'dv' => $dvNew
+            ]);
+        }
+        if (count($Datos) == 1) {
+            $fechaActual = Carbon::now();
+            $Vacaciones = DB::table('vacations_available_per_users')
+                ->where('users_id', $user->id)
+                ->where('cutoff_date', '>=', $fechaActual)
+                ->orderBy('cutoff_date', 'asc')
+                ->get();
+            $Datosnew = [];
+            foreach ($Vacaciones as $vaca) {
+                $Datosnew[] = [
+                    'id' => $vaca->id,
+                    'dv' => $vaca->dv,
+                    'days_enjoyed' => $vaca->days_enjoyed,
+                    'date_start' => $vaca->date_start,
+                    'date_end' => $vaca->date_end,
+                    'anniversary_number' => $vaca->anniversary_number,
+                ];
+            }
+            $fechaActual = Carbon::now();
+            $fechaInicio = Carbon::parse($Datosnew[0]['date_start']);
+            $fechaFin = Carbon::parse($Datosnew[0]['date_end']);
+            $DiasPorAñoCumplido = VacationPerYear::where('year',  $Datosnew[0]['anniversary_number'])->value('days');
+            $diasTranscurridos = $fechaInicio->diffInDays($fechaActual);
+            $diasaño = $fechaInicio->diffInDays($fechaFin);
+            $calculoVacaciones = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido), 2);
+            $calculoVacacionesRedondeado = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido));
+            $dv = $Datosnew[0]['dv'];
+            $days_enjoyed = $Datosnew[0]['days_enjoyed'];
+            $dvNew = $calculoVacacionesRedondeado - $days_enjoyed;
+            DB::table('vacations_available_per_users')->where('id', $Datosnew[0]['id'])->update([
+                'days_availables' =>  $calculoVacaciones,
+                'dv' => $dvNew
+            ]);
+        }
+
+
+
         return view('request.vacations-collaborators', compact('users', 'vacaciones', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar', 'porcentajeespecial'));
     }
     public function CreatePurchase(Request $request)
@@ -267,7 +345,7 @@ class VacationRequestController extends Controller
                 return back()->with('error', 'No has cumplido el tiempo suficiente para solicitar vacaciones.');
             }
 
-            $Vacaciones = DB::table('vacations_availables')
+            $Vacaciones = DB::table('vacations_available_per_users')
                 ->where('users_id', $user->id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
@@ -353,7 +431,7 @@ class VacationRequestController extends Controller
                     $RestaDv = $VacacionesOne - $diasTotales;
                     ////ReservaWaiting nos va ayudar para cuando nieguen las vacaciones, las regresemos al periodo actual///
                     $ReservaWaiting = $WaitingOne + $diasTotales;
-                    DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $PeriodoOne)->update([
+                    DB::table('vacations_available_per_users')->where('users_id', $user->id)->where('period', $PeriodoOne)->update([
                         'waiting' => $ReservaWaiting,
                         'dv' => $RestaDv
                     ]);
@@ -429,12 +507,12 @@ class VacationRequestController extends Controller
                                 $ReservaWaitingTwo = $WaitingTwo + $FaltanVacacionesOne;
                                 $RestaDvTwo = $VacacionesTwo - $FaltanVacacionesOne;
 
-                                DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $PeriodoOne)->update([
+                                DB::table('vacations_available_per_users')->where('users_id', $user->id)->where('period', $PeriodoOne)->update([
                                     'waiting' => $ReservaWaitingOne,
                                     'dv' => $RestaDvOne
                                 ]);
 
-                                DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $PeriodoTwo)->update([
+                                DB::table('vacations_available_per_users')->where('users_id', $user->id)->where('period', $PeriodoTwo)->update([
                                     'waiting' => $ReservaWaitingTwo,
                                     'dv' => $RestaDvTwo
                                 ]);
@@ -480,7 +558,7 @@ class VacationRequestController extends Controller
                         if ($VacacionesOne == 0 && $VacacionesTwo > 0 && $VacacionesTwo != 0) {
                             $RestadvTwo = $VacacionesTwo - $diasTotales;
                             $ReservaWaitingTwo = $WaitingTwo + $diasTotales;
-                            DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $PeriodoTwo)->update([
+                            DB::table('vacations_available_per_users')->where('users_id', $user->id)->where('period', $PeriodoTwo)->update([
                                 'waiting' => $ReservaWaitingTwo,
                                 'dv' => $RestadvTwo
                             ]);
@@ -533,7 +611,7 @@ class VacationRequestController extends Controller
                     $RestaDv = $VacacionesOne - $diasTotales;
                     ////ReservaWaiting nos va ayudar para cuando nieguen las vacaciones, las regresemos al periodo actual///
                     $ReservaWaiting = $WaitingOne + $diasTotales;
-                    DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $PeriodoOne)->update([
+                    DB::table('vacations_available_per_users')->where('users_id', $user->id)->where('period', $PeriodoOne)->update([
                         'waiting' => $ReservaWaiting,
                         'dv' => $RestaDv
                     ]);
@@ -1268,7 +1346,7 @@ class VacationRequestController extends Controller
             });
 
             $fechaActual = Carbon::now();
-            $Vacaciones = DB::table('vacations_availables')
+            $Vacaciones = DB::table('vacations_available_per_users')
                 ->where('users_id', $Solicitud->user_id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
@@ -1378,7 +1456,7 @@ class VacationRequestController extends Controller
             }
 
             $fechaActual = Carbon::now();
-            $Vacaciones = DB::table('vacations_availables')
+            $Vacaciones = DB::table('vacations_available_per_users')
                 ->where('users_id', $Solicitud->user_id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
@@ -1474,7 +1552,7 @@ class VacationRequestController extends Controller
             }
 
             $fechaActual = Carbon::now();
-            $Vacaciones = DB::table('vacations_availables')
+            $Vacaciones = DB::table('vacations_available_per_users')
                 ->where('users_id', $Solicitud->user_id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
@@ -1566,7 +1644,7 @@ class VacationRequestController extends Controller
             }
 
             $fechaActual = Carbon::now();
-            $Vacaciones = DB::table('vacations_availables')
+            $Vacaciones = DB::table('vacations_available_per_users')
                 ->where('users_id', $Solicitud->user_id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
@@ -1723,7 +1801,7 @@ class VacationRequestController extends Controller
 
         if ($solicitud->request_type_id == 1) {
             $fechaActual = Carbon::now();
-            $Vacaciones = DB::table('vacations_availables')
+            $Vacaciones = DB::table('vacations_available_per_users')
                 ->where('users_id', $user->id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
@@ -1772,12 +1850,12 @@ class VacationRequestController extends Controller
                     'status' => 0
                 ]);
 
-                DB::table('vacations_availables')->where('users_id', $solicitud->user_id)->where('id', $idOne)->update([
+                DB::table('vacations_available_per_users')->where('users_id', $solicitud->user_id)->where('id', $idOne)->update([
                     'waiting' => $newWaiting,
                     'dv' => $totaldvOne
                 ]);
 
-                DB::table('vacations_availables')->where('users_id', $solicitud->user_id)->where('id', $idTwo)->update([
+                DB::table('vacations_available_per_users')->where('users_id', $solicitud->user_id)->where('id', $idTwo)->update([
                     'waiting' => $newWaitingTwo,
                     'dv' => $totaldvTwo
                 ]);
@@ -1788,7 +1866,7 @@ class VacationRequestController extends Controller
             if ($total == 1) {
                 $VacaInfo = DB::table('vacation_information')->where('id_vacation_request', $solicitud->id)->first();
                 $id_vacations_availables = $VacaInfo->id_vacations_availables;
-                $VacacionesAviles = DB::table('vacations_availables')->where('id', $id_vacations_availables)->first();
+                $VacacionesAviles = DB::table('vacations_available_per_users')->where('id', $id_vacations_availables)->first();
                 $totaldaysOne =  //Si no esta el campo que no lo tome en cuenta
                     $VacaInfo->total_days == null ? 0 : $VacaInfo->total_days;
                 $newWaiting = $VacacionesAviles->waiting - $totaldaysOne;
@@ -1805,7 +1883,7 @@ class VacationRequestController extends Controller
                     'status' => 0
                 ]);
 
-                DB::table('vacations_availables')->where('users_id', $solicitud->user_id)->where('id', $id_vacations_availables)->update([
+                DB::table('vacations_available_per_users')->where('users_id', $solicitud->user_id)->where('id', $id_vacations_availables)->update([
                     'waiting' => $newWaiting,
                     'dv' => $totaldv
                 ]);
@@ -1861,7 +1939,7 @@ class VacationRequestController extends Controller
 
             if (($Solicitud->direct_manager_status == 'Aprobada' && $Solicitud->rh_status == 'Pendiente') || ($Solicitud->direct_manager_status == 'Pendiente' && $Solicitud->rh_status == 'Pendiente')) {
                 $fechaActual = Carbon::now();
-                $Vacaciones = DB::table('vacations_availables')
+                $Vacaciones = DB::table('vacations_available_per_users')
                     ->where('users_id', $user->id)
                     ->where('cutoff_date', '>=', $fechaActual)
                     ->orderBy('cutoff_date', 'asc')
@@ -1911,12 +1989,12 @@ class VacationRequestController extends Controller
                         'status' => 0
                     ]);
 
-                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
+                    DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
                         'waiting' => $newWaiting,
                         'dv' => $totaldvOne
                     ]);
 
-                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
+                    DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
                         'waiting' => $newWaitingTwo,
                         'dv' => $totaldvTwo
                     ]);
@@ -1927,7 +2005,7 @@ class VacationRequestController extends Controller
                 if ($total == 1) {
                     $VacaInfo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->first();
                     $id_vacations_availables = $VacaInfo->id_vacations_availables;
-                    $VacacionesAviles = DB::table('vacations_availables')->where('id', $id_vacations_availables)->first();
+                    $VacacionesAviles = DB::table('vacations_available_per_users')->where('id', $id_vacations_availables)->first();
                     $totaldaysOne = //Si no esta el campo que no lo tome en cuenta
                         $VacaInfo->total_days == null ? 0 : $VacaInfo->total_days;
                     $newWaiting = $VacacionesAviles->waiting - $totaldaysOne;
@@ -1944,7 +2022,7 @@ class VacationRequestController extends Controller
                         'status' => 0
                     ]);
 
-                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $id_vacations_availables)->update([
+                    DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $id_vacations_availables)->update([
                         'waiting' => $newWaiting,
                         'dv' => $totaldv
                     ]);
@@ -2051,7 +2129,7 @@ class VacationRequestController extends Controller
                 return back()->with('error', 'No has cumplido el tiempo suficiente para solicitar vacaciones.');
             }
 
-            $Vacaciones = DB::table('vacations_availables')
+            $Vacaciones = DB::table('vacations_available_per_users')
                 ->where('users_id', $user->id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
@@ -2134,7 +2212,7 @@ class VacationRequestController extends Controller
                     $eliminarArray = explode(', ', $eliminar);
                     $dias = count($eliminarArray);
 
-                    $Vacaciones = DB::table('vacations_availables')
+                    $Vacaciones = DB::table('vacations_available_per_users')
                         ->where('users_id', $user->id)
                         ->where('cutoff_date', '>=', $fechaActual)
                         ->orderBy('cutoff_date', 'asc')
@@ -2196,7 +2274,7 @@ class VacationRequestController extends Controller
                                             ->delete();
                                     }
 
-                                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
+                                    DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
                                         'waiting' => $NewWaitingTwo,
                                         'dv' => $NewDvTwo
                                     ]);
@@ -2227,11 +2305,11 @@ class VacationRequestController extends Controller
                                                     'total_days' => $NewTotalDaysOne,
                                                 ]);
 
-                                            DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
+                                            DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
                                                 'waiting' => $NewWaitingTwo,
                                                 'dv' => $NewDvTwo
                                             ]);
-                                            DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
+                                            DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
                                                 'waiting' => $NewWaitingOne,
                                                 'dv' => $NewDvOne
                                             ]);
@@ -2256,7 +2334,7 @@ class VacationRequestController extends Controller
                         if (count($idsPeriodos) == 1) {
                             $infosoli = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->first();
                             if ($dias <= $infosoli->total_days) {
-                                $vacacionesdisponibles = DB::table('vacations_availables')->where('id', $infosoli->id_vacations_availables)->first();
+                                $vacacionesdisponibles = DB::table('vacations_available_per_users')->where('id', $infosoli->id_vacations_availables)->first();
                                 $NewTotalDays = $infosoli->total_days - $dias;
                                 $NewWaitingTwo = $vacacionesdisponibles->waiting - $dias;
                                 $NewDvTwo = $vacacionesdisponibles->dv + $dias;
@@ -2278,7 +2356,7 @@ class VacationRequestController extends Controller
                                         ->delete();
                                 }
 
-                                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $infosoli->id_vacations_availables)->update([
+                                DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $infosoli->id_vacations_availables)->update([
                                     'waiting' => $NewWaitingTwo,
                                     'dv' => $NewDvTwo
                                 ]);
@@ -2311,7 +2389,7 @@ class VacationRequestController extends Controller
                                     ->delete();
                             }
 
-                            DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
+                            DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
                                 'waiting' => $NewWaitingTwo,
                                 'dv' => $NewDvTwo
                             ]);
@@ -2321,7 +2399,7 @@ class VacationRequestController extends Controller
 
                 //NUEVOS DÍAS//
                 if (!$missingInDias->isEmpty()) {
-                    $newVacaciones = DB::table('vacations_availables')
+                    $newVacaciones = DB::table('vacations_available_per_users')
                         ->where('users_id', $user->id)
                         ->where('cutoff_date', '>=', $fechaActual)
                         ->orderBy('cutoff_date', 'asc')
@@ -2372,7 +2450,7 @@ class VacationRequestController extends Controller
                                     $NewDvOne = $VacacionesOne - $diasTotales;
                                     $NewTotalDaysOne = $dvOne->total_days + $diasTotales;
 
-                                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
+                                    DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
                                         'waiting' => $NewWaitingOne,
                                         'dv' => $NewDvOne
                                     ]);
@@ -2415,12 +2493,12 @@ class VacationRequestController extends Controller
                                                 $NewTotalDaysOne = $dvOne->total_days + $DispoVacaOne;
                                                 $NewTotalDaysTwo = $dvTwo->total_days + $FaltanVacacionesOne;
 
-                                                DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $PeriodoOne)->update([
+                                                DB::table('vacations_available_per_users')->where('users_id', $user->id)->where('period', $PeriodoOne)->update([
                                                     'waiting' => $ReservaWaitingOne,
                                                     'dv' => $RestaDvOne
                                                 ]);
 
-                                                DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $PeriodoTwo)->update([
+                                                DB::table('vacations_available_per_users')->where('users_id', $user->id)->where('period', $PeriodoTwo)->update([
                                                     'waiting' => $ReservaWaitingTwo,
                                                     'dv' => $RestaDvTwo
                                                 ]);
@@ -2461,7 +2539,7 @@ class VacationRequestController extends Controller
                                             $RestadvTwo = $VacacionesTwo - $diasTotales;
                                             $ReservaWaitingTwo = $WaitingTwo + $diasTotales;
                                             $NewTotalDaysTwo = $dvTwo->total_days + $diasTotales;
-                                            DB::table('vacations_availables')->where('users_id', $user->id)->where('period', $PeriodoTwo)->update([
+                                            DB::table('vacations_available_per_users')->where('users_id', $user->id)->where('period', $PeriodoTwo)->update([
                                                 'waiting' => $ReservaWaitingTwo,
                                                 'dv' => $RestadvTwo
                                             ]);
@@ -2498,14 +2576,14 @@ class VacationRequestController extends Controller
                         if (count($idsPeriodos) == 1) {
                             $infosoli = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->first();
                             $Periodo = $infosoli->id_vacations_availables;
-                            $InfoVacaciones = DB::table('vacations_availables')->where('id', $Periodo)->first();
+                            $InfoVacaciones = DB::table('vacations_available_per_users')->where('id', $Periodo)->first();
                             if ($diasTotales <= $InfoVacaciones->dv) {
                                 $RestaDv = $InfoVacaciones->dv - $diasTotales;
                                 ////ReservaWaiting nos va ayudar para cuando nieguen las vacaciones, las regresemos al periodo actual///
                                 $NewWaitingOne = $InfoVacaciones->waiting + $diasTotales;
                                 $NewTotalDaysOne = $infosoli->total_days + $diasTotales;
 
-                                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $InfoVacaciones->id)->update([
+                                DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $InfoVacaciones->id)->update([
                                     'waiting' => $NewWaitingOne,
                                     'dv' => $RestaDv
                                 ]);
@@ -2541,7 +2619,7 @@ class VacationRequestController extends Controller
                                         'id_vacation_request' => $Solicitud->id
                                     ]);
 
-                                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
+                                    DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
                                         'waiting' => $NewWaitingOne,
                                         'dv' => $RestaDv
                                     ]);
@@ -2569,7 +2647,7 @@ class VacationRequestController extends Controller
                                         'id_vacation_request' => $Solicitud->id
                                     ]);
 
-                                    DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
+                                    DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
                                         'waiting' => $NewWaitingTwo,
                                         'dv' => $RestaDv
                                     ]);
@@ -2600,14 +2678,14 @@ class VacationRequestController extends Controller
                     if (count($Datosnew) == 1) {
                         $infosoli = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->first();
                         $Periodo = $infosoli->id_vacations_availables;
-                        $InfoVacaciones = DB::table('vacations_availables')->where('id', $Periodo)->first();
+                        $InfoVacaciones = DB::table('vacations_available_per_users')->where('id', $Periodo)->first();
                         if ($diasTotales <= $InfoVacaciones->dv) {
                             $RestaDv = $InfoVacaciones->dv - $diasTotales;
                             ////ReservaWaiting nos va ayudar para cuando nieguen las vacaciones, las regresemos al periodo actual///
                             $NewWaitingOne = $InfoVacaciones->waiting + $diasTotales;
                             $NewTotalDaysOne = $infosoli->total_days + $diasTotales;
 
-                            DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $InfoVacaciones->id)->update([
+                            DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $InfoVacaciones->id)->update([
                                 'waiting' => $NewWaitingOne,
                                 'dv' => $RestaDv
                             ]);
@@ -3623,7 +3701,7 @@ class VacationRequestController extends Controller
 
         if ($Solicitud->request_type_id == 1) {
             $fechaActual = Carbon::now();
-            $Vacaciones = DB::table('vacations_availables')
+            $Vacaciones = DB::table('vacations_available_per_users')
                 ->where('users_id', $user->id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
@@ -3676,12 +3754,12 @@ class VacationRequestController extends Controller
                     'status' => 0
                 ]);
 
-                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
+                DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
                     'waiting' => $newWaiting,
                     'dv' => $totaldvOne
                 ]);
 
-                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
+                DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
                     'waiting' => $newWaitingTwo,
                     'dv' => $totaldvTwo
                 ]);
@@ -3692,7 +3770,7 @@ class VacationRequestController extends Controller
             if ($total == 1) {
                 $VacaInfo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->first();
                 $id_vacations_availables = $VacaInfo->id_vacations_availables;
-                $VacacionesAviles = DB::table('vacations_availables')->where('id', $id_vacations_availables)->first();
+                $VacacionesAviles = DB::table('vacations_available_per_users')->where('id', $id_vacations_availables)->first();
                 $totaldaysOne = $VacaInfo->total_days;
                 $newWaiting = $VacacionesAviles->waiting - $totaldaysOne;
                 $totaldv = $VacacionesAviles->dv + $totaldaysOne;
@@ -3708,7 +3786,7 @@ class VacationRequestController extends Controller
                     'status' => 0
                 ]);
 
-                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $id_vacations_availables)->update([
+                DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $id_vacations_availables)->update([
                     'waiting' => $newWaiting,
                     'dv' => $totaldv
                 ]);
@@ -3744,7 +3822,7 @@ class VacationRequestController extends Controller
 
         if ($Solicitud->request_type_id == 1) {
             $fechaActual = Carbon::now();
-            $Vacaciones = DB::table('vacations_availables')
+            $Vacaciones = DB::table('vacations_available_per_users')
                 ->where('users_id', $user->id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
@@ -3795,12 +3873,12 @@ class VacationRequestController extends Controller
                     'status' => 1
                 ]);
 
-                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
+                DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idOne)->update([
                     'waiting' => $newWaiting,
                     'days_enjoyed' => $totalDaysEnjoyedOne
                 ]);
 
-                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
+                DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $idTwo)->update([
                     'waiting' => $newWaitingTwo,
                     'days_enjoyed' => $totalDaysEnjoyedtWO
                 ]);
@@ -3811,7 +3889,7 @@ class VacationRequestController extends Controller
             if ($total == 1) {
                 $VacaInfo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->first();
                 $id_vacations_availables = $VacaInfo->id_vacations_availables;
-                $VacacionesAviles = DB::table('vacations_availables')->where('id', $id_vacations_availables)->first();
+                $VacacionesAviles = DB::table('vacations_available_per_users')->where('id', $id_vacations_availables)->first();
                 // $totaldaysOne = $VacaInfo->total_days;
                 $totaldaysOne = //Si no esta el campo que no lo tome en cuenta
                     $VacaInfo->total_days == null ? 0 : $VacaInfo->total_days;
@@ -3827,7 +3905,7 @@ class VacationRequestController extends Controller
                     'status' => 1
                 ]);
 
-                DB::table('vacations_availables')->where('users_id', $Solicitud->user_id)->where('id', $id_vacations_availables)->update([
+                DB::table('vacations_available_per_users')->where('users_id', $Solicitud->user_id)->where('id', $id_vacations_availables)->update([
                     'waiting' => $newWaiting,
                     'days_enjoyed' => $totalDaysEnjoyedOne
                 ]);
@@ -3876,7 +3954,7 @@ class VacationRequestController extends Controller
 
         $usuarios = $request->team;
         $fechaActual = Carbon::now();
-        $vacaciones = DB::table('vacations_availables')
+        $vacaciones = DB::table('vacations_available_per_users')
             ->where('cutoff_date', '>=', $fechaActual)
             ->whereIn('users_id', $usuarios)
             ->orderBy('cutoff_date', 'asc')
@@ -3900,7 +3978,7 @@ class VacationRequestController extends Controller
                     if (isset($Datos[$usuario][0])) {
                         $primerdv = $Datos[$usuario][0]['dv'];
                         $totalnuevodv = $primerdv + $request->days;
-                        DB::table('vacations_availables')
+                        DB::table('vacations_available_per_users')
                             ->where('users_id', $usuario)
                             ->where('dv', $primerdv)
                             ->update(['dv' => $totalnuevodv]);
@@ -3919,7 +3997,7 @@ class VacationRequestController extends Controller
                     if (isset($Datos[$usuario][0])) {
                         $primerdv = $Datos[$usuario][0]['dv'];
                         $totalnuevodv = $primerdv - $request->days;
-                        DB::table('vacations_availables')
+                        DB::table('vacations_available_per_users')
                             ->where('users_id', $usuario)
                             ->where('dv', $primerdv)
                             ->update(['dv' => $totalnuevodv]);
@@ -3948,7 +4026,7 @@ class VacationRequestController extends Controller
                     if (isset($Datos[$usuario][1])) {
                         $primerdv = $Datos[$usuario][1]['dv'];
                         $totalnuevodv = $primerdv + $request->days;
-                        DB::table('vacations_availables')
+                        DB::table('vacations_available_per_users')
                             ->where('users_id', $usuario)
                             ->where('dv', $primerdv)
                             ->update(['dv' => $totalnuevodv]);
@@ -3979,7 +4057,7 @@ class VacationRequestController extends Controller
                     if (isset($Datos[$usuario][1])) {
                         $primerdv = $Datos[$usuario][1]['dv'];
                         $totalnuevodv = $primerdv - $request->days;
-                        DB::table('vacations_availables')
+                        DB::table('vacations_available_per_users')
                             ->where('users_id', $usuario)
                             ->where('dv', $primerdv)
                             ->update(['dv' => $totalnuevodv]);
@@ -4071,7 +4149,6 @@ class VacationRequestController extends Controller
             ];
         }
         // Muestra el resultado
-        dd($aniversariosPorUsuario[85]);
-    
+        dd($aniversariosPorUsuario[169]);
     }
 }

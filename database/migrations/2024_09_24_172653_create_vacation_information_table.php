@@ -16,7 +16,7 @@ class CreateVacationInformationTable extends Migration
         Schema::create('vacation_information', function (Blueprint $table) {
             $table->id();
             $table->integer('total_days');
-            $table->foreignId('id_vacations_availables')->references('id')->on('vacations_availables')->onDelete('cascade');
+            $table->foreignId('id_vacations_availables')->references('id')->on('vacations_available_per_users')->onDelete('cascade');
             $table->foreignId('id_vacation_request')->references('id')->on('vacation_requests')->onDelete('cascade');
             $table->timestamps();
         });
