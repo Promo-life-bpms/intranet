@@ -4037,6 +4037,7 @@ class VacationRequestController extends Controller
             ];
         }
         // Muestra el resultado
-        dd($aniversariosPorUsuario[45]);
+        dd($aniversariosPorUsuario[85]);
+    
     }
 }
