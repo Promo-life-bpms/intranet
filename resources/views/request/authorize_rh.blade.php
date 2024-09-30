@@ -91,7 +91,7 @@
 
                     <div class="col-4">
                         <div id="tarjeta3" class="tarjetaRh3 hover-tarjetaRh3"
-                            style="border-bottom: 10px solid var(--color-target-4); min-height: 100%; padding: 10px 20px !important;">
+                            style="border-bottom: 10px solid var(--color-target-4); min-height: 100%; padding: 10px 20px !important; align-content: end !important; ">
                             <div class="d-flex justify-content-end">
                                 <strong>{{ $sumaCanceladasUsuario }}</strong>
                             </div>
@@ -200,7 +200,6 @@
                         </tbody>
                     </table>
                     @if (count($Aprobadas) > 0)
-                        <span>Autorizadas</span>
                         <div class="d-flex justify-content-end">
                             {{ $Aprobadas->appends(request()->input())->links() }}
                         </div>
@@ -217,7 +216,7 @@
                                 <th scope="col" style="text-align: center;">Tipo de solicitud</th>
                                 <th scope="col" style="text-align: center;">Días ausente</th>
                                 <th scope="col" style="text-align: center;">Aprobado por (Jefe)</th>
-                                <th scope="col" style="text-align: center;">Autorizar solicitud</th>
+                                <th scope="col" style="text-align: center;">Autorizar/Rechazar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -276,7 +275,7 @@
                                             {{-- Para permisos especiales --}}
                                             data-tipo-permiso-especial="{{ is_array($pendiente->more_information) && count($pendiente->more_information) > 0 && isset($pendiente->more_information[0]['Tipo_de_permiso_especial']) ? $pendiente->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
                                             data-reveal_id="{{ $pendiente->reveal_id }}"
-                                            data-file="{{ $pendiente->file }}">Ver y Autorizar</button>
+                                            data-file="{{ $pendiente->file }}">Ver</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -284,7 +283,6 @@
                     </table>
 
                     @if (count($Pendientes) > 0)
-                        <span>Pendientes</span>
                         <div class="d-flex justify-content-end">
                             {{ $Pendientes->appends(request()->input())->links() }}
                         </div>
@@ -376,8 +374,6 @@
                     </table>
 
                     @if (count($rechazadas) > 0)
-                        <span>rechazada</span>
-
                         <div class="d-flex justify-content-end">
                             {{ $rechazadas->appends(request()->input())->links() }}
                         </div>
