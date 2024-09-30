@@ -133,9 +133,65 @@ class VacationRequestController extends Controller
         $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
         $fechaIngreso = Carbon::parse($Ingreso->date_admission);
         $fechaActual = Carbon::now();
+
+        $NewUser = DB::table('vacations_available_per_users')->where('users_id', $user->id)->exists();
+        if (!$NewUser) {
+            $date_end = Carbon::parse($fechaIngreso)->addYear()->format('Y-m-d');
+            $date_cutoff_date = Carbon::parse($date_end)->addYear()->format('Y-m-d');
+            VacationsAvailablePerUser::create([
+                'period' => 1,
+                'days_availables' => 0,
+                'dv' => 0,
+                'days_enjoyed' => 0,
+                'date_start' => $fechaIngreso,
+                'date_end' => $date_end,
+                'cutoff_date' => $date_cutoff_date,
+                'anniversary_number' => 1,
+                'waiting' => 0,
+                'users_id' => $user->id,
+            ]);
+        }
+
+        $Primerperiodo = DB::table('vacations_available_per_users')->where('users_id', $user->id)
+            ->where('period', 1)->first();
+        $PeriodOne = $Primerperiodo->date_end;
+        if ($PeriodOne && $fechaActual->greaterThanOrEqualTo(Carbon::parse($PeriodOne))) {
+            $date_end = $Primerperiodo->cutoff_date;
+            $fechaCaducidad = Carbon::parse($Primerperiodo->cutoff_date)->addYear()->format('Y-m-d');
+            $Aniversario = $Primerperiodo->anniversary_number + 1;
+            $DiasPorAñoCumplido = VacationPerYear::where('year',  $Primerperiodo->anniversary_number)->value('days');
+
+            $Segundoperiodo = DB::table('vacations_available_per_users')->where('users_id', $user->id)
+                ->where('period', 2)->exists();
+
+            if ($Segundoperiodo) {
+                DB::table('vacations_available_per_users')->where('users_id', $user->id)->where('period', 2)->update([
+                    'period' => 3,
+                ]);
+            }
+
+            DB::table('vacations_available_per_users')->where('users_id', $user->id)->where('period', 1)->update([
+                'period' => 2,
+                'days_availables' =>  $DiasPorAñoCumplido,
+            ]);
+
+            VacationsAvailablePerUser::create([
+                'period' => 1,
+                'days_availables' => 0,
+                'dv' => 0,
+                'days_enjoyed' => 0,
+                'date_start' => $PeriodOne,
+                'date_end' => $date_end,
+                'cutoff_date' => $fechaCaducidad,
+                'anniversary_number' => $Aniversario,
+                'waiting' => 0,
+                'users_id' => $user->id,
+            ]);
+        }
+
         $Vacaciones = DB::table('vacations_available_per_users')
             ->where('users_id', $user->id)
-            ->where('cutoff_date', '>', $fechaActual)
+            ->where('cutoff_date', '>=', $fechaActual)
             ->orderBy('cutoff_date', 'asc')
             ->get();
         $Datos = [];
@@ -166,19 +222,21 @@ class VacationRequestController extends Controller
             $calculoVacacionesRedondeado = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido));
             $dv = $Datos[1]['dv'];
             $days_enjoyed = $Datos[1]['days_enjoyed'];
-            $dvNew = $calculoVacacionesRedondeado - $days_enjoyed;
+            $WaitingOne = $Datos[1]['waiting'];
+            $dvNew = $calculoVacacionesRedondeado - $days_enjoyed - $WaitingOne;
             if ($calculoVacaciones <= $DiasPorAñoCumplido) {
                 DB::table('vacations_available_per_users')->where('id', $Datos[1]['id'])->update([
                     'days_availables' =>  $calculoVacaciones,
                     'dv' => $dvNew
                 ]);
-            }else{
+            } else {
                 DB::table('vacations_available_per_users')->where('id', $Datos[1]['id'])->update([
                     'days_availables' =>  $DiasPorAñoCumplido,
                     'dv' => $dvNew
                 ]);
             }
         }
+
         if (count($Datos) == 1) {
             $fechaActual = Carbon::now();
             $fechaInicio = Carbon::parse($Datos[0]['date_start']);
@@ -190,7 +248,8 @@ class VacationRequestController extends Controller
             $calculoVacacionesRedondeado = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido));
             $dv = $Datos[0]['dv'];
             $days_enjoyed = $Datos[0]['days_enjoyed'];
-            $dvNew = $calculoVacacionesRedondeado - $days_enjoyed;
+            $WaitingOne = $Datos[0]['waiting'];
+            $dvNew = $calculoVacacionesRedondeado - $days_enjoyed - $WaitingOne;
             if ($calculoVacaciones <= $DiasPorAñoCumplido) {
                 DB::table('vacations_available_per_users')->where('id', $Datos[0]['id'])->update([
                     'days_availables' =>  $calculoVacaciones,
@@ -307,7 +366,6 @@ class VacationRequestController extends Controller
             }
         }
 
-
         // Crear el arreglo final
         $vacacionescalendar = [
             'vacaciones' => $vacacionesDias,
@@ -317,7 +375,6 @@ class VacationRequestController extends Controller
             'permisos_especiales' => $permisosEspecialesDias,
 
         ];
-
 
         //PERMISOS ESPECIALES//
         $currentYear = date('Y');
@@ -339,15 +396,17 @@ class VacationRequestController extends Controller
 
         $porcentajeespecial = round(($contadorAsuntosPersonales / 3) * 100);
 
-        ////ACTUALIZAR LAS VACACIONES////
-        /* $employee = Employee::where('user_id', $user->id)->first();
-        dd($employee->date_admission); */
-
         return view('request.vacations-collaborators', compact('users', 'vacaciones', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar', 'porcentajeespecial'));
     }
+
     public function CreatePurchase(Request $request)
     {
         $user = auth()->user();
+
+        if ($request->reveal_id == $user->id) {
+            return back()->with('error', 'No puedes ser tú mismo el responsable de tus deberes.');
+        }
+
 
         ///VACACIONES
         if ($request->request_type_id == 1) {
@@ -960,10 +1019,6 @@ class VacationRequestController extends Controller
                 return back()->with('error', 'Solo puedes tomar cinco días.');
             }
 
-            if ($dias < 5) {
-                return back()->with('error', 'Debes ingresar los cinco días.');
-            }
-
             ///VACACIONES PENDIENTES O APROBADAS///
             $vacaciones = DB::table('vacation_requests')
                 ->where('user_id', $user->id)
@@ -1218,7 +1273,7 @@ class VacationRequestController extends Controller
                     return back()->with('error', 'Solo tienes derecho a tomar cinco días.');
                 }
 
-                if ($dias == 5) {
+                if ($dias <= 5) {
                     $more_information[] = [
                         'Tipo_de_permiso_especial' => $request->Permiso,
                     ];
@@ -1243,8 +1298,6 @@ class VacationRequestController extends Controller
                         ]);
                     }
                     return back()->with('message', 'Se creó con éxito tu solicitud.');
-                } else {
-                    return back()->with('error', 'Debes tomar tus cinco días.');
                 }
             }
 
@@ -1828,7 +1881,7 @@ class VacationRequestController extends Controller
         if ($solicitud->request_type_id == 1) {
             $fechaActual = Carbon::now();
             $Vacaciones = DB::table('vacations_available_per_users')
-                ->where('users_id', $user->id)
+                ->where('users_id', $solicitud->user_id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
                 ->get();
@@ -1847,15 +1900,16 @@ class VacationRequestController extends Controller
                 ];
             }
 
-            $idOne = (int) $Datos[0]['id'];
-            $idTwo = (int) $Datos[1]['id'];
-            $WaitingOne = $Datos[0]['waiting'];
-            $WaitingTwo = $Datos[1]['waiting'];
-            $dvOne = $Datos[0]['dv'];
-            $dvTwo = $Datos[1]['dv'];
             $InfoVacaciones = DB::table('vacation_information')->where('id_vacation_request', $request->id)->get();
             $total = count($InfoVacaciones);
             if ($total == 2) {
+                $idOne = (int) $Datos[0]['id'];
+                $idTwo = (int) $Datos[1]['id'];
+                $WaitingOne = $Datos[0]['waiting'];
+                $WaitingTwo = $Datos[1]['waiting'];
+                $dvOne = $Datos[0]['dv'];
+                $dvTwo = $Datos[1]['dv'];
+
                 $InfoTwo = DB::table('vacation_information')->where('id_vacation_request', $solicitud->id)->where('id_vacations_availables', $idTwo)->first();
                 $InfoOne = DB::table('vacation_information')->where('id_vacation_request', $solicitud->id)->where('id_vacations_availables', $idOne)->first();
                 $totaldaysOne = $InfoOne->total_days == null ? 0 : $InfoOne->total_days;
@@ -1966,7 +2020,7 @@ class VacationRequestController extends Controller
             if (($Solicitud->direct_manager_status == 'Aprobada' && $Solicitud->rh_status == 'Pendiente') || ($Solicitud->direct_manager_status == 'Pendiente' && $Solicitud->rh_status == 'Pendiente')) {
                 $fechaActual = Carbon::now();
                 $Vacaciones = DB::table('vacations_available_per_users')
-                    ->where('users_id', $user->id)
+                    ->where('users_id', $Solicitud->user_id)
                     ->where('cutoff_date', '>=', $fechaActual)
                     ->orderBy('cutoff_date', 'asc')
                     ->get();
@@ -1985,15 +2039,16 @@ class VacationRequestController extends Controller
                     ];
                 }
 
-                $idOne = (int) $Datos[0]['id'];
-                $idTwo = (int) $Datos[1]['id'];
-                $WaitingOne = $Datos[0]['waiting'];
-                $WaitingTwo = $Datos[1]['waiting'];
-                $dvOne = $Datos[0]['dv'];
-                $dvTwo = $Datos[1]['dv'];
                 $InfoVacaciones = DB::table('vacation_information')->where('id_vacation_request', $request->id)->get();
                 $total = count($InfoVacaciones);
                 if ($total == 2) {
+                    $idOne = (int) $Datos[0]['id'];
+                    $idTwo = (int) $Datos[1]['id'];
+                    $WaitingOne = $Datos[0]['waiting'];
+                    $WaitingTwo = $Datos[1]['waiting'];
+                    $dvOne = $Datos[0]['dv'];
+                    $dvTwo = $Datos[1]['dv'];
+
                     $InfoTwo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idTwo)->first();
                     $InfoOne = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idOne)->first();
                     $totaldaysOne =  //Si no esta el campo que no lo tome en cuenta
@@ -2007,8 +2062,8 @@ class VacationRequestController extends Controller
 
                     DB::table('vacation_requests')->where('id', $request->id)->update([
                         'commentary' => $request->commentary,
-                        'direct_manager_status' => 'Cancelada',
-                        'rh_status' => 'Cancelada'
+                        'direct_manager_status' => 'Cancelada por el usuario',
+                        'rh_status' => 'Cancelada por el usuario'
                     ]);
 
                     DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
@@ -2040,8 +2095,8 @@ class VacationRequestController extends Controller
 
                     DB::table('vacation_requests')->where('id', $request->id)->update([
                         'commentary' => $request->commentary,
-                        'direct_manager_status' => 'Cancelada',
-                        'rh_status' => 'Cancelada'
+                        'direct_manager_status' => 'Cancelada por el usuario',
+                        'rh_status' => 'Cancelada por el usuario'
                     ]);
 
                     DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
@@ -2084,6 +2139,10 @@ class VacationRequestController extends Controller
 
         if ($Solicitud->user_id != $user->id) {
             return back()->with('error', 'Solo el dueño de la solicitud la puede editar.');
+        }
+
+        if ($request->reveal_id == $user->id) {
+            return back()->with('error', 'No puedes ser tú mismo el responsable de tus deberes.');
         }
 
         $path = '';
@@ -2184,11 +2243,9 @@ class VacationRequestController extends Controller
             $missingInDates = $diasSet->diff($datesSet); // Días en $dias pero no en $dates
 
             if ($missingInDias->isEmpty() && $missingInDates->isEmpty()) {
-                ///EL ARREGLO ES EL MISMO///
                 DB::table('vacation_requests')->where('id', $request->id)->update([
                     'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                     'details' => $request->details == null ? $Solicitud->details : $request->details,
-                    'file' => $request->archivos == null ? $Solicitud->file : $path,
                 ]);
                 return back()->with('message', 'Se actualizó correctamente tu solicitud.');
             } else {
@@ -2258,7 +2315,6 @@ class VacationRequestController extends Controller
                         ];
                     }
 
-
                     if (count($Datos) > 1) {
                         ///ELIMINEMOS LOS DÍAS///
                         $VacacionesOne = $Datos[0]['dv'];
@@ -2291,6 +2347,7 @@ class VacationRequestController extends Controller
                                         'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                         'details' => $request->details == null ? $Solicitud->details : $request->details,
                                         'file' => $request->archivos == null ? $Solicitud->file : $path,
+                                        'direct_manager_status' => 'Pendiente',
                                     ]);
 
                                     foreach ($eliminarArray as $eliminar) {
@@ -2344,6 +2401,7 @@ class VacationRequestController extends Controller
                                                 'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                                 'details' => $request->details == null ? $Solicitud->details : $request->details,
                                                 'file' => $request->archivos == null ? $Solicitud->file : $path,
+                                                'direct_manager_status' => 'Pendiente',
                                             ]);
 
                                             foreach ($eliminarArray as $eliminar) {
@@ -2373,6 +2431,7 @@ class VacationRequestController extends Controller
                                     'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                     'details' => $request->details == null ? $Solicitud->details : $request->details,
                                     'file' => $request->archivos == null ? $Solicitud->file : $path,
+                                    'direct_manager_status' => 'Pendiente',
                                 ]);
 
                                 foreach ($eliminarArray as $eliminar) {
@@ -2406,6 +2465,7 @@ class VacationRequestController extends Controller
                                 'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                 'details' => $request->details == null ? $Solicitud->details : $request->details,
                                 'file' => $request->archivos == null ? $Solicitud->file : $path,
+                                'direct_manager_status' => 'Pendiente',
                             ]);
 
                             foreach ($eliminarArray as $eliminar) {
@@ -2490,6 +2550,7 @@ class VacationRequestController extends Controller
                                         'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                         'details' => $request->details == null ? $Solicitud->details : $request->details,
                                         'file' => $request->archivos == null ? $Solicitud->file : $path,
+                                        'direct_manager_status' => 'Pendiente',
                                     ]);
 
 
@@ -2534,6 +2595,7 @@ class VacationRequestController extends Controller
                                                     'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                                     'details' => $request->details == null ? $Solicitud->details : $request->details,
                                                     'file' => $request->archivos == null ? $Solicitud->file : $path,
+                                                    'direct_manager_status' => 'Pendiente',
                                                 ]);
 
 
@@ -2574,6 +2636,7 @@ class VacationRequestController extends Controller
                                                 'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                                 'details' => $request->details == null ? $Solicitud->details : $request->details,
                                                 'file' => $request->archivos == null ? $Solicitud->file : $path,
+                                                'direct_manager_status' => 'Pendiente',
                                             ]);
 
                                             foreach ($registrarArray as $dia) {
@@ -2623,6 +2686,7 @@ class VacationRequestController extends Controller
                                     'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                     'details' => $request->details == null ? $Solicitud->details : $request->details,
                                     'file' => $request->archivos == null ? $Solicitud->file : $path,
+                                    'direct_manager_status' => 'Pendiente',
                                 ]);
 
 
@@ -2653,6 +2717,7 @@ class VacationRequestController extends Controller
                                         'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                         'details' => $request->details == null ? $Solicitud->details : $request->details,
                                         'file' => $request->archivos == null ? $Solicitud->file : $path,
+                                        'direct_manager_status' => 'Pendiente',
                                     ]);
 
                                     foreach ($registrarArray as $dia) {
@@ -2681,6 +2746,7 @@ class VacationRequestController extends Controller
                                         'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                         'details' => $request->details == null ? $Solicitud->details : $request->details,
                                         'file' => $request->archivos == null ? $Solicitud->file : $path,
+                                        'direct_manager_status' => 'Pendiente',
                                     ]);
 
                                     foreach ($registrarArray as $dia) {
@@ -2725,6 +2791,7 @@ class VacationRequestController extends Controller
                                 'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                                 'details' => $request->details == null ? $Solicitud->details : $request->details,
                                 'file' => $request->archivos == null ? $Solicitud->file : $path,
+                                'direct_manager_status' => 'Pendiente',
                             ]);
 
 
@@ -2876,6 +2943,7 @@ class VacationRequestController extends Controller
                             'details' => $request->details == null ? $Solicitud->details : $request->details,
                             'file' => $request->archivos == null ? $Solicitud->file : $path,
                             'more_information' => $moreinformation,
+                            'direct_manager_status' => 'Pendiente',
                         ]);
                         foreach ($dates as $dia) {
                             VacationDays::create([
@@ -2951,6 +3019,7 @@ class VacationRequestController extends Controller
                             'details' => $request->details == null ? $Solicitud->details : $request->details,
                             'file' => $request->archivos == null ? $Solicitud->file : $path,
                             'more_information' => $moreinformation,
+                            'direct_manager_status' => 'Pendiente',
                         ]);
 
                         foreach ($dates as $dia) {
@@ -3057,6 +3126,7 @@ class VacationRequestController extends Controller
                             'details' => $request->details == null ? $Solicitud->details : $request->details,
                             'file' => $request->archivos == null ? $Solicitud->file : $path,
                             'more_information' => $moreinformation,
+                            'direct_manager_status' => 'Pendiente',
                         ]);
 
                         foreach ($dates as $dia) {
@@ -3132,10 +3202,6 @@ class VacationRequestController extends Controller
                 return back()->with('error', 'Solo puedes tomar cinco días.');
             }
 
-            if ($diasTotales < 5) {
-                return back()->with('error', 'Debes ingresar los cinco días.');
-            }
-
             if ($Solicitud->file == null) {
                 if ($path == null) {
                     return back()->with('error', 'Ingresa tu justificante; de lo contrario, no podrás continuar con el proceso.');
@@ -3166,6 +3232,7 @@ class VacationRequestController extends Controller
                         'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                         'details' => $request->details == null ? $Solicitud->details : $request->details,
                         'file' => $request->archivos == null ? $Solicitud->file : $path,
+                        'direct_manager_status' => 'Pendiente',
                     ]);
 
                     foreach ($registrarArray as $registro) {
@@ -3190,6 +3257,7 @@ class VacationRequestController extends Controller
                         'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                         'details' => $request->details == null ? $Solicitud->details : $request->details,
                         'file' => $request->archivos == null ? $Solicitud->file : $path,
+                        'direct_manager_status' => 'Pendiente',
                     ]);
                 }
                 return back()->with('message', 'Solicitud actualizada correctamente.');
@@ -3273,6 +3341,7 @@ class VacationRequestController extends Controller
                         'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                         'details' => $request->details == null ? $Solicitud->details : $request->details,
                         'file' => $request->archivos == null ? $Solicitud->file : $path,
+                        'direct_manager_status' => 'Pendiente',
                     ]);
 
                     foreach ($registrarArray as $registro) {
@@ -3297,6 +3366,7 @@ class VacationRequestController extends Controller
                         'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                         'details' => $request->details == null ? $Solicitud->details : $request->details,
                         'file' => $request->archivos == null ? $Solicitud->file : $path,
+                        'direct_manager_status' => 'Pendiente',
                     ]);
                 }
                 return back()->with('message', 'Solicitud actualizada correctamente.');
@@ -3346,10 +3416,6 @@ class VacationRequestController extends Controller
             }
 
             if ($request->Permiso == 'Fallecimiento de un familiar') {
-                if ($diasTotales < 3) {
-                    return back()->with('error', 'Debes ingresar los tres días permitidos.');
-                }
-
                 if ($diasTotales > 3) {
                     return back()->with('error', 'Solo tienes derecho a tomar tres días.');
                 }
@@ -3391,6 +3457,7 @@ class VacationRequestController extends Controller
                             'details' => $request->details == null ? $Solicitud->details : $request->details,
                             'file' => $request->archivos == null ? $Solicitud->file : $path,
                             'more_information' => $moreinformation,
+                            'direct_manager_status' => 'Pendiente',
                         ]);
 
                         foreach ($registrarArray as $registro) {
@@ -3415,6 +3482,7 @@ class VacationRequestController extends Controller
                             'details' => $request->details == null ? $Solicitud->details : $request->details,
                             'file' => $request->archivos == null ? $Solicitud->file : $path,
                             'more_information' => $moreinformation,
+                            'direct_manager_status' => 'Pendiente',
                         ]);
 
                         foreach ($eliminarArray as $eliminar) {
@@ -3428,14 +3496,11 @@ class VacationRequestController extends Controller
             }
 
             if ($request->Permiso == 'Matrimonio del colaborador') {
-                if ($diasTotales < 5) {
-                    return back()->with('error', 'Debes ingresar los cinco días permitidos.');
-                }
                 if ($diasTotales > 5) {
                     return back()->with('error', 'Solo tienes derecho a tomar cinco días.');
                 }
 
-                if ($diasTotales == 5) {
+                if ($diasTotales <= 5) {
                     // Convertir ambos arrays a conjuntos (sets) para la comparación
                     $diasSet = collect($dias)->unique()->sort()->values();
                     $datesSet = collect($dates)->unique()->sort()->values();
@@ -3471,6 +3536,7 @@ class VacationRequestController extends Controller
                                 'details' => $request->details == null ? $Solicitud->details : $request->details,
                                 'file' => $request->archivos == null ? $Solicitud->file : $path,
                                 'more_information' => $moreinformation,
+                                'direct_manager_status' => 'Pendiente',
                             ]);
 
                             foreach ($registrarArray as $registro) {
@@ -3494,6 +3560,7 @@ class VacationRequestController extends Controller
                                 'details' => $request->details == null ? $Solicitud->details : $request->details,
                                 'file' => $request->archivos == null ? $Solicitud->file : $path,
                                 'more_information' => $moreinformation,
+                                'direct_manager_status' => 'Pendiente',
                             ]);
 
                             foreach ($eliminarArray as $eliminar) {
@@ -3503,8 +3570,6 @@ class VacationRequestController extends Controller
                         }
                         return back()->with('message', 'Actualización exitosa.');
                     }
-                } else {
-                    return back()->with('error', 'Debes tomar tus cinco días.');
                 }
             }
 
@@ -3560,6 +3625,7 @@ class VacationRequestController extends Controller
                             'details' => $request->details == null ? $Solicitud->details : $request->details,
                             'file' => $request->archivos == null ? $Solicitud->file : $path,
                             'more_information' => $moreinformation,
+                            'direct_manager_status' => 'Pendiente',
                         ]);
                         foreach ($registrarArray as $dia) {
                             VacationDays::create([
@@ -3683,6 +3749,7 @@ class VacationRequestController extends Controller
                             'details' => $request->details == null ? $Solicitud->details : $request->details,
                             'file' => $request->archivos == null ? $Solicitud->file : $path,
                             'more_information' => $moreinformation,
+                            'direct_manager_status' => 'Pendiente',
                         ]);
 
                         foreach ($registrarArray as $dia) {
@@ -3728,7 +3795,7 @@ class VacationRequestController extends Controller
         if ($Solicitud->request_type_id == 1) {
             $fechaActual = Carbon::now();
             $Vacaciones = DB::table('vacations_available_per_users')
-                ->where('users_id', $user->id)
+                ->where('users_id', $Solicitud->user_id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
                 ->get();
