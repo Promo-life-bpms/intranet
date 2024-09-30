@@ -135,7 +135,7 @@ class VacationRequestController extends Controller
         $fechaActual = Carbon::now();
         $Vacaciones = DB::table('vacations_available_per_users')
             ->where('users_id', $user->id)
-            ->where('cutoff_date', '>=', $fechaActual)
+            ->where('cutoff_date', '>', $fechaActual)
             ->orderBy('cutoff_date', 'asc')
             ->get();
         $Datos = [];
@@ -156,26 +156,123 @@ class VacationRequestController extends Controller
         }
 
         if (count($Datos) > 1) {
-            $diasreservados = $Datos[0]['waiting'] + $Datos[1]['waiting'];
-            $diasdisponibles = $Datos[0]['dv'] + $Datos[1]['dv'];
-            $totalvacaciones = $Datos[0]['days_availables'] + $Datos[1]['days_availables'];
-            $totalvacaionestomadas = $Datos[0]['days_enjoyed'] + $Datos[1]['days_enjoyed'];
+            $fechaActual = Carbon::now();
+            $fechaInicio = Carbon::parse($Datos[1]['date_start']);
+            $fechaFin = Carbon::parse($Datos[1]['date_end']);
+            $DiasPorAñoCumplido = VacationPerYear::where('year',  $Datos[1]['anniversary_number'])->value('days');
+            $diasTranscurridos = $fechaInicio->diffInDays($fechaActual);
+            $diasaño = $fechaInicio->diffInDays($fechaFin);
+            $calculoVacaciones = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido), 2);
+            $calculoVacacionesRedondeado = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido));
+            $dv = $Datos[1]['dv'];
+            $days_enjoyed = $Datos[1]['days_enjoyed'];
+            $dvNew = $calculoVacacionesRedondeado - $days_enjoyed;
+            if ($calculoVacaciones <= $DiasPorAñoCumplido) {
+                DB::table('vacations_available_per_users')->where('id', $Datos[1]['id'])->update([
+                    'days_availables' =>  $calculoVacaciones,
+                    'dv' => $dvNew
+                ]);
+            }else{
+                DB::table('vacations_available_per_users')->where('id', $Datos[1]['id'])->update([
+                    'days_availables' =>  $DiasPorAñoCumplido,
+                    'dv' => $dvNew
+                ]);
+            }
+        }
+        if (count($Datos) == 1) {
+            $fechaActual = Carbon::now();
+            $fechaInicio = Carbon::parse($Datos[0]['date_start']);
+            $fechaFin = Carbon::parse($Datos[0]['date_end']);
+            $DiasPorAñoCumplido = VacationPerYear::where('year',  $Datos[0]['anniversary_number'])->value('days');
+            $diasTranscurridos = $fechaInicio->diffInDays($fechaActual);
+            $diasaño = $fechaInicio->diffInDays($fechaFin);
+            $calculoVacaciones = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido), 2);
+            $calculoVacacionesRedondeado = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido));
+            $dv = $Datos[0]['dv'];
+            $days_enjoyed = $Datos[0]['days_enjoyed'];
+            $dvNew = $calculoVacacionesRedondeado - $days_enjoyed;
+            if ($calculoVacaciones <= $DiasPorAñoCumplido) {
+                DB::table('vacations_available_per_users')->where('id', $Datos[0]['id'])->update([
+                    'days_availables' =>  $calculoVacaciones,
+                    'dv' => $dvNew
+                ]);
+            } else {
+                DB::table('vacations_available_per_users')->where('id', $Datos[0]['id'])->update([
+                    'days_availables' =>  $DiasPorAñoCumplido,
+                    'dv' => $dvNew
+                ]);
+            }
+        }
+
+        if (count($Datos) > 1) {
+            $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
+            $fechaIngreso = Carbon::parse($Ingreso->date_admission);
+            $fechaActual = Carbon::now();
+            $Vacaciones = DB::table('vacations_available_per_users')
+                ->where('users_id', $user->id)
+                ->where('cutoff_date', '>=', $fechaActual)
+                ->orderBy('cutoff_date', 'asc')
+                ->get();
+            $DatosNew = [];
+            foreach ($Vacaciones as $vaca) {
+                $DatosNew[] = [
+                    'id' => $vaca->id,
+                    'dv' => $vaca->dv,
+                    'cutoff_date' => $vaca->cutoff_date,
+                    'period' => $vaca->period,
+                    'days_enjoyed' => $vaca->days_enjoyed,
+                    'waiting' => $vaca->waiting,
+                    'days_enjoyed' => $vaca->days_enjoyed,
+                    'days_availables' => $vaca->days_availables,
+                    'date_start' => $vaca->date_start,
+                    'date_end' => $vaca->date_end,
+                    'anniversary_number' => $vaca->anniversary_number,
+                ];
+            }
+            $diasreservados = $DatosNew[0]['waiting'] + $DatosNew[1]['waiting'];
+            $diasdisponibles = $DatosNew[0]['dv'] + $DatosNew[1]['dv'];
+            $totalvacaciones = $DatosNew[0]['days_availables'] + $DatosNew[1]['days_availables'];
+            $totalvacaionestomadas = $DatosNew[0]['days_enjoyed'] + $DatosNew[1]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
             $porcentajetomadas = round($porcentajetomadas);
-            $fecha_expiracion_actual = $Datos[0]['cutoff_date'];
-            $vacaciones_actuales = $Datos[0]['dv'];
-            $fecha_expiracion_entrante = $Datos[1]['cutoff_date'];
-            $vacaciones_entrantes = $Datos[1]['dv'];
+            $fecha_expiracion_actual = $DatosNew[0]['cutoff_date'];
+            $vacaciones_actuales = $DatosNew[0]['dv'];
+            $fecha_expiracion_entrante = $DatosNew[1]['cutoff_date'];
+            $vacaciones_entrantes = $DatosNew[1]['dv'];
         } elseif (count($Datos) == 1) {
-            $diasreservados = $Datos[0]['waiting'];
-            $diasdisponibles = $Datos[0]['dv'];
-            $totalvacaciones = $Datos[0]['days_availables'];
-            $totalvacaionestomadas = $Datos[0]['days_enjoyed'];
+            $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
+            $fechaIngreso = Carbon::parse($Ingreso->date_admission);
+            $fechaActual = Carbon::now();
+            $Vacaciones = DB::table('vacations_available_per_users')
+                ->where('users_id', $user->id)
+                ->where('cutoff_date', '>=', $fechaActual)
+                ->orderBy('cutoff_date', 'asc')
+                ->get();
+            $DatosNew = [];
+            foreach ($Vacaciones as $vaca) {
+                $DatosNew[] = [
+                    'id' => $vaca->id,
+                    'dv' => $vaca->dv,
+                    'cutoff_date' => $vaca->cutoff_date,
+                    'period' => $vaca->period,
+                    'days_enjoyed' => $vaca->days_enjoyed,
+                    'waiting' => $vaca->waiting,
+                    'days_enjoyed' => $vaca->days_enjoyed,
+                    'days_availables' => $vaca->days_availables,
+                    'date_start' => $vaca->date_start,
+                    'date_end' => $vaca->date_end,
+                    'anniversary_number' => $vaca->anniversary_number,
+                ];
+            }
+            $diasreservados = $DatosNew[0]['waiting'];
+            $diasdisponibles = $DatosNew[0]['dv'];
+            $totalvacaciones = $DatosNew[0]['days_availables'];
+            $totalvacaionestomadas = $DatosNew[0]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
             $porcentajetomadas = round($porcentajetomadas, 2);
             //dd($porcentajetomadas);
-            $fecha_expiracion_actual = $Datos[0]['cutoff_date'];
-            $vacaciones_actuales = $Datos[0]['dv'];
+            $fecha_expiracion_actual = $DatosNew[0]['cutoff_date'];
+            $vacaciones_actuales = $DatosNew[0]['dv'];
         }
 
         $vacacionesDias = [];
@@ -245,77 +342,6 @@ class VacationRequestController extends Controller
         ////ACTUALIZAR LAS VACACIONES////
         /* $employee = Employee::where('user_id', $user->id)->first();
         dd($employee->date_admission); */
-        if (count($Datos) > 1) {
-            $fechaActual = Carbon::now();
-            $Vacaciones = DB::table('vacations_available_per_users')
-                ->where('users_id', $user->id)
-                ->where('cutoff_date', '>=', $fechaActual)
-                ->orderBy('cutoff_date', 'asc')
-                ->get();
-            $Datosnew = [];
-            foreach ($Vacaciones as $vaca) {
-                $Datosnew[] = [
-                    'id' => $vaca->id,
-                    'dv' => $vaca->dv,
-                    'days_enjoyed' => $vaca->days_enjoyed,
-                    'date_start' => $vaca->date_start,
-                    'date_end' => $vaca->date_end,
-                    'anniversary_number' => $vaca->anniversary_number,
-                ];
-            }
-            
-            $fechaActual = Carbon::now();
-            $fechaInicio = Carbon::parse($Datosnew[1]['date_start']);
-            $fechaFin = Carbon::parse($Datosnew[1]['date_end']);
-            $DiasPorAñoCumplido = VacationPerYear::where('year',  $Datosnew[1]['anniversary_number'])->value('days');
-            $diasTranscurridos = $fechaInicio->diffInDays($fechaActual);
-            $diasaño = $fechaInicio->diffInDays($fechaFin);
-            $calculoVacaciones = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido), 2);
-            $calculoVacacionesRedondeado = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido));
-            $dv = $Datosnew[1]['dv'];
-            $days_enjoyed = $Datosnew[1]['days_enjoyed'];
-            $dvNew = $calculoVacacionesRedondeado - $days_enjoyed;
-            DB::table('vacations_available_per_users')->where('id', $Datosnew[1]['id'])->update([
-                'days_availables' =>  $calculoVacaciones,
-                'dv' => $dvNew
-            ]);
-        }
-        if (count($Datos) == 1) {
-            $fechaActual = Carbon::now();
-            $Vacaciones = DB::table('vacations_available_per_users')
-                ->where('users_id', $user->id)
-                ->where('cutoff_date', '>=', $fechaActual)
-                ->orderBy('cutoff_date', 'asc')
-                ->get();
-            $Datosnew = [];
-            foreach ($Vacaciones as $vaca) {
-                $Datosnew[] = [
-                    'id' => $vaca->id,
-                    'dv' => $vaca->dv,
-                    'days_enjoyed' => $vaca->days_enjoyed,
-                    'date_start' => $vaca->date_start,
-                    'date_end' => $vaca->date_end,
-                    'anniversary_number' => $vaca->anniversary_number,
-                ];
-            }
-            $fechaActual = Carbon::now();
-            $fechaInicio = Carbon::parse($Datosnew[0]['date_start']);
-            $fechaFin = Carbon::parse($Datosnew[0]['date_end']);
-            $DiasPorAñoCumplido = VacationPerYear::where('year',  $Datosnew[0]['anniversary_number'])->value('days');
-            $diasTranscurridos = $fechaInicio->diffInDays($fechaActual);
-            $diasaño = $fechaInicio->diffInDays($fechaFin);
-            $calculoVacaciones = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido), 2);
-            $calculoVacacionesRedondeado = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido));
-            $dv = $Datosnew[0]['dv'];
-            $days_enjoyed = $Datosnew[0]['days_enjoyed'];
-            $dvNew = $calculoVacacionesRedondeado - $days_enjoyed;
-            DB::table('vacations_available_per_users')->where('id', $Datosnew[0]['id'])->update([
-                'days_availables' =>  $calculoVacaciones,
-                'dv' => $dvNew
-            ]);
-        }
-
-
 
         return view('request.vacations-collaborators', compact('users', 'vacaciones', 'solicitudes', 'diasreservados', 'diasdisponibles', 'totalvacaciones', 'totalvacaionestomadas', 'porcentajetomadas', 'fecha_expiracion_actual', 'vacaciones_actuales', 'fecha_expiracion_entrante', 'vacaciones_entrantes', 'vacacionescalendar', 'porcentajeespecial'));
     }
