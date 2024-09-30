@@ -209,7 +209,7 @@
                         <div class="col-3 d-flex align-items-center justify-content-center">
                             <input id="fechaInput" type="date" class="form-control mr-1"
                                 value="{{ request('fecha') }}" />
-                            <i id="clearFecha" class="fas fa-times-circle" style="cursor: pointer;"></i>
+                            <i id="clearFilter" class="fas fa-times-circle" style="cursor: pointer;"></i>
                         </div>
                     </div>
 
@@ -706,29 +706,8 @@
                     <div class="modal-body">
                         <form id="denyFormRequest" action="reject/leave/by/direct/user" method="POST">
                             @csrf
-
-                            <div style="text-align: center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="120" height="120"
-                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"
-                                    style="color: red">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-                                </svg>
-
-                            </div>
-                            <div style="text-align: center">
-                                <strong style="color: red">Advertencia</strong>
-                            </div>
-
-
-
-                            <span style="display: flex; text-align: center">Si decide cancelar esta solicitud y no utilizar
-                                los días previamente solicitados, deberá
-                                esperar a que RH complete el proceso de retribución, lo cual podría tomar tiempo. Se le
-                                notificará por correo electrónico cuando la retribución esté lista.</span>
-
                             <textarea style="min-width: 100%; min-height: 80px;" class="form-control mt-2" id="commentary" name="commentary"
-                                required></textarea>
+                                placeholder="Motivo de la cancelación" required></textarea>
                             <div class="d-flex justify-content-end mt-2">
                                 <button type="button" class="btn btn-primary" id="denyButtonForm">Enviar</button>
                             </div>
@@ -960,17 +939,20 @@
                             case 'salida_antes':
                                 horaSalida.classList.remove('d-none');
                                 horaEntrada.classList.add('d-none');
-                                textTime.classList.add('d-none');
+                                document.querySelector('#text-time').innerText =
+                                    'Solo puedes elegir hasta 4 horas antes de la hora de salida.';
                                 break;
                             case 'salida_durante':
                                 horaEntrada.classList.remove('d-none');
                                 horaSalida.classList.remove('d-none');
-                                textTime.classList.remove('d-none');
+                                document.querySelector('#text-time').innerText =
+                                    'Solo puedes elegir hasta 4 horas.';
                                 break;
                             case 'retardo':
                                 horaSalida.classList.add('d-none');
                                 horaEntrada.classList.remove('d-none');
-                                textTime.classList.add('d-none');
+                                document.querySelector('#text-time').innerText =
+                                    'Solo puedes elegir hasta 4 horas después de la hora de ingreso.';
                                 //Cambiar el texto de la hora de regreso a Hora de llegada
                                 document.querySelector('#horaEntrada').querySelector('span').innerText =
                                     'Hora de llegada: ';
@@ -1226,8 +1208,11 @@
                 applyFilters();
             });
 
-            document.getElementById('clearFecha').addEventListener('click', function() {
+            document.getElementById('clearFilter').addEventListener('click', function() {
                 document.getElementById('fechaInput').value = '';
+                document.getElementById('tipoSelect').value = '';
+                document.getElementById('selectJD').value = '';
+                document.getElementById('selectRh').value = '';
                 applyFilters();
             });
 
@@ -1510,10 +1495,13 @@
                     document.getElementById('ButtonEditRequest').classList.add('d-none');
                 } else if (statusRh === 'Aprobada') {
                     document.getElementById('ButtonEditRequest').classList.add('d-none');
-                    document.getElementById('seccionOptionButton').style.display = 'block';
+                    document.getElementById('seccionOptionButton').style.display = 'none';
                 } else if (directManagerStatus === 'Rechazada') {
                     document.getElementById('seccionOptionButton').style.display = 'block';
                     document.getElementById('ButtonEditRequest').classList.add('d-none');
+                } else if (statusRh === 'Pendiente') {
+                    document.getElementById('seccionOptionButton').style.display = 'block';
+                    document.getElementById('ButtonEditRequest').classList.remove('d-none');
                 } else {
                     document.getElementById('seccionOptionButton').style.display = 'block';
                     document.getElementById('ButtonEditRequest').classList.remove('d-none');
@@ -1696,8 +1684,7 @@
                         </div>
 
                         <div style="width: 72%">
-                            <span id="text-time" class="d-none" style="color: red">
-                                Toma en cuenta que si la ausencia supera las 4 horas, se descontará de los días de vacaciones.
+                            <span id="text-time" style="color: red">
                             </span>
 
                             <div class="d-flex justify-content-between">
@@ -1752,17 +1739,18 @@
                     case 'salida_antes':
                         horaSalida.classList.remove('d-none');
                         horaEntrada.classList.add('d-none');
-                        textTime.classList.add('d-none');
+                        document.querySelector('#text-time').innerText =
+                            'Solo puedes elegir hasta 4 horas antes de la hora de salida.';
                         break;
                     case 'salida_durante':
                         horaEntrada.classList.remove('d-none');
                         horaSalida.classList.remove('d-none');
-                        textTime.classList.remove('d-none');
+                        document.querySelector('#text-time').innerText =
+                            'Solo puedes elegir hasta 4 horas.';
                         break;
                     case 'retardo':
                         horaSalida.classList.add('d-none');
                         horaEntrada.classList.remove('d-none');
-                        textTime.classList.remove('d-none');
                         document.querySelector('#text-time').innerText =
                             'Solo puedes elegir hasta 4 horas después de la hora de ingreso.';
                         //Cambiar el texto de la hora de regreso a Hora de llegada
@@ -1773,6 +1761,7 @@
                         horaSalida.classList.add('d-none');
                         horaEntrada.classList.add('d-none');
                         textTime.classList.add('d-none');
+
                 }
             }
 
@@ -1837,6 +1826,9 @@
 
             document.getElementById('dynamicContentEncabezado').innerHTML = `
                 <span>Selecciona los días naturales que no te presentarás</span>
+            `;
+            document.getElementById('textDinamicCalendar').innerHTML = `
+                <span>Selecciona los días de incapacidad.</span>
             `;
 
             document.getElementById('dynamicContentEncabezado').innerHTML = `
