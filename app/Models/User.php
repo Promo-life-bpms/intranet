@@ -82,17 +82,17 @@ class User extends Authenticatable
 
     public function vacation()
     {
-        return $this->hasOne(Vacations::class, 'users_id');
+        return $this->hasOne(VacationsAvailablePerUser::class, 'users_id');
     }
 
     public function vacationsAvailables()
     {
-        return $this->hasMany(Vacations::class, 'users_id')->where('period', '<>', 3);
+        return $this->hasMany(VacationsAvailablePerUser::class, 'users_id')->where('period', '<>', 3);
     }
 
     public function vacationsComplete()
     {
-        return $this->hasMany(Vacations::class, 'users_id');
+        return $this->hasMany(VacationsAvailablePerUser::class, 'users_id');
     }
 
     public function directory()
