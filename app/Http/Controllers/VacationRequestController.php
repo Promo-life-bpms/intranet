@@ -407,6 +407,59 @@ class VacationRequestController extends Controller
             return back()->with('error', 'No puedes ser tú mismo el responsable de tus deberes.');
         }
 
+        $dates = $request->dates;
+        $datesArray = json_decode($dates, true);
+
+        $UserEmployee = Employee::where('user_id', $user->id)->value('user_id');
+        $company = DB::table('company_employee')->where('employee_id', $UserEmployee)->pluck('company_id');
+        if ($company->contains(2)) {
+            $DaysJudios = [
+                '03-10-2024',
+                '04-10-2024',
+                '17-10-2024',
+                '18-10-2024',
+                '24-10-2024',
+            ];
+
+            $diasParecidos = [];
+            foreach ($datesArray as $date) {
+                foreach ($DaysJudios as $vacationDate) {
+                    if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                        $diasParecidos[] = $vacationDate;
+                    }
+                }
+            }
+
+            if (!empty($diasParecidos)) {
+                return back()->with('error', 'Verifica que no hayas seleccionado algún día feriado para BH Trade Market.');
+            }
+        }
+
+        $DaysFeridos = [
+            '18-11-2024',
+            '25-12-2024',
+            '01-01-2025',
+            '03-02-2025',
+            '17-10-2025',
+            '01-05-2025',
+            '16-09-2025',
+            '17-09-2025',
+            '25-09-2025'
+        ];
+
+        $diasParecidosFestivos = [];
+        foreach ($datesArray as $date) {
+            foreach ($DaysFeridos as $Feriados) {
+                if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($Feriados))) {
+                    $diasParecidosFestivos[] = $Feriados;
+                }
+            }
+        }
+
+        if (!empty($diasParecidosFestivos)) {
+            return back()->with('error', 'Algunos de los días seleccionados son feriados, por lo tanto no puedes solicitarlos.');
+        }
+
 
         ///VACACIONES
         if ($request->request_type_id == 1) {
@@ -1809,6 +1862,78 @@ class VacationRequestController extends Controller
         return view('request.authorize_rh', compact('Pendientes', 'Aprobadas',  'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', 'IdandNameUser', 'vacacionesagregadas'));
     }
 
+    public function UserVacationInformation()
+    {
+        $Primerperiodos = DB::table('vacations_available_per_users')->where('period', 1)->get();
+        foreach ($Primerperiodos as $Primerperiodo) {
+            $fechaActual = Carbon::now();
+            $PeriodOne = $Primerperiodo->date_end;
+            if ($PeriodOne && $fechaActual->greaterThanOrEqualTo(Carbon::parse($PeriodOne))) {
+                $date_end = $Primerperiodo->cutoff_date;
+                $fechaCaducidad = Carbon::parse($Primerperiodo->cutoff_date)->addYear()->format('Y-m-d');
+                $Aniversario = $Primerperiodo->anniversary_number + 1;
+                $DiasPorAñoCumplido = VacationPerYear::where('year',  $Primerperiodo->anniversary_number)->value('days');
+
+                $Segundoperiodo = DB::table('vacations_available_per_users')->where('users_id', $Primerperiodo->users_id)
+                    ->where('period', 2)->exists();
+
+                if ($Segundoperiodo) {
+                    DB::table('vacations_available_per_users')->where('users_id', $Primerperiodo->users_id)->where('period', 2)->update([
+                        'period' => 3,
+                    ]);
+                }
+
+                DB::table('vacations_available_per_users')->where('users_id', $Primerperiodo->users_id)->where('period', 1)->update([
+                    'period' => 2,
+                    'days_availables' =>  $DiasPorAñoCumplido,
+                ]);
+
+                VacationsAvailablePerUser::create([
+                    'period' => 1,
+                    'days_availables' => 0,
+                    'dv' => 0,
+                    'days_enjoyed' => 0,
+                    'date_start' => $PeriodOne,
+                    'date_end' => $date_end,
+                    'cutoff_date' => $fechaCaducidad,
+                    'anniversary_number' => $Aniversario,
+                    'waiting' => 0,
+                    'users_id' => $Primerperiodo->users_id,
+                ]);
+            }
+        }
+
+        $Primerperiodos = DB::table('vacations_available_per_users')->where('period', 1)->get();
+        foreach ($Primerperiodos as $Primerperiodo) {
+            $fechaActual = Carbon::now();
+            $fechaInicio = Carbon::parse($Primerperiodo->date_start);
+            $fechaFin = Carbon::parse($Primerperiodo->date_end);
+            $DiasPorAñoCumplido = VacationPerYear::where('year',  $Primerperiodo->anniversary_number)->value('days');
+            $diasTranscurridos = $fechaInicio->diffInDays($fechaActual);
+            $diasaño = $fechaInicio->diffInDays($fechaFin);
+            $calculoVacaciones = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido), 2);
+            $calculoVacacionesRedondeado = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido));
+            $dv = $Primerperiodo->dv;
+            $days_enjoyed = $Primerperiodo->days_enjoyed;
+            $WaitingOne = $Primerperiodo->waiting;
+            $dvNew = $calculoVacacionesRedondeado - $days_enjoyed - $WaitingOne;
+            if ($calculoVacaciones <= $DiasPorAñoCumplido) {
+                DB::table('vacations_available_per_users')->where('id', $Primerperiodo->id)->update([
+                    'days_availables' =>  $calculoVacaciones,
+                    'dv' => $dvNew
+                ]);
+            } else {
+                DB::table('vacations_available_per_users')->where('id', $Primerperiodo->id)->update([
+                    'days_availables' =>  $DiasPorAñoCumplido,
+                    'dv' => $dvNew
+                ]);
+            }
+        }
+
+        $users = User::where('status', 1)->get();
+        return view('admin.vacations.index', compact('users'));
+    }
+
     public function ConfirmRejectedByRh(Request $request)
     {
         if ($request->value == 'aprobada') {
@@ -2143,6 +2268,58 @@ class VacationRequestController extends Controller
 
         if ($request->reveal_id == $user->id) {
             return back()->with('error', 'No puedes ser tú mismo el responsable de tus deberes.');
+        }
+
+        $dates = $request->dates;
+        $datesArray = json_decode($dates, true);
+        $UserEmployee = Employee::where('user_id', $user->id)->value('user_id');
+        $company = DB::table('company_employee')->where('employee_id', $UserEmployee)->pluck('company_id');
+        if ($company->contains(2)) {
+            $DaysJudios = [
+                '03-10-2024',
+                '04-10-2024',
+                '17-10-2024',
+                '18-10-2024',
+                '24-10-2024',
+            ];
+
+            $diasParecidos = [];
+            foreach ($datesArray as $date) {
+                foreach ($DaysJudios as $vacationDate) {
+                    if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                        $diasParecidos[] = $vacationDate;
+                    }
+                }
+            }
+
+            if (!empty($diasParecidos)) {
+                return back()->with('error', 'Verifica que no hayas seleccionado algún día feriado para BH Trade Market.');
+            }
+        }
+
+        $DaysFeridos = [
+            '18-11-2024',
+            '25-12-2024',
+            '01-01-2025',
+            '03-02-2025',
+            '17-10-2025',
+            '01-05-2025',
+            '16-09-2025',
+            '17-09-2025',
+            '25-09-2025'
+        ];
+
+        $diasParecidosFestivos = [];
+        foreach ($datesArray as $date) {
+            foreach ($DaysFeridos as $Feriados) {
+                if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($Feriados))) {
+                    $diasParecidosFestivos[] = $Feriados;
+                }
+            }
+        }
+
+        if (!empty($diasParecidosFestivos)) {
+            return back()->with('error', 'Algunos de los días seleccionados son feriados, por lo tanto no puedes solicitarlos.');
         }
 
         $path = '';
@@ -4242,6 +4419,6 @@ class VacationRequestController extends Controller
             ];
         }
         // Muestra el resultado
-        dd($aniversariosPorUsuario[169]);
+        dd($aniversariosPorUsuario[31]);
     }
 }
