@@ -739,9 +739,15 @@
         }
 
         .alert-danger {
-            color: #842029 !important;
+            color: #C10C0C !important;
             background-color: #f8d7da !important;
             border-color: #f5c2c7 !important;
+        }
+
+        .alert-warning {
+            color: #664d03 !important;
+            background-color: #fff3cd !important;
+            border-color: #ffecb5 !important;
         }
 
 
