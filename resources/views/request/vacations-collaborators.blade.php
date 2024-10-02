@@ -549,7 +549,8 @@
                                     </div>
 
                                     <div class="mt-3">
-                                        <span>Anexa tu justificación (opcional)</span>
+                                        <div class="mt-2" id="textDinamicJustify">
+                                        </div>
                                         <div class="mt-1">
                                             <input type="file" class="form-control-file" id="archivos"
                                                 name="archivos">
@@ -1017,6 +1018,18 @@
                     document.getElementById('details').value = detailsGlobal;
                     document.getElementById('reveal_id').value = revealIdGlobal;
 
+                    if (tipeRequest === 'Paternidad') {
+                        document.getElementById('textDinamicJustify').innerHTML = `
+                            <span>Anexa tu justificación</span>
+                        `;
+                        document.getElementById('archivos').required = true;
+                    } else {
+                        document.getElementById('textDinamicJustify').innerHTML = `
+                            <span>Anexa tu justificación (opcional)</span>
+                        `;
+
+                        document.getElementById('archivos').required = false;
+                    }
 
                     if (tipeRequest === 'Ausencia') {
                         var radioButtonAusencia = document.querySelector(
@@ -1025,9 +1038,7 @@
                             radioButtonAusencia.checked = true;
                             ausenciaTipo(valueTypesGlobal);
                         }
-                    }
 
-                    if (tipeRequest === 'Especiales' || tipeRequest === 'Ausencia') {
                         var horaSalidaInput = document.getElementById('hora_salida');
                         if (horaSalidaInput) {
                             horaSalidaInput.value =
@@ -1620,6 +1631,10 @@
                 <span>Forma de pago (Asignación automática)</span>
                 <input type="text" disabled class="form-control mt-1" value="A cuenta de vacaciones" id="forma_pago" name="forma_pago" disabled>
             `;
+            document.getElementById('textDinamicJustify').innerHTML = `
+                <span>Anexa tu justificación (opcional)</span>
+            `;
+            document.getElementById('archivos').required = false;
 
             document.getElementById('request_values').innerHTML = `
                 <input type="text" class="form-control mt-1 d-none" value="1" id="request_type_id" name="request_type_id">
@@ -1721,6 +1736,11 @@
                 </div>
             `;
 
+            document.getElementById('textDinamicJustify').innerHTML = `
+                <span>Anexa tu justificación (opcional)</span>
+            `;
+
+            document.getElementById('archivos').required = false;
             document.getElementById('request_values').innerHTML = `
                 <input type="text"  class="form-control mt-1 d-none" value="2" id="request_type_id" name="request_type_id">
             `;
@@ -1819,6 +1839,12 @@
                 </div>
             `;
 
+            document.getElementById('textDinamicJustify').innerHTML = `
+                <span>Anexa tu justificación (opcional)</span>
+            `;
+
+            document.getElementById('archivos').required = false;
+
             document.getElementById('request_values').innerHTML = `
                 <input type="text"  class="form-control mt-1 d-none" value="3" id="request_type_id" name="request_type_id">
             `;
@@ -1846,6 +1872,12 @@
                 anexarlo al recibirlo. Es obligatorio presentarlo; de lo contrario, se descontarán los días
                 de tus vacaciones.</span>
             `;
+
+            document.getElementById('textDinamicJustify').innerHTML = `
+                <span>Anexa tu justificación (opcional)</span>
+            `;
+
+            document.getElementById('archivos').required = false;
 
             document.getElementById('request_values').innerHTML = `
                 <input type="text"  class="form-control mt-1 d-none" value="4" id="request_type_id" name="request_type_id">
@@ -1970,6 +2002,14 @@
 
                 </div>
             `;
+
+            document.getElementById('textDinamicJustify').innerHTML = `
+                            <span>Anexa tu justificación (opcional)</span>
+                        `;
+
+            document.getElementById('archivos').required = false;
+
+
             // Abre el modal
             $('#modaTarjetas').modal('show');
             $(document).ready(function() {
@@ -1982,7 +2022,6 @@
             const academicos = document.querySelector('#academicos');
 
             function especiales(value) {
-                console.log('value', value);
                 switch (value) {
                     case 'Fallecimiento de un familiar':
                         persona_afectada.classList.remove('d-none');
@@ -1990,6 +2029,12 @@
                         document.getElementById('textDinamicCalendar').innerHTML = `
                             <span>Elige los 3 días naturales a los que tienes derecho.</span>
                         `;
+
+                        document.getElementById('textDinamicJustify').innerHTML = `
+                            <span>Anexa tu justificación (opcional)</span>
+                        `;
+
+                        document.getElementById('archivos').required = false;
                         break;
 
                     case 'Matrimonio del colaborador':
@@ -1998,6 +2043,11 @@
                         document.getElementById('textDinamicCalendar').innerHTML = `
                             <span>Elige los 5 días habiles a los que tienes derecho.</span>
                         `;
+                        document.getElementById('textDinamicJustify').innerHTML = `
+                            <span>Anexa tu justificación (opcional)</span>
+                        `;
+
+                        document.getElementById('archivos').required = false;
                         break;
                     case 'Motivos académicos/escolares':
                         persona_afectada.classList.add('d-none');
@@ -2005,6 +2055,13 @@
                         document.getElementById('textDinamicCalendar').innerHTML = `
                             <span>Elige el dia que no te presentaras.</span>
                         `;
+
+                        document.getElementById('textDinamicJustify').innerHTML = `
+                            <span>Anexa tu justificación (opcional)</span>
+                        `;
+
+                        document.getElementById('archivos').required = false;
+
                         break;
                     case 'Asuntos personales':
                         academicos.classList.add('d-none');
@@ -2012,10 +2069,47 @@
                         document.getElementById('textDinamicCalendar').innerHTML = `
                             <span style="color: red;">Tienes derecho a 3 días al año, no pueden ser consecutivos.</span>
                         `;
+                        document.getElementById('textDinamicJustify').innerHTML = `
+                            <span>Anexa tu justificación (opcional)</span>
+                        `;
+
+                        document.getElementById('archivos').required = false;
                         break;
                     default:
                         persona_afectada.classList.add('d-none');
                         academicos.classList.add('d-none');
+                }
+            }
+
+            $(document).ready(function() {
+                $('input[name="Posicion"]').on('change', function() {
+                    console.log('value', $(this).attr('id'));
+                    posicionValue($(this).attr('id'));
+                });
+            });
+
+            function posicionValue(value) {
+                console.log('value', value);
+                switch (value) {
+                    case 'hijo':
+                        document.getElementById('textDinamicJustify').innerHTML = `
+                            <span>Anexa tu justificación (opcional)</span>
+                        `;
+                        document.getElementById('archivos').required = false;
+
+                        break;
+                    case 'colaborador':
+                        document.getElementById('textDinamicJustify').innerHTML = `
+                            <span>Anexa tu justificación (requerido)</span>
+                        `;
+
+                        document.getElementById('archivos').required = true;
+                        break;
+                    default:
+                        document.getElementById('textDinamicJustify').innerHTML = `
+                            <span>Anexa tu justificación (opcional)</span>
+                        `;
+                        document.getElementById('archivos').required = false;
                 }
             }
 
