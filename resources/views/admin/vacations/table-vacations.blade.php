@@ -140,7 +140,7 @@
 
                                                                     <th scope="col" class="text-center">Vencimiento
                                                                     </th>
-                                                                    <th scope="col" class="text-center">Editar</th>
+                                                                    {{-- <th scope="col" class="text-center">Editar</th> --}}
                                                                     <th scope="col" class="text-center">Estado</th>
                                                                 </tr>
                                                             </thead>
@@ -162,12 +162,16 @@
                                                                             $vacation->cutoff_date,
                                                                         );
                                                                         $totalCalculados =
-                                                                            $totalCalculados +
-                                                                            $vacation->days_availables;
+                                                                            round($totalCalculados) +
+                                                                            round($vacation->days_availables);
+
                                                                         $totalDisponibles =
-                                                                            $totalDisponibles + $vacation->dv;
+                                                                            round($totalDisponibles) +
+                                                                            round($vacation->dv);
+
                                                                         $totalDisfrutados =
-                                                                            $totalDisfrutados + $vacation->days_enjoyed;
+                                                                            round($totalDisfrutados) +
+                                                                            round($vacation->days_enjoyed);
                                                                     @endphp
                                                                     <tr>
                                                                         <td scope="row">{{ $loop->iteration }}</td>
@@ -179,7 +183,8 @@
                                                                             al
                                                                             {{ $date_end->format('d-m-Y') }}</td>
                                                                         <td class="text-center">
-                                                                            {{ $vacation->days_availables }}</td>
+                                                                            {{ round($vacation->days_availables) }}
+                                                                        </td>
                                                                         <td class="text-center">
                                                                             <p
                                                                                 class="{{ $vacation->days_enjoyed <= $vacation->days_availables ? '' : 'text-danger' }} m-0 font-bold">
@@ -193,7 +198,7 @@
                                                                         <td class="text-center">
                                                                             {{ $cutoff_date->format('d-m-Y') }}
                                                                         </td>
-                                                                        <td style="width: 150px" class="text-center">
+                                                                        {{-- <td style="width: 150px" class="text-center">
                                                                             <div class="d-flex">
                                                                                 <input type="number"
                                                                                     wire:model="daysEnjoyed.{{ $user->id }}.{{ $vacation->id }}"
@@ -201,7 +206,7 @@
                                                                                     class="form-control text-center"
                                                                                     placeholder="Dias disfrutados">
                                                                             </div>
-                                                                        </td>
+                                                                        </td> --}}
                                                                         <td class="text-center">
                                                                             @switch($vacation->period)
                                                                                 @case(1)
@@ -232,7 +237,8 @@
                                                                     <td></td>
                                                                     <td></td>
                                                                     {{-- <td></td> --}}
-                                                                    <td class="text-center">{{ $totalCalculados }}
+                                                                    <td class="text-center">
+                                                                        {{ $totalCalculados }}
                                                                         <br>
                                                                         Dias Cumplidos
                                                                     </td>
@@ -263,3 +269,32 @@
         {{ $users->links() }}
     </div>
 </div>
+
+<style>
+    /*Estilos de paginacion*/
+    .pagination {
+        display: flex;
+        justify-content: end;
+
+    }
+
+    .page-item .page-link {
+        font-size: .875rem;
+        border-color: transparent;
+    }
+
+    .page-item.active .page-link {
+        background-color: #435ebe;
+        border-color: #435ebe;
+        color: #fff;
+        z-index: 3;
+        border-radius: 27px;
+    }
+
+    .page-item.disabled .page-link {
+        background-color: #fff;
+        color: #6c757d;
+        pointer-events: none;
+        border-color: transparent;
+    }
+</style>

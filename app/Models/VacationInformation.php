@@ -22,7 +22,7 @@ class VacationInformation extends Model
         return $this->belongsTo(VacationRequest::class, 'id_vacation_request');
     }
     public function VacationAvailables(){
-        return $this->belongsTo(Vacations::class, 'id_vacations_availables');
+        return $this->belongsTo(VacationsAvailablePerUser::class, 'id_vacations_availables');
     }
 
 }
