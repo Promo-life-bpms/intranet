@@ -733,7 +733,7 @@
         }
 
         .alert-success {
-            color: #81C10C !important;
+            color: #0f5132 !important;
             background-color: #d1e7dd !important;
             border-color: #badbcc !important;
         }
