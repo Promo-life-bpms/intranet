@@ -782,16 +782,23 @@
         }
 
         .alert-success {
-            color: #0f5132 !important;
-            background-color: #d1e7dd !important;
-            border-color: #badbcc !important;
+            color: black !important;
+            background-color: #badbcc !important;
+            border-color: #81C10C !important;
         }
 
         .alert-danger {
-            color: #842029 !important;
-            background-color: #f8d7da !important;
-            border-color: #f5c2c7 !important;
+            color: black !important;
+            background-color: #f5c2c7 !important;
+            border-color: #C10C0C !important;
         }
+
+        .alert-warning {
+            color: #664d03 !important;
+            background-color: #fff3cd !important;
+            border-color: #ffecb5 !important;
+        }
+
 
         /*Estilos de paginacion*/
         .pagination {

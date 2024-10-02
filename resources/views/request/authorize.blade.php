@@ -733,15 +733,21 @@
         }
 
         .alert-success {
-            color: #0f5132 !important;
+            color: #81C10C !important;
             background-color: #d1e7dd !important;
             border-color: #badbcc !important;
         }
 
         .alert-danger {
-            color: #842029 !important;
+            color: #C10C0C !important;
             background-color: #f8d7da !important;
             border-color: #f5c2c7 !important;
+        }
+
+        .alert-warning {
+            color: #664d03 !important;
+            background-color: #fff3cd !important;
+            border-color: #ffecb5 !important;
         }
 
 
