@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class RejectRequest extends Notification
+class AuthorizeRequestByRH extends Notification
 {
     use Queueable;
 
@@ -19,15 +19,16 @@ class RejectRequest extends Notification
     public $receptor;
     public $emisor;
     public $type_request;
-    public $observation;
-    public function __construct($receptor, $emisor, $type_request, $observation)
+    public $details;
+    public $days;
+    public function __construct($receptor, $emisor, $type_request, $details, $days)
     {
         $this->receptor = $receptor;
         $this->emisor = $emisor;
         $this->type_request = $type_request;
-        $this->observation = $observation;
+        $this->details = $details;
+        $this->days = $days;
     }
-
     /**
      * Get the notification's delivery channels.
      *
@@ -48,13 +49,15 @@ class RejectRequest extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->markdown('mail.permissionrequest.RejectRequest', [
+            ->markdown('mail.permissionrequest.AuthorizeRequestByRH', [
+                'url' => url('/'),
                 'receptor' => $this->receptor,
                 'emisor' => $this->emisor,
                 'type_request' => $this->type_request,
-                'observation' => $this->observation,
+                'details' => $this->details,
+                'days' => $this->days
             ])
-            ->subject('Solicitud cancelada')
+            ->subject('Solicitud de vacaciones o permiso aprobada')
             ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
 
