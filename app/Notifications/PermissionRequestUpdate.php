@@ -7,10 +7,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PermissionRequest extends Notification
+class PermissionRequestUpdate extends Notification
 {
     use Queueable;
 
+    /**
+     * Create a new notification instance.
+     *
+     * @return void
+     */
     public $receptor;
     public $emisor;
     public $type_request;
@@ -36,11 +41,16 @@ class PermissionRequest extends Notification
         return ['mail'];
     }
 
-
+    /**
+     * Get the mail representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return \Illuminate\Notifications\Messages\MailMessage
+     */
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->markdown('mail.permissionrequest.CreateRequest', [
+            ->markdown('mail.permissionrequest.UpdateRequest', [
                 'url' => url('/'),
                 'receptor' => $this->receptor,
                 'emisor' => $this->emisor,
@@ -48,7 +58,7 @@ class PermissionRequest extends Notification
                 'days' => $this->days,
                 'details' => $this->details,
             ])
-            ->subject('Solicitud de vacaciones o permiso')
+            ->subject('Modificación de permiso o vacaciones')
             ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
 
