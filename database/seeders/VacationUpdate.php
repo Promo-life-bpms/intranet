@@ -1667,8 +1667,8 @@ class VacationUpdate extends Seeder
             (object)[
                 'period' => 2,
                 'days_availables' => 20,
-                'dv' => 8,
-                'days_enjoyed' => 12,
+                'dv' => 7,
+                'days_enjoyed' => 13,
                 'date_start' => '2023-03-01',
                 'date_end' => '2024-03-01',
                 'cutoff_date' => '2025-03-01',

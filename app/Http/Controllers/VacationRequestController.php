@@ -14,7 +14,11 @@ use App\Models\VacationPerYear;
 use App\Models\VacationRequest;
 use App\Models\Vacations as ModelsVacations;
 use App\Models\VacationsAvailablePerUser;
+use App\Notifications\AuthorizeRequest;
 use App\Notifications\PermissionRequest;
+use App\Notifications\PermissionRequestUpdate;
+use App\Notifications\RejectRequest;
+use App\Notifications\RejectRequestBoss;
 use Carbon\Carbon;
 use Doctrine\DBAL\Schema\Index;
 use Illuminate\Http\Request;
@@ -407,6 +411,59 @@ class VacationRequestController extends Controller
             return back()->with('error', 'No puedes ser tú mismo el responsable de tus deberes.');
         }
 
+        $dates = $request->dates;
+        $datesArray = json_decode($dates, true);
+
+        $UserEmployee = Employee::where('user_id', $user->id)->value('user_id');
+        $company = DB::table('company_employee')->where('employee_id', $UserEmployee)->pluck('company_id');
+        if ($company->contains(2)) {
+            $DaysJudios = [
+                '03-10-2024',
+                '04-10-2024',
+                '17-10-2024',
+                '18-10-2024',
+                '24-10-2024',
+            ];
+
+            $diasParecidos = [];
+            foreach ($datesArray as $date) {
+                foreach ($DaysJudios as $vacationDate) {
+                    if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                        $diasParecidos[] = $vacationDate;
+                    }
+                }
+            }
+
+            if (!empty($diasParecidos)) {
+                return back()->with('error', 'Verifica que no hayas seleccionado algún día feriado para BH Trade Market.');
+            }
+        }
+
+        $DaysFeridos = [
+            '18-11-2024',
+            '25-12-2024',
+            '01-01-2025',
+            '03-02-2025',
+            '17-10-2025',
+            '01-05-2025',
+            '16-09-2025',
+            '17-09-2025',
+            '25-09-2025'
+        ];
+
+        $diasParecidosFestivos = [];
+        foreach ($datesArray as $date) {
+            foreach ($DaysFeridos as $Feriados) {
+                if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($Feriados))) {
+                    $diasParecidosFestivos[] = $Feriados;
+                }
+            }
+        }
+
+        if (!empty($diasParecidosFestivos)) {
+            return back()->with('error', 'Algunos de los días seleccionados son feriados, por lo tanto no puedes solicitarlos.');
+        }
+
 
         ///VACACIONES
         if ($request->request_type_id == 1) {
@@ -548,34 +605,27 @@ class VacationRequestController extends Controller
 
                     ]);
 
-                    /* $receptor = User::where('id', $request->reveal_id)->value('name');
-                    $emisor = User::where('id', $user->id)->value('name');
-                    $reveal = User::where('id', $request->reveal_id)->value('name');
-                    $request = RequestType::where('id', $request->request_type_id)->value('name');
-                    $Days = VacationDays::where('vacation_request_id', $Vacaciones->id)->get();
-                    $dias = [];
-                    foreach ($Days as $Day) {
-                        $dias[] = $Day->day;
+
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Vacaciones->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+
+                        $boss->notify(new PermissionRequest(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Vacaciones creadas exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
                     }
-                    $dias = implode(', ', $dias);
 
-                    $time = VacationDays::where('vacation_request_id', $Vacaciones->id)->first();
-                    $start = $time->start;
-
-                    $Boss = User::where('id', $Ingreso->jefe_directo_id)->first();
-
-                    $Boss->notify(new PermissionRequest(
-                        $receptor,
-                        $emisor,
-                        $request,
-                        $dias,
-                        $start,
-                        $reveal,
-                        $request->details,
-                        $Vacaciones->more_information,
-                    )); */
-
-                    return back()->with('message', 'Vacaciones creadas exitosamente. 1');
+                    return back()->with('message', 'Vacaciones creadas exitosamente.');
                 }
 
                 $totalVacaciones = $VacacionesOne + $VacacionesTwo;
@@ -634,7 +684,25 @@ class VacationRequestController extends Controller
 
                                 ]);
 
-                                return back()->with('message', 'Vacaciones creadas exitosamente. 1');
+                                try {
+                                    $emisor = User::find($user->id);
+                                    $requestType = RequestType::find($request->request_type_id);
+                                    $days = VacationDays::where('vacation_request_id', $Vacaciones->id)
+                                        ->pluck('day')
+                                        ->implode(', ');
+                                    $boss = User::find($Ingreso->jefe_directo_id);
+
+                                    $boss->notify(new PermissionRequest(
+                                        $boss->name,
+                                        $emisor->name,
+                                        $requestType->type,
+                                        $days,
+                                        $request->details,
+                                    ));
+                                } catch (\Exception $e) {
+                                    return back()->with('warning', 'Vacaciones creadas exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                                }
+                                return back()->with('message', 'Vacaciones creadas exitosamente.');
                             } else {
                                 return back()->with('error', 'No cuentas con las vacaciones suficientes. 1');
                             }
@@ -670,9 +738,27 @@ class VacationRequestController extends Controller
                                 'total_days' => $diasTotales,
                                 'id_vacations_availables' => $idTwo,
                                 'id_vacation_request' => $Vacaciones->id
-
                             ]);
-                            return back()->with('message', 'Vacaciones creadas exitosamente. 2');
+
+                            try {
+                                $emisor = User::find($user->id);
+                                $requestType = RequestType::find($request->request_type_id);
+                                $days = VacationDays::where('vacation_request_id', $Vacaciones->id)
+                                    ->pluck('day')
+                                    ->implode(', ');
+                                $boss = User::find($Ingreso->jefe_directo_id);
+
+                                $boss->notify(new PermissionRequest(
+                                    $boss->name,
+                                    $emisor->name,
+                                    $requestType->type,
+                                    $days,
+                                    $request->details,
+                                ));
+                            } catch (\Exception $e) {
+                                return back()->with('warning', 'Vacaciones creadas exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                            }
+                            return back()->with('message', 'Vacaciones creadas exitosamente.');
                         } else {
                             return back()->with('error', 'No cuentas con las vacaciones suficientes. 2');
                         }
@@ -727,35 +813,26 @@ class VacationRequestController extends Controller
 
                     ]);
 
-                    /* $receptor = User::where('id', $request->reveal_id)->value('name');
-                    $emisor = User::where('id', $user->id)->value('name');
-                    $reveal = User::where('id', $request->reveal_id)->value('name');
-                    $request = RequestType::where('id', $request->request_type_id)->value('type');
-                    $Days = VacationDays::where('vacation_request_id', $Vacaciones->id)->get();
-                    $dias = [];
-                    foreach ($Days as $Day) {
-                        $dias[] = $Day->day;
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Vacaciones->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+
+                        $boss->notify(new PermissionRequest(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Vacaciones creadas exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
                     }
-                    $dias = implode(', ', $dias);
-                    $ditails = $request->details;
 
-                    $time = VacationDays::where('vacation_request_id', $Vacaciones->id)->first();
-                    $start = $time->start;
-
-                    $Boss = User::where('id', $Ingreso->jefe_directo_id)->first();
-
-                    $Boss->notify(new PermissionRequest(
-                        $receptor,
-                        $emisor,
-                        $request,
-                        $dias,
-                        $start,
-                        $reveal,
-                        $ditails,
-                        $Vacaciones->more_information,
-                    )); */
-
-                    return back()->with('message', 'Vacaciones creadas exitosamente. 1');
+                    return back()->with('message', 'Vacaciones creadas exitosamente.');
                 }
             }
         }
@@ -887,6 +964,25 @@ class VacationRequestController extends Controller
                         'status' => 0,
                     ]);
                 }
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($request->request_type_id);
+                    $days = VacationDays::where('vacation_request_id', $Vacaciones->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $boss = User::find($Ingreso->jefe_directo_id);
+
+                    $boss->notify(new PermissionRequest(
+                        $boss->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $days,
+                        $request->details,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Solicitud creada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
+
                 return back()->with('message', 'Solicitud creada exitosamente.');
             }
             if ($request->ausenciaTipo == 'salida_antes') {
@@ -930,6 +1026,25 @@ class VacationRequestController extends Controller
                         'vacation_request_id' => $Vacaciones->id,
                         'status' => 0,
                     ]);
+                }
+
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($request->request_type_id);
+                    $days = VacationDays::where('vacation_request_id', $Vacaciones->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $boss = User::find($Ingreso->jefe_directo_id);
+
+                    $boss->notify(new PermissionRequest(
+                        $boss->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $days,
+                        $request->details,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Solicitud creada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
                 }
 
                 return back()->with('message', 'Solicitud creada exitosamente.');
@@ -998,6 +1113,24 @@ class VacationRequestController extends Controller
                         'vacation_request_id' => $Vacaciones->id,
                         'status' => 0,
                     ]);
+                }
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($request->request_type_id);
+                    $days = VacationDays::where('vacation_request_id', $Vacaciones->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $boss = User::find($Ingreso->jefe_directo_id);
+
+                    $boss->notify(new PermissionRequest(
+                        $boss->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $days,
+                        $request->details,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Solicitud creada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
                 }
                 return back()->with('message', 'Solicitud creada exitosamente.');
             }
@@ -1088,6 +1221,24 @@ class VacationRequestController extends Controller
                     'status' => 0,
                 ]);
             }
+            try {
+                $emisor = User::find($user->id);
+                $requestType = RequestType::find($request->request_type_id);
+                $days = VacationDays::where('vacation_request_id', $Vacaciones->id)
+                    ->pluck('day')
+                    ->implode(', ');
+                $boss = User::find($Ingreso->jefe_directo_id);
+
+                $boss->notify(new PermissionRequest(
+                    $boss->name,
+                    $emisor->name,
+                    $requestType->type,
+                    $days,
+                    $request->details,
+                ));
+            } catch (\Exception $e) {
+                return back()->with('warning', 'Se creó exitosamente la solicitud. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+            }
             return back()->with('message', 'Se creó exitosamente la solicitud.');
         }
 
@@ -1168,7 +1319,26 @@ class VacationRequestController extends Controller
                     'status' => 0,
                 ]);
             }
-            return back()->with('message', 'Se creo exitosamente la solicitud. Recuerda que estos días son naturales y además estos los paga el IMSS.');
+            try {
+                $emisor = User::find($user->id);
+                $requestType = RequestType::find($request->request_type_id);
+                $days = VacationDays::where('vacation_request_id', $Vacaciones->id)
+                    ->pluck('day')
+                    ->implode(', ');
+                $boss = User::find($Ingreso->jefe_directo_id);
+
+                $boss->notify(new PermissionRequest(
+                    $boss->name,
+                    $emisor->name,
+                    $requestType->type,
+                    $days,
+                    $request->details,
+                ));
+            } catch (\Exception $e) {
+                return back()->with('warning', 'Se creó exitosamente la solicitud. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+            }
+
+            return back()->with('message', 'Se creó exitosamente la solicitud. Recuerda que estos días son naturales y además estos los paga el IMSS.');
         }
 
         ///PERMISOS ESPECIALES
@@ -1264,6 +1434,25 @@ class VacationRequestController extends Controller
                     ]);
                 }
 
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($request->request_type_id);
+                    $diasAusencia = VacationDays::where('vacation_request_id', $permisoespecial->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $boss = User::find($Ingreso->jefe_directo_id);
+
+                    $boss->notify(new PermissionRequest(
+                        $boss->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $diasAusencia,
+                        $request->details,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Se creó con éxito tu solicitud. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
+
                 return back()->with('message', 'Se creó con éxito tu solicitud.');
             }
 
@@ -1297,6 +1486,26 @@ class VacationRequestController extends Controller
                             'status' => 0,
                         ]);
                     }
+
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $permisoespecial->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+
+                        $boss->notify(new PermissionRequest(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Se creó con éxito tu solicitud. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    }
+
                     return back()->with('message', 'Se creó con éxito tu solicitud.');
                 }
             }
@@ -1337,6 +1546,26 @@ class VacationRequestController extends Controller
                         'status' => 0,
                     ]);
                 }
+
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($request->request_type_id);
+                    $days = VacationDays::where('vacation_request_id', $permisoespecial->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $boss = User::find($Ingreso->jefe_directo_id);
+
+                    $boss->notify(new PermissionRequest(
+                        $boss->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $days,
+                        $request->details,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Se creó con éxito tu solicitud. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
+
                 return back()->with('message', 'Se creó con éxito tu solicitud.');
             }
 
@@ -1395,6 +1624,26 @@ class VacationRequestController extends Controller
                         'status' => 0,
                     ]);
                 }
+
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($request->request_type_id);
+                    $days = VacationDays::where('vacation_request_id', $permisoespecial->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $boss = User::find($Ingreso->jefe_directo_id);
+
+                    $boss->notify(new PermissionRequest(
+                        $boss->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $days,
+                        $request->details,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Se creó con éxito tu solicitud. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
+
                 return back()->with('message', 'Se creó con éxito tu solicitud.');
             }
         }
@@ -1809,6 +2058,78 @@ class VacationRequestController extends Controller
         return view('request.authorize_rh', compact('Pendientes', 'Aprobadas',  'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', 'IdandNameUser', 'vacacionesagregadas'));
     }
 
+    public function UserVacationInformation()
+    {
+        $Primerperiodos = DB::table('vacations_available_per_users')->where('period', 1)->get();
+        foreach ($Primerperiodos as $Primerperiodo) {
+            $fechaActual = Carbon::now();
+            $PeriodOne = $Primerperiodo->date_end;
+            if ($PeriodOne && $fechaActual->greaterThanOrEqualTo(Carbon::parse($PeriodOne))) {
+                $date_end = $Primerperiodo->cutoff_date;
+                $fechaCaducidad = Carbon::parse($Primerperiodo->cutoff_date)->addYear()->format('Y-m-d');
+                $Aniversario = $Primerperiodo->anniversary_number + 1;
+                $DiasPorAñoCumplido = VacationPerYear::where('year',  $Primerperiodo->anniversary_number)->value('days');
+
+                $Segundoperiodo = DB::table('vacations_available_per_users')->where('users_id', $Primerperiodo->users_id)
+                    ->where('period', 2)->exists();
+
+                if ($Segundoperiodo) {
+                    DB::table('vacations_available_per_users')->where('users_id', $Primerperiodo->users_id)->where('period', 2)->update([
+                        'period' => 3,
+                    ]);
+                }
+
+                DB::table('vacations_available_per_users')->where('users_id', $Primerperiodo->users_id)->where('period', 1)->update([
+                    'period' => 2,
+                    'days_availables' =>  $DiasPorAñoCumplido,
+                ]);
+
+                VacationsAvailablePerUser::create([
+                    'period' => 1,
+                    'days_availables' => 0,
+                    'dv' => 0,
+                    'days_enjoyed' => 0,
+                    'date_start' => $PeriodOne,
+                    'date_end' => $date_end,
+                    'cutoff_date' => $fechaCaducidad,
+                    'anniversary_number' => $Aniversario,
+                    'waiting' => 0,
+                    'users_id' => $Primerperiodo->users_id,
+                ]);
+            }
+        }
+
+        $Primerperiodos = DB::table('vacations_available_per_users')->where('period', 1)->get();
+        foreach ($Primerperiodos as $Primerperiodo) {
+            $fechaActual = Carbon::now();
+            $fechaInicio = Carbon::parse($Primerperiodo->date_start);
+            $fechaFin = Carbon::parse($Primerperiodo->date_end);
+            $DiasPorAñoCumplido = VacationPerYear::where('year',  $Primerperiodo->anniversary_number)->value('days');
+            $diasTranscurridos = $fechaInicio->diffInDays($fechaActual);
+            $diasaño = $fechaInicio->diffInDays($fechaFin);
+            $calculoVacaciones = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido), 2);
+            $calculoVacacionesRedondeado = round(($diasTranscurridos / $diasaño) * ($DiasPorAñoCumplido));
+            $dv = $Primerperiodo->dv;
+            $days_enjoyed = $Primerperiodo->days_enjoyed;
+            $WaitingOne = $Primerperiodo->waiting;
+            $dvNew = $calculoVacacionesRedondeado - $days_enjoyed - $WaitingOne;
+            if ($calculoVacaciones <= $DiasPorAñoCumplido) {
+                DB::table('vacations_available_per_users')->where('id', $Primerperiodo->id)->update([
+                    'days_availables' =>  $calculoVacaciones,
+                    'dv' => $dvNew
+                ]);
+            } else {
+                DB::table('vacations_available_per_users')->where('id', $Primerperiodo->id)->update([
+                    'days_availables' =>  $DiasPorAñoCumplido,
+                    'dv' => $dvNew
+                ]);
+            }
+        }
+
+        $users = User::where('status', 1)->get();
+        return view('admin.vacations.index', compact('users'));
+    }
+
     public function ConfirmRejectedByRh(Request $request)
     {
         if ($request->value == 'aprobada') {
@@ -1848,6 +2169,8 @@ class VacationRequestController extends Controller
             'id' => 'required',
         ]);
 
+        $solicitud = DB::table('vacation_requests')->where('id', $request->id)->first();
+
         $IsBoss = VacationRequest::where('id', $request->id)->value('direct_manager_id');
         if ($IsBoss != $user->id) {
             return back()->with('error', 'Sólo su jefe directo puede autorizar la solicitud');
@@ -1856,6 +2179,20 @@ class VacationRequestController extends Controller
         DB::table('vacation_requests')->where('id', $request->id)->update([
             'direct_manager_status' => 'Aprobada'
         ]);
+
+        try {
+            $emisor = User::find($user->id);
+            $requestType = RequestType::find($solicitud->request_type_id);
+            $ApplicationOwner = User::find($solicitud->user_id);
+            $ApplicationOwner->notify(new AuthorizeRequest(
+                $ApplicationOwner->name,
+                $emisor->name,
+                $requestType->type,
+                $solicitud->details,
+            ));
+        } catch (\Exception $e) {
+            return back()->with('warning', 'Solicitud aprobada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+        }
 
         return back()->with('message', 'Solicitud aprobada exitosamente.');
     }
@@ -1940,6 +2277,20 @@ class VacationRequestController extends Controller
                     'dv' => $totaldvTwo
                 ]);
 
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($solicitud->request_type_id);
+                    $ApplicationOwner = User::find($solicitud->user_id);
+                    $ApplicationOwner->notify(new RejectRequestBoss(
+                        $ApplicationOwner->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $request->commentary,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Vacaciones rechazadas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
+
                 return back()->with('message', 'Vacaciones rechazadas correctamente');
             }
 
@@ -1968,6 +2319,20 @@ class VacationRequestController extends Controller
                     'dv' => $totaldv
                 ]);
 
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($solicitud->request_type_id);
+                    $ApplicationOwner = User::find($solicitud->user_id);
+                    $ApplicationOwner->notify(new RejectRequestBoss(
+                        $ApplicationOwner->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $request->commentary,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Vacaciones rechazadas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
+
                 return back()->with('message', 'Vacaciones rechazadas correctamente');
             }
         } else {
@@ -1978,6 +2343,20 @@ class VacationRequestController extends Controller
             DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
                 'status' => 0
             ]);
+
+            try {
+                $emisor = User::find($user->id);
+                $requestType = RequestType::find($solicitud->request_type_id);
+                $ApplicationOwner = User::find($solicitud->user_id);
+                $ApplicationOwner->notify(new RejectRequestBoss(
+                    $ApplicationOwner->name,
+                    $emisor->name,
+                    $requestType->type,
+                    $request->commentary,
+                ));
+            } catch (\Exception $e) {
+                return back()->with('warning', 'Solicitud rechazada correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+            }
 
             return back()->with('message', 'Solicitud rechazada exitosamente.');
         }
@@ -1994,6 +2373,7 @@ class VacationRequestController extends Controller
         ]);
 
         $Solicitud = VacationRequest::where('id', $request->id)->first();
+        
 
         if ($Solicitud->user_id != $user->id) {
             return back()->with('error', 'Solo el creador de la solicitud puede rechazar la solicitud');
@@ -2080,6 +2460,20 @@ class VacationRequestController extends Controller
                         'dv' => $totaldvTwo
                     ]);
 
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($Solicitud->request_type_id);
+                        $boss = User::find($Solicitud->direct_manager_id);
+                        $boss->notify(new RejectRequest(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $request->commentary,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Vacaciones canceladas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    }
+
                     return back()->with('message', 'Vacaciones canceladas correctamente.');
                 }
 
@@ -2108,6 +2502,20 @@ class VacationRequestController extends Controller
                         'dv' => $totaldv
                     ]);
 
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($Solicitud->request_type_id);
+                        $boss = User::find($Solicitud->direct_manager_id);
+                        $boss->notify(new RejectRequest(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $request->commentary,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Vacaciones canceladas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    }
+
                     return back()->with('message', 'Vacaciones canceladas correctamente.');
                 }
             }
@@ -2121,6 +2529,20 @@ class VacationRequestController extends Controller
             DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
                 'status' => 0
             ]);
+
+            try {
+                $emisor = User::find($user->id);
+                $requestType = RequestType::find($Solicitud->request_type_id);
+                $boss = User::find($Solicitud->direct_manager_id);
+                $boss->notify(new RejectRequest(
+                    $boss->name,
+                    $emisor->name,
+                    $requestType->type,
+                    $request->commentary,
+                ));
+            } catch (\Exception $e) {
+                return back()->with('warning', 'Vacaciones canceladas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+            }
             return back()->with('message', 'Se rechazó la solicitud exitosamente.');
         }
     }
@@ -2143,6 +2565,58 @@ class VacationRequestController extends Controller
 
         if ($request->reveal_id == $user->id) {
             return back()->with('error', 'No puedes ser tú mismo el responsable de tus deberes.');
+        }
+
+        $dates = $request->dates;
+        $datesArray = json_decode($dates, true);
+        $UserEmployee = Employee::where('user_id', $user->id)->value('user_id');
+        $company = DB::table('company_employee')->where('employee_id', $UserEmployee)->pluck('company_id');
+        if ($company->contains(2)) {
+            $DaysJudios = [
+                '03-10-2024',
+                '04-10-2024',
+                '17-10-2024',
+                '18-10-2024',
+                '24-10-2024',
+            ];
+
+            $diasParecidos = [];
+            foreach ($datesArray as $date) {
+                foreach ($DaysJudios as $vacationDate) {
+                    if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($vacationDate))) {
+                        $diasParecidos[] = $vacationDate;
+                    }
+                }
+            }
+
+            if (!empty($diasParecidos)) {
+                return back()->with('error', 'Verifica que no hayas seleccionado algún día feriado para BH Trade Market.');
+            }
+        }
+
+        $DaysFeridos = [
+            '18-11-2024',
+            '25-12-2024',
+            '01-01-2025',
+            '03-02-2025',
+            '17-10-2025',
+            '01-05-2025',
+            '16-09-2025',
+            '17-09-2025',
+            '25-09-2025'
+        ];
+
+        $diasParecidosFestivos = [];
+        foreach ($datesArray as $date) {
+            foreach ($DaysFeridos as $Feriados) {
+                if (date('Y-m-d', strtotime($date)) === date('Y-m-d', strtotime($Feriados))) {
+                    $diasParecidosFestivos[] = $Feriados;
+                }
+            }
+        }
+
+        if (!empty($diasParecidosFestivos)) {
+            return back()->with('error', 'Algunos de los días seleccionados son feriados, por lo tanto no puedes solicitarlos.');
         }
 
         $path = '';
@@ -2247,6 +2721,26 @@ class VacationRequestController extends Controller
                     'reveal_id' => $request->reveal_id == null ? $Solicitud->reveal_id : $request->reveal_id,
                     'details' => $request->details == null ? $Solicitud->details : $request->details,
                 ]);
+
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($request->request_type_id);
+                    $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $boss = User::find($Ingreso->jefe_directo_id);
+
+                    $boss->notify(new PermissionRequestUpdate(
+                        $boss->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $days,
+                        $request->details,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Se actualizó correctamente tu solicitud. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
+
                 return back()->with('message', 'Se actualizó correctamente tu solicitud.');
             } else {
                 ///VERIFICAR SI LE ALCANZAN LOS DIAS ANTES DE ELIMINAR///
@@ -2483,6 +2977,26 @@ class VacationRequestController extends Controller
                     }
                 }
 
+                if ($diasneuvos == 0) {
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Se eliminarón los días de vacaciones exitosamente. Sin embargo, no sepudo enviar el correo electrónico.');
+                    }
+                }
+
                 //NUEVOS DÍAS//
                 if (!$missingInDias->isEmpty()) {
                     $newVacaciones = DB::table('vacations_available_per_users')
@@ -2561,6 +3075,23 @@ class VacationRequestController extends Controller
                                             'status' => 0,
                                         ]);
                                     }
+                                    try {
+                                        $emisor = User::find($user->id);
+                                        $requestType = RequestType::find($request->request_type_id);
+                                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                                            ->pluck('day')
+                                            ->implode(', ');
+                                        $boss = User::find($Ingreso->jefe_directo_id);
+                                        $boss->notify(new PermissionRequestUpdate(
+                                            $boss->name,
+                                            $emisor->name,
+                                            $requestType->type,
+                                            $days,
+                                            $request->details,
+                                        ));
+                                    } catch (\Exception $e) {
+                                        return back()->with('warning', 'Vacaciones actualizadas exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                                    }
                                     return back()->with('message', 'Vacaciones actualizadas exitosamente.');
                                 }
 
@@ -2617,9 +3148,27 @@ class VacationRequestController extends Controller
                                                         'total_days' => $NewTotalDaysTwo,
                                                     ]);
 
-                                                return back()->with('message', 'Vacaciones creadas exitosamente. 1');
+                                                try {
+                                                    $emisor = User::find($user->id);
+                                                    $requestType = RequestType::find($request->request_type_id);
+                                                    $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                                                        ->pluck('day')
+                                                        ->implode(', ');
+                                                    $boss = User::find($Ingreso->jefe_directo_id);
+                                                    $boss->notify(new PermissionRequestUpdate(
+                                                        $boss->name,
+                                                        $emisor->name,
+                                                        $requestType->type,
+                                                        $days,
+                                                        $request->details,
+                                                    ));
+                                                } catch (\Exception $e) {
+                                                    return back()->with('warning', 'Vacaciones modificadas exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                                                }
+
+                                                return back()->with('message', 'Vacaciones modificadas exitosamente.');
                                             } else {
-                                                return back()->with('error', 'No cuentas con las vacaciones suficientes. 1');
+                                                return back()->with('error', 'No cuentas con las vacaciones suficientes.');
                                             }
                                         }
 
@@ -2652,7 +3201,25 @@ class VacationRequestController extends Controller
                                                     'total_days' => $NewTotalDaysTwo,
                                                 ]);
 
-                                            return back()->with('message', 'Vacaciones creadas exitosamente. 2');
+                                            try {
+                                                $emisor = User::find($user->id);
+                                                $requestType = RequestType::find($request->request_type_id);
+                                                $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                                                    ->pluck('day')
+                                                    ->implode(', ');
+                                                $boss = User::find($Ingreso->jefe_directo_id);
+                                                $boss->notify(new PermissionRequestUpdate(
+                                                    $boss->name,
+                                                    $emisor->name,
+                                                    $requestType->type,
+                                                    $days,
+                                                    $request->details,
+                                                ));
+                                            } catch (\Exception $e) {
+                                                return back()->with('warning', 'Vacaciones modificadas exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                                            }
+
+                                            return back()->with('message', 'Vacaciones modificadas exitosamente.');
                                         } else {
                                             return back()->with('error', 'No cuentas con las vacaciones suficientes. 2');
                                         }
@@ -2697,7 +3264,24 @@ class VacationRequestController extends Controller
                                         'status' => 0,
                                     ]);
                                 }
-                                return back()->with('message', 'Vacaciones actualizadas exitosamente. 1');
+                                try {
+                                    $emisor = User::find($user->id);
+                                    $requestType = RequestType::find($request->request_type_id);
+                                    $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                                        ->pluck('day')
+                                        ->implode(', ');
+                                    $boss = User::find($Ingreso->jefe_directo_id);
+                                    $boss->notify(new PermissionRequestUpdate(
+                                        $boss->name,
+                                        $emisor->name,
+                                        $requestType->type,
+                                        $days,
+                                        $request->details,
+                                    ));
+                                } catch (\Exception $e) {
+                                    return back()->with('warning', 'Vacaciones actualizadas exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                                }
+                                return back()->with('message', 'Vacaciones actualizadas exitosamente.');
                             } elseif ($diasTotales > $InfoVacaciones->dv) {
                                 if ($diasTotales <= $VacacionesOne && $VacacionesTwo == 0) {
                                     $NewWaitingOne = $WaitingOne + $diasTotales;
@@ -2727,6 +3311,23 @@ class VacationRequestController extends Controller
                                             'status' => 0,
                                         ]);
                                     }
+                                    try {
+                                        $emisor = User::find($user->id);
+                                        $requestType = RequestType::find($request->request_type_id);
+                                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                                            ->pluck('day')
+                                            ->implode(', ');
+                                        $boss = User::find($Ingreso->jefe_directo_id);
+                                        $boss->notify(new PermissionRequestUpdate(
+                                            $boss->name,
+                                            $emisor->name,
+                                            $requestType->type,
+                                            $days,
+                                            $request->details,
+                                        ));
+                                    } catch (\Exception $e) {
+                                        return back()->with('warning', 'Vacaciones actualizadas exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                                    }
                                     return back()->with('message', 'Vacaciones actualizadas correctamente.');
                                 } elseif ($diasTotales <= $VacacionesTwo && $VacacionesOne == 0) {
                                     $NewWaitingTwo = $WaitingTwo + $diasTotales;
@@ -2755,6 +3356,23 @@ class VacationRequestController extends Controller
                                             'vacation_request_id' => $Solicitud->id,
                                             'status' => 0,
                                         ]);
+                                    }
+                                    try {
+                                        $emisor = User::find($user->id);
+                                        $requestType = RequestType::find($request->request_type_id);
+                                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                                            ->pluck('day')
+                                            ->implode(', ');
+                                        $boss = User::find($Ingreso->jefe_directo_id);
+                                        $boss->notify(new PermissionRequestUpdate(
+                                            $boss->name,
+                                            $emisor->name,
+                                            $requestType->type,
+                                            $days,
+                                            $request->details,
+                                        ));
+                                    } catch (\Exception $e) {
+                                        return back()->with('warning', 'Vacaciones actualizadas exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
                                     }
                                     return back()->with('message', 'Vacaciones actualizadas correctamente.');
                                 } else {
@@ -2802,6 +3420,25 @@ class VacationRequestController extends Controller
                                     'status' => 0,
                                 ]);
                             }
+
+                            try {
+                                $emisor = User::find($user->id);
+                                $requestType = RequestType::find($request->request_type_id);
+                                $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                                    ->pluck('day')
+                                    ->implode(', ');
+                                $boss = User::find($Ingreso->jefe_directo_id);
+                                $boss->notify(new PermissionRequestUpdate(
+                                    $boss->name,
+                                    $emisor->name,
+                                    $requestType->type,
+                                    $days,
+                                    $request->details,
+                                ));
+                            } catch (\Exception $e) {
+                                return back()->with('warning', 'Vacaciones actualizadas exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                            }
+
                             return back()->with('message', 'Vacaciones actualizadas exitosamente.');
                         } else {
                             return back()->with('error', 'No tienes suficientes días.');
@@ -2863,6 +3500,9 @@ class VacationRequestController extends Controller
             if ($diasTotales == 0) {
                 return back()->with('error', 'Debes ingresar el día en que saldrás temprano de la jornada.');
             }
+
+            $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
+
             if ($request->ausenciaTipo == 'retardo') {
                 if ($diasTotales > 1) {
                     return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
@@ -2929,7 +3569,25 @@ class VacationRequestController extends Controller
                         'end' => $retardo,
                         'start' => null,
                     ]);
-                    return back()->with('message', 'Solicitud creada exitosamente.');
+
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    }
+                    return back()->with('message', 'Solicitud actualizada exitosamente.');
                 } else {
                     if (!$missingInDias->isEmpty()) {
                         ///Dias que no vienen en el arreglo
@@ -2964,6 +3622,24 @@ class VacationRequestController extends Controller
                                 ->where('id', $idfecha)
                                 ->delete();
                         }
+                    }
+
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
                     }
                     return back()->with('message', 'Solicitud actualizada correctamente.');
                 }
@@ -3006,6 +3682,23 @@ class VacationRequestController extends Controller
                         'start' => $start,
                         'end' => null,
                     ]);
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    }
                 } else {
                     if (!$missingInDias->isEmpty()) {
                         ///Dias que no vienen en el arreglo
@@ -3041,6 +3734,23 @@ class VacationRequestController extends Controller
                                 ->where('id', $idfecha)
                                 ->delete();
                         }
+                    }
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
                     }
                 }
                 return back()->with('message', 'Se actualizó correctamente la solicitud.');
@@ -3113,6 +3823,24 @@ class VacationRequestController extends Controller
                         'end' => $hora2Carbon,
                     ]);
 
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    }
+
                     return back()->with('message', 'Solicitud actualizada correctamente.');
                 } else {
                     if (!$missingInDias->isEmpty()) {
@@ -3149,6 +3877,23 @@ class VacationRequestController extends Controller
                                 ->where('id', $idfecha)
                                 ->delete();
                         }
+                    }
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
                     }
                 }
                 return back()->with('message', 'Se actualizó correctamente tu solicitud.');
@@ -3208,6 +3953,8 @@ class VacationRequestController extends Controller
                 }
             }
 
+            $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
+
             // Convertir ambos arrays a conjuntos (sets) para la comparación
             $diasSet = collect($dias)->unique()->sort()->values();
             $datesSet = collect($dates)->unique()->sort()->values();
@@ -3222,6 +3969,24 @@ class VacationRequestController extends Controller
                     'details' => $request->details == null ? $Solicitud->details : $request->details,
                     'file' => $request->archivos == null ? $Solicitud->file : $path,
                 ]);
+
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($request->request_type_id);
+                    $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $boss = User::find($Ingreso->jefe_directo_id);
+                    $boss->notify(new PermissionRequestUpdate(
+                        $boss->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $days,
+                        $request->details,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
                 return back()->with('message', 'Solicitud actualizada correctamente.');
             } else {
                 if (!$missingInDias->isEmpty()) {
@@ -3259,6 +4024,24 @@ class VacationRequestController extends Controller
                         'file' => $request->archivos == null ? $Solicitud->file : $path,
                         'direct_manager_status' => 'Pendiente',
                     ]);
+                }
+
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($request->request_type_id);
+                    $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $boss = User::find($Ingreso->jefe_directo_id);
+                    $boss->notify(new PermissionRequestUpdate(
+                        $boss->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $days,
+                        $request->details,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
                 }
                 return back()->with('message', 'Solicitud actualizada correctamente.');
             }
@@ -3317,6 +4100,8 @@ class VacationRequestController extends Controller
                 }
             }
 
+            $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
+
             // Convertir ambos arrays a conjuntos (sets) para la comparación
             $diasSet = collect($dias)->unique()->sort()->values();
             $datesSet = collect($dates)->unique()->sort()->values();
@@ -3331,6 +4116,24 @@ class VacationRequestController extends Controller
                     'details' => $request->details == null ? $Solicitud->details : $request->details,
                     'file' => $request->archivos == null ? $Solicitud->file : $path,
                 ]);
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($request->request_type_id);
+                    $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $boss = User::find($Ingreso->jefe_directo_id);
+                    $boss->notify(new PermissionRequestUpdate(
+                        $boss->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $days,
+                        $request->details,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
+
                 return back()->with('message', 'Solicitud actualizada correctamente.');
             } else {
                 if (!$missingInDias->isEmpty()) {
@@ -3368,6 +4171,23 @@ class VacationRequestController extends Controller
                         'file' => $request->archivos == null ? $Solicitud->file : $path,
                         'direct_manager_status' => 'Pendiente',
                     ]);
+                }
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($request->request_type_id);
+                    $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $boss = User::find($Ingreso->jefe_directo_id);
+                    $boss->notify(new PermissionRequestUpdate(
+                        $boss->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $days,
+                        $request->details,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
                 }
                 return back()->with('message', 'Solicitud actualizada correctamente.');
             }
@@ -3415,6 +4235,8 @@ class VacationRequestController extends Controller
                 return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
             }
 
+            $Ingreso = DB::table('employees')->where('user_id', $user->id)->first();
+
             if ($request->Permiso == 'Fallecimiento de un familiar') {
                 if ($diasTotales > 3) {
                     return back()->with('error', 'Solo tienes derecho a tomar tres días.');
@@ -3440,6 +4262,24 @@ class VacationRequestController extends Controller
                         'file' => $request->archivos == null ? $Solicitud->file : $path,
                         'more_information' => $moreinformation,
                     ]);
+
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    }
                     return back()->with('message', 'Solicitud actualizada correctamente.');
                 } else {
                     if (!$missingInDias->isEmpty()) {
@@ -3490,6 +4330,23 @@ class VacationRequestController extends Controller
                             DB::table('vacation_days')->where('id', $idfecha)->delete();
                         }
                     }
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    }
                     return back()->with('message', 'Solicitud actualizada correctamente.');
                 }
                 return back()->with('message', 'Solicitud actualizada correctamente.');
@@ -3520,6 +4377,23 @@ class VacationRequestController extends Controller
                             'file' => $request->archivos == null ? $Solicitud->file : $path,
                             'more_information' => $moreinformation,
                         ]);
+                        try {
+                            $emisor = User::find($user->id);
+                            $requestType = RequestType::find($request->request_type_id);
+                            $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                                ->pluck('day')
+                                ->implode(', ');
+                            $boss = User::find($Ingreso->jefe_directo_id);
+                            $boss->notify(new PermissionRequestUpdate(
+                                $boss->name,
+                                $emisor->name,
+                                $requestType->type,
+                                $days,
+                                $request->details,
+                            ));
+                        } catch (\Exception $e) {
+                            return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                        }
                         return back()->with('message', 'Solicitud actualizada correctamente.');
                     } else {
                         if (!$missingInDias->isEmpty()) {
@@ -3568,6 +4442,25 @@ class VacationRequestController extends Controller
                                 DB::table('vacation_days')->where('id', $idfecha)->delete();
                             }
                         }
+
+                        try {
+                            $emisor = User::find($user->id);
+                            $requestType = RequestType::find($request->request_type_id);
+                            $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                                ->pluck('day')
+                                ->implode(', ');
+                            $boss = User::find($Ingreso->jefe_directo_id);
+                            $boss->notify(new PermissionRequestUpdate(
+                                $boss->name,
+                                $emisor->name,
+                                $requestType->type,
+                                $days,
+                                $request->details,
+                            ));
+                        } catch (\Exception $e) {
+                            return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                        }
+
                         return back()->with('message', 'Actualización exitosa.');
                     }
                 }
@@ -3609,6 +4502,25 @@ class VacationRequestController extends Controller
                         'file' => $request->archivos == null ? $Solicitud->file : $path,
                         'more_information' => $moreinformation,
                     ]);
+
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    }
+
                     return back()->with('message', 'Solicitud actualizada correctamente.');
                 } else {
                     if (!$missingInDias->isEmpty()) {
@@ -3643,6 +4555,24 @@ class VacationRequestController extends Controller
                             $idfecha = VacationDays::where('vacation_request_id', $Solicitud->id)->where('day', $eliminar)->value('id');
                             DB::table('vacation_days')->where('id', $idfecha)->delete();
                         }
+                    }
+
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
                     }
                     return back()->with('message', 'Se actualizó correctamente la solicitud.');
                 }
@@ -3733,6 +4663,24 @@ class VacationRequestController extends Controller
                         'file' => $request->archivos == null ? $Solicitud->file : $path,
                         'more_information' => $moreinformation,
                     ]);
+
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    }
                     return back()->with('message', 'Solicitud actualizada correctamente.');
                 } else {
                     if (!$missingInDias->isEmpty()) {
@@ -3769,12 +4717,29 @@ class VacationRequestController extends Controller
                             DB::table('vacation_days')->where('id', $idfecha)->delete();
                         }
                     }
+
+                    try {
+                        $emisor = User::find($user->id);
+                        $requestType = RequestType::find($request->request_type_id);
+                        $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                            ->pluck('day')
+                            ->implode(', ');
+                        $boss = User::find($Ingreso->jefe_directo_id);
+                        $boss->notify(new PermissionRequestUpdate(
+                            $boss->name,
+                            $emisor->name,
+                            $requestType->type,
+                            $days,
+                            $request->details,
+                        ));
+                    } catch (\Exception $e) {
+                        return back()->with('warning', 'Solicitud actualizada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    }
                     return back()->with('message', 'Se actualizó correctamente la solicitud.');
                 }
             }
         }
     }
-
 
     public function RejectPermissionHumanResources(Request $request)
     {
@@ -3814,15 +4779,15 @@ class VacationRequestController extends Controller
                 ];
             }
 
-            $idOne = (int) $Datos[0]['id'];
-            $idTwo = (int) $Datos[1]['id'];
-            $WaitingOne = $Datos[0]['waiting'];
-            $WaitingTwo = $Datos[1]['waiting'];
-            $dvOne = $Datos[0]['dv'];
-            $dvTwo = $Datos[1]['dv'];
             $InfoVacaciones = DB::table('vacation_information')->where('id_vacation_request', $request->id)->get();
             $total = count($InfoVacaciones);
             if ($total == 2) {
+                $idOne = (int) $Datos[0]['id'];
+                $idTwo = (int) $Datos[1]['id'];
+                $WaitingOne = $Datos[0]['waiting'];
+                $WaitingTwo = $Datos[1]['waiting'];
+                $dvOne = $Datos[0]['dv'];
+                $dvTwo = $Datos[1]['dv'];
                 $InfoTwo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idTwo)->first();
                 $InfoOne = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idOne)->first();
                 // $totaldaysOne = $InfoOne->total_days;
@@ -3857,6 +4822,20 @@ class VacationRequestController extends Controller
                     'dv' => $totaldvTwo
                 ]);
 
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($Solicitud->request_type_id);
+                    $ApplicationOwner = User::find($Solicitud->user_id);
+                    $ApplicationOwner->notify(new RejectRequestBoss(
+                        $ApplicationOwner->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $request->commentary,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Vacaciones rechazadas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
+
                 return back()->with('message', 'Vacaciones rechazadas correctamente');
             }
 
@@ -3884,6 +4863,20 @@ class VacationRequestController extends Controller
                     'dv' => $totaldv
                 ]);
 
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($Solicitud->request_type_id);
+                    $ApplicationOwner = User::find($Solicitud->user_id);
+                    $ApplicationOwner->notify(new RejectRequestBoss(
+                        $ApplicationOwner->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $request->commentary,
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Vacaciones rechazadas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
+
                 return back()->with('message', 'Vacaciones rechazadas correctamente');
             }
         } else {
@@ -3896,6 +4889,20 @@ class VacationRequestController extends Controller
             DB::table('vacation_days')->where('vacation_request_id', $request->id)->update([
                 'status' => 0
             ]);
+
+            try {
+                $emisor = User::find($user->id);
+                $requestType = RequestType::find($Solicitud->request_type_id);
+                $ApplicationOwner = User::find($Solicitud->user_id);
+                $ApplicationOwner->notify(new RejectRequestBoss(
+                    $ApplicationOwner->name,
+                    $emisor->name,
+                    $requestType->type,
+                    $request->commentary,
+                ));
+            } catch (\Exception $e) {
+                return back()->with('warning', 'Solicitud rechazada correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+            }
             return back('message', 'Solicitud rechazada exitosamente.');
         }
     }
@@ -4242,6 +5249,6 @@ class VacationRequestController extends Controller
             ];
         }
         // Muestra el resultado
-        dd($aniversariosPorUsuario[169]);
+        dd($aniversariosPorUsuario[31]);
     }
 }
