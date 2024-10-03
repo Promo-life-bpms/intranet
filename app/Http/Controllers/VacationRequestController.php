@@ -2230,7 +2230,7 @@ class VacationRequestController extends Controller
             return back()->with('warning', 'Solicitud aprobada exitosamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador.');
         }
 
-        $dep = Department::find(1);
+        /* $dep = Department::find(1);
         $positions = Position::where("department_id", 1)->pluck("name", "id");
         $data = $dep->positions;
         $users = [];
@@ -2265,7 +2265,7 @@ class VacationRequestController extends Controller
                     return back()->with('warning', 'Solicitud aprobada exitosamente. Sin embargo, no se pudo enviar el correo electrónico al jefe de Recursos Humanos.');
                 }
             }
-        }
+        } */
 
         return back()->with('message', 'Solicitud aprobada exitosamente.');
     }

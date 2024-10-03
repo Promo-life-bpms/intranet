@@ -7,7 +7,7 @@ Los días que {{$user}} solicitó son: {{$days}}.<br>
 Descripción: "{{$details}}"
 
 @component('mail::button', ['url' => $url.'/request/authorize-rh', 'color' => 'blue'])
-Revisar permiso
+Revisar solicitud
 @endcomponent
 
 <hr>
