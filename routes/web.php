@@ -326,6 +326,6 @@ Route::get('vacations/sendRemembers/', [VacationsController::class, 'sendRemembe
 Route::get('request/alertRequesPendients/', [RequestController::class, 'alertPendient']);
 
 // Actualizar información de vacaciones
-Route::get('vacations/updateInformationVacations', [VacationsController::class, 'updateInformationVacations']);
+//Route::get('vacations/updateInformationVacations', [VacationsController::class, 'updateInformationVacations']);
 
 Route::get('vacations/obtenerInformacionDeLosUsuarios', [VacationsController::class, 'obtenerInformacionDeLosUsuarios']);
