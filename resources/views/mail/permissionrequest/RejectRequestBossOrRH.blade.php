@@ -1,12 +1,12 @@
 @component('mail::message')
 # ¡Buen día, {{$receptor}}!
 
-<h2> {{$emisor}} ha cancelado tu solicitud de "{{$type_request}}". </h2>
+<h2> {{$emisor}} ha rechazado tu solicitud de "{{$type_request}}". </h2>
 
 El motivo de la cancelación es el siguiente: "{{$observation}}"
 
 @component('mail::button', ['url' => $url.'/request', 'color' => 'blue'])
-Revisar permiso
+Revisar solicitud
 @endcomponent
 
 <hr>

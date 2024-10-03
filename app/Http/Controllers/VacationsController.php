@@ -28,22 +28,22 @@ class VacationsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    /* public function index()
     {
         $users = User::where('status', 1)->get();
         return view('admin.vacations.index', compact('users'));
     }
-
+ */
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    /* public function create()
     {
         $users = User::all()->pluck('name', 'id');
         return view('admin.vacations.create', compact('users'));
-    }
+    } */
 
     /**
      * Store a newly created resource in storage.
@@ -51,7 +51,7 @@ class VacationsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    /* public function store(Request $request)
     {
         request()->validate([
             'days_availables' => 'required',
@@ -66,7 +66,7 @@ class VacationsController extends Controller
         $vacation->save();
 
         return redirect()->action([VacationsController::class, 'index']);
-    }
+    } */
 
     /**
      * Display the specified resource.
@@ -74,10 +74,10 @@ class VacationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    /* public function show($id)
     {
         //
-    }
+    } */
 
     /**
      * Show the form for editing the specified resource.
@@ -85,10 +85,10 @@ class VacationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Vacations $vacation)
+    /* public function edit(Vacations $vacation)
     {
         return view('admin.vacations.edit', compact('vacation'));
-    }
+    } */
 
     /**
      * Update the specified resource in storage.
@@ -97,7 +97,7 @@ class VacationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Vacations $vacation)
+    /* public function update(Request $request, Vacations $vacation)
     {
         request()->validate([
             'period_days' => 'required',
@@ -112,7 +112,7 @@ class VacationsController extends Controller
         $vacation->save();
 
         return redirect()->action([VacationsController::class, 'index']);
-    }
+    } */
 
     /**
      * Remove the specified resource from storage.
@@ -120,23 +120,23 @@ class VacationsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Vacations $vacation)
+    /* public function destroy(Vacations $vacation)
     {
         $vacation->delete();
         return redirect()->action([VacationsController::class, 'edit'], ['user' => $vacation->users_id]);
-    }
+    } */
 
-    public function export()
+    /* public function export()
     {
         return Excel::download(new VacationsExport, 'vacaciones.xlsx');
-    }
+    } */
 
     // Funciones para el calculo de vacaciones
     /**
      * Actualiza la información de las vacaciones para todos los usuarios activos.
      * Calcula y actualiza las vacaciones para cada usuario en función de su antigüedad.
      */
-    public function updateInformationVacations()
+    /* public function updateInformationVacations()
     {
         $users = User::where('status', 1)->get();
         foreach ($users as $user) {
@@ -178,9 +178,9 @@ class VacationsController extends Controller
                 }
             }
         }
-    }
+    } */
 
-    public function obtenerEstadoVacaciones($fecha_fin, $fecha_inicio)
+    /* public function obtenerEstadoVacaciones($fecha_fin, $fecha_inicio)
     {
         $un_anos_despues = $fecha_fin->copy()->addYears(1);
         $fecha_actual = $this->time;
@@ -193,9 +193,9 @@ class VacationsController extends Controller
             return 3;
         }
         // Lógica para calcular el estado de las vacaciones según la fecha actual.
-    }
+    } */
 
-    function obtenerDiasVacaciones($antiguedad, $fecha_fin, $actual = false)
+   /*  function obtenerDiasVacaciones($antiguedad, $fecha_fin, $actual = false)
     {
         if ($fecha_fin->isBefore(Carbon::parse('2023-01-01'))) {
             $daysPerYear = [
@@ -216,9 +216,9 @@ class VacationsController extends Controller
         // Lógica para calcular el número de días de vacaciones según la antigüedad del empleado.
         // Valida, tambien, si entra la ley actual, o anterior
         // Devuelve el número de días correspondientes.
-    }
+    } */
 
-    public function obtenerInformacionDeLosUsuarios()
+    /* public function obtenerInformacionDeLosUsuarios()
     {
         $str = '';
         foreach (Vacations::all() as $vacation) {
@@ -237,14 +237,14 @@ class VacationsController extends Controller
                 . "'),";
         }
         return $str;
-    }
+    } */
 
     /**
      * Envía recordatorios a los usuarios respecto a sus vacaciones.
      *
      * @return void
      */
-    public function sendRemembers()
+    /* public function sendRemembers()
     {
         $users =  User::where('status', 1)->get();
         $errors = [];
@@ -311,5 +311,5 @@ class VacationsController extends Controller
         if ($usersAdmin) {
             $usersAdmin->notify(new InfoRemembersAdmin([$errors, $usersData]));
         }
-    }
+    } */
 }

@@ -395,7 +395,7 @@
                                 </span>
                             </div>
                             <div>
-                                <strong>{{ $porcentajetomadas }}%</strong>
+                                <strong>{{ round($porcentajetomadas) }}%</strong>
                             </div>
                         </div>
 
