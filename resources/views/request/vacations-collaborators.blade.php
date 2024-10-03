@@ -395,7 +395,7 @@
                                 </span>
                             </div>
                             <div>
-                                <strong>{{ $porcentajetomadas }}%</strong>
+                                <strong>{{ round($porcentajetomadas) }}%</strong>
                             </div>
                         </div>
 
@@ -709,7 +709,7 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">Rechazar solicitud</h5>
+                        <h5 class="modal-title" id="modalTitle">Cancelar solicitud</h5>
                         <button id='closeVerSolicitud' type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
 
