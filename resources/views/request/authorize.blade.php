@@ -351,7 +351,7 @@
                             aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="denyFormRequest" action="reject/leave/by/direct/boss/" method="POST">
+                        <form id="denyFormRequest" action="reject/leave/by/direct/boss" method="POST">
                             @csrf
                             <textarea style="min-width: 100%" placeholder="Motivo" class="form-control" id="commentary" name="commentary"
                                 required></textarea>
@@ -733,7 +733,7 @@
         }
 
         .alert-success {
-            color: #81C10C !important;
+            color: #0f5132 !important;
             background-color: #d1e7dd !important;
             border-color: #badbcc !important;
         }
