@@ -439,7 +439,7 @@ class VacationRequestController extends Controller
             }
 
             if (!empty($diasParecidos)) {
-                return back()->with('error', 'Verifica que no hayas seleccionado algún día feriado para BH Trade Market.');
+                return back()->with('error', 'Algunos de los días seleccionados no están disponibles para tu solicitud.');
             }
         }
 
@@ -2671,7 +2671,7 @@ class VacationRequestController extends Controller
             }
 
             if (!empty($diasParecidos)) {
-                return back()->with('error', 'Verifica que no hayas seleccionado algún día feriado para BH Trade Market.');
+                return back()->with('error', 'Algunos de los días seleccionados no están disponibles para tu solicitud.');
             }
         }
 
