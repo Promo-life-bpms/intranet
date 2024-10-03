@@ -3,11 +3,11 @@
 
 <h2> {{$emisor}} ha creado una solicitud de "{{$type_request}}". </h2>
 
-Los días que {{$emisor}} solicitó son: son: {{$days}}.<br>
+Los días que {{$emisor}} solicitó son: {{$days}}.<br>
 Descripción: "{{$details}}"
 
 @component('mail::button', ['url' => $url.'/request/authorize-manager', 'color' => 'blue'])
-Revisar permiso
+Revisar solicitud
 @endcomponent
 
 <hr>

@@ -439,7 +439,7 @@ class VacationRequestController extends Controller
             }
 
             if (!empty($diasParecidos)) {
-                return back()->with('error', 'Verifica que no hayas seleccionado algún día feriado para BH Trade Market.');
+                return back()->with('error', 'Algunos de los días seleccionados no están disponibles para tu solicitud.');
             }
         }
 
@@ -2130,6 +2130,42 @@ class VacationRequestController extends Controller
         return view('admin.vacations.index', compact('users'));
     }
 
+    public function AllVacationsAndPermits()
+    {
+        $RequestAndVacations = VacationRequest::orderBy('created_at', 'desc')->get();
+
+        $Information = [];
+        foreach ($RequestAndVacations as $Requests) {
+            $creador = User::where('id', $Requests->user_id)->first();
+            $typeRequest = RequestType::where('id', $Requests->request_type_id)->value('type');
+            $Days = VacationDays::where('vacation_request_id', $Requests->id)->get();
+            $dias = [];
+            foreach ($Days as $Day) {
+                $dias[] = $Day->day;
+            }
+            usort($dias, function ($a, $b) {
+                return strtotime($a) - strtotime($b);
+            });
+            $time = [];
+            foreach ($Days as $Day) {
+                $time[] = [
+                    'start' => Carbon::parse($Day->start)->format('H:i'),
+                    'end' => Carbon::parse($Day->end)->format('H:i')
+                ];
+            }
+
+            $Information[] = [
+                'id' => $Requests->id,
+                'Solicitante' => $creador->name.' '.$creador->lastname,
+                'Tipo_solicitud' => $typeRequest,
+                'dias' => $dias,
+                'Motivo' => $Requests->details
+            ];
+        }
+        
+        return back()->with('Information');
+    }
+
     public function ConfirmRejectedByRh(Request $request)
     {
         if ($request->value == 'aprobada') {
@@ -2194,7 +2230,7 @@ class VacationRequestController extends Controller
             return back()->with('warning', 'Solicitud aprobada exitosamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador.');
         }
 
-        $dep = Department::find(1);
+        /* $dep = Department::find(1);
         $positions = Position::where("department_id", 1)->pluck("name", "id");
         $data = $dep->positions;
         $users = [];
@@ -2229,7 +2265,7 @@ class VacationRequestController extends Controller
                     return back()->with('warning', 'Solicitud aprobada exitosamente. Sin embargo, no se pudo enviar el correo electrónico al jefe de Recursos Humanos.');
                 }
             }
-        }
+        } */
 
         return back()->with('message', 'Solicitud aprobada exitosamente.');
     }
@@ -2635,7 +2671,7 @@ class VacationRequestController extends Controller
             }
 
             if (!empty($diasParecidos)) {
-                return back()->with('error', 'Verifica que no hayas seleccionado algún día feriado para BH Trade Market.');
+                return back()->with('error', 'Algunos de los días seleccionados no están disponibles para tu solicitud.');
             }
         }
 
