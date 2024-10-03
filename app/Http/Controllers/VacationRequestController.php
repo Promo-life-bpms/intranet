@@ -2130,6 +2130,42 @@ class VacationRequestController extends Controller
         return view('admin.vacations.index', compact('users'));
     }
 
+    public function AllVacationsAndPermits()
+    {
+        $RequestAndVacations = VacationRequest::orderBy('created_at', 'desc')->get();
+
+        $Information = [];
+        foreach ($RequestAndVacations as $Requests) {
+            $creador = User::where('id', $Requests->user_id)->first();
+            $typeRequest = RequestType::where('id', $Requests->request_type_id)->value('type');
+            $Days = VacationDays::where('vacation_request_id', $Requests->id)->get();
+            $dias = [];
+            foreach ($Days as $Day) {
+                $dias[] = $Day->day;
+            }
+            usort($dias, function ($a, $b) {
+                return strtotime($a) - strtotime($b);
+            });
+            $time = [];
+            foreach ($Days as $Day) {
+                $time[] = [
+                    'start' => Carbon::parse($Day->start)->format('H:i'),
+                    'end' => Carbon::parse($Day->end)->format('H:i')
+                ];
+            }
+
+            $Information[] = [
+                'id' => $Requests->id,
+                'Solicitante' => $creador->name.' '.$creador->lastname,
+                'Tipo_solicitud' => $typeRequest,
+                'dias' => $dias,
+                'Motivo' => $Requests->details
+            ];
+        }
+        
+        return back()->with('Information');
+    }
+
     public function ConfirmRejectedByRh(Request $request)
     {
         if ($request->value == 'aprobada') {
@@ -2373,7 +2409,7 @@ class VacationRequestController extends Controller
         ]);
 
         $Solicitud = VacationRequest::where('id', $request->id)->first();
-        
+
 
         if ($Solicitud->user_id != $user->id) {
             return back()->with('error', 'Solo el creador de la solicitud puede rechazar la solicitud');
