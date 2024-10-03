@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class RejectRequest extends Notification
+class ApprovalNoticeByDirectBoss extends Notification
 {
     use Queueable;
 
@@ -18,14 +18,18 @@ class RejectRequest extends Notification
      */
     public $receptor;
     public $emisor;
+    public $user;
     public $type_request;
-    public $observation;
-    public function __construct($receptor, $emisor, $type_request, $observation)
+    public $days;
+    public $details;
+    public function __construct($receptor, $emisor, $user, $type_request, $days, $details)
     {
         $this->receptor = $receptor;
         $this->emisor = $emisor;
+        $this->user = $user;
         $this->type_request = $type_request;
-        $this->observation = $observation;
+        $this->days = $days;
+        $this->details = $details;
     }
 
     /**
@@ -48,13 +52,16 @@ class RejectRequest extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->markdown('mail.permissionrequest.RejectRequest', [
+            ->markdown('mail.permissionrequest.ApprovalNoticeByDirectBoss', [
+                'url' => url('/'),
                 'receptor' => $this->receptor,
                 'emisor' => $this->emisor,
+                'user' => $this->user,
                 'type_request' => $this->type_request,
-                'observation' => $this->observation,
+                'days' => $this->days,
+                'details' => $this->details,
             ])
-            ->subject('Solicitud cancelada')
+            ->subject('Solicitud de vacaciones o permiso pendiente')
             ->from('adminportales@promolife.com.mx', 'Intranet Corporativa BH - PL');
     }
 

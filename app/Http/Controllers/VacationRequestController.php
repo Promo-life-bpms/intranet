@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Livewire\Vacations\Vacations;
+use App\Models\Department;
 use App\Models\Employee;
 use App\Models\MakeUpVacations;
 use App\Models\Position;
@@ -14,13 +15,16 @@ use App\Models\VacationPerYear;
 use App\Models\VacationRequest;
 use App\Models\Vacations as ModelsVacations;
 use App\Models\VacationsAvailablePerUser;
+use App\Notifications\ApprovalNoticeByDirectBoss;
 use App\Notifications\AuthorizeRequest;
+use App\Notifications\AuthorizeRequestByRH;
 use App\Notifications\PermissionRequest;
 use App\Notifications\PermissionRequestUpdate;
 use App\Notifications\RejectRequest;
 use App\Notifications\RejectRequestBoss;
 use Carbon\Carbon;
 use Doctrine\DBAL\Schema\Index;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
@@ -1580,24 +1584,20 @@ class VacationRequestController extends Controller
                     return back()->with('error', 'Solo puedes tomar un día a la vez.');
                 }
 
-                $currentYear = date('Y');
-                $AsuntosPersonales = DB::table('vacation_requests')
+                $moreInformationVacation = DB::table('vacations_available_per_users')->where('period', 1)->where('users_id', $user->id)->first();
+                $start = $moreInformationVacation->date_start;
+                $end = $moreInformationVacation->date_end;
+
+                $permisoEspecial = DB::table('vacation_requests')
                     ->where('user_id', $user->id)
                     ->where('request_type_id', 5)
                     ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
                     ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
-                    ->whereBetween('created_at', ["$currentYear-01-01 00:00:00", "$currentYear-12-31 23:59:59"])
-                    ->get();
+                    ->whereBetween('created_at', [$start, $end])
+                    ->whereJsonContains('more_information', ['Tipo_de_permiso_especial' => 'Asuntos personales'])
+                    ->count();
 
-                $contadorAsuntosPersonales = 0;
-                foreach ($AsuntosPersonales as $asuntoPersonal) {
-                    $moreInformation = json_decode($asuntoPersonal->more_information, true);
-                    if (!empty($moreInformation) && isset($moreInformation[0]['Tipo_de_permiso_especial']) && $moreInformation[0]['Tipo_de_permiso_especial'] === 'Asuntos personales') {
-                        $contadorAsuntosPersonales++;
-                    }
-                }
-
-                if ($contadorAsuntosPersonales >= 3) {
+                if ($permisoEspecial >= 3) {
                     return back()->with('error', 'Solo tienes derecho a 3 permisos especiales por año.');
                 }
 
@@ -2227,7 +2227,44 @@ class VacationRequestController extends Controller
                 $solicitud->details,
             ));
         } catch (\Exception $e) {
-            return back()->with('warning', 'Solicitud aprobada exitosamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+            return back()->with('warning', 'Solicitud aprobada exitosamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador.');
+        }
+
+        $dep = Department::find(1);
+        $positions = Position::where("department_id", 1)->pluck("name", "id");
+        $data = $dep->positions;
+        $users = [];
+        foreach ($data as $dat) {
+            foreach ($dat->getEmployees as $emp) {
+                if ($emp->user->status == 1) {
+                    $users["{$emp->user->id}"] = $emp->user->id;
+                }
+            }
+        }
+
+        foreach ($users as $userID) {
+            if ($userID == 6) {
+                $emisor = User::find($user->id);
+                $RH = User::where('id', $userID)->first();
+                $ApplicationOwner = User::find($solicitud->user_id);
+                $requestType = RequestType::find($solicitud->request_type_id);
+                $days = VacationDays::where('vacation_request_id', $solicitud->id)
+                    ->pluck('day')
+                    ->implode(', ');
+                $RHName = $RH->name;
+                try {
+                    $RH->notify(new ApprovalNoticeByDirectBoss(
+                        $RHName,
+                        $emisor->name,
+                        $ApplicationOwner->name,
+                        $requestType->type,
+                        $days,
+                        $solicitud->details
+                    ));
+                } catch (Exception $e) {
+                    return back()->with('warning', 'Solicitud aprobada exitosamente. Sin embargo, no se pudo enviar el correo electrónico al jefe de Recursos Humanos.');
+                }
+            }
         }
 
         return back()->with('message', 'Solicitud aprobada exitosamente.');
@@ -2249,6 +2286,10 @@ class VacationRequestController extends Controller
 
         if ($solicitud->direct_manager_status == 'Aprobada') {
             return redirect()->with('error', 'La solicitud ya fue aprobada, por lo tanto ya no puede ser rechazada.');
+        }
+
+        if ($request->commentary == null) {
+            return back()->with('error', 'Debes indicar el motivo por el cual deseas rechazar la solicitud.');
         }
 
         if ($solicitud->request_type_id == 1) {
@@ -2417,6 +2458,10 @@ class VacationRequestController extends Controller
 
         if ($Solicitud->direct_manager_status == 'Rechazada') {
             return back()->with('error', 'Esta solicitud ya fue rechazada por tu jefe directo.');
+        }
+
+        if ($request->commentary == null) {
+            return back()->with('error', 'Debes indicar el motivo por el cual deseas cancelar la solicitud.');
         }
 
         if ($Solicitud->request_type_id == 1) {
@@ -4660,26 +4705,9 @@ class VacationRequestController extends Controller
                     return back()->with('error', 'Solo puedes tomar un día a la vez.');
                 }
 
-                $currentYear = date('Y');
-                $AsuntosPersonales = DB::table('vacation_requests')
-                    ->where('user_id', $user->id)
-                    ->where('request_type_id', 5)
-                    ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
-                    ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
-                    ->whereBetween('created_at', ["$currentYear-01-01 00:00:00", "$currentYear-12-31 23:59:59"])
-                    ->get();
-
-                $contadorAsuntosPersonales = 0;
-                foreach ($AsuntosPersonales as $asuntoPersonal) {
-                    $moreInformation = json_decode($asuntoPersonal->more_information, true);
-                    if (!empty($moreInformation) && isset($moreInformation[0]['Tipo_de_permiso_especial']) && $moreInformation[0]['Tipo_de_permiso_especial'] === 'Asuntos personales') {
-                        $contadorAsuntosPersonales++;
-                    }
-                }
-
-                if ($contadorAsuntosPersonales >= 3) {
-                    return back()->with('error', 'Solo tienes derecho a 3 permisos especiales por año.');
-                }
+                $moreInformationVacation = DB::table('vacations_available_per_users')->where('period', 1)->where('users_id', $user->id)->first();
+                $start = $moreInformationVacation->date_start;
+                $end = $moreInformationVacation->date_end;
 
                 $diasSet = collect($dias)->unique()->sort()->values();
                 $datesSet = collect($dates)->unique()->sort()->values();
@@ -4688,6 +4716,37 @@ class VacationRequestController extends Controller
                 $missingInDias = $datesSet->diff($diasSet);  // Días en $dates pero no en $dias
                 $missingInDates = $diasSet->diff($datesSet); // Días en $dias pero no en $dates
 
+                $contadorAsuntosPersonales = DB::table('vacation_requests')
+                    ->where('user_id', $user->id)
+                    ->where('request_type_id', 5)
+                    ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereBetween('created_at', [$start, $end])
+                    ->whereJsonContains('more_information', ['Tipo_de_permiso_especial' => 'Asuntos personales'])
+                    ->count();
+
+                if ($contadorAsuntosPersonales) {
+                    if (!$missingInDias->isEmpty()) {
+                        $diasnuevos = 0;
+                        $registrar = $missingInDias->implode(', ');
+                        $registrarArray = explode(', ', $registrar);
+                        $diasnuevos = count($registrarArray);
+                    }
+    
+                    if (!$missingInDates->isEmpty()) {
+                        $diasEliminar = 0;
+                        $eliminar = $missingInDates->implode(', ');
+                        $eliminarArray = explode(', ', $eliminar);
+                        $diasEliminar =  count($eliminarArray);
+                    }
+
+                    $AsuntosPersonales =$contadorAsuntosPersonales + $diasnuevos  - $diasEliminar;
+                    
+                    if($AsuntosPersonales > 3){
+                        return back()->with('message', 'Solo puedes solicitar tres permisos especiales por año de tipo "Asuntos personales.');
+                    }
+                }
+                
                 if ($missingInDias->isEmpty() && $missingInDates->isEmpty()) {
                     $more_information[] = [
                         'Tipo_de_permiso_especial' => $request->Permiso
@@ -4791,6 +4850,10 @@ class VacationRequestController extends Controller
 
         if ($Solicitud->direct_manager_status != 'Aprobada') {
             return back()->with('error', 'Esta solicitud aún no ha sido aprobada.');
+        }
+
+        if ($request->commentary == null) {
+            return back()->with('error', 'Debes indicar el motivo por el cual deseas rechazar la solicitud.');
         }
 
         if ($Solicitud->request_type_id == 1) {
@@ -5019,7 +5082,26 @@ class VacationRequestController extends Controller
                     'days_enjoyed' => $totalDaysEnjoyedtWO
                 ]);
 
-                return back()->with('message', 'Vacaciones actualizadas correctamente');
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($Solicitud->request_type_id);
+                    $ApplicationOwner = User::find($Solicitud->user_id);
+                    $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $ApplicationOwner->notify(new AuthorizeRequestByRH(
+                        $ApplicationOwner->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $Solicitud->details,
+                        $days
+
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Vacaciones aprobadas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
+
+                return back()->with('message', 'Vacaciones aprobadas correctamente');
             }
 
             if ($total == 1) {
@@ -5046,7 +5128,26 @@ class VacationRequestController extends Controller
                     'days_enjoyed' => $totalDaysEnjoyedOne
                 ]);
 
-                return back()->with('message', 'Vacaciones actualizadas correctamente');
+                try {
+                    $emisor = User::find($user->id);
+                    $requestType = RequestType::find($Solicitud->request_type_id);
+                    $ApplicationOwner = User::find($Solicitud->user_id);
+                    $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                        ->pluck('day')
+                        ->implode(', ');
+                    $ApplicationOwner->notify(new AuthorizeRequestByRH(
+                        $ApplicationOwner->name,
+                        $emisor->name,
+                        $requestType->type,
+                        $Solicitud->details,
+                        $days
+
+                    ));
+                } catch (\Exception $e) {
+                    return back()->with('warning', 'Vacaciones aprobadas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                }
+
+                return back()->with('message', 'Vacaciones aprobadas correctamente');
             }
 
             return back()->with('message', 'Autorización exitosa');
@@ -5059,7 +5160,26 @@ class VacationRequestController extends Controller
                 'status' => 1
             ]);
 
-            return back()->with('message', 'Autorización exitosa');
+            try {
+                $emisor = User::find($user->id);
+                $requestType = RequestType::find($Solicitud->request_type_id);
+                $ApplicationOwner = User::find($Solicitud->user_id);
+                $days = VacationDays::where('vacation_request_id', $Solicitud->id)
+                    ->pluck('day')
+                    ->implode(', ');
+                $ApplicationOwner->notify(new AuthorizeRequestByRH(
+                    $ApplicationOwner->name,
+                    $emisor->name,
+                    $requestType->type,
+                    $Solicitud->details,
+                    $days
+
+                ));
+            } catch (\Exception $e) {
+                return back()->with('warning', 'Vacaciones aprobadas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+            }
+
+            return back()->with('message', 'Autorización exitosa.');
         }
     }
     public function UpdatePurchase(Request $request)
