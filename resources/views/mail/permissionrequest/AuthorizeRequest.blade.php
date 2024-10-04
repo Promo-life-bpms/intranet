@@ -9,7 +9,7 @@ Recuerda que aún debes esperar la confirmación de Recursos Humanos,
 y que la aprobación de tu jefe directo no garantiza la aprobación de RH.
 
 @component('mail::button', ['url' => $url.'/request', 'color' => 'blue'])
-Revisar permiso
+Revisar solicitud
 @endcomponent
 
 <hr>

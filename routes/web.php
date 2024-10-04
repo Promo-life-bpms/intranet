@@ -161,6 +161,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('request/authorization/by/human/resources', [VacationRequestController::class, 'AuthorizePermissionHumanResources'])->middleware('role:rh')->name('authorization.by.human.resources');
     Route::get('request/authorize-rh', [VacationRequestController::class, 'authorizeRequestRH'])->middleware('role:rh')->name('request.authorizeRH');
     Route::get('/vacations', [VacationRequestController::class, 'UserVacationInformation'])->middleware('role:rh')->name('admin.vacations.index');
+    Route::get('all/vacations/and/permits', [VacationRequestController::class, 'AllVacationsAndPermits'])->middleware('role:rh')->name('all.vacations.and.permits');
     Route::get('update/vacation/or/leave/request', [VacationRequestController::class, 'UpdatePurchase'])->name('update.vacation.or.leave.request');
     Route::get('prueba/info', [VacationRequestController::class, 'CreateVacationRequest']);
     Route::post('create/request/type', [RequestTypeController::class, 'store'])->name('create.request.type');
@@ -325,6 +326,6 @@ Route::get('vacations/sendRemembers/', [VacationsController::class, 'sendRemembe
 Route::get('request/alertRequesPendients/', [RequestController::class, 'alertPendient']);
 
 // Actualizar información de vacaciones
-Route::get('vacations/updateInformationVacations', [VacationsController::class, 'updateInformationVacations']);
+//Route::get('vacations/updateInformationVacations', [VacationsController::class, 'updateInformationVacations']);
 
 Route::get('vacations/obtenerInformacionDeLosUsuarios', [VacationsController::class, 'obtenerInformacionDeLosUsuarios']);

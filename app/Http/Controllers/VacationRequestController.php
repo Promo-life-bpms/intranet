@@ -337,7 +337,6 @@ class VacationRequestController extends Controller
             $totalvacaionestomadas = $DatosNew[0]['days_enjoyed'];
             $porcentajetomadas = (($totalvacaionestomadas / $totalvacaciones) * 100);
             $porcentajetomadas = round($porcentajetomadas, 2);
-            //dd($porcentajetomadas);
             $fecha_expiracion_actual = $DatosNew[0]['cutoff_date'];
             $vacaciones_actuales = $DatosNew[0]['dv'];
         }
@@ -439,7 +438,7 @@ class VacationRequestController extends Controller
             }
 
             if (!empty($diasParecidos)) {
-                return back()->with('error', 'Verifica que no hayas seleccionado algún día feriado para BH Trade Market.');
+                return back()->with('error', 'Algunos de los días seleccionados no están disponibles para tu solicitud.');
             }
         }
 
@@ -2130,6 +2129,42 @@ class VacationRequestController extends Controller
         return view('admin.vacations.index', compact('users'));
     }
 
+    public function AllVacationsAndPermits()
+    {
+        $RequestAndVacations = VacationRequest::orderBy('created_at', 'desc')->get();
+
+        $Information = [];
+        foreach ($RequestAndVacations as $Requests) {
+            $creador = User::where('id', $Requests->user_id)->first();
+            $typeRequest = RequestType::where('id', $Requests->request_type_id)->value('type');
+            $Days = VacationDays::where('vacation_request_id', $Requests->id)->get();
+            $dias = [];
+            foreach ($Days as $Day) {
+                $dias[] = $Day->day;
+            }
+            usort($dias, function ($a, $b) {
+                return strtotime($a) - strtotime($b);
+            });
+            $time = [];
+            foreach ($Days as $Day) {
+                $time[] = [
+                    'start' => Carbon::parse($Day->start)->format('H:i'),
+                    'end' => Carbon::parse($Day->end)->format('H:i')
+                ];
+            }
+
+            $Information[] = [
+                'id' => $Requests->id,
+                'Solicitante' => $creador->name . ' ' . $creador->lastname,
+                'Tipo_solicitud' => $typeRequest,
+                'dias' => $dias,
+                'Motivo' => $Requests->details
+            ];
+        }
+
+        return back()->with('Information');
+    }
+
     public function ConfirmRejectedByRh(Request $request)
     {
         if ($request->value == 'aprobada') {
@@ -2191,10 +2226,10 @@ class VacationRequestController extends Controller
                 $solicitud->details,
             ));
         } catch (\Exception $e) {
-            return back()->with('warning', 'Solicitud aprobada exitosamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador.');
+            return back()->with('warning', 'Solicitud aprobada exitosamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador(a).');
         }
 
-        $dep = Department::find(1);
+        /* $dep = Department::find(1);
         $positions = Position::where("department_id", 1)->pluck("name", "id");
         $data = $dep->positions;
         $users = [];
@@ -2229,7 +2264,7 @@ class VacationRequestController extends Controller
                     return back()->with('warning', 'Solicitud aprobada exitosamente. Sin embargo, no se pudo enviar el correo electrónico al jefe de Recursos Humanos.');
                 }
             }
-        }
+        } */
 
         return back()->with('message', 'Solicitud aprobada exitosamente.');
     }
@@ -2329,7 +2364,7 @@ class VacationRequestController extends Controller
                         $request->commentary,
                     ));
                 } catch (\Exception $e) {
-                    return back()->with('warning', 'Vacaciones rechazadas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    return back()->with('warning', 'Vacaciones rechazadas correctamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador(a).');
                 }
 
                 return back()->with('message', 'Vacaciones rechazadas correctamente');
@@ -2371,13 +2406,14 @@ class VacationRequestController extends Controller
                         $request->commentary,
                     ));
                 } catch (\Exception $e) {
-                    return back()->with('warning', 'Vacaciones rechazadas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    return back()->with('warning', 'Vacaciones rechazadas correctamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador(a).');
                 }
 
                 return back()->with('message', 'Vacaciones rechazadas correctamente');
             }
         } else {
             DB::table('vacation_requests')->where('id', $request->id)->update([
+                'rh_status' => 'Rechazada',
                 'direct_manager_status' => 'Rechazada',
                 'commentary' => $request->commentary
             ]);
@@ -2396,7 +2432,7 @@ class VacationRequestController extends Controller
                     $request->commentary,
                 ));
             } catch (\Exception $e) {
-                return back()->with('warning', 'Solicitud rechazada correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                return back()->with('warning', 'Solicitud rechazada correctamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador(a).');
             }
 
             return back()->with('message', 'Solicitud rechazada exitosamente.');
@@ -2635,7 +2671,7 @@ class VacationRequestController extends Controller
             }
 
             if (!empty($diasParecidos)) {
-                return back()->with('error', 'Verifica que no hayas seleccionado algún día feriado para BH Trade Market.');
+                return back()->with('error', 'Algunos de los días seleccionados no están disponibles para tu solicitud.');
             }
         }
 
@@ -4696,7 +4732,7 @@ class VacationRequestController extends Controller
                         $registrarArray = explode(', ', $registrar);
                         $diasnuevos = count($registrarArray);
                     }
-    
+
                     if (!$missingInDates->isEmpty()) {
                         $diasEliminar = 0;
                         $eliminar = $missingInDates->implode(', ');
@@ -4704,13 +4740,13 @@ class VacationRequestController extends Controller
                         $diasEliminar =  count($eliminarArray);
                     }
 
-                    $AsuntosPersonales =$contadorAsuntosPersonales + $diasnuevos  - $diasEliminar;
-                    
-                    if($AsuntosPersonales > 3){
+                    $AsuntosPersonales = $contadorAsuntosPersonales + $diasnuevos  - $diasEliminar;
+
+                    if ($AsuntosPersonales > 3) {
                         return back()->with('message', 'Solo puedes solicitar tres permisos especiales por año de tipo "Asuntos personales.');
                     }
                 }
-                
+
                 if ($missingInDias->isEmpty() && $missingInDates->isEmpty()) {
                     $more_information[] = [
                         'Tipo_de_permiso_especial' => $request->Permiso
@@ -4896,7 +4932,7 @@ class VacationRequestController extends Controller
                         $request->commentary,
                     ));
                 } catch (\Exception $e) {
-                    return back()->with('warning', 'Vacaciones rechazadas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    return back()->with('warning', 'Vacaciones rechazadas correctamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador(a).');
                 }
 
                 return back()->with('message', 'Vacaciones rechazadas correctamente');
@@ -4937,7 +4973,7 @@ class VacationRequestController extends Controller
                         $request->commentary,
                     ));
                 } catch (\Exception $e) {
-                    return back()->with('warning', 'Vacaciones rechazadas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                    return back()->with('warning', 'Vacaciones rechazadas correctamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador(a).');
                 }
 
                 return back()->with('message', 'Vacaciones rechazadas correctamente');
@@ -4964,7 +5000,7 @@ class VacationRequestController extends Controller
                     $request->commentary,
                 ));
             } catch (\Exception $e) {
-                return back()->with('warning', 'Solicitud rechazada correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                return back()->with('warning', 'Solicitud rechazada correctamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador(a).');
             }
             return back('message', 'Solicitud rechazada exitosamente.');
         }
@@ -4986,7 +5022,7 @@ class VacationRequestController extends Controller
         if ($Solicitud->request_type_id == 1) {
             $fechaActual = Carbon::now();
             $Vacaciones = DB::table('vacations_available_per_users')
-                ->where('users_id', $user->id)
+                ->where('users_id', $Solicitud->user_id)
                 ->where('cutoff_date', '>=', $fechaActual)
                 ->orderBy('cutoff_date', 'asc')
                 ->get();
@@ -5005,18 +5041,18 @@ class VacationRequestController extends Controller
                 ];
             }
 
-            $idOne = (int) $Datos[0]['id'];
-            $idTwo = (int) $Datos[1]['id'];
-            $WaitingOne = $Datos[0]['waiting'];
-            $WaitingTwo = $Datos[1]['waiting'];
-            $DaysEnjoyedOne = $Datos[0]['days_enjoyed'];
-            $DaysEnjoyedTwo = $Datos[1]['days_enjoyed'];
+
             $InfoVacaciones = DB::table('vacation_information')->where('id_vacation_request', $request->id)->get();
             $total = count($InfoVacaciones);
             if ($total == 2) {
+                $idOne = (int) $Datos[0]['id'];
+                $idTwo = (int) $Datos[1]['id'];
+                $WaitingOne = $Datos[0]['waiting'];
+                $WaitingTwo = $Datos[1]['waiting'];
+                $DaysEnjoyedOne = $Datos[0]['days_enjoyed'];
+                $DaysEnjoyedTwo = $Datos[1]['days_enjoyed'];
                 $dvTwo = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idTwo)->first();
                 $dvOne = DB::table('vacation_information')->where('id_vacation_request', $Solicitud->id)->where('id_vacations_availables', $idOne)->first();
-                // $totaldaysOne = $dvOne->total_days;
 
                 $totaldaysOne = //Si no esta el campo que no lo tome en cuenta
                     $dvOne->total_days == null ? 0 : $dvOne->total_days;
@@ -5140,7 +5176,7 @@ class VacationRequestController extends Controller
 
                 ));
             } catch (\Exception $e) {
-                return back()->with('warning', 'Vacaciones aprobadas correctamente. Sin embargo, no se pudo enviar el correo electrónico a tu jefe directo.');
+                return back()->with('warning', 'Solicitud aprobada correctamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador(a).');
             }
 
             return back()->with('message', 'Autorización exitosa.');
