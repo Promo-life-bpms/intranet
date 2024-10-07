@@ -2162,6 +2162,7 @@ class VacationRequestController extends Controller
             ];
         }
 
+        dd($Information);
         return back()->with('Information');
     }
 

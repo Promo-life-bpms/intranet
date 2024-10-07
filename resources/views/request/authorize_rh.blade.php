@@ -1058,7 +1058,7 @@
 
                 var timeStatusDiv = document.getElementById('timeStatus');
                 if (timeText === 'true') {
-                    var startValue = dataStar;
+                    var startValue = dataStart;
                     var endValue = dataEnd;
 
                     if (request_type === 'Ausencia' && valueType === 'salida_durante') {
