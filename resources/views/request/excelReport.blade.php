@@ -36,7 +36,9 @@
                         @if ($requestDay->start !== null && $requestDay->end !== null)
                             {{ 'Salida: ' . $requestDay->start . ' Reingreso: ' . $requestDay->end }}
                         @elseif ($requestDay->start === null)
-                            {{ 'Reingreso: ' . $requestDay->end }}
+                            {{ 'Hora de llegada: ' . $requestDay->end }}
+                        @elseif ($requestDay->end === null)
+                            {{ 'Hora de salida antes: ' . $requestDay->start }}
                         @endif
                     @endif
                 @endforeach
