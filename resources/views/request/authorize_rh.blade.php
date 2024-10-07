@@ -1050,6 +1050,7 @@
 
                 /* Para Ausencia */
                 const valueType = this.getAttribute('data-value-type');
+                console.log('valueType', valueType);
                 const tipoDeAusencia = this.getAttribute('data-tipo-de-ausencia');
 
                 /* Para permisos especiales */
@@ -1063,9 +1064,12 @@
                     if (request_type === 'Ausencia' && valueType === 'salida_durante') {
                         timeStatusDiv.innerHTML =
                             '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
-                            'Hora de regreso: <strong>' + endValue + '</strong></span>';
+                            '- Hora de regreso: <strong>' + endValue + '</strong></span>';
                     } else if (request_type === 'Ausencia' && valueType === 'salida_antes') {
                         timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
+                            '</strong></span> ';
+                    } else if (request_type === 'Ausencia' && valueType === 'retardo') {
+                        timeStatusDiv.innerHTML = '<span>Hora de entrada: <strong>' + endValue +
                             '</strong></span> ';
                     } else {
                         timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
@@ -1284,12 +1288,12 @@
                     if (request_type === 'Ausencia' && valueType === 'salida_durante') {
                         timeStatusDiv.innerHTML =
                             '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
-                            'Hora de regreso: <strong>' + endValue + '</strong></span>';
+                            '- Hora de regreso: <strong>' + endValue + '</strong></span>';
                     } else if (request_type === 'Ausencia' && valueType === 'salida_antes') {
                         timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
                             '</strong></span> ';
                     } else if (request_type === 'Ausencia' && valueType === 'retardo') {
-                        timeStatusDiv.innerHTML = '<span>Hora de llegada: <strong>' + startValue +
+                        timeStatusDiv.innerHTML = '<span>Hora de entrada: <strong>' + endValue +
                             '</strong></span> ';
                     } else {
                         timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';

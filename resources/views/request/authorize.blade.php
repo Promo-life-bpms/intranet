@@ -492,7 +492,7 @@
                     if (request_type === 'Ausencia' && valueType === 'salida_durante') {
                         timeStatusDiv.innerHTML =
                             '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
-                            'Hora de regreso: <strong>' + endValue + '</strong></span>';
+                            '- Hora de regreso: <strong>' + endValue + '</strong></span>';
                     } else if (request_type === 'Ausencia' && valueType === 'salida_antes') {
                         timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
                             '</strong></span> ';
