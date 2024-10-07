@@ -5003,7 +5003,7 @@ class VacationRequestController extends Controller
             } catch (\Exception $e) {
                 return back()->with('warning', 'Solicitud rechazada correctamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador(a).');
             }
-            return back('message', 'Solicitud rechazada exitosamente.');
+            return back()->with('message', 'Solicitud rechazada exitosamente.');
         }
     }
 
