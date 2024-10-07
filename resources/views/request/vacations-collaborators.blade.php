@@ -709,7 +709,7 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">Rechazar solicitud</h5>
+                        <h5 class="modal-title" id="modalTitle">Cancelar solicitud</h5>
                         <button id='closeVerSolicitud' type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
 
@@ -986,7 +986,7 @@
                                 persona_afectada.classList.remove('d-none');
                                 academicos.classList.add('d-none');
                                 document.getElementById('textDinamicCalendar').innerHTML = `
-                                    <span>Elige los 3 días naturales a los que tienes derecho.</span>
+                                    <span>Elige los 3 días habiles a los que tienes derecho.</span>
                                 `;
                                 break;
 
@@ -1001,7 +1001,7 @@
                                 persona_afectada.classList.add('d-none');
                                 academicos.classList.remove('d-none');
                                 document.getElementById('textDinamicCalendar').innerHTML = `
-                            <span>Elige el dia que no te presentaras.</span>
+                            <span>Elige el día que no te presentaras.</span>
                         `;
                                 break;
                             case 'asunto':
@@ -1754,7 +1754,7 @@
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
                 <div class="mb-2">
-                    <span>Forma de pago (Asignación automatica)</span>
+                    <span>Forma de pago (Asignación automática)</span>
                     <input type="text" disabled class="form-control mt-1"
                     value="Descontar Tiempo/Día" id="forma_pago" name="forma_pago" disabled>
                 </div>
@@ -1857,7 +1857,7 @@
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
                 <div class="mb-2">
-                    <span>Forma de pago (Asignación automatica)</span>
+                    <span>Forma de pago (Asignación automática)</span>
 
                     <input type="text" class="form-control mt-1" value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
                 </div>
@@ -1910,7 +1910,7 @@
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
                 <div class="mb-2">
-                    <span>Forma de pago (Asignación automatica)</span>
+                    <span>Forma de pago (Asignación automática)</span>
                     <input type="text" class="form-control mt-1" value="Pago del IMSS" id="forma_pago" name="forma_pago" disabled>
                 </div>
             `;
@@ -2020,7 +2020,7 @@
             // Cambia el contenido dinámico
             document.getElementById('dynamicContentFormaPago').innerHTML = `
                 <div class="mb-2">
-                    <span>Forma de pago (Asignación automatica)</span>
+                    <span>Forma de pago (Asignación automática)</span>
                     <input type="text"  class="form-control mt-1"
                         value="Permiso Especial" id="forma_pago" name="forma_pago" disabled>
 
@@ -2051,7 +2051,7 @@
                         persona_afectada.classList.remove('d-none');
                         academicos.classList.add('d-none');
                         document.getElementById('textDinamicCalendar').innerHTML = `
-                            <span>Elige los 3 días naturales a los que tienes derecho.</span>
+                            <span>Elige los 3 días habiles a los que tienes derecho.</span>
                         `;
 
                         document.getElementById('textDinamicJustify').innerHTML = `
@@ -2065,7 +2065,7 @@
                         academicos.classList.add('d-none');
                         persona_afectada.classList.add('d-none');
                         document.getElementById('textDinamicCalendar').innerHTML = `
-                            <span>Elige los 5 días habiles a los que tienes derecho.</span>
+                            <span>Elige los 5 días hábiles a los que tienes derecho.</span>
                         `;
                         document.getElementById('textDinamicJustify').innerHTML = `
                             <span>Anexa tu justificación (opcional)</span>
@@ -2077,7 +2077,7 @@
                         persona_afectada.classList.add('d-none');
                         academicos.classList.remove('d-none');
                         document.getElementById('textDinamicCalendar').innerHTML = `
-                            <span>Elige el dia que no te presentaras.</span>
+                            <span>Elige el día que no te presentaras.</span>
                         `;
 
                         document.getElementById('textDinamicJustify').innerHTML = `
