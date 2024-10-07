@@ -160,11 +160,11 @@
                                     </span>
                                 </a>
                             </li>
-                            <li class="submenu-item ">
+                            {{-- <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.reportRequest') }}">
                                     <span>Reportes totales</span>
                                 </a>
-                            </li>
+                            </li> --}}
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">

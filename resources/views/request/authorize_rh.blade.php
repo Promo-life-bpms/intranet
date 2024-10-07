@@ -40,7 +40,17 @@
             </div>
         </div>
 
-        <h3 id="titlePage">Solicitudes autorizadas</h3>
+        <div class="d-flex justify-content-between mb-2">
+            <h3 id="titlePage">Solicitudes autorizadas</h3>
+
+
+            <div id="exporTable">
+                {!! Form::open(['route' => 'request.export', 'id' => 'exportForm']) !!}
+                <button id="buttonExpor" type="submit" class="btn btn-success"
+                    style="margin-left: 20px; background-color: #81C10C !important; border-color: #81C10C !important; ">Exportar</button>
+                {!! Form::close() !!}
+            </div>
+        </div>
         <div class="row">
             <div class="col-5 align-content-end">
                 <div class="row">
@@ -934,6 +944,7 @@
 
             //Cambiar titulo de la pagina
             document.getElementById('titlePage').innerHTML = 'Solicitudes autorizadas';
+            document.getElementById('exporTable').style.display = 'block';
         });
 
 
@@ -950,6 +961,7 @@
 
             //Cambiar titulo de la pagina
             document.getElementById('titlePage').innerHTML = 'Solicitudes pendientes';
+            document.getElementById('exporTable').style.display = 'none';
         });
 
         document.getElementById('tarjeta3').addEventListener('click', function() {
@@ -964,6 +976,7 @@
 
             //Cambiar titulo de la pagina
             document.getElementById('titlePage').innerHTML = 'Solicitudes canceladas por el usuario';
+            document.getElementById('exporTable').style.display = 'none';
         });
 
         // Evento cuando se hace clic en el botón para abrir el modal
@@ -1441,5 +1454,35 @@
         if (search) {
             document.getElementById('searchName').value = search;
         }
+
+
+        document.getElementById('exportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('loadingSpinner').style.display = 'flex';
+
+            axios({
+                method: 'post',
+                url: this.action,
+                data: new FormData(this),
+                responseType: 'blob'
+            }).then(function(response) {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+
+                link.setAttribute('download',
+                    'Solicitudes aprobadas.xlsx');
+                document.body.appendChild(link);
+                link.click();
+
+                window.URL.revokeObjectURL(url);
+
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }).catch(function(error) {
+                console.error('Error al exportar:', error);
+
+                document.getElementById('loadingSpinner').style.display = 'none';
+            });
+        });
     </script>
 @stop
