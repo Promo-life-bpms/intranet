@@ -993,7 +993,6 @@
                     console.log('esta vacio');
                     /*Poner una imagen de un perfil*/
                     imagen = 'https://www.w3schools.com/howto/img_avatar.png';
-
                 } else {
                     const baseUrl = window.location.origin;
                     /* Poner anexarle la baseURl a la imagen */
@@ -1058,7 +1057,7 @@
 
                 var timeStatusDiv = document.getElementById('timeStatus');
                 if (timeText === 'true') {
-                    var startValue = dataStar;
+                    var startValue = dataStart;
                     var endValue = dataEnd;
 
                     if (request_type === 'Ausencia' && valueType === 'salida_durante') {

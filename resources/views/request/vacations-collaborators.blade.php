@@ -986,7 +986,7 @@
                                 persona_afectada.classList.remove('d-none');
                                 academicos.classList.add('d-none');
                                 document.getElementById('textDinamicCalendar').innerHTML = `
-                                    <span>Elige los 3 días naturales a los que tienes derecho.</span>
+                                    <span>Elige los 3 días habiles a los que tienes derecho.</span>
                                 `;
                                 break;
 
@@ -2051,7 +2051,7 @@
                         persona_afectada.classList.remove('d-none');
                         academicos.classList.add('d-none');
                         document.getElementById('textDinamicCalendar').innerHTML = `
-                            <span>Elige los 3 días naturales a los que tienes derecho.</span>
+                            <span>Elige los 3 días habiles a los que tienes derecho.</span>
                         `;
 
                         document.getElementById('textDinamicJustify').innerHTML = `
