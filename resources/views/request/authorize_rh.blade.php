@@ -40,7 +40,13 @@
             </div>
         </div>
 
-        <h3 id="titlePage">Solicitudes autorizadas</h3>
+        <div class="d-flex justify-content-between">
+            <h3 id="titlePage">Solicitudes autorizadas</h3>
+
+            {!! Form::open(['route' => 'request.export']) !!}
+            <button type="submit" class="btn btn-success" style="margin-left: 20px;">Exportar</button>
+            {!! Form::close() !!}
+        </div>
         <div class="row">
             <div class="col-5 align-content-end">
                 <div class="row">
