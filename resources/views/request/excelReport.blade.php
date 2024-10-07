@@ -3,49 +3,51 @@
         <tr>
             <th scope="col">Solicitante</th>
             <th scope="col">Tipo</th>
-            <th scope="col">Pago</th>
             <th scope="col">Fechas ausencia</th>
             <th scope="col">Tiempo</th>
             <th scope="col">Motivo</th>
-            <th scope="col">Vacaciones disponibles</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($requests as $request)
-            <tr>
-                <td>{{ $request->employee->user->name . ' ' . $request->employee->user->lastname }}</td>
-                <td>{{ $request->type_request }}</td>
-                <td>{{ $request->payment }}</td>
-                <td>
-                    @foreach ($request->requestDays as $requestDay)
-                        @if ($request->id == $requestDay->requests_id)
-                            {{ $requestDay->start }} ,
+        <tr>
+            <td>
+                {{ $request->users->name.' '.$request->users->lastname }}
+            </td>
 
-                        @endif
-                    @endforeach
-                </td>
+            <td>
+                {{ $request->RequestType->type }}
+            </td>
 
-                <td>
-                    @if ($request->start == null)
+            <td>
+                @foreach ($requestDays as $requestDay)
+                @if ($request->id == $requestDay->vacation_request_id)
+                {{ $requestDay->day }} ,
+                @endif
+                @endforeach
+            </td>
+
+            <td>
+                @if ($request->request_type_id === 1)
                     Tiempo completo
-                    @else
-                        @if ($request->end ==null) 
-                        {{'Salida: '. $request->start . ' ' }}
-                        @else
-                            {{'Salida: '. $request->start . ' ' .'Reingreso:' . ' ' . $request->end }}
+                @else
+                @foreach ($requestDays as $requestDay)
+                    @if ($request->id == $requestDay->vacation_request_id)
+                        @if ($requestDay->start !== null && $requestDay->end !== null)
+                            {{ 'Salida: ' . $requestDay->start . ' Reingreso: ' . $requestDay->end }}
+                        @elseif ($requestDay->start === null)
+                            {{ 'Hora de llegada: ' . $requestDay->end }}
+                        @elseif ($requestDay->end === null)
+                            {{ 'Hora de salida antes: ' . $requestDay->start }}
                         @endif
                     @endif
-                </td>
-                <td>{{ $request->reason }}</td>
-                <td>
-                    @if ($request->employee->user->vacation)
-                        {{ $request->employee->user->vacation->dv }}
-                    @else
-                        N/A 
-                    @endif
-                </td>
-            </tr>
+                @endforeach
+                @endif
+            </td>
+            <td> 
+                {{ $request->details }}
+            </td>
+        </tr>
         @endforeach
-
     </tbody>
 </table>
