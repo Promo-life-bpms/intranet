@@ -35,12 +35,14 @@
     @endif
 
     <div>
+        {{-- Spinner de carga --}}
         <div id="loadingSpinner"
             style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255, 255, 255, 0.8); z-index:9999; justify-content:center; align-items:center;">
             <div class="spinner-border text-primary" role="status">
             </div>
         </div>
 
+        {{-- Título de la página y motor de búsqueda --}}
         <div class="row">
             <div class="col-4">
                 <h3>Solicitudes autorizadas</h3>
@@ -80,11 +82,10 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
+        {{-- Tabla de solicitudes autorizadas --}}
         <div class="mt-3" style="min-width: 100% !important;">
-            {{-- Tabla para autorizadas --}}
             <div id="tableAutorizadas">
                 <table class="table" style="min-width: 100% !important;">
                     <thead style="background-color: #072A3B; color: white;">
@@ -206,7 +207,7 @@
             </div>
         </div>
 
-
+        {{-- Modal de detalles de la solicitud --}}
         <div class="modal fade bd-example-modal-lg" id="modalDetails" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
@@ -340,6 +341,7 @@
             </div>
         </div>
 
+        {{-- Modal de rechazo --}}
         <div class="modal fade bd-example-modal-lg" id="modalDeny" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
@@ -376,8 +378,6 @@
             form.reset();
         });
 
-
-
         // Evento cuando se hace clic en el botón para abrir el modal
         document.querySelectorAll('.openModalDetails').forEach(button => {
             button.addEventListener('click', function() {
@@ -389,8 +389,6 @@
 
                 const create = this.getAttribute('data-create');
                 const image = this.getAttribute('data-image');
-
-
                 const date = new Date(create);
                 const options = {
                     year: 'numeric',
@@ -403,21 +401,18 @@
                 document.getElementById('modalCreate').textContent = formattedDate;
 
                 let imagen = '';
-
                 if (image === null || image === 'null' || image === 'undefined' || image === undefined ||
                     image === '') {
                     console.log('esta vacio');
                     /*Poner una imagen de un perfil*/
                     imagen = 'https://www.w3schools.com/howto/img_avatar.png';
-
                 } else {
                     const baseUrl = window.location.origin;
                     /* Poner anexarle la baseURl a la imagen */
                     imagen = baseUrl + '/' + image;
                 }
 
-
-                // Otros atributos
+                document.getElementById('modalImage').src = imagen;
                 const name = this.getAttribute('data-name');
                 const current_vacation = this.getAttribute('data-current_vacation');
                 const current_vacation_expiration = this.getAttribute('data-current_vacation_expiration');
@@ -441,42 +436,27 @@
                 const reveal_id = this.getAttribute('data-reveal_id');
                 const file = this.getAttribute('data-file');
 
-                console.log('file', file);
-
                 if (file === 'No hay justificante' || file === '' || file === null || file === 'null' ||
                     file === undefined) {
-                    console.log('no hay justificante');
-                } else {
-                    console.log('si hay justificante');
-                }
-
-                if (file === 'No hay justificante' || file === '' || file === null || file === 'null' ||
-                    file === undefined) {
-
-                    // Crea la etiqueta <span> con el texto "No hay justificante"
                     const span = document.createElement('span');
                     span.textContent = 'No hay justificante';
-                    // Agrega el span al div
                     document.getElementById('viewFile').innerHTML = '';
                     document.getElementById('viewFile').appendChild(span);
-
                 } else {
                     const baseUrl = window.location.origin;
                     const viewFile = baseUrl + '/' + file;
-                    // Crea la etiqueta <a> y establece su href dinámicamente
                     const link = document.createElement('a');
                     link.id = 'file';
                     link.href = viewFile;
                     link.target = '_blank';
                     link.textContent = 'Ver archivo';
-                    // Agrega el enlace al div
                     document.getElementById('viewFile').innerHTML = '';
                     document.getElementById('viewFile').appendChild(link);
                 }
 
                 const timeText = this.getAttribute('data-timeArray')
-                const dataStar = this.getAttribute('data-start'); // Obtener la hora de salida
-                const dataEnd = this.getAttribute('data-end'); // Obtener la hora de regreso
+                const dataStar = this.getAttribute('data-start');
+                const dataEnd = this.getAttribute('data-end');
                 /*Para Ausencia*/
                 const valueType = this.getAttribute('data-value-type');
                 const tipoDeAusencia = this.getAttribute('data-tipo-de-ausencia');
@@ -551,10 +531,8 @@
                 }
 
                 document.getElementById('modalExpireNextVaca').textContent = formattedDate3;
-
                 document.getElementById('modalDirectManagerStatus').textContent = direct_manager_status;
                 const modalDirectManagerStatus = document.getElementById('modalDirectManagerStatus');
-                // Verificar el valor y asignar el contenido y las clases
                 if (direct_manager_status === 'Pendiente') {
                     modalDirectManagerStatus.textContent = 'Pendiente';
                     modalDirectManagerStatus.className = 'badge bg-warning text-dark';
@@ -574,7 +552,6 @@
 
                 document.getElementById('modalRhStatus').textContent = rh_status;
                 const modalRhStatus = document.getElementById('modalRhStatus');
-                // Verificar el valor y asignar el contenido y las clases
                 if (rh_status === 'Pendiente') {
                     modalRhStatus.textContent = 'Pendiente';
                     modalRhStatus.className = 'badge bg-warning text-dark';
@@ -591,7 +568,6 @@
                     modalRhStatus.textContent = 'Desconocido';
                     modalRhStatus.className = 'badge bg-secondary';
                 }
-                /*Tipo Especifico*/
                 if (request_type === 'Ausencia') {
                     document.getElementById('modalSpecificType').textContent = tipoDeAusencia;
                 } else if (request_type === 'Permisos especiales') {
@@ -607,10 +583,10 @@
             });
         });
 
+        // Evento para enviar el formulario de aprobación
         document.getElementById('approveButton').addEventListener('click', function() {
             document.getElementById('loadingSpinner').style.display = 'flex';
             const form = document.getElementById('miFormularioAprobar');
-            /*Mandar el ID de la solicitus que se va a aprobar del que viene en el modal*/
             const id = document.getElementById('modalId').textContent;
             const inputId = document.createElement('input');
             inputId.type = 'hidden';
@@ -620,51 +596,32 @@
             form.submit();
         });
 
-
-        // document.getElementById('denyButtonForm').addEventListener('click', function() {
-        //     document.getElementById('loadingSpinner').style.display = 'flex';
-
-        //     const form = document.getElementById('denyFormRequest');
-        //     /*Mandar el ID de la solicitus que se va a aprobar del que viene en el modal*/
-        //     const id = document.getElementById('modalId').textContent;
-        //     const inputId = document.createElement('input');
-        //     inputId.type = 'hidden';
-        //     inputId.name = 'id';
-        //     inputId.value = id;
-        //     form.appendChild(inputId);
-
-        //     form.submit();
-        // });
-
+        // Evento para abrir el modal de rechazo y enviar el formulario
         const formDeny = document.getElementById('denyFormRequest');
-
         formDeny.addEventListener('submit', function(event) {
             event.preventDefault();
-
             document.getElementById('loadingSpinner').style.display = 'flex';
             const form = document.getElementById('denyFormRequest');
-            /*Mandar el ID de la solicitus que se va a aprobar del que viene en el modal*/
             const id = document.getElementById('modalId').textContent;
             const inputId = document.createElement('input');
             inputId.type = 'hidden';
             inputId.name = 'id';
             inputId.value = id;
             form.appendChild(inputId);
-
             form.submit();
         });
 
-
+        // Evento para abrir el modal de rechazo
         document.getElementById('denyRequest').addEventListener('click', function() {
             $('#modalDetails').modal('hide');
             $('#modalDeny').modal({
-                backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
-                keyboard: false // Desactiva el cierre con la tecla "Esc"
+                backdrop: 'static',
+                keyboard: false
             }).modal('show');
         });
 
-        let tiempoEspera;
         //Filtrado de solicitudes
+        let tiempoEspera;
         document.getElementById('searchName').addEventListener('input', function() {
             clearTimeout(tiempoEspera);
             tiempoEspera = setTimeout(function() {
@@ -672,7 +629,6 @@
                 applyFilters();
             }, 750);
         });
-
 
         document.getElementById('tipoSelect').addEventListener('change', function() {
             applyFilters();
@@ -682,6 +638,7 @@
             applyFilters();
         });
 
+        // Limpiar los filtros
         document.getElementById('clearFilter').addEventListener('click', function() {
             document.getElementById('fechaInput').value = '';
             document.getElementById('tipoSelect').value = '';
@@ -689,14 +646,12 @@
             applyFilters();
         });
 
-        /*Funcion para aplicar los filtros*/
+        //Funcion para aplicar los filtros
         function applyFilters() {
             document.getElementById('loadingSpinner').style.display = 'flex';
-
             const tipo = document.getElementById('tipoSelect').value;
             const fecha = document.getElementById('fechaInput').value;
             const search = document.getElementById('searchName').value;
-
             let url = '?tipo=' + tipo + '&fecha=' + fecha + '&search=' + encodeURIComponent(search);
             window.location.href = url;
         }
@@ -709,8 +664,7 @@
         });
 
 
-
-
+        //Si en la url esta el parametro de search pasarlo al input de busqueda searchName
         const urlParams = new URLSearchParams(window.location.search);
         const search = urlParams.get('search');
         if (search) {
@@ -719,6 +673,7 @@
     </script>
 
     <style>
+        /*Estilos de las tarjetas*/
         .bg-success {
             background-color: #81C10C !important;
         }
@@ -749,7 +704,6 @@
             background-color: #fff3cd !important;
             border-color: #ffecb5 !important;
         }
-
 
         /*Estilos de paginacion*/
         .pagination {

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    {{-- alertas --}}
     @if (session('message'))
         <div id="alert-succ" class="alert alert-success">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="26" height="26"
@@ -34,6 +35,7 @@
     @endif
 
     <div>
+        {{-- Spinner de carga --}}
         <div id="loadingSpinner"
             style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255, 255, 255, 0.8); z-index:9999; justify-content:center; align-items:center;">
             <div class="spinner-border text-primary" role="status">
@@ -43,7 +45,7 @@
         <div class="d-flex justify-content-between mb-2">
             <h3 id="titlePage">Solicitudes autorizadas</h3>
 
-
+            {{-- Botón para exportar a excel --}}
             <div id="exporTable">
                 {!! Form::open(['route' => 'request.export', 'id' => 'exportForm']) !!}
                 <button id="buttonExpor" type="submit" class="btn btn-success"
@@ -51,7 +53,10 @@
                 {!! Form::close() !!}
             </div>
         </div>
+
+
         <div class="row">
+            {{-- Filtros de búsqueda --}}
             <div class="col-5 align-content-end">
                 <div class="row">
                     <div class="col-4">
@@ -73,7 +78,6 @@
                         </select>
                     </div>
 
-
                     <div class="col-3 d-flex align-items-center justify-content-center">
                         <input id="fechaInput" type="date" class="form-control" value="{{ request('fecha') }}"
                             style="width: 2.8rem" />
@@ -82,6 +86,8 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Tarjetas  --}}
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">
@@ -124,9 +130,8 @@
             </div>
 
 
-
+            {{-- Tabla para autorizadas --}}
             <div class="mt-3" style="min-width: 100% !important;">
-                {{-- Tabla para autorizadas --}}
                 <div id="tableAutorizadas">
                     <table class="table" style="min-width: 100% !important;">
                         <thead style="background-color: #072A3B; color: white;">
@@ -374,8 +379,8 @@
     </div>
 @stop
 
-
 @section('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/modul_rh.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/fontawesome/all.min.css') }}">
     <style>
         table.dataTable td {
@@ -386,237 +391,22 @@
             font-size: 24px;
         }
     </style>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />x1
-
-    <style>
-        .tarjetaRh1 {
-            border: 0px solid rgb(243, 243, 243);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .tarjetaRh1:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .tarjetaRh1 strong {
-            color: var(--color-target-1);
-        }
-
-        .tarjetaRh1-activa {
-            background-color: var(--color-target-1);
-            color: white;
-        }
-
-        .tarjetaRh1-activa strong {
-            color: white;
-        }
-
-        .tarjetaRh2 {
-            border: 0px solid rgb(243, 243, 243);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .tarjetaRh2:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .tarjetaRh2 strong {
-            color: var(--color-target-3);
-        }
-
-        .tarjetaRh2-activa {
-            background-color: var(--color-target-3);
-            color: white;
-        }
-
-        .tarjetaRh2-activa strong {
-            color: white;
-        }
-
-        .tarjetaRh3 {
-            border: 0px solid rgb(243, 243, 243);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .tarjetaRh3:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .tarjetaRh3 strong {
-            color: var(--color-target-4);
-        }
-
-        .tarjetaRh3-activa {
-            background-color: var(--color-target-4);
-            color: white !important;
-        }
-
-        .tarjetaRh3-activa strong {
-            color: white;
-        }
-
-        .hover-tarjetaRh1:hover {
-            background-color: var(--color-target-1);
-            color: white;
-        }
-
-        .hover-tarjetaRh1:hover strong {
-            color: white;
-        }
-
-        .hover-tarjetaRh2:hover {
-            background-color: var(--color-target-3);
-            /*Degradar el color*/
-            color: white;
-        }
-
-        .hover-tarjetaRh2:hover strong {
-            color: white;
-        }
-
-        .hover-tarjetaRh3:hover {
-            background-color: var(--color-target-4);
-            color: white;
-        }
-
-        .hover-tarjetaRh3:hover strong {
-            color: white;
-        }
-
-
-        /*Color para el badge de aprobado*/
-        .bg-success {
-            background-color: #81C10C !important;
-        }
-
-        .bg-warning {
-            background-color: #FFC107 !important;
-        }
-
-        /*Estilos de las alertas*/
-        .alert {
-            padding: 0.7rem !important;
-        }
-
-        .alert-success {
-            color: #0f5132 !important;
-            background-color: #d1e7dd !important;
-            border-color: #badbcc !important;
-        }
-
-        .alert-danger {
-            color: #C10C0C !important;
-            background-color: #f8d7da !important;
-            border-color: #f5c2c7 !important;
-        }
-
-        .alert-warning {
-            color: #664d03 !important;
-            background-color: #fff3cd !important;
-            border-color: #ffecb5 !important;
-        }
-
-
-        /*Estilos de paginacion*/
-        .pagination {
-            display: flex;
-            justify-content: end;
-
-        }
-
-        .page-item .page-link {
-            font-size: .875rem;
-            border-color: transparent;
-        }
-
-        .page-item.active .page-link {
-            background-color: #435ebe;
-            border-color: #435ebe;
-            color: #fff;
-            z-index: 3;
-            border-radius: 27px;
-        }
-
-        .page-item.disabled .page-link {
-            background-color: #fff;
-            color: #6c757d;
-            pointer-events: none;
-            border-color: transparent;
-        }
-
-        /*Estilo para spin de carga*/
-        #loadingSpinner {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-        }
-    </style>
 @stop
 
 @section('scripts')
-
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#select2').select2();
-        });
-    </script>
 
     <script>
-        function viewFileDeny(file) {
-            console.log('file', file);
-            const correctedFile = file.replace(/\\/g, '/');
-
-            const baseUrl = window.location.origin;
-
-            const fileUrl = baseUrl + '/' + correctedFile;
-
-            window.open(fileUrl, '_blank');
-        }
-
-
-
-
-        //Poner por defecto la tarjeta 1 activa
+        //Tarjeta activa por defecto
         document.getElementById('tarjeta1').classList.add('tarjetaRh1-activa');
 
-
+        //Evento de la tarjeta 2
         document.getElementById('tarjeta2').addEventListener('click', function() {
-
             document.getElementById('loadingSpinner').style.display = 'flex';
-
             window.location.href = '/request/authorize-rh/pendientes';
-
         });
 
+        //Evento de la tarjeta 3
         document.getElementById('tarjeta3').addEventListener('click', function() {
             document.getElementById('loadingSpinner').style.display = 'flex';
             window.location.href = '/request/authorize-rh/rechazadas';
@@ -766,10 +556,9 @@
                 }
 
                 document.getElementById('secondariPeriodo').textContent = formattedDate3;
-
                 document.getElementById('modalDirectManagerStatus').textContent = direct_manager_status;
                 const modalDirectManagerStatus = document.getElementById('modalDirectManagerStatus');
-                // Verificar el valor y asignar el contenido y las clases
+
                 if (direct_manager_status === 'Pendiente') {
                     modalDirectManagerStatus.textContent = 'Pendiente';
                     modalDirectManagerStatus.className = 'badge bg-warning text-dark';
@@ -784,10 +573,9 @@
                     modalDirectManagerStatus.className = 'badge bg-secondary';
                 }
 
-
                 document.getElementById('modalRhStatus').textContent = rh_status;
                 const modalRhStatus = document.getElementById('modalRhStatus');
-                // Verificar el valor y asignar el contenido y las clases
+
                 if (rh_status === 'Pendiente') {
                     modalRhStatus.textContent = 'Pendiente';
                     modalRhStatus.className = 'badge bg-warning text-dark';
@@ -825,8 +613,8 @@
 
         });
 
-        let tiempoEspera;
         //Filtrado de solicitudes
+        let tiempoEspera;
         document.getElementById('searchName').addEventListener('input', function() {
             clearTimeout(tiempoEspera);
             tiempoEspera = setTimeout(function() {
@@ -834,7 +622,6 @@
                 applyFilters();
             }, 750);
         });
-
 
         document.getElementById('tipoSelect').addEventListener('change', function() {
             applyFilters();
@@ -844,6 +631,7 @@
             applyFilters();
         });
 
+        /*Limpiar los filtros de busqueda */
         document.getElementById('clearFilter').addEventListener('click', function() {
             document.getElementById('fechaInput').value = '';
             document.getElementById('tipoSelect').value = '';
@@ -851,10 +639,9 @@
             applyFilters();
         });
 
-        /*Funcion para aplicar los filtros*/
+        /*Funcion para aplicar los filtros de busqueda */
         function applyFilters() {
             document.getElementById('loadingSpinner').style.display = 'flex';
-
             const tipo = document.getElementById('tipoSelect').value;
             const fecha = document.getElementById('fechaInput').value;
             const search = document.getElementById('searchName').value;
@@ -870,8 +657,6 @@
             });
         });
 
-
-
         //Si en la url esta el parametro de search pasarlo al input de busqueda searchName
         const urlParams = new URLSearchParams(window.location.search);
         const search = urlParams.get('search');
@@ -879,11 +664,10 @@
             document.getElementById('searchName').value = search;
         }
 
-
+        //Petición para exportar a excel
         document.getElementById('exportForm').addEventListener('submit', function(e) {
             e.preventDefault();
             document.getElementById('loadingSpinner').style.display = 'flex';
-
             axios({
                 method: 'post',
                 url: this.action,

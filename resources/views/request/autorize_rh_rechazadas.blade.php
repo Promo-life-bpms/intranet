@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    {{-- Alertas --}}
     @if (session('message'))
         <div id="alert-succ" class="alert alert-success">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="26" height="26"
@@ -34,6 +35,7 @@
     @endif
 
     <div>
+        {{-- Spinner de carga --}}
         <div id="loadingSpinner"
             style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255, 255, 255, 0.8); z-index:9999; justify-content:center; align-items:center;">
             <div class="spinner-border text-primary" role="status">
@@ -198,219 +200,15 @@
 
 
 @section('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/modul_rh.css') }}">
+
     <link rel="stylesheet" href="{{ asset('assets/vendors/fontawesome/all.min.css') }}">
-    <style>
-        table.dataTable td {
-            padding: 15px 8px;
-        }
 
-        .fontawesome-icons .the-icon svg {
-            font-size: 24px;
-        }
-    </style>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />x1
-
-    <style>
-        .tarjetaRh1 {
-            border: 0px solid rgb(243, 243, 243);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .tarjetaRh1:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .tarjetaRh1 strong {
-            color: var(--color-target-1);
-        }
-
-        .tarjetaRh1-activa {
-            background-color: var(--color-target-1);
-            color: white;
-        }
-
-        .tarjetaRh1-activa strong {
-            color: white;
-        }
-
-        .tarjetaRh2 {
-            border: 0px solid rgb(243, 243, 243);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .tarjetaRh2:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .tarjetaRh2 strong {
-            color: var(--color-target-3);
-        }
-
-        .tarjetaRh2-activa {
-            background-color: var(--color-target-3);
-            color: white;
-        }
-
-        .tarjetaRh2-activa strong {
-            color: white;
-        }
-
-        .tarjetaRh3 {
-            border: 0px solid rgb(243, 243, 243);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .tarjetaRh3:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .tarjetaRh3 strong {
-            color: var(--color-target-4);
-        }
-
-        .tarjetaRh3-activa {
-            background-color: var(--color-target-4);
-            color: white !important;
-        }
-
-        .tarjetaRh3-activa strong {
-            color: white;
-        }
-
-        .hover-tarjetaRh1:hover {
-            background-color: var(--color-target-1);
-            color: white;
-        }
-
-        .hover-tarjetaRh1:hover strong {
-            color: white;
-        }
-
-        .hover-tarjetaRh2:hover {
-            background-color: var(--color-target-3);
-            /*Degradar el color*/
-            color: white;
-        }
-
-        .hover-tarjetaRh2:hover strong {
-            color: white;
-        }
-
-        .hover-tarjetaRh3:hover {
-            background-color: var(--color-target-4);
-            color: white;
-        }
-
-        .hover-tarjetaRh3:hover strong {
-            color: white;
-        }
-
-
-        /*Color para el badge de aprobado*/
-        .bg-success {
-            background-color: #81C10C !important;
-        }
-
-        .bg-warning {
-            background-color: #FFC107 !important;
-        }
-
-        /*Estilos de las alertas*/
-        .alert {
-            padding: 0.7rem !important;
-        }
-
-        .alert-success {
-            color: #0f5132 !important;
-            background-color: #d1e7dd !important;
-            border-color: #badbcc !important;
-        }
-
-        .alert-danger {
-            color: #C10C0C !important;
-            background-color: #f8d7da !important;
-            border-color: #f5c2c7 !important;
-        }
-
-        .alert-warning {
-            color: #664d03 !important;
-            background-color: #fff3cd !important;
-            border-color: #ffecb5 !important;
-        }
-
-
-        /*Estilos de paginacion*/
-        .pagination {
-            display: flex;
-            justify-content: end;
-
-        }
-
-        .page-item .page-link {
-            font-size: .875rem;
-            border-color: transparent;
-        }
-
-        .page-item.active .page-link {
-            background-color: #435ebe;
-            border-color: #435ebe;
-            color: #fff;
-            z-index: 3;
-            border-radius: 27px;
-        }
-
-        .page-item.disabled .page-link {
-            background-color: #fff;
-            color: #6c757d;
-            pointer-events: none;
-            border-color: transparent;
-        }
-
-        /*Estilo para spin de carga*/
-        #loadingSpinner {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-        }
-    </style>
 @stop
 
 @section('scripts')
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#select2').select2();
-        });
-    </script>
 
     <script>
         function viewFileDeny(file) {
@@ -421,7 +219,6 @@
             window.open(fileUrl, '_blank');
         }
 
-
         //Poner por defecto la tarjeta 1 activa
         document.getElementById('tarjeta3').classList.add('tarjetaRh3-activa');
 
@@ -430,14 +227,12 @@
             window.location.href = '/request/authorize-rh/aprobadas';
         });
 
-
         document.getElementById('tarjeta2').addEventListener('click', function() {
             document.getElementById('loadingSpinner').style.display = 'flex';
             window.location.href = '/request/authorize-rh/pendientes';
         });
 
         let tiempoEspera;
-        //Filtrado de solicitudes
         document.getElementById('searchName').addEventListener('input', function() {
             clearTimeout(tiempoEspera);
             tiempoEspera = setTimeout(function() {
@@ -445,7 +240,6 @@
                 applyFilters();
             }, 750);
         });
-
 
         document.getElementById('tipoSelect').addEventListener('change', function() {
             applyFilters();
