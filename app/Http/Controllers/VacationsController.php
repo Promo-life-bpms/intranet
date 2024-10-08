@@ -126,10 +126,10 @@ class VacationsController extends Controller
         return redirect()->action([VacationsController::class, 'edit'], ['user' => $vacation->users_id]);
     } */
 
-    /* public function export()
+    public function export()
     {
         return Excel::download(new VacationsExport, 'vacaciones.xlsx');
-    } */
+    }
 
     // Funciones para el calculo de vacaciones
     /**
