@@ -41,15 +41,7 @@
         </div>
 
         <div class="d-flex justify-content-between mb-2">
-            <h3 id="titlePage">Solicitudes autorizadas</h3>
-
-
-            <div id="exporTable">
-                {!! Form::open(['route' => 'request.export', 'id' => 'exportForm']) !!}
-                <button id="buttonExpor" type="submit" class="btn btn-success"
-                    style="margin-left: 20px; background-color: #81C10C !important; border-color: #81C10C !important; ">Exportar</button>
-                {!! Form::close() !!}
-            </div>
+            <h3>Solicitudes pendientes</h3>
         </div>
         <div class="row">
             <div class="col-5 align-content-end">
@@ -126,108 +118,10 @@
 
 
             <div class="mt-3" style="min-width: 100% !important;">
-                {{-- Tabla para autorizadas --}}
-                <div id="tableAutorizadas">
-                    <table class="table" style="min-width: 100% !important;">
-                        <thead style="background-color: #072A3B; color: white;">
-                            <tr>
-                                <th scope="col" style="text-align: center;">#</th>
-                                <th scope="col" style="text-align: center;">Solicitante</th>
-                                <th scope="col" style="text-align: center;">Tipo de solicitud</th>
-                                <th scope="col" style="text-align: center;">Días ausente</th>
-                                <th scope="col" style="text-align: center;">Aprobado por (Jefe)</th>
-                                <th scope="col" style="text-align: center;">Aprobado por (RH)</th>
-                                <th scope="col" style="text-align: center;">Detalles</th>
-                            </tr>
-                        </thead>
 
-                        <tbody>
-                            @if (count($Aprobadas) == 0)
-                                <tr>
-                                    <td colspan="7" style="text-align: center;">No tienes solicitudes</td>
-                                </tr>
-                            @endif
-                            @foreach ($Aprobadas as $aprovada)
-                                <tr class="solicitud-row1" data-days1="{{ implode(',', $aprovada->days_absent) }}">
-                                    <th style="text-align: center; align-content: center;" scope="row">
-                                        {{ $aprovada->id }}</th>
-                                    <td style="text-align: center;">{{ $aprovada->name }}</td>
-                                    <td style="text-align: center;">{{ $aprovada->request_type }}</td>
-                                    <td style="text-align: center;">
-                                        @foreach ($aprovada->days_absent as $day)
-                                            <div>
-                                                {{ $day }}
-                                            </div>
-                                        @endforeach
-                                    </td>
-                                    <td style="text-align: center;">
-                                        @if ($aprovada->direct_manager_status == 'Pendiente')
-                                            <span class="badge bg-warning text-dark">
-                                                {{ $aprovada->direct_manager_status }}
-                                            </span>
-                                        @elseif ($aprovada->direct_manager_status == 'Aprobada')
-                                            <span class="badge bg-success text-white">
-                                                {{ $aprovada->direct_manager_status }}
-                                            </span>
-                                        @else
-                                            <span class="badge bg-danger text-white">
-                                                {{ $aprovada->direct_manager_status }}
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td style="text-align: center;">
-                                        @if ($aprovada->rh_status == 'Pendiente')
-                                            <span class="badge bg-warning text-dark">
-                                                {{ $aprovada->rh_status }}
-                                            </span>
-                                        @elseif ($aprovada->rh_status == 'Aprobada')
-                                            <span class="badge bg-success text-white">
-                                                {{ $aprovada->rh_status }}
-                                            </span>
-                                        @else
-                                            <span class="badge bg-danger text-white">
-                                                {{ $aprovada->rh_status }}
-                                            </span>
-                                        @endif
-                                    </td>
-
-                                    <td style="text-align: center; cursor: pointer;">
-                                        <button class="btn btn-link openModalDetails" data-id="{{ $aprovada->id }}"
-                                            data-crete="{{ $aprovada->created_at }}" data-name="{{ $aprovada->name }}"
-                                            data-image="{{ $aprovada->image }}"
-                                            data-current_vacation="{{ $aprovada->current_vacation }}"
-                                            data-current_vacation_expiration="{{ $aprovada->current_vacation_expiration }}"
-                                            data-next_vacation="{{ $aprovada->next_vacation }}"
-                                            data-expiration_of_next_vacation="{{ $aprovada->expiration_of_next_vacation }}"
-                                            data-direct_manager_status="{{ $aprovada->direct_manager_status }}"
-                                            data-rh_status="{{ $aprovada->rh_status }}"
-                                            data-request_type="{{ $aprovada->request_type }}"
-                                            data-specific_type="{{ $aprovada->specific_type }}"
-                                            data-days_absent="{{ implode(',', $aprovada->days_absent) }}"
-                                            data-timeArray="{{ is_Array($aprovada->time) ? 'true' : 'false' }}"
-                                            data-start="{{ $aprovada->time ? $aprovada->time[0]['start'] : '12:00' }}"
-                                            data-end="{{ $aprovada->time ? $aprovada->time[0]['end'] : '12:00' }}"
-                                            {{-- Para Ausencia --}}
-                                            data-value-type="{{ is_array($aprovada->more_information) && count($aprovada->more_information) > 0 && isset($aprovada->more_information[0]['value_type']) ? $aprovada->more_information[0]['value_type'] : '0' }}"
-                                            data-tipo-de-ausencia="{{ is_array($aprovada->more_information) && isset($aprovada->more_information[0]['Tipo_de_ausencia']) ? $aprovada->more_information[0]['Tipo_de_ausencia'] : '-' }}"
-                                            {{-- Para permisos especiales --}}
-                                            data-tipo-permiso-especial="{{ is_array($aprovada->more_information) && count($aprovada->more_information) > 0 && isset($aprovada->more_information[0]['Tipo_de_permiso_especial']) ? $aprovada->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
-                                            data-reveal_id="{{ $aprovada->reveal_id }}"
-                                            data-file="{{ $aprovada->file }}">Ver</button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    @if (count($Aprobadas) > 0)
-                        <div class="d-flex justify-content-end">
-                            {{ $Aprobadas->appends(request()->input())->links() }}
-                        </div>
-                    @endif
-                </div>
 
                 {{-- Tabla para pendientes --}}
-                <div id="tablePendientes" style="display: none">
+                <div id="tablePendientes">
                     <table class="table" style="min-width: 100% !important;">
                         <thead style="background-color: #072A3B; color: white;">
                             <tr>
@@ -309,96 +203,6 @@
                     @endif
                 </div>
 
-                {{-- Tabla para canceladas por el usuario --}}
-                <div id="tableCanceladas" style="display: none">
-                    {{-- <div id="buttonUpdateDays" class="d-flex justify-content-end mb-2">
-                        <button id="buttonReposicion" class="btn"
-                            style="background-color: var(--color-target-1); color: white; ">Reposición</button>
-                    </div> --}}
-                    <table class="table" id="tableCanceladas" style="min-width: 100% !important;">
-                        <thead style="background-color: #072A3B; color: white;">
-                            <tr>
-                                <th scope="col" style="text-align: center;">#</th>
-                                <th scope="col" style="text-align: center;">Solicitante</th>
-                                <th scope="col" style="text-align: center;">Tipo de solicitud</th>
-                                <th scope="col" style="text-align: center;">Días ausente</th>
-                                <th scope="col" style="text-align: center;">Justificante</th>
-                                <th scope="col" style="text-align: center;">Motivo</th>
-                                <th scope="col" style="text-align: center;">Estado</th>
-                                {{-- <th scope="col" style="text-align: center;">Acciones</th> --}}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (count($rechazadas) == 0)
-                                <tr>
-                                    <td colspan="7" style="text-align: center;">No tienes solicitudes</td>
-                                </tr>
-                            @endif
-                            @foreach ($rechazadas as $rechazada)
-                                <tr class="solicitud-row3" data-days3="{{ implode(',', $rechazada->days_absent) }}">
-                                    <th style="text-align: center; align-content: center;" scope="row">
-                                        {{ $rechazada->id }}</th>
-                                    <td style="text-align: center;">{{ $rechazada->name }}</td>
-                                    <td style="text-align: center;">{{ $rechazada->request_type }}</td>
-                                    <td style="text-align: center;">
-                                        @foreach ($rechazada->days_absent as $day)
-                                            <div>
-                                                {{ $day }}
-                                            </div>
-                                        @endforeach
-                                    </td>
-
-
-                                    <td style="text-align: center;">
-                                        @if ($rechazada->file == null || $rechazada->file == '' || $rechazada->file == 'null' || $rechazada->file == 'undefined')
-                                            <span>Sin archivo</span>
-                                        @else
-                                            <button type="button" id="file-link-{{ $rechazada->file }}"
-                                                class="btn btn-link"
-                                                onclick="viewFileDeny({{ json_encode($rechazada->file) }})">Ver
-                                                archivo</button>
-                                        @endif
-
-                                    </td>
-                                    <td style="text-align: center;">
-                                        {{ $rechazada->commentary }}
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <span class="badge bg-danger text-white">
-                                            {{ $rechazada->rh_status }}
-                                        </span>
-                                    </td>
-
-                                    {{-- <td style="text-align: center;">
-                                        <!-- Formulario para rechazar -->
-                                        <form action="{{ route('confirm.rejected.by.rh') }}" method="POST"
-                                            style="display:inline;">
-                                            @csrf
-                                            <input type="hidden" name="id" value="{{ $rechazada->id }}">
-                                            <input type="hidden" name="value" value="rechazada">
-                                            <button type="submit" class="btn btn-danger mr-1 mb-1">Rechazar</button>
-                                        </form>
-
-                                        <!-- Formulario para aceptar -->
-                                        <form action="{{ route('confirm.rejected.by.rh') }}" method="POST"
-                                            style="display:inline;">
-                                            @csrf
-                                            <input type="hidden" name="id" value="{{ $rechazada->id }}">
-                                            <input type="hidden" name="value" value="aprobada">
-                                            <button type="submit" class="btn btn-primary mb-1">Aceptar</button>
-                                        </form>
-                                    </td> --}}
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-
-                    @if (count($rechazadas) > 0)
-                        <div class="d-flex justify-content-end">
-                            {{ $rechazadas->appends(request()->input())->links() }}
-                        </div>
-                    @endif
-                </div>
             </div>
         </div>
 
@@ -558,91 +362,6 @@
                             <div class="d-flex justify-content-end mt-2">
                                 <button type="submit" class="btn btn-primary" id="denyButtonForm">Enviar</button>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Modal para reposición -->
-        <div class="modal fade bd-example-modal-lg" id="modalReposicion" tabindex="-1" role="dialog"
-            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">Aumento/Descuento de días</h5>
-                        <button id="ButtonCloseReposicion" type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="make/up/vacations" method="POST" id="formReposicion">
-                            @csrf
-                            <div class="row">
-                                <div class="col-12 mb-3">
-                                    <span>Selecciona usuarios:</span>
-                                    <select name="team[]" class="form-select" multiple
-                                        data-placeholder="Selecciona Usuarios" id="select2" data-coreui-search="true"
-                                        style="width: 100%">
-                                        @foreach ($IdandNameUser as $user)
-                                            <option value="{{ $user['id'] }}">{{ $user['name'] }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-4">
-                                    <span>Días: </span>
-                                    <input name='days' id="days" type="number" min="0"
-                                        class="form-control" placeholder="Días">
-                                </div>
-
-                                <div class="col-4">
-                                    <div class="mr-4 mb-3">
-                                        <span>Periodo: </span>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="Periodo"
-                                                id="primer_periodo" value="primer_periodo">
-                                            <label class="form-check-label" for="primer_periodo">
-                                                Viejo
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="Periodo"
-                                                id="segundo_periodo" value="segundo_periodo">
-                                            <label class="form-check-label" for="segundo_periodo">
-                                                Nuevo
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-4">
-                                    <div class="mr-4 mb-3">
-                                        <span>Opción: </span>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="Opcion"
-                                                id="aumentar_dias" value="aumentar_dias">
-                                            <label class="form-check-label" for="aumentar_dias">
-                                                Aumentar
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="Opcion"
-                                                id="descontar_dias" value="descontar_dias">
-                                            <label class="form-check-label" for="descontar_dias">
-                                                Descontar
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-12">
-                                    <textarea style="min-width: 100%" class="form-control mt-2" id="commentary" name="commentary" placeholder="Motivo"
-                                        required></textarea>
-                                </div>
-
-                                <div class="d-flex justify-content-end mt-2">
-                                    <button id="acepForm" class="btn btn-primary" type="submit">Aceptar</button>
-                                </div>
                         </form>
                     </div>
                 </div>
@@ -869,34 +588,6 @@
     </script>
 
     <script>
-        function viewFileDeny(file) {
-            console.log('file', file);
-            const correctedFile = file.replace(/\\/g, '/');
-
-            const baseUrl = window.location.origin;
-
-            const fileUrl = baseUrl + '/' + correctedFile;
-
-            window.open(fileUrl, '_blank');
-        }
-
-
-        /*Rechazar solicitud*/
-        // document.getElementById('denyButtonForm').addEventListener('click', function() {
-        //     document.getElementById('loadingSpinner').style.display = 'flex';
-
-        //     const form = document.getElementById('denyFormRequest');
-        //     /*Mandar el ID de la solicitus que se va a aprobar del que viene en el modal*/
-        //     const id = document.getElementById('modalId').textContent;
-        //     const inputId = document.createElement('input');
-        //     inputId.type = 'hidden';
-        //     inputId.name = 'id';
-        //     inputId.value = id;
-        //     form.appendChild(inputId);
-
-        //     form.submit();
-        // });
-
         formDeny = document.getElementById('denyFormRequest');
 
         formDeny.addEventListener('submit', function(event) {
@@ -919,64 +610,21 @@
             document.getElementById('commentary').value = '';
         });
 
-        /*Limpiar ek formulario de agregar o quitar dias*/
-        document.getElementById('ButtonCloseReposicion').addEventListener('click', function() {
-            const form = document.getElementById('formReposicion');
-            form.reset();
-            // Limpiar el select múltiple de Select2
-            $('#select2').val(null).trigger('change'); // Con jQuery y Select2
-        });
-
 
         //Poner por defecto la tarjeta 1 activa
-        document.getElementById('tarjeta1').classList.add('tarjetaRh1-activa');
+        document.getElementById('tarjeta2').classList.add('tarjetaRh2-activa');
 
         document.getElementById('tarjeta1').addEventListener('click', function() {
-            this.classList.toggle('tarjetaRh1-activa');
-            ///Y removemos la clase activa de las otras tarjetas
-            document.getElementById('tarjeta2').classList.remove('tarjetaRh2-activa');
-            document.getElementById('tarjeta3').classList.remove('tarjetaRh3-activa');
-            ///Mostrar tabla de autorizadas
-            document.getElementById('tableAutorizadas').style.display = 'block';
-            document.getElementById('tablePendientes').style.display = 'none';
-            document.getElementById('tableCanceladas').style.display = 'none';
+            document.getElementById('loadingSpinner').style.display = 'flex';
 
-
-            //Cambiar titulo de la pagina
-            document.getElementById('titlePage').innerHTML = 'Solicitudes autorizadas';
-            document.getElementById('exporTable').style.display = 'block';
-        });
-
-
-        document.getElementById('tarjeta2').addEventListener('click', function() {
-            this.classList.toggle('tarjetaRh2-activa');
-            ///Y removemos la clase activa de las otras tarjetas
-            document.getElementById('tarjeta1').classList.remove('tarjetaRh1-activa');
-            document.getElementById('tarjeta3').classList.remove('tarjetaRh3-activa');
-            ///Mostrar tabla de pendientes
-            document.getElementById('tableAutorizadas').style.display = 'none';
-            document.getElementById('tablePendientes').style.display = 'block';
-            document.getElementById('tableCanceladas').style.display = 'none';
-
-
-            //Cambiar titulo de la pagina
-            document.getElementById('titlePage').innerHTML = 'Solicitudes pendientes';
-            document.getElementById('exporTable').style.display = 'none';
+            window.location.href = '/request/authorize-rh/aprobadas';
         });
 
         document.getElementById('tarjeta3').addEventListener('click', function() {
-            this.classList.toggle('tarjetaRh3-activa');
-            ///Y removemos la clase activa de las otras tarjetas
-            document.getElementById('tarjeta1').classList.remove('tarjetaRh1-activa');
-            document.getElementById('tarjeta2').classList.remove('tarjetaRh2-activa');
-            ///Mostrar tabla de canceladas
-            document.getElementById('tableAutorizadas').style.display = 'none';
-            document.getElementById('tablePendientes').style.display = 'none';
-            document.getElementById('tableCanceladas').style.display = 'block';
+            document.getElementById('loadingSpinner').style.display = 'flex';
 
-            //Cambiar titulo de la pagina
-            document.getElementById('titlePage').innerHTML = 'Solicitudes canceladas por el usuario';
-            document.getElementById('exporTable').style.display = 'none';
+            window.location.href = '/request/authorize-rh/rechazadas';
+
         });
 
         // Evento cuando se hace clic en el botón para abrir el modal

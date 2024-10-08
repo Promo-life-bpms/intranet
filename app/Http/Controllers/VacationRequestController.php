@@ -1750,7 +1750,314 @@ class VacationRequestController extends Controller
         return view('request.authorize', compact('solicitudes', 'SumaSolicitudes'));
     }
 
-    public function authorizeRequestRH(Request $request)
+    // public function authorizeRequestRH(Request $request)
+    // {
+    //     $user = auth()->user();
+
+    //     $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->orderBy('created_at', 'desc')->get();
+    //     $sumaAprobadas = count($Solicitudes);
+
+    //     // $SolicitudesAprobadas = [];
+    //     $solicitudesAprobadasCollection = $Solicitudes->map(function ($Solicitud) {
+    //         $nameUser = User::where('id', $Solicitud->user_id)->first();
+    //         $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
+    //         $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
+    //         $Reveal = User::where('id', $Solicitud->reveal_id)->first();
+
+    //         $dias = [];
+    //         foreach ($Days as $Day) {
+    //             $dias[] = $Day->day;
+    //         }
+
+    //         // Ordenar las fechas de la más cercana a la más lejana
+    //         usort($dias, function ($a, $b) {
+    //             return strtotime($a) - strtotime($b);
+    //         });
+
+    //         $time = [];
+    //         foreach ($Days as $Day) {
+    //             $time[] = [
+    //                 'start' => Carbon::parse($Day->start)->format('H:i'),
+    //                 'end' => Carbon::parse($Day->end)->format('H:i')
+    //             ];
+    //         }
+
+    //         $fechaActual = Carbon::now();
+    //         $Vacaciones = DB::table('vacations_available_per_users')
+    //             ->where('users_id', $Solicitud->user_id)
+    //             ->where('cutoff_date', '>=', $fechaActual)
+    //             ->orderBy('cutoff_date', 'asc')
+    //             ->get();
+    //         $Datos = [];
+    //         foreach ($Vacaciones as $vaca) {
+    //             $Datos[] = [
+    //                 'dv' => $vaca->dv,
+    //                 'cutoff_date' => $vaca->cutoff_date,
+    //             ];
+    //         }
+
+    //         $solicitudesAprobadas = new \stdClass();
+    //         $solicitudesAprobadas->image = $nameUser->image;
+    //         $solicitudesAprobadas->created_at = $Solicitud->created_at;
+    //         $solicitudesAprobadas->id = $Solicitud->id;
+    //         $solicitudesAprobadas->name = $nameUser->name . ' ' . $nameUser->lastname;
+    //         $solicitudesAprobadas->current_vacation = $Datos[0]['dv'];
+    //         $solicitudesAprobadas->current_vacation_expiration = $Datos[0]['cutoff_date'];
+    //         $solicitudesAprobadas->next_vacation =  empty($Datos[1]['dv']) ? null : $Datos[1]['dv'];
+    //         $solicitudesAprobadas->expiration_of_next_vacation = empty($Datos[1]['cutoff_date']) ? null : $Datos[1]['cutoff_date'];
+    //         $solicitudesAprobadas->direct_manager_status = $Solicitud->direct_manager_status;
+    //         $solicitudesAprobadas->rh_status = $Solicitud->rh_status;
+    //         $solicitudesAprobadas->request_type = $RequestType->type;
+    //         $solicitudesAprobadas->specific_type = $RequestType->type == 1 ?: '-';
+    //         $solicitudesAprobadas->days_absent = $dias;
+    //         $solicitudesAprobadas->method_of_payment = $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro'))));
+    //         $solicitudesAprobadas->reveal_id = $Reveal->name . ' ' . $Reveal->lastname;
+    //         $solicitudesAprobadas->file = $Solicitud->file == null ? null : $Solicitud->file;
+    //         $solicitudesAprobadas->time = in_array($Solicitud->request_type_id, [2]) ? $time : null;
+    //         $solicitudesAprobadas->more_information = $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true);
+    //         return $solicitudesAprobadas;
+    //     });
+
+    //     if ($request->filled('search')) {
+    //         $solicitudesAprobadasCollection = $solicitudesAprobadasCollection->filter(function ($solicitud) use ($request) {
+    //             return stripos($solicitud->name, $request->search) !== false;
+    //         });
+    //     }
+
+    //     if ($request->has('tipo') && $request->tipo != '') {
+    //         $solicitudesAprobadasCollection = $solicitudesAprobadasCollection->filter(function ($solicitud) use ($request) {
+    //             return $solicitud->request_type == $request->tipo;
+    //         });
+    //     }
+    //     if ($request->has('fecha') && $request->fecha != '') {
+    //         $solicitudesAprobadasCollection = $solicitudesAprobadasCollection->filter(function ($solicitud) use ($request) {
+    //             return in_array($request->fecha, $solicitud->days_absent);
+    //         });
+    //     }
+
+
+    //     $page = $request->get('page', 1);
+    //     $perPage = 5;
+    //     $Aprobadas = new LengthAwarePaginator(
+    //         $solicitudesAprobadasCollection->forPage($page, $perPage),
+    //         $solicitudesAprobadasCollection->count(),
+    //         $perPage,
+    //         $page,
+    //         ['path' => $request->url(), 'query' => $request->query()]
+    //     );
+
+
+
+    //     $SolicitudesPendientes = DB::table('vacation_requests')
+    //         ->where('direct_manager_status', 'Aprobada')
+    //         ->where('rh_status', 'Pendiente')
+    //         ->orderBy('created_at', 'desc');
+    //     $sumaPendientes = count($SolicitudesPendientes->get());
+
+    //     $solicitudesPendientesCollection = $SolicitudesPendientes->get()->map(function ($Solicitud) {
+    //         $nameUser = User::where('id', $Solicitud->user_id)->first();
+    //         $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
+    //         $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
+    //         $Reveal = User::where('id', $Solicitud->reveal_id)->first();
+
+    //         $dias = [];
+    //         foreach ($Days as $Day) {
+    //             $dias[] = $Day->day;
+    //         }
+
+    //         // Ordenar las fechas de la más cercana a la más lejana
+    //         usort($dias, function ($a, $b) {
+    //             return strtotime($a) - strtotime($b);
+    //         });
+
+    //         $time = [];
+    //         foreach ($Days as $Day) {
+    //             $time[] = [
+    //                 'start' => Carbon::parse($Day->start)->format('H:i'),
+    //                 'end' => Carbon::parse($Day->end)->format('H:i')
+    //             ];
+    //         }
+
+    //         $fechaActual = Carbon::now();
+    //         $Vacaciones = DB::table('vacations_available_per_users')
+    //             ->where('users_id', $Solicitud->user_id)
+    //             ->where('cutoff_date', '>=', $fechaActual)
+    //             ->orderBy('cutoff_date', 'asc')
+    //             ->get();
+    //         $Datos = [];
+    //         foreach ($Vacaciones as $vaca) {
+    //             $Datos[] = [
+    //                 'dv' => $vaca->dv,
+    //                 'cutoff_date' => $vaca->cutoff_date,
+    //             ];
+    //         }
+
+    //         // $Pendientes[] = [
+    //         $SolicitudesPendientes = new \stdClass();
+    //         $SolicitudesPendientes->image = $nameUser->image;
+    //         $SolicitudesPendientes->created_at = $Solicitud->created_at;
+    //         $SolicitudesPendientes->id = $Solicitud->id;
+    //         $SolicitudesPendientes->name = $nameUser->name . ' ' . $nameUser->lastname;
+    //         $SolicitudesPendientes->current_vacation = $Datos[0]['dv'];
+    //         $SolicitudesPendientes->current_vacation_expiration = $Datos[0]['cutoff_date'];
+    //         $SolicitudesPendientes->next_vacation =  empty($Datos[1]['dv']) ? null : $Datos[1]['dv'];
+    //         $SolicitudesPendientes->expiration_of_next_vacation = empty($Datos[1]['cutoff_date']) ? null : $Datos[1]['cutoff_date'];
+    //         $SolicitudesPendientes->direct_manager_status = $Solicitud->direct_manager_status;
+    //         $SolicitudesPendientes->rh_status = $Solicitud->rh_status;
+    //         $SolicitudesPendientes->request_type = $RequestType->type;
+    //         $SolicitudesPendientes->specific_type = $RequestType->type == 1 ?: '-';
+    //         $SolicitudesPendientes->days_absent = $dias;
+    //         $SolicitudesPendientes->method_of_payment = $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro'))));
+    //         $SolicitudesPendientes->reveal_id = $Reveal->name . ' ' . $Reveal->lastname;
+    //         $SolicitudesPendientes->file = $Solicitud->file == null ? null : $Solicitud->file;
+    //         $SolicitudesPendientes->time = in_array($Solicitud->request_type_id, [2]) ? $time : null;
+    //         $SolicitudesPendientes->more_information = $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true);
+    //         return $SolicitudesPendientes;
+    //     });
+
+    //     if ($request->filled('search')) {
+    //         $solicitudesPendientesCollection = $solicitudesPendientesCollection->filter(function ($solicitud) use ($request) {
+    //             return stripos($solicitud->name, $request->search) !== false;
+    //         });
+    //     }
+
+    //     if ($request->has('tipo') && $request->tipo != '') {
+    //         $solicitudesPendientesCollection = $solicitudesPendientesCollection->filter(function ($solicitud) use ($request) {
+    //             return $solicitud->request_type == $request->tipo;
+    //         });
+    //     }
+    //     if ($request->has('fecha') && $request->fecha != '') {
+    //         $solicitudesPendientesCollection = $solicitudesPendientesCollection->filter(function ($solicitud) use ($request) {
+    //             return in_array($request->fecha, $solicitud->days_absent);
+    //         });
+    //     }
+    //     $Pendientes = new LengthAwarePaginator(
+    //         $solicitudesPendientesCollection->forPage($page, $perPage),
+    //         $solicitudesPendientesCollection->count(),
+    //         $perPage,
+    //         $page,
+    //         ['path' => $request->url(), 'query' => $request->query()]
+    //     );
+
+
+
+    //     $SolicitudesRechazadas = DB::table('vacation_requests')->where('direct_manager_status', 'Cancelada por el usuario')
+    //         ->where('rh_status', 'Cancelada por el usuario')->orderBy('created_at', 'desc')->get();
+
+    //     $sumaCanceladasUsuario = count($SolicitudesRechazadas);
+
+    //     $solicitudesRechazadasCollection = $SolicitudesRechazadas->map(function ($Solicitud) {
+    //         $nameUser = User::where('id', $Solicitud->user_id)->first();
+    //         $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
+    //         $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
+    //         $Reveal = User::where('id', $Solicitud->reveal_id)->first();
+
+    //         $dias = [];
+    //         foreach ($Days as $Day) {
+    //             $dias[] = $Day->day;
+    //         }
+
+    //         // Ordenar las fechas de la más cercana a la más lejana
+    //         usort($dias, function ($a, $b) {
+    //             return strtotime($a) - strtotime($b);
+    //         });
+
+    //         $time = [];
+    //         foreach ($Days as $Day) {
+    //             $time[] = [
+    //                 'start' => Carbon::parse($Day->start)->format('H:i'),
+    //                 'end' => Carbon::parse($Day->end)->format('H:i')
+    //             ];
+    //         }
+
+    //         $fechaActual = Carbon::now();
+    //         $Vacaciones = DB::table('vacations_available_per_users')
+    //             ->where('users_id', $Solicitud->user_id)
+    //             ->where('cutoff_date', '>=', $fechaActual)
+    //             ->orderBy('cutoff_date', 'asc')
+    //             ->get();
+    //         $Datos = [];
+    //         foreach ($Vacaciones as $vaca) {
+    //             $Datos[] = [
+    //                 'dv' => $vaca->dv,
+    //                 'cutoff_date' => $vaca->cutoff_date,
+    //             ];
+    //         }
+
+    //         // $rechazadas[] = [
+    //         $rechazadas = new \stdClass();
+    //         $rechazadas->image = $nameUser->image;
+    //         $rechazadas->created_at = $Solicitud->created_at;
+    //         $rechazadas->id = $Solicitud->id;
+    //         $rechazadas->name = $nameUser->name . ' ' . $nameUser->lastname;
+    //         $rechazadas->current_vacation = $Datos[0]['dv'];
+    //         $rechazadas->current_vacation_expiration = $Datos[0]['cutoff_date'];
+    //         $rechazadas->next_vacation =  empty($Datos[1]['dv']) ? null : $Datos[1]['dv'];
+    //         $rechazadas->expiration_of_next_vacation = empty($Datos[1]['cutoff_date']) ? null : $Datos[1]['cutoff_date'];
+    //         $rechazadas->details = $Solicitud->details;
+    //         $rechazadas->commentary = $Solicitud->commentary;
+    //         $rechazadas->direct_manager_status = $Solicitud->direct_manager_status;
+    //         $rechazadas->rh_status = $Solicitud->rh_status;
+    //         $rechazadas->request_type = $RequestType->type;
+    //         $rechazadas->specific_type = $RequestType->type == 1 ?: '-';
+    //         $rechazadas->days_absent = $dias;
+    //         $rechazadas->method_of_payment = $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro'))));
+    //         $rechazadas->reveal_id = $Reveal->name . ' ' . $Reveal->lastname;
+    //         $rechazadas->file = $Solicitud->file == null ? null : $Solicitud->file;
+    //         $rechazadas->time = in_array($Solicitud->request_type_id, [2]) ? $time : null;
+    //         $rechazadas->more_information = $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true);
+    //         return $rechazadas;
+    //     });
+
+    //     if ($request->filled('search')) {
+    //         $solicitudesRechazadasCollection = $solicitudesRechazadasCollection->filter(function ($solicitud) use ($request) {
+    //             return stripos($solicitud->name, $request->search) !== false;
+    //         });
+    //     }
+
+    //     if ($request->has('tipo') && $request->tipo != '') {
+    //         $solicitudesRechazadasCollection = $solicitudesRechazadasCollection->filter(function ($solicitud) use ($request) {
+    //             return $solicitud->request_type == $request->tipo;
+    //         });
+    //     }
+    //     if ($request->has('fecha') && $request->fecha != '') {
+    //         $solicitudesRechazadasCollection = $solicitudesRechazadasCollection->filter(function ($solicitud) use ($request) {
+    //             return in_array($request->fecha, $solicitud->days_absent);
+    //         });
+    //     }
+
+    //     $rechazadas = new LengthAwarePaginator(
+    //         $solicitudesRechazadasCollection->forPage($page, $perPage),
+    //         $solicitudesRechazadasCollection->count(),
+    //         $perPage,
+    //         $page,
+    //         ['path' => $request->url(), 'query' => $request->query()]
+    //     );
+
+    //     $usersid = DB::table('employees')->where('status', 1)->pluck('user_id');
+    //     $IdandNameUser = [];
+    //     foreach ($usersid as $userid) {
+    //         $Usuario = User::where('id', $userid)->first();
+    //         $IdandNameUser[] = [
+    //             'name' => $Usuario->name . ' ' . $Usuario->lastname,
+    //             'id' => $userid
+    //         ];
+    //     }
+
+    //     $agregarvacaciones = MakeUpVacations::all();
+    //     $vacacionesagregadas = [];
+    //     foreach ($agregarvacaciones as $vacacionesUser) {
+    //         $Usuario = User::where('id', $vacacionesUser->user_id)->first();
+    //         $vacacionesagregadas[] = [
+    //             'iduser' => $Usuario->name . ' ' . $Usuario->lastname,
+    //             'num_days' => $vacacionesUser->num_days,
+    //             'description' => $vacacionesUser->description
+    //         ];
+    //     }
+    //     return view('request.autorize_rh_pendientes', compact('Pendientes', 'Aprobadas',  'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', 'IdandNameUser', 'vacacionesagregadas'));
+    // }
+
+    public function RequestAuthorizeRH(Request $request)
     {
         $user = auth()->user();
 
@@ -1846,101 +2153,32 @@ class VacationRequestController extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-
+        $usersid = DB::table('employees')->where('status', 1)->pluck('user_id');
+        $IdandNameUser = [];
+        foreach ($usersid as $userid) {
+            $Usuario = User::where('id', $userid)->first();
+            $IdandNameUser[] = [
+                'name' => $Usuario->name . ' ' . $Usuario->lastname,
+                'id' => $userid
+            ];
+        }
 
         $SolicitudesPendientes = DB::table('vacation_requests')
             ->where('direct_manager_status', 'Aprobada')
             ->where('rh_status', 'Pendiente')
-            ->orderBy('created_at', 'desc');
-        $sumaPendientes = count($SolicitudesPendientes->get());
+            ->orderBy('created_at', 'desc')->get();
+        $sumaPendientes = count($SolicitudesPendientes);
 
-        $solicitudesPendientesCollection = $SolicitudesPendientes->get()->map(function ($Solicitud) {
-            $nameUser = User::where('id', $Solicitud->user_id)->first();
-            $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
-            $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
-            $Reveal = User::where('id', $Solicitud->reveal_id)->first();
+        $SolicitudesRechazadas = DB::table('vacation_requests')->where('direct_manager_status', 'Cancelada por el usuario')
+            ->where('rh_status', 'Cancelada por el usuario')->orderBy('created_at', 'desc')->get();
 
-            $dias = [];
-            foreach ($Days as $Day) {
-                $dias[] = $Day->day;
-            }
+        $sumaCanceladasUsuario = count($SolicitudesRechazadas);
+        return view('request.authorize_rh_aprobadas', compact('Aprobadas', 'sumaAprobadas', 'IdandNameUser', 'sumaPendientes', 'sumaCanceladasUsuario'));
+    }
 
-            // Ordenar las fechas de la más cercana a la más lejana
-            usort($dias, function ($a, $b) {
-                return strtotime($a) - strtotime($b);
-            });
-
-            $time = [];
-            foreach ($Days as $Day) {
-                $time[] = [
-                    'start' => Carbon::parse($Day->start)->format('H:i'),
-                    'end' => Carbon::parse($Day->end)->format('H:i')
-                ];
-            }
-
-            $fechaActual = Carbon::now();
-            $Vacaciones = DB::table('vacations_available_per_users')
-                ->where('users_id', $Solicitud->user_id)
-                ->where('cutoff_date', '>=', $fechaActual)
-                ->orderBy('cutoff_date', 'asc')
-                ->get();
-            $Datos = [];
-            foreach ($Vacaciones as $vaca) {
-                $Datos[] = [
-                    'dv' => $vaca->dv,
-                    'cutoff_date' => $vaca->cutoff_date,
-                ];
-            }
-
-            // $Pendientes[] = [
-            $SolicitudesPendientes = new \stdClass();
-            $SolicitudesPendientes->image = $nameUser->image;
-            $SolicitudesPendientes->created_at = $Solicitud->created_at;
-            $SolicitudesPendientes->id = $Solicitud->id;
-            $SolicitudesPendientes->name = $nameUser->name . ' ' . $nameUser->lastname;
-            $SolicitudesPendientes->current_vacation = $Datos[0]['dv'];
-            $SolicitudesPendientes->current_vacation_expiration = $Datos[0]['cutoff_date'];
-            $SolicitudesPendientes->next_vacation =  empty($Datos[1]['dv']) ? null : $Datos[1]['dv'];
-            $SolicitudesPendientes->expiration_of_next_vacation = empty($Datos[1]['cutoff_date']) ? null : $Datos[1]['cutoff_date'];
-            $SolicitudesPendientes->direct_manager_status = $Solicitud->direct_manager_status;
-            $SolicitudesPendientes->rh_status = $Solicitud->rh_status;
-            $SolicitudesPendientes->request_type = $RequestType->type;
-            $SolicitudesPendientes->specific_type = $RequestType->type == 1 ?: '-';
-            $SolicitudesPendientes->days_absent = $dias;
-            $SolicitudesPendientes->method_of_payment = $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro'))));
-            $SolicitudesPendientes->reveal_id = $Reveal->name . ' ' . $Reveal->lastname;
-            $SolicitudesPendientes->file = $Solicitud->file == null ? null : $Solicitud->file;
-            $SolicitudesPendientes->time = in_array($Solicitud->request_type_id, [2]) ? $time : null;
-            $SolicitudesPendientes->more_information = $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true);
-            return $SolicitudesPendientes;
-        });
-
-        if ($request->filled('search')) {
-            $solicitudesPendientesCollection = $solicitudesPendientesCollection->filter(function ($solicitud) use ($request) {
-                return stripos($solicitud->name, $request->search) !== false;
-            });
-        }
-
-        if ($request->has('tipo') && $request->tipo != '') {
-            $solicitudesPendientesCollection = $solicitudesPendientesCollection->filter(function ($solicitud) use ($request) {
-                return $solicitud->request_type == $request->tipo;
-            });
-        }
-        if ($request->has('fecha') && $request->fecha != '') {
-            $solicitudesPendientesCollection = $solicitudesPendientesCollection->filter(function ($solicitud) use ($request) {
-                return in_array($request->fecha, $solicitud->days_absent);
-            });
-        }
-        $Pendientes = new LengthAwarePaginator(
-            $solicitudesPendientesCollection->forPage($page, $perPage),
-            $solicitudesPendientesCollection->count(),
-            $perPage,
-            $page,
-            ['path' => $request->url(), 'query' => $request->query()]
-        );
-
-
-
+    public function RequestRejectUserRH(Request $request)
+    {
+        $user = auth()->user();
         $SolicitudesRechazadas = DB::table('vacation_requests')->where('direct_manager_status', 'Cancelada por el usuario')
             ->where('rh_status', 'Cancelada por el usuario')->orderBy('created_at', 'desc')->get();
 
@@ -2026,6 +2264,8 @@ class VacationRequestController extends Controller
             });
         }
 
+        $page = $request->get('page', 1);
+        $perPage = 5;
         $rechazadas = new LengthAwarePaginator(
             $solicitudesRechazadasCollection->forPage($page, $perPage),
             $solicitudesRechazadasCollection->count(),
@@ -2044,17 +2284,136 @@ class VacationRequestController extends Controller
             ];
         }
 
-        $agregarvacaciones = MakeUpVacations::all();
-        $vacacionesagregadas = [];
-        foreach ($agregarvacaciones as $vacacionesUser) {
-            $Usuario = User::where('id', $vacacionesUser->user_id)->first();
-            $vacacionesagregadas[] = [
-                'iduser' => $Usuario->name . ' ' . $Usuario->lastname,
-                'num_days' => $vacacionesUser->num_days,
-                'description' => $vacacionesUser->description
+        $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->orderBy('created_at', 'desc')->get();
+        $sumaAprobadas = count($Solicitudes);
+
+        $SolicitudesPendientes = DB::table('vacation_requests')
+            ->where('direct_manager_status', 'Aprobada')
+            ->where('rh_status', 'Pendiente')
+            ->orderBy('created_at', 'desc')->get();
+        $sumaPendientes = count($SolicitudesPendientes);
+
+        return view('request.autorize_rh_rechazadas', compact('sumaCanceladasUsuario', 'rechazadas', 'IdandNameUser', 'sumaAprobadas', 'sumaPendientes'));
+    }
+
+    public function RequestPendingRH(Request $request)
+    {
+
+        $user = auth()->user();
+
+        $SolicitudesPendientes = DB::table('vacation_requests')
+            ->where('direct_manager_status', 'Aprobada')
+            ->where('rh_status', 'Pendiente')
+            ->orderBy('created_at', 'desc')->get();
+        $sumaPendientes = count($SolicitudesPendientes);
+
+        $solicitudesPendientesCollection = $SolicitudesPendientes->map(function ($Solicitud) {
+            $nameUser = User::where('id', $Solicitud->user_id)->first();
+            $RequestType = RequestType::where('id', $Solicitud->request_type_id)->first();
+            $Days = VacationDays::where('vacation_request_id', $Solicitud->id)->get();
+            $Reveal = User::where('id', $Solicitud->reveal_id)->first();
+
+            $dias = [];
+            foreach ($Days as $Day) {
+                $dias[] = $Day->day;
+            }
+
+            // Ordenar las fechas de la más cercana a la más lejana
+            usort($dias, function ($a, $b) {
+                return strtotime($a) - strtotime($b);
+            });
+
+            $time = [];
+            foreach ($Days as $Day) {
+                $time[] = [
+                    'start' => Carbon::parse($Day->start)->format('H:i'),
+                    'end' => Carbon::parse($Day->end)->format('H:i')
+                ];
+            }
+
+            $fechaActual = Carbon::now();
+            $Vacaciones = DB::table('vacations_available_per_users')
+                ->where('users_id', $Solicitud->user_id)
+                ->where('cutoff_date', '>=', $fechaActual)
+                ->orderBy('cutoff_date', 'asc')
+                ->get();
+            $Datos = [];
+            foreach ($Vacaciones as $vaca) {
+                $Datos[] = [
+                    'dv' => $vaca->dv,
+                    'cutoff_date' => $vaca->cutoff_date,
+                ];
+            }
+
+            // $Pendientes[] = [
+            $SolicitudesPendientes = new \stdClass();
+            $SolicitudesPendientes->image = $nameUser->image;
+            $SolicitudesPendientes->created_at = $Solicitud->created_at;
+            $SolicitudesPendientes->id = $Solicitud->id;
+            $SolicitudesPendientes->name = $nameUser->name . ' ' . $nameUser->lastname;
+            $SolicitudesPendientes->current_vacation = $Datos[0]['dv'];
+            $SolicitudesPendientes->current_vacation_expiration = $Datos[0]['cutoff_date'];
+            $SolicitudesPendientes->next_vacation =  empty($Datos[1]['dv']) ? null : $Datos[1]['dv'];
+            $SolicitudesPendientes->expiration_of_next_vacation = empty($Datos[1]['cutoff_date']) ? null : $Datos[1]['cutoff_date'];
+            $SolicitudesPendientes->direct_manager_status = $Solicitud->direct_manager_status;
+            $SolicitudesPendientes->rh_status = $Solicitud->rh_status;
+            $SolicitudesPendientes->request_type = $RequestType->type;
+            $SolicitudesPendientes->specific_type = $RequestType->type == 1 ?: '-';
+            $SolicitudesPendientes->days_absent = $dias;
+            $SolicitudesPendientes->method_of_payment = $Solicitud->request_type_id == 1 ? 'A cuenta de vacaciones' : ($Solicitud->request_type_id == 2 ? 'Ausencia' : ($Solicitud->request_type_id == 3 ? 'Paternidad' : ($Solicitud->request_type_id == 4 ? 'Incapacidad' : ($Solicitud->request_type_id == 5 ? 'Permisos especiales' : 'Otro'))));
+            $SolicitudesPendientes->reveal_id = $Reveal->name . ' ' . $Reveal->lastname;
+            $SolicitudesPendientes->file = $Solicitud->file == null ? null : $Solicitud->file;
+            $SolicitudesPendientes->time = in_array($Solicitud->request_type_id, [2]) ? $time : null;
+            $SolicitudesPendientes->more_information = $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true);
+            return $SolicitudesPendientes;
+        });
+
+        if ($request->filled('search')) {
+            $solicitudesPendientesCollection = $solicitudesPendientesCollection->filter(function ($solicitud) use ($request) {
+                return stripos($solicitud->name, $request->search) !== false;
+            });
+        }
+
+        if ($request->has('tipo') && $request->tipo != '') {
+            $solicitudesPendientesCollection = $solicitudesPendientesCollection->filter(function ($solicitud) use ($request) {
+                return $solicitud->request_type == $request->tipo;
+            });
+        }
+        if ($request->has('fecha') && $request->fecha != '') {
+            $solicitudesPendientesCollection = $solicitudesPendientesCollection->filter(function ($solicitud) use ($request) {
+                return in_array($request->fecha, $solicitud->days_absent);
+            });
+        }
+
+        $page = $request->get('page', 1);
+        $perPage = 5;
+        $Pendientes = new LengthAwarePaginator(
+            $solicitudesPendientesCollection->forPage($page, $perPage),
+            $solicitudesPendientesCollection->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        $usersid = DB::table('employees')->where('status', 1)->pluck('user_id');
+        $IdandNameUser = [];
+        foreach ($usersid as $userid) {
+            $Usuario = User::where('id', $userid)->first();
+            $IdandNameUser[] = [
+                'name' => $Usuario->name . ' ' . $Usuario->lastname,
+                'id' => $userid
             ];
         }
-        return view('request.authorize_rh', compact('Pendientes', 'Aprobadas',  'sumaAprobadas', 'sumaPendientes', 'sumaCanceladasUsuario', 'rechazadas', 'IdandNameUser', 'vacacionesagregadas'));
+
+        $SolicitudesRechazadas = DB::table('vacation_requests')->where('direct_manager_status', 'Cancelada por el usuario')
+            ->where('rh_status', 'Cancelada por el usuario')->orderBy('created_at', 'desc')->get();
+
+        $sumaCanceladasUsuario = count($SolicitudesRechazadas);
+
+        $Solicitudes = DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Aprobada')->orderBy('created_at', 'desc')->get();
+        $sumaAprobadas = count($Solicitudes);
+
+        return view('request.autorize_rh_pendientes', compact('Pendientes', 'sumaPendientes', 'IdandNameUser', 'sumaCanceladasUsuario', 'sumaAprobadas'));
     }
 
     public function UserVacationInformation()
@@ -5003,7 +5362,7 @@ class VacationRequestController extends Controller
             } catch (\Exception $e) {
                 return back()->with('warning', 'Solicitud rechazada correctamente. Sin embargo, no se pudo enviar el correo electrónico al colaborador(a).');
             }
-            return back()->with('message', 'Solicitud rechazada exitosamente.');
+            return back('message', 'Solicitud rechazada exitosamente.');
         }
     }
 
