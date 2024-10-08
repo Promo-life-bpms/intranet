@@ -351,7 +351,7 @@
                         <span>
                             Tienes
                             <strong>{{ $vacaciones_actuales }}</strong>
-                            día(s) disponible(s) que vence el
+                            día(s) disponible(s) que vence(n) el
                             <strong>{{ $fecha_expiracion_actual }}</strong>.
                         </span>
                     </div>
@@ -362,7 +362,7 @@
                             <span>
                                 Tienes
                                 <strong>{{ $vacaciones_entrantes }}</strong>
-                                día(s) disponible(s) que vence el
+                                día(s) disponible(s) que vence(n) el
                                 <strong>{{ $fecha_expiracion_entrante }}</strong>.
                             </span>
                         </div>
