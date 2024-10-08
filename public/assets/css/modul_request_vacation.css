@@ -1,0 +1,298 @@
+.dataTables_wrapper .dataTables_info {
+    clear: both;
+    float: left;
+    padding-top: 0.755em;
+}
+
+/*Acomodo de forma de boton y siguiente y anterior*/
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    box-sizing: border-box;
+    display: inline-block;
+    min-width: 1.5em;
+    padding: 0.5em 1em;
+    margin-left: 2px;
+    text-align: center;
+    text-decoration: none !important;
+    cursor: pointer;
+    cursor: hand;
+    color: #000000 !important;
+    border: 1px solid transparent;
+    border-radius: 2px;
+}
+
+/*Marcado de la pagina actual*/
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    color: #FFFFFF !important;
+    background-color: #006EAD;
+    border-radius: 5px;
+
+}
+
+/*Acomodar al final los numeros de la paginacion*/
+.dataTables_paginate {
+    text-align: end !important;
+}
+
+/*Quitar la barra de busqueda del script de datatables*/
+.dataTables_filter {
+    display: none;
+}
+
+/*Padding para las alertas*/
+.alert {
+    padding: 0.7rem !important;
+}
+
+.bg-success {
+    background-color: #81C10C !important;
+}
+
+.bg-warning {
+    background-color: #FFC107 !important;
+}
+
+.fc-day-disabled {
+    background-color: #e6e6e6 !important;
+    pointer-events: none;
+}
+
+.fc-toolbar-chunk>div {
+    width: 380px;
+    display: flex;
+    justify-content: space-between
+}
+
+.fc-prev-button.fc-button.fc-button-primary {
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    border: 0px solid white;
+}
+
+.fc-prev-button.fc-button.fc-button-primary:focus {
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    border: 0px solid white;
+    box-shadow: 0 0px 0px white;
+}
+
+.fc-next-button.fc-button.fc-button-primary {
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    border: 0px solid white;
+}
+
+.fc-next-button.fc-button.fc-button-primary:focus {
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    border: 0px solid white;
+    box-shadow: 0 0px 0px white;
+}
+
+
+.fc-theme-standard .fc-scrollgrid {
+    border: 0px solid white !important;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+    /* Espaciado interno */
+    border: 0px solid white;
+    /* Borde gris claro */
+    text-align: center;
+    /* Centrar el texto */
+}
+
+.fc-col-header-cell-cushion {
+    color: black;
+    text-decoration: none;
+}
+
+.fc-daygrid-day-number {
+    color: black;
+    text-decoration: none;
+}
+
+.fc-scrollgrid-sync-table {
+    height: 280px !important;
+}
+
+.fc,
+.fc *,
+.fc :after,
+.fc :before {
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+
+.fc-theme-standard .fc-daygrid-day-number {
+    color: black;
+    /* Color del número del día seleccionado */
+    background-color: transparent;
+    /* Fondo transparente para el número del día */
+    font-weight: bold;
+    /* Hacer el número más prominente */
+}
+
+.fc-theme-standard .fc-daygrid-day.fc-daygrid-day-selected {
+    background-color: transparent;
+    /* Fondo transparente para la celda seleccionada */
+    border: none;
+    /* Opcional: eliminar el borde si es necesario */
+}
+
+
+.highlighted-day {
+    /* background-color: #81C10C !important; */
+    color: white !important;
+    border-radius: 50%;
+    padding: 0.5em;
+}
+
+.fc-day-selected {
+    border-radius: 17px;
+    color: white !important;
+}
+
+.fc-day-vacaciones {
+    background-color: #81C10C !important;
+}
+
+.fc-day-ausencia {
+    background-color: #0C57C1 !important;
+}
+
+.fc-day-paternidad {
+    background-color: #C10C8E !important;
+}
+
+.fc-day-incapacidad {
+    background-color: #C10C0C !important;
+}
+
+.fc-day-especiales {
+    background-color: #C1A10C !important;
+}
+
+
+.fc-day-start {
+    background-color: rgb(59, 201, 23);
+    /* Color para el primer día de la selección */
+    color: white;
+}
+
+.fc-day-end {
+    background-color: #d5c321;
+    /* Color para el último día de la selección */
+    color: white;
+}
+
+.fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events {
+    min-height: 0px;
+}
+
+.fc .fc-daygrid-day-top {
+    margin-top: 2px !important;
+}
+
+.fc-theme-standard .fc-daygrid-day-number {
+    width: 45% !important;
+}
+
+
+/*Estilo azul al seleccionar dia*/
+.fc .fc-highlight {
+    background-color: transparent !important;
+}
+
+/*Estilo para quitar el color del dia actual */
+.fc .fc-daygrid-day.fc-day-today {
+    background-color: transparent !important;
+}
+
+/*Estilo para quitar dias anteriores al que estamos*/
+.fc .fc-cell-shaded,
+.fc .fc-day-disabled {
+    background-color: transparent !important;
+}
+
+
+/*Estilo para cambiar el tamaño*/
+.fc .fc-toolbar-title {
+    font-size: 17px !important;
+}
+
+.fc-toolbar-title {
+    margin-top: 8px !important;
+}
+
+/*Estilo para quitar el mnargin botton del titulo*/
+.fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 4px !important;
+}
+
+/*Estilo para darle margin bottom de los dias del calendario*/
+.fc .fc-view-harness {
+    margin-bottom: 20px !important;
+}
+
+#calendario {
+    width: 100%;
+}
+
+/*Estilo para el div de los dias en Calendario General*/
+.custom-day-top-class {
+    padding: 0px 25px !important;
+}
+
+
+/*Estilos de paginacion*/
+.pagination {
+    display: flex;
+    justify-content: end;
+
+}
+
+.page-item .page-link {
+    font-size: .875rem;
+    border-color: transparent;
+}
+
+.page-item.active .page-link {
+    background-color: #435ebe;
+    border-color: #435ebe;
+    color: #fff;
+    z-index: 3;
+    border-radius: 27px;
+}
+
+.page-item.disabled .page-link {
+    background-color: #fff;
+    color: #6c757d;
+    pointer-events: none;
+    border-color: transparent;
+}
+
+/*Estilo para spin de carga*/
+#loadingSpinner {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}

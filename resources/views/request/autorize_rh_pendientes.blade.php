@@ -22,6 +22,7 @@
             {{ session('error') }}
         </div>
     @endif
+
     @if (session('warning'))
         <div class="alert alert-warning d-flex align-items-center" role="alert">
             <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:">
@@ -34,6 +35,7 @@
     @endif
 
     <div>
+        {{-- Spinner de carga --}}
         <div id="loadingSpinner"
             style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255, 255, 255, 0.8); z-index:9999; justify-content:center; align-items:center;">
             <div class="spinner-border text-primary" role="status">
@@ -43,6 +45,8 @@
         <div class="d-flex justify-content-between mb-2">
             <h3>Solicitudes pendientes</h3>
         </div>
+
+        {{-- Filtros --}}
         <div class="row">
             <div class="col-5 align-content-end">
                 <div class="row">
@@ -65,7 +69,6 @@
                         </select>
                     </div>
 
-
                     <div class="col-3 d-flex align-items-center justify-content-center">
                         <input id="fechaInput" type="date" class="form-control" value="{{ request('fecha') }}"
                             style="width: 2.8rem" />
@@ -74,6 +77,8 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Tarjetas --}}
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">
@@ -87,7 +92,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     <div class="col-4">
                         <div id="tarjeta2" class="tarjetaRh2 hover-tarjetaRh2"
@@ -115,12 +119,8 @@
                 </div>
             </div>
 
-
-
+            {{-- Tabla para pendientes --}}
             <div class="mt-3" style="min-width: 100% !important;">
-
-
-                {{-- Tabla para pendientes --}}
                 <div id="tablePendientes">
                     <table class="table" style="min-width: 100% !important;">
                         <thead style="background-color: #072A3B; color: white;">
@@ -202,10 +202,10 @@
                         </div>
                     @endif
                 </div>
-
             </div>
         </div>
 
+        {{-- Modal de detalles de la solicitud --}}
         <div class="modal fade bd-example-modal-lg" id="modalDetails" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
@@ -344,6 +344,7 @@
             </div>
         </div>
 
+        {{-- Modal para rechazar --}}
         <div class="modal fade bd-example-modal-lg" id="modalDeny" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
@@ -373,219 +374,14 @@
 
 
 @section('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/modul_rh.css') }}">
+
     <link rel="stylesheet" href="{{ asset('assets/vendors/fontawesome/all.min.css') }}">
-    <style>
-        table.dataTable td {
-            padding: 15px 8px;
-        }
 
-        .fontawesome-icons .the-icon svg {
-            font-size: 24px;
-        }
-    </style>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />x1
-
-    <style>
-        .tarjetaRh1 {
-            border: 0px solid rgb(243, 243, 243);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .tarjetaRh1:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .tarjetaRh1 strong {
-            color: var(--color-target-1);
-        }
-
-        .tarjetaRh1-activa {
-            background-color: var(--color-target-1);
-            color: white;
-        }
-
-        .tarjetaRh1-activa strong {
-            color: white;
-        }
-
-        .tarjetaRh2 {
-            border: 0px solid rgb(243, 243, 243);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .tarjetaRh2:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .tarjetaRh2 strong {
-            color: var(--color-target-3);
-        }
-
-        .tarjetaRh2-activa {
-            background-color: var(--color-target-3);
-            color: white;
-        }
-
-        .tarjetaRh2-activa strong {
-            color: white;
-        }
-
-        .tarjetaRh3 {
-            border: 0px solid rgb(243, 243, 243);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .tarjetaRh3:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .tarjetaRh3 strong {
-            color: var(--color-target-4);
-        }
-
-        .tarjetaRh3-activa {
-            background-color: var(--color-target-4);
-            color: white !important;
-        }
-
-        .tarjetaRh3-activa strong {
-            color: white;
-        }
-
-        .hover-tarjetaRh1:hover {
-            background-color: var(--color-target-1);
-            color: white;
-        }
-
-        .hover-tarjetaRh1:hover strong {
-            color: white;
-        }
-
-        .hover-tarjetaRh2:hover {
-            background-color: var(--color-target-3);
-            /*Degradar el color*/
-            color: white;
-        }
-
-        .hover-tarjetaRh2:hover strong {
-            color: white;
-        }
-
-        .hover-tarjetaRh3:hover {
-            background-color: var(--color-target-4);
-            color: white;
-        }
-
-        .hover-tarjetaRh3:hover strong {
-            color: white;
-        }
-
-
-        /*Color para el badge de aprobado*/
-        .bg-success {
-            background-color: #81C10C !important;
-        }
-
-        .bg-warning {
-            background-color: #FFC107 !important;
-        }
-
-        /*Estilos de las alertas*/
-        .alert {
-            padding: 0.7rem !important;
-        }
-
-        .alert-success {
-            color: #0f5132 !important;
-            background-color: #d1e7dd !important;
-            border-color: #badbcc !important;
-        }
-
-        .alert-danger {
-            color: #C10C0C !important;
-            background-color: #f8d7da !important;
-            border-color: #f5c2c7 !important;
-        }
-
-        .alert-warning {
-            color: #664d03 !important;
-            background-color: #fff3cd !important;
-            border-color: #ffecb5 !important;
-        }
-
-
-        /*Estilos de paginacion*/
-        .pagination {
-            display: flex;
-            justify-content: end;
-
-        }
-
-        .page-item .page-link {
-            font-size: .875rem;
-            border-color: transparent;
-        }
-
-        .page-item.active .page-link {
-            background-color: #435ebe;
-            border-color: #435ebe;
-            color: #fff;
-            z-index: 3;
-            border-radius: 27px;
-        }
-
-        .page-item.disabled .page-link {
-            background-color: #fff;
-            color: #6c757d;
-            pointer-events: none;
-            border-color: transparent;
-        }
-
-        /*Estilo para spin de carga*/
-        #loadingSpinner {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-        }
-    </style>
 @stop
 
 @section('scripts')
-
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#select2').select2();
-        });
-    </script>
 
     <script>
         formDeny = document.getElementById('denyFormRequest');
