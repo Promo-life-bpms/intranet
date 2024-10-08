@@ -28,7 +28,7 @@
             </td>
 
             <td>
-                @if ($request->request_type_id === 1)
+                @if ($request->request_type_id === 1  || $request->request_type_id === 3  ||  $request->request_type_id === 4  || $request->request_type_id === 5)
                     Tiempo completo
                 @else
                 @foreach ($requestDays as $requestDay)

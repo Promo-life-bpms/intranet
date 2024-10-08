@@ -2415,6 +2415,7 @@ class VacationRequestController extends Controller
 
         return view('request.autorize_rh_pendientes', compact('Pendientes', 'sumaPendientes', 'IdandNameUser', 'sumaCanceladasUsuario', 'sumaAprobadas'));
     }
+
     public function UserVacationInformation()
     {
         $Primerperiodos = DB::table('vacations_available_per_users')->where('period', 1)->get();
