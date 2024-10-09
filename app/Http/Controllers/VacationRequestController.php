@@ -341,12 +341,13 @@ class VacationRequestController extends Controller
             $vacaciones_actuales = $DatosNew[0]['dv'];
         }
 
+        $PermisosyVacacionesAll = VacationRequest::pluck('id');
         $vacacionesDias = [];
         $ausenciaDias = [];
         $paternidadDias = [];
         $incapacidadDias = [];
         $permisosEspecialesDias = [];
-        foreach ($solicitudes as $daysonthecalendar) {
+        foreach ($PermisosyVacacionesAll as $daysonthecalendar) {
             // Obtener los días asociados a la solicitud
             $Days = VacationDays::where('vacation_request_id', $daysonthecalendar->id_request)->get();
             $dias = [];
