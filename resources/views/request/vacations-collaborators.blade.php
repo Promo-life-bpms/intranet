@@ -1721,12 +1721,12 @@
                             <div class="d-flex justify-content-between">
                                 <div id="horaSalida" class="cs-form d-none mb-3">
                                     <span>Hora de salida: </span>
-                                    <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" id="hora_salida" />
+                                    <input placeholder="Hora de salida" type="time" class="form-control" name="hora_salida" id="hora_salida"  required/>
                                 </div>
 
                                 <div id="horaEntrada" class="cs-form d-none mb-3">
                                     <span>Hora de regreso: </span>
-                                    <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" id="hora_regreso" />
+                                    <input placeholder="Hora de regreso" type="time" class="form-control" name="hora_regreso" id="hora_regreso" required />
                                 </div>
                             </div>
                             <textarea placeholder="Motivo" class="form-control" id="details" name="details" rows="3" required> </textarea>
