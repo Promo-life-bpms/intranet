@@ -341,14 +341,16 @@ class VacationRequestController extends Controller
             $vacaciones_actuales = $DatosNew[0]['dv'];
         }
 
+        $PermisosyVacacionesAll = VacationRequest::where('user_id', $user->id)->whereIn('direct_manager_status', ['Aprobada', 'Pendiente'])
+        ->whereIn('rh_status', ['Aprobada', 'Pendiente'])->get();
         $vacacionesDias = [];
         $ausenciaDias = [];
         $paternidadDias = [];
         $incapacidadDias = [];
         $permisosEspecialesDias = [];
-        foreach ($solicitudes as $daysonthecalendar) {
+        foreach ($PermisosyVacacionesAll as $daysonthecalendar) {
             // Obtener los días asociados a la solicitud
-            $Days = VacationDays::where('vacation_request_id', $daysonthecalendar->id_request)->get();
+            $Days = VacationDays::where('vacation_request_id', $daysonthecalendar->id)->get();
             $dias = [];
 
             foreach ($Days as $Day) {
@@ -544,6 +546,37 @@ class VacationRequestController extends Controller
 
             if (!empty($diasParecidos)) {
                 return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
+            }
+
+            $permisoEspecial = DB::table('vacation_requests')
+                ->where('user_id', $user->id)
+                ->where('request_type_id', 5)
+                ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                ->whereJsonContains('more_information', ['Tipo_de_permiso_especial' => 'Asuntos personales'])
+                ->pluck('id');
+
+            $diasPermisoEspecial = collect();
+            foreach ($permisoEspecial as $diaspermisoespecial) {
+                $Days = VacationDays::where('vacation_request_id', $diaspermisoespecial)->pluck('day');
+                $diasPermisoEspecial = $diasPermisoEspecial->merge($Days);
+            }
+
+            $diasPermisoEspecial = $diasPermisoEspecial->map(function ($day) {
+                return Carbon::parse($day);
+            });
+
+            foreach ($datesArray as $dia) {
+                $dia = Carbon::parse($dia);
+                foreach ($diasPermisoEspecial as $PermisoEspecial) {
+                    if (
+                        $dia->isSameDay($PermisoEspecial) ||
+                        $dia->isSameDay($PermisoEspecial->copy()->subDay()) ||
+                        $dia->isSameDay($PermisoEspecial->copy()->addDay())
+                    ) {
+                        return back()->with('error', 'No se puede crear la solicitud; recuerda que no puedes tomar vacaciones un día antes o un día después de haber disfrutado un permiso especial de tipo "Asuntos personales".');
+                    }
+                }
             }
 
             if ($diasTotales == 0) {
@@ -905,12 +938,15 @@ class VacationRequestController extends Controller
                     return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
                 }
 
+                if($request->hora_regreso == null){
+                    return back()->with('error', 'Debes ingresar la hora en que ingresarás a la empresa.');
+                }
+
                 $hora12PM = Carbon::today()->setHour(12)->setMinute(00);
                 $totalMinutos = $hora12PM->hour * 60 + $hora12PM->minute;
 
                 $Hora8AM = Carbon::today()->setHour(8)->setMinute(00);
                 $totalMinutos8AM = $Hora8AM->hour * 60 + $Hora8AM->minute;
-
 
                 $retardo = $request->hora_regreso;
                 $Retardo = Carbon::parse($retardo);
@@ -988,10 +1024,14 @@ class VacationRequestController extends Controller
 
                 return back()->with('message', 'Solicitud creada exitosamente.');
             }
+            
             if ($request->ausenciaTipo == 'salida_antes') {
-
                 if ($dias > 1) {
                     return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
+                }
+
+                if($request->hora_salida == null){
+                    return back()->with('error', 'Debes ingresar la hora en que saldras de la empresa.');
                 }
 
                 $hora13PM = Carbon::today()->setHour(13)->setMinute(00);
@@ -1057,6 +1097,10 @@ class VacationRequestController extends Controller
                 $start = $request->hora_salida;
                 $end = $request->hora_regreso;
 
+                if($start == null || $end == null){
+                    return back()->with('error', 'Debes ingresar el horario en que saldrás de la empresa.');
+                }
+                
                 $hora1Carbon = Carbon::createFromFormat('H:i', $start);
                 $hora2Carbon = Carbon::createFromFormat('H:i', $end);
 
@@ -1088,6 +1132,10 @@ class VacationRequestController extends Controller
                 }
                 if ($totalSalida == $totalRegreso) {
                     return back()->with('error', 'La hora de salida no puede ser la misma que la de regreso');
+                }
+
+                if($totalRegreso < $totalSalida){
+                    return back()->with('error', 'La hora de regreso no puede ser antes que la hora de inicio.');
                 }
 
                 $more_information[] = [
@@ -3040,6 +3088,11 @@ class VacationRequestController extends Controller
             return back()->with('error', 'No puedes ser tú mismo el responsable de tus deberes.');
         }
 
+        
+        if($Solicitud->direct_manager_status == 'Aprobada' && $Solicitud->rh_status == 'Aprobada'){
+            return back()->with('error', 'La solicitud ya fue aprobada, ya no la puedes editar.');
+        }
+
         $dates = $request->dates;
         $datesArray = json_decode($dates, true);
         $UserEmployee = Employee::where('user_id', $user->id)->value('user_id');
@@ -3160,6 +3213,38 @@ class VacationRequestController extends Controller
             if ($mesesTranscurridos < 6) {
                 return back()->with('error', 'No has cumplido el tiempo suficiente para solicitar vacaciones.');
             }
+
+            $permisoEspecial = DB::table('vacation_requests')
+                ->where('user_id', $user->id)
+                ->where('request_type_id', 5)
+                ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                ->whereJsonContains('more_information', ['Tipo_de_permiso_especial' => 'Asuntos personales'])
+                ->pluck('id');
+
+            $diasPermisoEspecial = collect();
+            foreach ($permisoEspecial as $diaspermisoespecial) {
+                $Days = VacationDays::where('vacation_request_id', $diaspermisoespecial)->pluck('day');
+                $diasPermisoEspecial = $diasPermisoEspecial->merge($Days);
+            }
+
+            $diasPermisoEspecial = $diasPermisoEspecial->map(function ($day) {
+                return Carbon::parse($day);
+            });
+
+            foreach ($dates as $dia) {
+                $dia = Carbon::parse($dia);
+                foreach ($diasPermisoEspecial as $PermisoEspecial) {
+                    if (
+                        $dia->isSameDay($PermisoEspecial) ||
+                        $dia->isSameDay($PermisoEspecial->copy()->subDay()) ||
+                        $dia->isSameDay($PermisoEspecial->copy()->addDay())
+                    ) {
+                        return back()->with('error', 'No se puede crear la solicitud; recuerda que no puedes tomar vacaciones un día antes o un día después de haber disfrutado un permiso especial de tipo "Asuntos personales".');
+                    }
+                }
+            }
+
 
             $Vacaciones = DB::table('vacations_available_per_users')
                 ->where('users_id', $user->id)
@@ -3981,6 +4066,10 @@ class VacationRequestController extends Controller
                     return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
                 }
 
+                if($request->hora_regreso == null){
+                    return back()->with('error', 'Debes ingresar la hora en que ingresarás a la empresa.');
+                }
+
                 $hora12PM = Carbon::today()->setHour(12)->setMinute(00);
                 $totalMinutos = $hora12PM->hour * 60 + $hora12PM->minute;
 
@@ -4119,6 +4208,10 @@ class VacationRequestController extends Controller
             }
 
             if ($request->ausenciaTipo == 'salida_antes') {
+                if($request->hora_salida == null){
+                    return back()->with('error', 'Debes ingresar la hora en que saldrás de la empresa.');
+                }
+
                 $hora13PM = Carbon::today()->setHour(13)->setMinute(00);
                 $totalMinutos = $hora13PM->hour * 60 + $hora13PM->minute;
 
@@ -4233,6 +4326,10 @@ class VacationRequestController extends Controller
                 $start = $request->hora_salida;
                 $end = $request->hora_regreso;
 
+                if($start == null || $end == null){
+                    return back()->with('error', 'Debes ingresar el horario en que saldrás de la empresa.');
+                }
+
                 $hora1Carbon = Carbon::createFromFormat('H:i', $start);
                 $hora2Carbon = Carbon::createFromFormat('H:i', $end);
 
@@ -4266,6 +4363,11 @@ class VacationRequestController extends Controller
                 if ($totalSalida == $totalRegreso) {
                     return back()->with('error', 'La hora de salida no puede ser la misma que la de regreso');
                 }
+
+                if($totalRegreso < $totalSalida){
+                    return back()->with('error', 'La hora de regreso no puede ser antes que la hora de inicio.');
+                }
+                
 
                 // Convertir ambos arrays a conjuntos (sets) para la comparación
                 $diasSet = collect($dias)->unique()->sort()->values();
