@@ -938,12 +938,15 @@ class VacationRequestController extends Controller
                     return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
                 }
 
+                if($request->hora_regreso == null){
+                    return back()->with('error', 'Debes ingresar la hora en que ingresarás a la empresa.');
+                }
+
                 $hora12PM = Carbon::today()->setHour(12)->setMinute(00);
                 $totalMinutos = $hora12PM->hour * 60 + $hora12PM->minute;
 
                 $Hora8AM = Carbon::today()->setHour(8)->setMinute(00);
                 $totalMinutos8AM = $Hora8AM->hour * 60 + $Hora8AM->minute;
-
 
                 $retardo = $request->hora_regreso;
                 $Retardo = Carbon::parse($retardo);
@@ -1021,10 +1024,14 @@ class VacationRequestController extends Controller
 
                 return back()->with('message', 'Solicitud creada exitosamente.');
             }
+            
             if ($request->ausenciaTipo == 'salida_antes') {
-
                 if ($dias > 1) {
                     return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
+                }
+
+                if($request->hora_salida == null){
+                    return back()->with('error', 'Debes ingresar la hora en que saldras de la empresa.');
                 }
 
                 $hora13PM = Carbon::today()->setHour(13)->setMinute(00);
@@ -1090,6 +1097,10 @@ class VacationRequestController extends Controller
                 $start = $request->hora_salida;
                 $end = $request->hora_regreso;
 
+                if($start == null || $end == null){
+                    return back()->with('error', 'Debes ingresar el horario en que saldrás de la empresa.');
+                }
+                
                 $hora1Carbon = Carbon::createFromFormat('H:i', $start);
                 $hora2Carbon = Carbon::createFromFormat('H:i', $end);
 
@@ -4055,6 +4066,10 @@ class VacationRequestController extends Controller
                     return back()->with('error', 'Sí tienes más de una solicitud, debes crearla una por una.');
                 }
 
+                if($request->hora_regreso == null){
+                    return back()->with('error', 'Debes ingresar la hora en que ingresarás a la empresa.');
+                }
+
                 $hora12PM = Carbon::today()->setHour(12)->setMinute(00);
                 $totalMinutos = $hora12PM->hour * 60 + $hora12PM->minute;
 
@@ -4193,6 +4208,10 @@ class VacationRequestController extends Controller
             }
 
             if ($request->ausenciaTipo == 'salida_antes') {
+                if($request->hora_salida == null){
+                    return back()->with('error', 'Debes ingresar la hora en que saldrás de la empresa.');
+                }
+
                 $hora13PM = Carbon::today()->setHour(13)->setMinute(00);
                 $totalMinutos = $hora13PM->hour * 60 + $hora13PM->minute;
 
@@ -4306,6 +4325,10 @@ class VacationRequestController extends Controller
             if ($request->ausenciaTipo == 'salida_durante') {
                 $start = $request->hora_salida;
                 $end = $request->hora_regreso;
+
+                if($start == null || $end == null){
+                    return back()->with('error', 'Debes ingresar el horario en que saldrás de la empresa.');
+                }
 
                 $hora1Carbon = Carbon::createFromFormat('H:i', $start);
                 $hora2Carbon = Carbon::createFromFormat('H:i', $end);
