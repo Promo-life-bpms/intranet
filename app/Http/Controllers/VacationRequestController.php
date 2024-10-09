@@ -341,7 +341,7 @@ class VacationRequestController extends Controller
             $vacaciones_actuales = $DatosNew[0]['dv'];
         }
 
-        $PermisosyVacacionesAll = VacationRequest::whereIn('direct_manager_status', ['Aprobada', 'Pendiente'])
+        $PermisosyVacacionesAll = VacationRequest::where('user_id', $user->id)->whereIn('direct_manager_status', ['Aprobada', 'Pendiente'])
         ->whereIn('rh_status', ['Aprobada', 'Pendiente'])->get();
         $vacacionesDias = [];
         $ausenciaDias = [];
