@@ -189,7 +189,8 @@
                                             {{-- Para permisos especiales --}}
                                             data-tipo-permiso-especial="{{ is_array($pendiente->more_information) && count($pendiente->more_information) > 0 && isset($pendiente->more_information[0]['Tipo_de_permiso_especial']) ? $pendiente->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
                                             data-reveal_id="{{ $pendiente->reveal_id }}"
-                                            data-file="{{ $pendiente->file }}">Ver</button>
+                                            data-file="{{ $pendiente->file }}"
+                                            data-details= "{{ $pendiente->details }}">Ver</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -332,6 +333,14 @@
                                         {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
                                     </div>
                                 </div>
+
+                                <div class="col-3 mt-2">
+                                    <strong>Motivo </strong>
+                                </div>
+
+                                <div class="col-9 mt-2">
+                                    <textarea id="details" class="form-control" readonly></textarea>
+                                </div>
                             </div>
 
                             <div id="buttonModifi" class="d-none">
@@ -462,202 +471,6 @@
 
             window.location.href = '/request/authorize-rh/rechazadas';
 
-        });
-
-        // Evento cuando se hace clic en el botón para abrir el modal
-        document.querySelectorAll('.openModalDetails').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                document.getElementById('modalId').textContent = id;
-
-                const modal = new bootstrap.Modal(document.getElementById('modalDetails'));
-                modal.show();
-                const create = this.getAttribute('data-crete');
-                const image = this.getAttribute('data-image');
-
-                const date = new Date(create);
-                const options = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                };
-                const formattedDate = date.toLocaleDateString('es-ES', options);
-                document.getElementById('modalCreate').textContent = formattedDate;
-                let imagen = '';
-
-
-                if (image === null || image === 'null' || image === 'undefined' || image === undefined ||
-                    image === '') {
-                    console.log('esta vacio');
-                    /*Poner una imagen de un perfil*/
-                    imagen = 'https://www.w3schools.com/howto/img_avatar.png';
-                } else {
-                    const baseUrl = window.location.origin;
-                    /* Poner anexarle la baseURl a la imagen */
-                    imagen = baseUrl + '/' + image;
-                }
-
-                document.getElementById('modalImage').src = imagen;
-                const name = this.getAttribute('data-name');
-                const current_vacation = this.getAttribute('data-current_vacation');
-                const current_vacation_expiration = this.getAttribute('data-current_vacation_expiration');
-                const next_vacation = this.getAttribute('data-next_vacation');
-                const expiration_of_next_vacation = this.getAttribute('data-expiration_of_next_vacation');
-                const direct_manager_status = this.getAttribute('data-direct_manager_status');
-                const rh_status = this.getAttribute('data-rh_status');
-                const request_type = this.getAttribute('data-request_type');
-                const specific_type = this.getAttribute('data-specific_type');
-                const days_absent = this.getAttribute('data-days_absent');
-                const method_of_payment = (request_type === 'Vacaciones' || request_type === 'vacaciones') ?
-                    'A cuenta de vacaciones' :
-                    request_type === 'Ausencia' ?
-                    'Descontar Tiempo/Día' :
-                    (request_type === 'Paternidad' || request_type === 'Permisos especiales') ?
-                    'Permiso Especial' :
-                    request_type === 'Incapacidad' ?
-                    'Pago del IMSS' :
-                    'Sin especificar';
-                const reveal_id = this.getAttribute('data-reveal_id');
-                const file = this.getAttribute('data-file');
-
-                if (file === 'No hay justificante' || file === '' || file === null || file === 'null' ||
-                    file === undefined) {
-                    // Crea la etiqueta <span> con el texto "No hay justificante"
-                    const span = document.createElement('span');
-                    span.textContent = 'No hay justificante';
-                    // Agrega el span al div
-                    document.getElementById('viewFile').innerHTML = '';
-                    document.getElementById('viewFile').appendChild(span);
-                } else {
-                    const baseUrl = window.location.origin;
-                    const viewFile = baseUrl + '/' + file;
-                    // Crea la etiqueta <a> y establece su href dinámicamente
-                    const link = document.createElement('a');
-                    link.id = 'file';
-                    link.href = viewFile;
-                    link.target = '_blank';
-                    link.textContent = 'Ver archivo';
-                    // Agrega el enlace al div
-                    document.getElementById('viewFile').innerHTML = '';
-                    document.getElementById('viewFile').appendChild(link);
-                }
-
-                const timeText = this.getAttribute('data-timeArray');
-                const dataStart = this.getAttribute('data-start');
-                const dataEnd = this.getAttribute('data-end');
-
-                /* Para Ausencia */
-                const valueType = this.getAttribute('data-value-type');
-                console.log('valueType', valueType);
-                const tipoDeAusencia = this.getAttribute('data-tipo-de-ausencia');
-
-                /* Para permisos especiales */
-                const typePermisoEspecial = this.getAttribute('data-tipo-permiso-especial');
-
-                var timeStatusDiv = document.getElementById('timeStatus');
-                if (timeText === 'true') {
-                    var startValue = dataStart;
-                    var endValue = dataEnd;
-
-                    if (request_type === 'Ausencia' && valueType === 'salida_durante') {
-                        timeStatusDiv.innerHTML =
-                            '<span>Hora de salida: <strong>' + startValue + '</strong></span> ' +
-                            '- Hora de regreso: <strong>' + endValue + '</strong></span>';
-                    } else if (request_type === 'Ausencia' && valueType === 'salida_antes') {
-                        timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
-                            '</strong></span> ';
-                    } else if (request_type === 'Ausencia' && valueType === 'retardo') {
-                        timeStatusDiv.innerHTML = '<span>Hora de entrada: <strong>' + endValue +
-                            '</strong></span> ';
-                    } else {
-                        timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
-                    }
-                } else {
-                    timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
-                }
-
-                const date2 = new Date(current_vacation_expiration);
-                date2.setDate(date2.getDate() + 1);
-                const options2 = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                };
-                const formattedDate2 = date2.toLocaleDateString('es-ES', options2);
-
-                const date3 = new Date(expiration_of_next_vacation);
-                date3.setDate(date3.getDate() + 1);
-                const options3 = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                };
-                const formattedDate3 = date3.toLocaleDateString('es-ES', options3);
-
-
-                document.getElementById('modalName').textContent = name;
-                document.getElementById('modalCurrentVacation').textContent = current_vacation;
-                document.getElementById('primaryPeriodo').textContent = formattedDate2;
-                document.getElementById('modalNextVaca').textContent = next_vacation || 'No hay vacaciones';
-
-                const secondaryPeriodo = document.getElementById('secondaryPeriodo');
-                if (modalNextVaca.textContent === 'No hay vacaciones') {
-                    secondaryPeriodo.className = 'd-none';
-                } else {
-                    secondaryPeriodo.className = 'd-flex';
-                }
-
-                document.getElementById('secondariPeriodo').textContent = formattedDate3;
-
-                document.getElementById('modalDirectManagerStatus').textContent = direct_manager_status;
-                const modalDirectManagerStatus = document.getElementById('modalDirectManagerStatus');
-                // Verificar el valor y asignar el contenido y las clases
-                if (direct_manager_status === 'Pendiente') {
-                    modalDirectManagerStatus.textContent = 'Pendiente';
-                    modalDirectManagerStatus.className = 'badge bg-warning text-dark';
-                } else if (direct_manager_status === 'Aprobada') {
-                    modalDirectManagerStatus.textContent = 'Aprobada';
-                    modalDirectManagerStatus.className = 'badge bg-success';
-                } else if (direct_manager_status === 'Rechazada') {
-                    modalDirectManagerStatus.textContent = 'Rechazada';
-                    modalDirectManagerStatus.className = 'badge bg-danger';
-                } else {
-                    modalDirectManagerStatus.textContent = 'Desconocido';
-                    modalDirectManagerStatus.className = 'badge bg-secondary';
-                }
-
-
-                document.getElementById('modalRhStatus').textContent = rh_status;
-                const modalRhStatus = document.getElementById('modalRhStatus');
-                // Verificar el valor y asignar el contenido y las clases
-                if (rh_status === 'Pendiente') {
-                    modalRhStatus.textContent = 'Pendiente';
-                    modalRhStatus.className = 'badge bg-warning text-dark';
-                } else if (rh_status === 'Aprobada') {
-                    modalRhStatus.textContent = 'Aprobada';
-                    modalRhStatus.className = 'badge bg-success';
-                } else if (rh_status === 'Rechazada') {
-                    modalRhStatus.textContent = 'Rechazada';
-                    modalRhStatus.className = 'badge bg-danger';
-                } else {
-                    modalRhStatus.textContent = 'Desconocido';
-                    modalRhStatus.className = 'badge bg-secondary';
-                }
-
-                if (request_type === 'Ausencia') {
-                    document.getElementById('modalSpecificType').textContent = tipoDeAusencia;
-                } else if (request_type === 'Permisos especiales') {
-                    document.getElementById('modalSpecificType').textContent =
-                        typePermisoEspecial;
-                } else {
-                    document.getElementById('modalSpecificType').textContent = 'Sin especificar';
-                }
-
-                document.getElementById('modalRequestType').textContent = request_type;
-                document.getElementById('modalDaysAbsent').textContent = days_absent;
-                document.getElementById('modalMethodOfPayment').textContent = method_of_payment;
-                document.getElementById('modalRevealId').textContent = reveal_id;
-            });
         });
 
         /* Cerrar el modal de detalles */
@@ -857,6 +670,7 @@
                 document.getElementById('modalDaysAbsent').textContent = days_absent;
                 document.getElementById('modalMethodOfPayment').textContent = method_of_payment;
                 document.getElementById('modalRevealId').textContent = reveal_id;
+                document.getElementById('details').textContent = this.getAttribute('data-details');
             });
         });
 
@@ -885,7 +699,7 @@
                         if (response.ok) {
                             document.getElementById('loadingSpinner').style.display = 'none';
                             Swal.fire({
-                                title: 'Solicitud rechazada',
+                                title: 'Solicitud Aprobada',
                                 text: 'La solicitud ha sido aprobada correctamente',
                                 icon: 'success',
                                 confirmButtonText: 'Aceptar'

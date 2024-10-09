@@ -218,7 +218,8 @@
                                             {{-- Para permisos especiales --}}
                                             data-tipo-permiso-especial="{{ is_array($aprovada->more_information) && count($aprovada->more_information) > 0 && isset($aprovada->more_information[0]['Tipo_de_permiso_especial']) ? $aprovada->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
                                             data-reveal_id="{{ $aprovada->reveal_id }}"
-                                            data-file="{{ $aprovada->file }}">Ver</button>
+                                            data-file="{{ $aprovada->file }}" data-details="{{ $aprovada->details }}">
+                                            Ver</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -363,6 +364,14 @@
                                     <div id="viewFile">
                                         {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
                                     </div>
+                                </div>
+
+                                <div class="col-3 mt-2">
+                                    <strong>Motivo </strong>
+                                </div>
+
+                                <div class="col-9 mt-2">
+                                    <textarea id="details" class="form-control" readonly></textarea>
                                 </div>
                             </div>
 
@@ -603,6 +612,7 @@
                 document.getElementById('modalDaysAbsent').textContent = days_absent;
                 document.getElementById('modalMethodOfPayment').textContent = method_of_payment;
                 document.getElementById('modalRevealId').textContent = reveal_id;
+                document.getElementById('details').textContent = this.getAttribute('data-details');
             });
         });
 
