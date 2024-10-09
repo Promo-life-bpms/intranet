@@ -1123,7 +1123,7 @@ class VacationRequestController extends Controller
                     return back()->with('error', 'La hora de salida no puede ser la misma que la de regreso');
                 }
 
-                if($totalRegreso > $totalSalida){
+                if($totalRegreso < $totalSalida){
                     return back()->with('error', 'La hora de regreso no puede ser antes que la hora de inicio.');
                 }
 
@@ -4341,7 +4341,7 @@ class VacationRequestController extends Controller
                     return back()->with('error', 'La hora de salida no puede ser la misma que la de regreso');
                 }
 
-                if($totalRegreso > $totalSalida){
+                if($totalRegreso < $totalSalida){
                     return back()->with('error', 'La hora de regreso no puede ser antes que la hora de inicio.');
                 }
                 
