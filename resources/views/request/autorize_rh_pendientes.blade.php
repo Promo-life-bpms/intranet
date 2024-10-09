@@ -361,7 +361,7 @@
                             <textarea style="min-width: 100%" class="form-control" id="commentary" name="commentary" placeholder="Motivo"
                                 required></textarea>
                             <div class="d-flex justify-content-end mt-2">
-                                <button type="submit" class="btn btn-primary" id="denyButtonForm">Enviar</button>
+                                <button type="button" class="btn btn-primary" id="denyButtonForm">Enviar</button>
                             </div>
                         </form>
                     </div>
@@ -382,12 +382,11 @@
 
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     <script>
-        formDeny = document.getElementById('denyFormRequest');
-
-        formDeny.addEventListener('submit', function(event) {
-            event.preventDefault();
+        document.getElementById('denyButtonForm').addEventListener('click', function() {
             document.getElementById('loadingSpinner').style.display = 'flex';
             const form = document.getElementById('denyFormRequest');
             /*Mandar el ID de la solicitus que se va a aprobar del que viene en el modal*/
@@ -398,7 +397,49 @@
             inputId.value = id;
             form.appendChild(inputId);
 
-            form.submit();
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            document.getElementById('loadingSpinner').style.display = 'none';
+                            Swal.fire({
+                                title: 'Solicitud rechazada',
+                                text: 'La solicitud ha sido rechazada correctamente',
+                                icon: 'success',
+                                confirmButtonText: 'Aceptar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href =
+                                        '/request/authorize-rh/pendientes';
+                                }
+                            });
+                        } else {
+                            document.getElementById('loadingSpinner').style.display = 'none';
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Ocurrió un error al rechazar la solicitud.',
+                                icon: 'error',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('loadingSpinner').style.display = 'none';
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un error al rechazar la solicitud',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    });
+            });
+
+            form.dispatchEvent(new Event('submit'));
         });
 
         /*Limpiar el formulario de rechazo*/
@@ -824,15 +865,60 @@
             document.getElementById('loadingSpinner').style.display = 'flex';
 
             const form = document.getElementById('miFormularioAproveRh');
-            /*Mandar el ID de la solicitus que se va a aprobar del que viene en el modal*/
+
+            // Mandar el ID de la solicitud que se va a aprobar
             const id = document.getElementById('modalId').textContent;
             const inputId = document.createElement('input');
             inputId.type = 'hidden';
             inputId.name = 'id';
             inputId.value = id;
             form.appendChild(inputId);
-            form.submit();
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            document.getElementById('loadingSpinner').style.display = 'none';
+                            Swal.fire({
+                                title: 'Solicitud rechazada',
+                                text: 'La solicitud ha sido aprobada correctamente',
+                                icon: 'success',
+                                confirmButtonText: 'Aceptar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href =
+                                        '/request/authorize-rh/pendientes';
+                                }
+                            });
+                        } else {
+                            document.getElementById('loadingSpinner').style.display = 'none';
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Ocurrió un error al aprobar la solicitud.',
+                                icon: 'error',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('loadingSpinner').style.display = 'none';
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un error al aprobar la solicitud',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    });
+            });
+
+            form.dispatchEvent(new Event('submit'));
         });
+
 
 
         document.getElementById('denyRequest').addEventListener('click', function() {
@@ -898,35 +984,5 @@
         if (search) {
             document.getElementById('searchName').value = search;
         }
-
-
-        document.getElementById('exportForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            document.getElementById('loadingSpinner').style.display = 'flex';
-
-            axios({
-                method: 'post',
-                url: this.action,
-                data: new FormData(this),
-                responseType: 'blob'
-            }).then(function(response) {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-
-                link.setAttribute('download',
-                    'Solicitudes aprobadas.xlsx');
-                document.body.appendChild(link);
-                link.click();
-
-                window.URL.revokeObjectURL(url);
-
-                document.getElementById('loadingSpinner').style.display = 'none';
-            }).catch(function(error) {
-                console.error('Error al exportar:', error);
-
-                document.getElementById('loadingSpinner').style.display = 'none';
-            });
-        });
     </script>
 @stop
