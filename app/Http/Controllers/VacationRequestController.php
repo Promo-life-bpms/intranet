@@ -1574,7 +1574,6 @@ class VacationRequestController extends Controller
 
             if ($request->Permiso == 'Asuntos personales') {
                 ///VACACIONES PENDIENTES O APROBADAS///
-                //dd($request);
                 if ($mesesTranscurridos < 3) {
                     return back()->with('error', 'No has cumplido el tiempo suficiente para solicitar este permiso.');
                 }
@@ -1598,6 +1597,36 @@ class VacationRequestController extends Controller
 
                 if ($permisoEspecial >= 3) {
                     return back()->with('error', 'Solo tienes derecho a 3 permisos especiales por año.');
+                }
+
+                $VacacionesTomadas = DB::table('vacation_requests')
+                    ->where('user_id', $user->id)
+                    ->where('request_type_id', 1)
+                    ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                    ->pluck('id'); // Especificar la columna
+
+                $diasVaca = collect();
+                foreach ($VacacionesTomadas as $diasvacaciones) {
+                    $Days = VacationDays::where('vacation_request_id', $diasvacaciones)->pluck('day');
+                    $diasVaca = $diasVaca->merge($Days);
+                }
+
+                $diasVaca = $diasVaca->map(function ($day) {
+                    return Carbon::parse($day);
+                });
+
+                foreach ($datesArray as $dia) {
+                    $dia = Carbon::parse($dia);
+                    foreach ($diasVaca as $VacacionesExistentes) {
+                        if (
+                            $dia->isSameDay($VacacionesExistentes) ||
+                            $dia->isSameDay($VacacionesExistentes->copy()->subDay()) ||
+                            $dia->isSameDay($VacacionesExistentes->copy()->addDay())
+                        ) {
+                            return back()->with('error', 'No se puede crear la solicitud; recuerda que no puedes tomar un permiso especial un día antes o un día después de tus vacaciones.');
+                        }
+                    }
                 }
 
                 $more_information[] = [
@@ -5104,6 +5133,36 @@ class VacationRequestController extends Controller
 
                     if ($AsuntosPersonales > 3) {
                         return back()->with('message', 'Solo puedes solicitar tres permisos especiales por año de tipo "Asuntos personales.');
+                    }
+
+                    $VacacionesTomadas = DB::table('vacation_requests')
+                        ->where('user_id', $user->id)
+                        ->where('request_type_id', 1)
+                        ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                        ->pluck('id'); // Especificar la columna
+
+                    $diasVaca = collect();
+                    foreach ($VacacionesTomadas as $diasvacaciones) {
+                        $Days = VacationDays::where('vacation_request_id', $diasvacaciones)->pluck('day');
+                        $diasVaca = $diasVaca->merge($Days);
+                    }
+
+                    $diasVaca = $diasVaca->map(function ($day) {
+                        return Carbon::parse($day);
+                    });
+
+                    foreach ($registrarArray as $dia) {
+                        $dia = Carbon::parse($dia);
+                        foreach ($diasVaca as $VacacionesExistentes) {
+                            if (
+                                $dia->isSameDay($VacacionesExistentes) ||
+                                $dia->isSameDay($VacacionesExistentes->copy()->subDay()) ||
+                                $dia->isSameDay($VacacionesExistentes->copy()->addDay())
+                            ) {
+                                return back()->with('error', 'No se puede crear la solicitud; recuerda que no puedes tomar un permiso especial un día antes o un día después de tus vacaciones.');
+                            }
+                        }
                     }
                 }
 
