@@ -341,7 +341,8 @@ class VacationRequestController extends Controller
             $vacaciones_actuales = $DatosNew[0]['dv'];
         }
 
-        $PermisosyVacacionesAll = VacationRequest::pluck('id');
+        $PermisosyVacacionesAll = VacationRequest::whereIn('direct_manager_status', ['Aprobada', 'Pendiente'])
+        ->whereIn('rh_status', ['Aprobada', 'Pendiente'])->get();
         $vacacionesDias = [];
         $ausenciaDias = [];
         $paternidadDias = [];
@@ -349,7 +350,7 @@ class VacationRequestController extends Controller
         $permisosEspecialesDias = [];
         foreach ($PermisosyVacacionesAll as $daysonthecalendar) {
             // Obtener los días asociados a la solicitud
-            $Days = VacationDays::where('vacation_request_id', $daysonthecalendar->id_request)->get();
+            $Days = VacationDays::where('vacation_request_id', $daysonthecalendar->id)->get();
             $dias = [];
 
             foreach ($Days as $Day) {
