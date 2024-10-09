@@ -1123,6 +1123,10 @@ class VacationRequestController extends Controller
                     return back()->with('error', 'La hora de salida no puede ser la misma que la de regreso');
                 }
 
+                if($totalRegreso > $totalSalida){
+                    return back()->with('error', 'La hora de regreso no puede ser antes que la hora de inicio.');
+                }
+
                 $more_information[] = [
                     'Tipo_de_ausencia' => $request->ausenciaTipo == 'salida_durante' ? 'Salir durante la jornada' : 'No encontro el valor',
                     'value_type' => $request->ausenciaTipo,
@@ -4336,6 +4340,11 @@ class VacationRequestController extends Controller
                 if ($totalSalida == $totalRegreso) {
                     return back()->with('error', 'La hora de salida no puede ser la misma que la de regreso');
                 }
+
+                if($totalRegreso > $totalSalida){
+                    return back()->with('error', 'La hora de regreso no puede ser antes que la hora de inicio.');
+                }
+                
 
                 // Convertir ambos arrays a conjuntos (sets) para la comparación
                 $diasSet = collect($dias)->unique()->sort()->values();
