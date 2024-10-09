@@ -280,33 +280,5 @@
         if (search) {
             document.getElementById('searchName').value = search;
         }
-
-        document.getElementById('exportForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            document.getElementById('loadingSpinner').style.display = 'flex';
-            axios({
-                method: 'post',
-                url: this.action,
-                data: new FormData(this),
-                responseType: 'blob'
-            }).then(function(response) {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-
-                link.setAttribute('download',
-                    'Solicitudes aprobadas.xlsx');
-                document.body.appendChild(link);
-                link.click();
-
-                window.URL.revokeObjectURL(url);
-
-                document.getElementById('loadingSpinner').style.display = 'none';
-            }).catch(function(error) {
-                console.error('Error al exportar:', error);
-
-                document.getElementById('loadingSpinner').style.display = 'none';
-            });
-        });
     </script>
 @stop
