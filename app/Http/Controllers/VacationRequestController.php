@@ -546,6 +546,37 @@ class VacationRequestController extends Controller
                 return back()->with('error', 'Verifica que los días seleccionados no los hayas solicitado anteriormente.');
             }
 
+            $permisoEspecial = DB::table('vacation_requests')
+                ->where('user_id', $user->id)
+                ->where('request_type_id', 5)
+                ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                ->whereJsonContains('more_information', ['Tipo_de_permiso_especial' => 'Asuntos personales'])
+                ->pluck('id');
+
+            $diasPermisoEspecial = collect();
+            foreach ($permisoEspecial as $diaspermisoespecial) {
+                $Days = VacationDays::where('vacation_request_id', $diaspermisoespecial)->pluck('day');
+                $diasPermisoEspecial = $diasPermisoEspecial->merge($Days);
+            }
+
+            $diasPermisoEspecial = $diasPermisoEspecial->map(function ($day) {
+                return Carbon::parse($day);
+            });
+
+            foreach ($datesArray as $dia) {
+                $dia = Carbon::parse($dia);
+                foreach ($diasPermisoEspecial as $PermisoEspecial) {
+                    if (
+                        $dia->isSameDay($PermisoEspecial) ||
+                        $dia->isSameDay($PermisoEspecial->copy()->subDay()) ||
+                        $dia->isSameDay($PermisoEspecial->copy()->addDay())
+                    ) {
+                        return back()->with('error', 'No se puede crear la solicitud; recuerda que no puedes tomar un vacaciones un día antes o un día después de haber disfrutado un permiso especial.');
+                    }
+                }
+            }
+
             if ($diasTotales == 0) {
                 return back()->with('error', 'Debes enviar al menos un día de vacaciones.');
             }
@@ -3160,6 +3191,38 @@ class VacationRequestController extends Controller
             if ($mesesTranscurridos < 6) {
                 return back()->with('error', 'No has cumplido el tiempo suficiente para solicitar vacaciones.');
             }
+
+            $permisoEspecial = DB::table('vacation_requests')
+                ->where('user_id', $user->id)
+                ->where('request_type_id', 5)
+                ->whereNotIn('direct_manager_status', ['Rechazada', 'Cancelada por el usuario'])
+                ->whereNotIn('rh_status', ['Rechazada', 'Cancelada por el usuario'])
+                ->whereJsonContains('more_information', ['Tipo_de_permiso_especial' => 'Asuntos personales'])
+                ->pluck('id');
+
+            $diasPermisoEspecial = collect();
+            foreach ($permisoEspecial as $diaspermisoespecial) {
+                $Days = VacationDays::where('vacation_request_id', $diaspermisoespecial)->pluck('day');
+                $diasPermisoEspecial = $diasPermisoEspecial->merge($Days);
+            }
+
+            $diasPermisoEspecial = $diasPermisoEspecial->map(function ($day) {
+                return Carbon::parse($day);
+            });
+
+            foreach ($dates as $dia) {
+                $dia = Carbon::parse($dia);
+                foreach ($diasPermisoEspecial as $PermisoEspecial) {
+                    if (
+                        $dia->isSameDay($PermisoEspecial) ||
+                        $dia->isSameDay($PermisoEspecial->copy()->subDay()) ||
+                        $dia->isSameDay($PermisoEspecial->copy()->addDay())
+                    ) {
+                        return back()->with('error', 'No se puede crear la solicitud; recuerda que no puedes tomar un vacaciones un día antes o un día después de haber disfrutado un permiso especial.');
+                    }
+                }
+            }
+
 
             $Vacaciones = DB::table('vacations_available_per_users')
                 ->where('users_id', $user->id)
