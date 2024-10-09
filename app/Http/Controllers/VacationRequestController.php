@@ -3073,6 +3073,11 @@ class VacationRequestController extends Controller
             return back()->with('error', 'No puedes ser tú mismo el responsable de tus deberes.');
         }
 
+        
+        if($Solicitud->direct_manager_status == 'Aprobada' && $Solicitud->rh_status == 'Aprobada'){
+            return back()->with('error', 'La solicitud ya fue aprobada, ya no la puedes editar.');
+        }
+
         $dates = $request->dates;
         $datesArray = json_decode($dates, true);
         $UserEmployee = Employee::where('user_id', $user->id)->value('user_id');
