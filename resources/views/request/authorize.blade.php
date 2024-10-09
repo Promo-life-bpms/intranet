@@ -167,7 +167,8 @@
                                             {{-- Para permisos especiales --}}
                                             data-tipo-permiso-especial="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_permiso_especial']) ? $infoSoli->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
                                             data-reveal_id="{{ $infoSoli->reveal_id }}"
-                                            data-file="{{ $infoSoli->file }}"> Ver y
+                                            data-file="{{ $infoSoli->file }}" data-details="{{ $infoSoli->details }}">
+                                            Ver y
                                             autorizar</button>
                                     @else
                                         <button class="btn btn-link openModalDetails" data-id="{{ $infoSoli->id }}"
@@ -191,7 +192,8 @@
                                             {{-- Para permisos especiales --}}
                                             data-tipo-permiso-especial="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_permiso_especial']) ? $infoSoli->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
                                             data-reveal_id="{{ $infoSoli->reveal_id }}"
-                                            data-file="{{ $infoSoli->file }}"> Ver
+                                            data-file="{{ $infoSoli->file }}" data-details="{{ $infoSoli->details }}">
+                                            Ver
                                         </button>
                                     @endif
                                 </td>
@@ -328,6 +330,14 @@
 
                                 <div class="col-9 mt-2" id="viewFile">
                                     {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
+                                </div>
+
+                                <div class="col-3 mt-2">
+                                    <strong>Motivo </strong>
+                                </div>
+
+                                <div class="col-9 mt-2">
+                                    <textarea id="details" class="form-control" readonly></textarea>
                                 </div>
                             </div>
 
@@ -580,6 +590,7 @@
                 document.getElementById('modalDaysAbsent').textContent = days_absent;
                 document.getElementById('modalMethodOfPayment').textContent = method_of_payment;
                 document.getElementById('modalRevealId').textContent = reveal_id;
+                document.getElementById('details').textContent = this.getAttribute('data-details');
             });
         });
 
