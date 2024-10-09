@@ -1715,6 +1715,7 @@ class VacationRequestController extends Controller
             $solicitud->file = $Solicitud->file == null ? null : $Solicitud->file;
             $solicitud->time = in_array($Solicitud->request_type_id, [2]) ? $time : null;
             $solicitud->more_information = $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true);
+            $solicitud->details = $Solicitud->details;
             return $solicitud;
         });
 
@@ -2122,6 +2123,7 @@ class VacationRequestController extends Controller
             $solicitudesAprobadas->file = $Solicitud->file == null ? null : $Solicitud->file;
             $solicitudesAprobadas->time = in_array($Solicitud->request_type_id, [2]) ? $time : null;
             $solicitudesAprobadas->more_information = $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true);
+            $solicitudesAprobadas->details = $Solicitud->details;
             return $solicitudesAprobadas;
         });
 
@@ -2365,6 +2367,7 @@ class VacationRequestController extends Controller
             $SolicitudesPendientes->file = $Solicitud->file == null ? null : $Solicitud->file;
             $SolicitudesPendientes->time = in_array($Solicitud->request_type_id, [2]) ? $time : null;
             $SolicitudesPendientes->more_information = $Solicitud->more_information == null ? null : json_decode($Solicitud->more_information, true);
+            $SolicitudesPendientes->details = $Solicitud->details;
             return $SolicitudesPendientes;
         });
 
