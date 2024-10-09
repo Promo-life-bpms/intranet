@@ -572,7 +572,7 @@ class VacationRequestController extends Controller
                         $dia->isSameDay($PermisoEspecial->copy()->subDay()) ||
                         $dia->isSameDay($PermisoEspecial->copy()->addDay())
                     ) {
-                        return back()->with('error', 'No se puede crear la solicitud; recuerda que no puedes tomar un vacaciones un día antes o un día después de haber disfrutado un permiso especial.');
+                        return back()->with('error', 'No se puede crear la solicitud; recuerda que no puedes tomar vacaciones un día antes o un día después de haber disfrutado un permiso especial de tipo "Asuntos personales".');
                     }
                 }
             }
@@ -3218,7 +3218,7 @@ class VacationRequestController extends Controller
                         $dia->isSameDay($PermisoEspecial->copy()->subDay()) ||
                         $dia->isSameDay($PermisoEspecial->copy()->addDay())
                     ) {
-                        return back()->with('error', 'No se puede crear la solicitud; recuerda que no puedes tomar un vacaciones un día antes o un día después de haber disfrutado un permiso especial.');
+                        return back()->with('error', 'No se puede crear la solicitud; recuerda que no puedes tomar vacaciones un día antes o un día después de haber disfrutado un permiso especial de tipo "Asuntos personales".');
                     }
                 }
             }
