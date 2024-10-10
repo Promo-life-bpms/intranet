@@ -121,8 +121,10 @@
                         <a href="#" class='sidebar-link'>
                             <i class="fa fa-users" aria-hidden="true"></i>
                             <span>Vacaciones</span>
-                            <span
-                                class="badge bg-secondary">{{ count(App\Models\Request::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Pendiente')->get()) }}
+                            <span class="badge bg-secondary">
+                                {{-- {{ count(App\Models\Request::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Pendiente')->get()) }} --}}
+                                {{ DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Pendiente')->count() }}
+
                             </span>
                         </a>
                         {{-- <ul class="submenu ">
@@ -151,16 +153,18 @@
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.authorizeRH') }}">
                                     <span>Ver solicitudes</span>
-                                    <span
-                                        class="badge bg-secondary">{{ count(App\Models\Request::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Pendiente')->get()) }}
+                                    <span class="badge bg-secondary">
+                                        {{ DB::table('vacation_requests')->where('direct_manager_status', 'Aprobada')->where('rh_status', 'Pendiente')->count() }}
+
+                                        {{-- {{ count(App\Models\Request::where('direct_manager_status', 'Aprobada')->where('human_resources_status', 'Pendiente')->get()) }} --}}
                                     </span>
                                 </a>
                             </li>
-                            <li class="submenu-item ">
+                            {{-- <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('request.reportRequest') }}">
                                     <span>Reportes totales</span>
                                 </a>
-                            </li>
+                            </li> --}}
 
                             <li class="submenu-item ">
                                 <a class="dropdown-item" href="{{ route('admin.vacations.index') }}">

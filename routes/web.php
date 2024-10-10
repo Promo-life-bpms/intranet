@@ -123,7 +123,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::put('/access/{acc}', [AccessController::class, 'update'])->name('access.update');
     Route::delete('/access/{acc}', [AccessController::class, 'destroy'])->name('access.delete');
 
-    Route::get('/vacations', [VacationsController::class, 'index'])->middleware('role:rh')->name('admin.vacations.index');
+    //Route::get('/vacations', [VacationsController::class, 'index'])->middleware('role:rh')->name('admin.vacations.index');
     Route::get('/vacations/create', [VacationsController::class, 'create'])->middleware('role:rh')->name('admin.vacations.create');
     Route::post('/vacations', [VacationsController::class, 'store'])->middleware('role:rh')->name('admin.vacations.store');
     Route::get('/vacations/{vacation}/edit', [VacationsController::class, 'edit'])->middleware('role:rh')->name('admin.vacations.edit');
@@ -154,17 +154,24 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('create/vacation/or/leave/request', [VacationRequestController::class, 'CreatePurchase'])->name('create.vacation.or.leave.request');
     Route::get('request/authorize-manager', [VacationRequestController::class, 'RequestBoss'])->name('request.authorizeManager');
     Route::post('request/authorize/leave/by/direct/boss', [VacationRequestController::class, 'AuthorizePermissionBoss'])->name('authorize.leave.by.direct.boss');
-    Route::post('request/reject/leave/by/direct/boss/', [VacationRequestController::class, 'RejectPermissionBoss'])->name('reject.leave.by.direct.boss');
+    Route::post('request/reject/leave/by/direct/boss', [VacationRequestController::class, 'RejectPermissionBoss'])->name('reject.leave.by.direct.boss');
     Route::post('reject/leave/by/direct/user', [VacationRequestController::class, 'RejectPermissionUser'])->name('reject.leave.by.direct.user');
     Route::post('update/request', [VacationRequestController::class, 'UpdateRequest'])->name('update.request');
-    Route::post('request/reject/leave/by/human/resources', [VacationRequestController::class, 'RejectPermissionHumanResources'])->name('reject.leave.by.human.resources');
-    Route::post('request/authorization/by/human/resources', [VacationRequestController::class, 'AuthorizePermissionHumanResources'])->name('authorization.by.human.resources');
-    Route::get('request/authorize-rh', [VacationRequestController::class, 'authorizeRequestRH'])->name('request.authorizeRH');
+    Route::post('request/authorize-rh/reject/leave/by/human/resources', [VacationRequestController::class, 'RejectPermissionHumanResources'])->middleware('role:rh')->name('reject.leave.by.human.resources');
+    Route::post('request/authorize-rh/authorization/by/human/resources', [VacationRequestController::class, 'AuthorizePermissionHumanResources'])->middleware('role:rh')->name('authorization.by.human.resources');
+    //Route::get('request/authorize-rh', [VacationRequestController::class, 'authorizeRequestRH'])->middleware('role:rh')->name('request.authorizeRH');
+
+    Route::get('request/authorize-rh/aprobadas', [VacationRequestController::class, 'RequestAuthorizeRH'])->middleware('role:rh')->name('request.authorizeRH');
+    Route::get('request/authorize-rh/rechazadas', [VacationRequestController::class, 'RequestRejectUserRH'])->middleware('role:rh')->name('request.authorizeRHReject');
+    Route::get('request/authorize-rh/pendientes', [VacationRequestController::class, 'RequestPendingRH'])->middleware('role:rh')->name('request.authorizeRHPending');
+
+    Route::get('/vacations', [VacationRequestController::class, 'UserVacationInformation'])->middleware('role:rh')->name('admin.vacations.index');
+    Route::get('all/vacations/and/permits', [VacationRequestController::class, 'AllVacationsAndPermits'])->middleware('role:rh')->name('all.vacations.and.permits');
     Route::get('update/vacation/or/leave/request', [VacationRequestController::class, 'UpdatePurchase'])->name('update.vacation.or.leave.request');
     Route::get('prueba/info', [VacationRequestController::class, 'CreateVacationRequest']);
     Route::post('create/request/type', [RequestTypeController::class, 'store'])->name('create.request.type');
     Route::post('request/make/up/vacations', [VacationRequestController::class, 'MakeUpVacations'])->name('make.up.vacations');
-    Route::post('request/confirm/rejected/by/rh',[VacationRequestController::class, 'ConfirmRejectedByRh'])->name('confirm.rejected.by.rh');
+    Route::post('request/confirm/rejected/by/rh', [VacationRequestController::class, 'ConfirmRejectedByRh'])->name('confirm.rejected.by.rh');
 
 
     Route::get('dropdownlist/getPosition/{id}', [EmployeeController::class, 'getPositions']);
@@ -324,6 +331,6 @@ Route::get('vacations/sendRemembers/', [VacationsController::class, 'sendRemembe
 Route::get('request/alertRequesPendients/', [RequestController::class, 'alertPendient']);
 
 // Actualizar información de vacaciones
-Route::get('vacations/updateInformationVacations', [VacationsController::class, 'updateInformationVacations']);
+//Route::get('vacations/updateInformationVacations', [VacationsController::class, 'updateInformationVacations']);
 
 Route::get('vacations/obtenerInformacionDeLosUsuarios', [VacationsController::class, 'obtenerInformacionDeLosUsuarios']);

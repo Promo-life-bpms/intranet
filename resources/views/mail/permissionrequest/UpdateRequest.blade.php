@@ -1,7 +1,7 @@
 @component('mail::message')
 # ¡Buen día, {{$receptor}}!
 
-<h2> {{$emisor}} ha creado una solicitud de "{{$type_request}}". </h2>
+<h2> {{$emisor}} ha modificado su solicitud de "{{$type_request}}". </h2>
 
 Los días que {{$emisor}} solicitó son: {{$days}}.<br>
 Descripción: "{{$details}}"

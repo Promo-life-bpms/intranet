@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    {{-- alertas --}}
     @if (session('message'))
         <div id="alert-succ" class="alert alert-success">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="26" height="26"
@@ -22,7 +23,6 @@
             {{ session('error') }}
         </div>
     @endif
-
     @if (session('warning'))
         <div class="alert alert-warning d-flex align-items-center" role="alert">
             <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:">
@@ -42,17 +42,27 @@
             </div>
         </div>
 
-        {{-- Título de la página y motor de búsqueda --}}
-        <div class="row">
-            <div class="col-4">
-                <h3>Solicitudes autorizadas</h3>
+        <div class="d-flex justify-content-between mb-2">
+            <h3 id="titlePage">Solicitudes autorizadas</h3>
+
+            {{-- Botón para exportar a excel --}}
+            <div id="exporTable">
+                {!! Form::open(['route' => 'request.export', 'id' => 'exportForm']) !!}
+                <button id="buttonExpor" type="submit" class="btn btn-success"
+                    style="margin-left: 20px; background-color: #81C10C !important; border-color: #81C10C !important; ">Exportar</button>
+                {!! Form::close() !!}
             </div>
-            <div class="col-8">
+        </div>
+
+
+        <div class="row">
+            {{-- Filtros de búsqueda --}}
+            <div class="col-5 align-content-end">
                 <div class="row">
                     <div class="col-4">
-                        <input id="searchName" type="search" class="form-control" placeholder="Buscar por nombre">
+                        <input id="searchName" type="search" class="form-control" placeholder="Nombre">
                     </div>
-                    <div class="col-3">
+                    <div class="col-5">
                         <select id="tipoSelect" name="tipo" class="form-select">
                             <option value="">Tipo de permiso</option>
                             <option value="Vacaciones" {{ request('tipo') == 'Vacaciones' ? 'selected' : '' }}>Vacaciones
@@ -67,161 +77,182 @@
                             </option>
                         </select>
                     </div>
-                    <div class="col-3 d-flex align-items-baseline">
-                        <input id="fechaInput" type="date" class="form-control mr-1" value="{{ request('fecha') }}" />
-                        <i id="clearFilter" class="fas fa-times-circle" style="cursor: pointer;"></i>
-                    </div>
-                    <div class="col-2">
-                        <div class="d-flex justify-content-center">
-                            <strong> Total {{ $SumaSolicitudes }} </strong>
-                        </div>
 
-                        <div class="d-flex justify-content-center">
-                            <span>Solicitudes</span>
+                    <div class="col-3 d-flex align-items-center justify-content-center">
+                        <input id="fechaInput" type="date" class="form-control" value="{{ request('fecha') }}"
+                            style="width: 2.8rem" />
+                        <i style="margin-left: 0.5rem" id="clearFilter" class="fas fa-times-circle"
+                            style="cursor: pointer;"></i>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Tarjetas  --}}
+            <div class="col-7">
+                <div class="row">
+                    <div class="col-4">
+                        <div id="tarjeta1" class="tarjetaRh1 hover-tarjetaRh1"
+                            style="border-bottom: 10px solid var(--color-target-1); min-height: 100%; padding: 10px 20px !important;">
+                            <div class="d-flex justify-content-end">
+                                <strong>{{ $sumaAprobadas }}</strong>
+                            </div>
+                            <div style="margin-top: 25px">
+                                <strong>Autorizadas</strong>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-4">
+                        <div id="tarjeta2" class="tarjetaRh2 hover-tarjetaRh2"
+                            style="border-bottom: 10px solid var(--color-target-3); min-height: 100%; padding: 10px 20px !important;">
+                            <div class="d-flex justify-content-end">
+                                <strong>{{ $sumaPendientes }}</strong>
+                            </div>
+                            <div style="margin-top: 25px">
+                                <strong>Pendientes</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <div id="tarjeta3" class="tarjetaRh3 hover-tarjetaRh3"
+                            style="border-bottom: 10px solid var(--color-target-4); min-height: 100%; padding: 10px 20px !important; align-content: end !important; ">
+                            <div class="d-flex justify-content-end">
+                                <strong>{{ $sumaCanceladasUsuario }}</strong>
+                            </div>
+                            <div>
+                                <strong>Canceladas por el usuario</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        {{-- Tabla de solicitudes autorizadas --}}
-        <div class="mt-3" style="min-width: 100% !important;">
-            <div id="tableAutorizadas">
-                <table class="table" style="min-width: 100% !important;">
-                    <thead style="background-color: #072A3B; color: white;">
-                        <tr>
-                            <th scope="col" style="text-align: center; align-content: center">#</th>
-                            <th scope="col" style="text-align: center;">Solicitante</th>
-                            <th scope="col" style="text-align: center;">Tipo de solicitud</th>
-                            <th scope="col" style="text-align: center;">Días ausente</th>
-                            <th scope="col" style="text-align: center;">Aprobado por (Jefe)</th>
-                            <th scope="col" style="text-align: center;">Aprobado por (RH)</th>
-                            <th scope="col" style="text-align: center;">Detalles</th>
-                        </tr>
-                    </thead>
 
-                    <tbody>
-                        @if (count($solicitudes) === 0)
+            {{-- Tabla para autorizadas --}}
+            <div class="mt-3" style="min-width: 100% !important;">
+                <div id="tableAutorizadas">
+                    <table class="table" style="min-width: 100% !important;">
+                        <thead style="background-color: #072A3B; color: white;">
                             <tr>
-                                <td colspan="7" style="text-align: center;">No hay solicitudes</td>
+                                <th scope="col" style="text-align: center;">#</th>
+                                <th scope="col" style="text-align: center;">Solicitante</th>
+                                <th scope="col" style="text-align: center;">Tipo de solicitud</th>
+                                <th scope="col" style="text-align: center;">Días ausente</th>
+                                <th scope="col" style="text-align: center;">Aprobado por (Jefe)</th>
+                                <th scope="col" style="text-align: center;">Aprobado por (RH)</th>
+                                <th scope="col" style="text-align: center;">Detalles</th>
                             </tr>
-                        @endif
+                        </thead>
 
-                        @foreach ($solicitudes as $infoSoli)
-                            <tr class="solicitud-row"
-                                data-days="{{ isset($infoSoli->days_absent) ? implode(',', $infoSoli->days_absent) : '' }}">
-                                <th style="text-align: center; align-content: center;" scope="row">
-                                    {{ $infoSoli->id }}
-                                </th>
-                                <td style="text-align: center;">{{ $infoSoli->name }}</td>
-                                <td style="text-align: center;">{{ $infoSoli->request_type }}</td>
-                                <td style="text-align: center;">
-                                    @foreach ($infoSoli->days_absent as $day)
-                                        <div>
-                                            {{ $day }}
-                                        </div>
-                                    @endforeach
-                                </td>
-                                <td style="text-align: center;">
-                                    @if ($infoSoli->direct_manager_status == 'Pendiente')
-                                        <span class="badge bg-warning text-dark">{{ $infoSoli->direct_manager_status }}
-                                        </span>
-                                    @elseif ($infoSoli->direct_manager_status == 'Aprobada')
-                                        <span class="badge bg-success">{{ $infoSoli->direct_manager_status }}
-                                        </span>
-                                    @else
-                                        <span class="badge bg-danger">{{ $infoSoli->direct_manager_status }}
-                                        </span>
-                                    @endif
-                                </td>
-                                <td style="text-align: center;">
-                                    @if ($infoSoli->rh_status === 'Pendiente')
-                                        <span class="badge bg-warning text-dark">{{ $infoSoli->rh_status }}</span>
-                                    @elseif ($infoSoli->rh_status === 'Aprobada')
-                                        <span class="badge bg-success">{{ $infoSoli->rh_status }}</span>
-                                    @else
-                                        <span class="badge bg-danger">{{ $infoSoli->rh_status }}</span>
-                                    @endif
-                                </td>
+                        <tbody>
+                            @if (count($Aprobadas) == 0)
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">No tienes solicitudes</td>
+                                </tr>
+                            @endif
+                            @foreach ($Aprobadas as $aprovada)
+                                <tr class="solicitud-row1" data-days1="{{ implode(',', $aprovada->days_absent) }}">
+                                    <th style="text-align: center; align-content: center;" scope="row">
+                                        {{ $aprovada->id }}</th>
+                                    <td style="text-align: center;">{{ $aprovada->name }}</td>
+                                    <td style="text-align: center;">{{ $aprovada->request_type }}</td>
+                                    <td style="text-align: center;">
+                                        @foreach ($aprovada->days_absent as $day)
+                                            <div>
+                                                {{ $day }}
+                                            </div>
+                                        @endforeach
+                                    </td>
+                                    <td style="text-align: center;">
+                                        @if ($aprovada->direct_manager_status == 'Pendiente')
+                                            <span class="badge bg-warning text-dark">
+                                                {{ $aprovada->direct_manager_status }}
+                                            </span>
+                                        @elseif ($aprovada->direct_manager_status == 'Aprobada')
+                                            <span class="badge bg-success text-white">
+                                                {{ $aprovada->direct_manager_status }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-danger text-white">
+                                                {{ $aprovada->direct_manager_status }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td style="text-align: center;">
+                                        @if ($aprovada->rh_status == 'Pendiente')
+                                            <span class="badge bg-warning text-dark">
+                                                {{ $aprovada->rh_status }}
+                                            </span>
+                                        @elseif ($aprovada->rh_status == 'Aprobada')
+                                            <span class="badge bg-success text-white">
+                                                {{ $aprovada->rh_status }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-danger text-white">
+                                                {{ $aprovada->rh_status }}
+                                            </span>
+                                        @endif
+                                    </td>
 
-                                <td style="text-align: center; cursor: pointer;">
-                                    @if ($infoSoli->direct_manager_status === 'Pendiente')
-                                        <button class="btn btn-link openModalDetails" data-id="{{ $infoSoli->id }}"
-                                            data-create="{{ $infoSoli->created_at }}" data-name="{{ $infoSoli->name }}"
-                                            data-image="{{ $infoSoli->image }}"
-                                            data-current_vacation="{{ $infoSoli->current_vacation }}"
-                                            data-current_vacation_expiration="{{ $infoSoli->current_vacation_expiration }}"
-                                            data-next_vacation="{{ $infoSoli->next_vacation }}"
-                                            data-expiration_of_next_vacation="{{ $infoSoli->expiration_of_next_vacation }}"
-                                            data-direct_manager_status="{{ $infoSoli->direct_manager_status }}"
-                                            data-rh_status="{{ $infoSoli->rh_status }}"
-                                            data-request_type="{{ $infoSoli->request_type }}"
-                                            data-specific_type="{{ $infoSoli->specific_type }}"
-                                            data-days_absent="{{ implode(',', $infoSoli->days_absent) }}"
-                                            data-timeArray="{{ is_Array($infoSoli->time) ? 'true' : 'false' }}"
-                                            data-start="{{ $infoSoli->time ? $infoSoli->time[0]['start'] : '12:00' }}"
-                                            data-end="{{ $infoSoli->time ? $infoSoli->time[0]['end'] : '12:00' }}"
+                                    <td style="text-align: center; cursor: pointer;">
+                                        <button class="btn btn-link openModalDetails" data-id="{{ $aprovada->id }}"
+                                            data-crete="{{ $aprovada->created_at }}" data-name="{{ $aprovada->name }}"
+                                            data-image="{{ $aprovada->image }}"
+                                            data-current_vacation="{{ $aprovada->current_vacation }}"
+                                            data-current_vacation_expiration="{{ $aprovada->current_vacation_expiration }}"
+                                            data-next_vacation="{{ $aprovada->next_vacation }}"
+                                            data-expiration_of_next_vacation="{{ $aprovada->expiration_of_next_vacation }}"
+                                            data-direct_manager_status="{{ $aprovada->direct_manager_status }}"
+                                            data-rh_status="{{ $aprovada->rh_status }}"
+                                            data-request_type="{{ $aprovada->request_type }}"
+                                            data-specific_type="{{ $aprovada->specific_type }}"
+                                            data-days_absent="{{ implode(',', $aprovada->days_absent) }}"
+                                            data-timeArray="{{ is_Array($aprovada->time) ? 'true' : 'false' }}"
+                                            data-start="{{ $aprovada->time ? $aprovada->time[0]['start'] : '12:00' }}"
+                                            data-end="{{ $aprovada->time ? $aprovada->time[0]['end'] : '12:00' }}"
                                             {{-- Para Ausencia --}}
-                                            data-value-type="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['value_type']) ? $infoSoli->more_information[0]['value_type'] : '0' }}"
-                                            data-tipo-de-ausencia="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_ausencia']) ? $infoSoli->more_information[0]['Tipo_de_ausencia'] : '-' }}"
+                                            data-value-type="{{ is_array($aprovada->more_information) && count($aprovada->more_information) > 0 && isset($aprovada->more_information[0]['value_type']) ? $aprovada->more_information[0]['value_type'] : '0' }}"
+                                            data-tipo-de-ausencia="{{ is_array($aprovada->more_information) && isset($aprovada->more_information[0]['Tipo_de_ausencia']) ? $aprovada->more_information[0]['Tipo_de_ausencia'] : '-' }}"
                                             {{-- Para permisos especiales --}}
-                                            data-tipo-permiso-especial="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_permiso_especial']) ? $infoSoli->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
-                                            data-reveal_id="{{ $infoSoli->reveal_id }}"
-                                            data-file="{{ $infoSoli->file }}" data-details="{{ $infoSoli->details }}">
-                                            Ver y
-                                            autorizar</button>
-                                    @else
-                                        <button class="btn btn-link openModalDetails" data-id="{{ $infoSoli->id }}"
-                                            data-create="{{ $infoSoli->created_at }}" data-name="{{ $infoSoli->name }}"
-                                            data-image="{{ $infoSoli->image }}"
-                                            data-current_vacation="{{ $infoSoli->current_vacation }}"
-                                            data-current_vacation_expiration="{{ $infoSoli->current_vacation_expiration }}"
-                                            data-next_vacation="{{ $infoSoli->next_vacation }}"
-                                            data-expiration_of_next_vacation="{{ $infoSoli->expiration_of_next_vacation }}"
-                                            data-direct_manager_status="{{ $infoSoli->direct_manager_status }}"
-                                            data-rh_status="{{ $infoSoli->rh_status }}"
-                                            data-request_type="{{ $infoSoli->request_type }}"
-                                            data-specific_type="{{ $infoSoli->specific_type }}"
-                                            data-days_absent="{{ implode(',', $infoSoli->days_absent) }}"
-                                            data-timeArray="{{ is_Array($infoSoli->time) ? 'true' : 'false' }}"
-                                            data-start="{{ $infoSoli->time ? $infoSoli->time[0]['start'] : '12:00' }}"
-                                            data-end="{{ $infoSoli->time ? $infoSoli->time[0]['end'] : '12:00' }}"
-                                            {{-- Para Ausencia --}}
-                                            data-value-type="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['value_type']) ? $infoSoli->more_information[0]['value_type'] : '0' }}"
-                                            data-tipo-de-ausencia="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_ausencia']) ? $infoSoli->more_information[0]['Tipo_de_ausencia'] : '-' }}"
-                                            {{-- Para permisos especiales --}}
-                                            data-tipo-permiso-especial="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_permiso_especial']) ? $infoSoli->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
-                                            data-reveal_id="{{ $infoSoli->reveal_id }}"
-                                            data-file="{{ $infoSoli->file }}" data-details="{{ $infoSoli->details }}">
-                                            Ver
-                                        </button>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-
-
-                    </tbody>
-                </table>
-                <div class="d-flex justify-content-end">
-                    {{ $solicitudes->appends(request()->input())->links() }}
+                                            data-tipo-permiso-especial="{{ is_array($aprovada->more_information) && count($aprovada->more_information) > 0 && isset($aprovada->more_information[0]['Tipo_de_permiso_especial']) ? $aprovada->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
+                                            data-reveal_id="{{ $aprovada->reveal_id }}"
+                                            data-file="{{ $aprovada->file }}" data-details="{{ $aprovada->details }}">
+                                            Ver</button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @if (count($Aprobadas) > 0)
+                        <div class="d-flex justify-content-end">
+                            {{ $Aprobadas->appends(request()->input())->links() }}
+                        </div>
+                    @endif
                 </div>
+
+
+
+                {{-- Tabla para canceladas por el usuario --}}
+
             </div>
         </div>
 
-        {{-- Modal de detalles de la solicitud --}}
         <div class="modal fade bd-example-modal-lg" id="modalDetails" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Detalles de la solicitud</h5>
+                        <h5 class="modal-title" id="modalTitle">Detalles de la solicitud</h5>
                         <div id="modalId" style="display: none;"></div>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button id="closeModalDetails" type="button" class="btn-close" aria-label="Close"></button>
+
                     </div>
                     <div class="modal-body">
-                        <form id="miFormularioAprobar" action="authorize/leave/by/direct/boss" method="POST">
+                        <form id="miFormularioAproveRh" action="authorization/by/human/resources" method="POST">
                             @csrf
+
                             <div class="d-flex justify-content-end">
                                 <span class="mr-1">Fecha de creación: </span>
                                 <span id="modalCreate"></span>
@@ -234,7 +265,7 @@
                                             style="width: 70%; height: 120px; border-radius: 100px;">
                                     </div>
                                 </div>
-                                <div class="col-9">
+                                <div class="col-9  mt-2">
                                     <div>
                                         <strong id="modalName"></strong>
                                     </div>
@@ -243,15 +274,16 @@
                                         <span>Tienes
                                             <strong id="modalCurrentVacation"></strong>
                                             día(s) disponible(s) que vence(n) el
-                                            <strong id="modalCurrentVacationExpiration"></strong>
+                                            <strong id="primaryPeriodo"></strong>
                                         </span>
                                     </div>
+
 
                                     <div class="mt-2" id="secondaryPeriodo">
                                         <span>Tienes
                                             <strong id="modalNextVaca"></strong>
                                             día(s) disponible(s) que vence(n) el
-                                            <strong id="modalExpireNextVaca"></strong>
+                                            <strong id="secondariPeriodo"></strong>
                                         </span>
                                     </div>
 
@@ -279,57 +311,59 @@
 
                             <div class="row mt-3 mb-2">
                                 <div class="col-3 mt-2">
-                                    <strong>Tipo </strong>
+                                    <strong>Tipo: </strong>
                                 </div>
-                                <div class="col-9 mt-2">
+                                <div class="col-9  mt-2">
                                     <span id="modalRequestType"></span>
                                 </div>
 
                                 <div class="col-3 mt-2">
-                                    <strong>Tipo específico </strong>
+                                    <strong>Tipo específico: </strong>
                                 </div>
-                                <div class="col-9 mt-2">
+                                <div class="col-9  mt-2">
                                     <span id="modalSpecificType"></span>
                                 </div>
 
                                 <div class="col-3 mt-2">
-                                    <strong>Días ausente </strong>
+                                    <strong>Días ausente: </strong>
                                 </div>
 
-                                <div class="col-9 mt-2">
+                                <div class="col-9  mt-2">
                                     <span id="modalDaysAbsent"></span>
                                 </div>
 
                                 <div class="col-3 mt-2">
-                                    <strong>Forma de pago </strong>
+                                    <strong>Forma de pago: </strong>
                                 </div>
 
-                                <div class="col-9 mt-2">
+                                <div class="col-9  mt-2">
                                     <span id="modalMethodOfPayment"></span>
                                 </div>
 
                                 <div class="col-3 mt-2">
-                                    <strong>Tiempo </strong>
+                                    <strong>Tiempo: </strong>
                                 </div>
 
-                                <div class="col-9 mt-2" id="timeStatus">
-                                    <span>Tiempo completo</span>
+                                <div class="col-9  mt-2">
+                                    <span id="timeStatus">Tiempo completo</span>
                                 </div>
 
                                 <div class="col-3 mt-2">
-                                    <strong>Apoyo </strong>
+                                    <strong>Apoyo: </strong>
                                 </div>
 
-                                <div class="col-9 mt-2">
+                                <div class="col-9  mt-2">
                                     <span id="modalRevealId"></span>
                                 </div>
 
                                 <div class="col-3 mt-2">
-                                    <strong>Justificante </strong>
+                                    <strong>Justificante: </strong>
                                 </div>
 
-                                <div class="col-9 mt-2" id="viewFile">
-                                    {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
+                                <div class="col-9  mt-2">
+                                    <div id="viewFile">
+                                        {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
+                                    </div>
                                 </div>
 
                                 <div class="col-3 mt-2">
@@ -341,7 +375,7 @@
                                 </div>
                             </div>
 
-                            <div id="buttonModifi" style="display: none">
+                            <div id="buttonModifi" class="d-none">
                                 <button id="denyRequest" type="button" class="btn btn-danger mr-2">Rechazar</button>
                                 <button type="button" class="btn btn-primary" id="approveButton">Aprobar</button>
                             </div>
@@ -351,41 +385,40 @@
             </div>
         </div>
 
-        {{-- Modal de rechazo --}}
-        <div class="modal fade bd-example-modal-lg" id="modalDeny" tabindex="-1" role="dialog"
-            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">Rechazar solicitud</h5>
-
-                        <button id='closeModalDeny' type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="denyFormRequest" action="reject/leave/by/direct/boss" method="POST">
-                            @csrf
-                            <textarea style="min-width: 100%" placeholder="Motivo" class="form-control" id="commentary" name="commentary"
-                                required></textarea>
-                            <div class="d-flex justify-content-end mt-2">
-                                <button type="submit" class="btn btn-primary" id="denyButtonForm">Enviar</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 @stop
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/modul_rh.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/fontawesome/all.min.css') }}">
+    <style>
+        table.dataTable td {
+            padding: 15px 8px;
+        }
 
+        .fontawesome-icons .the-icon svg {
+            font-size: 24px;
+        }
+    </style>
+@stop
 
 @section('scripts')
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
     <script>
-        /*Limpiar los campos del formulario de rechazo*/
-        document.getElementById('closeModalDeny').addEventListener('click', function() {
-            const form = document.getElementById('denyFormRequest');
-            form.reset();
+        //Tarjeta activa por defecto
+        document.getElementById('tarjeta1').classList.add('tarjetaRh1-activa');
+
+        //Evento de la tarjeta 2
+        document.getElementById('tarjeta2').addEventListener('click', function() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            window.location.href = '/request/authorize-rh/pendientes';
+        });
+
+        //Evento de la tarjeta 3
+        document.getElementById('tarjeta3').addEventListener('click', function() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            window.location.href = '/request/authorize-rh/rechazadas';
         });
 
         // Evento cuando se hace clic en el botón para abrir el modal
@@ -396,9 +429,9 @@
 
                 const modal = new bootstrap.Modal(document.getElementById('modalDetails'));
                 modal.show();
-
-                const create = this.getAttribute('data-create');
+                const create = this.getAttribute('data-crete');
                 const image = this.getAttribute('data-image');
+
                 const date = new Date(create);
                 const options = {
                     year: 'numeric',
@@ -406,11 +439,10 @@
                     day: 'numeric'
                 };
                 const formattedDate = date.toLocaleDateString('es-ES', options);
-
-                // Asigna el valor formateado a algún elemento en el modal
                 document.getElementById('modalCreate').textContent = formattedDate;
-
                 let imagen = '';
+
+
                 if (image === null || image === 'null' || image === 'undefined' || image === undefined ||
                     image === '') {
                     console.log('esta vacio');
@@ -442,41 +474,46 @@
                     request_type === 'Incapacidad' ?
                     'Pago del IMSS' :
                     'Sin especificar';
-                const time = this.getAttribute('data-time');
                 const reveal_id = this.getAttribute('data-reveal_id');
                 const file = this.getAttribute('data-file');
 
                 if (file === 'No hay justificante' || file === '' || file === null || file === 'null' ||
                     file === undefined) {
+                    // Crea la etiqueta <span> con el texto "No hay justificante"
                     const span = document.createElement('span');
                     span.textContent = 'No hay justificante';
+                    // Agrega el span al div
                     document.getElementById('viewFile').innerHTML = '';
                     document.getElementById('viewFile').appendChild(span);
                 } else {
                     const baseUrl = window.location.origin;
                     const viewFile = baseUrl + '/' + file;
+                    // Crea la etiqueta <a> y establece su href dinámicamente
                     const link = document.createElement('a');
                     link.id = 'file';
                     link.href = viewFile;
                     link.target = '_blank';
                     link.textContent = 'Ver archivo';
+                    // Agrega el enlace al div
                     document.getElementById('viewFile').innerHTML = '';
                     document.getElementById('viewFile').appendChild(link);
                 }
 
-                const timeText = this.getAttribute('data-timeArray')
-                const dataStar = this.getAttribute('data-start');
+                const timeText = this.getAttribute('data-timeArray');
+                const dataStart = this.getAttribute('data-start');
                 const dataEnd = this.getAttribute('data-end');
-                /*Para Ausencia*/
+
+                /* Para Ausencia */
                 const valueType = this.getAttribute('data-value-type');
+                console.log('valueType', valueType);
                 const tipoDeAusencia = this.getAttribute('data-tipo-de-ausencia');
 
-                /*Para permisos especiales*/
+                /* Para permisos especiales */
                 const typePermisoEspecial = this.getAttribute('data-tipo-permiso-especial');
 
                 var timeStatusDiv = document.getElementById('timeStatus');
                 if (timeText === 'true') {
-                    var startValue = dataStar;
+                    var startValue = dataStart;
                     var endValue = dataEnd;
 
                     if (request_type === 'Ausencia' && valueType === 'salida_durante') {
@@ -487,25 +524,15 @@
                         timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
                             '</strong></span> ';
                     } else if (request_type === 'Ausencia' && valueType === 'retardo') {
-                        timeStatusDiv.innerHTML = '<span>Hora de llegada: <strong>' + startValue +
+                        timeStatusDiv.innerHTML = '<span>Hora de entrada: <strong>' + endValue +
                             '</strong></span> ';
                     } else {
                         timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
                     }
-
                 } else {
                     timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
                 }
 
-                if (direct_manager_status === 'Pendiente') {
-                    document.getElementById('buttonModifi').style.display = 'flex';
-                    buttonModifi.style.justifyContent = 'end';
-                } else {
-                    document.getElementById('buttonModifi').style.display = 'none';
-                }
-
-
-                /*Pasar current_vacation_expiration que viene 2026-02-06 a 6 de febrero del 2026*/
                 const date2 = new Date(current_vacation_expiration);
                 date2.setDate(date2.getDate() + 1);
                 const options2 = {
@@ -516,33 +543,31 @@
                 const formattedDate2 = date2.toLocaleDateString('es-ES', options2);
 
                 const date3 = new Date(expiration_of_next_vacation);
-                //Sumar 1 día a la fecha de expiración de la siguiente vacación
                 date3.setDate(date3.getDate() + 1);
                 const options3 = {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 };
-
                 const formattedDate3 = date3.toLocaleDateString('es-ES', options3);
-                document.getElementById('modalId').textContent = id;
+
+
                 document.getElementById('modalName').textContent = name;
                 document.getElementById('modalCurrentVacation').textContent = current_vacation;
-                document.getElementById('modalCurrentVacationExpiration').textContent = formattedDate2;
+                document.getElementById('primaryPeriodo').textContent = formattedDate2;
                 document.getElementById('modalNextVaca').textContent = next_vacation || 'No hay vacaciones';
 
-                const modalNextVaca = document.getElementById('modalNextVaca');
                 const secondaryPeriodo = document.getElementById('secondaryPeriodo');
-
                 if (modalNextVaca.textContent === 'No hay vacaciones') {
                     secondaryPeriodo.className = 'd-none';
                 } else {
                     secondaryPeriodo.className = 'd-flex';
                 }
 
-                document.getElementById('modalExpireNextVaca').textContent = formattedDate3;
+                document.getElementById('secondariPeriodo').textContent = formattedDate3;
                 document.getElementById('modalDirectManagerStatus').textContent = direct_manager_status;
                 const modalDirectManagerStatus = document.getElementById('modalDirectManagerStatus');
+
                 if (direct_manager_status === 'Pendiente') {
                     modalDirectManagerStatus.textContent = 'Pendiente';
                     modalDirectManagerStatus.className = 'badge bg-warning text-dark';
@@ -552,9 +577,6 @@
                 } else if (direct_manager_status === 'Rechazada') {
                     modalDirectManagerStatus.textContent = 'Rechazada';
                     modalDirectManagerStatus.className = 'badge bg-danger';
-                } else if (direct_manager_status === 'Cancelada por el usuario') {
-                    modalDirectManagerStatus.textContent = 'Cancelada por el usuario';
-                    modalDirectManagerStatus.className = 'badge bg-danger';
                 } else {
                     modalDirectManagerStatus.textContent = 'Desconocido';
                     modalDirectManagerStatus.className = 'badge bg-secondary';
@@ -562,6 +584,7 @@
 
                 document.getElementById('modalRhStatus').textContent = rh_status;
                 const modalRhStatus = document.getElementById('modalRhStatus');
+
                 if (rh_status === 'Pendiente') {
                     modalRhStatus.textContent = 'Pendiente';
                     modalRhStatus.className = 'badge bg-warning text-dark';
@@ -571,13 +594,11 @@
                 } else if (rh_status === 'Rechazada') {
                     modalRhStatus.textContent = 'Rechazada';
                     modalRhStatus.className = 'badge bg-danger';
-                } else if (direct_manager_status === 'Cancelada por el usuario') {
-                    modalRhStatus.textContent = 'Cancelada por el usuario';
-                    modalRhStatus.className = 'badge bg-danger';
                 } else {
                     modalRhStatus.textContent = 'Desconocido';
                     modalRhStatus.className = 'badge bg-secondary';
                 }
+
                 if (request_type === 'Ausencia') {
                     document.getElementById('modalSpecificType').textContent = tipoDeAusencia;
                 } else if (request_type === 'Permisos especiales') {
@@ -586,6 +607,7 @@
                 } else {
                     document.getElementById('modalSpecificType').textContent = 'Sin especificar';
                 }
+
                 document.getElementById('modalRequestType').textContent = request_type;
                 document.getElementById('modalDaysAbsent').textContent = days_absent;
                 document.getElementById('modalMethodOfPayment').textContent = method_of_payment;
@@ -594,41 +616,11 @@
             });
         });
 
-        // Evento para enviar el formulario de aprobación
-        document.getElementById('approveButton').addEventListener('click', function() {
-            document.getElementById('loadingSpinner').style.display = 'flex';
-            const form = document.getElementById('miFormularioAprobar');
-            const id = document.getElementById('modalId').textContent;
-            const inputId = document.createElement('input');
-            inputId.type = 'hidden';
-            inputId.name = 'id';
-            inputId.value = id;
-            form.appendChild(inputId);
-            form.submit();
-        });
-
-        // Evento para abrir el modal de rechazo y enviar el formulario
-        const formDeny = document.getElementById('denyFormRequest');
-        formDeny.addEventListener('submit', function(event) {
-            event.preventDefault();
-            document.getElementById('loadingSpinner').style.display = 'flex';
-            const form = document.getElementById('denyFormRequest');
-            const id = document.getElementById('modalId').textContent;
-            const inputId = document.createElement('input');
-            inputId.type = 'hidden';
-            inputId.name = 'id';
-            inputId.value = id;
-            form.appendChild(inputId);
-            form.submit();
-        });
-
-        // Evento para abrir el modal de rechazo
-        document.getElementById('denyRequest').addEventListener('click', function() {
+        /* Cerrar el modal de detalles */
+        document.getElementById('closeModalDetails').addEventListener('click', function() {
             $('#modalDetails').modal('hide');
-            $('#modalDeny').modal({
-                backdrop: 'static',
-                keyboard: false
-            }).modal('show');
+            document.getElementById('buttonModifi').style.display = 'none';
+
         });
 
         //Filtrado de solicitudes
@@ -649,7 +641,7 @@
             applyFilters();
         });
 
-        // Limpiar los filtros
+        /*Limpiar los filtros de busqueda */
         document.getElementById('clearFilter').addEventListener('click', function() {
             document.getElementById('fechaInput').value = '';
             document.getElementById('tipoSelect').value = '';
@@ -657,12 +649,13 @@
             applyFilters();
         });
 
-        //Funcion para aplicar los filtros
+        /*Funcion para aplicar los filtros de busqueda */
         function applyFilters() {
             document.getElementById('loadingSpinner').style.display = 'flex';
             const tipo = document.getElementById('tipoSelect').value;
             const fecha = document.getElementById('fechaInput').value;
             const search = document.getElementById('searchName').value;
+
             let url = '?tipo=' + tipo + '&fecha=' + fecha + '&search=' + encodeURIComponent(search);
             window.location.href = url;
         }
@@ -674,92 +667,40 @@
             });
         });
 
-
         //Si en la url esta el parametro de search pasarlo al input de busqueda searchName
         const urlParams = new URLSearchParams(window.location.search);
         const search = urlParams.get('search');
         if (search) {
             document.getElementById('searchName').value = search;
         }
+
+        //Petición para exportar a excel
+        document.getElementById('exportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            axios({
+                method: 'post',
+                url: this.action,
+                data: new FormData(this),
+                responseType: 'blob'
+            }).then(function(response) {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+
+                link.setAttribute('download',
+                    'Solicitudes aprobadas.xlsx');
+                document.body.appendChild(link);
+                link.click();
+
+                window.URL.revokeObjectURL(url);
+
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }).catch(function(error) {
+                console.error('Error al exportar:', error);
+
+                document.getElementById('loadingSpinner').style.display = 'none';
+            });
+        });
     </script>
-
-    <style>
-        /*Estilos de las tarjetas*/
-        .bg-success {
-            background-color: #81C10C !important;
-        }
-
-        .bg-warning {
-            background-color: #FFC107 !important;
-        }
-
-        /*Estilos de las alertas*/
-        .alert {
-            padding: 0.7rem !important;
-        }
-
-        .alert-success {
-            color: #0f5132 !important;
-            background-color: #d1e7dd !important;
-            border-color: #badbcc !important;
-        }
-
-        .alert-danger {
-            color: #C10C0C !important;
-            background-color: #f8d7da !important;
-            border-color: #f5c2c7 !important;
-        }
-
-        .alert-warning {
-            color: #664d03 !important;
-            background-color: #fff3cd !important;
-            border-color: #ffecb5 !important;
-        }
-
-        /*Estilos de paginacion*/
-        .pagination {
-            display: flex;
-            justify-content: end;
-
-        }
-
-        .page-item .page-link {
-            font-size: .875rem;
-            border-color: transparent;
-        }
-
-        .page-item.active .page-link {
-            background-color: #435ebe;
-            border-color: #435ebe;
-            color: #fff;
-            z-index: 3;
-            border-radius: 27px;
-        }
-
-        .page-item.disabled .page-link {
-            background-color: #fff;
-            color: #6c757d;
-            pointer-events: none;
-            border-color: transparent;
-        }
-
-        /*Estilo para spin de carga*/
-        #loadingSpinner {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-        }
-    </style>
 @stop

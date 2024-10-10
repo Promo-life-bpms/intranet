@@ -42,17 +42,18 @@
             </div>
         </div>
 
-        {{-- Título de la página y motor de búsqueda --}}
+        <div class="d-flex justify-content-between mb-2">
+            <h3>Solicitudes pendientes</h3>
+        </div>
+
+        {{-- Filtros --}}
         <div class="row">
-            <div class="col-4">
-                <h3>Solicitudes autorizadas</h3>
-            </div>
-            <div class="col-8">
+            <div class="col-5 align-content-end">
                 <div class="row">
                     <div class="col-4">
-                        <input id="searchName" type="search" class="form-control" placeholder="Buscar por nombre">
+                        <input id="searchName" type="search" class="form-control" placeholder="Nombre">
                     </div>
-                    <div class="col-3">
+                    <div class="col-5">
                         <select id="tipoSelect" name="tipo" class="form-select">
                             <option value="">Tipo de permiso</option>
                             <option value="Vacaciones" {{ request('tipo') == 'Vacaciones' ? 'selected' : '' }}>Vacaciones
@@ -67,144 +68,140 @@
                             </option>
                         </select>
                     </div>
-                    <div class="col-3 d-flex align-items-baseline">
-                        <input id="fechaInput" type="date" class="form-control mr-1" value="{{ request('fecha') }}" />
-                        <i id="clearFilter" class="fas fa-times-circle" style="cursor: pointer;"></i>
-                    </div>
-                    <div class="col-2">
-                        <div class="d-flex justify-content-center">
-                            <strong> Total {{ $SumaSolicitudes }} </strong>
-                        </div>
 
-                        <div class="d-flex justify-content-center">
-                            <span>Solicitudes</span>
+                    <div class="col-3 d-flex align-items-center justify-content-center">
+                        <input id="fechaInput" type="date" class="form-control" value="{{ request('fecha') }}"
+                            style="width: 2.8rem" />
+                        <i style="margin-left: 0.5rem" id="clearFilter" class="fas fa-times-circle"
+                            style="cursor: pointer;"></i>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Tarjetas --}}
+            <div class="col-7">
+                <div class="row">
+                    <div class="col-4">
+                        <div id="tarjeta1" class="tarjetaRh1 hover-tarjetaRh1"
+                            style="border-bottom: 10px solid var(--color-target-1); min-height: 100%; padding: 10px 20px !important;">
+                            <div class="d-flex justify-content-end">
+                                <strong>{{ $sumaAprobadas }}</strong>
+                            </div>
+                            <div style="margin-top: 25px">
+                                <strong>Autorizadas</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <div id="tarjeta2" class="tarjetaRh2 hover-tarjetaRh2"
+                            style="border-bottom: 10px solid var(--color-target-3); min-height: 100%; padding: 10px 20px !important;">
+                            <div class="d-flex justify-content-end">
+                                <strong>{{ $sumaPendientes }}</strong>
+                            </div>
+                            <div style="margin-top: 25px">
+                                <strong>Pendientes</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <div id="tarjeta3" class="tarjetaRh3 hover-tarjetaRh3"
+                            style="border-bottom: 10px solid var(--color-target-4); min-height: 100%; padding: 10px 20px !important; align-content: end !important; ">
+                            <div class="d-flex justify-content-end">
+                                <strong>{{ $sumaCanceladasUsuario }}</strong>
+                            </div>
+                            <div>
+                                <strong>Canceladas por el usuario</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        {{-- Tabla de solicitudes autorizadas --}}
-        <div class="mt-3" style="min-width: 100% !important;">
-            <div id="tableAutorizadas">
-                <table class="table" style="min-width: 100% !important;">
-                    <thead style="background-color: #072A3B; color: white;">
-                        <tr>
-                            <th scope="col" style="text-align: center; align-content: center">#</th>
-                            <th scope="col" style="text-align: center;">Solicitante</th>
-                            <th scope="col" style="text-align: center;">Tipo de solicitud</th>
-                            <th scope="col" style="text-align: center;">Días ausente</th>
-                            <th scope="col" style="text-align: center;">Aprobado por (Jefe)</th>
-                            <th scope="col" style="text-align: center;">Aprobado por (RH)</th>
-                            <th scope="col" style="text-align: center;">Detalles</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @if (count($solicitudes) === 0)
+            {{-- Tabla para pendientes --}}
+            <div class="mt-3" style="min-width: 100% !important;">
+                <div id="tablePendientes">
+                    <table class="table" style="min-width: 100% !important;">
+                        <thead style="background-color: #072A3B; color: white;">
                             <tr>
-                                <td colspan="7" style="text-align: center;">No hay solicitudes</td>
+                                <th scope="col" style="text-align: center; align-content: center;">#</th>
+                                <th scope="col" style="text-align: center;">Solicitante</th>
+                                <th scope="col" style="text-align: center;">Tipo de solicitud</th>
+                                <th scope="col" style="text-align: center;">Días ausente</th>
+                                <th scope="col" style="text-align: center;">Aprobado por (Jefe)</th>
+                                <th scope="col" style="text-align: center;">Autorizar/Rechazar</th>
                             </tr>
-                        @endif
-
-                        @foreach ($solicitudes as $infoSoli)
-                            <tr class="solicitud-row"
-                                data-days="{{ isset($infoSoli->days_absent) ? implode(',', $infoSoli->days_absent) : '' }}">
-                                <th style="text-align: center; align-content: center;" scope="row">
-                                    {{ $infoSoli->id }}
-                                </th>
-                                <td style="text-align: center;">{{ $infoSoli->name }}</td>
-                                <td style="text-align: center;">{{ $infoSoli->request_type }}</td>
-                                <td style="text-align: center;">
-                                    @foreach ($infoSoli->days_absent as $day)
-                                        <div>
-                                            {{ $day }}
-                                        </div>
-                                    @endforeach
-                                </td>
-                                <td style="text-align: center;">
-                                    @if ($infoSoli->direct_manager_status == 'Pendiente')
-                                        <span class="badge bg-warning text-dark">{{ $infoSoli->direct_manager_status }}
-                                        </span>
-                                    @elseif ($infoSoli->direct_manager_status == 'Aprobada')
-                                        <span class="badge bg-success">{{ $infoSoli->direct_manager_status }}
-                                        </span>
-                                    @else
-                                        <span class="badge bg-danger">{{ $infoSoli->direct_manager_status }}
-                                        </span>
-                                    @endif
-                                </td>
-                                <td style="text-align: center;">
-                                    @if ($infoSoli->rh_status === 'Pendiente')
-                                        <span class="badge bg-warning text-dark">{{ $infoSoli->rh_status }}</span>
-                                    @elseif ($infoSoli->rh_status === 'Aprobada')
-                                        <span class="badge bg-success">{{ $infoSoli->rh_status }}</span>
-                                    @else
-                                        <span class="badge bg-danger">{{ $infoSoli->rh_status }}</span>
-                                    @endif
-                                </td>
-
-                                <td style="text-align: center; cursor: pointer;">
-                                    @if ($infoSoli->direct_manager_status === 'Pendiente')
-                                        <button class="btn btn-link openModalDetails" data-id="{{ $infoSoli->id }}"
-                                            data-create="{{ $infoSoli->created_at }}" data-name="{{ $infoSoli->name }}"
-                                            data-image="{{ $infoSoli->image }}"
-                                            data-current_vacation="{{ $infoSoli->current_vacation }}"
-                                            data-current_vacation_expiration="{{ $infoSoli->current_vacation_expiration }}"
-                                            data-next_vacation="{{ $infoSoli->next_vacation }}"
-                                            data-expiration_of_next_vacation="{{ $infoSoli->expiration_of_next_vacation }}"
-                                            data-direct_manager_status="{{ $infoSoli->direct_manager_status }}"
-                                            data-rh_status="{{ $infoSoli->rh_status }}"
-                                            data-request_type="{{ $infoSoli->request_type }}"
-                                            data-specific_type="{{ $infoSoli->specific_type }}"
-                                            data-days_absent="{{ implode(',', $infoSoli->days_absent) }}"
-                                            data-timeArray="{{ is_Array($infoSoli->time) ? 'true' : 'false' }}"
-                                            data-start="{{ $infoSoli->time ? $infoSoli->time[0]['start'] : '12:00' }}"
-                                            data-end="{{ $infoSoli->time ? $infoSoli->time[0]['end'] : '12:00' }}"
+                        </thead>
+                        <tbody>
+                            @if (count($Pendientes) == 0)
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">No tienes solicitudes</td>
+                                </tr>
+                            @endif
+                            @foreach ($Pendientes as $pendiente)
+                                <tr class="solicitud-row2" data-days2="{{ implode(',', $pendiente->days_absent) }}">
+                                    <th style="text-align: center; align-content: center;" scope="row">
+                                        {{ $pendiente->id }}</th>
+                                    <td style="text-align: center;">{{ $pendiente->name }}</td>
+                                    <td style="text-align: center;">{{ $pendiente->request_type }}</td>
+                                    <td style="text-align: center;">
+                                        @foreach ($pendiente->days_absent as $day)
+                                            <div>
+                                                {{ $day }}
+                                            </div>
+                                        @endforeach
+                                    </td>
+                                    <td style="text-align: center;">
+                                        @if ($pendiente->direct_manager_status == 'Pendiente')
+                                            <span class="badge bg-warning text-dark">
+                                                {{ $pendiente->direct_manager_status }}
+                                            </span>
+                                        @elseif ($pendiente->direct_manager_status == 'Aprobada')
+                                            <span class="badge bg-success text-white">
+                                                {{ $pendiente->direct_manager_status }}
+                                            </span>
+                                        @else
+                                            <span class="badge bg-danger text-white">
+                                                {{ $pendiente->direct_manager_status }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td style="text-align: center; cursor: pointer;">
+                                        <button class="btn btn-link updateDetails" data-id="{{ $pendiente->id }}"
+                                            data-crete="{{ $pendiente->created_at }}" data-name="{{ $pendiente->name }}"
+                                            data-image="{{ $pendiente->image }}"
+                                            data-current_vacation="{{ $pendiente->current_vacation }}"
+                                            data-current_vacation_expiration="{{ $pendiente->current_vacation_expiration }}"
+                                            data-next_vacation="{{ $pendiente->next_vacation }}"
+                                            data-expiration_of_next_vacation="{{ $pendiente->expiration_of_next_vacation }}"
+                                            data-direct_manager_status="{{ $pendiente->direct_manager_status }}"
+                                            data-rh_status="{{ $pendiente->rh_status }}"
+                                            data-request_type="{{ $pendiente->request_type }}"
+                                            data-specific_type="{{ $pendiente->specific_type }}"
+                                            data-days_absent="{{ implode(',', $pendiente->days_absent) }}"
+                                            data-timeArray="{{ is_Array($pendiente->time) ? 'true' : 'false' }}"
+                                            data-start="{{ $pendiente->time ? $pendiente->time[0]['start'] : '12:00' }}"
+                                            data-end="{{ $pendiente->time ? $pendiente->time[0]['end'] : '12:00' }}"
                                             {{-- Para Ausencia --}}
-                                            data-value-type="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['value_type']) ? $infoSoli->more_information[0]['value_type'] : '0' }}"
-                                            data-tipo-de-ausencia="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_ausencia']) ? $infoSoli->more_information[0]['Tipo_de_ausencia'] : '-' }}"
+                                            data-value-type="{{ is_array($pendiente->more_information) && count($pendiente->more_information) > 0 && isset($pendiente->more_information[0]['value_type']) ? $pendiente->more_information[0]['value_type'] : '0' }}"
+                                            data-tipo-de-ausencia="{{ is_array($pendiente->more_information) && isset($pendiente->more_information[0]['Tipo_de_ausencia']) ? $pendiente->more_information[0]['Tipo_de_ausencia'] : '-' }}"
                                             {{-- Para permisos especiales --}}
-                                            data-tipo-permiso-especial="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_permiso_especial']) ? $infoSoli->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
-                                            data-reveal_id="{{ $infoSoli->reveal_id }}"
-                                            data-file="{{ $infoSoli->file }}" data-details="{{ $infoSoli->details }}">
-                                            Ver y
-                                            autorizar</button>
-                                    @else
-                                        <button class="btn btn-link openModalDetails" data-id="{{ $infoSoli->id }}"
-                                            data-create="{{ $infoSoli->created_at }}" data-name="{{ $infoSoli->name }}"
-                                            data-image="{{ $infoSoli->image }}"
-                                            data-current_vacation="{{ $infoSoli->current_vacation }}"
-                                            data-current_vacation_expiration="{{ $infoSoli->current_vacation_expiration }}"
-                                            data-next_vacation="{{ $infoSoli->next_vacation }}"
-                                            data-expiration_of_next_vacation="{{ $infoSoli->expiration_of_next_vacation }}"
-                                            data-direct_manager_status="{{ $infoSoli->direct_manager_status }}"
-                                            data-rh_status="{{ $infoSoli->rh_status }}"
-                                            data-request_type="{{ $infoSoli->request_type }}"
-                                            data-specific_type="{{ $infoSoli->specific_type }}"
-                                            data-days_absent="{{ implode(',', $infoSoli->days_absent) }}"
-                                            data-timeArray="{{ is_Array($infoSoli->time) ? 'true' : 'false' }}"
-                                            data-start="{{ $infoSoli->time ? $infoSoli->time[0]['start'] : '12:00' }}"
-                                            data-end="{{ $infoSoli->time ? $infoSoli->time[0]['end'] : '12:00' }}"
-                                            {{-- Para Ausencia --}}
-                                            data-value-type="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['value_type']) ? $infoSoli->more_information[0]['value_type'] : '0' }}"
-                                            data-tipo-de-ausencia="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_ausencia']) ? $infoSoli->more_information[0]['Tipo_de_ausencia'] : '-' }}"
-                                            {{-- Para permisos especiales --}}
-                                            data-tipo-permiso-especial="{{ is_array($infoSoli->more_information) && count($infoSoli->more_information) > 0 && isset($infoSoli->more_information[0]['Tipo_de_permiso_especial']) ? $infoSoli->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
-                                            data-reveal_id="{{ $infoSoli->reveal_id }}"
-                                            data-file="{{ $infoSoli->file }}" data-details="{{ $infoSoli->details }}">
-                                            Ver
-                                        </button>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
+                                            data-tipo-permiso-especial="{{ is_array($pendiente->more_information) && count($pendiente->more_information) > 0 && isset($pendiente->more_information[0]['Tipo_de_permiso_especial']) ? $pendiente->more_information[0]['Tipo_de_permiso_especial'] : '-' }}"
+                                            data-reveal_id="{{ $pendiente->reveal_id }}"
+                                            data-file="{{ $pendiente->file }}"
+                                            data-details= "{{ $pendiente->details }}">Ver</button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
 
-
-                    </tbody>
-                </table>
-                <div class="d-flex justify-content-end">
-                    {{ $solicitudes->appends(request()->input())->links() }}
+                    @if (count($Pendientes) > 0)
+                        <div class="d-flex justify-content-end">
+                            {{ $Pendientes->appends(request()->input())->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -215,13 +212,15 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Detalles de la solicitud</h5>
+                        <h5 class="modal-title" id="modalTitle">Detalles de la solicitud</h5>
                         <div id="modalId" style="display: none;"></div>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button id="closeModalDetails" type="button" class="btn-close" aria-label="Close"></button>
+
                     </div>
                     <div class="modal-body">
-                        <form id="miFormularioAprobar" action="authorize/leave/by/direct/boss" method="POST">
+                        <form id="miFormularioAproveRh" action="authorization/by/human/resources" method="POST">
                             @csrf
+
                             <div class="d-flex justify-content-end">
                                 <span class="mr-1">Fecha de creación: </span>
                                 <span id="modalCreate"></span>
@@ -234,7 +233,7 @@
                                             style="width: 70%; height: 120px; border-radius: 100px;">
                                     </div>
                                 </div>
-                                <div class="col-9">
+                                <div class="col-9  mt-2">
                                     <div>
                                         <strong id="modalName"></strong>
                                     </div>
@@ -243,15 +242,16 @@
                                         <span>Tienes
                                             <strong id="modalCurrentVacation"></strong>
                                             día(s) disponible(s) que vence(n) el
-                                            <strong id="modalCurrentVacationExpiration"></strong>
+                                            <strong id="primaryPeriodo"></strong>
                                         </span>
                                     </div>
+
 
                                     <div class="mt-2" id="secondaryPeriodo">
                                         <span>Tienes
                                             <strong id="modalNextVaca"></strong>
                                             día(s) disponible(s) que vence(n) el
-                                            <strong id="modalExpireNextVaca"></strong>
+                                            <strong id="secondariPeriodo"></strong>
                                         </span>
                                     </div>
 
@@ -279,57 +279,59 @@
 
                             <div class="row mt-3 mb-2">
                                 <div class="col-3 mt-2">
-                                    <strong>Tipo </strong>
+                                    <strong>Tipo: </strong>
                                 </div>
-                                <div class="col-9 mt-2">
+                                <div class="col-9  mt-2">
                                     <span id="modalRequestType"></span>
                                 </div>
 
                                 <div class="col-3 mt-2">
-                                    <strong>Tipo específico </strong>
+                                    <strong>Tipo específico: </strong>
                                 </div>
-                                <div class="col-9 mt-2">
+                                <div class="col-9  mt-2">
                                     <span id="modalSpecificType"></span>
                                 </div>
 
                                 <div class="col-3 mt-2">
-                                    <strong>Días ausente </strong>
+                                    <strong>Días ausente: </strong>
                                 </div>
 
-                                <div class="col-9 mt-2">
+                                <div class="col-9  mt-2">
                                     <span id="modalDaysAbsent"></span>
                                 </div>
 
                                 <div class="col-3 mt-2">
-                                    <strong>Forma de pago </strong>
+                                    <strong>Forma de pago: </strong>
                                 </div>
 
-                                <div class="col-9 mt-2">
+                                <div class="col-9  mt-2">
                                     <span id="modalMethodOfPayment"></span>
                                 </div>
 
                                 <div class="col-3 mt-2">
-                                    <strong>Tiempo </strong>
+                                    <strong>Tiempo: </strong>
                                 </div>
 
-                                <div class="col-9 mt-2" id="timeStatus">
-                                    <span>Tiempo completo</span>
+                                <div class="col-9  mt-2">
+                                    <span id="timeStatus">Tiempo completo</span>
                                 </div>
 
                                 <div class="col-3 mt-2">
-                                    <strong>Apoyo </strong>
+                                    <strong>Apoyo: </strong>
                                 </div>
 
-                                <div class="col-9 mt-2">
+                                <div class="col-9  mt-2">
                                     <span id="modalRevealId"></span>
                                 </div>
 
                                 <div class="col-3 mt-2">
-                                    <strong>Justificante </strong>
+                                    <strong>Justificante: </strong>
                                 </div>
 
-                                <div class="col-9 mt-2" id="viewFile">
-                                    {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
+                                <div class="col-9  mt-2">
+                                    <div id="viewFile">
+                                        {{-- <a id="file" href="" target="_blank">Ver archivo</a> --}}
+                                    </div>
                                 </div>
 
                                 <div class="col-3 mt-2">
@@ -341,7 +343,7 @@
                                 </div>
                             </div>
 
-                            <div id="buttonModifi" style="display: none">
+                            <div id="buttonModifi" class="d-none">
                                 <button id="denyRequest" type="button" class="btn btn-danger mr-2">Rechazar</button>
                                 <button type="button" class="btn btn-primary" id="approveButton">Aprobar</button>
                             </div>
@@ -351,24 +353,24 @@
             </div>
         </div>
 
-        {{-- Modal de rechazo --}}
+        {{-- Modal para rechazar --}}
         <div class="modal fade bd-example-modal-lg" id="modalDeny" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalTitle">Rechazar solicitud</h5>
-
+                        <div id="modalId" style="display: none;"></div>
                         <button id='closeModalDeny' type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="denyFormRequest" action="reject/leave/by/direct/boss" method="POST">
+                        <form id="denyFormRequest" action="reject/leave/by/human/resources" method="POST">
                             @csrf
-                            <textarea style="min-width: 100%" placeholder="Motivo" class="form-control" id="commentary" name="commentary"
+                            <textarea style="min-width: 100%" class="form-control" id="commentary" name="commentary" placeholder="Motivo"
                                 required></textarea>
                             <div class="d-flex justify-content-end mt-2">
-                                <button type="submit" class="btn btn-primary" id="denyButtonForm">Enviar</button>
+                                <button type="button" class="btn btn-primary" id="denyButtonForm">Enviar</button>
                             </div>
                         </form>
                     </div>
@@ -376,29 +378,119 @@
             </div>
         </div>
     </div>
+
 @stop
 
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/modul_rh.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('assets/vendors/fontawesome/all.min.css') }}">
+
+@stop
 
 @section('scripts')
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     <script>
-        /*Limpiar los campos del formulario de rechazo*/
-        document.getElementById('closeModalDeny').addEventListener('click', function() {
+        document.getElementById('denyButtonForm').addEventListener('click', function() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
             const form = document.getElementById('denyFormRequest');
-            form.reset();
+            /*Mandar el ID de la solicitus que se va a aprobar del que viene en el modal*/
+            const id = document.getElementById('modalId').textContent;
+            const inputId = document.createElement('input');
+            inputId.type = 'hidden';
+            inputId.name = 'id';
+            inputId.value = id;
+            form.appendChild(inputId);
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            document.getElementById('loadingSpinner').style.display = 'none';
+                            Swal.fire({
+                                title: 'Solicitud rechazada',
+                                text: 'La solicitud ha sido rechazada correctamente',
+                                icon: 'success',
+                                confirmButtonText: 'Aceptar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href =
+                                        '/request/authorize-rh/pendientes';
+                                }
+                            });
+                        } else {
+                            document.getElementById('loadingSpinner').style.display = 'none';
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Ocurrió un error al rechazar la solicitud.',
+                                icon: 'error',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('loadingSpinner').style.display = 'none';
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un error al rechazar la solicitud',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    });
+            });
+
+            form.dispatchEvent(new Event('submit'));
         });
 
-        // Evento cuando se hace clic en el botón para abrir el modal
-        document.querySelectorAll('.openModalDetails').forEach(button => {
+        /*Limpiar el formulario de rechazo*/
+        document.getElementById('closeModalDeny').addEventListener('click', function() {
+            document.getElementById('commentary').value = '';
+        });
+
+
+        //Poner por defecto la tarjeta 1 activa
+        document.getElementById('tarjeta2').classList.add('tarjetaRh2-activa');
+
+        document.getElementById('tarjeta1').addEventListener('click', function() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+
+            window.location.href = '/request/authorize-rh/aprobadas';
+        });
+
+        document.getElementById('tarjeta3').addEventListener('click', function() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+
+            window.location.href = '/request/authorize-rh/rechazadas';
+
+        });
+
+        /* Cerrar el modal de detalles */
+        document.getElementById('closeModalDetails').addEventListener('click', function() {
+            $('#modalDetails').modal('hide');
+            document.getElementById('buttonModifi').style.display = 'none';
+
+        });
+
+
+        document.querySelectorAll('.updateDetails').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
                 document.getElementById('modalId').textContent = id;
 
                 const modal = new bootstrap.Modal(document.getElementById('modalDetails'));
                 modal.show();
-
-                const create = this.getAttribute('data-create');
+                const create = this.getAttribute('data-crete');
                 const image = this.getAttribute('data-image');
+
                 const date = new Date(create);
                 const options = {
                     year: 'numeric',
@@ -406,14 +498,11 @@
                     day: 'numeric'
                 };
                 const formattedDate = date.toLocaleDateString('es-ES', options);
-
-                // Asigna el valor formateado a algún elemento en el modal
                 document.getElementById('modalCreate').textContent = formattedDate;
 
                 let imagen = '';
                 if (image === null || image === 'null' || image === 'undefined' || image === undefined ||
                     image === '') {
-                    console.log('esta vacio');
                     /*Poner una imagen de un perfil*/
                     imagen = 'https://www.w3schools.com/howto/img_avatar.png';
                 } else {
@@ -442,7 +531,6 @@
                     request_type === 'Incapacidad' ?
                     'Pago del IMSS' :
                     'Sin especificar';
-                const time = this.getAttribute('data-time');
                 const reveal_id = this.getAttribute('data-reveal_id');
                 const file = this.getAttribute('data-file');
 
@@ -464,14 +552,43 @@
                     document.getElementById('viewFile').appendChild(link);
                 }
 
-                const timeText = this.getAttribute('data-timeArray')
+                const date2 = new Date(current_vacation_expiration);
+                date2.setDate(date2.getDate() + 1);
+                const options2 = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                };
+                const formattedDate2 = date2.toLocaleDateString('es-ES', options2);
+                const date3 = new Date(expiration_of_next_vacation);
+                date3.setDate(date3.getDate() + 1);
+                const options3 = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                };
+                const formattedDate3 = date3.toLocaleDateString('es-ES', options3);
+
+                document.getElementById('modalName').textContent = name;
+                document.getElementById('modalCurrentVacation').textContent = current_vacation;
+                document.getElementById('primaryPeriodo').textContent = formattedDate2;
+                document.getElementById('modalNextVaca').textContent = next_vacation || 'No hay vacaciones';
+
+                const secondaryPeriodo = document.getElementById('secondaryPeriodo');
+                if (modalNextVaca.textContent === 'No hay vacaciones') {
+                    secondaryPeriodo.className = 'd-none';
+                } else {
+                    secondaryPeriodo.className = 'd-flex';
+                }
+
+                const timeText = this.getAttribute('data-timeArray');
                 const dataStar = this.getAttribute('data-start');
                 const dataEnd = this.getAttribute('data-end');
-                /*Para Ausencia*/
+
+                /* Para Ausencia */
                 const valueType = this.getAttribute('data-value-type');
                 const tipoDeAusencia = this.getAttribute('data-tipo-de-ausencia');
 
-                /*Para permisos especiales*/
                 const typePermisoEspecial = this.getAttribute('data-tipo-permiso-especial');
 
                 var timeStatusDiv = document.getElementById('timeStatus');
@@ -487,62 +604,27 @@
                         timeStatusDiv.innerHTML = '<span>Hora de salida: <strong>' + startValue +
                             '</strong></span> ';
                     } else if (request_type === 'Ausencia' && valueType === 'retardo') {
-                        timeStatusDiv.innerHTML = '<span>Hora de llegada: <strong>' + startValue +
+                        timeStatusDiv.innerHTML = '<span>Hora de entrada: <strong>' + endValue +
                             '</strong></span> ';
                     } else {
                         timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
                     }
-
                 } else {
                     timeStatusDiv.innerHTML = '<span>Tiempo Completo</span>';
                 }
 
-                if (direct_manager_status === 'Pendiente') {
-                    document.getElementById('buttonModifi').style.display = 'flex';
-                    buttonModifi.style.justifyContent = 'end';
-                } else {
-                    document.getElementById('buttonModifi').style.display = 'none';
-                }
+
+                /*Habilitar el boton de rechazar */
+                document.getElementById('buttonModifi').classList.remove('d-none');
+                document.getElementById('buttonModifi').style.display = 'flex';
+                document.getElementById('buttonModifi').style.justifyContent = 'flex-end';
 
 
-                /*Pasar current_vacation_expiration que viene 2026-02-06 a 6 de febrero del 2026*/
-                const date2 = new Date(current_vacation_expiration);
-                date2.setDate(date2.getDate() + 1);
-                const options2 = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                };
-                const formattedDate2 = date2.toLocaleDateString('es-ES', options2);
+                document.getElementById('secondariPeriodo').textContent = formattedDate3;
 
-                const date3 = new Date(expiration_of_next_vacation);
-                //Sumar 1 día a la fecha de expiración de la siguiente vacación
-                date3.setDate(date3.getDate() + 1);
-                const options3 = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                };
-
-                const formattedDate3 = date3.toLocaleDateString('es-ES', options3);
-                document.getElementById('modalId').textContent = id;
-                document.getElementById('modalName').textContent = name;
-                document.getElementById('modalCurrentVacation').textContent = current_vacation;
-                document.getElementById('modalCurrentVacationExpiration').textContent = formattedDate2;
-                document.getElementById('modalNextVaca').textContent = next_vacation || 'No hay vacaciones';
-
-                const modalNextVaca = document.getElementById('modalNextVaca');
-                const secondaryPeriodo = document.getElementById('secondaryPeriodo');
-
-                if (modalNextVaca.textContent === 'No hay vacaciones') {
-                    secondaryPeriodo.className = 'd-none';
-                } else {
-                    secondaryPeriodo.className = 'd-flex';
-                }
-
-                document.getElementById('modalExpireNextVaca').textContent = formattedDate3;
                 document.getElementById('modalDirectManagerStatus').textContent = direct_manager_status;
                 const modalDirectManagerStatus = document.getElementById('modalDirectManagerStatus');
+                // Verificar el valor y asignar el contenido y las clases
                 if (direct_manager_status === 'Pendiente') {
                     modalDirectManagerStatus.textContent = 'Pendiente';
                     modalDirectManagerStatus.className = 'badge bg-warning text-dark';
@@ -552,9 +634,6 @@
                 } else if (direct_manager_status === 'Rechazada') {
                     modalDirectManagerStatus.textContent = 'Rechazada';
                     modalDirectManagerStatus.className = 'badge bg-danger';
-                } else if (direct_manager_status === 'Cancelada por el usuario') {
-                    modalDirectManagerStatus.textContent = 'Cancelada por el usuario';
-                    modalDirectManagerStatus.className = 'badge bg-danger';
                 } else {
                     modalDirectManagerStatus.textContent = 'Desconocido';
                     modalDirectManagerStatus.className = 'badge bg-secondary';
@@ -562,6 +641,7 @@
 
                 document.getElementById('modalRhStatus').textContent = rh_status;
                 const modalRhStatus = document.getElementById('modalRhStatus');
+                // Verificar el valor y asignar el contenido y las clases
                 if (rh_status === 'Pendiente') {
                     modalRhStatus.textContent = 'Pendiente';
                     modalRhStatus.className = 'badge bg-warning text-dark';
@@ -571,13 +651,12 @@
                 } else if (rh_status === 'Rechazada') {
                     modalRhStatus.textContent = 'Rechazada';
                     modalRhStatus.className = 'badge bg-danger';
-                } else if (direct_manager_status === 'Cancelada por el usuario') {
-                    modalRhStatus.textContent = 'Cancelada por el usuario';
-                    modalRhStatus.className = 'badge bg-danger';
                 } else {
                     modalRhStatus.textContent = 'Desconocido';
                     modalRhStatus.className = 'badge bg-secondary';
                 }
+
+                /*Tipo Especifico*/
                 if (request_type === 'Ausencia') {
                     document.getElementById('modalSpecificType').textContent = tipoDeAusencia;
                 } else if (request_type === 'Permisos especiales') {
@@ -586,6 +665,7 @@
                 } else {
                     document.getElementById('modalSpecificType').textContent = 'Sin especificar';
                 }
+
                 document.getElementById('modalRequestType').textContent = request_type;
                 document.getElementById('modalDaysAbsent').textContent = days_absent;
                 document.getElementById('modalMethodOfPayment').textContent = method_of_payment;
@@ -594,45 +674,79 @@
             });
         });
 
-        // Evento para enviar el formulario de aprobación
+
         document.getElementById('approveButton').addEventListener('click', function() {
             document.getElementById('loadingSpinner').style.display = 'flex';
-            const form = document.getElementById('miFormularioAprobar');
+
+            const form = document.getElementById('miFormularioAproveRh');
+
+            // Mandar el ID de la solicitud que se va a aprobar
             const id = document.getElementById('modalId').textContent;
             const inputId = document.createElement('input');
             inputId.type = 'hidden';
             inputId.name = 'id';
             inputId.value = id;
             form.appendChild(inputId);
-            form.submit();
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            document.getElementById('loadingSpinner').style.display = 'none';
+                            Swal.fire({
+                                title: 'Solicitud Aprobada',
+                                text: 'La solicitud ha sido aprobada correctamente',
+                                icon: 'success',
+                                confirmButtonText: 'Aceptar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href =
+                                        '/request/authorize-rh/pendientes';
+                                }
+                            });
+                        } else {
+                            document.getElementById('loadingSpinner').style.display = 'none';
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Ocurrió un error al aprobar la solicitud.',
+                                icon: 'error',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('loadingSpinner').style.display = 'none';
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un error al aprobar la solicitud',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    });
+            });
+
+            form.dispatchEvent(new Event('submit'));
         });
 
-        // Evento para abrir el modal de rechazo y enviar el formulario
-        const formDeny = document.getElementById('denyFormRequest');
-        formDeny.addEventListener('submit', function(event) {
-            event.preventDefault();
-            document.getElementById('loadingSpinner').style.display = 'flex';
-            const form = document.getElementById('denyFormRequest');
-            const id = document.getElementById('modalId').textContent;
-            const inputId = document.createElement('input');
-            inputId.type = 'hidden';
-            inputId.name = 'id';
-            inputId.value = id;
-            form.appendChild(inputId);
-            form.submit();
-        });
 
-        // Evento para abrir el modal de rechazo
+
         document.getElementById('denyRequest').addEventListener('click', function() {
             $('#modalDetails').modal('hide');
             $('#modalDeny').modal({
-                backdrop: 'static',
-                keyboard: false
+                backdrop: 'static', // Evita que el modal se cierre al hacer clic fuera
+                keyboard: false // Desactiva el cierre con la tecla "Esc"
             }).modal('show');
         });
 
-        //Filtrado de solicitudes
+
+
         let tiempoEspera;
+        //Filtrado de solicitudes
         document.getElementById('searchName').addEventListener('input', function() {
             clearTimeout(tiempoEspera);
             tiempoEspera = setTimeout(function() {
@@ -640,6 +754,7 @@
                 applyFilters();
             }, 750);
         });
+
 
         document.getElementById('tipoSelect').addEventListener('change', function() {
             applyFilters();
@@ -649,7 +764,6 @@
             applyFilters();
         });
 
-        // Limpiar los filtros
         document.getElementById('clearFilter').addEventListener('click', function() {
             document.getElementById('fechaInput').value = '';
             document.getElementById('tipoSelect').value = '';
@@ -657,12 +771,14 @@
             applyFilters();
         });
 
-        //Funcion para aplicar los filtros
+        /*Funcion para aplicar los filtros*/
         function applyFilters() {
             document.getElementById('loadingSpinner').style.display = 'flex';
+
             const tipo = document.getElementById('tipoSelect').value;
             const fecha = document.getElementById('fechaInput').value;
             const search = document.getElementById('searchName').value;
+
             let url = '?tipo=' + tipo + '&fecha=' + fecha + '&search=' + encodeURIComponent(search);
             window.location.href = url;
         }
@@ -675,6 +791,7 @@
         });
 
 
+
         //Si en la url esta el parametro de search pasarlo al input de busqueda searchName
         const urlParams = new URLSearchParams(window.location.search);
         const search = urlParams.get('search');
@@ -682,84 +799,4 @@
             document.getElementById('searchName').value = search;
         }
     </script>
-
-    <style>
-        /*Estilos de las tarjetas*/
-        .bg-success {
-            background-color: #81C10C !important;
-        }
-
-        .bg-warning {
-            background-color: #FFC107 !important;
-        }
-
-        /*Estilos de las alertas*/
-        .alert {
-            padding: 0.7rem !important;
-        }
-
-        .alert-success {
-            color: #0f5132 !important;
-            background-color: #d1e7dd !important;
-            border-color: #badbcc !important;
-        }
-
-        .alert-danger {
-            color: #C10C0C !important;
-            background-color: #f8d7da !important;
-            border-color: #f5c2c7 !important;
-        }
-
-        .alert-warning {
-            color: #664d03 !important;
-            background-color: #fff3cd !important;
-            border-color: #ffecb5 !important;
-        }
-
-        /*Estilos de paginacion*/
-        .pagination {
-            display: flex;
-            justify-content: end;
-
-        }
-
-        .page-item .page-link {
-            font-size: .875rem;
-            border-color: transparent;
-        }
-
-        .page-item.active .page-link {
-            background-color: #435ebe;
-            border-color: #435ebe;
-            color: #fff;
-            z-index: 3;
-            border-radius: 27px;
-        }
-
-        .page-item.disabled .page-link {
-            background-color: #fff;
-            color: #6c757d;
-            pointer-events: none;
-            border-color: transparent;
-        }
-
-        /*Estilo para spin de carga*/
-        #loadingSpinner {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-        }
-    </style>
 @stop
